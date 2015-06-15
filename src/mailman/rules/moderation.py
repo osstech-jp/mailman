@@ -23,6 +23,8 @@ __all__ = [
     ]
 
 
+import re
+
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import MemberRole
@@ -93,8 +95,21 @@ class NonmemberModeration:
         # Do nonmember moderation check.
         for sender in msg.senders:
             nonmember = mlist.nonmembers.get_member(sender)
-            action = (None if nonmember is None
-                      else nonmember.moderation_action)
+            assert nonmember is not None, (
+                'Sender not added to the nonmembers: {0}'.format(sender))
+            # Check the '*_these_nonmembers' properties first
+            for action in ('accept', 'hold', 'reject', 'discard'):
+                checklist = getattr(mlist, '{}_these_nonmembers'.format(action))
+                for addr in checklist:
+                    if (addr.startswith('^') and re.match(addr, sender)) \
+                        or addr == sender:
+                        msgdata['moderation_action'] = action
+                        msgdata['moderation_sender'] = sender
+                        msgdata.setdefault('moderation_reasons', []).append(
+                            'The sender is in the nonmember {} list'.format(
+                            action))
+                        return True
+            action = nonmember.moderation_action
             if action is Action.defer:
                 # The regular moderation rules apply.
                 return False
