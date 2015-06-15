@@ -39,7 +39,7 @@ Interfaces
  * Messages now include a `Message-ID-Hash` as the replacement for
    `X-Message-ID-Hash` although the latter is still included for backward
    compatibility.  Also be sure that all places which add the header use the
-   same algorithm.
+   same algorithm.  (Closes #118)
 
 Internal API
 ------------
