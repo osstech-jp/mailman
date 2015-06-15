@@ -399,14 +399,18 @@ def import_config_pck(mlist, config_dict):
                       MemberRole.owner)
         import_roster(mlist, config_dict, config_dict.get('moderator', []),
                       MemberRole.moderator)
-        import_roster(mlist, config_dict, config_dict.get('accept_these_nonmembers', []),
-                      MemberRole.nonmember, Action.accept)
-        import_roster(mlist, config_dict, config_dict.get('hold_these_nonmembers', []),
-                      MemberRole.nonmember, Action.hold)
-        import_roster(mlist, config_dict, config_dict.get('reject_these_nonmembers', []),
-                      MemberRole.nonmember, Action.reject)
-        import_roster(mlist, config_dict, config_dict.get('discard_these_nonmembers', []),
-                      MemberRole.nonmember, Action.discard)
+        # Now import the '*_these_nonmembers' properties, filtering out the
+        # regexps which will remain in the property
+        for action_name in ('accept', 'hold', 'reject', 'discard'):
+            prop_name = '{0}_these_nonmembers'.format(action_name)
+            emails = [ addr for addr in config_dict.get(prop_name, [])
+                       if not addr.startswith('^') ]
+            import_roster(mlist, config_dict, emails, MemberRole.nonmember,
+                          Action[action_name])
+            # Only keep the regexes in the legacy list property
+            list_prop = getattr(mlist, prop_name)
+            for email in emails:
+                list_prop.remove(email)
     finally:
         mlist.send_welcome_message = send_welcome_message
 

@@ -650,15 +650,19 @@ class TestRosterImport(unittest.TestCase):
             ],
             'accept_these_nonmembers': [
                 'gene@example.com',
+                '^gene-.*@example.com',
             ],
             'hold_these_nonmembers': [
                 'homer@example.com',
+                '^homer-.*@example.com',
             ],
             'reject_these_nonmembers': [
                 'iris@example.com',
+                '^iris-.*@example.com',
             ],
             'discard_these_nonmembers': [
                 'kenny@example.com',
+                '^kenny-.*@example.com',
             ],
         }
         self._usermanager = getUtility(IUserManager)
@@ -857,6 +861,11 @@ class TestRosterImport(unittest.TestCase):
             member = self._mlist.nonmembers.get_member(
                 '{}@example.com'.format(name))
             self.assertEqual(member.moderation_action, action)
+            # Only regexps should remain in the list property
+            list_prop = getattr(self._mlist,
+                '{}_these_nonmembers'.format(action.name))
+            self.assertEqual(len(list_prop), 1)
+            self.assertTrue(all(addr.startswith('^') for addr in list_prop))
 
 
 
