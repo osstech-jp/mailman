@@ -53,7 +53,7 @@ To: test@example.com
 From: anne@example.com
 Subject: Testing the test list
 Message-ID: <ant>
-X-Message-ID-Hash: MS6QLWERIJLGCRF44J7USBFDELMNT2BW
+Message-ID-Hash: MS6QLWERIJLGCRF44J7USBFDELMNT2BW
 
 Tests are better than no tests
 but the water deserves to be swum.
@@ -125,7 +125,7 @@ but the water deserves to be swum.
         # Archive a second message.  If an exception occurs, let it fail the
         # test.  Afterward, two messages should be in the 'new' directory.
         del self._msg['message-id']
-        del self._msg['x-message-id-hash']
+        del self._msg['message-id-hash']
         self._msg['Message-ID'] = '<bee>'
         add_message_hash(self._msg)
         Prototype.archive_message(self._mlist, self._msg)

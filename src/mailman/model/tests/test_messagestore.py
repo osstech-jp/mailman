@@ -60,12 +60,49 @@ This message is very important.
         add_message_hash(message)
         self._store.add(message)
         self.assertEqual(message['x-message-id-hash'],
-                         'V3YEHAFKE2WVJNK63Z7RFP4JMHISI2RG')
+                         'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
         found = self._store.get_message_by_hash(
-            'V3YEHAFKE2WVJNK63Z7RFP4JMHISI2RG')
+            'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
         self.assertEqual(found['message-id'], '<ant>')
         self.assertEqual(found['x-message-id-hash'],
-                         'V3YEHAFKE2WVJNK63Z7RFP4JMHISI2RG')
+                         'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
 
     def test_cannot_delete_missing_message(self):
         self.assertRaises(LookupError, self._store.delete_message, 'missing')
+
+    def test_message_id_hash(self):
+        # The new specification calls for a Message-ID-Hash header,
+        # specifically without the X- prefix.
+        msg = mfs("""\
+Message-ID: <ant>
+
+""")
+        self._store.add(msg)
+        stored_msg = self._store.get_message_by_id('<ant>')
+        self.assertEqual(stored_msg['message-id-hash'],
+                         'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
+        # For backward compatibility with the old spec.
+        self.assertEqual(stored_msg['x-message-id-hash'],
+                         'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
+
+    def test_message_id_hash_gets_replaced(self):
+        # Any existing Message-ID-Hash header (or for backward compatibility
+        # X-Message-ID-Hash) gets replaced with its new value.
+        msg = mfs("""\
+Subject: Testing
+Message-ID: <ant>
+Message-ID-Hash: abc
+X-Message-ID-Hash: abc
+
+""")
+        self._store.add(msg)
+        stored_msg = self._store.get_message_by_id('<ant>')
+        message_id_hashes = stored_msg.get_all('message-id-hash')
+        self.assertEqual(len(message_id_hashes), 1)
+        self.assertEqual(message_id_hashes[0],
+                         'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
+        # For backward compatibility with the old spec.
+        x_message_id_hashes = stored_msg.get_all('x-message-id-hash')
+        self.assertEqual(len(x_message_id_hashes), 1)
+        self.assertEqual(x_message_id_hashes[0],
+                         'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')

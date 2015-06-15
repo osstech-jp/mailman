@@ -50,12 +50,12 @@ class DummyArchiver:
 
     @staticmethod
     def permalink(mlist, msg):
-        filename = msg['x-message-id-hash']
+        filename = msg['message-id-hash']
         return 'http://archive.example.com/' + filename
 
     @staticmethod
     def archive_message(mlist, msg):
-        filename = msg['x-message-id-hash']
+        filename = msg['message-id-hash']
         path = os.path.join(config.MESSAGES_DIR, filename)
         with open(path, 'w') as fp:
             print(msg.as_string(), file=fp)
@@ -90,7 +90,7 @@ From: aperson@example.com
 To: test@example.com
 Subject: My first post
 Message-ID: <first>
-X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
 
 First post!
 """)

@@ -24,14 +24,13 @@ __all__ = [
 
 import os
 import errno
-import base64
 import pickle
-import hashlib
 
 from mailman.config import config
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.messages import IMessageStore
 from mailman.model.message import Message
+from mailman.utilities.email import add_message_hash
 from mailman.utilities.filesystem import makedirs
 from zope.interface import implementer
 
@@ -53,7 +52,7 @@ class MessageStore:
         message_ids = message.get_all('message-id', [])
         if len(message_ids) != 1:
             raise ValueError('Exactly one Message-ID header required')
-        # Calculate and insert the X-Message-ID-Hash.
+        # Calculate and insert the Message-ID-Hash.
         message_id = message_ids[0]
         if isinstance(message_id, bytes):
             message_id = message_id.decode('ascii')
@@ -64,10 +63,7 @@ class MessageStore:
             raise ValueError(
                 'Message ID already exists in message store: {0}'.format(
                     message_id))
-        shaobj = hashlib.sha1(message_id.encode('utf-8'))
-        hash32 = base64.b32encode(shaobj.digest()).decode('utf-8')
-        del message['X-Message-ID-Hash']
-        message['X-Message-ID-Hash'] = hash32
+        hash32 = add_message_hash(message)
         # Calculate the path on disk where we're going to store this message
         # object, in pickled format.
         parts = []

@@ -121,6 +121,7 @@ Additionally, this archiver can handle malformed ``Message-IDs``.
     >>> del msg['x-message-id-hash']
     >>> msg['Message-ID'] = '12345>'
     >>> add_message_hash(msg)
+    'YJIGBYRWZFG5LZEBQ7NR25B5HBR2BVD6'
     >>> print(archiver.permalink(mlist, msg))
     http://go.mail-archive.dev/YJIGBYRWZFG5LZEBQ7NR25B5HBR2BVD6
 
@@ -128,6 +129,7 @@ Additionally, this archiver can handle malformed ``Message-IDs``.
     >>> del msg['x-message-id-hash']
     >>> msg['Message-ID'] = '<12345'
     >>> add_message_hash(msg)
+    'XUFFJNJ2P2WC4NDPQRZFDJMV24POP64B'
     >>> print(archiver.permalink(mlist, msg))
     http://go.mail-archive.dev/XUFFJNJ2P2WC4NDPQRZFDJMV24POP64B
 
@@ -135,6 +137,7 @@ Additionally, this archiver can handle malformed ``Message-IDs``.
     >>> del msg['x-message-id-hash']
     >>> msg['Message-ID'] = '12345'
     >>> add_message_hash(msg)
+    'RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE'
     >>> print(archiver.permalink(mlist, msg))
     http://go.mail-archive.dev/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
 
@@ -143,6 +146,7 @@ Additionally, this archiver can handle malformed ``Message-IDs``.
     >>> add_message_hash(msg)
     >>> msg['Message-ID'] = '    12345    '
     >>> add_message_hash(msg)
+    'RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE'
     >>> print(archiver.permalink(mlist, msg))
     http://go.mail-archive.dev/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
 

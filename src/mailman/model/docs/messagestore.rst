@@ -22,11 +22,12 @@ A message with a ``Message-ID`` header can be stored.
     ... """)
     >>> x_message_id_hash = message_store.add(msg)
     >>> print(x_message_id_hash)
-    AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
+    JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
     >>> print(msg.as_string())
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-Message-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
+    Message-ID-Hash: JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
+    X-Message-ID-Hash: JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
     <BLANKLINE>
     This message is very important.
     <BLANKLINE>
@@ -50,7 +51,8 @@ Given an existing ``Message-ID``, the message can be found.
     >>> print(message.as_string())
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-Message-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
+    Message-ID-Hash: JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
+    X-Message-ID-Hash: JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
     <BLANKLINE>
     This message is very important.
     <BLANKLINE>
@@ -61,7 +63,8 @@ Similarly, we can find messages by the ``X-Message-ID-Hash``:
     >>> print(message.as_string())
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-Message-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
+    Message-ID-Hash: JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
+    X-Message-ID-Hash: JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
     <BLANKLINE>
     This message is very important.
     <BLANKLINE>
@@ -79,7 +82,8 @@ contains.
     >>> print(messages[0].as_string())
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-Message-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
+    Message-ID-Hash: JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
+    X-Message-ID-Hash: JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP
     <BLANKLINE>
     This message is very important.
     <BLANKLINE>

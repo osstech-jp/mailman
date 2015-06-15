@@ -63,10 +63,14 @@ class MHonArc:
     def permalink(self, mlist, msg):
         """See `IArchiver`."""
         # XXX What about private MHonArc archives?
-        # It is the LMTP server's responsibility to ensure that the message
-        # has a X-Message-ID-Hash header.  If it doesn't then there's no
+        #
+        # It is the LMTP server's responsibility to ensure that the message has
+        # a Message-ID-Hash header.  For backward compatibility, fall back to
+        # X-Message-ID-Hash.  If the message has neither, then there's no
         # permalink.
-        message_id_hash = msg.get('x-message-id-hash')
+        message_id_hash = msg.get('message-id-hash')
+        if message_id_hash is None:
+            message_id_hash = msg.get('x-message-id-hash')
         if message_id_hash is None:
             return None
         if isinstance(message_id_hash, bytes):

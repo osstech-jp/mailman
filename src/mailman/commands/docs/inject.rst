@@ -95,7 +95,7 @@ By default, the incoming queue is used.
     >>> dump_msgdata(items[0].msgdata)
     _parsemsg    : False
     listid       : test.example.com
-    original_size: 203
+    original_size: 253
     version      : 3
 
 But a different queue can be specified on the command line.
@@ -123,7 +123,7 @@ But a different queue can be specified on the command line.
     >>> dump_msgdata(items[0].msgdata)
     _parsemsg    : False
     listid       : test.example.com
-    original_size: 203
+    original_size: 253
     version      : 3
 
 
@@ -167,7 +167,7 @@ The message text can also be provided on standard input.
     >>> dump_msgdata(items[0].msgdata)
     _parsemsg    : False
     listid       : test.example.com
-    original_size: 211
+    original_size: 261
     version      : 3
 
 .. Clean up.
@@ -195,7 +195,7 @@ injected.
     bar          : two
     foo          : one
     listid       : test.example.com
-    original_size: 203
+    original_size: 253
     version      : 3
 
 

@@ -30,42 +30,42 @@ from zope.interface import Interface, Attribute
 class IMessageStore(Interface):
     """The interface of the global message storage service.
 
-    All messages that are stored in the system live in the message storage
-    service.  A message stored in this service must have a Message-ID header.
-    The store writes an X-Message-ID-Hash header which contains the Base32
-    encoded SHA1 hash of the message's Message-ID header.  Any existing
-    X-Message-ID-Hash header is overwritten.
+    All messages that are stored in the system live in the message
+    storage service.  A message stored in this service must have a
+    Message-ID header.  The store writes an Message-ID-Hash header which
+    contains the Base32 encoded SHA1 hash of the message's Message-ID
+    header.  Any existing Message-ID-Hash header is overwritten.
 
-    Either the Message-ID or the X-Message-ID-Hash header can be used to
+    Either the Message-ID or the Message-ID-Hash header can be used to
     uniquely identify this message in the storage service.  While it is
     possible to see duplicate Message-IDs, this is never correct and the
-    service is allowed to drop any subsequent colliding messages, or overwrite
-    earlier messages with later ones.
+    service is allowed to drop any subsequent colliding messages, or
+    overwrite earlier messages with later ones.
 
-    The combination of the List-Archive header and either the Message-ID or
-    X-Message-ID-Hash header can be used to retrieve the message from the
-    internet facing interface for the message store.  This can be considered a
-    globally unique URI to the message.
+    The combination of the List-Archive header and either the Message-ID
+    or Message-ID-Hash header can be used to retrieve the message from
+    the internet facing interface for the message store.  This can be
+    considered a globally unique URI to the message.
 
     For example, a message with the following headers:
 
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
     Date: Wed, 04 Jul 2007 16:49:58 +0900
     List-Archive: http://archive.example.com/
-    X-Message-ID-Hash: RXTJ357KFOTJP3NFJA6KMO65X7VQOHJI
+    Message-ID-Hash: RXTJ357KFOTJP3NFJA6KMO65X7VQOHJI
 
     the globally unique URI would be:
 
     http://archive.example.com/RXTJ357KFOTJP3NFJA6KMO65X7VQOHJI
-    """
+"""
 
     def add(message):
         """Add the message to the store.
 
         :param message: An email.message.Message instance containing at least
             a unique Message-ID header.  The message will be given an
-            X-Message-ID-Hash header, overriding any existing such header.
-        :returns: The calculated X-Message-ID-Hash header.
+            Message-ID-Hash header, overriding any existing such header.
+        :returns: The calculated Message-ID-Hash header.
         :raises ValueError: if the message is missing a Message-ID header.
             The storage service is also allowed to raise this exception if it
             find, but disallows collisions.
@@ -79,9 +79,9 @@ class IMessageStore(Interface):
         """
 
     def get_message_by_hash(message_id_hash):
-        """Return the message with the matching X-Message-ID-Hash.
+        """Return the message with the matching Message-ID-Hash.
 
-        :param message_id_hash: The X-Message-ID-Hash header contents to
+        :param message_id_hash: The Message-ID-Hash header contents to
             search for.
         :returns: The message, or None if no matching message was found.
         """
