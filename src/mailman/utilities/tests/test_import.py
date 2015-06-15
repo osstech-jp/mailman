@@ -444,15 +444,26 @@ class TestMemberActionImport(unittest.TestCase):
         for key, value in expected.items():
             self.assertEqual(getattr(self._mlist, key), value)
 
+    def test_member_defer(self):
+        # if default_member_moderation is not set, the member_moderation_action
+        # value is meaningless
+        self._pckdict['default_member_moderation'] = 0
+        for mmaval in range(3):
+            self._pckdict['member_moderation_action'] = mmaval
+            self._do_test(dict(default_member_action=Action.defer))
+
     def test_member_hold(self):
+        self._pckdict['default_member_moderation'] = 1
         self._pckdict['member_moderation_action'] = 0
         self._do_test(dict(default_member_action=Action.hold))
 
     def test_member_reject(self):
+        self._pckdict['default_member_moderation'] = 1
         self._pckdict['member_moderation_action'] = 1
         self._do_test(dict(default_member_action=Action.reject))
 
     def test_member_discard(self):
+        self._pckdict['default_member_moderation'] = 1
         self._pckdict['member_moderation_action'] = 2
         self._do_test(dict(default_member_action=Action.discard))
 

@@ -103,21 +103,6 @@ def filter_action_mapping(value):
         }[value]
 
 
-
-def member_action_mapping(value):
-    # The mlist.default_member_action and mlist.default_nonmember_action enum
-    # values are different in Mailman 2.1, because they have been merged into
-    # a single enum in Mailman 3.
-    #
-    # For default_member_action, which used to be called
-    # member_moderation_action, the values were: 0==Hold, 1=Reject, 2==Discard
-    return {
-        0: Action.hold,
-        1: Action.reject,
-        2: Action.discard,
-        }[value]
-
-
 def nonmember_action_mapping(value):
     # For default_nonmember_action, which used to be called
     # generic_nonmember_action, the values were: 0==Accept, 1==Hold,
@@ -161,7 +146,6 @@ TYPES = dict(
     autoresponse_grace_period=days_to_delta,
     bounce_info_stale_after=seconds_to_delta,
     bounce_you_are_disabled_warnings_interval=seconds_to_delta,
-    default_member_action=member_action_mapping,
     default_nonmember_action=nonmember_action_mapping,
     digest_volume_frequency=DigestFrequency,
     filter_action=filter_action_mapping,
@@ -190,7 +174,6 @@ NAME_MAPPINGS = dict(
     filter_mime_types='filter_types',
     generic_nonmember_action='default_nonmember_action',
     include_list_post_header='allow_list_posts',
-    member_moderation_action='default_member_action',
     mod_password='moderator_password',
     news_moderation='newsgroup_moderation',
     news_prefix_subject_too='nntp_prefix_subject_too',
@@ -268,6 +251,23 @@ def import_config_pck(mlist, config_dict):
             setattr(mlist, 'last_post_at', value)
             continue
         setattr(mlist, key, value)
+    # Handle the moderation policy.
+    # The mlist.default_member_action and mlist.default_nonmember_action enum
+    # values are different in Mailman 2.1, because they have been merged into
+    # a single enum in Mailman 3.
+    # Unmoderated lists used to have default_member_moderation set to a false
+    # value, this translates to the Defer default action. Moderated lists with
+    # the default_member_moderation set to a true value used to store the
+    # action in the member_moderation_action flag, the values were: 0==Hold,
+    # 1=Reject, 2==Discard
+    if bool(config_dict.get("default_member_moderation", 0)):
+        mlist.default_member_action = {
+                0: Action.hold,
+                1: Action.reject,
+                2: Action.discard,
+            }[config_dict.get("member_moderation_action")]
+    else:
+        mlist.default_member_action = Action.defer
     # Handle the archiving policy.  In MM2.1 there were two boolean options
     # but only three of the four possible states were valid.  Now there's just
     # an enum.
