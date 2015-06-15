@@ -89,8 +89,9 @@ class TestQueues(unittest.TestCase):
         msg = items[0].msg
         # Remove some headers that get added by Mailman.
         del msg['date']
-        self.assertEqual(msg['x-message-id-hash'],
+        self.assertEqual(msg['message-id-hash'],
                          'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
+        del msg['message-id-hash']
         del msg['x-message-id-hash']
         self.assertMultiLineEqual(msg.as_string(), TEXT)
 

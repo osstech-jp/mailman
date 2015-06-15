@@ -57,10 +57,13 @@ class MailArchive:
         """See `IArchiver`."""
         if mlist.archive_policy is not ArchivePolicy.public:
             return None
-        # It is the LMTP server's responsibility to ensure that the message
-        # has a X-Message-ID-Hash header.  If it doesn't then there's no
-        # permalink.
-        message_id_hash = msg.get('x-message-id-hash')
+        # It is the LMTP server's responsibility to ensure that the message has
+        # a Message-ID-Hash header.  For backward compatibility, fallback to
+        # searching for X-Message-ID-Hash.  If the message has neither, then
+        # there's no permalink.
+        message_id_hash = msg.get('message-id-hash')
+        if message_id_hash is None:
+            message_id_hash = msg.get('x-message-id-hash')
         if message_id_hash is None:
             return None
         if isinstance(message_id_hash, bytes):

@@ -35,7 +35,7 @@ def inject_message(mlist, msg, recipients=None, switchboard=None, **kws):
     """Inject a message into a queue.
 
     If the message does not have a Message-ID header, one is added.  An
-    X-Message-Id-Hash header is also always added.
+    Message-ID-Hash header is also always added.
 
     :param mlist: The mailing list this message is destined for.
     :type mlist: IMailingList
@@ -78,7 +78,7 @@ def inject_text(mlist, text, recipients=None, switchboard=None, **kws):
     """Turn text into a message and inject that into a queue.
 
     If the text does not have a Message-ID header, one is added.  An
-    X-Message-Id-Hash header is also always added.
+    Message-ID-Hash header is also always added.
 
     :param mlist: The mailing list this message is destined for.
     :type mlist: IMailingList

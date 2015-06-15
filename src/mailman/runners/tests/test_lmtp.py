@@ -70,12 +70,12 @@ Subject: This has no Message-ID header
 From: anne@example.com
 To: test@example.com
 Message-ID: <ant>
-Subject: This has a Message-ID but no X-Message-ID-Hash
+Subject: This has a Message-ID but no Message-ID-Hash
 
 """)
         messages = get_queue_messages('in')
         self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msg['x-message-id-hash'],
+        self.assertEqual(messages[0].msg['message-id-hash'],
                          'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
 
     def test_original_message_id_hash_is_overwritten(self):
@@ -83,15 +83,15 @@ Subject: This has a Message-ID but no X-Message-ID-Hash
 From: anne@example.com
 To: test@example.com
 Message-ID: <ant>
-X-Message-ID-Hash: IGNOREME
-Subject: This has a Message-ID but no X-Message-ID-Hash
+Message-ID-Hash: IGNOREME
+Subject: This has a Message-ID but no Message-ID-Hash
 
 """)
         messages = get_queue_messages('in')
         self.assertEqual(len(messages), 1)
-        all_headers = messages[0].msg.get_all('x-message-id-hash')
+        all_headers = messages[0].msg.get_all('message-id-hash')
         self.assertEqual(len(all_headers), 1)
-        self.assertEqual(messages[0].msg['x-message-id-hash'],
+        self.assertEqual(messages[0].msg['message-id-hash'],
                          'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
 
     def test_received_time(self):

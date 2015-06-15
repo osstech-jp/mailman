@@ -46,15 +46,17 @@ def split_email(address):
 
 
 def add_message_hash(msg):
-    """Add a X-Message-ID-Hash header derived from Message-ID.
+    """Add a Message-ID-Hash header derived from Message-ID.
 
-    This function works by side-effect; the original message is mutated.  Any
-    existing X-Message-ID-Headers are deleted if a Message-ID header is
-    found.  If no Message-ID header is found, the original message is not
-    modified.
+    This function works by side-effect; the original message is mutated.
+    Any existing Message-ID-Headers are deleted if a Message-ID header
+    is found.  If no Message-ID header is found, the original message is
+    not modified.
 
     :param msg: An email message
     :type msg: `email.message.Message` or derived
+    :return: The Message-ID-Hash contents.
+    :rtype: str
     """
     message_id = msg.get('message-id')
     if message_id is None:
@@ -71,6 +73,10 @@ def add_message_hash(msg):
     # we need a string for the header value.  We know the b32encoded byte
     # string must be ascii-only.
     digest = sha1(message_id.encode('utf-8')).digest()
-    message_id_hash = b32encode(digest)
+    hash32 = b32encode(digest).decode('ascii')
+    del msg['message-id-hash']
+    msg['Message-ID-Hash'] = hash32
+    # For backward compatibility with previous versions of the spec.
     del msg['x-message-id-hash']
-    msg['X-Message-ID-Hash'] = message_id_hash.decode('ascii')
+    msg['X-Message-ID-Hash'] = hash32
+    return hash32

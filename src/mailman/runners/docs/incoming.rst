@@ -125,6 +125,7 @@ Now the message is in the pipeline queue.
     To: test@example.com
     Subject: My first post
     Message-ID: <first>
+    Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     Date: ...
     X-Mailman-Rule-Misses: approved; emergency; loop; member-moderation;

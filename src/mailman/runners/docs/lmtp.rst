@@ -60,6 +60,7 @@ queue.
     To: mylist@example.com
     Subject: An interesting message
     Message-ID: <badger>
+    Message-ID-Hash: JYMZWSQ4IC2JPKK7ZUONRFRVC4ZYJGKJ
     X-Message-ID-Hash: JYMZWSQ4IC2JPKK7ZUONRFRVC4ZYJGKJ
     X-MailFrom: anne.person@example.com
     <BLANKLINE>
@@ -107,6 +108,7 @@ command queue for processing.
     To: mylist-request@example.com
     Subject: Help
     Message-ID: <dog>
+    Message-ID-Hash: 4SKREUSPI62BHDMFBSOZ3BMXFETSQHNA
     X-Message-ID-Hash: 4SKREUSPI62BHDMFBSOZ3BMXFETSQHNA
     X-MailFrom: anne.person@example.com
     <BLANKLINE>

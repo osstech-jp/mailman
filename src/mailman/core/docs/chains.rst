@@ -147,7 +147,8 @@ This one is addressed to the list moderators.
     To: test@example.com
     Subject: My first post
     Message-ID: <first>
-    X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
+    Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     <BLANKLINE>
     An important message.
     <BLANKLINE>
@@ -219,7 +220,8 @@ processed and sent on to the list membership.
     To: test@example.com
     Subject: My first post
     Message-ID: <first>
-    X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
+    Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     <BLANKLINE>
     An important message.
     <BLANKLINE>
@@ -264,7 +266,8 @@ This message will end up in the `pipeline` queue.
     To: test@example.com
     Subject: My first post
     Message-ID: <first>
-    X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
+    Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     X-Mailman-Rule-Misses: approved; emergency; loop; member-moderation;
         administrivia; implicit-dest; max-recipients; max-size;
         news-moderation; no-subject; suspicious-header; nonmember-moderation

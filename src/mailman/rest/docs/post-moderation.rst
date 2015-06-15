@@ -45,7 +45,8 @@ When a message gets held for moderator approval, it shows up in this list.
     To: ant@example.com
     Subject: Something
     Message-ID: <alpha>
-    X-Message-ID-Hash: GCSMSG43GYWWVUMO6F7FBUSSPNXQCJ6M
+    Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
+    X-Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
     <BLANKLINE>
     Something else.
     <BLANKLINE>
@@ -74,7 +75,8 @@ message.  This will include the text of the message.
     To: ant@example.com
     Subject: Something
     Message-ID: <alpha>
-    X-Message-ID-Hash: GCSMSG43GYWWVUMO6F7FBUSSPNXQCJ6M
+    Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
+    X-Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
     <BLANKLINE>
     Something else.
     <BLANKLINE>
@@ -117,7 +119,8 @@ The message is still in the moderation queue.
     To: ant@example.com
     Subject: Something
     Message-ID: <alpha>
-    X-Message-ID-Hash: GCSMSG43GYWWVUMO6F7FBUSSPNXQCJ6M
+    Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
+    X-Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
     <BLANKLINE>
     Something else.
     <BLANKLINE>
