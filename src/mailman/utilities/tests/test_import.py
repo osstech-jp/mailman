@@ -648,6 +648,18 @@ class TestRosterImport(unittest.TestCase):
                 'bob@example.com',
                 'fred@example.com',
             ],
+            'accept_these_nonmembers': [
+                'gene@example.com',
+            ],
+            'hold_these_nonmembers': [
+                'homer@example.com',
+            ],
+            'reject_these_nonmembers': [
+                'iris@example.com',
+            ],
+            'discard_these_nonmembers': [
+                'kenny@example.com',
+            ],
         }
         self._usermanager = getUtility(IUserManager)
         language_manager = getUtility(ILanguageManager)
@@ -830,6 +842,21 @@ class TestRosterImport(unittest.TestCase):
                              "Unexpected queue '{}' file count: {}".format(
                                  queue, file_count))
         self.assertTrue(self._mlist.send_welcome_message)
+
+    def test_nonmembers(self):
+        import_config_pck(self._mlist, self._pckdict)
+        expected = {"gene": Action.accept,
+                    "homer": Action.hold,
+                    "iris": Action.reject,
+                    "kenny": Action.discard,
+                    }
+        for name, action in expected.items():
+            self.assertIn('{}@example.com'.format(name),
+                          [a.email for a in self._mlist.nonmembers.addresses],
+                          'Address {} was not imported'.format(name))
+            member = self._mlist.nonmembers.get_member(
+                '{}@example.com'.format(name))
+            self.assertEqual(member.moderation_action, action)
 
 
 

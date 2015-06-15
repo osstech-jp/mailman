@@ -399,12 +399,20 @@ def import_config_pck(mlist, config_dict):
                       MemberRole.owner)
         import_roster(mlist, config_dict, config_dict.get('moderator', []),
                       MemberRole.moderator)
+        import_roster(mlist, config_dict, config_dict.get('accept_these_nonmembers', []),
+                      MemberRole.nonmember, Action.accept)
+        import_roster(mlist, config_dict, config_dict.get('hold_these_nonmembers', []),
+                      MemberRole.nonmember, Action.hold)
+        import_roster(mlist, config_dict, config_dict.get('reject_these_nonmembers', []),
+                      MemberRole.nonmember, Action.reject)
+        import_roster(mlist, config_dict, config_dict.get('discard_these_nonmembers', []),
+                      MemberRole.nonmember, Action.discard)
     finally:
         mlist.send_welcome_message = send_welcome_message
 
 
 
-def import_roster(mlist, config_dict, members, role):
+def import_roster(mlist, config_dict, members, role, action=None):
     """Import members lists from a config.pck configuration dictionary.
 
     :param mlist: The mailing list.
@@ -447,8 +455,7 @@ def import_roster(mlist, config_dict, members, role):
                 address = usermanager.create_address(original_email)
                 address.verified_on = datetime.datetime.now()
             user.link(address)
-        mlist.subscribe(address, role)
-        member = roster.get_member(email)
+        member = mlist.subscribe(address, role)
         assert member is not None
         prefs = config_dict.get('user_options', {}).get(email, 0)
         if email in config_dict.get('members', {}):
@@ -488,6 +495,8 @@ def import_roster(mlist, config_dict, members, role):
         elif oldds == 4:
             member.preferences.delivery_status = DeliveryStatus.by_bounces
         # Moderation.
+        if action is not None:
+            member.moderation_action = action
         if prefs & 128:
             member.moderation_action = Action.hold
         # Other preferences.
