@@ -949,10 +949,28 @@ class TestPreferencesImport(unittest.TestCase):
             self.assertEqual(member.delivery_status, expected)
             member.unsubscribe()
 
-    def test_moderate(self):
-        # Option flag Moderate is translated to
-        # member.moderation_action = Action.hold
+    def test_moderate_hold(self):
+        # Option flag Moderate is translated to the action set in
+        # member_moderation_action
+        self._pckdict["member_moderation_action"] = 0
         self._do_test(128, dict(moderation_action=Action.hold))
+
+    def test_moderate_hold(self):
+        # Option flag Moderate is translated to the action set in
+        # member_moderation_action
+        self._pckdict["member_moderation_action"] = 1
+        self._do_test(128, dict(moderation_action=Action.reject))
+
+    def test_moderate_hold(self):
+        # Option flag Moderate is translated to the action set in
+        # member_moderation_action
+        self._pckdict["member_moderation_action"] = 2
+        self._do_test(128, dict(moderation_action=Action.discard))
+
+    def test_no_moderate(self):
+        # If option flag Moderate is not set, action is accept
+        self._pckdict["member_moderation_action"] = 1 # reject
+        self._do_test(0, dict(moderation_action=Action.accept))
 
     def test_multiple_options(self):
         # DontReceiveDuplicates & DisableMime & SuppressPasswordReminder

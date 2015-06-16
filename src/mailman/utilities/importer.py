@@ -103,6 +103,16 @@ def filter_action_mapping(value):
         }[value]
 
 
+def member_moderation_action_mapping(value):
+    # Convert the member_moderation_action option to an Action enum.
+    # The values were: 0==Hold, 1==Reject, 2==Discard
+    return {
+        0: Action.hold,
+        1: Action.reject,
+        2: Action.discard,
+        }[value]
+
+
 def nonmember_action_mapping(value):
     # For default_nonmember_action, which used to be called
     # generic_nonmember_action, the values were: 0==Accept, 1==Hold,
@@ -113,7 +123,6 @@ def nonmember_action_mapping(value):
         2: Action.reject,
         3: Action.discard,
         }[value]
-
 
 
 def check_language_code(code):
@@ -261,11 +270,8 @@ def import_config_pck(mlist, config_dict):
     # action in the member_moderation_action flag, the values were: 0==Hold,
     # 1=Reject, 2==Discard
     if bool(config_dict.get("default_member_moderation", 0)):
-        mlist.default_member_action = {
-                0: Action.hold,
-                1: Action.reject,
-                2: Action.discard,
-            }[config_dict.get("member_moderation_action")]
+        mlist.default_member_action = member_moderation_action_mapping(
+            config_dict.get("member_moderation_action"))
     else:
         mlist.default_member_action = Action.defer
     # Handle the archiving policy.  In MM2.1 there were two boolean options
@@ -461,11 +467,11 @@ def import_roster(mlist, config_dict, members, role, action=None):
             user.link(address)
         member = mlist.subscribe(address, role)
         assert member is not None
-        prefs = config_dict.get('user_options', {}).get(email, 0)
+        prefs = config_dict.get('user_options', {}).get(email)
         if email in config_dict.get('members', {}):
             member.preferences.delivery_mode = DeliveryMode.regular
         elif email in config_dict.get('digest_members', {}):
-            if prefs & 8: # DisableMime
+            if prefs is not None and prefs & 8: # DisableMime
                 member.preferences.delivery_mode = \
                   DeliveryMode.plaintext_digests
             else:
@@ -499,17 +505,27 @@ def import_roster(mlist, config_dict, members, role, action=None):
         elif oldds == 4:
             member.preferences.delivery_status = DeliveryStatus.by_bounces
         # Moderation.
+        if prefs is not None:
+            # we're adding a member
+            if prefs & 128:
+                # Member is moderated, check the member_moderation_action option to
+                # know which action should be taken.
+                action = member_moderation_action_mapping(
+                    config_dict.get("member_moderation_action"))
+            else:
+                action = Action.accept
         if action is not None:
+            # either set right above or in the function's arguments for
+            # nonmembers
             member.moderation_action = action
-        if prefs & 128:
-            member.moderation_action = Action.hold
-        # Other preferences.
         #
-        # AcknowledgePosts
-        member.preferences.acknowledge_posts = bool(prefs & 4)
-        # ConcealSubscription
-        member.preferences.hide_address = bool(prefs & 16)
-        # DontReceiveOwnPosts
-        member.preferences.receive_own_postings = not bool(prefs & 2)
-        # DontReceiveDuplicates
-        member.preferences.receive_list_copy = not bool(prefs & 256)
+        # Other preferences.
+        if prefs is not None:
+            # AcknowledgePosts
+            member.preferences.acknowledge_posts = bool(prefs & 4)
+            # ConcealSubscription
+            member.preferences.hide_address = bool(prefs & 16)
+            # DontReceiveOwnPosts
+            member.preferences.receive_own_postings = not bool(prefs & 2)
+            # DontReceiveDuplicates
+            member.preferences.receive_list_copy = not bool(prefs & 256)
