@@ -2,3 +2,5 @@
 var
 .coverage
 htmlcov
+__pycache__
+.tox
