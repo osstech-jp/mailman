@@ -91,7 +91,8 @@ for delivery.  The original message as received by Mailman is attached.
         if not include_sender and member.address.email in recipients:
             recipients.remove(member.address.email)
         # Handle topic classifications
-        do_topic_filters(mlist, msg, msgdata, recipients)
+        # XXX: Disabled for now until we fix it properly
+        #do_topic_filters(mlist, msg, msgdata, recipients)
         # Bookkeeping
         msgdata['recipients'] = recipients
 
