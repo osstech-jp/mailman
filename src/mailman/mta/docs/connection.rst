@@ -70,7 +70,7 @@ will authenticate with the mail server after each new connection.
     ... """)
     {}
     >>> print(smtpd.get_authentication_credentials())
-    PLAIN AHRlc3R1c2VyAHRlc3RwYXNz
+    AHRlc3R1c2VyAHRlc3RwYXNz
 
     >>> reset()
     >>> config.pop('auth')

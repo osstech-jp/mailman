@@ -53,6 +53,11 @@ class FakeMTA:
 class StatisticsChannel(Channel):
     """A channel that can answers to the fake STAT command."""
 
+    def __init__(self, server, connection, address):
+        super().__init__(server, connection, address)
+        self._auth_response = None
+        self._waiting_for_auth_response = False
+
     def smtp_EHLO(self, arg):
         if not arg:
             self.push('501 Syntax: HELO hostname')
@@ -69,12 +74,28 @@ class StatisticsChannel(Channel):
         self._server.send_statistics()
         self.push('250 Ok')
 
+    def _check_auth(self, response):
+        # Base 64 for "testuser:testpass"
+        if response == 'AHRlc3R1c2VyAHRlc3RwYXNz':
+            self.push('235 Ok')
+            self._server.send_auth(response)
+        else:
+            self.push('571 Bad authentication')
+
     def smtp_AUTH(self, arg):
         """Record that the AUTH occurred."""
-        if arg == 'PLAIN AHRlc3R1c2VyAHRlc3RwYXNz':
-            # testuser:testpass
-            self.push('235 Ok')
-            self._server.send_auth(arg)
+        args = arg.split()
+        if args[0].lower() == 'plain':
+            if len(args) == 2:
+                # The second argument is the AUTH PLAIN <initial-response>
+                # which must be equal to the base 64 equivalent of the
+                # expected login string "testuser:testpass".
+                self._check_auth(args[1])
+            else:
+                assert len(args) == 1, args
+                # Send a challenge and set us up to wait for the response.
+                self.push('334 ')
+                self._waiting_for_auth_response = True
         else:
             self.push('571 Bad authentication')
 
@@ -99,6 +120,18 @@ class StatisticsChannel(Channel):
             # The test suite wants this to fail.  The message corresponds to
             # the exception we expect smtplib.SMTP to raise.
             self.push('%d Error: SMTPResponseException' % code)
+
+    def found_terminator(self):
+        # Are we're waiting for the AUTH challenge response?
+        if self._waiting_for_auth_response:
+            line = self._emptystring.join(self.received_lines)
+            self._auth_response = line
+            self._waiting_for_auth_response = False
+            self.received_lines = []
+            # Now check to see if they authenticated correctly.
+            self._check_auth(line)
+        else:
+            super().found_terminator()
 
 
 

@@ -41,16 +41,10 @@ from mailman.config import config
 
 
 COMMASPACE = ', '
-VERSION = tuple(int(v) for v in email.__version__.split('.'))
 
 
 
 class Message(email.message.Message):
-    def __init__(self):
-        # We need a version number so that we can optimize __setstate__().
-        self.__version__ = VERSION
-        email.message.Message.__init__(self)
-
     # BAW: For debugging w/ bin/dumpdb.  Apparently pprint uses repr.
     def __repr__(self):
         return self.__str__()
@@ -62,12 +56,6 @@ class Message(email.message.Message):
         # safer for pickling, so we handle such changes here.  Note that we're
         # using Python 2.6's email package version 4.0.1 as a base line here.
         self.__dict__ = values
-        # The pickled instance should have an __version__ string, but it may
-        # not if it's an email package message.
-        version = values.get('__version__', (0, 0, 0))
-        values['__version__'] = version
-        # There's really nothing to check; there's nothing newer than email
-        # 4.0.1 at the moment.
 
     @property
     def sender(self):
