@@ -103,14 +103,9 @@ def filter_action_mapping(value):
         }[value]
 
 
-
-def member_action_mapping(value):
-    # The mlist.default_member_action and mlist.default_nonmember_action enum
-    # values are different in Mailman 2.1, because they have been merged into
-    # a single enum in Mailman 3.
-    #
-    # For default_member_action, which used to be called
-    # member_moderation_action, the values were: 0==Hold, 1=Reject, 2==Discard
+def member_moderation_action_mapping(value):
+    # Convert the member_moderation_action option to an Action enum.
+    # The values were: 0==Hold, 1==Reject, 2==Discard
     return {
         0: Action.hold,
         1: Action.reject,
@@ -128,7 +123,6 @@ def nonmember_action_mapping(value):
         2: Action.reject,
         3: Action.discard,
         }[value]
-
 
 
 def check_language_code(code):
@@ -161,7 +155,6 @@ TYPES = dict(
     autoresponse_grace_period=days_to_delta,
     bounce_info_stale_after=seconds_to_delta,
     bounce_you_are_disabled_warnings_interval=seconds_to_delta,
-    default_member_action=member_action_mapping,
     default_nonmember_action=nonmember_action_mapping,
     digest_volume_frequency=DigestFrequency,
     filter_action=filter_action_mapping,
@@ -190,7 +183,6 @@ NAME_MAPPINGS = dict(
     filter_mime_types='filter_types',
     generic_nonmember_action='default_nonmember_action',
     include_list_post_header='allow_list_posts',
-    member_moderation_action='default_member_action',
     mod_password='moderator_password',
     news_moderation='newsgroup_moderation',
     news_prefix_subject_too='nntp_prefix_subject_too',
@@ -268,6 +260,22 @@ def import_config_pck(mlist, config_dict):
             setattr(mlist, 'last_post_at', value)
             continue
         setattr(mlist, key, value)
+    # Handle the moderation policy.
+    #
+    # The mlist.default_member_action and mlist.default_nonmember_action enum
+    # values are different in Mailman 2.1, because they have been merged into a
+    # single enum in Mailman 3.
+    #
+    # Unmoderated lists used to have default_member_moderation set to a false
+    # value; this translates to the Defer default action.  Moderated lists with
+    # the default_member_moderation set to a true value used to store the
+    # action in the member_moderation_action flag, the values were: 0==Hold,
+    # 1=Reject, 2==Discard
+    if bool(config_dict.get('default_member_moderation', 0)):
+        mlist.default_member_action = member_moderation_action_mapping(
+            config_dict.get('member_moderation_action'))
+    else:
+        mlist.default_member_action = Action.defer
     # Handle the archiving policy.  In MM2.1 there were two boolean options
     # but only three of the four possible states were valid.  Now there's just
     # an enum.
@@ -399,12 +407,25 @@ def import_config_pck(mlist, config_dict):
                       MemberRole.owner)
         import_roster(mlist, config_dict, config_dict.get('moderator', []),
                       MemberRole.moderator)
+        # Now import the '*_these_nonmembers' properties, filtering out the
+        # regexps which will remain in the property.
+        for action_name in ('accept', 'hold', 'reject', 'discard'):
+            prop_name = '{}_these_nonmembers'.format(action_name)
+            emails = [addr
+                      for addr in config_dict.get(prop_name, [])
+                      if not addr.startswith('^')]
+            import_roster(mlist, config_dict, emails, MemberRole.nonmember,
+                          Action[action_name])
+            # Only keep the regexes in the legacy list property.
+            list_prop = getattr(mlist, prop_name)
+            for email in emails:
+                list_prop.remove(email)
     finally:
         mlist.send_welcome_message = send_welcome_message
 
 
 
-def import_roster(mlist, config_dict, members, role):
+def import_roster(mlist, config_dict, members, role, action=None):
     """Import members lists from a config.pck configuration dictionary.
 
     :param mlist: The mailing list.
@@ -415,6 +436,8 @@ def import_roster(mlist, config_dict, members, role):
     :type members: list
     :param role: The MemberRole to import them as.
     :type role: MemberRole enum
+    :param action: The default nonmember action.
+    :type action: Action
     """
     usermanager = getUtility(IUserManager)
     validator = getUtility(IEmailValidator)
@@ -447,14 +470,13 @@ def import_roster(mlist, config_dict, members, role):
                 address = usermanager.create_address(original_email)
                 address.verified_on = datetime.datetime.now()
             user.link(address)
-        mlist.subscribe(address, role)
-        member = roster.get_member(email)
+        member = mlist.subscribe(address, role)
         assert member is not None
-        prefs = config_dict.get('user_options', {}).get(email, 0)
+        prefs = config_dict.get('user_options', {}).get(email)
         if email in config_dict.get('members', {}):
             member.preferences.delivery_mode = DeliveryMode.regular
         elif email in config_dict.get('digest_members', {}):
-            if prefs & 8: # DisableMime
+            if prefs is not None and prefs & 8:               # DisableMime
                 member.preferences.delivery_mode = \
                   DeliveryMode.plaintext_digests
             else:
@@ -488,15 +510,26 @@ def import_roster(mlist, config_dict, members, role):
         elif oldds == 4:
             member.preferences.delivery_status = DeliveryStatus.by_bounces
         # Moderation.
-        if prefs & 128:
-            member.moderation_action = Action.hold
+        if prefs is not None:
+            # We're adding a member.
+            if prefs & 128:
+                # The member is moderated.  Check the member_moderation_action
+                # option to know which action should be taken.
+                action = member_moderation_action_mapping(
+                    config_dict.get("member_moderation_action"))
+            else:
+                action = Action.accept
+        if action is not None:
+            # Either this was set right above or in the function's arguments
+            # for nonmembers.
+            member.moderation_action = action
         # Other preferences.
-        #
-        # AcknowledgePosts
-        member.preferences.acknowledge_posts = bool(prefs & 4)
-        # ConcealSubscription
-        member.preferences.hide_address = bool(prefs & 16)
-        # DontReceiveOwnPosts
-        member.preferences.receive_own_postings = not bool(prefs & 2)
-        # DontReceiveDuplicates
-        member.preferences.receive_list_copy = not bool(prefs & 256)
+        if prefs is not None:
+            # AcknowledgePosts
+            member.preferences.acknowledge_posts = bool(prefs & 4)
+            # ConcealSubscription
+            member.preferences.hide_address = bool(prefs & 16)
+            # DontReceiveOwnPosts
+            member.preferences.receive_own_postings = not bool(prefs & 2)
+            # DontReceiveDuplicates
+            member.preferences.receive_list_copy = not bool(prefs & 256)

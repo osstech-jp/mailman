@@ -110,3 +110,42 @@ A message body.
         reasons = msgdata['moderation_reasons']
         self.assertEqual(
             reasons, ['The message comes from a moderated member'])
+
+    def test_these_nonmembers(self):
+        # Test the legacy *_these_nonmembers attributes.
+        user_manager = getUtility(IUserManager)
+        actions = {
+            'anne@example.com': 'accept',
+            'bill@example.com': 'hold',
+            'chris@example.com': 'reject',
+            'dana@example.com': 'discard',
+            '^anne-.*@example.com': 'accept',
+            '^bill-.*@example.com': 'hold',
+            '^chris-.*@example.com': 'reject',
+            '^dana-.*@example.com': 'discard',
+            }
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        for address, action_name in actions.items():
+            setattr(self._mlist,
+                    '{}_these_nonmembers'.format(action_name),
+                    [address])
+            if address.startswith('^'):
+                # It's a pattern, craft a proper address.
+                address = address[1:].replace('.*', 'something')
+            user_manager.create_address(address)
+            msg = mfs("""\
+From: {}
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""".format(address))
+            msgdata = {}
+            result = rule.check(self._mlist, msg, msgdata)
+            self.assertTrue(result, 'NonmemberModeration rule should hit')
+            self.assertIn('moderation_action', msgdata)
+            self.assertEqual(msgdata['moderation_action'], action_name,
+                'Wrong action for {}: {}'.format(address, action_name))
