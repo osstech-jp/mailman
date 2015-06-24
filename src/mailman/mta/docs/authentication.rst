@@ -45,7 +45,7 @@ Attempting delivery first must authorize with the mail server.
     {}
 
     >>> print(smtpd.get_authentication_credentials())
-    PLAIN AHRlc3R1c2VyAHRlc3RwYXNz
+    AHRlc3R1c2VyAHRlc3RwYXNz
     >>> config.pop('auth')
 
 But if the user name and password does not match, the connection will fail.

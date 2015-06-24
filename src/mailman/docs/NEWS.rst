@@ -52,6 +52,10 @@ REST
    isn't linked, the address is linked to the new user.  Given by Aurélien
    Bompard.
 
+Other
+-----
+ * The test suite is now Python 3.5 compatible.
+
 
 3.0.0 -- "Show Don't Tell"
 ==========================

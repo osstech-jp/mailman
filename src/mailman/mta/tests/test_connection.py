@@ -49,3 +49,17 @@ Subject: aardvarks
 """)
         self.assertEqual(cm.exception.smtp_code, 571)
         self.assertEqual(cm.exception.smtp_error, b'Bad authentication')
+
+    def test_authentication_good_path(self):
+        # Logging in with the correct user name and password succeeds.
+        connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0,
+            'testuser', 'testpass')
+        connection.sendmail('anne@example.com', ['bart@example.com'], """\
+From: anne@example.com
+To: bart@example.com
+Subject: aardvarks
+
+""")
+        self.assertEqual(self.layer.smtpd.get_authentication_credentials(),
+                         'AHRlc3R1c2VyAHRlc3RwYXNz')
