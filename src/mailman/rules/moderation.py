@@ -66,6 +66,12 @@ class MemberModeration:
 
 
 
+def _record_action(msgdata, action, sender, reason):
+    msgdata['moderation_action'] = action
+    msgdata['moderation_sender'] = sender
+    msgdata.setdefault('moderation_reasons', []).append(reason)
+
+
 @implementer(IRule)
 class NonmemberModeration:
     """The nonmember moderation rule."""
@@ -97,17 +103,19 @@ class NonmemberModeration:
             nonmember = mlist.nonmembers.get_member(sender)
             assert nonmember is not None, (
                 'Sender not added to the nonmembers: {0}'.format(sender))
-            # Check the '*_these_nonmembers' properties first
+            # Check the '*_these_nonmembers' properties first.  XXX These are
+            # legacy attributes from MM2.1; their database type is 'pickle' and
+            # they should eventually get replaced.
             for action in ('accept', 'hold', 'reject', 'discard'):
-                checklist = getattr(mlist, '{}_these_nonmembers'.format(action))
+                legacy_attribute_name = '{}_these_nonmembers'.format(action)
+                checklist = getattr(mlist, legacy_attribute_name)
                 for addr in checklist:
-                    if (addr.startswith('^') and re.match(addr, sender)) \
-                        or addr == sender:
-                        msgdata['moderation_action'] = action
-                        msgdata['moderation_sender'] = sender
-                        msgdata.setdefault('moderation_reasons', []).append(
-                            'The sender is in the nonmember {} list'.format(
-                            action))
+                    if ((addr.startswith('^') and re.match(addr, sender))
+                            or addr == sender):
+                        # The reason will get translated at the point of use.
+                        reason = 'The sender is in the nonmember {} list'
+                        _record_action(msgdata, action, sender,
+                                       reason.format(action))
                         return True
             action = nonmember.moderation_action
             if action is Action.defer:
@@ -116,11 +124,10 @@ class NonmemberModeration:
             elif action is not None:
                 # We must stringify the moderation action so that it can be
                 # stored in the pending request table.
-                msgdata['moderation_action'] = action.name
-                msgdata['moderation_sender'] = sender
-                msgdata.setdefault('moderation_reasons', []).append(
-                    # This will get translated at the point of use.
-                    'The message is not from a list member')
+                #
+                # The reason will get translated at the point of use.
+                reason = 'The message is not from a list member'
+                _record_action(msgdata, action.name, sender, reason)
                 return True
         # The sender must be a member, so this rule does not match.
         return False

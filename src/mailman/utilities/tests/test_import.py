@@ -445,8 +445,8 @@ class TestMemberActionImport(unittest.TestCase):
             self.assertEqual(getattr(self._mlist, key), value)
 
     def test_member_defer(self):
-        # if default_member_moderation is not set, the member_moderation_action
-        # value is meaningless
+        # If default_member_moderation is not set, the member_moderation_action
+        # value is meaningless.
         self._pckdict['default_member_moderation'] = 0
         for mmaval in range(3):
             self._pckdict['member_moderation_action'] = mmaval
@@ -849,11 +849,12 @@ class TestRosterImport(unittest.TestCase):
 
     def test_nonmembers(self):
         import_config_pck(self._mlist, self._pckdict)
-        expected = {"gene": Action.accept,
-                    "homer": Action.hold,
-                    "iris": Action.reject,
-                    "kenny": Action.discard,
-                    }
+        expected = {
+            'gene': Action.accept,
+            'homer': Action.hold,
+            'iris': Action.reject,
+            'kenny': Action.discard,
+            }
         for name, action in expected.items():
             self.assertIn('{}@example.com'.format(name),
                           [a.email for a in self._mlist.nonmembers.addresses],
@@ -861,8 +862,9 @@ class TestRosterImport(unittest.TestCase):
             member = self._mlist.nonmembers.get_member(
                 '{}@example.com'.format(name))
             self.assertEqual(member.moderation_action, action)
-            # Only regexps should remain in the list property
-            list_prop = getattr(self._mlist,
+            # Only regexps should remain in the list property.
+            list_prop = getattr(
+                self._mlist,
                 '{}_these_nonmembers'.format(action.name))
             self.assertEqual(len(list_prop), 1)
             self.assertTrue(all(addr.startswith('^') for addr in list_prop))
@@ -951,25 +953,25 @@ class TestPreferencesImport(unittest.TestCase):
 
     def test_moderate_hold(self):
         # Option flag Moderate is translated to the action set in
-        # member_moderation_action
-        self._pckdict["member_moderation_action"] = 0
+        # member_moderation_action.
+        self._pckdict['member_moderation_action'] = 0
         self._do_test(128, dict(moderation_action=Action.hold))
 
-    def test_moderate_hold(self):
+    def test_moderate_reject(self):
         # Option flag Moderate is translated to the action set in
-        # member_moderation_action
-        self._pckdict["member_moderation_action"] = 1
+        # member_moderation_action.
+        self._pckdict['member_moderation_action'] = 1
         self._do_test(128, dict(moderation_action=Action.reject))
 
-    def test_moderate_hold(self):
+    def test_moderate_hold_discard(self):
         # Option flag Moderate is translated to the action set in
-        # member_moderation_action
-        self._pckdict["member_moderation_action"] = 2
+        # member_moderation_action.
+        self._pckdict['member_moderation_action'] = 2
         self._do_test(128, dict(moderation_action=Action.discard))
 
     def test_no_moderate(self):
         # If option flag Moderate is not set, action is accept
-        self._pckdict["member_moderation_action"] = 1 # reject
+        self._pckdict['member_moderation_action'] = 1 # reject
         self._do_test(0, dict(moderation_action=Action.accept))
 
     def test_multiple_options(self):
