@@ -55,6 +55,7 @@ REST
 Other
 -----
  * The test suite is now Python 3.5 compatible.
+ * Improvements in importing Mailman 2.1 lists, given by Aurélien Bompard.
 
 
 3.0.0 -- "Show Don't Tell"
