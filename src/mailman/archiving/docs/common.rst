@@ -92,7 +92,7 @@ address at The Mail Archive.  The message gets no header or footer decoration.
     Subject: An archived message
     Message-ID: <12345>
     X-Message-ID-Hash: RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
-    X-Peer: 127.0.0.1:...
+    X-Peer: ...
     X-MailFrom: test-bounces@example.com
     X-RcptTo: archive@mail-archive.dev
     <BLANKLINE>
