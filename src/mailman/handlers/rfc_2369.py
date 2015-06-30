@@ -91,7 +91,7 @@ def process(mlist, msg, msgdata):
                                     '<{}>'.format(archiver_url)))
                 permalink = archiver.system_archiver.permalink(mlist, msg)
                 if permalink is not None:
-                    headers.append(('Archived-At', permalink))
+                    headers.append(('Archived-At', '<{}>'.format(permalink)))
     # XXX RFC 2369 also defines a List-Owner header which we are not currently
     # supporting, but should.
     #

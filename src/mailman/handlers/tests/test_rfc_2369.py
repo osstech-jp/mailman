@@ -97,7 +97,7 @@ Dummy text
             ['<http://lists.example.com>'])
         self.assertEqual(
             self._msg.get_all('Archived-At'),
-            ['http://lists.example.com/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB'])
+            ['<http://lists.example.com/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB>'])
 
     def test_prototype_no_url(self):
         # The prototype archiver is not web-based, it must not return URLs
