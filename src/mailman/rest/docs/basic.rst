@@ -42,6 +42,7 @@ System version information can be retrieved from the server, in the form of a
 JSON encoded response.
 
     >>> dump_json('http://localhost:9001/3.0/system/versions')
+    api_version: 3.0
     http_etag: "..."
     mailman_version: GNU Mailman 3...
     python_version: ...

@@ -50,19 +50,32 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
         log.info('%s - - %s', self.address_string(), format % args)
 
 
+class SetAPIVersion:
+    """Falcon middleware object that sets the api_version on resources."""
+    def process_resource(self, request, response, resource):
+        # Set this attribute on the resource right before it is dispatched
+        # too.  This can be used by the resource to provide different
+        # responses based on the API version, and for path_to() to provide an
+        # API version-specific path.
+        #
+        # Note that it's possible that resource is None, e.g. such as when a
+        # resource path does not exist.  This middleware method will still get
+        # called, but there's nothing to set the api_version on.
+        if resource is not None:
+            resource.api_version = request.context.get('api_version')
+
+
 class RootedAPI(API):
     def __init__(self, root, *args, **kws):
         self._root = root
-        super(RootedAPI, self).__init__(*args, **kws)
+        super().__init__(*args, middleware=SetAPIVersion(), **kws)
 
     @transactional
     def __call__(self, environ, start_response):
-        # The only difference between this and the super class's wsgi API is
-        # that this wraps a transactional handler around the call.  If an
-        # error occurs, the current transaction is aborted, otherwise it is
-        # committed.
-        return super(RootedAPI, self).__call__(
-            environ, start_response)
+        # Override the base class implementation to wrap a transactional
+        # handler around the call, such that the current transaction is
+        # committed if no errors occur, and aborted otherwise.
+        return super().__call__(environ, start_response)
 
     def _get_responder(self, req):
         path = req.path

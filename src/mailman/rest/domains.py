@@ -27,7 +27,7 @@ from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.rest.helpers import (
     BadRequest, CollectionMixin, NotFound, bad_request, child, created, etag,
-    no_content, not_found, okay, path_to)
+    no_content, not_found, okay)
 from mailman.rest.lists import ListsForDomain
 from mailman.rest.users import OwnersForDomain
 from mailman.rest.validator import Validator, list_of_strings_validator
@@ -44,7 +44,7 @@ class _DomainBase(CollectionMixin):
             base_url=domain.base_url,
             description=domain.description,
             mail_host=domain.mail_host,
-            self_link=path_to('domains/{0}'.format(domain.mail_host)),
+            self_link=self.path_to('domains/{0}'.format(domain.mail_host)),
             url_host=domain.url_host,
             )
 
@@ -125,7 +125,8 @@ class AllDomains(_DomainBase):
         except ValueError as error:
             bad_request(response, str(error))
         else:
-            created(response, path_to('domains/{0}'.format(domain.mail_host)))
+            location = self.path_to('domains/{0}'.format(domain.mail_host))
+            created(response, location)
 
     def on_get(self, request, response):
         """/domains"""

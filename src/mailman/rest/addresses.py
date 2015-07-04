@@ -29,7 +29,7 @@ from mailman.interfaces.address import (
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
     BadRequest, CollectionMixin, NotFound, bad_request, child, created, etag,
-    no_content, not_found, okay, path_to)
+    no_content, not_found, okay)
 from mailman.rest.members import MemberCollection
 from mailman.rest.preferences import Preferences
 from mailman.rest.validator import Validator
@@ -51,7 +51,7 @@ class _AddressBase(CollectionMixin):
             email=address.email,
             original_email=address.original_email,
             registered_on=address.registered_on,
-            self_link=path_to('addresses/{0}'.format(address.email)),
+            self_link=self.path_to('addresses/{0}'.format(address.email)),
             )
         # Add optional attributes.  These can be None or the empty string.
         if address.display_name:
@@ -59,7 +59,7 @@ class _AddressBase(CollectionMixin):
         if address.verified_on:
             representation['verified_on'] = address.verified_on
         if address.user:
-            representation['user'] = path_to(
+            representation['user'] = self.path_to(
                 'users/{0}'.format(address.user.user_id.int))
         return representation
 
@@ -178,7 +178,7 @@ class UserAddresses(_AddressBase):
 
     def __init__(self, user):
         self._user = user
-        super(UserAddresses, self).__init__()
+        super().__init__()
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
@@ -215,7 +215,8 @@ class UserAddresses(_AddressBase):
         else:
             # Link the address to the current user and return it.
             address.user = self._user
-            created(response, path_to('addresses/{0}'.format(address.email)))
+            location = self.path_to('addresses/{0}'.format(address.email))
+            created(response, location)
 
 
 
@@ -228,7 +229,7 @@ class AddressMemberships(MemberCollection):
     """All the memberships of a particular email address."""
 
     def __init__(self, address):
-        super(AddressMemberships, self).__init__()
+        super().__init__()
         self._address = address
 
     def _get_collection(self, request):

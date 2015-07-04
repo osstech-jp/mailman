@@ -56,8 +56,22 @@ class Root:
     always be the case though.
     """
 
-    @child(config.webservice.api_version)
-    def api_version(self, request, segments):
+    @child('3.0')
+    def api_version_30(self, request, segments):
+        # API version 3.0 was introduced in Mailman 3.0.
+        request.context['api_version'] = '3.0'
+        return self._check_authorization(request, segments)
+
+    @child('3.1')
+    def api_version_31(self, request, segments):
+        # API version 3.1 was introduced in Mailman 3.1.  Primary backward
+        # incompatible difference is that uuids are represented as hex strings
+        # instead of 128 bit integers.  The latter is not compatible with all
+        # versions of JavaScript.
+        request.context['api_version'] = '3.1'
+        return self._check_authorization(request, segments)
+
+    def _check_authorization(self, request, segments):
         # We have to do this here instead of in a @falcon.before() handler
         # because those handlers are not compatible with our custom traversal
         # logic.  Specifically, falcon's before/after handlers will call the
@@ -88,7 +102,8 @@ class Versions:
         resource = dict(
             mailman_version=system.mailman_version,
             python_version=system.python_version,
-            self_link=path_to('system/versions'),
+            api_version=self.api_version,
+            self_link=path_to('system/versions', self.api_version),
             )
         okay(response, etag(resource))
 
