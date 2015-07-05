@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2015 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,16 +23,15 @@ __all__ = [
 
 
 import unittest
-from urllib.parse import urljoin
-
-from zope.interface import implementer
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
-from mailman.interfaces.archiver import ArchivePolicy, IArchiver
 from mailman.handlers import rfc_2369
+from mailman.interfaces.archiver import ArchivePolicy, IArchiver
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
+from urllib.parse import urljoin
+from zope.interface import implementer
 
 
 @implementer(IArchiver)
@@ -107,8 +106,8 @@ Dummy text
         """)
         self.addCleanup(config.pop, 'archiver')
         rfc_2369.process(self._mlist, self._msg, {})
-        self.assertFalse('Archived-At' in self._msg)
-        self.assertFalse('List-Archive' in self._msg)
+        self.assertNotIn('Archived-At', self._msg)
+        self.assertNotIn('List-Archive', self._msg)
 
     def test_not_archived(self):
         # Messages sent to non-archived lists must not get the added headers.
@@ -120,5 +119,5 @@ Dummy text
         """.format(DummyArchiver.__module__))
         self.addCleanup(config.pop, 'archiver')
         rfc_2369.process(self._mlist, self._msg, {})
-        self.assertFalse('List-Archive' in self._msg)
-        self.assertFalse('Archived-At' in self._msg)
+        self.assertNotIn('List-Archive', self._msg)
+        self.assertNotIn('Archived-At', self._msg)

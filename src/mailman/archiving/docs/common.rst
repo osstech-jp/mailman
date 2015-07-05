@@ -21,7 +21,7 @@ header, and one that provides a *permalink* to the specific message object in
 the archive.  This latter is appropriate for the message footer or for the RFC
 5064 ``Archived-At:`` header.
 
-If the archiver is not network-accessible, it can return ``None`` and the
+If the archiver is not network-accessible, it will return ``None`` and the
 headers will not be added.
 
 Mailman defines a draft spec for how list servers and archivers can

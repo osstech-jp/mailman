@@ -53,6 +53,8 @@ class IArchiver(Interface):
     def list_url(mlist):
         """Return the url to the top of the list's archive.
 
+        If the archiver is not web-accessible, return None.
+
         :param mlist: The IMailingList object.
         :returns: The url string.
         """
@@ -62,6 +64,8 @@ class IArchiver(Interface):
 
         This url points directly to the message in the archive.  This method
         only calculates the url, it does not actually archive the message.
+
+        If the archiver is not web-accessible, return None.
 
         :param mlist: The IMailingList object.
         :param msg: The message object.

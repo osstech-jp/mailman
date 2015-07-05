@@ -169,8 +169,8 @@ Any existing ``List-Id`` headers are removed from the original message.
 Archive headers
 ===============
 
-When the mailing list is configured to enable archiving, a `List-Archive`
-header will be added.
+When the mailing list is configured to enable archiving, ``List-Archive``
+headers will be added for each web accessible archiver that is enabled.
 
 `RFC 5064`_ defines the `Archived-At` header which contains the url to the
 individual message in the archives.  Archivers which don't support
