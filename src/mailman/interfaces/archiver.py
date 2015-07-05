@@ -56,7 +56,7 @@ class IArchiver(Interface):
         If the archiver is not web-accessible, return None.
 
         :param mlist: The IMailingList object.
-        :returns: The url string.
+        :returns: The url string or None.
         """
 
     def permalink(mlist, msg):

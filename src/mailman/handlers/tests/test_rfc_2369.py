@@ -34,6 +34,7 @@ from urllib.parse import urljoin
 from zope.interface import implementer
 
 
+
 @implementer(IArchiver)
 class DummyArchiver:
     """An example archiver which does nothing but return URLs."""
@@ -55,6 +56,7 @@ class DummyArchiver:
         return None
 
 
+
 class TestRFC2369(unittest.TestCase):
     """Test the rfc_2369 handler."""
 
