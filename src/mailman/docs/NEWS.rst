@@ -56,6 +56,8 @@ Other
 -----
  * The test suite is now Python 3.5 compatible.
  * Improvements in importing Mailman 2.1 lists, given by Aurélien Bompard.
+ * The ``prototype`` archiver is not web accessible so it does not have a
+   ``list_url`` or permalink.  Given by Aurélien Bompard.
 
 
 3.0.0 -- "Show Don't Tell"
