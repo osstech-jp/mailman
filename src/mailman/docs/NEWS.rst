@@ -51,6 +51,8 @@ REST
  * When creating a user via REST using an address that already exists, but
    isn't linked, the address is linked to the new user.  Given by Aurélien
    Bompard.
+ * The REST API incorrectly parsed `is_server_owner` values when given
+   explicitly in the POST that creates a user.  (Closes #136)
 
 Other
 -----
