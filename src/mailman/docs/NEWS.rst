@@ -58,6 +58,8 @@ Other
  * Improvements in importing Mailman 2.1 lists, given by Aurélien Bompard.
  * The ``prototype`` archiver is not web accessible so it does not have a
    ``list_url`` or permalink.  Given by Aurélien Bompard.
+ * The REST API incorrectly parsed `is_server_owner` values when given
+   explicitly in the POST that creates a user.  (Closes #136)
 
 
 3.0.0 -- "Show Don't Tell"
