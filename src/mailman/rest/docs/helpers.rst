@@ -10,14 +10,15 @@ Resource paths
 
 For example, most resources don't have to worry about where they are rooted.
 They only need to know where they are relative to the root URI, and this
-function can return them the full path to the resource.
+function can return them the full path to the resource.  We have to pass in
+the REST API version because there is no request in flight.
 
     >>> from mailman.rest.helpers import path_to
-    >>> print(path_to('system'))
+    >>> print(path_to('system', '3.0'))
     http://localhost:9001/3.0/system
 
-Parameters like the ``scheme``, ``host``, ``port``, and API version number can
-be set in the configuration file.
+Parameters like the ``scheme``, ``host``, and ``port`` can be set in the
+configuration file.
 ::
 
     >>> config.push('helpers', """
@@ -25,11 +26,10 @@ be set in the configuration file.
     ... hostname: geddy
     ... port: 2112
     ... use_https: yes
-    ... api_version: 4.2
     ... """)
     >>> cleanups.append((config.pop, 'helpers'))
 
-    >>> print(path_to('system'))
+    >>> print(path_to('system', '4.2'))
     https://geddy:2112/4.2/system
 
 

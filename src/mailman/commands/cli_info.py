@@ -68,7 +68,9 @@ class Info:
         print('devmode:',
               'ENABLED' if as_boolean(config.devmode.enabled) else 'DISABLED',
               file=output)
-        print('REST root url:', path_to('/'), file=output)
+        print('REST root url:',
+              path_to('/', config.webservice.api_version),
+              file=output)
         print('REST credentials: {0}:{1}'.format(
             config.webservice.admin_user, config.webservice.admin_pass),
             file=output)

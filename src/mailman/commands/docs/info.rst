@@ -20,7 +20,7 @@ script ``mailman info``.  By default, the info is printed to standard output.
     ...
     config file: .../test.cfg
     db url: ...
-    REST root url: http://localhost:9001/3.0/
+    REST root url: http://localhost:9001/3.1/
     REST credentials: restadmin:restpass
 
 By passing in the ``-o/--output`` option, you can print the info to a file.
@@ -38,7 +38,7 @@ By passing in the ``-o/--output`` option, you can print the info to a file.
     config file: .../test.cfg
     db url: ...
     devmode: DISABLED
-    REST root url: http://localhost:9001/3.0/
+    REST root url: http://localhost:9001/3.1/
     REST credentials: restadmin:restpass
 
 You can also get more verbose information, which contains a list of the file

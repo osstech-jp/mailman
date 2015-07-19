@@ -48,6 +48,10 @@ Internal API
 
 REST
 ----
+ * REST API version 3.1 introduced.  Mostly backward compatible with version
+   3.0 except that UUIDs are represented as hex strings instead of 128-bit
+   integers, since the latter are not compatible with all versions of
+   JavaScript.
  * When creating a user via REST using an address that already exists, but
    isn't linked, the address is linked to the new user.  Given by Aurélien
    Bompard.

@@ -134,7 +134,6 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
 
     def __init__(self, mlist):
         self._mlist = mlist
-        self._requests = None
 
     def _resource_as_dict(self, request):
         """See `CollectionMixin`."""
@@ -142,7 +141,6 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
 
     def _get_collection(self, request):
         requests = IListRequests(self._mlist)
-        self._requests = requests
         return list(requests.of_type(RequestType.held_message))
 
     def on_get(self, request, response):

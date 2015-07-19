@@ -47,12 +47,14 @@ from pprint import pformat
 
 
 
-def path_to(resource):
+def path_to(resource, api_version):
     """Return the url path to a resource.
 
     :param resource: The canonical path to the resource, relative to the
         system base URI.
     :type resource: string
+    :param api_version: API version to report.
+    :type api_version: string
     :return: The full path to the resource.
     :rtype: bytes
     """
@@ -60,7 +62,7 @@ def path_to(resource):
         ('https' if as_boolean(config.webservice.use_https) else 'http'),
         config.webservice.hostname,
         config.webservice.port,
-        config.webservice.api_version,
+        api_version,
         (resource[1:] if resource.startswith('/') else resource),
         )
 
@@ -184,6 +186,9 @@ class CollectionMixin:
                 total_size=len(collection),
                 entries=entries,
                 )
+
+    def path_to(self, resource):
+        return path_to(resource, self.api_version)
 
 
 

@@ -89,7 +89,7 @@ CREATION_FIELDS = dict(
 
 
 
-def create_user(arguments, response):
+def create_user(arguments, request, response):
     """Create a new user."""
     # We can't pass the 'password' argument to the user creation method, so
     # strip that out (if it exists), then create the user, adding the password
@@ -118,7 +118,8 @@ def create_user(arguments, response):
         password = generate(int(config.passwords.password_length))
     user.password = config.password_context.encrypt(password)
     user.is_server_owner = is_server_owner
-    location = path_to('users/{}'.format(user.user_id.int))
+    location = path_to('users/{}'.format(user.user_id.int),
+                       request.context['api_version'])
     created(response, location)
     return user
 
@@ -137,7 +138,7 @@ class _UserBase(CollectionMixin):
         resource = dict(
             created_on=user.created_on,
             is_server_owner=user.is_server_owner,
-            self_link=path_to('users/{}'.format(user_id)),
+            self_link=self.path_to('users/{}'.format(user_id)),
             user_id=user_id,
         )
         # Add the password attribute, only if the user has a password.  Same
@@ -171,7 +172,7 @@ class AllUsers(_UserBase):
         except ValueError as error:
             bad_request(response, str(error))
             return
-        create_user(arguments, response)
+        create_user(arguments, request, response)
 
 
 
@@ -345,7 +346,7 @@ class AddressUser(_UserBase):
             auto_create = arguments.pop('auto_create', True)
             if auto_create:
                 # This sets the 201 or 400 status.
-                user = create_user(arguments, response)
+                user = create_user(arguments, request, response)
                 if user is None:
                     return
             else:
@@ -378,7 +379,7 @@ class AddressUser(_UserBase):
                 return
             okay(response)
         else:
-            user = create_user(arguments, response)
+            user = create_user(arguments, request, response)
             if user is None:
                 return
         user.link(self._address)

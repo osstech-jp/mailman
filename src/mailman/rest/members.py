@@ -38,7 +38,7 @@ from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
     CollectionMixin, NotFound, accepted, bad_request, child, conflict,
-    created, etag, no_content, not_found, okay, paginate, path_to)
+    created, etag, no_content, not_found, okay, paginate)
 from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
@@ -65,15 +65,16 @@ class _MemberBase(CollectionMixin):
             list_id=member.list_id,
             email=member.address.email,
             role=role,
-            address=path_to('addresses/{}'.format(member.address.email)),
-            self_link=path_to('members/{}'.format(member_id)),
+            address=self.path_to('addresses/{}'.format(member.address.email)),
+            self_link=self.path_to('members/{}'.format(member_id)),
             delivery_mode=member.delivery_mode,
             member_id=member_id,
             )
         # Add the user link if there is one.
         user = member.user
         if user is not None:
-            response['user'] = path_to('users/{}'.format(user.user_id.int))
+            response['user'] = self.path_to(
+                'users/{}'.format(user.user_id.int))
         return response
 
     @paginate
@@ -277,7 +278,7 @@ class AllMembers(_MemberBase):
                 # UUIDs and need to be converted to URLs because JSON doesn't
                 # directly support UUIDs.
                 member_id = member.member_id.int
-                location = path_to('members/{0}'.format(member_id))
+                location = self.path_to('members/{0}'.format(member_id))
                 created(response, location)
                 return
             # The member could not be directly subscribed because there are
@@ -327,9 +328,8 @@ class AllMembers(_MemberBase):
         # UUIDs and need to be converted to URLs because JSON doesn't
         # directly support UUIDs.
         member_id = member.member_id.int
-        location = path_to('members/{0}'.format(member_id))
+        location = self.path_to('members/{0}'.format(member_id))
         created(response, location)
-        return
 
     def on_get(self, request, response):
         """/members"""
@@ -341,9 +341,10 @@ class AllMembers(_MemberBase):
 class _FoundMembers(MemberCollection):
     """The found members collection."""
 
-    def __init__(self, members):
-        super(_FoundMembers, self).__init__()
+    def __init__(self, members, api_version):
+        super().__init__()
         self._members = members
+        self.api_version = api_version
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
@@ -367,5 +368,5 @@ class FindMembers(_MemberBase):
         except ValueError as error:
             bad_request(response, str(error))
         else:
-            resource = _FoundMembers(members)._make_collection(request)
-            okay(response, etag(resource))
+            resource = _FoundMembers(members, self.api_version)
+            okay(response, etag(resource._make_collection(request)))

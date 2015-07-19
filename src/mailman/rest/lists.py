@@ -40,7 +40,7 @@ from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.rest.listconf import ListConfiguration
 from mailman.rest.helpers import (
     CollectionMixin, GetterSetter, NotFound, bad_request, child, created,
-    etag, no_content, not_found, okay, paginate, path_to)
+    etag, no_content, not_found, okay, paginate)
 from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
@@ -109,7 +109,7 @@ class _ListBase(CollectionMixin):
             mail_host=mlist.mail_host,
             member_count=mlist.members.member_count,
             volume=mlist.volume,
-            self_link=path_to('lists/{0}'.format(mlist.list_id)),
+            self_link=self.path_to('lists/{0}'.format(mlist.list_id)),
             )
 
     @paginate
@@ -213,7 +213,8 @@ class AllLists(_ListBase):
         except ValueError as error:
             bad_request(response, str(error))
         else:
-            created(response, path_to('lists/{0}'.format(mlist.list_id)))
+            location = self.path_to('lists/{0}'.format(mlist.list_id))
+            created(response, location)
 
     def on_get(self, request, response):
         """/lists"""
