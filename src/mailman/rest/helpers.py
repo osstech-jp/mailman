@@ -54,6 +54,7 @@ def path_to(resource, api_version):
         system base URI.
     :type resource: string
     :param api_version: API version to report.
+    :type api_version: string
     :return: The full path to the resource.
     :rtype: bytes
     """

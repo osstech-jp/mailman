@@ -235,8 +235,7 @@ class MembersOfList(MemberCollection):
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         # Overrides _MemberBase._get_collection() because we only want to
-        # return the members from the requested roster.  Don't call super()
-        # but be sure to set the request object.
+        # return the members from the requested roster.
         roster = self._mlist.get_roster(self._role)
         address_of_member = attrgetter('address.email')
         return list(sorted(roster.members, key=address_of_member))

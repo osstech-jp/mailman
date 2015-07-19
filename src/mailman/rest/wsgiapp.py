@@ -52,6 +52,7 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
 
 class SetAPIVersion:
     """Falcon middleware object that sets the api_version on resources."""
+
     def process_resource(self, request, response, resource):
         # Set this attribute on the resource right before it is dispatched
         # too.  This can be used by the resource to provide different
