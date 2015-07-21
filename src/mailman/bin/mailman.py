@@ -88,7 +88,6 @@ def main():
         command.add(parser, command_parser)
         command_parser.set_defaults(func=command.process)
     args = parser.parse_args()
-    print(args)
     if len(args.__dict__) == 1:
         # No arguments or subcommands were given.
         parser.print_help()
