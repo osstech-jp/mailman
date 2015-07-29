@@ -20,6 +20,7 @@
 from mailman import public
 from mailman.database.model import Model
 from mailman.database.types import Enum
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.preferences import IPreferences
@@ -43,6 +44,8 @@ class Preferences(Model):
     receive_own_postings = Column(Boolean)
     delivery_mode = Column(Enum(DeliveryMode))
     delivery_status = Column(Enum(DeliveryStatus))
+    # When adding new columns, also add them to
+    # mailman.model.tests.test_preferences.TestPreferences.test_absorb_all_attributes()
 
     def __repr__(self):
         return '<Preferences object at {:#x}>'.format(id(self))
@@ -62,3 +65,14 @@ class Preferences(Model):
             self._preferred_language = language.code
         except AttributeError:
             self._preferred_language = language
+
+    @dbconnection
+    def absorb(self, store, preferences):
+        """See `IPreferences`."""
+        column_names = [ c.name for c in self.__table__.columns
+                         if not c.primary_key ]
+        for cname in column_names:
+            if (getattr(self, cname) is None and
+                getattr(preferences, cname) is not None):
+                setattr(self, cname, getattr(preferences, cname))
+        store.delete(preferences)

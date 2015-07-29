@@ -68,3 +68,9 @@ class IPreferences(Interface):
         which means that no preference is specified.
 
         XXX I'm not sure this is the right place to put this.""")
+
+    def absorb(preferences):
+        """Merge these preferences, and then delete them.
+
+        Only this instance's unset preferences (None/NULL) will be imported.
+        """

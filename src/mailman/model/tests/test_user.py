@@ -26,6 +26,7 @@ from mailman.interfaces.address import (
     AddressAlreadyLinkedError, AddressNotLinkedError)
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
+from mailman.interfaces.member import MemberRole
 from mailman.model.preferences import Preferences
 from mailman.testing.helpers import set_preferred
 from mailman.testing.layers import ConfigLayer
@@ -120,3 +121,116 @@ class TestUser(unittest.TestCase):
         preferences = config.db.store.query(Preferences).filter_by(
             id=user.preferences.id)
         self.assertEqual(preferences.count(), 0)
+
+    def test_absorb_addresses(self):
+        anne_addr = self._anne.preferred_address
+        with transaction():
+            # This has to happen in a transaction so that both the user and
+            # the preferences objects get valid ids.
+            bill = self._manager.create_user(
+                'bill@example.com', 'Bill Person')
+            bill_addr_2 = self._manager.create_address('bill2@example.com')
+            bill.link(bill_addr_2)
+        self._anne.absorb(bill)
+        self.assertIn('bill@example.com',
+            list(a.email for a in self._anne.addresses))
+        self.assertIn('bill2@example.com',
+            list(a.email for a in self._anne.addresses))
+        # the preferred address shouldn't change
+        self.assertEqual(self._anne.preferred_address, anne_addr)
+
+    def test_absorb_memberships(self):
+        mlist2 = create_list('test2@example.com')
+        mlist3 = create_list('test3@example.com')
+        with transaction():
+            # This has to happen in a transaction so that both the user and
+            # the preferences objects get valid ids.
+            bill = self._manager.create_user(
+                'bill@example.com', 'Bill Person')
+            bill_address = list(bill.addresses)[0]
+            bill_address.verified_on = now()
+            bill.preferred_address = bill_address
+        # Subscribe both users to self._mlist
+        self._mlist.subscribe(self._anne, MemberRole.member)
+        self._mlist.subscribe(bill, MemberRole.moderator)
+        # Subscribe only bill to mlist2
+        mlist2.subscribe(bill, MemberRole.owner)
+        # Subscribe only bill's address to mlist3
+        mlist3.subscribe(bill.preferred_address, MemberRole.moderator)
+        self._anne.absorb(bill)
+        # check that anne is subscribed to all lists
+        self.assertEqual(self._anne.memberships.member_count, 3)
+        memberships = {}
+        for member in self._anne.memberships.members:
+            memberships[member.list_id] = member
+        self.assertEqual(
+            set(memberships.keys()),
+            set(['test.example.com', 'test2.example.com', 'test3.example.com']))
+        # The subscription to test@example.com already existed, it must not be
+        # overwritten.
+        self.assertEqual(
+            memberships['test.example.com'].role, MemberRole.member)
+        # Check that the subscription roles were imported
+        self.assertEqual(
+            memberships['test2.example.com'].role, MemberRole.owner)
+        self.assertEqual(
+            memberships['test3.example.com'].role, MemberRole.moderator)
+        # The user bill was subscribed, the subscription must thus be
+        # transferred to anne's primary address.
+        self.assertEqual(
+            memberships['test2.example.com'].address,
+            self._anne.preferred_address)
+        # The address was subscribed, it must not be changed
+        self.assertEqual(
+            memberships['test3.example.com'].address.email,
+            'bill@example.com')
+
+    def test_absorb_preferences(self):
+        with transaction():
+            # This has to happen in a transaction so that both the user and
+            # the preferences objects get valid ids.
+            bill = self._manager.create_user(
+                'bill@example.com', 'Bill Person')
+        bill.preferences.acknowledge_posts = True
+        self.assertIsNone(self._anne.preferences.acknowledge_posts)
+        self._anne.absorb(bill)
+        self.assertEqual(self._anne.preferences.acknowledge_posts, True)
+
+    def test_absorb_properties(self):
+        props = {
+            'password': 'dummy',
+            'is_server_owner': True
+        }
+        with transaction():
+            # This has to happen in a transaction so that both the user and
+            # the preferences objects get valid ids.
+            bill = self._manager.create_user(
+                'bill@example.com', 'Bill Person')
+        for prop, value in props.items():
+            setattr(bill, prop, value)
+        self._anne.absorb(bill)
+        for prop, value in props.items():
+            self.assertEqual(getattr(self._anne, prop), value)
+        # This was not empty so it must not be overwritten
+        self.assertEqual(self._anne.display_name, 'Anne Person')
+
+    def test_absorb_delete_user(self):
+        # Make sure the user was deleted
+        with transaction():
+            # This has to happen in a transaction so that both the user and
+            # the preferences objects get valid ids.
+            bill = self._manager.create_user(
+                'bill@example.com', 'Bill Person')
+        bill_user_id = bill.user_id
+        self._anne.absorb(bill)
+        self.assertIsNone(self._manager.get_user_by_id(bill_user_id))
+
+    def test_absorb_self(self):
+        # Absorbing oneself should be a no-op (it must not delete the user)
+        self._mlist.subscribe(self._anne)
+        self._anne.absorb(self._anne)
+        new_anne = self._manager.get_user_by_id(self._anne.user_id)
+        self.assertIsNotNone(new_anne)
+        self.assertEqual(
+            [a.email for a in new_anne.addresses], ['anne@example.com'])
+        self.assertEqual(new_anne.memberships.member_count, 1)

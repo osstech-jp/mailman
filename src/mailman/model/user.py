@@ -26,10 +26,12 @@ from mailman.interfaces.address import (
 from mailman.interfaces.user import (
     IUser, PasswordChangeEvent, UnverifiedAddressError)
 from mailman.model.address import Address
+from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.model.roster import Memberships
 from mailman.utilities.datetime import factory as date_factory
 from mailman.utilities.uid import UIDFactory
+from sqlalchemy import not_
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Unicode
 from sqlalchemy.orm import backref, relationship
 from zope.event import notify
@@ -173,6 +175,35 @@ class User(Model):
     @property
     def memberships(self):
         return Memberships(self)
+
+    @dbconnection
+    def absorb(self, store, user):
+        """See `IUser`."""
+        assert user is not None
+        if user.id == self.id:
+            return # Protect against absorbing oneself.
+        # Relink addresses.
+        for address in list(user.addresses):
+            # convert to list because we'll mutate the result
+            address.user = self
+        # Merge memberships.
+        other_members = store.query(Member).filter(
+            Member.user_id == user.id)
+        # (only import memberships of lists I'm not subscribed to yet)
+        subscribed_lists = [ m.list_id for m in self.memberships.members ]
+        if subscribed_lists:
+            other_members = other_members.filter(
+                not_(Member.list_id.in_(subscribed_lists)))
+        for member in other_members:
+            member.user_id = self.id
+        # Merge the user preferences
+        self.preferences.absorb(user.preferences)
+        # Merge display_name, password and is_server_owner attributes.
+        for prop in ('display_name', 'password', 'is_server_owner'):
+            if getattr(user, prop) and not getattr(self, prop):
+                setattr(self, prop, getattr(user, prop))
+        # Delete the other user.
+        store.delete(user)
 
 
 @public
