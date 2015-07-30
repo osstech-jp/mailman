@@ -211,7 +211,15 @@ class UserAddresses(_AddressBase):
         except InvalidEmailAddressError:
             bad_request(response, b'Invalid email address')
         except ExistingAddressError:
-            bad_request(response, b'Address already exists')
+            # Check if the address is not linked to any user, link it to
+            # the current user and return it.
+            address = user_manager.get_address(**validator(request))
+            if address.user is None:
+                address.user = self._user
+                location = self.path_to('addresses/{0}'.format(address.email))
+                created(response, location)
+            else:
+                bad_request(response, 'Address belongs to other user.')
         else:
             # Link the address to the current user and return it.
             address.user = self._user
