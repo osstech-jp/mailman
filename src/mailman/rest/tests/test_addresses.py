@@ -212,6 +212,25 @@ class TestAddresses(unittest.TestCase):
         anne_person = user_manager.get_address('anne@example.com')
         self.assertEqual(anne_person.display_name, '')
 
+    def test_existing_address_absorb(self):
+        # Trying to add an existing address causes a merge if the
+        # 'force_existing' flag is present.
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            anne = user_manager.create_user('anne@example.com')
+            bill = user_manager.create_user('bill@example.com')
+        response, content = call_api(
+            'http://localhost:9001/3.0/users/anne@example.com/addresses', {
+                 'email': 'bill@example.com',
+                 'force_existing': '1',
+                 })
+        self.assertIn('bill@example.com',
+                      [addr.email for addr in anne.addresses])
+        self.assertEqual(content['status'], '201')
+        self.assertEqual(
+            content['location'],
+            'http://localhost:9001/3.0/addresses/bill@example.com')
+
     def test_invalid_address_bad_request(self):
         # Trying to add an invalid address string returns 400.
         with transaction():

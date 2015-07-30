@@ -192,30 +192,44 @@ class UserAddresses(_AddressBase):
         user_manager = getUtility(IUserManager)
         validator = Validator(email=str,
                               display_name=str,
-                              _optional=('display_name',))
+                              force_existing=bool,
+                              _optional=('display_name', 'force_existing'))
         try:
-            address = user_manager.create_address(**validator(request))
+            data = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
+            return
+        force_existing = data.pop('force_existing', False)
+        try:
+            address = user_manager.create_address(**data)
         except InvalidEmailAddressError:
             bad_request(response, b'Invalid email address')
+            return
         except ExistingAddressError:
             # Check if the address is not linked to any user, link it to the
             # current user and return it.  Since we're linking to an existing
             # address, ignore any given display_name attribute.
-            address = user_manager.get_address(validator(request)['email'])
+            address = user_manager.get_address(data['email'])
             if address.user is None:
                 address.user = self._user
                 location = self.api.path_to(
                     'addresses/{}'.format(address.email))
                 created(response, location)
+                return
             else:
-                bad_request(response, 'Address belongs to other user.')
+                if not force_existing:
+                    bad_request(response, 'Address belongs to other user.')
+                    return
+                else:
+                    # The address exists and is linked but we can merge the
+                    # users.
+                    address = user_manager.get_address(data['email'])
+                    self._user.absorb(address.user)
         else:
             # Link the address to the current user and return it.
             address.user = self._user
-            location = self.api.path_to('addresses/{}'.format(address.email))
-            created(response, location)
+        location = self.api.path_to('addresses/{}'.format(address.email))
+        created(response, location)
 
 
 def membership_key(member):
