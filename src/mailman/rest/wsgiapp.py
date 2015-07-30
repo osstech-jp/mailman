@@ -216,11 +216,7 @@ class RootedAPI(API):
 
 @public
 def make_application():
-    """Create the WSGI application.
-
-    Use this if you want to integrate Mailman's REST server with your own WSGI
-    server.
-    """
+    """Return a callable WSGI application object."""
     return RootedAPI(Root())
 
 

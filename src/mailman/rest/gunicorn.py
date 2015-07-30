@@ -35,16 +35,18 @@ __all__ = [
     'make_application',
     ]
 
+# Initializing the Mailman system once.
+from mailman.core.initialize import initialize
+initialize()
+from mailman.rest.wsgiapp import make_application as base_application
+app = base_application()
 
-
-def make_application():
-    """Create the WSGI application, after initializing the Mailman system.
+
+def make_application(environ, start_response):
+    """Create the WSGI application.
 
     Use this if you want to integrate Mailman's REST server with an external
     WSGI server, such as gunicorn.  Be sure to set the $MAILMAN_CONFIG_FILE
     environment variable.
     """
-    from mailman.core.initialize import initialize
-    initialize()
-    from mailman.rest.wsgiapp import make_application as base_application
-    return base_application()
+    return app(environ, start_response)
