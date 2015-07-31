@@ -91,7 +91,7 @@ class TestListManager(unittest.TestCase):
     def test_delete_lists_with_data_in_listarchiver(self):
         mlist = create_list('ant@example.com')
         with transaction():
-            aset = getUtility(IListArchiverSet)(mlist)
+            aset = IListArchiverSet(mlist)
         list_manager = getUtility(IListManager)
         list_manager.delete(mlist)
         self.assertIsNone(list_manager.get('ant@example.com'))
