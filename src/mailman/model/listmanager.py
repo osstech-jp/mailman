@@ -27,7 +27,9 @@ from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError, ListCreatedEvent, ListCreatingEvent,
     ListDeletedEvent, ListDeletingEvent)
-from mailman.model.mailinglist import IAcceptableAliasSet, MailingList
+from mailman.model.autorespond import AutoResponseRecord
+from mailman.model.mailinglist import (
+    IAcceptableAliasSet, MailingList, ListArchiver)
 from mailman.model.mime import ContentFilter
 from mailman.utilities.datetime import now
 from zope.event import notify
@@ -77,6 +79,8 @@ class ListManager:
         # First delete information associated with the mailing list.
         IAcceptableAliasSet(mlist).clear()
         store.query(ContentFilter).filter_by(mailing_list=mlist).delete()
+        store.query(ListArchiver).filter_by(mailing_list=mlist).delete()
+        store.query(AutoResponseRecord).filter_by(mailing_list=mlist).delete()
         store.delete(mlist)
         notify(ListDeletedEvent(fqdn_listname))
 
