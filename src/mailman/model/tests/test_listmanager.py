@@ -30,6 +30,7 @@ from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
 from mailman.config import config
 from mailman.database.transaction import transaction
+from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError, ListCreatedEvent, ListCreatingEvent,
@@ -90,9 +91,18 @@ class TestListManager(unittest.TestCase):
 
     def test_delete_lists_with_data_in_listarchiver(self):
         mlist = create_list('ant@example.com')
-        with transaction():
-            aset = IListArchiverSet(mlist)
+        aset = IListArchiverSet(mlist)
         list_manager = getUtility(IListManager)
+        list_manager.delete(mlist)
+        self.assertIsNone(list_manager.get('ant@example.com'))
+
+    def test_delete_lists_with_data_in_autoresponserecord(self):
+        list_manager = getUtility(IListManager)
+        user_manager = getUtility(IUserManager)
+        mlist = create_list('ant@example.com')
+        addr = user_manager.create_address('aperson@example.com')
+        autoresset = IAutoResponseSet(mlist)
+        autoresset.response_sent(addr, Response.hold)
         list_manager.delete(mlist)
         self.assertIsNone(list_manager.get('ant@example.com'))
 

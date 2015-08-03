@@ -29,7 +29,7 @@ from mailman.interfaces.listmanager import (
     ListDeletedEvent, ListDeletingEvent)
 from mailman.model.autorespond import AutoResponseRecord
 from mailman.model.mailinglist import (
-    IAcceptableAliasSet, MailingList, ListArchiver)
+    IAcceptableAliasSet, ListArchiver, MailingList)
 from mailman.model.mime import ContentFilter
 from mailman.utilities.datetime import now
 from zope.event import notify
