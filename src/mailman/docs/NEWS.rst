@@ -24,6 +24,8 @@ Bugs
    variable `[mailman]html_to_plain_text_command` in the `mailman.cfg` file
    defines the command to use.  It defaults to `lynx`.  (Closes: #109)
  * Confirmation messages should not be `Precedence: bulk`.  (Closes #75)
+ * Fix constraint violations on mailing list deletes affecting PostgreSQL.
+   Given by Abhilash Raj.  (Closes #115)
 
 Configuration
 -------------
