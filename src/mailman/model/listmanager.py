@@ -78,9 +78,9 @@ class ListManager:
         notify(ListDeletingEvent(mlist))
         # First delete information associated with the mailing list.
         IAcceptableAliasSet(mlist).clear()
+        store.query(AutoResponseRecord).filter_by(mailing_list=mlist).delete()
         store.query(ContentFilter).filter_by(mailing_list=mlist).delete()
         store.query(ListArchiver).filter_by(mailing_list=mlist).delete()
-        store.query(AutoResponseRecord).filter_by(mailing_list=mlist).delete()
         store.delete(mlist)
         notify(ListDeletedEvent(fqdn_listname))
 
