@@ -33,7 +33,7 @@ from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.templates import ITemplateLoader
-from mailman.interfaces.archiver import IArchiver
+from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.utilities.string import expand
 from urllib.error import URLError
 from zope.component import getUtility
@@ -62,10 +62,14 @@ def process(mlist, msg, msgdata):
                           else member.address.original_email)
         d['user_optionsurl'] = member.options_url
 
-    archivers = [archiver for archiver in config.archivers
-                 if archiver.is_enabled]
-    d['archive_url'] = ("\n").join([archiver.permalink(mlist, msg)
-                                     for archiver in archivers])
+    archivers = IListArchiverSet(mlist).archivers
+    archive_urls = [archiver.system_archiver.permalink(mlist, msg)
+                        for archiver in archivers if archiver.is_enabled]
+    archive_urls = [url for url in archive_urls if url is not None]
+    if len(archive_urls):
+        d['archive_url'] = ("\n").join(archive_urls)
+    else:
+        d['archive_url'] = None
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
     try:
