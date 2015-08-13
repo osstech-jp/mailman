@@ -62,11 +62,12 @@ def process(mlist, msg, msgdata):
         d['user_optionsurl'] = member.options_url
 
     archivers = IListArchiverSet(mlist).archivers
-    archive_urls = [archiver.system_archiver.permalink(mlist, msg)
+    archive_urls = [(archiver.system_archiver.name,
+                     archiver.system_archiver.permalink(mlist, msg))
                         for archiver in archivers if archiver.is_enabled]
-    archive_urls = [url for url in archive_urls if url is not None]
+    archive_urls = [(archiver,url) for archiver, url in archive_urls if url is not None]
     if len(archive_urls):
-        d['archive_url'] = ("\n").join(archive_urls)
+        d['archive_url'] = dict(archive_urls)
     else:
         d['archive_url'] = None
     # These strings are descriptive for the log file and shouldn't be i18n'd
