@@ -68,8 +68,6 @@ def process(mlist, msg, msgdata):
     archive_urls = [(archiver,url) for archiver, url in archive_urls if url is not None]
     if len(archive_urls):
         d['archive_url'] = dict(archive_urls)
-    else:
-        d['archive_url'] = None
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
     try:
