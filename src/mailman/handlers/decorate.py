@@ -61,24 +61,28 @@ def process(mlist, msg, msgdata):
                           else member.address.original_email)
         d['user_optionsurl'] = member.options_url
 
-    archivers = IListArchiverSet(mlist).archivers
-    archive_urls = [(archiver.system_archiver.name,
-                     archiver.system_archiver.permalink(mlist, msg))
-                        for archiver in archivers if archiver.is_enabled]
-    archive_urls = [(archiver,url) for archiver, url in archive_urls if url is not None]
-    if len(archive_urls):
-        for archiver, url in archive_urls:
-            d[archiver + '_url'] = url
+    for archiver in IListArchiverSet(mlist).archivers:
+        if not archiver.is_enabled:
+            # The archiver is not enabled for the mailing list
+            continue
+        # Get the permalink of the message from the archiver
+        archive_url = archiver.system_archiver.permalink(mlist, msg)
+        if archive_url is None:
+            continue
+        d[archiver.system_archiver.name + '_url'] = archive_url
+
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
     try:
         header = decorate(mlist, mlist.header_uri, d)
     except URLError:
+        header = None
         log.exception('Header decorator URI not found ({0}): {1}'.format(
             mlist.fqdn_listname, mlist.header_uri))
     try:
         footer = decorate(mlist, mlist.footer_uri, d)
     except URLError:
+        footer = None
         log.exception('Footer decorator URI not found ({0}): {1}'.format(
             mlist.fqdn_listname, mlist.footer_uri))
     # Escape hatch if both the footer and header are empty
