@@ -26,6 +26,8 @@ Bugs
  * Confirmation messages should not be `Precedence: bulk`.  (Closes #75)
  * Fix constraint violations on mailing list deletes affecting PostgreSQL.
    Given by Abhilash Raj.  (Closes #115)
+ * `mailman` command with no subcommand now prints the help text.  Given by
+   Abhilash Raj.  (Closes #137)
 
 Configuration
 -------------
