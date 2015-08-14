@@ -19,24 +19,24 @@
 
 __all__ = [
     'TestMailmanCommand',
-]
+    ]
 
-import sys
+
 import unittest
 
 from io import StringIO
-from mock import patch, MagicMock
-
+from mock import patch
 from mailman.bin.mailman import main
 
 
 
 class TestMailmanCommand(unittest.TestCase):
-
-    def test_mailman_command__without_subscommnad_prints_help(self):
+    def test_mailman_command_without_subcommand_prints_help(self):
+        # Issue #137: Running `mailman` without a subcommand raises an
+        # AttributeError.
         testargs = ['mailman']
         output = StringIO()
         with patch('sys.argv', testargs), patch('sys.stdout', output):
-            with self.assertRaises(SystemExit) as cm:
+            with self.assertRaises(SystemExit):
                 main()
         self.assertIn('usage', output.getvalue())
