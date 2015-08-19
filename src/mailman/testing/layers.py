@@ -158,8 +158,11 @@ class ConfigLayer(MockAndMonkeyLayer):
             get_handler(sub_name).reopen(path)
             log.setLevel(logging.DEBUG)
             # If stderr debugging is enabled, make sure subprocesses are also
-            # more verbose.
-            if cls.stderr:
+            # more verbose.  In general though, we still don't want SQLAlchemy
+            # debugging because it's just too verbose.  Unfortunately, if you
+            # do want that level of debugging you currently have to manually
+            # modify this conditional.
+            if cls.stderr and sub_name != 'database':
                 test_config += expand(dedent("""
                 [logging.$name]
                 propagate: yes

@@ -255,7 +255,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
 
     def run(self):
         """See `IRunner`."""
-        asyncore.loop()
+        asyncore.loop(use_poll=True)
 
     def stop(self):
         """See `IRunner`."""
