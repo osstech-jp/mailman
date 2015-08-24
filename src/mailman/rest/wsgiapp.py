@@ -32,7 +32,7 @@ from falcon.routing import create_http_method_map
 from mailman.config import config
 from mailman.database.transaction import transactional
 from mailman.rest.root import Root
-from wsgiref.simple_server import WSGIRequestHandler
+from wsgiref.simple_server import WSGIRequestHandler, WSGIServer
 from wsgiref.simple_server import make_server as wsgi_server
 
 
@@ -42,12 +42,32 @@ SLASH = '/'
 
 
 
+class AdminWSGIServer(WSGIServer):
+    """Server class that integrates error handling with our log files."""
+
+    def handle_error(self, request, client_address):
+        # Interpose base class method so that the exception gets printed to
+        # our log file rather than stderr.
+        log.exception('Exception happened during request from %s',
+                      client_address)
+
+
 class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
     """Handler class which just logs output to the right place."""
 
     def log_message(self, format, *args):
         """See `BaseHTTPRequestHandler`."""
         log.info('%s - - %s', self.address_string(), format % args)
+
+    def get_stderr(self):
+        # Return a fake stderr object that will actually write its output to
+        # the log file.
+        class StderrLogger:
+            def write(self, message):
+                log.exception('Client error')
+            def flush(self):
+                pass
+        return StderrLogger()
 
 
 class SetAPIVersion:
@@ -176,5 +196,6 @@ def make_server():
     port = int(config.webservice.port)
     server = wsgi_server(
         host, port, make_application(),
+        server_class=AdminWSGIServer,
         handler_class=AdminWebServiceWSGIRequestHandler)
     return server
