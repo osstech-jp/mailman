@@ -39,6 +39,7 @@ from wsgiref.simple_server import make_server as wsgi_server
 log = logging.getLogger('mailman.http')
 _missing = object()
 SLASH = '/'
+EMPTYSTRING = ''
 
 
 
@@ -48,7 +49,7 @@ class AdminWSGIServer(WSGIServer):
     def handle_error(self, request, client_address):
         # Interpose base class method so that the exception gets printed to
         # our log file rather than stderr.
-        log.exception('Exception happened during request from %s',
+        log.exception('REST server exception during request from %s',
                       client_address)
 
 
@@ -63,10 +64,14 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
         # Return a fake stderr object that will actually write its output to
         # the log file.
         class StderrLogger:
+            def __init__(self):
+                self._buffer = []
             def write(self, message):
-                log.exception('Client error')
+                self._buffer.append(message)
             def flush(self):
-                pass
+                self._buffer.insert(0, 'REST request handler error:\n')
+                log.error(EMPTYSTRING.join(self._buffer))
+                self._buffer = []
         return StderrLogger()
 
 
