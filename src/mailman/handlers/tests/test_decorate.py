@@ -19,31 +19,32 @@
 
 __all__ = [
     'TestDecorate',
-]
+    ]
 
 import os
 import tempfile
 import unittest
-from mock import patch
 
 from mailman.app.lifecycle import create_list
-from mailman.archiving.prototype import Prototype
 from mailman.config import config
 from mailman.handlers import decorate
-from mailman.testing.helpers import configuration
+from mailman.interfaces.archiver import IArchiver
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
+from unittest.mock import patch
+from zope.interface import implementer
 
 
+@implementer(IArchiver)
 class TestArchiver:
     "A test archiver"
 
-    name = "testarchiver"
+    name = 'testarchiver'
     is_enabled = False
 
     @staticmethod
     def permalink(mlist, msg):
-        return "http://example.com/link_to_message"
+        return 'http://example.com/link_to_message'
 
 
 class TestDecorate(unittest.TestCase):
@@ -66,14 +67,19 @@ This is a test message.
         os.makedirs(site_dir)
         config.push('templates', """
         [paths.testing]
-        template_dir: {0}
+        template_dir: {}
         """.format(template_dir))
+        config.push('archiver', """
+        [archiver.testarchiver]
+        class: mailman.handlers.tests.test_decorate.TestArchiver
+        enable: yes
+        """)
         self.footer_path = os.path.join(site_dir, 'myfooter.txt')
 
+    def cleanUp(self):
+        self.addCleanup(shutil.rmtree, template_dir)
 
-    @patch('mailman.archiving.prototype.Prototype', TestArchiver)
-    @configuration('archiver.prototype', enable='yes')
-    def test_decorate_footer_with_arcihve_url(self):
+    def test_decorate_footer_with_archive_url(self):
         with open(self.footer_path, 'w') as fp:
             print("${testarchiver_url}", file=fp)
         self._mlist.footer_uri = 'mailman:///myfooter.txt'
