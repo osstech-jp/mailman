@@ -31,6 +31,7 @@ from email.mime.text import MIMEText
 from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
+from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.interfaces.templates import ITemplateLoader
 from mailman.utilities.string import expand
 from urllib.error import URLError
@@ -59,19 +60,30 @@ def process(mlist, msg, msgdata):
                           if member.user.display_name
                           else member.address.original_email)
         d['user_optionsurl'] = member.options_url
+    # Calculate the archiver permalink substitution variables.  This provides
+    # the $<archive-name>_url placeholder for every enabled archiver.
+    for archiver in IListArchiverSet(mlist).archivers:
+        if archiver.is_enabled:
+            # Get the permalink of the message from the archiver.
+            archive_url = archiver.system_archiver.permalink(mlist, msg)
+            if archive_url is not None:
+                placeholder = '{}_url'.format(archiver.system_archiver.name)
+                d[placeholder] = archive_url
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
     try:
         header = decorate(mlist, mlist.header_uri, d)
     except URLError:
+        header = None
         log.exception('Header decorator URI not found ({0}): {1}'.format(
             mlist.fqdn_listname, mlist.header_uri))
     try:
         footer = decorate(mlist, mlist.footer_uri, d)
     except URLError:
+        footer = None
         log.exception('Footer decorator URI not found ({0}): {1}'.format(
             mlist.fqdn_listname, mlist.footer_uri))
-    # Escape hatch if both the footer and header are empty
+    # Escape hatch if both the footer and header are empty or None.
     if not header and not footer:
         return
     # Be MIME smart here.  We only attach the header and footer by

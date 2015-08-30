@@ -122,6 +122,16 @@ will remain in the header or footer unchanged.
     $dummy footer
 
 
+Adding archiver permalink URLs in the message footer
+====================================================
+
+You can add links to archived messages in the footer using special placeholder
+variables.  For all available and enabled archiver for the mailing list, use a
+placeholder of the format ``$<archiver_name>_url``.  For example, if you have
+HyperKitty enabled you can add ``${hyperkitty_url}`` to point to the message
+in HyperKitty.
+
+
 Handling RFC 3676 'format=flowed' parameters
 ============================================
 
