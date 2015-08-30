@@ -22,6 +22,7 @@ __all__ = [
     ]
 
 import os
+import shutil
 import tempfile
 import unittest
 
@@ -65,7 +66,7 @@ This is a test message.
         template_dir = tempfile.mkdtemp()
         site_dir = os.path.join(template_dir, 'site', 'en')
         os.makedirs(site_dir)
-        config.push('templates', """
+        config.push('templates', """\
         [paths.testing]
         template_dir: {}
         """.format(template_dir))
@@ -75,9 +76,8 @@ This is a test message.
         enable: yes
         """)
         self.footer_path = os.path.join(site_dir, 'myfooter.txt')
-
-    def cleanUp(self):
         self.addCleanup(shutil.rmtree, template_dir)
+        self.addCleanup(config.pop, 'archiver')
 
     def test_decorate_footer_with_archive_url(self):
         with open(self.footer_path, 'w') as fp:
