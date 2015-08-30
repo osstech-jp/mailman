@@ -21,6 +21,7 @@ __all__ = [
     'TestDecorate',
     ]
 
+
 import os
 import shutil
 import tempfile
@@ -32,13 +33,13 @@ from mailman.handlers import decorate
 from mailman.interfaces.archiver import IArchiver
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
-from unittest.mock import patch
 from zope.interface import implementer
 
 
+
 @implementer(IArchiver)
 class TestArchiver:
-    "A test archiver"
+    """A test archiver"""
 
     name = 'testarchiver'
     is_enabled = False
@@ -48,6 +49,7 @@ class TestArchiver:
         return 'http://example.com/link_to_message'
 
 
+
 class TestDecorate(unittest.TestCase):
     """Test the cook_headers handler."""
 
@@ -64,26 +66,24 @@ Content-Type: text/plain;
 This is a test message.
 """)
         template_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, template_dir)
         site_dir = os.path.join(template_dir, 'site', 'en')
         os.makedirs(site_dir)
-        config.push('templates', """\
+        config.push('archiver', """\
         [paths.testing]
         template_dir: {}
-        """.format(template_dir))
-        config.push('archiver', """
         [archiver.testarchiver]
         class: mailman.handlers.tests.test_decorate.TestArchiver
         enable: yes
-        """)
-        self.footer_path = os.path.join(site_dir, 'myfooter.txt')
-        self.addCleanup(shutil.rmtree, template_dir)
+        """.format(template_dir))
         self.addCleanup(config.pop, 'archiver')
+        self.footer_path = os.path.join(site_dir, 'myfooter.txt')
 
     def test_decorate_footer_with_archive_url(self):
-        with open(self.footer_path, 'w') as fp:
-            print("${testarchiver_url}", file=fp)
+        with open(self.footer_path, 'w', encoding='utf-8') as fp:
+            print('${testarchiver_url}', file=fp)
         self._mlist.footer_uri = 'mailman:///myfooter.txt'
         self._mlist.preferred_language = 'en'
         decorate.process(self._mlist, self._msg, {})
-        self.assertIn("http://example.com/link_to_message",
+        self.assertIn('http://example.com/link_to_message',
                       self._msg.as_string())

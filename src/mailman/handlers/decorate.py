@@ -31,8 +31,8 @@ from email.mime.text import MIMEText
 from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
-from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.mailinglist import IListArchiverSet
+from mailman.interfaces.templates import ITemplateLoader
 from mailman.utilities.string import expand
 from urllib.error import URLError
 from zope.component import getUtility
@@ -60,17 +60,15 @@ def process(mlist, msg, msgdata):
                           if member.user.display_name
                           else member.address.original_email)
         d['user_optionsurl'] = member.options_url
-
+    # Calculate the archiver permalink substitution variables.  This provides
+    # the $<archive-name>_url placeholder for every enabled archiver.
     for archiver in IListArchiverSet(mlist).archivers:
-        if not archiver.is_enabled:
-            # The archiver is not enabled for the mailing list
-            continue
-        # Get the permalink of the message from the archiver
-        archive_url = archiver.system_archiver.permalink(mlist, msg)
-        if archive_url is None:
-            continue
-        d[archiver.system_archiver.name + '_url'] = archive_url
-
+        if archiver.is_enabled:
+            # Get the permalink of the message from the archiver.
+            archive_url = archiver.system_archiver.permalink(mlist, msg)
+            if archive_url is not None:
+                placeholder = '{}_url'.format(archiver.system_archiver.name)
+                d[placeholder] = archive_url
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
     try:
@@ -85,7 +83,7 @@ def process(mlist, msg, msgdata):
         footer = None
         log.exception('Footer decorator URI not found ({0}): {1}'.format(
             mlist.fqdn_listname, mlist.footer_uri))
-    # Escape hatch if both the footer and header are empty
+    # Escape hatch if both the footer and header are empty or None.
     if not header and not footer:
         return
     # Be MIME smart here.  We only attach the header and footer by

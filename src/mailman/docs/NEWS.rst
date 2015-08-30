@@ -52,6 +52,13 @@ Internal API
  * A handful of unused legacy exceptions have been removed.  The redundant
    `MailmanException` has been removed; use `MailmanError` everywhere.
 
+Message handling
+----------------
+ * New placeholders have been added for message headers and footers.  You can
+   use a placeholder of the format `$<archiver-name>_url` to insert the
+   permalink to the message in the named archiver, for any archiver enabled
+   for the mailing list.  Given by Abhilash Raj.
+
 REST
 ----
  * REST API version 3.1 introduced.  Mostly backward compatible with version
