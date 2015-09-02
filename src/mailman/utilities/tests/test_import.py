@@ -50,6 +50,7 @@ from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
+from mailman.testing.helpers import LogFileMark
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.importer import import_config_pck, Import21Error
 from mailman.utilities.string import expand
@@ -329,6 +330,114 @@ class TestBasicImport(unittest.TestCase):
         self._import()
         self.assertEqual(self._mlist.subscription_policy,
                          SubscriptionPolicy.confirm_then_moderate)
+
+    def test_header_matches(self):
+        # This test contail real cases of header_filter_rules
+        self._pckdict['header_filter_rules'] = [
+            ('^X-Spam-Status: Yes', 3, False),
+            ('X-Spam-Status: Yes', 3, False),
+            ('X\\-Spam\\-Status\\: Yes.*', 3, False),
+            ('X-Spam-Status: Yes\r\n\r\n', 2, False),
+            ('^X-Spam-Level: \\*\\*\\*.*$', 3, False),
+            ('^X-Spam-Level:.\\*\\*\r\n^X-Spam:.\\Yes', 3, False),
+            ('Subject: \\[SPAM\\].*', 3, False),
+            ('^Subject: .*loan.*', 3, False),
+            ('Original-Received: from *linkedin.com*\r\n', 3, False),
+            ('X-Git-Module: rhq.*git', 6, False),
+            ('Approved: verysecretpassword', 6, False),
+            ('^Subject: dev-\r\n^Subject: staging-', 3, False),
+            ('from: .*info@aolanchem.com\r\nfrom: .*@jw-express.com', 2, False),
+            ('^Received: from smtp-.*\\.fedoraproject\\.org\r\n'
+             '^Received: from mx.*\\.redhat.com\r\n'
+             '^Resent-date:\r\n'
+             '^Resent-from:\r\n'
+             '^Resent-Message-ID:\r\n'
+             '^Resent-to:\r\n'
+             '^Subject: [^mtv]\r\n',
+             7, False),
+            ('^Received: from fedorahosted\\.org.*by fedorahosted\\.org\r\n'
+             '^Received: from hosted.*\\.fedoraproject.org.*by '
+             'hosted.*\\.fedoraproject\\.org\r\n'
+             '^Received: from hosted.*\\.fedoraproject.org.*by fedoraproject\\.org\r\n'
+             '^Received: from hosted.*\\.fedoraproject.org.*by fedorahosted\\.org',
+             6, False),
+            ]
+        error_log = LogFileMark('mailman.error')
+        self._import()
+        self.assertListEqual(self._mlist.header_matches, [
+            ('x-spam-status', 'Yes', 'discard'),
+            ('x-spam-status', 'Yes', 'discard'),
+            ('x-spam-status', 'Yes.*', 'discard'),
+            ('x-spam-status', 'Yes', 'reject'),
+            ('x-spam-level', '\\*\\*\\*.*$', 'discard'),
+            ('x-spam-level', '\\*\\*', 'discard'),
+            ('x-spam', '\\Yes', 'discard'),
+            ('subject', '\\[SPAM\\].*', 'discard'),
+            ('subject', '.*loan.*', 'discard'),
+            ('original-received', 'from *linkedin.com*', 'discard'),
+            ('x-git-module', 'rhq.*git', 'accept'),
+            ('approved', 'verysecretpassword', 'accept'),
+            ('subject', 'dev-', 'discard'),
+            ('subject', 'staging-', 'discard'),
+            ('from', '.*info@aolanchem.com', 'reject'),
+            ('from', '.*@jw-express.com', 'reject'),
+            ('received', 'from smtp-.*\\.fedoraproject\\.org', 'hold'),
+            ('received', 'from mx.*\\.redhat.com', 'hold'),
+            ('resent-date', '.*', 'hold'),
+            ('resent-from', '.*', 'hold'),
+            ('resent-message-id', '.*', 'hold'),
+            ('resent-to', '.*', 'hold'),
+            ('subject', '[^mtv]', 'hold'),
+            ('received', 'from fedorahosted\\.org.*by fedorahosted\\.org', 'accept'),
+            ('received', 'from hosted.*\\.fedoraproject.org.*by hosted.*\\.fedoraproject\\.org', 'accept'),
+            ('received', 'from hosted.*\\.fedoraproject.org.*by fedoraproject\\.org', 'accept'),
+            ('received', 'from hosted.*\\.fedoraproject.org.*by fedorahosted\\.org', 'accept'),
+            ])
+        loglines = error_log.read().strip()
+        self.assertEqual(len(loglines), 0)
+
+    def test_header_matches_header_only(self):
+        # Check that an empty pattern is skipped
+        self._pckdict['header_filter_rules'] = [
+            ('SomeHeaderName', 3, False),
+        ]
+        error_log = LogFileMark('mailman.error')
+        self._import()
+        self.assertListEqual(self._mlist.header_matches, [])
+        self.assertIn('Unsupported header_filter_rules pattern',
+                      error_log.readline())
+
+    def test_header_matches_anything(self):
+        # Check that an empty pattern is skipped
+        self._pckdict['header_filter_rules'] = [
+            ('.*', 7, False),
+        ]
+        error_log = LogFileMark('mailman.error')
+        self._import()
+        self.assertListEqual(self._mlist.header_matches, [])
+        self.assertIn('Unsupported header_filter_rules pattern',
+                      error_log.readline())
+
+    def test_header_matches_invalid_re(self):
+        # Check that an empty pattern is skipped
+        self._pckdict['header_filter_rules'] = [
+            ('SomeHeaderName: *invalid-re', 3, False),
+        ]
+        error_log = LogFileMark('mailman.error')
+        self._import()
+        self.assertListEqual(self._mlist.header_matches, [])
+        self.assertIn('Skipping header_filter rule because of an invalid '
+                      'regular expression', error_log.readline())
+
+    def test_header_matches_defer(self):
+        # Check that a defer action is properly converted.
+        self._pckdict['header_filter_rules'] = [
+            ('^X-Spam-Status: Yes', 0, False),
+        ]
+        self._import()
+        self.assertListEqual(self._mlist.header_matches, [
+            ('x-spam-status', 'Yes', None),
+        ])
 
 
 

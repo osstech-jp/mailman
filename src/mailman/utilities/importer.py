@@ -24,9 +24,11 @@ __all__ = [
 
 
 import os
+import re
 import sys
 import codecs
 import datetime
+import logging
 
 from mailman.config import config
 from mailman.core.errors import MailmanError
@@ -38,6 +40,7 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
+from mailman.interfaces.chain import LinkAction
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import IAcceptableAliasSet
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
@@ -50,6 +53,8 @@ from mailman.utilities.i18n import search
 from sqlalchemy import Boolean
 from urllib.error import URLError
 from zope.component import getUtility
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -123,6 +128,24 @@ def nonmember_action_mapping(value):
         2: Action.reject,
         3: Action.discard,
         }[value]
+
+
+def action_to_chain(value):
+    # Converts an action number in Mailman 2.1 to the name of the corresponding
+    # chain in 3.x. The actions "approve", "subscribe" and "unsubscribe" are
+    # ignored. The defer action is converted to None, because it is not a jump
+    # to a terminal chain.
+    return {
+        0: None,
+        #1: "approve",
+        2: "reject",
+        3: "discard",
+        #4: "subscribe",
+        #5: "unsubscribe",
+        6: "accept",
+        7: "hold",
+        }[value]
+
 
 
 def check_language_code(code):
@@ -310,6 +333,42 @@ def import_config_pck(mlist, config_dict):
             # When .add() rejects this, the line probably contains a regular
             # expression.  Make that explicit for MM3.
             alias_set.add('^' + address)
+    # Handle header_filter_rules conversion to header_matches
+    header_matches = []
+    for line_patterns, action, _unused in \
+            config_dict.get('header_filter_rules', []):
+        chain = action_to_chain(action)
+        # now split the pattern in a header and a pattern
+        for line_pattern in line_patterns.splitlines():
+            if not line_pattern.strip():
+                continue
+            for sep in (': ', ':.', ':'):
+                header, sep, pattern = line_pattern.partition(sep)
+                if sep:
+                    break # found it.
+            else:
+                # matches any header. Those are not supported. XXX
+                log.warning('Unsupported header_filter_rules pattern: %r',
+                            line_pattern)
+                continue
+            header = header.strip().lstrip("^").lower()
+            header = header.replace('\\', '')
+            if not header:
+                log.warning('Can\'t parse the header in header_filter_rule: %r',
+                            line_pattern)
+                continue
+            if not pattern:
+                # The line matched only the header, therefore the header can
+                # be anything.
+                pattern = '.*'
+            try:
+                re.compile(pattern)
+            except re.error:
+                log.warning('Skipping header_filter rule because of an '
+                            'invalid regular expression: %r', line_pattern)
+                continue
+            header_matches.append((header, pattern, chain))
+    mlist.header_matches = header_matches
     # Handle conversion to URIs.  In MM2.1, the decorations are strings
     # containing placeholders, and there's no provision for language-specific
     # templates.  In MM3, template locations are specified by URLs with the
