@@ -30,6 +30,8 @@ Bugs
    Abhilash Raj.  (Closes #137)
  * The MHonArc archiver must set stdin=PIPE when calling the subprocess.
    Given by Walter Doekes.
+ * For Python versions earlier than 3.5, use a compatibility layer for a
+   backported smtpd module which can accept non-UTF-8 data.  (Closes #140)
 
 Configuration
 -------------
