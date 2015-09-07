@@ -30,6 +30,9 @@ Bugs
    Abhilash Raj.  (Closes #137)
  * The MHonArc archiver must set stdin=PIPE when calling the subprocess.
    Given by Walter Doekes.
+ * For now, treat `DeliveryMode.summary_digests` the same as `.mime_digests`.
+   (Closes #141).  Also, don't enqueue a particular digest if there are no
+   recipients for that digest.
 
 Configuration
 -------------
