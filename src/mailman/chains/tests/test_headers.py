@@ -119,3 +119,35 @@ class TestHeaderChain(unittest.TestCase):
                               HeaderMatchRule, 'x-spam-score', '.*')
         finally:
             config.rules = saved_rules
+
+    def test_list_rule(self):
+        # Test that the header-match chain has the header checks from the
+        # mailing-list configuration.
+        chain = config.chains['header-match']
+        self._mlist.header_matches = [('Foo', 'a+')]
+        links = [ link for link in chain.get_links(self._mlist, Message(), {})
+                  if link.rule.name != 'any' ]
+        self.assertEqual(len(links), 1)
+        self.assertEqual(links[0].action, LinkAction.defer)
+        self.assertEqual(links[0].rule.header, 'Foo')
+        self.assertEqual(links[0].rule.pattern, 'a+')
+
+    def test_list_complex_rule(self):
+        # Test that the mailing-list header-match complex rules are read
+        # properly.
+        chain = config.chains['header-match']
+        self._mlist.header_matches = [
+            ('Foo', 'a+', 'reject'),
+            ('Bar', 'b+', 'discard'),
+            ('Baz', 'z+', 'accept'),
+            ]
+        links = [ link for link in chain.get_links(self._mlist, Message(), {})
+                  if link.rule.name != 'any' ]
+        self.assertEqual(len(links), 3)
+        self.assertListEqual(
+            [ (link.rule.header, link.rule.pattern, link.action, link.chain.name)
+              for link in links ],
+            [('Foo', 'a+', LinkAction.jump, 'reject'),
+             ('Bar', 'b+', LinkAction.jump, 'discard'),
+             ('Baz', 'z+', LinkAction.jump, 'accept'),
+            ])

@@ -37,7 +37,7 @@ log = logging.getLogger('mailman.error')
 
 
 
-def make_link(header, pattern):
+def make_link(header, pattern, chain=None):
     """Create a Link object.
 
     The link action is always to defer, since at the end of all the header
@@ -52,7 +52,12 @@ def make_link(header, pattern):
     :rtype: `ILink`
     """
     rule = HeaderMatchRule(header, pattern)
-    return Link(rule, LinkAction.defer)
+    if chain is None:
+        action = LinkAction.defer
+    else:
+        chain = config.chains[chain]
+        action = LinkAction.jump
+    return Link(rule, action, chain)
 
 
 
