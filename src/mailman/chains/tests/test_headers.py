@@ -29,9 +29,12 @@ from mailman.chains.headers import HeaderMatchRule
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.model.mailinglist import HeaderMatch
-from mailman.interfaces.chain import LinkAction
+from mailman.interfaces.chain import LinkAction, HoldEvent
+from mailman.core.chains import process
 from mailman.testing.layers import ConfigLayer
-from mailman.testing.helpers import LogFileMark, configuration
+from mailman.testing.helpers import (LogFileMark, configuration,
+    event_subscribers, get_queue_messages,
+    specialized_message_from_string as mfs)
 
 
 
@@ -152,3 +155,36 @@ class TestHeaderChain(unittest.TestCase):
              ('Bar', 'b+', LinkAction.jump, 'discard'),
              ('Baz', 'z+', LinkAction.jump, 'accept'),
             ])
+
+    @configuration('antispam', header_checks="""
+    Foo: foo
+    """, jump_chain="hold")
+    def test_priority_site_over_list(self):
+        # Test that the site-wide checks take precedence over the list-specific
+        # checks.
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A message
+Message-ID: <ant>
+Foo: foo
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        self._mlist.header_matches = [
+            HeaderMatch(header='Foo', pattern='foo', chain='accept')
+        ]
+        # This event subscriber records the event that occurs when the message
+        # is processed by the owner chain.
+        events = []
+        def catch_event(event):
+            events.append(event)
+        with event_subscribers(catch_event):
+            process(self._mlist, msg, msgdata, start_chain='header-match')
+        self.assertEqual(len(events), 1)
+        event = events[0]
+        # Site-wide wants to hold the message, the list wants to accept it.
+        self.assertTrue(isinstance(event, HoldEvent))
+        self.assertEqual(event.chain, config.chains['hold'])
