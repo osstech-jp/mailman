@@ -38,7 +38,8 @@ from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IListArchiver, IListArchiverSet,
-    IMailingList, Personalization, ReplyToMunging, SubscriptionPolicy)
+    IHeaderMatches, IMailingList, Personalization, ReplyToMunging,
+    SubscriptionPolicy)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError,
     SubscriptionEvent)
@@ -149,7 +150,6 @@ class MailingList(Model):
     gateway_to_mail = Column(Boolean)
     gateway_to_news = Column(Boolean)
     goodbye_message_uri = Column(Unicode)
-    header_matches = Column(PickleType)
     header_uri = Column(Unicode)
     hold_these_nonmembers = Column(PickleType)
     info = Column(Unicode)
@@ -621,3 +621,20 @@ class ListArchiverSet:
         return store.query(ListArchiver).filter(
             ListArchiver.mailing_list == self._mailing_list,
             ListArchiver.name == archiver_name).first()
+
+
+
+@implementer(IHeaderMatches)
+class HeaderMatches(Model):
+    """See `IHeaderMatches`."""
+
+    __tablename__ = 'headermatches'
+
+    id = Column(Integer, primary_key=True)
+
+    mailing_list_id = Column(Integer, ForeignKey('mailinglist.id'))
+    mailing_list = relationship('MailingList', backref='header_matches')
+
+    header = Column(Unicode, nullable=True)
+    pattern = Column(Unicode, nullable=True)
+    chain = Column(Unicode, nullable=True)

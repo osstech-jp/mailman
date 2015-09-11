@@ -1,0 +1,82 @@
+"""header_matches
+
+Revision ID: 42756496720
+Revises: 2bb9b382198
+Create Date: 2015-09-11 10:11:38.310315
+
+"""
+
+# revision identifiers, used by Alembic.
+revision = '42756496720'
+down_revision = '2bb9b382198'
+
+from alembic import op
+import sqlalchemy as sa
+
+
+def upgrade():
+    # Create the new table
+    header_matches_table = op.create_table('headermatches',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('mailing_list_id', sa.Integer(), nullable=True),
+        sa.Column('header', sa.Unicode(), nullable=True),
+        sa.Column('pattern', sa.Unicode(), nullable=True),
+        sa.Column('chain', sa.Unicode(), nullable=True),
+        sa.ForeignKeyConstraint(['mailing_list_id'], ['mailinglist.id'], ),
+        sa.PrimaryKeyConstraint('id')
+    )
+
+    # Now migrate the data. It can't be offline because we need to read the
+    # pickles.
+    connection = op.get_bind()
+    # Don't import the table definition from the models, it may break this
+    # migration when the model is updated in the future (see the Alembic doc).
+    mlist_table = sa.sql.table('mailinglist',
+        sa.sql.column('id', sa.Integer),
+        sa.sql.column('header_matches', sa.PickleType)
+    )
+    for mlist_id, old_matches in connection.execute(mlist_table.select()):
+        for old_match in old_matches:
+            connection.execute(header_matches_table.insert().values(
+                mailing_list_id=mlist_id,
+                header=old_match[0],
+                pattern=old_match[1],
+                chain=None
+            ))
+
+    # Now that data is migrated, drop the old column (except on SQLite which
+    # does not support this)
+    if op.get_bind().dialect.name != 'sqlite':
+        op.drop_column('mailinglist', 'header_matches')
+
+
+def downgrade():
+    if op.get_bind().dialect.name != 'sqlite':
+        # SQLite will not have deleted the former column, since it does not
+        # support column deletion.
+        op.add_column('mailinglist', sa.Column(
+            'header_matches', sa.PickleType, nullable=True))
+
+    # Now migrate the data. It can't be offline because we need to read the
+    # pickles.
+    connection = op.get_bind()
+    # Don't import the table definition from the models, it may break this
+    # migration when the model is updated in the future (see the Alembic doc).
+    mlist_table = sa.sql.table('mailinglist',
+        sa.sql.column('id', sa.Integer),
+        sa.sql.column('header_matches', sa.PickleType)
+    )
+    header_matches_table = sa.sql.table('headermatches',
+        sa.sql.column('mailing_list_id', sa.Integer),
+        sa.sql.column('header', sa.Unicode),
+        sa.sql.column('pattern', sa.Unicode),
+    )
+    for mlist_id, header, pattern in connection.execute(
+            header_matches_table.select()):
+        mlist = connection.execute(mlist_table.select().where(
+            mlist_table.c.id == mlist_id)).fetchone()
+        if not mlist["header_matches"]:
+            mlist["header_matches"] = []
+        mlist["header_matches"].append((header, pattern))
+
+    op.drop_table('headermatches')

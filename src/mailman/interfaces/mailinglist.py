@@ -839,3 +839,23 @@ class IListArchiverSet(Interface):
         :return: the matching `IListArchiver` or None if the named archiver
             does not exist.
         """
+
+
+
+class IHeaderMatches(Interface):
+    """Registration record for a single bounce event."""
+
+    mailing_list = Attribute(
+        """The mailing list for the header match.""")
+
+    header = Attribute(
+        """The email header that will be checked.""")
+
+    pattern = Attribute(
+        """The regular expression to match.""")
+
+    chain = Attribute(
+        """The chain to jump to on a match.
+
+        If it is None, the configuration file action for spam is used.
+        """)
