@@ -842,8 +842,8 @@ class IListArchiverSet(Interface):
 
 
 
-class IHeaderMatches(Interface):
-    """Registration record for a single bounce event."""
+class IHeaderMatch(Interface):
+    """A header matching rule for mailinglist messages."""
 
     mailing_list = Attribute(
         """The mailing list for the header match.""")

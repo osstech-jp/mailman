@@ -16,7 +16,7 @@ import sqlalchemy as sa
 
 def upgrade():
     # Create the new table
-    header_matches_table = op.create_table('headermatches',
+    header_match_table = op.create_table('headermatch',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('mailing_list_id', sa.Integer(), nullable=True),
         sa.Column('header', sa.Unicode(), nullable=True),
@@ -37,7 +37,7 @@ def upgrade():
     )
     for mlist_id, old_matches in connection.execute(mlist_table.select()):
         for old_match in old_matches:
-            connection.execute(header_matches_table.insert().values(
+            connection.execute(header_match_table.insert().values(
                 mailing_list_id=mlist_id,
                 header=old_match[0],
                 pattern=old_match[1],
@@ -66,17 +66,17 @@ def downgrade():
         sa.sql.column('id', sa.Integer),
         sa.sql.column('header_matches', sa.PickleType)
     )
-    header_matches_table = sa.sql.table('headermatches',
+    header_match_table = sa.sql.table('headermatch',
         sa.sql.column('mailing_list_id', sa.Integer),
         sa.sql.column('header', sa.Unicode),
         sa.sql.column('pattern', sa.Unicode),
     )
     for mlist_id, header, pattern in connection.execute(
-            header_matches_table.select()):
+            header_match_table.select()):
         mlist = connection.execute(mlist_table.select().where(
             mlist_table.c.id == mlist_id)).fetchone()
         if not mlist["header_matches"]:
             mlist["header_matches"] = []
         mlist["header_matches"].append((header, pattern))
 
-    op.drop_table('headermatches')
+    op.drop_table('headermatch')

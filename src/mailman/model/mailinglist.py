@@ -38,7 +38,7 @@ from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IListArchiver, IListArchiverSet,
-    IHeaderMatches, IMailingList, Personalization, ReplyToMunging,
+    IHeaderMatch, IMailingList, Personalization, ReplyToMunging,
     SubscriptionPolicy)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError,
@@ -624,11 +624,11 @@ class ListArchiverSet:
 
 
 
-@implementer(IHeaderMatches)
-class HeaderMatches(Model):
-    """See `IHeaderMatches`."""
+@implementer(IHeaderMatch)
+class HeaderMatch(Model):
+    """See `IHeaderMatch`."""
 
-    __tablename__ = 'headermatches'
+    __tablename__ = 'headermatch'
 
     id = Column(Integer, primary_key=True)
 
