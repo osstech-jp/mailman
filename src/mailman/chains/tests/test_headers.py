@@ -28,6 +28,7 @@ from mailman.app.lifecycle import create_list
 from mailman.chains.headers import HeaderMatchRule
 from mailman.config import config
 from mailman.email.message import Message
+from mailman.model.mailinglist import HeaderMatch
 from mailman.interfaces.chain import LinkAction
 from mailman.testing.layers import ConfigLayer
 from mailman.testing.helpers import LogFileMark, configuration
@@ -124,7 +125,7 @@ class TestHeaderChain(unittest.TestCase):
         # Test that the header-match chain has the header checks from the
         # mailing-list configuration.
         chain = config.chains['header-match']
-        self._mlist.header_matches = [('Foo', 'a+')]
+        self._mlist.header_matches = [HeaderMatch(header='Foo', pattern='a+')]
         links = [ link for link in chain.get_links(self._mlist, Message(), {})
                   if link.rule.name != 'any' ]
         self.assertEqual(len(links), 1)
@@ -137,9 +138,9 @@ class TestHeaderChain(unittest.TestCase):
         # properly.
         chain = config.chains['header-match']
         self._mlist.header_matches = [
-            ('Foo', 'a+', 'reject'),
-            ('Bar', 'b+', 'discard'),
-            ('Baz', 'z+', 'accept'),
+            HeaderMatch(header='Foo', pattern='a+', chain='reject'),
+            HeaderMatch(header='Bar', pattern='b+', chain='discard'),
+            HeaderMatch(header='Baz', pattern='z+', chain='accept'),
             ]
         links = [ link for link in chain.get_links(self._mlist, Message(), {})
                   if link.rule.name != 'any' ]

@@ -48,6 +48,7 @@ from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.usermanager import IUserManager
+from mailman.model.mailinglist import HeaderMatch
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.i18n import search
 from sqlalchemy import Boolean
@@ -334,7 +335,6 @@ def import_config_pck(mlist, config_dict):
             # expression.  Make that explicit for MM3.
             alias_set.add('^' + address)
     # Handle header_filter_rules conversion to header_matches
-    header_matches = []
     for line_patterns, action, _unused in \
             config_dict.get('header_filter_rules', []):
         chain = action_to_chain(action)
@@ -367,8 +367,8 @@ def import_config_pck(mlist, config_dict):
                 log.warning('Skipping header_filter rule because of an '
                             'invalid regular expression: %r', line_pattern)
                 continue
-            header_matches.append((header, pattern, chain))
-    mlist.header_matches = header_matches
+            mlist.header_matches.append(HeaderMatch(
+                header=header, pattern=pattern, chain=chain))
     # Handle conversion to URIs.  In MM2.1, the decorations are strings
     # containing placeholders, and there's no provision for language-specific
     # templates.  In MM3, template locations are specified by URLs with the

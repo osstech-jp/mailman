@@ -143,7 +143,7 @@ class HeaderMatchChain(Chain):
         # Then return all the list-specific header matches.
         # Python 3.3: Use 'yield from'
         for entry in mlist.header_matches:
-            yield make_link(*entry)
+            yield make_link(entry.header, entry.pattern, entry.chain)
         # Then return all the explicitly added links.
         for link in self._extended_links:
             yield link

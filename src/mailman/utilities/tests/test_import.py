@@ -49,6 +49,7 @@ from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
+from mailman.model.mailinglist import HeaderMatch
 from mailman.testing.layers import ConfigLayer
 from mailman.testing.helpers import LogFileMark
 from mailman.utilities.filesystem import makedirs
@@ -364,7 +365,9 @@ class TestBasicImport(unittest.TestCase):
             ]
         error_log = LogFileMark('mailman.error')
         self._import()
-        self.assertListEqual(self._mlist.header_matches, [
+        self.assertListEqual(
+            [ (hm.header, hm.pattern, hm.chain)
+              for hm in self._mlist.header_matches ], [
             ('x-spam-status', 'Yes', 'discard'),
             ('x-spam-status', 'Yes', 'discard'),
             ('x-spam-status', 'Yes.*', 'discard'),
@@ -435,9 +438,11 @@ class TestBasicImport(unittest.TestCase):
             ('^X-Spam-Status: Yes', 0, False),
         ]
         self._import()
-        self.assertListEqual(self._mlist.header_matches, [
-            ('x-spam-status', 'Yes', None),
-        ])
+        self.assertListEqual(
+            [ (hm.header, hm.pattern, hm.chain)
+              for hm in self._mlist.header_matches ],
+            [ ('x-spam-status', 'Yes', None) ]
+        )
 
 
 

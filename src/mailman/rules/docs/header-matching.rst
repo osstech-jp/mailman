@@ -125,7 +125,10 @@ with the same semantics as the global `[antispam]` section.
 The list administrator wants to match not on four stars, but on three plus
 signs, but only for the current mailing list.
 
-    >>> mlist.header_matches = [('x-spam-score', '[+]{3,}')]
+    >>> from mailman.model.mailinglist import HeaderMatch
+    >>> mlist.header_matches = [
+    ...     HeaderMatch(header='x-spam-score', pattern='[+]{3,}')
+    ...     ]
 
 A message with a spam score of two pluses does not match.
 
