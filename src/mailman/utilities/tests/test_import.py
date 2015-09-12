@@ -50,8 +50,8 @@ from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import HeaderMatch
-from mailman.testing.layers import ConfigLayer
 from mailman.testing.helpers import LogFileMark
+from mailman.testing.layers import ConfigLayer
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.importer import import_config_pck, Import21Error
 from mailman.utilities.string import expand
@@ -443,6 +443,23 @@ class TestBasicImport(unittest.TestCase):
               for hm in self._mlist.header_matches ],
             [ ('x-spam-status', 'Yes', None) ]
         )
+
+    def test_header_matches_unsupported_action(self):
+        # Check that an unsupported actions are skipped
+        for action_num in (1, 4, 5):
+            self._pckdict['header_filter_rules'] = [
+                ('HeaderName: test-re', action_num, False),
+            ]
+            error_log = LogFileMark('mailman.error')
+            self._import()
+            self.assertListEqual(self._mlist.header_matches, [])
+            self.assertIn('Unsupported header_filter_rules action',
+                          error_log.readline())
+            # Avoid a useless warning.
+            for member in self._mlist.members.members:
+                member.unsubscribe()
+            for member in self._mlist.owners.members:
+                member.unsubscribe()
 
 
 

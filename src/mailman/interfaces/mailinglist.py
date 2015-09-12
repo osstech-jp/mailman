@@ -857,5 +857,6 @@ class IHeaderMatch(Interface):
     chain = Attribute(
         """The chain to jump to on a match.
 
-        If it is None, the configuration file action for spam is used.
+        If it is None, the `[antispam]jump_chain` action in the configuration
+        file is used.
         """)

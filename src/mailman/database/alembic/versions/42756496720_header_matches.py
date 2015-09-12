@@ -19,8 +19,8 @@ def upgrade():
     header_match_table = op.create_table('headermatch',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('mailing_list_id', sa.Integer(), nullable=True),
-        sa.Column('header', sa.Unicode(), nullable=True),
-        sa.Column('pattern', sa.Unicode(), nullable=True),
+        sa.Column('header', sa.Unicode(), nullable=False),
+        sa.Column('pattern', sa.Unicode(), nullable=False),
         sa.Column('chain', sa.Unicode(), nullable=True),
         sa.ForeignKeyConstraint(['mailing_list_id'], ['mailinglist.id'], ),
         sa.PrimaryKeyConstraint('id')

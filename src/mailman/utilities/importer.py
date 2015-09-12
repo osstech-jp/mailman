@@ -27,8 +27,8 @@ import os
 import re
 import sys
 import codecs
-import datetime
 import logging
+import datetime
 
 from mailman.config import config
 from mailman.core.errors import MailmanError
@@ -39,8 +39,8 @@ from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
-from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.chain import LinkAction
+from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import IAcceptableAliasSet
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
@@ -335,9 +335,14 @@ def import_config_pck(mlist, config_dict):
             # expression.  Make that explicit for MM3.
             alias_set.add('^' + address)
     # Handle header_filter_rules conversion to header_matches
-    for line_patterns, action, _unused in \
-            config_dict.get('header_filter_rules', []):
-        chain = action_to_chain(action)
+    header_filter_rules = config_dict.get('header_filter_rules', [])
+    for line_patterns, action, _unused in header_filter_rules:
+        try:
+            chain = action_to_chain(action)
+        except KeyError:
+            log.warning('Unsupported header_filter_rules action: %r',
+                        action)
+            continue
         # now split the pattern in a header and a pattern
         for line_pattern in line_patterns.splitlines():
             if not line_pattern.strip():

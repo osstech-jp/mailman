@@ -53,11 +53,9 @@ def make_link(header, pattern, chain=None):
     """
     rule = HeaderMatchRule(header, pattern)
     if chain is None:
-        action = LinkAction.defer
-    else:
-        chain = config.chains[chain]
-        action = LinkAction.jump
-    return Link(rule, action, chain)
+        return Link(rule, LinkAction.defer)
+    chain = config.chains[chain]
+    return Link(rule, LinkAction.jump, chain)
 
 
 
@@ -141,14 +139,12 @@ class HeaderMatchChain(Chain):
                 continue
             yield make_link(parts[0], parts[1].lstrip())
         # Then return all the explicitly added links.
-        for link in self._extended_links:
-            yield link
+        yield from self._extended_links
         # If any of the above rules matched, jump to the chain
         # defined in the configuration file. This takes precedence over
         # list-specific matches for security considerations.
         yield Link(config.rules['any'], LinkAction.jump,
                    config.chains[config.antispam.jump_chain])
         # Then return all the list-specific header matches.
-        # Python 3.3: Use 'yield from'
         for entry in mlist.header_matches:
             yield make_link(entry.header, entry.pattern, entry.chain)

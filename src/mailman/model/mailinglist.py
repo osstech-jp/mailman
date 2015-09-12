@@ -635,6 +635,6 @@ class HeaderMatch(Model):
     mailing_list_id = Column(Integer, ForeignKey('mailinglist.id'))
     mailing_list = relationship('MailingList', backref='header_matches')
 
-    header = Column(Unicode, nullable=True)
-    pattern = Column(Unicode, nullable=True)
+    header = Column(Unicode)
+    pattern = Column(Unicode)
     chain = Column(Unicode, nullable=True)
