@@ -37,6 +37,7 @@ __all__ = [
 
 from alembic import op
 import sqlalchemy as sa
+from mailman.database.utilities import is_sqlite, exists_in_db
 
 
 # Revision identifiers, used by Alembic.
@@ -46,7 +47,7 @@ down_revision = None
 
 def upgrade():
     op.drop_table('version')
-    if op.get_bind().dialect.name != 'sqlite':
+    if not is_sqlite(op.get_bind()):
         # SQLite does not support dropping columns.
         op.drop_column('mailinglist', 'acceptable_aliases_id')
     op.create_index(op.f('ix_user__user_id'), 'user',
@@ -58,6 +59,7 @@ def downgrade():
     op.create_table('version')
     op.create_index('ix_user_user_id', 'user', ['_user_id'], unique=False)
     op.drop_index(op.f('ix_user__user_id'), table_name='user')
-    op.add_column(
-        'mailinglist',
-        sa.Column('acceptable_aliases_id', sa.INTEGER(), nullable=True))
+    if not exists_in_db(op.get_bind(), 'mailinglist', 'acceptable_aliases_id'):
+        op.add_column(
+            'mailinglist',
+            sa.Column('acceptable_aliases_id', sa.INTEGER(), nullable=True))

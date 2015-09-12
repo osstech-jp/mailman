@@ -33,6 +33,7 @@ __all__ = [
 
 from alembic import op
 import sqlalchemy as sa
+from mailman.database.utilities import is_sqlite
 
 
 # revision identifiers, used by Alembic.
@@ -41,7 +42,7 @@ down_revision = '51b7f92bd06c'
 
 
 def upgrade():
-    if op.get_bind().dialect.name != 'sqlite':
+    if not is_sqlite(op.get_bind()):
         # SQLite does not support altering columns.
         op.alter_column('message', 'message_id_hash', type_=sa.Unicode)
         op.alter_column('message', 'path', type_=sa.Unicode)
@@ -51,7 +52,7 @@ def upgrade():
 
 
 def downgrade():
-    if op.get_bind().dialect.name != 'sqlite':
+    if not is_sqlite(op.get_bind()):
         # SQLite does not support altering columns.
         op.alter_column('message', 'message_id_hash', type_=sa.LargeBinary)
         op.alter_column('message', 'path', type_=sa.LargeBinary)

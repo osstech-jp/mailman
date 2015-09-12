@@ -14,14 +14,17 @@ from alembic import op
 import sqlalchemy as sa
 
 from mailman.database.types import Enum
+from mailman.database.utilities import is_sqlite, exists_in_db
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 
 
 def upgrade():
 
     ### Update the schema
-    op.add_column('mailinglist', sa.Column(
-        'subscription_policy', Enum(SubscriptionPolicy), nullable=True))
+    if not exists_in_db(op.get_bind(), 'mailinglist', 'subscription_policy'):
+        # SQL may not have removed it when downgrading.
+        op.add_column('mailinglist', sa.Column(
+            'subscription_policy', Enum(SubscriptionPolicy), nullable=True))
 
     ### Now migrate the data
     # don't import the table definition from the models, it may break this
@@ -36,6 +39,6 @@ def upgrade():
 
 
 def downgrade():
-    if op.get_bind().dialect.name != 'sqlite':
+    if not is_sqlite(op.get_bind()):
         # SQLite does not support dropping columns.
         op.drop_column('mailinglist', 'subscription_policy')
