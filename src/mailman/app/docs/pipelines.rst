@@ -57,8 +57,15 @@ etc.
      <mailto:test-join@example.com>
     List-Unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
      <mailto:test-leave@example.com>
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
     <BLANKLINE>
     First post!
+    _______________________________________________
+    Test mailing list
+    test@example.com
+    http://lists.example.com/listinfo/test@example.com
     <BLANKLINE>
 
 The message metadata has information about recipients and other stuff.
@@ -129,6 +136,10 @@ delivered to end recipients.
     <BLANKLINE>
     First post!
     <BLANKLINE>
+    _______________________________________________
+    Test mailing list
+    test@example.com
+    http://lists.example.com/listinfo/test@example.com
 
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg       : False

@@ -123,6 +123,7 @@ class PostingPipeline(BasePipeline):
         'to-usenet',
         'after-delivery',
         'acknowledge',
+        'decorate',
         'to-outgoing',
         )
 
