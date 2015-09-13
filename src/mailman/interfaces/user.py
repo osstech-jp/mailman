@@ -70,6 +70,9 @@ class IUser(Interface):
     memberships = Attribute(
         """A roster of this user's memberships.""")
 
+    is_server_owner = Attribute(
+        """Boolean flag indicating whether the user is a server owner.""")
+
     def register(email, display_name=None):
         """Register the given email address and link it to this user.
 
