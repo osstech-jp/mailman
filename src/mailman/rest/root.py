@@ -29,6 +29,7 @@ from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.core.system import system
 from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.usermanager import IUserManager
 from mailman.model.uid import UID
 from mailman.rest.addresses import AllAddresses, AnAddress
 from mailman.rest.domains import ADomain, AllDomains
@@ -232,6 +233,13 @@ class TopLevel:
         else:
             user_id = segments.pop(0)
             return AUser(user_id), segments
+
+    @child()
+    def owners(self, request, segments):
+        """/<api>/owners"""
+        if len(segments) != 0:
+            return BadRequest(), []
+        
 
     @child()
     def templates(self, request, segments):
