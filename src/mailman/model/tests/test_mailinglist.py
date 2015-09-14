@@ -32,7 +32,7 @@ from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, IListArchiverSet)
+    IAcceptableAliasSet, IHeaderMatchSet, IListArchiverSet)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError)
 from mailman.interfaces.usermanager import IUserManager
@@ -163,3 +163,47 @@ class TestAcceptableAliases(unittest.TestCase):
         self.assertEqual(['bee@example.com'], list(alias_set.aliases))
         getUtility(IListManager).delete(self._mlist)
         self.assertEqual(len(list(alias_set.aliases)), 0)
+
+
+
+class TestHeaderMatch(unittest.TestCase):
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('ant@example.com')
+
+    def test_lowercase_header(self):
+        with transaction():
+            header_matches = IHeaderMatchSet(self._mlist)
+            header_matches.add('Header', 'pattern')
+            self.assertEqual(len(self._mlist.header_matches), 1)
+            self.assertEqual(self._mlist.header_matches[0].header, 'header')
+
+    def test_chain_defaults_to_none(self):
+        with transaction():
+            header_matches = IHeaderMatchSet(self._mlist)
+            header_matches.add('header', 'pattern')
+            self.assertEqual(len(self._mlist.header_matches), 1)
+            self.assertEqual(self._mlist.header_matches[0].chain, None)
+
+    def test_duplicate(self):
+        with transaction():
+            header_matches = IHeaderMatchSet(self._mlist)
+            header_matches.add('Header', 'pattern')
+            self.assertRaises(ValueError,
+                header_matches.add, 'Header', 'pattern')
+            self.assertEqual(len(self._mlist.header_matches), 1)
+
+    def test_remove_non_existent(self):
+        with transaction():
+            header_matches = IHeaderMatchSet(self._mlist)
+            self.assertRaises(ValueError,
+                header_matches.remove, 'header', 'pattern')
+
+    def test_add_remove(self):
+        with transaction():
+            header_matches = IHeaderMatchSet(self._mlist)
+            header_matches.add('header', 'pattern')
+            self.assertEqual(len(self._mlist.header_matches), 1)
+            header_matches.remove('header', 'pattern')
+            self.assertEqual(len(self._mlist.header_matches), 0)

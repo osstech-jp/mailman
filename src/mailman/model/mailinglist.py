@@ -38,8 +38,8 @@ from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IListArchiver, IListArchiverSet,
-    IHeaderMatch, IMailingList, Personalization, ReplyToMunging,
-    SubscriptionPolicy)
+    IHeaderMatch, IHeaderMatchSet, IMailingList, Personalization,
+    ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError,
     SubscriptionEvent)
@@ -58,6 +58,7 @@ from sqlalchemy import (
     LargeBinary, PickleType, Unicode)
 from sqlalchemy.event import listen
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.exc import NoResultFound
 from urllib.parse import urljoin
 from zope.component import getUtility
 from zope.event import notify
@@ -638,3 +639,48 @@ class HeaderMatch(Model):
     header = Column(Unicode)
     pattern = Column(Unicode)
     chain = Column(Unicode, nullable=True)
+
+
+
+@implementer(IHeaderMatchSet)
+class HeaderMatchSet:
+    """See `IHeaderMatchSet`."""
+
+    def __init__(self, mailing_list):
+        self._mailing_list = mailing_list
+
+    @dbconnection
+    def clear(self, store):
+        """See `IHeaderMatchSet`."""
+        store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self._mailing_list).delete()
+
+    @dbconnection
+    def add(self, store, header, pattern, chain=None):
+        header = header.lower()
+        existing = store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self._mailing_list,
+            HeaderMatch.header == header,
+            HeaderMatch.pattern == pattern).count()
+        if existing > 0:
+            raise ValueError('Pattern already exists')
+        header_match = HeaderMatch(
+            mailing_list=self._mailing_list,
+            header=header, pattern=pattern, chain=chain)
+        store.add(header_match)
+
+    @dbconnection
+    def remove(self, store, header, pattern):
+        header = header.lower()
+        # Don't just filter and use delete(), or the MailingList.header_matches
+        # collection will not be updated:
+        # http://docs.sqlalchemy.org/en/rel_1_0/orm/collections.html#dynamic-relationship-loaders
+        try:
+            existing = store.query(HeaderMatch).filter(
+                HeaderMatch.mailing_list == self._mailing_list,
+                HeaderMatch.header == header,
+                HeaderMatch.pattern == pattern).one()
+        except NoResultFound:
+            raise ValueError('Pattern does not exist')
+        else:
+            self._mailing_list.header_matches.remove(existing)

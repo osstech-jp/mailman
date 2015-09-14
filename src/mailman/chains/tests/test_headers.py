@@ -30,7 +30,7 @@ from mailman.config import config
 from mailman.core.chains import process
 from mailman.email.message import Message
 from mailman.interfaces.chain import LinkAction, HoldEvent
-from mailman.model.mailinglist import HeaderMatch
+from mailman.interfaces.mailinglist import IHeaderMatchSet
 from mailman.testing.layers import ConfigLayer
 from mailman.testing.helpers import (
     configuration, event_subscribers, get_queue_messages, LogFileMark,
@@ -128,32 +128,32 @@ class TestHeaderChain(unittest.TestCase):
         # Test that the header-match chain has the header checks from the
         # mailing-list configuration.
         chain = config.chains['header-match']
-        self._mlist.header_matches = [HeaderMatch(header='Foo', pattern='a+')]
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('Foo', 'a+', None)
         links = [link for link in chain.get_links(self._mlist, Message(), {})
                   if link.rule.name != 'any']
         self.assertEqual(len(links), 1)
         self.assertEqual(links[0].action, LinkAction.defer)
-        self.assertEqual(links[0].rule.header, 'Foo')
+        self.assertEqual(links[0].rule.header, 'foo')
         self.assertEqual(links[0].rule.pattern, 'a+')
 
     def test_list_complex_rule(self):
         # Test that the mailing-list header-match complex rules are read
         # properly.
         chain = config.chains['header-match']
-        self._mlist.header_matches = [
-            HeaderMatch(header='Foo', pattern='a+', chain='reject'),
-            HeaderMatch(header='Bar', pattern='b+', chain='discard'),
-            HeaderMatch(header='Baz', pattern='z+', chain='accept'),
-            ]
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('Foo', 'a+', 'reject')
+        header_matches.add('Bar', 'b+', 'discard')
+        header_matches.add('Baz', 'z+', 'accept')
         links = [link for link in chain.get_links(self._mlist, Message(), {})
                   if link.rule.name != 'any']
         self.assertEqual(len(links), 3)
         self.assertListEqual(
             [(link.rule.header, link.rule.pattern, link.action, link.chain.name)
               for link in links],
-            [('Foo', 'a+', LinkAction.jump, 'reject'),
-             ('Bar', 'b+', LinkAction.jump, 'discard'),
-             ('Baz', 'z+', LinkAction.jump, 'accept'),
+            [('foo', 'a+', LinkAction.jump, 'reject'),
+             ('bar', 'b+', LinkAction.jump, 'discard'),
+             ('baz', 'z+', LinkAction.jump, 'accept'),
             ])
 
     @configuration('antispam', header_checks="""
@@ -173,9 +173,8 @@ MIME-Version: 1.0
 A message body.
 """)
         msgdata = {}
-        self._mlist.header_matches = [
-            HeaderMatch(header='Foo', pattern='foo', chain='accept')
-            ]
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('Foo', 'foo', 'accept')
         # This event subscriber records the event that occurs when the message
         # is processed by the owner chain.
         events = []

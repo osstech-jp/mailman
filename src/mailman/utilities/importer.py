@@ -42,13 +42,12 @@ from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.chain import LinkAction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.languages import ILanguageManager
-from mailman.interfaces.mailinglist import IAcceptableAliasSet
+from mailman.interfaces.mailinglist import IAcceptableAliasSet, IHeaderMatchSet
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.usermanager import IUserManager
-from mailman.model.mailinglist import HeaderMatch
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.i18n import search
 from sqlalchemy import Boolean
@@ -335,6 +334,7 @@ def import_config_pck(mlist, config_dict):
             # expression.  Make that explicit for MM3.
             alias_set.add('^' + address)
     # Handle header_filter_rules conversion to header_matches
+    header_match_set = IHeaderMatchSet(mlist)
     header_filter_rules = config_dict.get('header_filter_rules', [])
     for line_patterns, action, _unused in header_filter_rules:
         try:
@@ -372,8 +372,12 @@ def import_config_pck(mlist, config_dict):
                 log.warning('Skipping header_filter rule because of an '
                             'invalid regular expression: %r', line_pattern)
                 continue
-            mlist.header_matches.append(HeaderMatch(
-                header=header, pattern=pattern, chain=chain))
+            try:
+                header_match_set.add(header, pattern, chain)
+            except ValueError:
+                log.warning('Skipping duplicate header_filter rule: %r',
+                            line_pattern)
+                continue
     # Handle conversion to URIs.  In MM2.1, the decorations are strings
     # containing placeholders, and there's no provision for language-specific
     # templates.  In MM3, template locations are specified by URLs with the

@@ -860,3 +860,34 @@ class IHeaderMatch(Interface):
         If it is None, the `[antispam]jump_chain` action in the configuration
         file is used.
         """)
+
+
+class IHeaderMatchSet(Interface):
+    """The set of header matching rules for a mailing list."""
+
+    def clear():
+        """Clear the set of header matching rules."""
+
+    def add(header, pattern, chain):
+        """Add the given header matching rule to this mailinglist's set.
+
+        :param header: The email header to filter on. It will be converted to
+            lowercase for easier removal.
+        :type header: string
+        :param pattern: The regular expression to use.
+        :type pattern: string
+        :param chain: The chain to jump to, or None to use the site-wide
+            configuration. Defaults to None.
+        :type chain: string or None
+        :raises ValueError: there can be only one couple of header and pattern
+            for a mailinglist.
+        """
+
+    def remove(header, pattern):
+        """Remove the given header matching rule from this mailinglist's set.
+
+        :param header: The email header part of the rule to be removed.
+        :type header: string
+        :param pattern: The regular expression part of the rule to be removed.
+        :type pattern: string
+        """

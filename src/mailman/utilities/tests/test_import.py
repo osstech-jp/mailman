@@ -44,12 +44,11 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, SubscriptionPolicy)
+    IAcceptableAliasSet, IHeaderMatchSet, SubscriptionPolicy)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
-from mailman.model.mailinglist import HeaderMatch
 from mailman.testing.helpers import LogFileMark
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.filesystem import makedirs
@@ -335,10 +334,8 @@ class TestBasicImport(unittest.TestCase):
     def test_header_matches(self):
         # This test contail real cases of header_filter_rules
         self._pckdict['header_filter_rules'] = [
-            ('^X-Spam-Status: Yes', 3, False),
-            ('X-Spam-Status: Yes', 3, False),
             ('X\\-Spam\\-Status\\: Yes.*', 3, False),
-            ('X-Spam-Status: Yes\r\n\r\n', 2, False),
+            ('^X-Spam-Status: Yes\r\n\r\n', 2, False),
             ('^X-Spam-Level: \\*\\*\\*.*$', 3, False),
             ('^X-Spam-Level:.\\*\\*\r\n^X-Spam:.\\Yes', 3, False),
             ('Subject: \\[SPAM\\].*', 3, False),
@@ -368,8 +365,6 @@ class TestBasicImport(unittest.TestCase):
         self.assertListEqual(
             [ (hm.header, hm.pattern, hm.chain)
               for hm in self._mlist.header_matches ], [
-            ('x-spam-status', 'Yes', 'discard'),
-            ('x-spam-status', 'Yes', 'discard'),
             ('x-spam-status', 'Yes.*', 'discard'),
             ('x-spam-status', 'Yes', 'reject'),
             ('x-spam-level', '\\*\\*\\*.*$', 'discard'),
@@ -460,6 +455,22 @@ class TestBasicImport(unittest.TestCase):
                 member.unsubscribe()
             for member in self._mlist.owners.members:
                 member.unsubscribe()
+
+    def test_header_matches_duplicate(self):
+        # Check that duplicate patterns don't cause tracebacks
+        self._pckdict['header_filter_rules'] = [
+            ('SomeHeaderName: test-pattern', 3, False),
+            ('SomeHeaderName: test-pattern', 2, False),
+        ]
+        error_log = LogFileMark('mailman.error')
+        self._import()
+        self.assertListEqual(
+            [ (hm.header, hm.pattern, hm.chain)
+              for hm in self._mlist.header_matches ],
+            [ ('someheadername', 'test-pattern', 'discard') ]
+            )
+        self.assertIn('Skipping duplicate header_filter rule',
+                      error_log.readline())
 
 
 

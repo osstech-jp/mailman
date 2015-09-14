@@ -36,6 +36,12 @@
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
+    provides="mailman.interfaces.mailinglist.IHeaderMatchSet"
+    factory="mailman.model.mailinglist.HeaderMatchSet"
+    />
+
+  <adapter
+    for="mailman.interfaces.mailinglist.IMailingList"
     provides="mailman.interfaces.requests.IListRequests"
     factory="mailman.model.requests.ListRequests"
     />
