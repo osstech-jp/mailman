@@ -14,7 +14,7 @@ from alembic import op
 import sqlalchemy as sa
 
 from mailman.database.types import Enum
-from mailman.database.utilities import is_sqlite, exists_in_db
+from mailman.database.helpers import is_sqlite, exists_in_db
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 
 
@@ -22,7 +22,7 @@ def upgrade():
 
     ### Update the schema
     if not exists_in_db(op.get_bind(), 'mailinglist', 'subscription_policy'):
-        # SQL may not have removed it when downgrading.
+        # SQLite may not have removed it when downgrading.
         op.add_column('mailinglist', sa.Column(
             'subscription_policy', Enum(SubscriptionPolicy), nullable=True))
 

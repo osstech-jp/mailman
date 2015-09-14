@@ -1,4 +1,4 @@
-# Copyright (C) 2013-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2015 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,14 +22,14 @@ __all__ = [
     ]
 
 
-import unittest
 import alembic.command
+import sqlalchemy as sa
+import unittest
 
 from mailman.config import config
 from mailman.database.alembic import alembic_cfg
 from mailman.database.model import Model
 from mailman.testing.layers import ConfigLayer
-import sqlalchemy as sa
 
 
 
@@ -51,7 +51,7 @@ class TestMigrations(unittest.TestCase):
     def test_all_migrations(self):
         script_dir = alembic.script.ScriptDirectory.from_config(alembic_cfg)
         revisions = [sc.revision for sc in
-                     script_dir.walk_revisions("base", "heads")]
+                     script_dir.walk_revisions('base', 'heads')]
         for revision in revisions:
             alembic.command.downgrade(alembic_cfg, revision)
         revisions.reverse()

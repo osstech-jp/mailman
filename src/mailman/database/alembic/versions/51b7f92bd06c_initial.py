@@ -35,9 +35,9 @@ __all__ = [
     ]
 
 
-from alembic import op
 import sqlalchemy as sa
-from mailman.database.utilities import is_sqlite, exists_in_db
+from alembic import op
+from mailman.database.helpers import is_sqlite, exists_in_db
 
 
 # Revision identifiers, used by Alembic.

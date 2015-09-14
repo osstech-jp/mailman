@@ -29,7 +29,7 @@ down_revision = '33e1f5f6fa8'
 
 from alembic import op
 import sqlalchemy as sa
-from mailman.database.utilities import is_sqlite, exists_in_db
+from mailman.database.helpers import is_sqlite, exists_in_db
 
 
 def upgrade():
@@ -42,7 +42,7 @@ def upgrade():
         sa.PrimaryKeyConstraint('user_id', 'domain_id')
         )
     if not exists_in_db(op.get_bind(), 'user', 'is_server_owner'):
-        # SQL may not have removed it when downgrading.
+        # SQLite may not have removed it when downgrading.
         op.add_column(
             'user',
             sa.Column('is_server_owner', sa.Boolean(), nullable=True))

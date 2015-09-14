@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2015 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -15,10 +15,11 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Common database utilities."""
+"""Common database helpers."""
 
 __all__ = [
     'exists_in_db',
+    'is_sqlite',
     ]
 
 import sqlalchemy as sa
