@@ -24,9 +24,9 @@ from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.address import (
     AddressAlreadyLinkedError, AddressNotLinkedError)
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
-from mailman.interfaces.member import MemberRole
 from mailman.model.preferences import Preferences
 from mailman.testing.helpers import set_preferred
 from mailman.testing.layers import ConfigLayer
