@@ -42,10 +42,9 @@ class TestMigrations(unittest.TestCase):
 
     def tearDown(self):
         # Drop and restore a virgin database.
-        md = sa.MetaData()
-        md.reflect(bind=config.db.engine)
-        for table in md.sorted_tables:
-            table.drop(config.db.engine)
+        md = sa.MetaData(bind=config.db.engine)
+        md.reflect()
+        md.drop_all()
         Model.metadata.create_all(config.db.engine)
 
     def test_all_migrations(self):

@@ -41,21 +41,33 @@ revision = '33e1f5f6fa8'
 down_revision = '51b7f92bd06c'
 
 
+COLUMNS_TO_CHANGE = (
+    ('message', 'message_id_hash'),
+    ('message', 'path'),
+    ('pended', 'token'),
+    ('_request', 'data_hash'),
+    ('user', 'password'),
+    )
+
+
 def upgrade():
-    if not is_sqlite(op.get_bind()):
+    if is_sqlite(op.get_bind()):
         # SQLite does not support altering columns.
-        op.alter_column('message', 'message_id_hash', type_=sa.Unicode)
-        op.alter_column('message', 'path', type_=sa.Unicode)
-        op.alter_column('pended', 'token', type_=sa.Unicode)
-        op.alter_column('_request', 'data_hash', type_=sa.Unicode)
-        op.alter_column('user', 'password', type_=sa.Unicode)
+        return
+    for table, column in COLUMNS_TO_CHANGE:
+        op.alter_column(table, column, type_=sa.Unicode)
 
 
 def downgrade():
-    if not is_sqlite(op.get_bind()):
+    if is_sqlite(op.get_bind()):
         # SQLite does not support altering columns.
-        op.alter_column('message', 'message_id_hash', type_=sa.LargeBinary)
-        op.alter_column('message', 'path', type_=sa.LargeBinary)
-        op.alter_column('pended', 'token', type_=sa.LargeBinary)
-        op.alter_column('_request', 'data_hash', type_=sa.LargeBinary)
-        op.alter_column('user', 'password', type_=sa.LargeBinary)
+        return
+    for table, column in COLUMNS_TO_CHANGE:
+        if op.get_bind().dialect.name == 'postgresql':
+            # PostgreSQL needs the USING clause that Alembic does not support
+            # yet.
+            op.execute(('ALTER TABLE "{table}" ALTER COLUMN "{column}" '
+                        'TYPE BYTEA USING decode("{column}", \'UTF8\')').format(
+                       table=table, column=column))
+        else:
+            op.alter_column(table, column, type_=sa.LargeBinary)
