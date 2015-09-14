@@ -179,7 +179,7 @@ Now, the list administrator wants to match on three plus signs, but wants those
 emails to be discarded instead of held.
 
     >>> mlist.header_matches = [
-    ...     HeaderMatch(header='x-spam-score', pattern='[+]{3,}', 'discard')
+    ...     HeaderMatch(header='x-spam-score', pattern='[+]{3,}', chain='discard')
     ...     ]
 
 A message with a spam score of three pluses will still match, and the message
