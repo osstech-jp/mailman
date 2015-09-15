@@ -22,9 +22,9 @@ __all__ = [
     ]
 
 
+import unittest
 import alembic.command
 import sqlalchemy as sa
-import unittest
 
 from mailman.config import config
 from mailman.database.alembic import alembic_cfg
@@ -34,7 +34,6 @@ from mailman.testing.layers import ConfigLayer
 
 
 class TestMigrations(unittest.TestCase):
-
     layer = ConfigLayer
 
     def setUp(self):

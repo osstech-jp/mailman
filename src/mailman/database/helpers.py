@@ -22,9 +22,11 @@ __all__ = [
     'is_sqlite',
     ]
 
+
 import sqlalchemy as sa
 
 
+
 def is_sqlite(bind):
     return bind.dialect.name == 'sqlite'
 
