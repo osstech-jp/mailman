@@ -10,8 +10,10 @@ Create Date: 2015-09-11 10:11:38.310315
 revision = '42756496720'
 down_revision = '2bb9b382198'
 
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
+from mailman.database.helpers import is_sqlite, exists_in_db
 
 
 def upgrade():
@@ -46,12 +48,12 @@ def upgrade():
 
     # Now that data is migrated, drop the old column (except on SQLite which
     # does not support this)
-    if op.get_bind().dialect.name != 'sqlite':
+    if not is_sqlite(connection):
         op.drop_column('mailinglist', 'header_matches')
 
 
 def downgrade():
-    if op.get_bind().dialect.name != 'sqlite':
+    if not exists_in_db(op.get_bind(), 'mailinglist', 'header_matches'):
         # SQLite will not have deleted the former column, since it does not
         # support column deletion.
         op.add_column('mailinglist', sa.Column(
@@ -72,11 +74,15 @@ def downgrade():
         sa.sql.column('pattern', sa.Unicode),
     )
     for mlist_id, header, pattern in connection.execute(
-            header_match_table.select()):
+            header_match_table.select()).fetchall():
         mlist = connection.execute(mlist_table.select().where(
             mlist_table.c.id == mlist_id)).fetchone()
-        if not mlist["header_matches"]:
-            mlist["header_matches"] = []
-        mlist["header_matches"].append((header, pattern))
+        header_matches = mlist['header_matches']
+        if not header_matches:
+            header_matches = []
+        header_matches.append((header, pattern))
+        connection.execute(mlist_table.update().where(
+            mlist_table.c.id == mlist_id).values(
+            header_matches=header_matches))
 
     op.drop_table('headermatch')
