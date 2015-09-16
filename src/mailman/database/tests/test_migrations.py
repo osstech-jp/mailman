@@ -51,15 +51,14 @@ class TestMigrations(unittest.TestCase):
         for tablename in ("user", "address"):
             if tablename not in md.tables:
                 continue
-            for fk in md.tables[tablename].foreign_key_constraints:
-                fk.use_alter = True
+            for fk in md.tables[tablename].foreign_keys:
+                fk.constraint.use_alter = True
         md.drop_all()
         Model.metadata.create_all(config.db.engine)
 
     def test_all_migrations(self):
         script_dir = alembic.script.ScriptDirectory.from_config(alembic_cfg)
-        revisions = [sc.revision for sc in
-                     script_dir.walk_revisions('base', 'heads')]
+        revisions = [sc.revision for sc in script_dir.walk_revisions()]
         for revision in revisions:
             alembic.command.downgrade(alembic_cfg, revision)
         revisions.reverse()
