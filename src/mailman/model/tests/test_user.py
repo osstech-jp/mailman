@@ -157,7 +157,12 @@ class TestUser(unittest.TestCase):
         mlist2.subscribe(bill, MemberRole.owner)
         # Subscribe only bill's address to mlist3
         mlist3.subscribe(bill.preferred_address, MemberRole.moderator)
+        # Do the absorption
         self._anne.absorb(bill)
+        # check that bill has been deleted
+        self.assertEqual(len(list(self._manager.users)), 1)
+        # check that there is no leftover membership from user bill
+        self.assertEqual(len(list(self._manager.members)), 3)
         # check that anne is subscribed to all lists
         self.assertEqual(self._anne.memberships.member_count, 3)
         memberships = {}

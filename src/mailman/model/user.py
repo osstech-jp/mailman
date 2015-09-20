@@ -189,13 +189,14 @@ class User(Model):
         # Merge memberships.
         other_members = store.query(Member).filter(
             Member.user_id == user.id)
-        # (only import memberships of lists I'm not subscribed to yet)
         subscribed_lists = [ m.list_id for m in self.memberships.members ]
-        if subscribed_lists:
-            other_members = other_members.filter(
-                not_(Member.list_id.in_(subscribed_lists)))
         for member in other_members:
-            member.user_id = self.id
+            # Only import memberships of lists I'm not subscribed to yet,
+            # delete the rest.
+            if member.list_id not in subscribed_lists:
+                member.user_id = self.id
+            else:
+                store.delete(member)
         # Merge the user preferences
         self.preferences.absorb(user.preferences)
         # Merge display_name, password and is_server_owner attributes.
