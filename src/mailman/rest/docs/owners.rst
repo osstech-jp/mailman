@@ -35,6 +35,13 @@ Anne's server owner flag is set.
 And now we can find her user record.
 
     >>> dump_json('http://localhost:9001/3.0/owners')
+    entry 0:
+        created_on: 2005-08-01T07:49:23
+        display_name: Anne Person
+        http_etag: "..."
+        is_server_owner: True
+        self_link: http://localhost:9001/3.0/users/1
+        user_id: 1
     http_etag: "..."
     start: 0
     total_size: 1
@@ -45,6 +52,13 @@ Bart and Cate are also users, but not server owners.
     >>> cate = user_manager.create_user('cate@example.com', 'Cate Person')
     >>> transaction.commit()
     >>> dump_json('http://localhost:9001/3.0/owners')
+    entry 0:
+        created_on: 2005-08-01T07:49:23
+        display_name: Anne Person
+        http_etag: "..."
+        is_server_owner: True
+        self_link: http://localhost:9001/3.0/users/1
+        user_id: 1
     http_etag: "..."
     start: 0
     total_size: 1
@@ -56,6 +70,20 @@ Anne retires as a server owner, with Bart and Cate taking over.
     >>> cate.is_server_owner = True
     >>> transaction.commit()
     >>> dump_json('http://localhost:9001/3.0/owners')
+    entry 0:
+        created_on: 2005-08-01T07:49:23
+        display_name: Bart Person
+        http_etag: "..."
+        is_server_owner: True
+        self_link: http://localhost:9001/3.0/users/2
+        user_id: 2
+    entry 1:
+        created_on: 2005-08-01T07:49:23
+        display_name: Cate Person
+        http_etag: "..."
+        is_server_owner: True
+        self_link: http://localhost:9001/3.0/users/3
+        user_id: 3
     http_etag: "..."
     start: 0
     total_size: 2
