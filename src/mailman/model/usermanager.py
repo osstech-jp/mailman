@@ -141,4 +141,11 @@ class UserManager:
     def members(self, store):
         """See `IUserManager."""
         for member in store.query(Member).all():
-                yield member
+            yield member
+
+    @property
+    @dbconnection
+    def server_owners(self, store):
+        """ See `IUserManager."""
+        users = store.query(User).filter_by(is_server_owner=True)
+        yield from users
