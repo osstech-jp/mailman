@@ -29,7 +29,6 @@ from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.core.system import system
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.usermanager import IUserManager
 from mailman.model.uid import UID
 from mailman.rest.addresses import AllAddresses, AnAddress
 from mailman.rest.domains import ADomain, AllDomains
@@ -40,7 +39,7 @@ from mailman.rest.members import AMember, AllMembers, FindMembers
 from mailman.rest.preferences import ReadOnlyPreferences
 from mailman.rest.queues import AQueue, AQueueFile, AllQueues
 from mailman.rest.templates import TemplateFinder
-from mailman.rest.users import AUser, AllUsers
+from mailman.rest.users import AUser, AllUsers, ServerOwners
 from zope.component import getUtility
 
 
@@ -239,7 +238,8 @@ class TopLevel:
         """/<api>/owners"""
         if len(segments) != 0:
             return BadRequest(), []
-        
+        else:
+            return ServerOwners(), segments
 
     @child()
     def templates(self, request, segments):
