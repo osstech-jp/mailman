@@ -78,6 +78,8 @@ REST
    Bompard.
  * The REST API incorrectly parsed `is_server_owner` values when given
    explicitly in the POST that creates a user.  (Closes #136)
+ * A new top-level resource `<api>/owners` can be used to get the list of
+   server owners as `IUser`s.  (Closes #135)
  * By POSTing to a user resource with an existing unlinked address, you can
    link the address to the user.  Given by Abhilash Raj.
 

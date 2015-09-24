@@ -126,3 +126,6 @@ class IUserManager(Interface):
 
     members = Attribute(
         """An iterator of all the `IMembers` in the database.""")
+
+    server_owners = Attribute(
+        """An iterator over all the `IUsers` who are server owners.""")

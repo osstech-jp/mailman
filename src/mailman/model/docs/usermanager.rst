@@ -201,3 +201,47 @@ The user has a single unverified address object.
     >>> for address in cris.addresses:
     ...     print(repr(address))
     <Address: Cris Person <cris@example.com> [not verified] at ...>
+
+
+Server owners
+=============
+
+Some users are designated as *server owners*.  At first there are no server
+owners.
+
+    >>> len(list(user_manager.server_owners))
+    0
+
+Dan is made a server owner.
+
+    >>> user_4.is_server_owner = True
+    >>> owners = list(user_manager.server_owners)
+    >>> len(owners)
+    1
+    >>> owners[0]
+    <User "Dan Person" (...) at ...>
+
+Now Ben and Claire are also made server owners.
+
+    >>> user_2.is_server_owner = True
+    >>> user_3.is_server_owner = True
+    >>> owners = list(user_manager.server_owners)
+    >>> len(owners)
+    3
+    >>> from operator import attrgetter
+    >>> for user in sorted(owners, key=attrgetter('display_name')):
+    ...     print(user)
+    <User "Ben Person" (...) at ...>
+    <User "Claire Person" (...) at ...>
+    <User "Dan Person" (...) at ...>
+
+Clair retires as a server owner.
+
+    >>> user_3.is_server_owner = False
+    >>> owners = list(user_manager.server_owners)
+    >>> len(owners)
+    2
+    >>> for user in sorted(owners, key=attrgetter('display_name')):
+    ...     print(user)
+    <User "Ben Person" (...) at ...>
+    <User "Dan Person" (...) at ...>

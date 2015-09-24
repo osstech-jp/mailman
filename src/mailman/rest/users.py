@@ -464,3 +464,18 @@ class OwnersForDomain(_UserBase):
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(self._domain.owners)
+
+
+
+class ServerOwners(_UserBase):
+    """All server owners."""
+
+    def on_get(self, request, response):
+        """/owners"""
+        resource = self._make_collection(request)
+        okay(response, etag(resource))
+
+    @paginate
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        return list(getUtility(IUserManager).server_owners)
