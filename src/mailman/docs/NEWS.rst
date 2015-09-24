@@ -38,6 +38,8 @@ Bugs
  * Bulk emails are now decorated with headers and footers.  Given by Aurélien
    Bompard.  (Closes #145)
  * Core no longer depends on the standalone `mock` module.  (Closes: #146)
+ * The logging of moderation reasons has been fixed.  Given by Aurélien
+   Bompard.
 
 Configuration
 -------------

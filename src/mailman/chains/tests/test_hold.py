@@ -31,7 +31,7 @@ from mailman.core.chains import process as process_chain
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    configuration, get_queue_messages,
+    LogFileMark, configuration, get_queue_messages,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
@@ -115,6 +115,7 @@ A message body.
             'TEST-REASON-1',
             'TEST-REASON-2',
             ])
+        logfile = LogFileMark('mailman.vette')
         process_chain(self._mlist, msg, msgdata, start_chain='hold')
         messages = get_queue_messages('virgin')
         self.assertEqual(len(messages), 2)
@@ -131,3 +132,6 @@ A message body.
         self.assertIn('    TEST-REASON-2', payloads['owner'])
         self.assertIn('    TEST-REASON-1', payloads['sender'])
         self.assertIn('    TEST-REASON-2', payloads['sender'])
+        logged = logfile.read()
+        self.assertIn('TEST-REASON-1', logged)
+        self.assertIn('TEST-REASON-2', logged)
