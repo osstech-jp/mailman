@@ -43,6 +43,11 @@ Bugs
 
 Configuration
 -------------
+ * Mailing lists can now have their own header matching rules, although
+   site-defined rules still take precedence.  Importing a Mailman 2.1 list
+   with header matching rules defined will create them in Mailman 3, albeit
+   with a few unsupported corner cases.  Definition of new header matching
+   rules is not yet exposed through the REST API.  Given by Aurélien Bompard.
  * The default languages from Mailman 2.1 have been ported over.  Given by
    Aurélien Bompard.
 
