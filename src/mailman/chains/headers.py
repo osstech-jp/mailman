@@ -40,20 +40,24 @@ log = logging.getLogger('mailman.error')
 def make_link(header, pattern, chain=None):
     """Create a Link object.
 
-    The link action is always to defer, since at the end of all the header
-    checks, we'll jump to the chain defined in the configuration file, should
-    any of them have matched.
+    The link action is to defer by default, since at the end of all the
+    header checks, we'll jump to the chain defined in the configuration
+    file, should any of them have matched.  However, it is possible to
+    create a link which jumps to a specific chain.
 
     :param header: The email header name to check, e.g. X-Spam.
     :type header: string
     :param pattern: A regular expression for matching the header value.
     :type pattern: string
+    :param chain: When given, this is the chain to jump to if the
+        pattern matches the header.
+    :type chain: string
     :return: The link representing this rule check.
     :rtype: `ILink`
     """
     rule = HeaderMatchRule(header, pattern)
     if chain is None:
-        return Link(rule, LinkAction.defer)
+        return Link(rule)
     chain = config.chains[chain]
     return Link(rule, LinkAction.jump, chain)
 
@@ -135,15 +139,17 @@ class HeaderMatchChain(Chain):
             parts = line.split(':', 1)
             if len(parts) != 2:
                 log.error('Configuration error: [antispam]header_checks '
-                          'contains bogus line: {0}'.format(line))
+                          'contains bogus line: {}'.format(line))
                 continue
             yield make_link(parts[0], parts[1].lstrip())
         # Then return all the explicitly added links.
         yield from self._extended_links
-        # If any of the above rules matched, jump to the chain
-        # defined in the configuration file. This takes precedence over
-        # list-specific matches for security considerations.
-        yield Link(config.rules['any'], LinkAction.jump,
+        # If any of the above rules matched, they will have deferred their
+        # action until now, so jump to the chain defined in the configuration
+        # file.  For security considerations, this takes precedence over
+        # list-specific matches.
+        yield Link(config.rules['any'],
+                   LinkAction.jump,
                    config.chains[config.antispam.jump_chain])
         # Then return all the list-specific header matches.
         for entry in mlist.header_matches:

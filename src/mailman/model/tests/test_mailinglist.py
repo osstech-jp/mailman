@@ -173,37 +173,48 @@ class TestHeaderMatch(unittest.TestCase):
         self._mlist = create_list('ant@example.com')
 
     def test_lowercase_header(self):
-        with transaction():
-            header_matches = IHeaderMatchSet(self._mlist)
-            header_matches.add('Header', 'pattern')
-            self.assertEqual(len(self._mlist.header_matches), 1)
-            self.assertEqual(self._mlist.header_matches[0].header, 'header')
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('Header', 'pattern')
+        self.assertEqual(len(self._mlist.header_matches), 1)
+        self.assertEqual(self._mlist.header_matches[0].header, 'header')
 
     def test_chain_defaults_to_none(self):
-        with transaction():
-            header_matches = IHeaderMatchSet(self._mlist)
-            header_matches.add('header', 'pattern')
-            self.assertEqual(len(self._mlist.header_matches), 1)
-            self.assertEqual(self._mlist.header_matches[0].chain, None)
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('header', 'pattern')
+        self.assertEqual(len(self._mlist.header_matches), 1)
+        self.assertEqual(self._mlist.header_matches[0].chain, None)
 
     def test_duplicate(self):
-        with transaction():
-            header_matches = IHeaderMatchSet(self._mlist)
-            header_matches.add('Header', 'pattern')
-            self.assertRaises(ValueError,
-                header_matches.add, 'Header', 'pattern')
-            self.assertEqual(len(self._mlist.header_matches), 1)
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('Header', 'pattern')
+        self.assertRaises(
+            ValueError, header_matches.add, 'Header', 'pattern')
+        self.assertEqual(len(self._mlist.header_matches), 1)
 
     def test_remove_non_existent(self):
-        with transaction():
-            header_matches = IHeaderMatchSet(self._mlist)
-            self.assertRaises(ValueError,
-                header_matches.remove, 'header', 'pattern')
+        header_matches = IHeaderMatchSet(self._mlist)
+        self.assertRaises(
+            ValueError, header_matches.remove, 'header', 'pattern')
 
     def test_add_remove(self):
-        with transaction():
-            header_matches = IHeaderMatchSet(self._mlist)
-            header_matches.add('header', 'pattern')
-            self.assertEqual(len(self._mlist.header_matches), 1)
-            header_matches.remove('header', 'pattern')
-            self.assertEqual(len(self._mlist.header_matches), 0)
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('header', 'pattern')
+        self.assertEqual(len(self._mlist.header_matches), 1)
+        header_matches.remove('header', 'pattern')
+        self.assertEqual(len(self._mlist.header_matches), 0)
+
+    def test_iterator(self):
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('Header', 'pattern')
+        header_matches.add('Subject', 'patt.*')
+        header_matches.add('From', '.*@example.com', 'discard')
+        header_matches.add('From', '.*@example.org', 'accept')
+        matches = sorted((match.header, match.pattern, match.chain)
+                         for match in IHeaderMatchSet(self._mlist))
+        self.assertEqual(
+            matches,
+            [('from', '.*@example.com', 'discard'),
+             ('from', '.*@example.org', 'accept'),
+             ('header', 'pattern', None),
+             ('subject', 'patt.*', None),
+             ])

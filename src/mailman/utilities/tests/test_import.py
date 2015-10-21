@@ -44,7 +44,7 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, IHeaderMatchSet, SubscriptionPolicy)
+    IAcceptableAliasSet, SubscriptionPolicy)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.templates import ITemplateLoader
@@ -344,7 +344,8 @@ class TestBasicImport(unittest.TestCase):
             ('X-Git-Module: rhq.*git', 6, False),
             ('Approved: verysecretpassword', 6, False),
             ('^Subject: dev-\r\n^Subject: staging-', 3, False),
-            ('from: .*info@aolanchem.com\r\nfrom: .*@jw-express.com', 2, False),
+            ('from: .*info@aolanchem.com\r\nfrom: .*@jw-express.com',
+             2, False),
             ('^Received: from smtp-.*\\.fedoraproject\\.org\r\n'
              '^Received: from mx.*\\.redhat.com\r\n'
              '^Resent-date:\r\n'
@@ -356,15 +357,17 @@ class TestBasicImport(unittest.TestCase):
             ('^Received: from fedorahosted\\.org.*by fedorahosted\\.org\r\n'
              '^Received: from hosted.*\\.fedoraproject.org.*by '
              'hosted.*\\.fedoraproject\\.org\r\n'
-             '^Received: from hosted.*\\.fedoraproject.org.*by fedoraproject\\.org\r\n'
-             '^Received: from hosted.*\\.fedoraproject.org.*by fedorahosted\\.org',
+             '^Received: from hosted.*\\.fedoraproject.org.*by '
+                'fedoraproject\\.org\r\n'
+             '^Received: from hosted.*\\.fedoraproject.org.*by '
+                'fedorahosted\\.org',
              6, False),
             ]
         error_log = LogFileMark('mailman.error')
         self._import()
         self.assertListEqual(
-            [ (hm.header, hm.pattern, hm.chain)
-              for hm in self._mlist.header_matches ], [
+            [(hm.header, hm.pattern, hm.chain)
+             for hm in self._mlist.header_matches ], [
             ('x-spam-status', 'Yes.*', 'discard'),
             ('x-spam-status', 'Yes', 'reject'),
             ('x-spam-level', '\\*\\*\\*.*$', 'discard'),
@@ -386,19 +389,26 @@ class TestBasicImport(unittest.TestCase):
             ('resent-message-id', '.*', 'hold'),
             ('resent-to', '.*', 'hold'),
             ('subject', '[^mtv]', 'hold'),
-            ('received', 'from fedorahosted\\.org.*by fedorahosted\\.org', 'accept'),
-            ('received', 'from hosted.*\\.fedoraproject.org.*by hosted.*\\.fedoraproject\\.org', 'accept'),
-            ('received', 'from hosted.*\\.fedoraproject.org.*by fedoraproject\\.org', 'accept'),
-            ('received', 'from hosted.*\\.fedoraproject.org.*by fedorahosted\\.org', 'accept'),
+            ('received', 'from fedorahosted\\.org.*by fedorahosted\\.org',
+             'accept'),
+            ('received',
+             'from hosted.*\\.fedoraproject.org.*by '
+                'hosted.*\\.fedoraproject\\.org', 'accept'),
+            ('received',
+             'from hosted.*\\.fedoraproject.org.*by '
+                'fedoraproject\\.org', 'accept'),
+            ('received',
+             'from hosted.*\\.fedoraproject.org.*by '
+                'fedorahosted\\.org', 'accept'),
             ])
         loglines = error_log.read().strip()
         self.assertEqual(len(loglines), 0)
 
     def test_header_matches_header_only(self):
-        # Check that an empty pattern is skipped
+        # Check that an empty pattern is skipped.
         self._pckdict['header_filter_rules'] = [
             ('SomeHeaderName', 3, False),
-        ]
+            ]
         error_log = LogFileMark('mailman.error')
         self._import()
         self.assertListEqual(self._mlist.header_matches, [])
@@ -406,10 +416,10 @@ class TestBasicImport(unittest.TestCase):
                       error_log.readline())
 
     def test_header_matches_anything(self):
-        # Check that an empty pattern is skipped
+        # Check that a wild card header pattern is skipped.
         self._pckdict['header_filter_rules'] = [
             ('.*', 7, False),
-        ]
+            ]
         error_log = LogFileMark('mailman.error')
         self._import()
         self.assertListEqual(self._mlist.header_matches, [])
@@ -417,10 +427,10 @@ class TestBasicImport(unittest.TestCase):
                       error_log.readline())
 
     def test_header_matches_invalid_re(self):
-        # Check that an empty pattern is skipped
+        # Check that an invalid regular expression pattern is skipped.
         self._pckdict['header_filter_rules'] = [
             ('SomeHeaderName: *invalid-re', 3, False),
-        ]
+            ]
         error_log = LogFileMark('mailman.error')
         self._import()
         self.assertListEqual(self._mlist.header_matches, [])
@@ -431,20 +441,20 @@ class TestBasicImport(unittest.TestCase):
         # Check that a defer action is properly converted.
         self._pckdict['header_filter_rules'] = [
             ('^X-Spam-Status: Yes', 0, False),
-        ]
+            ]
         self._import()
         self.assertListEqual(
-            [ (hm.header, hm.pattern, hm.chain)
-              for hm in self._mlist.header_matches ],
-            [ ('x-spam-status', 'Yes', None) ]
-        )
+            [(hm.header, hm.pattern, hm.chain)
+             for hm in self._mlist.header_matches],
+            [('x-spam-status', 'Yes', None)]
+            )
 
     def test_header_matches_unsupported_action(self):
-        # Check that an unsupported actions are skipped
+        # Check that unsupported actions are skipped.
         for action_num in (1, 4, 5):
             self._pckdict['header_filter_rules'] = [
                 ('HeaderName: test-re', action_num, False),
-            ]
+                ]
             error_log = LogFileMark('mailman.error')
             self._import()
             self.assertListEqual(self._mlist.header_matches, [])
@@ -457,17 +467,17 @@ class TestBasicImport(unittest.TestCase):
                 member.unsubscribe()
 
     def test_header_matches_duplicate(self):
-        # Check that duplicate patterns don't cause tracebacks
+        # Check that duplicate patterns don't cause tracebacks.
         self._pckdict['header_filter_rules'] = [
             ('SomeHeaderName: test-pattern', 3, False),
             ('SomeHeaderName: test-pattern', 2, False),
-        ]
+            ]
         error_log = LogFileMark('mailman.error')
         self._import()
         self.assertListEqual(
-            [ (hm.header, hm.pattern, hm.chain)
-              for hm in self._mlist.header_matches ],
-            [ ('someheadername', 'test-pattern', 'discard') ]
+            [(hm.header, hm.pattern, hm.chain)
+             for hm in self._mlist.header_matches],
+            [('someheadername', 'test-pattern', 'discard')]
             )
         self.assertIn('Skipping duplicate header_filter rule',
                       error_log.readline())

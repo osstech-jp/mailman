@@ -37,8 +37,8 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAlias, IAcceptableAliasSet, IListArchiver, IListArchiverSet,
-    IHeaderMatch, IHeaderMatchSet, IMailingList, Personalization,
+    IAcceptableAlias, IAcceptableAliasSet, IHeaderMatch, IHeaderMatchSet,
+    IListArchiver, IListArchiverSet, IMailingList, Personalization,
     ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError,
@@ -684,3 +684,8 @@ class HeaderMatchSet:
             raise ValueError('Pattern does not exist')
         else:
             self._mailing_list.header_matches.remove(existing)
+
+    @dbconnection
+    def __iter__(self, store):
+        yield from store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self._mailing_list)

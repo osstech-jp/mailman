@@ -46,9 +46,9 @@ class TestMigrations(unittest.TestCase):
         md = sa.MetaData(bind=config.db.engine)
         md.reflect()
         # We have circular dependencies between user and address, thus we can't
-        # use drop_all() without getting a warning. Setting use_alter to True
+        # use drop_all() without getting a warning.  Setting use_alter to True
         # on the foreign keys helps SQLAlchemy mark those loops as known.
-        for tablename in ("user", "address"):
+        for tablename in ('user', 'address'):
             if tablename not in md.tables:
                 continue
             for fk in md.tables[tablename].foreign_keys:
@@ -70,17 +70,19 @@ class TestMigrations(unittest.TestCase):
             ('test-header-1', 'test-pattern-1'),
             ('test-header-2', 'test-pattern-2'),
             ('test-header-3', 'test-pattern-3'),
-        ]
-        mlist_table = sa.sql.table('mailinglist',
+            ]
+        mlist_table = sa.sql.table(
+            'mailinglist',
             sa.sql.column('id', sa.Integer),
             sa.sql.column('header_matches', sa.PickleType)
             )
-        header_match_table = sa.sql.table('headermatch',
+        header_match_table = sa.sql.table(
+            'headermatch',
             sa.sql.column('mailing_list_id', sa.Integer),
             sa.sql.column('header', sa.Unicode),
             sa.sql.column('pattern', sa.Unicode),
-        )
-        # Downgrading
+            )
+        # Downgrading.
         config.db.store.execute(mlist_table.insert().values(id=1))
         config.db.store.execute(header_match_table.insert().values(
             [{'mailing_list_id': 1, 'header': hm[0], 'pattern': hm[1]}
@@ -92,7 +94,7 @@ class TestMigrations(unittest.TestCase):
         self.assertEqual(results[0].header_matches, test_header_matches)
         self.assertFalse(exists_in_db(config.db.engine, 'headermatch'))
         config.db.store.commit()
-        # Upgrading
+        # Upgrading.
         alembic.command.upgrade(alembic_cfg, '42756496720')
         results = config.db.store.execute(
             header_match_table.select()).fetchall()

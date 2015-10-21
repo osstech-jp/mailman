@@ -39,7 +39,6 @@ from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
-from mailman.interfaces.chain import LinkAction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import IAcceptableAliasSet, IHeaderMatchSet
@@ -132,18 +131,18 @@ def nonmember_action_mapping(value):
 
 def action_to_chain(value):
     # Converts an action number in Mailman 2.1 to the name of the corresponding
-    # chain in 3.x. The actions "approve", "subscribe" and "unsubscribe" are
-    # ignored. The defer action is converted to None, because it is not a jump
-    # to a terminal chain.
+    # chain in 3.x.  The actions 'approve', 'subscribe' and 'unsubscribe' are
+    # ignored.  The defer action is converted to None, because it is not
+    # a jump to a terminal chain.
     return {
         0: None,
-        #1: "approve",
-        2: "reject",
-        3: "discard",
-        #4: "subscribe",
-        #5: "unsubscribe",
-        6: "accept",
-        7: "hold",
+        #1: 'approve',
+        2: 'reject',
+        3: 'discard',
+        #4: 'subscribe',
+        #5: 'unsubscribe',
+        6: 'accept',
+        7: 'hold',
         }[value]
 
 
@@ -333,7 +332,7 @@ def import_config_pck(mlist, config_dict):
             # When .add() rejects this, the line probably contains a regular
             # expression.  Make that explicit for MM3.
             alias_set.add('^' + address)
-    # Handle header_filter_rules conversion to header_matches
+    # Handle header_filter_rules conversion to header_matches.
     header_match_set = IHeaderMatchSet(mlist)
     header_filter_rules = config_dict.get('header_filter_rules', [])
     for line_patterns, action, _unused in header_filter_rules:
@@ -343,26 +342,28 @@ def import_config_pck(mlist, config_dict):
             log.warning('Unsupported header_filter_rules action: %r',
                         action)
             continue
-        # now split the pattern in a header and a pattern
+        # Now split the line into a header and a pattern.
         for line_pattern in line_patterns.splitlines():
-            if not line_pattern.strip():
+            if len(line_pattern.strip()) == 0:
                 continue
             for sep in (': ', ':.', ':'):
                 header, sep, pattern = line_pattern.partition(sep)
                 if sep:
-                    break # found it.
+                    # We found it.
+                    break
             else:
-                # matches any header. Those are not supported. XXX
+                # Matches any header, which is not supported.  XXX
                 log.warning('Unsupported header_filter_rules pattern: %r',
                             line_pattern)
                 continue
-            header = header.strip().lstrip("^").lower()
+            header = header.strip().lstrip('^').lower()
             header = header.replace('\\', '')
             if not header:
-                log.warning('Can\'t parse the header in header_filter_rule: %r',
-                            line_pattern)
+                log.warning(
+                    'Cannot parse the header in header_filter_rule: %r',
+                    line_pattern)
                 continue
-            if not pattern:
+            if len(pattern) == 0:
                 # The line matched only the header, therefore the header can
                 # be anything.
                 pattern = '.*'
