@@ -119,13 +119,21 @@ List-specific header matching
 =============================
 
 Each mailing list can also be configured with a set of header matching regular
-expression rules.  These are used to impose list-specific header filtering
-with the same semantics as the global `[antispam]` section.
+expression rules.  These can be used to impose list-specific header filtering
+with the same semantics as the global ``[antispam]`` section, or to have a
+different action.
+
+To follow the global antispam action, the header match rule must not specify a
+``chain`` to jump to.  If the default antispam action is changed in the
+configuration file and Mailman is restarted, those rules will get the new jump
+action.
 
 The list administrator wants to match not on four stars, but on three plus
 signs, but only for the current mailing list.
 
-    >>> mlist.header_matches = [('x-spam-score', '[+]{3,}')]
+    >>> from mailman.interfaces.mailinglist import IHeaderMatchSet
+    >>> header_matches = IHeaderMatchSet(mlist)
+    >>> header_matches.add('x-spam-score', '[+]{3,}')
 
 A message with a spam score of two pluses does not match.
 
@@ -139,8 +147,8 @@ A message with a spam score of two pluses does not match.
         x-spam-score: [+]{3,}
 
 But a message with a spam score of three pluses does match.  Because a message
-with the previous Message-Id is already in the moderation queue, we need to
-give this message a new Message-Id.
+with the previous ``Message-Id`` is already in the moderation queue, we need
+to give this message a new ``Message-Id``.
 
     >>> msgdata = {}
     >>> del msg['x-spam-score']
@@ -161,6 +169,28 @@ As does a message with a spam score of four pluses.
     >>> del msg['message-id']
     >>> msg['Message-Id'] = '<cat>'
     >>> process(mlist, msg, msgdata, 'header-match')
+    >>> hits_and_misses(msgdata)
+    Rule hits:
+        x-spam-score: [+]{3,}
+    No rules missed
+
+Now, the list administrator wants to match on three plus signs, but wants
+those emails to be discarded instead of held.
+
+    >>> header_matches.remove('x-spam-score', '[+]{3,}')
+    >>> header_matches.add('x-spam-score', '[+]{3,}', 'discard')
+
+A message with a spam score of three pluses will still match, and the message
+will be discarded.
+
+    >>> msgdata = {}
+    >>> del msg['x-spam-score']
+    >>> msg['X-Spam-Score'] = '+++'
+    >>> del msg['message-id']
+    >>> msg['Message-Id'] = '<dog>'
+    >>> with event_subscribers(handler):
+    ...     process(mlist, msg, msgdata, 'header-match')
+    DiscardEvent discard <dog>
     >>> hits_and_misses(msgdata)
     Rule hits:
         x-spam-score: [+]{3,}

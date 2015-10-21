@@ -24,8 +24,10 @@ __all__ = [
 
 
 import os
+import re
 import sys
 import codecs
+import logging
 import datetime
 
 from mailman.config import config
@@ -39,7 +41,7 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.languages import ILanguageManager
-from mailman.interfaces.mailinglist import IAcceptableAliasSet
+from mailman.interfaces.mailinglist import IAcceptableAliasSet, IHeaderMatchSet
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
@@ -50,6 +52,8 @@ from mailman.utilities.i18n import search
 from sqlalchemy import Boolean
 from urllib.error import URLError
 from zope.component import getUtility
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -123,6 +127,24 @@ def nonmember_action_mapping(value):
         2: Action.reject,
         3: Action.discard,
         }[value]
+
+
+def action_to_chain(value):
+    # Converts an action number in Mailman 2.1 to the name of the corresponding
+    # chain in 3.x.  The actions 'approve', 'subscribe' and 'unsubscribe' are
+    # ignored.  The defer action is converted to None, because it is not
+    # a jump to a terminal chain.
+    return {
+        0: None,
+        #1: 'approve',
+        2: 'reject',
+        3: 'discard',
+        #4: 'subscribe',
+        #5: 'unsubscribe',
+        6: 'accept',
+        7: 'hold',
+        }[value]
+
 
 
 def check_language_code(code):
@@ -310,6 +332,53 @@ def import_config_pck(mlist, config_dict):
             # When .add() rejects this, the line probably contains a regular
             # expression.  Make that explicit for MM3.
             alias_set.add('^' + address)
+    # Handle header_filter_rules conversion to header_matches.
+    header_match_set = IHeaderMatchSet(mlist)
+    header_filter_rules = config_dict.get('header_filter_rules', [])
+    for line_patterns, action, _unused in header_filter_rules:
+        try:
+            chain = action_to_chain(action)
+        except KeyError:
+            log.warning('Unsupported header_filter_rules action: %r',
+                        action)
+            continue
+        # Now split the line into a header and a pattern.
+        for line_pattern in line_patterns.splitlines():
+            if len(line_pattern.strip()) == 0:
+                continue
+            for sep in (': ', ':.', ':'):
+                header, sep, pattern = line_pattern.partition(sep)
+                if sep:
+                    # We found it.
+                    break
+            else:
+                # Matches any header, which is not supported.  XXX
+                log.warning('Unsupported header_filter_rules pattern: %r',
+                            line_pattern)
+                continue
+            header = header.strip().lstrip('^').lower()
+            header = header.replace('\\', '')
+            if not header:
+                log.warning(
+                    'Cannot parse the header in header_filter_rule: %r',
+                    line_pattern)
+                continue
+            if len(pattern) == 0:
+                # The line matched only the header, therefore the header can
+                # be anything.
+                pattern = '.*'
+            try:
+                re.compile(pattern)
+            except re.error:
+                log.warning('Skipping header_filter rule because of an '
+                            'invalid regular expression: %r', line_pattern)
+                continue
+            try:
+                header_match_set.add(header, pattern, chain)
+            except ValueError:
+                log.warning('Skipping duplicate header_filter rule: %r',
+                            line_pattern)
+                continue
     # Handle conversion to URIs.  In MM2.1, the decorations are strings
     # containing placeholders, and there's no provision for language-specific
     # templates.  In MM3, template locations are specified by URLs with the

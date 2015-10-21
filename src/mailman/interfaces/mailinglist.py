@@ -20,6 +20,7 @@
 __all__ = [
     'IAcceptableAlias',
     'IAcceptableAliasSet',
+    'IHeaderMatch',
     'IListArchiver',
     'IListArchiverSet',
     'IMailingList',
@@ -838,4 +839,62 @@ class IListArchiverSet(Interface):
         :type archiver_name: unicode.
         :return: the matching `IListArchiver` or None if the named archiver
             does not exist.
+        """
+
+
+
+class IHeaderMatch(Interface):
+    """A mailing list-specific message header matching rule."""
+
+    mailing_list = Attribute(
+        """The mailing list for the header match.""")
+
+    header = Attribute(
+        """The email header that will be checked.""")
+
+    pattern = Attribute(
+        """The regular expression to match.""")
+
+    chain = Attribute(
+        """The chain to jump to on a match.
+
+        If it is None, the `[antispam]jump_chain` action in the configuration
+        file is used.
+        """)
+
+
+class IHeaderMatchSet(Interface):
+    """The set of header matching rules for a mailing list."""
+
+    def clear():
+        """Clear the set of header matching rules."""
+
+    def add(header, pattern, chain=None):
+        """Add the given header matching rule to this mailing list's set.
+
+        :param header: The email header to filter on.  It will be converted to
+            lower case for consistency.
+        :type header: string
+        :param pattern: The regular expression to use.
+        :type pattern: string
+        :param chain: The chain to jump to, or None to use the site-wide
+            configuration.  Defaults to None.
+        :type chain: string or None
+        :raises ValueError: if the header/pattern pair already exists for this
+            mailing list.
+        """
+
+    def remove(header, pattern):
+        """Remove the given header matching rule from this mailing list's set.
+
+        :param header: The email header part of the rule to be removed.
+        :type header: string
+        :param pattern: The regular expression part of the rule to be removed.
+        :type pattern: string
+        """
+
+    def __iter__():
+        """An iterator over all the IHeaderMatches defined in this set.
+
+        :return: iterator over `IHeaderMatch`.
         """
