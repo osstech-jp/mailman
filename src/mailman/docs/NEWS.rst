@@ -40,6 +40,8 @@ Bugs
  * Core no longer depends on the standalone `mock` module.  (Closes: #146)
  * The logging of moderation reasons has been fixed.  Given by Aurélien
    Bompard.
+ * Collapse multiple ``Re:`` in Subject headers.  Given by Mark Sapiro.
+   (Closes: #147)
 
 Configuration
 -------------
