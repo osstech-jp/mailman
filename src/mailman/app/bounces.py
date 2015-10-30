@@ -241,7 +241,7 @@ def maybe_forward(mlist, msg):
     """
     message_id = msg['message-id']
     if (mlist.forward_unrecognized_bounces_to
-        == UnrecognizedBounceDisposition.discard):
+            is UnrecognizedBounceDisposition.discard):
         blog.error('Discarding unrecognized bounce: {0}'.format(message_id))
         return
     # The notification is either going to go to the list's administrators
@@ -254,10 +254,10 @@ def maybe_forward(mlist, msg):
         _charset=mlist.preferred_language.charset)
     attachment = MIMEMessage(msg)
     if (mlist.forward_unrecognized_bounces_to
-        == UnrecognizedBounceDisposition.administrators):
+            is UnrecognizedBounceDisposition.administrators):
         keywords = dict(roster=mlist.administrators)
     elif (mlist.forward_unrecognized_bounces_to
-        == UnrecognizedBounceDisposition.site_owner):
+              is UnrecognizedBounceDisposition.site_owner):
         keywords = {}
     else:
         raise AssertionError('Invalid forwarding disposition: {0}'.format(
