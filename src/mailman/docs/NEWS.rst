@@ -42,6 +42,7 @@ Bugs
    Bompard.
  * Collapse multiple ``Re:`` in Subject headers.  Given by Mark Sapiro.
    (Closes: #147)
+ * Added Trove classifiers to setup.py.  (Closes: #152)
 
 Configuration
 -------------
