@@ -27,9 +27,9 @@ are given below.  We would really appreciate a contribution of a
 configuration for Sendmail, and welcome information about other popular
 open source mail servers.
 
-Configuring Mailman to communicate with the MTA is straightforward,
-and basically the same for all MTAs.  In your ``mailman.cfg`` file,
-add (or edit) a section like the following::
+Configuring Mailman to communicate with the MTA is straightforward, and
+basically the same for all MTAs.  Here are the default settings; if you need
+to change them, edit your ``mailman.cfg`` file::
 
     [mta]
     incoming: mailman.mta.postfix.LMTP
