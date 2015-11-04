@@ -35,8 +35,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import UserAddresses
 from mailman.rest.helpers import (
     BadRequest, CollectionMixin, GetterSetter, NotFound, bad_request, child,
-    conflict, created, etag, forbidden, no_content, not_found, okay, paginate,
-    path_to)
+    conflict, created, etag, forbidden, no_content, not_found, okay, path_to)
 from mailman.rest.preferences import Preferences
 from mailman.rest.validator import (
     PatchValidator, Validator, list_of_strings_validator)
@@ -149,7 +148,6 @@ class _UserBase(CollectionMixin):
             resource['display_name'] = user.display_name
         return resource
 
-    @paginate
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(getUtility(IUserManager).users)
@@ -460,7 +458,6 @@ class OwnersForDomain(_UserBase):
             self._domain.remove_owner(email)
         return no_content(response)
 
-    @paginate
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(self._domain.owners)
@@ -475,7 +472,6 @@ class ServerOwners(_UserBase):
         resource = self._make_collection(request)
         okay(response, etag(resource))
 
-    @paginate
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(getUtility(IUserManager).server_owners)

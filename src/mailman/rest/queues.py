@@ -28,8 +28,7 @@ from mailman.config import config
 from mailman.app.inject import inject_text
 from mailman.interfaces.listmanager import IListManager
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, created, etag, no_content, not_found, okay,
-    paginate)
+    CollectionMixin, bad_request, created, etag, no_content, not_found, okay)
 from mailman.rest.validator import Validator
 from zope.component import getUtility
 
@@ -50,7 +49,6 @@ class _QueuesBase(CollectionMixin):
             self_link=self.path_to('queues/{}'.format(name)),
             )
 
-    @paginate
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return sorted(config.switchboards)
