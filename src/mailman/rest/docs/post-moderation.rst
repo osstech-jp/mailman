@@ -52,6 +52,7 @@ When a message gets held for moderator approval, it shows up in this list.
     <BLANKLINE>
         reason: Because
         request_id: 1
+        self_link: http://localhost:9001/3.0/lists/ant.example.com/held/1
         sender: anne@example.com
         subject: Something
     http_etag: "..."

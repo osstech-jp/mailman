@@ -137,7 +137,11 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
 
     def _resource_as_dict(self, request):
         """See `CollectionMixin`."""
-        return self._make_resource(request.id)
+        resource = self._make_resource(request.id)
+        if resource is not None:
+            resource['self_link'] = self.path_to('lists/{0}/held/{1}'.format(
+                self._mlist.list_id, resource['request_id']))
+        return resource
 
     def _get_collection(self, request):
         requests = IListRequests(self._mlist)
