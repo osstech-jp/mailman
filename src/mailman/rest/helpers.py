@@ -20,6 +20,7 @@
 __all__ = [
     'BadRequest',
     'ChildError',
+    'CollectionMixin',
     'GetterSetter',
     'NotFound',
     'bad_request',
@@ -148,10 +149,11 @@ class CollectionMixin:
     def _paginate(self, request, collection):
         """Method to paginate through collection result lists.
 
-        Use this to return only a slice of a collection, specified in the request
-        itself.  The request should use query parameters `count` and `page` to
-        specify the slice they want.  The slice will start at index
-        ``(page - 1) * count`` and end (exclusive) at ``(page * count)``.
+        Use this to return only a slice of a collection, specified in
+        the request itself.  The request should use query parameters
+        `count` and `page` to specify the slice they want.  The slice
+        will start at index ``(page - 1) * count`` and end (exclusive)
+        at ``(page * count)``.
         """
         # Allow falcon's HTTPBadRequest exceptions to percolate up.  They'll
         # get turned into HTTP 400 errors.

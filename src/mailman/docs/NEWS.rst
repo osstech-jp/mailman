@@ -91,6 +91,8 @@ REST
    server owners as `IUser`s.  (Closes #135)
  * By POSTing to a user resource with an existing unlinked address, you can
    link the address to the user.  Given by Abhilash Raj.
+ * Fix pagination values `start` and `total_size` in the REST API.  Given by
+   Aurélien Bompard.  (Closes: #154)
 
 Other
 -----
