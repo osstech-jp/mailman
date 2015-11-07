@@ -42,6 +42,8 @@ Bugs
  * Added Trove classifiers to setup.py.  (Closes: #152)
  * Fix the processing of subscription confirmation messages when the mailing
    list is set to confirm-then-moderate.  (Closes #114)
+ * Fix ``UnicodeEncodeError`` in the hold chain when sending the authorization
+   email to the mailing list moderators.  (Closes: #144)
 
 Configuration
 -------------
