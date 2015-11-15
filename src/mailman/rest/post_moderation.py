@@ -28,7 +28,8 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, child, etag, no_content, not_found, okay)
+    CollectionMixin, bad_request, child, etag, no_content, not_found, okay,
+    path_to)
 from mailman.rest.validator import Validator, enum_validator
 from zope.component import getUtility
 
@@ -56,6 +57,10 @@ class _ModerationBase:
         # record's row id, which isn't helpful at all.  If it's not there,
         # that's fine too.
         resource.pop('id', None)
+        # Add a self_link.
+        resource['self_link'] = path_to(
+            'lists/{}/held/{}'.format(self._mlist.list_id, request_id),
+            self.api_version)
         return resource
 
 
@@ -64,7 +69,7 @@ class _HeldMessageBase(_ModerationBase):
     """Held messages are a little different."""
 
     def _make_resource(self, request_id):
-        resource = super(_HeldMessageBase, self)._make_resource(request_id)
+        resource = super()._make_resource(request_id)
         if resource is None:
             return None
         # Grab the message and insert its text representation into the
@@ -137,11 +142,7 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
 
     def _resource_as_dict(self, request):
         """See `CollectionMixin`."""
-        resource = self._make_resource(request.id)
-        if resource is not None:
-            resource['self_link'] = self.path_to('lists/{0}/held/{1}'.format(
-                self._mlist.list_id, resource['request_id']))
-        return resource
+        return self._make_resource(request.id)
 
     def _get_collection(self, request):
         requests = IListRequests(self._mlist)

@@ -95,6 +95,7 @@ REST
    link the address to the user.  Given by Abhilash Raj.
  * Fix pagination values `start` and `total_size` in the REST API.  Given by
    Aurélien Bompard.  (Closes: #154)
+ * JSON representations for held message now include a ``self_link``.
 
 Other
 -----
