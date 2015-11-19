@@ -42,7 +42,7 @@ class Address(Model):
     __tablename__ = 'address'
 
     id = Column(Integer, primary_key=True)
-    email = Column(Unicode)
+    email = Column(Unicode, index=True)
     _original = Column(Unicode)
     display_name = Column(Unicode)
     _verified_on = Column('verified_on', DateTime)

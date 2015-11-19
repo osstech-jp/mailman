@@ -57,11 +57,11 @@ class Member(Model):
     list_id = Column(Unicode)
     moderation_action = Column(Enum(Action))
 
-    address_id = Column(Integer, ForeignKey('address.id'))
+    address_id = Column(Integer, ForeignKey('address.id'), index=True)
     _address = relationship('Address')
-    preferences_id = Column(Integer, ForeignKey('preferences.id'))
+    preferences_id = Column(Integer, ForeignKey('preferences.id'), index=True)
     preferences = relationship('Preferences')
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'), index=True)
     _user = relationship('User')
 
     def __init__(self, role, list_id, subscriber):
