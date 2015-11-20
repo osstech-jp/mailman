@@ -23,6 +23,8 @@ import hashlib
 
 from contextlib import suppress
 from datetime import datetime, timedelta
+from email.header import Header
+from email.message import Message
 from enum import Enum
 from lazr.config import as_boolean
 from mailman import public
@@ -49,6 +51,10 @@ class ExtendedEncoder(json.JSONEncoder):
             return obj.name
         elif isinstance(obj, bytes):
             return bytes_to_str(obj)
+        elif isinstance(obj, Message):
+            return obj.as_string()
+        elif isinstance(obj, Header):
+            return str(obj)
         return super().default(obj)
 
 

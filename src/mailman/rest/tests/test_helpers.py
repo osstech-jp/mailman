@@ -17,11 +17,14 @@
 
 """Additional tests for helpers."""
 
+import json
 import unittest
 
+from email.message import Message
+from email.header import Header
 from datetime import timedelta
 from mailman.rest import helpers
-from mailman.testing.layers import ConfigLayer
+from mailman.testing.layers import ConfigLayer, RESTLayer
 
 
 class FakeResponse:
@@ -74,3 +77,31 @@ class TestHelpers(unittest.TestCase):
     def test_json_encoding_default(self):
         resource = dict(interval=Unserializable())
         self.assertRaises(TypeError, helpers.etag, resource)
+
+
+
+class TestJSONEncoder(unittest.TestCase):
+    """Test the JSON ExtendedEncoder."""
+
+    layer = RESTLayer
+
+    def test_encode_message(self):
+        msg = Message()
+        msg['From'] = 'test@example.com'
+        msg.set_payload('Test content.')
+        try:
+            result = json.dumps(msg, cls=helpers.ExtendedEncoder)
+        except TypeError as e:
+            self.fail(e)
+        self.assertEqual(result,
+            json.dumps('From: test@example.com\n\nTest content.'))
+
+    def test_encode_header(self):
+        value = 'Contains non-ascii \u00e9 \u00e7 \u00e0'
+        header = Header(value, charset='utf-8')
+        try:
+            result = json.dumps(Header(value, charset='utf-8'),
+                                cls=helpers.ExtendedEncoder)
+        except TypeError as e:
+            self.fail(e)
+        self.assertEqual(result, json.dumps(value))
