@@ -199,6 +199,7 @@ class User(Model):
                 store.delete(member)
         # Merge the user preferences
         self.preferences.absorb(user.preferences)
+        store.delete(user.preferences)
         # Merge display_name, password and is_server_owner attributes.
         for prop in ('display_name', 'password', 'is_server_owner'):
             if getattr(user, prop) and not getattr(self, prop):

@@ -25,6 +25,7 @@ __all__ = [
 import unittest
 
 from mailman.app.lifecycle import create_list
+from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
@@ -61,7 +62,7 @@ class TestPreferences(unittest.TestCase):
             'receive_own_postings': True,
             'delivery_mode': DeliveryMode.mime_digests,
             'delivery_status': DeliveryStatus.by_user,
-        }
+            }
         bill_prefs = self._bill.preferences
         for name, value in attributes.items():
             setattr(bill_prefs, name, value)
@@ -73,17 +74,17 @@ class TestPreferences(unittest.TestCase):
         # Only overwrite the pref if it is unset in the absorber
         anne_prefs = self._anne.preferences
         bill_prefs = self._bill.preferences
-        self.assertEqual(self._anne.preferences.acknowledge_posts, None)
-        self.assertEqual(self._anne.preferences.hide_address, None)
-        self.assertEqual(self._anne.preferences.receive_list_copy, None)
+        self.assertIsNone(self._anne.preferences.acknowledge_posts)
+        self.assertIsNone(self._anne.preferences.hide_address)
+        self.assertIsNone(self._anne.preferences.receive_list_copy)
         anne_prefs.acknowledge_posts = False
         bill_prefs.acknowledge_posts = True
         anne_prefs.hide_address = True
         bill_prefs.receive_list_copy = True
         self._anne.preferences.absorb(self._bill.preferences)
         # set for both anne and bill, don't overwrite
-        self.assertEqual(self._anne.preferences.acknowledge_posts, False)
+        self.assertFalse(self._anne.preferences.acknowledge_posts)
         # set only for anne
-        self.assertEqual(self._anne.preferences.hide_address, True)
+        self.assertTrue(self._anne.preferences.hide_address)
         # set only for bill, overwrite anne's default value
-        self.assertEqual(self._anne.preferences.receive_list_copy, True)
+        self.assertTrue(self._anne.preferences.receive_list_copy)

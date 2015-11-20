@@ -114,6 +114,4 @@ class IUser(Interface):
         """Merge this user's attributes and memberships, and then delete it.
 
         In case of conflict, the current user's properties are preserved.
-        If an IAddress is given, the merge will be performed on the addresses'
-        linked user.
         """

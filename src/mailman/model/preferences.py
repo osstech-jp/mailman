@@ -19,8 +19,8 @@
 
 from mailman import public
 from mailman.database.model import Model
-from mailman.database.types import Enum
 from mailman.database.transaction import dbconnection
+from mailman.database.types import Enum
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.preferences import IPreferences
@@ -69,10 +69,9 @@ class Preferences(Model):
     @dbconnection
     def absorb(self, store, preferences):
         """See `IPreferences`."""
-        column_names = [ c.name for c in self.__table__.columns
-                         if not c.primary_key ]
+        column_names = [c.name for c in self.__table__.columns
+                        if not c.primary_key]
         for cname in column_names:
             if (getattr(self, cname) is None and
                 getattr(preferences, cname) is not None):
                 setattr(self, cname, getattr(preferences, cname))
-        store.delete(preferences)

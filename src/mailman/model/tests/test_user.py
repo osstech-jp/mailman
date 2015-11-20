@@ -30,6 +30,8 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.preferences import Preferences
 from mailman.testing.helpers import set_preferred
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.datetime import now
+from sqlalchemy import inspect
 from zope.component import getUtility
 
 
@@ -136,8 +138,13 @@ class TestUser(unittest.TestCase):
             list(a.email for a in self._anne.addresses))
         self.assertIn('bill2@example.com',
             list(a.email for a in self._anne.addresses))
-        # the preferred address shouldn't change
+        # The preferred address shouldn't change.
         self.assertEqual(self._anne.preferred_address, anne_addr)
+        self.assertEqual(
+            self._manager.get_user('bill@example.com'), self._anne)
+        self.assertEqual(
+            self._manager.get_user('bill2@example.com'), self._anne)
+        self.assertIsNone(self._manager.get_user_by_id(bill.user_id))
 
     def test_absorb_memberships(self):
         mlist2 = create_list('test2@example.com')
@@ -150,20 +157,21 @@ class TestUser(unittest.TestCase):
             bill_address = list(bill.addresses)[0]
             bill_address.verified_on = now()
             bill.preferred_address = bill_address
-        # Subscribe both users to self._mlist
+        # Subscribe both users to self._mlist.
         self._mlist.subscribe(self._anne, MemberRole.member)
         self._mlist.subscribe(bill, MemberRole.moderator)
-        # Subscribe only bill to mlist2
+        # Subscribe only bill to mlist2.
         mlist2.subscribe(bill, MemberRole.owner)
-        # Subscribe only bill's address to mlist3
+        # Subscribe only bill's address to mlist3.
         mlist3.subscribe(bill.preferred_address, MemberRole.moderator)
-        # Do the absorption
+        # Do the absorption.
         self._anne.absorb(bill)
-        # check that bill has been deleted
+        # Check that bill has been deleted.
         self.assertEqual(len(list(self._manager.users)), 1)
-        # check that there is no leftover membership from user bill
+        self.assertEqual(list(self._manager.users)[0], self._anne)
+        # Check that there is no leftover membership from user bill.
         self.assertEqual(len(list(self._manager.members)), 3)
-        # check that anne is subscribed to all lists
+        # Check that anne is subscribed to all lists.
         self.assertEqual(self._anne.memberships.member_count, 3)
         memberships = {}
         for member in self._anne.memberships.members:
@@ -200,6 +208,9 @@ class TestUser(unittest.TestCase):
         self.assertIsNone(self._anne.preferences.acknowledge_posts)
         self._anne.absorb(bill)
         self.assertEqual(self._anne.preferences.acknowledge_posts, True)
+        # Check that Bill's preferences were deleted (requires a DB flush).
+        config.db.store.flush()
+        self.assertTrue(inspect(bill.preferences).deleted)
 
     def test_absorb_properties(self):
         props = {
