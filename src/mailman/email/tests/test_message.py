@@ -19,6 +19,7 @@
 
 import unittest
 
+from email.header import Header
 from email.parser import FeedParser
 from mailman.app.lifecycle import create_list
 from mailman.email.message import Message, UserNotification
@@ -52,6 +53,9 @@ class TestMessage(unittest.TestCase):
 
 
 class TestMessageSubclass(unittest.TestCase):
+
+    layer = ConfigLayer
+
     def test_i18n_filenames(self):
         parser = FeedParser(_factory=Message)
         parser.feed("""\
@@ -79,3 +83,9 @@ Test content
         except TypeError as error:
             self.fail(error)
         self.assertEqual(filename, u'd\xe9jeuner.txt')
+
+    def test_senders_header_instances(self):
+        msg = Message()
+        msg['From'] = Header('test@example.com')
+        # Make sure the senders property does not fail
+        self.assertEqual(msg.senders, ["test@example.com"])

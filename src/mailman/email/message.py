@@ -93,9 +93,10 @@ class Message(email.message.Message):
                                if envelope_sender is not None
                                else '')
             else:
-                field_values = self.get_all(header, [])
-                senders.extend(address.lower() for (display_name, address)
-                               in email.utils.getaddresses(field_values))
+                for field_value in self.get_all(header, []):
+                    # Convert the header to str in case it's a Header instance.
+                    name, address = email.utils.parseaddr(str(field_value))
+                    senders.append(address.lower())
         # Filter out None and the empty string, and convert to unicode.
         clean_senders = []
         for sender in senders:
