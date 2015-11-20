@@ -34,5 +34,7 @@ class NoSubject:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        subject = msg.get('subject', '').strip()
+        # Convert the header value to string because it may be an
+        # email.header.Header instance.
+        subject = str(msg.get('subject', '')).strip()
         return subject == ''
