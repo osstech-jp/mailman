@@ -87,6 +87,8 @@ def has_matching_bounce_header(mlist, msg):
     """
     for header, cre, line in _parse_matching_header_opt(mlist):
         for value in msg.get_all(header, []):
-            if cre.search(value):
+            # Convert the header value to string because it may be an
+            # email.header.Header instance.
+            if cre.search(str(value)):
                 return True
     return False
