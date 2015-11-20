@@ -269,8 +269,8 @@ This message will end up in the `pipeline` queue.
     Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     X-Mailman-Rule-Misses: approved; emergency; loop; member-moderation;
-        administrivia; implicit-dest; max-recipients; max-size;
-        news-moderation; no-subject; suspicious-header; nonmember-moderation
+        nonmember-moderation; administrivia; implicit-dest; max-recipients;
+        max-size; news-moderation; no-subject; suspicious-header
     <BLANKLINE>
     An important message.
     <BLANKLINE>

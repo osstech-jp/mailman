@@ -83,6 +83,7 @@ built-in chain.  No rules hit and so the message is accepted.
         emergency
         loop
         member-moderation
+        nonmember-moderation
         administrivia
         implicit-dest
         max-recipients
@@ -90,7 +91,6 @@ built-in chain.  No rules hit and so the message is accepted.
         news-moderation
         no-subject
         suspicious-header
-        nonmember-moderation
 
 However, when Anne's moderation action is set to `hold`, her post is held for
 moderator approval.
@@ -207,13 +207,6 @@ moderator approval.
         emergency
         loop
         member-moderation
-        administrivia
-        implicit-dest
-        max-recipients
-        max-size
-        news-moderation
-        no-subject
-        suspicious-header
 
     >>> nonmember = mlist.nonmembers.get_member('bart@example.com')
     >>> nonmember
