@@ -44,6 +44,8 @@ Bugs
    list is set to confirm-then-moderate.  (Closes #114)
  * Fix ``UnicodeEncodeError`` in the hold chain when sending the authorization
    email to the mailing list moderators.  (Closes: #144)
+ * Fix traceback in approved handler when the moderator password is None.
+   Given by Aurélien Bompard.
 
 Configuration
 -------------
