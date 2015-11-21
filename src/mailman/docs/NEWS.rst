@@ -77,6 +77,11 @@ Message handling
    use a placeholder of the format `$<archiver-name>_url` to insert the
    permalink to the message in the named archiver, for any archiver enabled
    for the mailing list.  Given by Abhilash Raj.
+ * The default posting chain has been modified so that the header-match chain
+   and nonmember-moderation rule are processed before "hold" rules are
+   processed.  This allows for better anti-spam defenses and rejecting
+   non-member posts instead of always holding them for moderator review.
+   Given by Aurélien Bompard.  (Closes #163)
 
 REST
 ----
