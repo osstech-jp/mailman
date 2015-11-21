@@ -96,6 +96,8 @@ REST
  * Fix pagination values `start` and `total_size` in the REST API.  Given by
    Aurélien Bompard.  (Closes: #154)
  * JSON representations for held message now include a ``self_link``.
+ * When ``[devmode]enabled`` is set, the JSON output is sorted.  Given by
+   Aurélien Bompard.
 
 Other
 -----
