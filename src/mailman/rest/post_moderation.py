@@ -148,7 +148,7 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
 
     def _get_collection(self, request):
         requests = IListRequests(self._mlist)
-        return list(requests.of_type(RequestType.held_message))
+        return requests.of_type(RequestType.held_message)
 
     def on_get(self, request, response):
         """/lists/listname/held"""

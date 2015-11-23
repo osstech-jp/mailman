@@ -87,10 +87,8 @@ class ListRequests:
 
     @dbconnection
     def of_type(self, store, request_type):
-        results = store.query(_Request).filter_by(
+        return store.query(_Request).filter_by(
             mailing_list=self.mailing_list, request_type=request_type)
-        for request in results:
-            yield request
 
     @dbconnection
     def hold_request(self, store, request_type, key, data=None):
