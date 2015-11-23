@@ -97,6 +97,16 @@ Something else.
             call_api(url, dict(action='discard'))
         self.assertEqual(cm.exception.code, 404)
 
+    def test_list_held_messages(self):
+        # We can view all the held requests.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+        content, response = call_api(
+            'http://localhost:9001/3.0/lists/ant@example.com/held')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(content['total_size'], 1)
+        self.assertEqual(content['entries'][0]['request_id'], held_id)
+
 
 
 class TestSubscriptionModeration(unittest.TestCase):
