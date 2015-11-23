@@ -47,7 +47,7 @@ from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
 from mailman.rest.validator import Validator
-from operator import attrgetter
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from zope.component import getUtility
 
 
@@ -152,12 +152,14 @@ class AList(_ListBase):
         """Return a single member representation."""
         if self._mlist is None:
             return NotFound(), []
-        members = getUtility(ISubscriptionService).find_members(
-            email, self._mlist.list_id, role)
-        if len(members) == 0:
+        try:
+            the_member = getUtility(ISubscriptionService).find_members(
+                email, self._mlist.list_id, role).one()
+        except NoResultFound:
             return NotFound(), []
-        assert len(members) == 1, 'Too many matches'
-        return AMember(request.context['api_version'], members[0].member_id)
+        except MultipleResultsFound:
+            raise AssertionError('Too many matches')
+        return AMember(request.context['api_version'], the_member.member_id)
 
     @child(roster_matcher)
     def roster(self, request, segments, role):
@@ -240,9 +242,9 @@ class MembersOfList(MemberCollection):
         """See `CollectionMixin`."""
         # Overrides _MemberBase._get_collection() because we only want to
         # return the members from the requested roster.
-        roster = self._mlist.get_roster(self._role)
-        address_of_member = attrgetter('address.email')
-        return list(sorted(roster.members, key=address_of_member))
+        return getUtility(ISubscriptionService).find_members(
+            list_id=self._mlist.list_id,
+            role=self._role)
 
 
 class ListsForDomain(_ListBase):

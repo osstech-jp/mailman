@@ -105,7 +105,7 @@ used.
         # matching memberships.
         members = getUtility(ISubscriptionService).find_members(
             email, mlist.list_id, MemberRole.member)
-        if len(members) > 0:
+        if members.count() > 0:
             print(_('$person is already a member'), file=results)
             return ContinueProcessing.yes
         subscriber = match_subscriber(email, display_name)

@@ -658,7 +658,7 @@ class TestSubscriptionService(unittest.TestCase):
         address = self._user_manager.create_address(
             'anne@example.com', 'Anne Address')
         self._mlist.subscribe(address)
-        members = self._service.find_members('anne@example.com')
+        members = list(self._service.find_members('anne@example.com'))
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].address, address)
 
@@ -671,7 +671,7 @@ class TestSubscriptionService(unittest.TestCase):
         user.preferred_address = address
         # Subscribe the address.
         self._mlist.subscribe(address)
-        members = self._service.find_members('anne@example.com')
+        members = list(self._service.find_members('anne@example.com'))
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].user, user)
 
@@ -684,7 +684,7 @@ class TestSubscriptionService(unittest.TestCase):
         user.preferred_address = address
         # Subscribe the user.
         self._mlist.subscribe(user)
-        members = self._service.find_members('anne@example.com')
+        members = list(self._service.find_members('anne@example.com'))
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].user, user)
 
@@ -702,7 +702,7 @@ class TestSubscriptionService(unittest.TestCase):
         # Subscribe the user.
         self._mlist.subscribe(user)
         # Search for the secondary address.
-        members = self._service.find_members('anne2@example.com')
+        members = list(self._service.find_members('anne2@example.com'))
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].user, user)
 
@@ -723,7 +723,7 @@ class TestSubscriptionService(unittest.TestCase):
         # Subscribe the secondary address.
         self._mlist.subscribe(address_2)
         # Search for the primary address.
-        members = self._service.find_members('anne@example.com')
+        members = list(self._service.find_members('anne@example.com'))
         self.assertEqual(len(members), 0)
 
     def test_find_member_user_id(self):
@@ -735,7 +735,7 @@ class TestSubscriptionService(unittest.TestCase):
         user.preferred_address = address
         # Subscribe the user.
         self._mlist.subscribe(user)
-        members = self._service.find_members(user.user_id)
+        members = list(self._service.find_members(user.user_id))
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].user, user)
 
@@ -759,7 +759,7 @@ class TestSubscriptionService(unittest.TestCase):
         address_3.user = user
         # Subscribe the secondary address only.
         self._mlist.subscribe(address_2)
-        members = self._service.find_members(user.user_id)
+        members = list(self._service.find_members(user.user_id))
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].address, address_2)
 
@@ -812,7 +812,7 @@ class TestSubscriptionService(unittest.TestCase):
         mlist1.subscribe(address_3, MemberRole.owner)
         # The results should be sorted first by list id, then by address, then
         # by member role.
-        members = self._service.find_members(user.user_id)
+        members = list(self._service.find_members(user.user_id))
         self.assertEqual(len(members), 21)
         self.assertListEqual(
             [(m.list_id.partition('.')[0],

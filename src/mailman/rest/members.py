@@ -363,8 +363,7 @@ class _FoundMembers(MemberCollection):
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        address_of_member = attrgetter('address.email')
-        return list(sorted(self._members, key=address_of_member))
+        return self._members
 
 
 class FindMembers(_MemberBase):
@@ -379,9 +378,10 @@ class FindMembers(_MemberBase):
             role=enum_validator(MemberRole),
             _optional=('list_id', 'subscriber', 'role'))
         try:
-            members = service.find_members(**validator(request))
+            data = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
         else:
+            members = service.find_members(**data)
             resource = _FoundMembers(members, self.api_version)
             okay(response, etag(resource._make_collection(request)))

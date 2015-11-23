@@ -102,7 +102,7 @@ a member of with her ``aperson@example.com`` address.
 
 There may be no matching memberships.
 
-    >>> service.find_members('dave@example.com')
+    >>> list(service.find_members('dave@example.com'))
     []
 
 Memberships can also be searched for by user id.

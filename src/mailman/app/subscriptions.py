@@ -408,7 +408,7 @@ class SubscriptionService:
             q_user = q_user.filter(Member.role == role)
         # Do a UNION of the two queries, sort the result and generate Members.
         query = q_address.union(q_user).order_by(*order).from_self(Member)
-        return query.all()
+        return query
 
     def __iter__(self):
         for member in self.get_members():
