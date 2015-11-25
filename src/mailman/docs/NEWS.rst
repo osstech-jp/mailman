@@ -1,4 +1,4 @@
-================================================
+===============================================
 Mailman - The GNU Mailing List Management System
 ================================================
 
@@ -47,7 +47,9 @@ Bugs
  * Fix traceback in approved handler when the moderator password is None.
    Given by Aurélien Bompard.
  * Fix IntegrityErrors raised under PostreSQL when deleting users and
-   addresses. Given by Aurélien Bompard.
+   addresses.  Given by Aurélien Bompard.
+ * Allow mailing lists to have localhost names with a suffix matching the
+   subcommand extensions.  Given by Aurélien Bompard.  (Closes: #168)
 
 Configuration
 -------------
