@@ -26,6 +26,7 @@ __all__ = [
 
 
 from mailman.app.membership import add_member, delete_member
+from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
@@ -62,13 +63,14 @@ class _MemberBase(CollectionMixin):
         # URL.
         member_id = member.member_id.int
         response = dict(
-            list_id=member.list_id,
-            email=member.address.email,
-            role=role,
             address=self.path_to('addresses/{}'.format(member.address.email)),
-            self_link=self.path_to('members/{}'.format(member_id)),
             delivery_mode=member.delivery_mode,
+            email=member.address.email,
+            list_id=member.list_id,
             member_id=member_id,
+            moderation_action=member.moderation_action,
+            role=role,
+            self_link=self.path_to('members/{}'.format(member_id)),
             )
         # Add the user link if there is one.
         user = member.user
@@ -178,7 +180,9 @@ class AMember(_MemberBase):
             values = Validator(
                 address=str,
                 delivery_mode=enum_validator(DeliveryMode),
-                _optional=('address', 'delivery_mode'))(request)
+                moderation_action=enum_validator(Action),
+                _optional=('address', 'delivery_mode', 'moderation_action'),
+                )(request)
         except ValueError as error:
             bad_request(response, str(error))
             return
@@ -195,6 +199,8 @@ class AMember(_MemberBase):
                 return
         if 'delivery_mode' in values:
             self._member.preferences.delivery_mode = values['delivery_mode']
+        if 'moderation_action' in values:
+            self._member.moderation_action = values['moderation_action']
         no_content(response)
 
 

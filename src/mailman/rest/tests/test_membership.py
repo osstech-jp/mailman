@@ -253,6 +253,19 @@ class TestMembership(unittest.TestCase):
             call_api('http://localhost:9001/3.0/members/1/all')
         self.assertEqual(cm.exception.code, 404)
 
+    def test_patch_member_invalid_moderation_action(self):
+        # /members/<id> PATCH with invalid 'moderation_action' returns 400.
+        with transaction():
+            anne = self._usermanager.create_address('anne@example.com')
+            self._mlist.subscribe(anne)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members/1', {
+                     'moderation_action': 'invalid',
+                     }, method='PATCH')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'Cannot convert parameters: moderation_action')
+
 
 
 class CustomLayer(ConfigLayer):

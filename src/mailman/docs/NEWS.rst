@@ -113,6 +113,8 @@ REST
  * JSON representations for held message now include a ``self_link``.
  * When ``[devmode]enabled`` is set, the JSON output is sorted.  Given by
    Aurélien Bompard.
+ * A member's moderation action can be changed via the REST API.  Given by
+   Aurélien Bompard.
 
 Other
 -----
