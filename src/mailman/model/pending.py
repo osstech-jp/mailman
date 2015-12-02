@@ -68,7 +68,7 @@ class Pended(Model):
     id = Column(Integer, primary_key=True)
     token = Column(Unicode)
     expiration_date = Column(DateTime)
-    key_values = relationship('PendedKeyValue')
+    key_values = relationship('PendedKeyValue', cascade="all, delete-orphan")
 
     def __init__(self, token, expiration_date):
         super(Pended, self).__init__()
@@ -147,8 +147,6 @@ class Pendings:
             if isinstance(value, dict) and '__encoding__' in value:
                 value = value['value'].encode(value['__encoding__'])
             pendable[keyvalue.key] = value
-            if expunge:
-                store.delete(keyvalue)
         if expunge:
             store.delete(pending)
         return pendable
@@ -158,12 +156,6 @@ class Pendings:
         right_now = now()
         for pending in store.query(Pended).all():
             if pending.expiration_date < right_now:
-                # Find all PendedKeyValue entries that are associated with the
-                # pending object's ID.
-                q = store.query(PendedKeyValue).filter(
-                    PendedKeyValue.pended_id == pending.id)
-                for keyvalue in q:
-                    store.delete(keyvalue)
                 store.delete(pending)
 
     @dbconnection
