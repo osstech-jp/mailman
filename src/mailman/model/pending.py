@@ -138,11 +138,9 @@ class Pendings:
             'Unexpected token count: {0}'.format(pendings.count()))
         pending = pendings[0]
         pendable = UnpendedPendable()
-        # Find all PendedKeyValue entries that are associated with the pending
+        # Iter on PendedKeyValue entries that are associated with the pending
         # object's ID.  Watch out for type conversions.
-        entries = store.query(PendedKeyValue).filter(
-            PendedKeyValue.pended_id == pending.id)
-        for keyvalue in entries:
+        for keyvalue in pending.key_values:
             value = json.loads(keyvalue.value)
             if isinstance(value, dict) and '__encoding__' in value:
                 value = value['value'].encode(value['__encoding__'])
