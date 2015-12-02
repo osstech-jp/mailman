@@ -49,13 +49,9 @@ class PendedKeyValue(Model):
     __tablename__ = 'pendedkeyvalue'
 
     id = Column(Integer, primary_key=True)
-    key = Column(Unicode)
-    value = Column(Unicode)
+    key = Column(Unicode, index=True)
+    value = Column(Unicode, index=True)
     pended_id = Column(Integer, ForeignKey('pended.id'), index=True)
-
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
 
 
 
@@ -66,14 +62,9 @@ class Pended(Model):
     __tablename__ = 'pended'
 
     id = Column(Integer, primary_key=True)
-    token = Column(Unicode)
-    expiration_date = Column(DateTime)
+    token = Column(Unicode, index=True)
+    expiration_date = Column(DateTime, index=True)
     key_values = relationship('PendedKeyValue', cascade="all, delete-orphan")
-
-    def __init__(self, token, expiration_date):
-        super(Pended, self).__init__()
-        self.token = token
-        self.expiration_date = expiration_date
 
 
 
