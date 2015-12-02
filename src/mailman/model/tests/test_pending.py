@@ -45,7 +45,7 @@ class TestPendings(unittest.TestCase):
     layer = ConfigLayer
 
     def test_delete_key_values(self):
-        # Deleting a pending should delete its key-values
+        # Deleting a pending should delete its key-values.
         pendingdb = getUtility(IPendings)
         subscription = SimplePendable(
             type='subscription',
@@ -60,7 +60,7 @@ class TestPendings(unittest.TestCase):
         self.assertEqual(config.db.store.query(PendedKeyValue).count(), 0)
 
     def test_find(self):
-        # Test getting pendables for a mailing-list
+        # Test getting pendables for a mailing-list.
         mlist = create_list('list1@example.com')
         pendingdb = getUtility(IPendings)
         subscription_1 = SimplePendable(
@@ -72,11 +72,30 @@ class TestPendings(unittest.TestCase):
         subscription_3 = SimplePendable(
             type='hold request',
             list_id='list1.example.com')
+        subscription_4 = SimplePendable(
+            type='hold request',
+            list_id='list2.example.com')
         token_1 = pendingdb.add(subscription_1)
-        pendingdb.add(subscription_2)
-        pendingdb.add(subscription_3)
-        self.assertEqual(pendingdb.count, 3)
-        mlist_pendings = list(pendingdb.find(mlist=mlist, type='subscription'))
-        self.assertEqual(len(mlist_pendings), 1)
-        self.assertEqual(mlist_pendings[0][0], token_1)
-        self.assertEqual(mlist_pendings[0][1]['list_id'], 'list1.example.com')
+        token_2 = pendingdb.add(subscription_2)
+        token_3 = pendingdb.add(subscription_3)
+        token_4 = pendingdb.add(subscription_4)
+        self.assertEqual(pendingdb.count, 4)
+        # Find the pending subscription in list1.
+        pendings = list(pendingdb.find(mlist=mlist, type='subscription'))
+        self.assertEqual(len(pendings), 1)
+        self.assertEqual(pendings[0][0], token_1)
+        self.assertEqual(pendings[0][1]['list_id'], 'list1.example.com')
+        # Find all pending hold requests.
+        pendings = list(pendingdb.find(type='hold request'))
+        self.assertEqual(len(pendings), 2)
+        self.assertSetEqual(
+            set((p[0], p[1]['list_id']) for p in pendings),
+            {(token_3, 'list1.example.com'), (token_4, 'list2.example.com')}
+            )
+        # Find all pendings for list1.
+        pendings = list(pendingdb.find(mlist=mlist))
+        self.assertEqual(len(pendings), 2)
+        self.assertSetEqual(
+            set((p[0], p[1]['list_id']) for p in pendings),
+            {(token_1, 'list1.example.com'), (token_3, 'list1.example.com')}
+            )
