@@ -55,7 +55,7 @@ log = logging.getLogger('mailman.vette')
 
 @implementer(IPendable)
 class HeldMessagePendable(dict):
-    PEND_KEY = 'held message'
+    PEND_TYPE = 'held message'
 
 
 
@@ -149,8 +149,7 @@ class HoldChain(TerminalChainBase):
         request_id = hold_message(mlist, msg, msgdata, None)
         # Calculate a confirmation token to send to the author of the
         # message.
-        pendable = HeldMessagePendable(type=HeldMessagePendable.PEND_KEY,
-                                       id=request_id)
+        pendable = HeldMessagePendable(id=request_id)
         token = getUtility(IPendings).add(pendable)
         # Get the language to send the response in.  If the sender is a
         # member, then send it in the member's language, otherwise send it in

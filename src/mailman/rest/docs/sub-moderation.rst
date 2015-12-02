@@ -51,6 +51,7 @@ The subscription request can be viewed in the REST API.
         list_id: ant.example.com
         token: ...
         token_owner: moderator
+        type: subscription
         when: 2005-08-01T07:49:23
     http_etag: "..."
     start: 0
@@ -71,6 +72,7 @@ You can view an individual membership change request by providing the token
     list_id: ant.example.com
     token: ...
     token_owner: moderator
+    type: subscription
     when: 2005-08-01T07:49:23
 
 

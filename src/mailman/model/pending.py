@@ -79,7 +79,7 @@ class Pended(Model):
 
 @implementer(IPendable)
 class UnpendedPendable(dict):
-    pass
+    PEND_TYPE = 'unpended'
 
 
 
@@ -114,6 +114,9 @@ class Pendings:
         pending = Pended(
             token=token,
             expiration_date=now() + lifetime)
+        pendable_type = pendable.pop('type', pendable.PEND_TYPE)
+        pending.key_values.append(
+            PendedKeyValue(key='type', value=pendable_type))
         for key, value in pendable.items():
             # Both keys and values must be strings.
             if isinstance(key, bytes):
@@ -141,7 +144,10 @@ class Pendings:
         # Iter on PendedKeyValue entries that are associated with the pending
         # object's ID.  Watch out for type conversions.
         for keyvalue in pending.key_values:
-            value = json.loads(keyvalue.value)
+            if keyvalue.key == 'type':
+                value = keyvalue.value
+            else:
+                value = json.loads(keyvalue.value)
             if isinstance(value, dict) and '__encoding__' in value:
                 value = value['value'].encode(value['__encoding__'])
             pendable[keyvalue.key] = value
@@ -169,7 +175,7 @@ class Pendings:
             pkv_alias_type = aliased(PendedKeyValue)
             query = query.join(pkv_alias_type).filter(and_(
                 pkv_alias_type.key == 'type',
-                pkv_alias_type.value == json.dumps(type)
+                pkv_alias_type.value == type
                 ))
         for pending in query:
             yield pending.token, self.confirm(pending.token, expunge=False)

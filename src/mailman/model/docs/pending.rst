@@ -26,10 +26,9 @@ token that can be used in urls and such.
     >>> from mailman.interfaces.pending import IPendable
     >>> @implementer(IPendable)
     ... class SimplePendable(dict):
-    ...     pass
+    ...     PEND_TYPE = 'subscription'
 
     >>> subscription = SimplePendable(
-    ...     type='subscription',
     ...     address='aperson@example.com',
     ...     display_name='Anne Person',
     ...     language='en',

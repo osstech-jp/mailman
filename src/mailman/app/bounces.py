@@ -176,6 +176,7 @@ class ProbeVERP(_BaseVERPParser):
 @implementer(IPendable)
 class _ProbePendable(dict):
     """The pendable dictionary for probe messages."""
+    PEND_TYPE = 'probe'
 
 
 def send_probe(member, msg):

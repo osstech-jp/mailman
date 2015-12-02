@@ -35,7 +35,7 @@ from zope.interface import implementer
 
 @implementer(IPendable)
 class SimplePendable(dict):
-    pass
+    PEND_TYPE = 'simple'
 
 
 

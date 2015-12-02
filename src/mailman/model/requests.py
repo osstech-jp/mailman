@@ -41,6 +41,8 @@ from zope.interface import implementer
 class DataPendable(dict):
     """See `IPendable`."""
 
+    PEND_TYPE = 'data'
+
     def update(self, mapping):
         # Keys and values must be strings (unicodes, but bytes values are
         # accepted for now).  Any other types for keys are a programming

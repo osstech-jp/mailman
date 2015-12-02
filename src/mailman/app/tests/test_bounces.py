@@ -207,9 +207,9 @@ Message-ID: <first>
         # corresponds to a record in the pending database.
         token = send_probe(self._member, self._msg)
         pendable = getUtility(IPendings).confirm(token)
-        self.assertEqual(len(pendable.items()), 2)
+        self.assertEqual(len(pendable.items()), 3)
         self.assertEqual(set(pendable.keys()),
-                         set(['member_id', 'message_id']))
+                         set(['member_id', 'message_id', 'type']))
         # member_ids are pended as unicodes.
         self.assertEqual(uuid.UUID(hex=pendable['member_id']),
                          self._member.member_id)

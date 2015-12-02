@@ -68,7 +68,7 @@ class WhichSubscriber(Enum):
 
 @implementer(IPendable)
 class Pendable(dict):
-    pass
+    PEND_TYPE = 'subscription'
 
 
 

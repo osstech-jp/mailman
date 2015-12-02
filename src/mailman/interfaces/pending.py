@@ -37,6 +37,8 @@ from zope.interface import Interface, Attribute
 class IPendable(Interface):
     """A pendable object."""
 
+    PEND_TYPE = Attribute("""The type of this pendable.""")
+
     def keys():
         """The keys of the pending event data, all of which are strings."""
 
