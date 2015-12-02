@@ -35,8 +35,8 @@ from mailman.database.transaction import dbconnection
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 from mailman.utilities.datetime import now
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode
-from sqlalchemy.orm import relationship
+from sqlalchemy import and_, Column, DateTime, ForeignKey, Integer, Unicode
+from sqlalchemy.orm import aliased, relationship
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
 
@@ -155,6 +155,24 @@ class Pendings:
         for pending in store.query(Pended).all():
             if pending.expiration_date < right_now:
                 store.delete(pending)
+
+    @dbconnection
+    def find(self, store, mlist=None, type=None):
+        query = store.query(Pended)
+        if mlist is not None:
+            pkv_alias_mlist = aliased(PendedKeyValue)
+            query = query.join(pkv_alias_mlist).filter(and_(
+                pkv_alias_mlist.key == 'list_id',
+                pkv_alias_mlist.value == json.dumps(mlist.list_id)
+                ))
+        if type is not None:
+            pkv_alias_type = aliased(PendedKeyValue)
+            query = query.join(pkv_alias_type).filter(and_(
+                pkv_alias_type.key == 'type',
+                pkv_alias_type.value == json.dumps(type)
+                ))
+        for pending in query:
+            yield pending.token, self.confirm(pending.token, expunge=False)
 
     @dbconnection
     def __iter__(self, store):

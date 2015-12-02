@@ -24,11 +24,10 @@ __all__ = [
 
 import unittest
 
+from mailman.app.lifecycle import create_list
 from mailman.config import config
-from mailman.email.validate import InvalidEmailAddressError
-from mailman.interfaces.pending import (
-    IPendable, IPended, IPendedKeyValue, IPendings)
-from mailman.model.pending import PendedKeyValue, Pended, Pendings
+from mailman.interfaces.pending import IPendable, IPendings
+from mailman.model.pending import PendedKeyValue
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 from zope.interface import implementer
@@ -59,3 +58,25 @@ class TestPendings(unittest.TestCase):
         pendable = pendingdb.confirm(token)
         self.assertEqual(pendingdb.count, 0)
         self.assertEqual(config.db.store.query(PendedKeyValue).count(), 0)
+
+    def test_find(self):
+        # Test getting pendables for a mailing-list
+        mlist = create_list('list1@example.com')
+        pendingdb = getUtility(IPendings)
+        subscription_1 = SimplePendable(
+            type='subscription',
+            list_id='list1.example.com')
+        subscription_2 = SimplePendable(
+            type='subscription',
+            list_id='list2.example.com')
+        subscription_3 = SimplePendable(
+            type='hold request',
+            list_id='list1.example.com')
+        token_1 = pendingdb.add(subscription_1)
+        pendingdb.add(subscription_2)
+        pendingdb.add(subscription_3)
+        self.assertEqual(pendingdb.count, 3)
+        mlist_pendings = list(pendingdb.find(mlist=mlist, type='subscription'))
+        self.assertEqual(len(mlist_pendings), 1)
+        self.assertEqual(mlist_pendings[0][0], token_1)
+        self.assertEqual(mlist_pendings[0][1]['list_id'], 'list1.example.com')
