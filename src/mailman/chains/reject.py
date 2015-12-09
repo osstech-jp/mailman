@@ -26,12 +26,15 @@ import logging
 
 from mailman.app.bounces import bounce_message
 from mailman.chains.base import TerminalChainBase
+from mailman.core.errors import RejectMessage
 from mailman.core.i18n import _
 from mailman.interfaces.chain import RejectEvent
 from zope.event import notify
 
 
 log = logging.getLogger('mailman.vette')
+
+NEWLINE = '\n'
 SEMISPACE = '; '
 
 
@@ -53,7 +56,21 @@ class RejectChain(TerminalChainBase):
         rule_misses = msgdata.get('rule_misses')
         if rule_misses:
             msg['X-Mailman-Rule-Misses'] = SEMISPACE.join(rule_misses)
-        # XXX Exception/reason
-        bounce_message(mlist, msg)
+        reasons = msgdata.get('moderation_reasons')
+        if reasons is None:
+            error = None
+        else:
+            error = RejectMessage(_("""
+Your message to the {list_name} mailing-list was rejected for the following
+reasons:
+
+{reasons}
+
+The original message as received by Mailman is attached.
+""").format(
+    list_name=mlist.display_name,
+    reasons=NEWLINE.join(reasons)
+    ))
+        bounce_message(mlist, msg, error)
         log.info('REJECT: %s', msg.get('message-id', 'n/a'))
         notify(RejectEvent(mlist, msg, msgdata, self))

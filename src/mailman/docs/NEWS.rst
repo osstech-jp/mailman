@@ -94,6 +94,7 @@ Message handling
    processed.  This allows for better anti-spam defenses and rejecting
    non-member posts instead of always holding them for moderator review.
    Given by Aurélien Bompard.  (Closes #163)
+ * Bounces can now contain rejection messages.  Given by Aurélien Bompard.
 
 REST
 ----
