@@ -52,6 +52,8 @@ Bugs
    subcommand extensions.  Given by Aurélien Bompard.  (Closes: #168)
  * Don't traceback if a nonexistent message-id is deleted from the message
    store.  Given by Aurélien Bompard, tweaked by Barry Warsaw.  (Closes: #167)
+ * Fix a bug in ``SubscriptionService.find_members()`` when searching for a
+   subscribed address that is not linked to a user.  Given by Aurélien Bompard.
 
 Configuration
 -------------
@@ -122,6 +124,8 @@ Other
  * Improvements in importing Mailman 2.1 lists, given by Aurélien Bompard.
  * The ``prototype`` archiver is not web accessible so it does not have a
    ``list_url`` or permalink.  Given by Aurélien Bompard.
+ * Large performance improvement in ``SubscriptionService.find_members()``.
+   Given by Aurélien Bompard.
 
 
 3.0.0 -- "Show Don't Tell"
