@@ -47,27 +47,18 @@ from mailman.interfaces.subscriptions import ISubscriptionService, TokenOwner
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.interfaces.workflow import IWorkflowStateManager
+from mailman.model.address import Address
 from mailman.model.member import Member
+from mailman.model.user import User
 from mailman.utilities.datetime import now
 from mailman.utilities.i18n import make
 from operator import attrgetter
-from sqlalchemy import and_, or_
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
 
 
 log = logging.getLogger('mailman.subscribe')
-
-
-
-def _membership_sort_key(member):
-    """Sort function for find_members().
-
-    The members are sorted first by unique list id, then by subscribed email
-    address, then by role.
-    """
-    return (member.list_id, member.address.email, member.role.value)
 
 
 class WhichSubscriber(Enum):
@@ -385,39 +376,39 @@ class SubscriptionService:
         # If `subscriber` is a user id, then we'll search for all addresses
         # which are controlled by the user, otherwise we'll just search for
         # the given address.
-        user_manager = getUtility(IUserManager)
         if subscriber is None and list_id is None and role is None:
             return []
+        order = (Member.list_id, Address.email, Member.role)
         # Querying for the subscriber is the most complicated part, because
-        # the parameter can either be an email address or a user id.
-        query = []
+        # the parameter can either be an email address or a user id.  Start by
+        # building two queries, one joined on the member's address, and one
+        # joined on the member's user.  Add the resulting email address to the
+        # selected values to be able to sort on it later on.
+        q_address = store.query(Member, Address.email).join(Member._address)
+        q_user = store.query(Member, Address.email).join(Member._user)
         if subscriber is not None:
             if isinstance(subscriber, str):
                 # subscriber is an email address.
-                address = user_manager.get_address(subscriber)
-                user = user_manager.get_user(subscriber)
-                # This probably could be made more efficient.
-                if address is None or user is None:
-                    return []
-                query.append(or_(Member.address_id == address.id,
-                                 Member.user_id == user.id))
+                q_address = q_address.filter(
+                    Address.email == subscriber.lower())
+                q_user = q_user.join(User.addresses).filter(
+                    Address.email == subscriber.lower())
             else:
                 # subscriber is a user id.
-                user = user_manager.get_user_by_id(subscriber)
-                address_ids = list(address.id for address in user.addresses
-                                   if address.id is not None)
-                if len(address_ids) == 0 or user is None:
-                    return []
-                query.append(or_(Member.user_id == user.id,
-                                 Member.address_id.in_(address_ids)))
-        # Calculate the rest of the query expression, which will get And'd
-        # with the Or clause above (if there is one).
+                q_address = q_address.join(Address.user).filter(
+                    User._user_id == subscriber)
+                q_user = q_user.join(User._preferred_address).filter(
+                    User._user_id == subscriber)
+        # Add additional filters to both queries.
         if list_id is not None:
-            query.append(Member.list_id == list_id)
+            q_address = q_address.filter(Member.list_id == list_id)
+            q_user = q_user.filter(Member.list_id == list_id)
         if role is not None:
-            query.append(Member.role == role)
-        results = store.query(Member).filter(and_(*query))
-        return sorted(results, key=_membership_sort_key)
+            q_address = q_address.filter(Member.role == role)
+            q_user = q_user.filter(Member.role == role)
+        # Do a UNION of the two queries, sort the result and generate Members.
+        query = q_address.union(q_user).order_by(*order).from_self(Member)
+        return query.all()
 
     def __iter__(self):
         for member in self.get_members():
