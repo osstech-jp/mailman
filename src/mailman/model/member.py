@@ -53,8 +53,8 @@ class Member(Model):
 
     id = Column(Integer, primary_key=True)
     _member_id = Column(UUID)
-    role = Column(Enum(MemberRole))
-    list_id = Column(Unicode)
+    role = Column(Enum(MemberRole), index=True)
+    list_id = Column(Unicode, index=True)
     moderation_action = Column(Enum(Action))
 
     address_id = Column(Integer, ForeignKey('address.id'), index=True)
