@@ -79,10 +79,6 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_index(op.f('ix_pendedkeyvalue_value'), table_name='pendedkeyvalue')
-    op.drop_index(op.f('ix_pendedkeyvalue_key'), table_name='pendedkeyvalue')
-    op.drop_index(op.f('ix_pended_token'), table_name='pended')
-    op.drop_index(op.f('ix_pended_expiration_date'), table_name='pended')
     # Data migration.
     connection = op.get_bind()
     # Remove the introduced type keys.
@@ -97,3 +93,8 @@ def downgrade():
         connection.execute(keyvalue_table.update().where(
             keyvalue_table.c.id == keyvalue['id']
             ).values(value=json.dumps(keyvalue['value'])))
+    # Remove indexes
+    op.drop_index(op.f('ix_pendedkeyvalue_value'), table_name='pendedkeyvalue')
+    op.drop_index(op.f('ix_pendedkeyvalue_key'), table_name='pendedkeyvalue')
+    op.drop_index(op.f('ix_pended_token'), table_name='pended')
+    op.drop_index(op.f('ix_pended_expiration_date'), table_name='pended')

@@ -157,6 +157,7 @@ class TestMigrations(unittest.TestCase):
         self.assertEqual(results[3]['type'], 'data')
         self.assertEqual(results[4]['type'], 'held message')
         self.assertEqual(results[5]['type'], 'registration')
+        config.db.store.commit()
         # Downgrading.
         alembic.command.downgrade(alembic_cfg, '33bc0099223')
         results = get_from_db()
