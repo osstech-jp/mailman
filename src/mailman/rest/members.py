@@ -356,19 +356,31 @@ class _FoundMembers(MemberCollection):
 class FindMembers(_MemberBase):
     """/members/find"""
 
+    def on_get(self, request, response):
+        return self._find(request, response)
+
     def on_post(self, request, response):
+        return self._find(request, response)
+
+    def _find(self, request, response):
         """Find a member"""
         service = getUtility(ISubscriptionService)
         validator = Validator(
             list_id=str,
             subscriber=str,
             role=enum_validator(MemberRole),
-            _optional=('list_id', 'subscriber', 'role'))
+            # Expect pagination
+            page=int,
+            count=int,
+            _optional=('list_id', 'subscriber', 'role', 'page', 'count'))
         try:
             data = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
         else:
+            # Remove pagination query elements, it will be handled later.
+            data.pop('page', None)
+            data.pop('count', None)
             members = service.find_members(**data)
             resource = _FoundMembers(members, self.api)
             okay(response, etag(resource._make_collection(request)))

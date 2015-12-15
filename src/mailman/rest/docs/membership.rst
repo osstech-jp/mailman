@@ -626,6 +626,28 @@ Finally, we can search for a specific member given all three criteria.
     start: 0
     total_size: 1
 
+Search can also be performed using HTTP GET requests.
+
+    >>> dump_json('http://localhost:9001/3.0/members/find'
+    ...           '?subscriber=cperson@example.com'
+    ...           '&list_id=bee.example.com'
+    ...           '&role=member'
+    ...           )
+    entry 0:
+        address: http://localhost:9001/3.0/addresses/cperson@example.com
+        delivery_mode: regular
+        email: cperson@example.com
+        http_etag: ...
+        list_id: bee.example.com
+        member_id: 2
+        moderation_action: defer
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
+    http_etag: ...
+    start: 0
+    total_size: 1
+
 
 Joining a mailing list
 ======================
