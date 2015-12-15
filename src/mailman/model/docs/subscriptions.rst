@@ -105,6 +105,22 @@ There may be no matching memberships.
     >>> list(service.find_members('dave@example.com'))
     []
 
+The address may contain an asterisk, which will be interpreted as a joker in
+the search pattern.
+
+    >>> for member in service.find_members('*person*'):
+    ...     print(member)
+    <Member: Anne Person <aperson@example.com>
+        on ant@example.com as MemberRole.member>
+    <Member: Anne Person <aperson@example.com>
+        on ant@example.com as MemberRole.owner>
+    <Member: Bart Person <bperson@example.com>
+        on ant@example.com as MemberRole.moderator>
+    <Member: Bart Person <bperson@example.com>
+        on bee@example.com as MemberRole.owner>
+    <Member: Cris Person <cperson@example.com>
+        on cat@example.com as MemberRole.member>
+
 Memberships can also be searched for by user id.
 
     >>> for member in service.find_members(anne_1.user.user_id):

@@ -94,10 +94,18 @@ class SubscriptionService:
         if subscriber is not None:
             if isinstance(subscriber, str):
                 # subscriber is an email address.
-                q_address = q_address.filter(
-                    Address.email == subscriber.lower())
-                q_user = q_user.join(User.addresses).filter(
-                    Address.email == subscriber.lower())
+                subscriber = subscriber.lower()
+                if '*' in subscriber:
+                    subscriber = subscriber.replace('*', '%')
+                    q_address = q_address.filter(
+                        Address.email.like(subscriber))
+                    q_user = q_user.join(User.addresses).filter(
+                        Address.email.like(subscriber))
+                else:
+                    q_address = q_address.filter(
+                        Address.email == subscriber)
+                    q_user = q_user.join(User.addresses).filter(
+                        Address.email == subscriber)
             else:
                 # subscriber is a user id.
                 q_address = q_address.join(Address.user).filter(
