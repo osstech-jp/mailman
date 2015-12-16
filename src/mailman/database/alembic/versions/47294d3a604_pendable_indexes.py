@@ -11,10 +11,11 @@ Create Date: 2015-12-02 11:46:47.295174
 
 # revision identifiers, used by Alembic.
 revision = '47294d3a604'
-down_revision = '33bc0099223'
+down_revision = '3e09bb4a5dc'
 
 import json
 import sqlalchemy as sa
+
 from alembic import op
 
 
@@ -22,7 +23,7 @@ TYPE_CLUES = {
     'member_id': 'probe',
     'token_owner': 'subscription',
     '_mod_message_id': 'data',
-}
+    }
 
 pended_table = sa.sql.table(
     'pended',
@@ -36,6 +37,7 @@ keyvalue_table = sa.sql.table(
     sa.sql.column('value', sa.Unicode),
     sa.sql.column('pended_id', sa.Integer),
     )
+
 
 def upgrade():
     op.create_index(
@@ -57,15 +59,17 @@ def upgrade():
         kv_type = [kv for kv in keyvalues if kv['key'] == 'type']
         if kv_type:
             # Convert existing type keys from JSON to plain text.
-            kv_type = kv_type[0] # the (pended_id, key) tuple is unique.
+            # The (pended_id, key) tuple is unique.
+            kv_type = kv_type[0]
             try:
                 new_value = json.loads(kv_type['value'])
             except ValueError:
-                pass # New-style entry (or already converted).
+                # New-style entry (or already converted).
+                pass
             else:
                 connection.execute(keyvalue_table.update().where(
                     keyvalue_table.c.id == kv_type['id']
-                ).values(value=new_value))
+                    ).values(value=new_value))
         else:
             # Detect the type and add the corresponding type key.
             keys = [kv['key'] for kv in keyvalues]
@@ -93,26 +97,7 @@ def downgrade():
         connection.execute(keyvalue_table.update().where(
             keyvalue_table.c.id == keyvalue['id']
             ).values(value=json.dumps(keyvalue['value'])))
-    # Remove indexes
-    op.drop_index(op.f('ix_pendedkeyvalue_value'), table_name='pendedkeyvalue')
-    op.drop_index(op.f('ix_pendedkeyvalue_key'), table_name='pendedkeyvalue')
-    op.drop_index(op.f('ix_pended_token'), table_name='pended')
-    op.drop_index(op.f('ix_pended_expiration_date'), table_name='pended')
-    # Data migration.
-    connection = op.get_bind()
-    # Remove the introduced type keys.
-    connection.execute(keyvalue_table.delete().where(sa.and_(
-        keyvalue_table.c.key == 'type',
-        keyvalue_table.c.value.in_(TYPE_CLUES.values())
-        )))
-    # Convert the other type keys to JSON.
-    keyvalues = connection.execute(keyvalue_table.select().where(
-        keyvalue_table.c.key == 'type')).fetchall()
-    for keyvalue in keyvalues:
-        connection.execute(keyvalue_table.update().where(
-            keyvalue_table.c.id == keyvalue['id']
-            ).values(value=json.dumps(keyvalue['value'])))
-    # Remove indexes
+    # Remove indexes.
     op.drop_index(op.f('ix_pendedkeyvalue_value'), table_name='pendedkeyvalue')
     op.drop_index(op.f('ix_pendedkeyvalue_key'), table_name='pendedkeyvalue')
     op.drop_index(op.f('ix_pended_token'), table_name='pended')

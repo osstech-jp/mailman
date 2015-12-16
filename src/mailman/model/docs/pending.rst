@@ -45,9 +45,10 @@ There's exactly one entry in the pendings database now.
 You can *confirm* the pending, which means returning the `IPendable` structure
 (as a dictionary) from the database that matches the token.
 
-All `IPendable` classes have a `PEND_TYPE` attribute which must be a string. It
-is used to identify and query pendables in the database, and will be returned
-as the `type` key in the dictionary.
+All `IPendable` classes have a `PEND_TYPE` attribute which must be a string.
+It is used to identify and query pendables in the database, and will be
+returned as the `type` key in the dictionary.  Thus `type` is a reserved key
+and pendables may not otherwise set it.
 
 If the token isn't in the database, None is returned.
 

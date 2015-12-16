@@ -35,7 +35,7 @@ from mailman.database.transaction import dbconnection
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 from mailman.utilities.datetime import now
-from sqlalchemy import and_, Column, DateTime, ForeignKey, Integer, Unicode
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode, and_
 from sqlalchemy.orm import aliased, relationship
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
@@ -139,9 +139,11 @@ class Pendings:
             'Unexpected token count: {0}'.format(pendings.count()))
         pending = pendings[0]
         pendable = UnpendedPendable()
-        # Iter on PendedKeyValue entries that are associated with the pending
-        # object's ID.  Watch out for type conversions.
+        # Iterate on PendedKeyValue entries that are associated with the
+        # pending object's ID.  Watch out for type conversions.
         for keyvalue in pending.key_values:
+            # The `type` key is special and served.  It is not JSONified.  See
+            # the IPendable interface for details.
             if keyvalue.key == 'type':
                 value = keyvalue.value
             else:

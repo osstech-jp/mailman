@@ -37,7 +37,13 @@ from zope.interface import Interface, Attribute
 class IPendable(Interface):
     """A pendable object."""
 
-    PEND_TYPE = Attribute("""The type of this pendable.""")
+    PEND_TYPE = Attribute(
+        """The type of this pendable.
+
+        Subclasses must define this attribute, and it must be a unique string;
+        it's used to efficiently search for all pendables of the given type.
+        The PEND_TYPE "type" is reserved.
+        """)
 
     def keys():
         """The keys of the pending event data, all of which are strings."""

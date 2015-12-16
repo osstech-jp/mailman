@@ -109,6 +109,7 @@ class TestMigrations(unittest.TestCase):
         # - one is a moderation request
         # - one is a held message
         # - one is a registration request in the new format
+        #
         # The first three used to have no 'type' key and must be properly
         # typed, the held message used to have a type key, but in JSON, and
         # must be converted.
@@ -144,7 +145,8 @@ class TestMigrations(unittest.TestCase):
             config.db.store.execute(keyvalue_table.insert().values([
                 {'pended_id': 1, 'key': 'member_id', 'value': 'test-value'},
                 {'pended_id': 2, 'key': 'token_owner', 'value': 'test-value'},
-                {'pended_id': 3, 'key': '_mod_message_id', 'value': 'test-value'},
+                {'pended_id': 3, 'key': '_mod_message_id',
+                                 'value': 'test-value'},
                 {'pended_id': 4, 'key': 'type', 'value': '"held message"'},
                 {'pended_id': 5, 'key': 'type', 'value': 'registration'},
                 ]))
