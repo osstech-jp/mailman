@@ -30,6 +30,7 @@ from mailman.config import config
 from mailman.database.alembic import alembic_cfg
 from mailman.database.helpers import exists_in_db
 from mailman.database.model import Model
+from mailman.database.transaction import transaction
 from mailman.testing.layers import ConfigLayer
 
 
@@ -100,3 +101,71 @@ class TestMigrations(unittest.TestCase):
             header_match_table.select()).fetchall()
         self.assertEqual(results,
             [(1, hm[0], hm[1]) for hm in test_header_matches])
+
+    def test_47294d3a604_pendable_keyvalues(self):
+        # We have 5 pended items:
+        # - one is a probe request
+        # - one is a subscription request
+        # - one is a moderation request
+        # - one is a held message
+        # - one is a registration request in the new format
+        #
+        # The first three used to have no 'type' key and must be properly
+        # typed, the held message used to have a type key, but in JSON, and
+        # must be converted.
+        pended_table = sa.sql.table(
+            'pended',
+            sa.sql.column('id', sa.Integer),
+            )
+        keyvalue_table = sa.sql.table(
+            'pendedkeyvalue',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('key', sa.Unicode),
+            sa.sql.column('value', sa.Unicode),
+            sa.sql.column('pended_id', sa.Integer),
+            )
+        def get_from_db():
+            results = {}
+            for i in range(1, 6):
+                query = sa.sql.select(
+                    [keyvalue_table.c.key, keyvalue_table.c.value]
+                ).where(
+                    keyvalue_table.c.pended_id == i
+                )
+                results[i] = dict([
+                    (r['key'], r['value']) for r in
+                    config.db.store.execute(query).fetchall()
+                    ])
+            return results
+        # Start at the previous revision
+        with transaction():
+            alembic.command.downgrade(alembic_cfg, '33bc0099223')
+            for i in range(1, 6):
+                config.db.store.execute(pended_table.insert().values(id=i))
+            config.db.store.execute(keyvalue_table.insert().values([
+                {'pended_id': 1, 'key': 'member_id', 'value': 'test-value'},
+                {'pended_id': 2, 'key': 'token_owner', 'value': 'test-value'},
+                {'pended_id': 3, 'key': '_mod_message_id',
+                                 'value': 'test-value'},
+                {'pended_id': 4, 'key': 'type', 'value': '"held message"'},
+                {'pended_id': 5, 'key': 'type', 'value': 'registration'},
+                ]))
+        # Upgrading.
+        with transaction():
+            alembic.command.upgrade(alembic_cfg, '47294d3a604')
+            results = get_from_db()
+        for i in range(1, 5):
+            self.assertIn('type', results[i])
+        self.assertEqual(results[1]['type'], 'probe')
+        self.assertEqual(results[2]['type'], 'subscription')
+        self.assertEqual(results[3]['type'], 'data')
+        self.assertEqual(results[4]['type'], 'held message')
+        self.assertEqual(results[5]['type'], 'registration')
+        # Downgrading.
+        with transaction():
+            alembic.command.downgrade(alembic_cfg, '33bc0099223')
+            results = get_from_db()
+        for i in range(1, 4):
+            self.assertNotIn('type', results[i])
+        self.assertEqual(results[4]['type'], '"held message"')
+        self.assertEqual(results[5]['type'], '"registration"')

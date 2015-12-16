@@ -168,6 +168,7 @@ however the message metadata indicates that the message has been approved.
     _parsemsg         : False
     approved          : True
     moderator_approved: True
+    type              : data
     version           : 3
 
 

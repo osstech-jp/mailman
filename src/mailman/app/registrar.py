@@ -43,7 +43,7 @@ log = logging.getLogger('mailman.error')
 
 @implementer(IPendable)
 class PendableRegistration(dict):
-    PEND_KEY = 'registration'
+    PEND_TYPE = 'registration'
 
 
 

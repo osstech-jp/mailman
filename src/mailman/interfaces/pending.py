@@ -37,6 +37,14 @@ from zope.interface import Interface, Attribute
 class IPendable(Interface):
     """A pendable object."""
 
+    PEND_TYPE = Attribute(
+        """The type of this pendable.
+
+        Subclasses must define this attribute, and it must be a unique string;
+        it's used to efficiently search for all pendables of the given type.
+        The PEND_TYPE "type" is reserved.
+        """)
+
     def keys():
         """The keys of the pending event data, all of which are strings."""
 
@@ -94,6 +102,16 @@ class IPendings(Interface):
 
     def evict():
         """Remove all pended items whose lifetime has expired."""
+
+    def find(mlist=None, pend_type=None):
+        """Search for the pendables matching the given criteria.
+
+        :param mlist: The MailingList object that the pendables must be
+            related to.
+        :param pend_type: The type of the pendables that are looked for, this
+            corresponds to the `PEND_TYPE` attribute.
+        :return: An iterator over 2-tuples of the form (token, dict).
+        """
 
     def __iter__():
         """An iterator over all pendables.

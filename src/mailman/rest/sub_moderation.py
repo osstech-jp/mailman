@@ -122,22 +122,9 @@ class SubscriptionRequests(_ModerationBase, CollectionMixin):
         self._mlist = mlist
 
     def _get_collection(self, request):
-        # There's currently no better way to query the pendings database for
-        # all the entries that are associated with subscription holds on this
-        # mailing list.  Brute force iterating over all the pendables.
-        collection = []
-        for token, pendable in getUtility(IPendings):
-            if 'token_owner' not in pendable:
-                # This isn't a subscription hold.
-                continue
-            list_id = pendable.get('list_id')
-            if list_id != self._mlist.list_id:
-                # Either there isn't a list_id field, in which case it can't
-                # be a subscription hold, or this is a hold for some other
-                # mailing list.
-                continue
-            collection.append(token)
-        return collection
+        pendings = getUtility(IPendings).find(
+            mlist=self._mlist, pend_type='subscription')
+        return [token for token, pendable in pendings]
 
     def on_get(self, request, response):
         """/lists/listname/requests"""

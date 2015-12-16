@@ -35,8 +35,8 @@ from mailman.database.transaction import dbconnection
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 from mailman.utilities.datetime import now
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode, and_
+from sqlalchemy.orm import aliased, relationship
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
 
@@ -49,8 +49,8 @@ class PendedKeyValue(Model):
     __tablename__ = 'pendedkeyvalue'
 
     id = Column(Integer, primary_key=True)
-    key = Column(Unicode)
-    value = Column(Unicode)
+    key = Column(Unicode, index=True)
+    value = Column(Unicode, index=True)
     pended_id = Column(Integer, ForeignKey('pended.id'), index=True)
 
     def __init__(self, key, value):
@@ -66,20 +66,15 @@ class Pended(Model):
     __tablename__ = 'pended'
 
     id = Column(Integer, primary_key=True)
-    token = Column(Unicode)
-    expiration_date = Column(DateTime)
-    key_values = relationship('PendedKeyValue')
-
-    def __init__(self, token, expiration_date):
-        super(Pended, self).__init__()
-        self.token = token
-        self.expiration_date = expiration_date
+    token = Column(Unicode, index=True)
+    expiration_date = Column(DateTime, index=True)
+    key_values = relationship('PendedKeyValue', cascade="all, delete-orphan")
 
 
 
 @implementer(IPendable)
 class UnpendedPendable(dict):
-    pass
+    PEND_TYPE = 'unpended'
 
 
 
@@ -114,7 +109,13 @@ class Pendings:
         pending = Pended(
             token=token,
             expiration_date=now() + lifetime)
+        pendable_type = pendable.get('type', pendable.PEND_TYPE)
+        pending.key_values.append(
+            PendedKeyValue(key='type', value=pendable_type))
         for key, value in pendable.items():
+            # The type has been handled above.
+            if key == 'type':
+                continue
             # Both keys and values must be strings.
             if isinstance(key, bytes):
                 key = key.decode('utf-8')
@@ -138,17 +139,18 @@ class Pendings:
             'Unexpected token count: {0}'.format(pendings.count()))
         pending = pendings[0]
         pendable = UnpendedPendable()
-        # Find all PendedKeyValue entries that are associated with the pending
-        # object's ID.  Watch out for type conversions.
-        entries = store.query(PendedKeyValue).filter(
-            PendedKeyValue.pended_id == pending.id)
-        for keyvalue in entries:
-            value = json.loads(keyvalue.value)
+        # Iterate on PendedKeyValue entries that are associated with the
+        # pending object's ID.  Watch out for type conversions.
+        for keyvalue in pending.key_values:
+            # The `type` key is special and served.  It is not JSONified.  See
+            # the IPendable interface for details.
+            if keyvalue.key == 'type':
+                value = keyvalue.value
+            else:
+                value = json.loads(keyvalue.value)
             if isinstance(value, dict) and '__encoding__' in value:
                 value = value['value'].encode(value['__encoding__'])
             pendable[keyvalue.key] = value
-            if expunge:
-                store.delete(keyvalue)
         if expunge:
             store.delete(pending)
         return pendable
@@ -158,13 +160,25 @@ class Pendings:
         right_now = now()
         for pending in store.query(Pended).all():
             if pending.expiration_date < right_now:
-                # Find all PendedKeyValue entries that are associated with the
-                # pending object's ID.
-                q = store.query(PendedKeyValue).filter(
-                    PendedKeyValue.pended_id == pending.id)
-                for keyvalue in q:
-                    store.delete(keyvalue)
                 store.delete(pending)
+
+    @dbconnection
+    def find(self, store, mlist=None, pend_type=None):
+        query = store.query(Pended)
+        if mlist is not None:
+            pkv_alias_mlist = aliased(PendedKeyValue)
+            query = query.join(pkv_alias_mlist).filter(and_(
+                pkv_alias_mlist.key == 'list_id',
+                pkv_alias_mlist.value == json.dumps(mlist.list_id)
+                ))
+        if pend_type is not None:
+            pkv_alias_type = aliased(PendedKeyValue)
+            query = query.join(pkv_alias_type).filter(and_(
+                pkv_alias_type.key == 'type',
+                pkv_alias_type.value == pend_type
+                ))
+        for pending in query:
+            yield pending.token, self.confirm(pending.token, expunge=False)
 
     @dbconnection
     def __iter__(self, store):

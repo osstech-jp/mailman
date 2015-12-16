@@ -26,10 +26,9 @@ token that can be used in urls and such.
     >>> from mailman.interfaces.pending import IPendable
     >>> @implementer(IPendable)
     ... class SimplePendable(dict):
-    ...     pass
+    ...     PEND_TYPE = 'subscription'
 
     >>> subscription = SimplePendable(
-    ...     type='subscription',
     ...     address='aperson@example.com',
     ...     display_name='Anne Person',
     ...     language='en',
@@ -44,8 +43,14 @@ There's exactly one entry in the pendings database now.
     1
 
 You can *confirm* the pending, which means returning the `IPendable` structure
-(as a dictionary) from the database that matches the token.  If the token
-isn't in the database, None is returned.
+(as a dictionary) from the database that matches the token.
+
+All `IPendable` classes have a `PEND_TYPE` attribute which must be a string.
+It is used to identify and query pendables in the database, and will be
+returned as the `type` key in the dictionary.  Thus `type` is a reserved key
+and pendables may not otherwise set it.
+
+If the token isn't in the database, None is returned.
 
     >>> pendable = pendingdb.confirm(b'missing')
     >>> print(pendable)

@@ -124,6 +124,7 @@ an additional key which holds the name of the request type.
     _request_type: held_message
     bar          : no
     foo          : yes
+    type         : data
 
 
 Iterating over requests
@@ -146,6 +147,7 @@ over by type.
         _request_type: held_message
         bar: no
         foo: yes
+        type: data
 
 
 Deleting requests
