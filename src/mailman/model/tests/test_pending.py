@@ -55,7 +55,7 @@ class TestPendings(unittest.TestCase):
             password='xyz')
         token = pendingdb.add(subscription)
         self.assertEqual(pendingdb.count, 1)
-        pendable = pendingdb.confirm(token)
+        pendingdb.confirm(token)
         self.assertEqual(pendingdb.count, 0)
         self.assertEqual(config.db.store.query(PendedKeyValue).count(), 0)
 
@@ -76,7 +76,7 @@ class TestPendings(unittest.TestCase):
             type='hold request',
             list_id='list2.example.com')
         token_1 = pendingdb.add(subscription_1)
-        token_2 = pendingdb.add(subscription_2)
+        pendingdb.add(subscription_2)
         token_3 = pendingdb.add(subscription_3)
         token_4 = pendingdb.add(subscription_4)
         self.assertEqual(pendingdb.count, 4)
