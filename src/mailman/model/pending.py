@@ -53,6 +53,10 @@ class PendedKeyValue(Model):
     value = Column(Unicode, index=True)
     pended_id = Column(Integer, ForeignKey('pended.id'), index=True)
 
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
 
 
 @implementer(IPended)
