@@ -123,7 +123,7 @@ class SubscriptionRequests(_ModerationBase, CollectionMixin):
 
     def _get_collection(self, request):
         pendings = getUtility(IPendings).find(
-            mlist=self._mlist, type='subscription')
+            mlist=self._mlist, pend_type='subscription')
         return [token for token, pendable in pendings]
 
     def on_get(self, request, response):
