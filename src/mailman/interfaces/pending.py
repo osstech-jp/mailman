@@ -97,6 +97,16 @@ class IPendings(Interface):
     def evict():
         """Remove all pended items whose lifetime has expired."""
 
+    def find(mlist=None, pend_type=None):
+        """Search for the pendables matching the given criteria.
+
+        :param mlist: The MailingList object that the pendables must be
+            related to.
+        :param pend_type: The type of the pendables that are looked for, this
+            corresponds to the `PEND_TYPE` attribute.
+        :return: An iterator over 2-tuples of the form (token, dict).
+        """
+
     def __iter__():
         """An iterator over all pendables.
 

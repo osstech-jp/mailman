@@ -105,10 +105,13 @@ class Pendings:
         pending = Pended(
             token=token,
             expiration_date=now() + lifetime)
-        pendable_type = pendable.pop('type', pendable.PEND_TYPE)
+        pendable_type = pendable.get('type', pendable.PEND_TYPE)
         pending.key_values.append(
             PendedKeyValue(key='type', value=pendable_type))
         for key, value in pendable.items():
+            # The type has been handled above.
+            if key == 'type':
+                continue
             # Both keys and values must be strings.
             if isinstance(key, bytes):
                 key = key.decode('utf-8')
@@ -154,7 +157,7 @@ class Pendings:
                 store.delete(pending)
 
     @dbconnection
-    def find(self, store, mlist=None, type=None):
+    def find(self, store, mlist=None, pend_type=None):
         query = store.query(Pended)
         if mlist is not None:
             pkv_alias_mlist = aliased(PendedKeyValue)
@@ -162,11 +165,11 @@ class Pendings:
                 pkv_alias_mlist.key == 'list_id',
                 pkv_alias_mlist.value == json.dumps(mlist.list_id)
                 ))
-        if type is not None:
+        if pend_type is not None:
             pkv_alias_type = aliased(PendedKeyValue)
             query = query.join(pkv_alias_type).filter(and_(
                 pkv_alias_type.key == 'type',
-                pkv_alias_type.value == type
+                pkv_alias_type.value == pend_type
                 ))
         for pending in query:
             yield pending.token, self.confirm(pending.token, expunge=False)

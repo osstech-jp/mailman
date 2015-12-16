@@ -30,6 +30,7 @@ from mailman.config import config
 from mailman.database.alembic import alembic_cfg
 from mailman.database.helpers import exists_in_db
 from mailman.database.model import Model
+from mailman.database.transaction import transaction
 from mailman.testing.layers import ConfigLayer
 
 
@@ -136,20 +137,21 @@ class TestMigrations(unittest.TestCase):
                     ])
             return results
         # Start at the previous revision
-        alembic.command.downgrade(alembic_cfg, '33bc0099223')
-        for i in range(1, 6):
-            config.db.store.execute(pended_table.insert().values(id=i))
-        config.db.store.execute(keyvalue_table.insert().values([
-            {'pended_id': 1, 'key': 'member_id', 'value': 'test-value'},
-            {'pended_id': 2, 'key': 'token_owner', 'value': 'test-value'},
-            {'pended_id': 3, 'key': '_mod_message_id', 'value': 'test-value'},
-            {'pended_id': 4, 'key': 'type', 'value': '"held message"'},
-            {'pended_id': 5, 'key': 'type', 'value': 'registration'},
-            ]))
-        config.db.store.commit()
+        with transaction():
+            alembic.command.downgrade(alembic_cfg, '33bc0099223')
+            for i in range(1, 6):
+                config.db.store.execute(pended_table.insert().values(id=i))
+            config.db.store.execute(keyvalue_table.insert().values([
+                {'pended_id': 1, 'key': 'member_id', 'value': 'test-value'},
+                {'pended_id': 2, 'key': 'token_owner', 'value': 'test-value'},
+                {'pended_id': 3, 'key': '_mod_message_id', 'value': 'test-value'},
+                {'pended_id': 4, 'key': 'type', 'value': '"held message"'},
+                {'pended_id': 5, 'key': 'type', 'value': 'registration'},
+                ]))
         # Upgrading.
-        alembic.command.upgrade(alembic_cfg, '47294d3a604')
-        results = get_from_db()
+        with transaction():
+            alembic.command.upgrade(alembic_cfg, '47294d3a604')
+            results = get_from_db()
         for i in range(1, 5):
             self.assertIn('type', results[i])
         self.assertEqual(results[1]['type'], 'probe')
@@ -157,10 +159,10 @@ class TestMigrations(unittest.TestCase):
         self.assertEqual(results[3]['type'], 'data')
         self.assertEqual(results[4]['type'], 'held message')
         self.assertEqual(results[5]['type'], 'registration')
-        config.db.store.commit()
         # Downgrading.
-        alembic.command.downgrade(alembic_cfg, '33bc0099223')
-        results = get_from_db()
+        with transaction():
+            alembic.command.downgrade(alembic_cfg, '33bc0099223')
+            results = get_from_db()
         for i in range(1, 4):
             self.assertNotIn('type', results[i])
         self.assertEqual(results[4]['type'], '"held message"')

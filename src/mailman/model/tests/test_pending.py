@@ -81,12 +81,12 @@ class TestPendings(unittest.TestCase):
         token_4 = pendingdb.add(subscription_4)
         self.assertEqual(pendingdb.count, 4)
         # Find the pending subscription in list1.
-        pendings = list(pendingdb.find(mlist=mlist, type='subscription'))
+        pendings = list(pendingdb.find(mlist=mlist, pend_type='subscription'))
         self.assertEqual(len(pendings), 1)
         self.assertEqual(pendings[0][0], token_1)
         self.assertEqual(pendings[0][1]['list_id'], 'list1.example.com')
         # Find all pending hold requests.
-        pendings = list(pendingdb.find(type='hold request'))
+        pendings = list(pendingdb.find(pend_type='hold request'))
         self.assertEqual(len(pendings), 2)
         self.assertSetEqual(
             set((p[0], p[1]['list_id']) for p in pendings),
@@ -96,6 +96,7 @@ class TestPendings(unittest.TestCase):
         pendings = list(pendingdb.find(mlist=mlist))
         self.assertEqual(len(pendings), 2)
         self.assertSetEqual(
-            set((p[0], p[1]['list_id']) for p in pendings),
-            {(token_1, 'list1.example.com'), (token_3, 'list1.example.com')}
+            set((p[0], p[1]['list_id'], p[1]['type']) for p in pendings),
+            {(token_1, 'list1.example.com', 'subscription'),
+             (token_3, 'list1.example.com', 'hold request')}
             )
