@@ -32,7 +32,7 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, ReplyToMunging, SubscriptionPolicy)
 from mailman.rest.helpers import (
-    GetterSetter, bad_request, etag, no_content, okay)
+    GetterSetter, bad_request, etag, no_content, not_found, okay)
 from mailman.rest.validator import (
     PatchValidator, Validator, enum_validator, list_of_strings_validator)
 
@@ -44,7 +44,7 @@ class AcceptableAliases(GetterSetter):
     def get(self, mlist, attribute):
         """Return the mailing list's acceptable aliases."""
         assert attribute == 'acceptable_aliases', (
-            'Unexpected attribute: {}'.format(attribute))
+            'Unexpected attribute: {}'.format(attribute))   # pragma: no cover
         aliases = IAcceptableAliasSet(mlist)
         return sorted(aliases.aliases)
 
@@ -56,7 +56,7 @@ class AcceptableAliases(GetterSetter):
         ignored.
         """
         assert attribute == 'acceptable_aliases', (
-            'Unexpected attribute: {}'.format(attribute))
+            'Unexpected attribute: {}'.format(attribute))   # pragma: no cover
         alias_set = IAcceptableAliasSet(mlist)
         alias_set.clear()
         for alias in value:
@@ -112,9 +112,9 @@ ATTRIBUTES = dict(
     default_nonmember_action=GetterSetter(enum_validator(Action)),
     description=GetterSetter(str),
     digest_last_sent_at=GetterSetter(None),
-    digest_send_periodic=GetterSetter(as_boolean),
+    #digest_send_periodic=GetterSetter(as_boolean),
     digest_size_threshold=GetterSetter(float),
-    digest_volume_frequency=GetterSetter(int),
+    #digest_volume_frequency=GetterSetter(int),
     filter_content=GetterSetter(as_boolean),
     first_strip_reply_to=GetterSetter(as_boolean),
     fqdn_listname=GetterSetter(None),
@@ -163,15 +163,18 @@ class ListConfiguration:
         """Get a mailing list configuration."""
         resource = {}
         if self._attribute is None:
-            # Return all readable attributes.
+            # This is a requst for all the mailing list's configuration
+            # variables.  Return all readable attributes.
             for attribute in ATTRIBUTES:
                 value = ATTRIBUTES[attribute].get(self._mlist, attribute)
                 resource[attribute] = value
         elif self._attribute not in ATTRIBUTES:
-            bad_request(
-                response, b'Unknown attribute: {}'.format(self._attribute))
+            # This is a request for a specific, nonexistent attribute.
+            not_found(
+                response, 'Unknown attribute: {}'.format(self._attribute))
             return
         else:
+            # This is a request for a specific attribute.
             attribute = self._attribute
             value = ATTRIBUTES[attribute].get(self._mlist, attribute)
             resource[attribute] = value
@@ -181,20 +184,31 @@ class ListConfiguration:
         """Set a mailing list configuration."""
         attribute = self._attribute
         if attribute is None:
+            # This is a request to update all the list's writable
+            # configuration variables.  All must be provided in the request.
             validator = Validator(**VALIDATORS)
             try:
                 validator.update(self._mlist, request)
             except ValueError as error:
+                # Unlike the case where we're PUTting to a specific
+                # configuration sub-resource, if we're PUTting to the list's
+                # entire configuration, but the request has a bogus attribute,
+                # the entire request is considered bad.  We can also get here
+                # if one of the attributes is read-only.  The error will
+                # contain sufficient details, so just return it as the reason.
                 bad_request(response, str(error))
                 return
         elif attribute not in ATTRIBUTES:
-            bad_request(response, b'Unknown attribute: {}'.format(attribute))
+            # Here we're PUTting to a specific resource, but that attribute is
+            # bogus so the URL is considered pointing to a missing resource.
+            not_found(response, 'Unknown attribute: {}'.format(attribute))
             return
         elif ATTRIBUTES[attribute].decoder is None:
             bad_request(
-                response, b'Read-only attribute: {}'.format(attribute))
+                response, 'Read-only attribute: {}'.format(attribute))
             return
         else:
+            # We're PUTting to a specific configuration sub-resource.
             validator = Validator(**{attribute: VALIDATORS[attribute]})
             try:
                 validator.update(self._mlist, request)
@@ -205,15 +219,42 @@ class ListConfiguration:
 
     def on_patch(self, request, response):
         """Patch the configuration (i.e. partial update)."""
+        if self._attribute is None:
+            # We're PATCHing one more attributes on the list's configuration
+            # resource, so all the writable attributes are valid candidates
+            # for updating.
+            converters = ATTRIBUTES
+        else:
+            # We're PATCHing a specific list configuration attribute
+            # sub-resource.  Because the request data must be a dictionary, we
+            # restrict it to containing only a single key, which must match
+            # the attribute name.  First, check for any extra attributes in
+            # the request.
+            keys = [key for key, value in request.params.items()]
+            if len(keys) > 1:
+                bad_request(response, 'Expected 1 attribute, got {}'.format(
+                    len(keys)))
+                return
+            converter = ATTRIBUTES.get(self._attribute)
+            if converter is None:
+                # This is the case where the URL points to a nonexisting list
+                # configuration attribute sub-resource.
+                not_found(response, 'Unknown attribute: {}'.format(
+                    self._attribute))
+                return
+            converters = {self._attribute: converter}
         try:
-            validator = PatchValidator(request, ATTRIBUTES)
+            validator = PatchValidator(request, converters)
         except UnknownPATCHRequestError as error:
-            bad_request(
-                response, b'Unknown attribute: {}'.format(error.attribute))
+            # This is the case where the URL points to the list's entire
+            # configuration resource, but the request dictionary contains a
+            # nonexistent attribute.
+            not_found(
+                response, 'Unknown attribute: {}'.format(error.attribute))
             return
         except ReadOnlyPATCHRequestError as error:
             bad_request(
-                response, b'Read-only attribute: {}'.format(error.attribute))
+                response, 'Read-only attribute: {}'.format(error.attribute))
             return
         try:
             validator.update(self._mlist, request)
