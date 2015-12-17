@@ -33,8 +33,8 @@ from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 
 
-# The representation of the listconf resource as a dictionary.  This is
-# required when PUTting to the list's configuration resource.
+# The representation of the listconf resource as a dictionary.  This is used
+# when PUTting to the list's configuration resource.
 RESOURCE = dict(
     acceptable_aliases=[
         'ant@example.com',
@@ -212,7 +212,7 @@ class TestConfiguration(unittest.TestCase):
             call_api('http://localhost:9001/3.0/lists/ant.example.com/config',
                     dict(bogus=1),
                     'PATCH')
-        self.assertEqual(cm.exception.code, 404)
+        self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason, b'Unknown attribute: bogus')
 
     def test_read_only_patch_attribute(self):
