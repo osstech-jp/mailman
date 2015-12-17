@@ -196,14 +196,6 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self._mlist.subscription_policy,
                          SubscriptionPolicy.confirm_then_moderate)
 
-    ## def test_digest_volume_frequency(self):
-    ##     resource, response = call_api(
-    ##         'http://localhost:9001/3.0/lists/test.example.com/config',
-    ##         dict(digest_volume_frequency=DigestFrequency.never),
-    ##         'PATCH')
-    ##     self.assertEqual(self._mlist.digest_volume_frequency,
-    ##                      DigestFrequency.never)
-
     def test_patch_attribute_double(self):
         with self.assertRaises(HTTPError) as cm:
             resource, response = call_api(
