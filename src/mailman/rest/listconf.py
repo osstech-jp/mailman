@@ -218,9 +218,9 @@ class ListConfiguration:
     def on_patch(self, request, response):
         """Patch the configuration (i.e. partial update)."""
         if self._attribute is None:
-            # We're PATCHing one more attributes on the list's configuration
-            # resource, so all the writable attributes are valid candidates
-            # for updating.
+            # We're PATCHing one or more of the attributes on the list's
+            # configuration resource, so all the writable attributes are valid
+            # candidates for updating.
             converters = ATTRIBUTES
         else:
             # We're PATCHing a specific list configuration attribute
@@ -247,7 +247,7 @@ class ListConfiguration:
             # This is the case where the URL points to the list's entire
             # configuration resource, but the request dictionary contains a
             # nonexistent attribute.
-            not_found(
+            bad_request(
                 response, 'Unknown attribute: {}'.format(error.attribute))
             return
         except ReadOnlyPATCHRequestError as error:
