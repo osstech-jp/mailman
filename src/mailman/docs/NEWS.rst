@@ -118,6 +118,8 @@ REST
    Aurélien Bompard.
  * A member's moderation action can be changed via the REST API.  Given by
    Aurélien Bompard.
+ * Fixed a number of corner cases for the return codes when PUTing or PATCHing
+   list configuration variables.  (Closes: #182)
 
 Other
 -----
