@@ -120,6 +120,9 @@ REST
    Aurélien Bompard.
  * Fixed a number of corner cases for the return codes when PUTing or PATCHing
    list configuration variables.  (Closes: #182)
+ * Expose ``digest_send_periodic``, ``digest_volume_frequency``, and
+   ``digests_enabled`` (renamed from ``digestable``) to the REST API.
+   (Closes: #159)
 
 Other
 -----
