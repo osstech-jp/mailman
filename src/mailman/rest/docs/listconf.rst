@@ -37,7 +37,10 @@ All readable attributes for a list are available on a sub-resource.
     default_nonmember_action: hold
     description:
     digest_last_sent_at: None
+    digest_send_periodic: True
     digest_size_threshold: 30.0
+    digest_volume_frequency: monthly
+    digests_enabled: True
     display_name: Ant
     filter_content: False
     first_strip_reply_to: False
@@ -97,7 +100,10 @@ When using ``PUT``, all writable attributes must be included.
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             allow_list_posts=False,
+    ...             digest_send_periodic=False,
     ...             digest_size_threshold=10.5,
+    ...             digest_volume_frequency='yearly',
+    ...             digests_enabled=False,
     ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             first_strip_reply_to=True,
@@ -145,7 +151,10 @@ These values are changed permanently.
     default_nonmember_action: discard
     description: This is my mailing list
     ...
+    digest_send_periodic: False
     digest_size_threshold: 10.5
+    digest_volume_frequency: yearly
+    digests_enabled: False
     display_name: Fnords
     filter_content: True
     first_strip_reply_to: True

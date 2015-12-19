@@ -151,7 +151,7 @@ testing
     def test_only_decorate_output(self):
         # Ensure that decoration is not done on the archive, digest, or
         # usenet copy of the message.
-        self.assertTrue(self._mlist.digestable)
+        self.assertTrue(self._mlist.digests_enabled)
         # Set up NNTP.
         self._mlist.gateway_to_news = True
         self._mlist.linked_newsgroup = 'testing'

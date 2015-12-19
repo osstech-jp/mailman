@@ -308,6 +308,19 @@ class IMailingList(Interface):
 
     # Digests.
 
+    digests_enabled = Attribute(
+        """Whether or not digests are enabled for this mailing list.""")
+
+    digest_size_threshold = Attribute(
+        """The maximum (approximate) size in kilobytes of the digest currently
+        being collected.""")
+
+    digest_send_periodic = Attribute(
+       "Should a digest be sent daily even when the size threshold isn't met?")
+
+    digest_volume_frequency = Attribute(
+        """How often should a new digest volume be started?""")
+
     digest_last_sent_at = Attribute(
         """The date and time a digest of this mailing list was last sent.""")
 
@@ -321,10 +334,6 @@ class IMailingList(Interface):
         """A sequence number for a specific digest in a given volume.  When
         the digest volume number is bumped, the digest number is reset to
         1.""")
-
-    digest_size_threshold = Attribute(
-        """The maximum (approximate) size in kilobytes of the digest currently
-        being collected.""")
 
     def send_one_last_digest_to(address, delivery_mode):
         """Make sure to send one last digest to an address.

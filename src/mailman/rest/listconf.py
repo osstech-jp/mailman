@@ -29,6 +29,7 @@ from mailman.core.errors import (
 from mailman.interfaces.action import Action
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
+from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, ReplyToMunging, SubscriptionPolicy)
 from mailman.rest.helpers import (
@@ -112,7 +113,10 @@ ATTRIBUTES = dict(
     default_nonmember_action=GetterSetter(enum_validator(Action)),
     description=GetterSetter(str),
     digest_last_sent_at=GetterSetter(None),
+    digest_send_periodic=GetterSetter(as_boolean),
     digest_size_threshold=GetterSetter(float),
+    digest_volume_frequency=GetterSetter(enum_validator(DigestFrequency)),
+    digests_enabled=GetterSetter(as_boolean),
     filter_content=GetterSetter(as_boolean),
     first_strip_reply_to=GetterSetter(as_boolean),
     fqdn_listname=GetterSetter(None),

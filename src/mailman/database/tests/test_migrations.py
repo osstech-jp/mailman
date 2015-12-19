@@ -169,3 +169,30 @@ class TestMigrations(unittest.TestCase):
             self.assertNotIn('type', results[i])
         self.assertEqual(results[4]['type'], '"held message"')
         self.assertEqual(results[5]['type'], '"registration"')
+
+    def test_70af5a4e5790_digests(self):
+        IDS_TO_DIGESTABLE = [
+            (1, True),
+            (2, False),
+            (3, False),
+            (4, True),
+            ]
+        mlist_table = sa.sql.table(
+            'mailinglist',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('digests_enabled', sa.Boolean)
+            )
+        # Downgrading.
+        for table_id, enabled in IDS_TO_DIGESTABLE:
+            config.db.store.execute(mlist_table.insert().values(
+                id=table_id, digests_enabled=enabled))
+        config.db.store.commit()
+        alembic.command.downgrade(alembic_cfg, '47294d3a604')
+        results = config.db.store.execute(
+            'SELECT id, digestable FROM mailinglist').fetchall()
+        self.assertEqual(results, IDS_TO_DIGESTABLE)
+        # Upgrading.
+        alembic.command.upgrade(alembic_cfg, '70af5a4e5790')
+        results = config.db.store.execute(
+            'SELECT id, digests_enabled FROM mailinglist').fetchall()
+        self.assertEqual(results, IDS_TO_DIGESTABLE)

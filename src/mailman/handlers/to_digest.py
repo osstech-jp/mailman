@@ -44,8 +44,9 @@ class ToDigest:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        # Short circuit for non-digestable messages.
-        if not mlist.digestable or msgdata.get('isdigest'):
+        # Short-circuit if digests are not enabled or if this message already
+        # is a digest.
+        if not mlist.digests_enabled or msgdata.get('isdigest'):
             return
         # Open the mailbox that will be used to collect the current digest.
         mailbox_path = os.path.join(mlist.data_path, 'digest.mmdf')

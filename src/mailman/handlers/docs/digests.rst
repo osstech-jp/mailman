@@ -37,7 +37,7 @@ Short circuiting
 When a message is posted to the mailing list, it is generally added to a
 mailbox, unless the mailing list does not allow digests.
 
-    >>> mlist.digestable = False
+    >>> mlist.digests_enabled = False
     >>> msg = next(message_factory)
     >>> process = config.handlers['to-digest'].process
     >>> process(mlist, msg, {})
@@ -49,7 +49,7 @@ mailbox, unless the mailing list does not allow digests.
 
 ...or they may allow digests but the message is already a digest.
 
-    >>> mlist.digestable = True
+    >>> mlist.digests_enabled = True
     >>> process(mlist, msg, dict(isdigest=True))
     >>> sum(1 for msg in digest_mbox(mlist))
     0

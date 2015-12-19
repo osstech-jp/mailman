@@ -26,6 +26,7 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
+from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, SubscriptionPolicy)
 from mailman.testing.helpers import call_api
@@ -58,9 +59,10 @@ RESOURCE = dict(
     description='This is my mailing list',
     include_rfc2369_headers=False,
     allow_list_posts=False,
-    #digest_send_periodic='yes',
+    digest_send_periodic=True,
     digest_size_threshold=10.5,
-    #digest_volume_frequency=1,
+    digest_volume_frequency='monthly',
+    digests_enabled=True,
     posting_pipeline='virgin',
     filter_content=True,
     first_strip_reply_to=True,
@@ -198,7 +200,7 @@ class TestConfiguration(unittest.TestCase):
 
     def test_patch_attribute_double(self):
         with self.assertRaises(HTTPError) as cm:
-            resource, response = call_api(
+            call_api(
                 'http://localhost:9001/3.0/lists/ant.example.com'
                 '/config/reply_to_address',
                 dict(display_name='bar@ant.example.com',
@@ -255,3 +257,121 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          b'Cannot convert parameters: posting_pipeline')
+
+    def test_get_digest_send_periodic(self):
+        with transaction():
+            self._mlist.digest_send_periodic = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digest_send_periodic')
+        self.assertFalse(resource['digest_send_periodic'])
+
+    def test_patch_digest_send_periodic(self):
+        with transaction():
+            self._mlist.digest_send_periodic = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digest_send_periodic',
+            dict(digest_send_periodic=True),
+            'PATCH')
+        self.assertEqual(response.status, 204)
+        self.assertTrue(self._mlist.digest_send_periodic)
+
+    def test_put_digest_send_periodic(self):
+        with transaction():
+            self._mlist.digest_send_periodic = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digest_send_periodic',
+            dict(digest_send_periodic=True),
+            'PUT')
+        self.assertEqual(response.status, 204)
+        self.assertTrue(self._mlist.digest_send_periodic)
+
+    def test_get_digest_volume_frequency(self):
+        with transaction():
+            self._mlist.digest_volume_frequency = DigestFrequency.yearly
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digest_volume_frequency')
+        self.assertEqual(resource['digest_volume_frequency'], 'yearly')
+
+    def test_patch_digest_volume_frequency(self):
+        with transaction():
+            self._mlist.digest_volume_frequency = DigestFrequency.yearly
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digest_volume_frequency',
+            dict(digest_volume_frequency='monthly'),
+            'PATCH')
+        self.assertEqual(response.status, 204)
+        self.assertEqual(self._mlist.digest_volume_frequency,
+                         DigestFrequency.monthly)
+
+    def test_put_digest_volume_frequency(self):
+        with transaction():
+            self._mlist.digest_volume_frequency = DigestFrequency.yearly
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digest_volume_frequency',
+            dict(digest_volume_frequency='monthly'),
+            'PUT')
+        self.assertEqual(response.status, 204)
+        self.assertEqual(self._mlist.digest_volume_frequency,
+                         DigestFrequency.monthly)
+
+    def test_bad_patch_digest_volume_frequency(self):
+        with transaction():
+            self._mlist.digest_volume_frequency = DigestFrequency.yearly
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/lists/ant.example.com/config'
+                '/digest_volume_frequency',
+                dict(digest_volume_frequency='once in a while'),
+                'PATCH')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'Cannot convert parameters: digest_volume_frequency')
+
+    def test_bad_put_digest_volume_frequency(self):
+        with transaction():
+            self._mlist.digest_volume_frequency = DigestFrequency.yearly
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/lists/ant.example.com/config'
+                '/digest_volume_frequency',
+                dict(digest_volume_frequency='once in a while'),
+                'PUT')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'Cannot convert parameters: digest_volume_frequency')
+
+    def test_get_digests_enabled(self):
+        with transaction():
+            self._mlist.digests_enabled = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digests_enabled')
+        self.assertFalse(resource['digests_enabled'])
+
+    def test_patch_digests_enabled(self):
+        with transaction():
+            self._mlist.digests_enabled = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digests_enabled',
+            dict(digests_enabled=True),
+            'PATCH')
+        self.assertEqual(response.status, 204)
+        self.assertTrue(self._mlist.digests_enabled)
+
+    def test_put_digests_enabled(self):
+        with transaction():
+            self._mlist.digests_enabled = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/digests_enabled',
+            dict(digests_enabled=True),
+            'PUT')
+        self.assertEqual(response.status, 204)
+        self.assertTrue(self._mlist.digests_enabled)

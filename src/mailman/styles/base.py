@@ -87,7 +87,7 @@ class BasicOperation:
         mlist.filter_action = FilterAction.discard
         mlist.filter_content = False
         # Digests.
-        mlist.digestable = True
+        mlist.digests_enabled = True
         mlist.digest_is_default = False
         mlist.mime_is_default_digest = False
         mlist.digest_size_threshold = 30 # KB
@@ -97,7 +97,6 @@ class BasicOperation:
             'mailman:///$listname/$language/footer-generic.txt')
         mlist.digest_volume_frequency = DigestFrequency.monthly
         mlist.next_digest_number = 1
-        mlist.nondigestable = True
         # NNTP gateway
         mlist.nntp_host = ''
         mlist.linked_newsgroup = ''
