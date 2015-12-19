@@ -71,19 +71,16 @@ something in the models, what steps are needed to reflect that change in the
 database schema?  You need to create and enter a virtual environment, install
 Mailman into that, and then run the ``alembic`` command.  For example::
 
-    $ virtualenv -p python3 /tmp/mm3
+    $ python3 -m venv /tmp/mm3
     $ source /tmp/mm3/bin/activate
     $ python setup.py develop
+    $ mailman info
     $ alembic -c src/mailman/config/alembic.cfg revision --autogenerate -m
       "<migration_name>"
+    $ deactivate
 
 This would create a new migration which would automatically be migrated to the
-database on the next run of Mailman.  Note that the database needs to be in
-the older state so that Alembic can track the changes in the schema and
-autogenerate a migration.  If you don't have the database in the older state
-you can remove the `--autogenerate` flag in the above command.  It would then
-create a new empty revision which you can edit manually to reflect your
-changes in the database schema.
+database on the next run of Mailman.
 
 People upgrading Mailman from previous versions need not do anything manually,
 as soon as a new migration is added in the sources, it will be automatically
