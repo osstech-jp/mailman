@@ -135,6 +135,9 @@ Other
  * Rework the digest machinery, and add a new `send-digests` subcommand, which
    can be used from the command line or cron to immediately send out any
    partially collected digests.
+ * The mailing list "data directory" has been renamed.  Instead of using the
+   fqdn listname, the subdirectory inside ``[paths]list_data_dir`` now uses
+   the List-ID.
 
 
 3.0.0 -- "Show Don't Tell"

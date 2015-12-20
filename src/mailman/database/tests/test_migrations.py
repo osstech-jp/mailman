@@ -22,10 +22,12 @@ __all__ = [
     ]
 
 
+import os
 import unittest
 import alembic.command
 import sqlalchemy as sa
 
+from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.alembic import alembic_cfg
 from mailman.database.helpers import exists_in_db
@@ -196,3 +198,24 @@ class TestMigrations(unittest.TestCase):
         results = config.db.store.execute(
             'SELECT id, digests_enabled FROM mailinglist').fetchall()
         self.assertEqual(results, IDS_TO_DIGESTABLE)
+
+    def test_70af5a4e5790_data_paths(self):
+        # Create a couple of mailing lists through the standard API.
+        with transaction():
+            ant = create_list('ant@example.com')
+            bee = create_list('bee@example.com')
+        # Downgrade and verify that the old data paths exist.
+        alembic.command.downgrade(alembic_cfg, '47294d3a604')
+        self.assertTrue(os.path.exists(
+            os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
+        self.assertTrue(os.path.exists(
+            os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
+        # Upgrade and verify that the new data paths exists and the old ones
+        # no longer do.
+        alembic.command.upgrade(alembic_cfg, '70af5a4e5790')
+        self.assertFalse(os.path.exists(
+            os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
+        self.assertFalse(os.path.exists(
+            os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
+        self.assertTrue(os.path.exists(ant.data_path))
+        self.assertTrue(os.path.exists(bee.data_path))

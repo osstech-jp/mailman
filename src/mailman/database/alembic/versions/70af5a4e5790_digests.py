@@ -10,14 +10,25 @@ Create Date: 2015-12-19 12:05:42.202998
 revision = '70af5a4e5790'
 down_revision = '47294d3a604'
 
-from alembic import op
+import os
 import sqlalchemy as sa
+
+from alembic import op
+from mailman.config import config
 
 
 def upgrade():
     with op.batch_alter_table('mailinglist') as batch_op:
         batch_op.alter_column('digestable', new_column_name='digests_enabled')
         batch_op.drop_column('nondigestable')
+    # Non-database migration: rename the list's data-path.
+    for dirname in os.listdir(config.LIST_DATA_DIR):
+        if '@' in dirname:
+            old_name = os.path.join(config.LIST_DATA_DIR, dirname)
+            listname, at, domain = dirname.partition('@')
+            new_name = os.path.join(config.LIST_DATA_DIR,
+                                    '{}.{}'.format(listname, domain))
+            os.rename(old_name, new_name)
 
 
 def downgrade():
@@ -25,5 +36,10 @@ def downgrade():
         batch_op.alter_column('digests_enabled', new_column_name='digestable')
         # The data for this column is lost, it's not used anyway.
         batch_op.add_column(sa.Column('nondigestable', sa.Boolean))
-
-# XXX - move list.data_path
+    for dirname in os.listdir(config.LIST_DATA_DIR):
+        if '@' not in dirname:
+            old_name = os.path.join(config.LIST_DATA_DIR, dirname)
+            listname, domain = dirname.split('.', 1)
+            new_name = os.path.join(config.LIST_DATA_DIR,
+                                    '{}@{}'.format(listname, domain))
+            os.rename(old_name, new_name)
