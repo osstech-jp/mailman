@@ -261,7 +261,7 @@ class MailingList(Model):
     @property
     def data_path(self):
         """See `IMailingList`."""
-        return os.path.join(config.LIST_DATA_DIR, self.fqdn_listname)
+        return os.path.join(config.LIST_DATA_DIR, self.list_id)
 
     # IMailingListAddresses
 

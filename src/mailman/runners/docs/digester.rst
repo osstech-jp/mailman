@@ -56,7 +56,7 @@ But the message metadata has a reference to the digest file.
     >>> dump_msgdata(entry.msgdata)
     _parsemsg    : False
     digest_number: 1
-    digest_path  : .../lists/test@example.com/digest.1.1.mmdf
+    digest_path  : .../lists/test.example.com/digest.1.1.mmdf
     listid       : test.example.com
     version      : 3
     volume       : 1

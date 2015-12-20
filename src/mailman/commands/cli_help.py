@@ -30,7 +30,7 @@ from zope.interface import implementer
 @implementer(ICLISubCommand)
 class Help:
     # Lowercase, to match argparse's default --help text.
-    """show this help message and exit"""
+    """Show this help message and exit."""
 
     name = 'help'
 

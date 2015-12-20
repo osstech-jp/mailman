@@ -132,6 +132,9 @@ Other
    ``list_url`` or permalink.  Given by Aurélien Bompard.
  * Large performance improvement in ``SubscriptionService.find_members()``.
    Given by Aurélien Bompard.
+ * Rework the digest machinery, and add a new `send-digests` subcommand, which
+   can be used from the command line or cron to immediately send out any
+   partially collected digests.
 
 
 3.0.0 -- "Show Don't Tell"

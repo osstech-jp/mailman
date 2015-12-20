@@ -25,3 +25,5 @@ def downgrade():
         batch_op.alter_column('digests_enabled', new_column_name='digestable')
         # The data for this column is lost, it's not used anyway.
         batch_op.add_column(sa.Column('nondigestable', sa.Boolean))
+
+# XXX - move list.data_path

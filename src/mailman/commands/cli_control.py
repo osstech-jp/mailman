@@ -205,7 +205,7 @@ class Stop(SignalCommand):
 
 
 class Reopen(SignalCommand):
-    """Signal the Mailman processes to re-open their log files.."""
+    """Signal the Mailman processes to re-open their log files."""
 
     name = 'reopen'
     message = _('Reopening the Mailman runners')

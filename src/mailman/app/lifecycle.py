@@ -94,14 +94,12 @@ def create_list(fqdn_listname, owners=None, style_name=None):
 
 def remove_list(mlist):
     """Remove the list and all associated artifacts and subscriptions."""
-    fqdn_listname = mlist.fqdn_listname
+    # Remove the list's data directory, if it exists.
+    try:
+        shutil.rmtree(mlist.data_path)
+    except FileNotFoundError:
+        pass
     # Delete the mailing list from the database.
     getUtility(IListManager).delete(mlist)
     # Do the MTA-specific list deletion tasks
     call_name(config.mta.incoming).delete(mlist)
-    # Remove the list directory, if it exists.
-    try:
-        shutil.rmtree(os.path.join(config.LIST_DATA_DIR, fqdn_listname))
-    except OSError as error:
-        if error.errno != errno.ENOENT:
-            raise

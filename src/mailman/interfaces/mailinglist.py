@@ -316,7 +316,8 @@ class IMailingList(Interface):
         being collected.""")
 
     digest_send_periodic = Attribute(
-       "Should a digest be sent daily even when the size threshold isn't met?")
+        """Should a digest be sent by the `mailman send_digest` command even
+        when the size threshold hasn't yet been met?""")
 
     digest_volume_frequency = Attribute(
         """How often should a new digest volume be started?""")

@@ -122,7 +122,7 @@ class Lists:
 
 @implementer(ICLISubCommand)
 class Create:
-    """Create a mailing list"""
+    """Create a mailing list."""
 
     name = 'create'
 
@@ -238,7 +238,7 @@ class Create:
 
 @implementer(ICLISubCommand)
 class Remove:
-    """Remove a mailing list"""
+    """Remove a mailing list."""
 
     name = 'remove'
 
