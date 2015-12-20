@@ -130,22 +130,23 @@ def maybe_send_digest_now(mlist=None, force=False):
         # actually be, but it's the most easily available metric to decide
         # whether the size threshold has been reached.
         size = os.path.getsize(mailbox_path)
-        if (size >= mlist.digest_size_threshold * 1024.0 or
+        if (size >= mailing_list.digest_size_threshold * 1024.0 or
             (force and size > 0)):
             # Send the digest.  Because we don't want to hold up this process
             # with crafting the digest, we're going to move the digest file to
             # a safe place, then craft a fake message for the DigestRunner as
             # a trigger for it to build and send the digest.
             mailbox_dest = os.path.join(
-                mlist.data_path,
-                'digest.{0.volume}.{0.next_digest_number}.mmdf'.format(mlist))
-            volume = mlist.volume
-            digest_number = mlist.next_digest_number
-            bump_digest_number_and_volume(mlist)
+                mailing_list.data_path,
+                'digest.{0.volume}.{0.next_digest_number}.mmdf'.format(
+                    mailing_list))
+            volume = mailing_list.volume
+            digest_number = mailing_list.next_digest_number
+            bump_digest_number_and_volume(mailing_list)
             os.rename(mailbox_path, mailbox_dest)
             config.switchboards['digest'].enqueue(
                 Message(),
-                listid=mlist.list_id,
+                listid=mailing_list.list_id,
                 digest_path=mailbox_dest,
                 volume=volume,
                 digest_number=digest_number)

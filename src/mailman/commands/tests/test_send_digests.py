@@ -285,3 +285,69 @@ Subject: message 3
         digest_contents = str(bee)
         self.assertIn('Subject: message 3', digest_contents)
         self.assertIn('Subject: message 4', digest_contents)
+
+    def test_send_digests_for_all_lists(self):
+        # Populate ant's digest.
+        msg = mfs("""\
+To: ant@example.com
+From: anne@example.com
+Subject: message 1
+
+""")
+        self._handler.process(self._mlist, msg, {})
+        del msg['subject']
+        msg['subject'] = 'message 2'
+        self._handler.process(self._mlist, msg, {})
+        # Create the second list.
+        bee = create_list('bee@example.com')
+        bee.digests_enabled = True
+        bee.digest_size_threshold = 100000
+        bee.send_welcome_message = False
+        member = subscribe(bee, 'Bart')
+        member.preferences.delivery_mode = DeliveryMode.plaintext_digests
+        # Populate bee's digest.
+        msg = mfs("""\
+To: bee@example.com
+From: bart@example.com
+Subject: message 3
+
+""")
+        self._handler.process(bee, msg, {})
+        del msg['subject']
+        msg['subject'] = 'message 4'
+        self._handler.process(bee, msg, {})
+        # There are no digests for either list already being sent, but the
+        # mailing lists do have a digest mbox collecting messages.
+        ant_mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
+        self.assertGreater(os.path.getsize(ant_mailbox_path), 0)
+        # Check bee's digest.
+        bee_mailbox_path = os.path.join(bee.data_path, 'digest.mmdf')
+        self.assertGreater(os.path.getsize(bee_mailbox_path), 0)
+        # Both.
+        items = get_queue_messages('digest')
+        self.assertEqual(len(items), 0)
+        # Process all mailing list digests by not setting any arguments.
+        self._command.process(FakeArgs())
+        self._runner.run()
+        # Now, neither list has a digest mbox and but there are plaintext
+        # digest in the outgoing queue for both.
+        self.assertFalse(os.path.exists(ant_mailbox_path))
+        self.assertFalse(os.path.exists(bee_mailbox_path))
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 2)
+        # Figure out which digest is going to ant and which to bee.
+        if items[0].msg['to'] == 'ant@example.com':
+            ant = items[0].msg
+            bee = items[1].msg
+        else:
+            assert items[0].msg['to'] == 'bee@example.com'
+            ant = items[1].msg
+            bee = items[0].msg
+        # Check ant's digest.
+        digest_contents = str(ant)
+        self.assertIn('Subject: message 1', digest_contents)
+        self.assertIn('Subject: message 2', digest_contents)
+        # Check bee's digest.
+        digest_contents = str(bee)
+        self.assertIn('Subject: message 3', digest_contents)
+        self.assertIn('Subject: message 4', digest_contents)
