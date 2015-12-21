@@ -83,6 +83,9 @@ so::
 
     $ MAILMAN_EXTRA_TESTING_CFG=/path/to/postgres.cfg .tox/pg/bin/python -m nose2 -vv -P user
 
+Note that the path specified in `MAILMAN_EXTRA_TESTING_CFG` must be an
+absolute path or some tests will fail.
+
 
 Building for development
 ------------------------

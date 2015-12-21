@@ -185,16 +185,18 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('digests_enabled', sa.Boolean)
             )
         # Downgrading.
-        for table_id, enabled in IDS_TO_DIGESTABLE:
-            config.db.store.execute(mlist_table.insert().values(
-                id=table_id, digests_enabled=enabled))
-        config.db.store.commit()
-        alembic.command.downgrade(alembic_cfg, '47294d3a604')
-        results = config.db.store.execute(
-            'SELECT id, digestable FROM mailinglist').fetchall()
+        with transaction():
+            for table_id, enabled in IDS_TO_DIGESTABLE:
+                config.db.store.execute(mlist_table.insert().values(
+                    id=table_id, digests_enabled=enabled))
+        with transaction():
+            alembic.command.downgrade(alembic_cfg, '47294d3a604')
+            results = config.db.store.execute(
+                'SELECT id, digestable FROM mailinglist').fetchall()
         self.assertEqual(results, IDS_TO_DIGESTABLE)
         # Upgrading.
-        alembic.command.upgrade(alembic_cfg, '70af5a4e5790')
+        with transaction():
+            alembic.command.upgrade(alembic_cfg, '70af5a4e5790')
         results = config.db.store.execute(
             'SELECT id, digests_enabled FROM mailinglist').fetchall()
         self.assertEqual(results, IDS_TO_DIGESTABLE)
