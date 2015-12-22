@@ -200,6 +200,24 @@ class TestLists(unittest.TestCase):
         self.assertIsNone(getUtility(IListManager).get('test@example.com'))
         self.assertEqual(config.db.store.query(AcceptableAlias).count(), 0)
 
+    def test_bad_roster_matcher(self):
+        # Try to get a list's roster, but the roster name is bogus.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                     '/roster/bogus')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_config_matcher(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                     '/config/volume/bogus')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_list_get(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/bogus.example.com')
+        self.assertEqual(cm.exception.code, 404)
+
 
 
 class TestListArchivers(unittest.TestCase):
@@ -230,8 +248,20 @@ class TestListArchivers(unittest.TestCase):
                 'http://localhost:9001/3.0/lists/bee.example.com/archivers')
         self.assertEqual(cm.exception.code, 404)
 
-    def test_patch_status_on_bogus_archiver(self):
-        # You cannot set the status on an archiver the list doesn't know about.
+    def test_put_bogus_archiver(self):
+        # You cannot PUT on an archiver the list doesn't know about.
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/lists/ant.example.com/archivers', {
+                    'bogus-archiver': True,
+                    },
+                method='PUT')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'Unexpected parameters: bogus-archiver')
+
+    def test_patch_bogus_archiver(self):
+        # You cannot PATCH on an archiver the list doesn't know about.
         with self.assertRaises(HTTPError) as cm:
             call_api(
                 'http://localhost:9001/3.0/lists/ant.example.com/archivers', {
@@ -363,6 +393,12 @@ class TestListDigests(unittest.TestCase):
             anne = getUtility(IUserManager).create_address('anne@example.com')
             self._mlist.subscribe(anne)
             anne.preferences.delivery_mode = DeliveryMode.plaintext_digests
+
+    def test_bad_digest_url(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/lists/bogus.example.com/digest')
+        self.assertEqual(cm.exception.code, 404)
 
     def test_post_nothing_to_do(self):
         resource, response = call_api(

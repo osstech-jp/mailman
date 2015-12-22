@@ -276,8 +276,7 @@ class ArchiverGetterSetter(GetterSetter):
         # getting a new status.  value will be the representation of the new
         # boolean status.
         archiver = self._archiver_set.get(attribute)
-        if archiver is None:
-            raise ValueError('No such archiver: {}'.format(attribute))
+        assert archiver is not None, attribute
         archiver.is_enabled = as_boolean(value)
 
 
