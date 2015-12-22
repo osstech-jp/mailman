@@ -288,3 +288,112 @@ You can change the state of a subset of the list archivers.
     mail-archive: False
     mhonarc: False
     prototype: False
+
+
+List digests
+============
+
+A list collects messages and prepares a digest which can be periodically sent
+to all members who elect to receive digests.  Digests are usually sent
+whenever their size has reached a threshold, but you can force a digest to be
+sent immediately via the REST API.
+
+Let's create a mailing list that has a digest recipient.
+
+    >>> from mailman.interfaces.member import DeliveryMode
+    >>> from mailman.testing.helpers import subscribe
+    >>> emu = create_list('emu@example.com')
+    >>> emu.send_welcome_message = False
+    >>> anne = subscribe(emu, 'Anne')
+    >>> anne.preferences.delivery_mode = DeliveryMode.plaintext_digests
+
+The mailing list has a fairly high size threshold so that sending a single
+message through the list won't trigger an automatic digest.  The threshold is
+the maximum digest size in kibibytes (1024 bytes).
+
+    >>> emu.digest_size_threshold = 100
+    >>> transaction.commit()
+
+We send a message through the mailing list to start collecting for a digest.
+
+    >>> from mailman.runners.digest import DigestRunner
+    >>> from mailman.testing.helpers import make_testable_runner
+    >>> msg = message_from_string("""\
+    ... From: anne@example.com
+    ... To: emu@example.com
+    ... Subject: Message #1
+    ...
+    ... """)
+    >>> config.handlers['to-digest'].process(emu, msg, {})
+    >>> runner = make_testable_runner(DigestRunner, 'digest')
+    >>> runner.run()
+
+No digest was sent because it didn't reach the size threshold.
+
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> len(get_queue_messages('virgin'))
+    0
+
+By POSTing to the list's digest end-point with the ``send`` parameter set, we
+can force the digest to be sent.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/emu.example.com/digest', {
+    ...           'send': True,
+    ...           })
+    content-length: 0
+    date: ...
+
+Once the runner does its thing, the digest message will be sent.
+
+    >>> runner.run()
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
+    1
+    >>> print(items[0].msg)
+    From: emu-request@example.com
+    Subject: Emu Digest, Vol 1, Issue 1
+    To: emu@example.com
+    ...
+    From: anne@example.com
+    Subject: Message #1
+    To: emu@example.com
+    ...
+    End of Emu Digest, Vol 1, Issue 1
+    *********************************
+    <BLANKLINE>
+
+Digests also have a volume number and digest number which can be bumped, also
+by POSTing to the REST API.  Bumping the digest for this list will increment
+the digest volume and reset the digest number to 1.  We have to fake that the
+last digest was sent a couple of days ago.
+
+    >>> from datetime import timedelta
+    >>> from mailman.interfaces.digests import DigestFrequency
+    >>> emu.digest_volume_frequency = DigestFrequency.daily
+    >>> emu.digest_last_sent_at -= timedelta(days=2)
+    >>> transaction.commit()
+
+Before bumping, we can get the next digest volume and number.  Doing a GET on
+the digest resource is just a shorthand for getting some interesting
+information about the digest.  Note that ``volume`` and ``next_digest_number``
+can also be retrieved from the list's configuration resource.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/emu.example.com/digest')
+    http_etag: ...
+    next_digest_number: 2
+    volume: 1
+
+Let's bump the digest.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/emu.example.com/digest', {
+    ...           'bump': True,
+    ...           })
+    content-length: 0
+    date: ...
+
+And now the next digest to be sent will have a new volume number.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/emu.example.com/digest')
+    http_etag: ...
+    next_digest_number: 1
+    volume: 2

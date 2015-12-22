@@ -123,6 +123,12 @@ REST
  * Expose ``digest_send_periodic``, ``digest_volume_frequency``, and
    ``digests_enabled`` (renamed from ``digestable``) to the REST API.
    (Closes: #159)
+ * Expose the "bump digest" and "send digest" functionality though the REST
+   API via the ``<api>/lists/<list-id>/digest`` end-point.  GETting this
+   resource returns the ``next_digest_number`` and ``volume`` as the same
+   values accessible through the list's configuraiton resource.  POSTing to
+   the resource with either ``send=True``, ``bump=True``, or both invokes the
+   given action.
 
 Other
 -----
@@ -132,9 +138,9 @@ Other
    ``list_url`` or permalink.  Given by Aurélien Bompard.
  * Large performance improvement in ``SubscriptionService.find_members()``.
    Given by Aurélien Bompard.
- * Rework the digest machinery, and add a new `send-digests` subcommand, which
+ * Rework the digest machinery, and add a new ``digests`` subcommand, which
    can be used from the command line or cron to immediately send out any
-   partially collected digests.
+   partially collected digests, or bump the digest and volume numbers.
  * The mailing list "data directory" has been renamed.  Instead of using the
    fqdn listname, the subdirectory inside ``[paths]list_data_dir`` now uses
    the List-ID.

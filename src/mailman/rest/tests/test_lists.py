@@ -19,6 +19,7 @@
 
 __all__ = [
     'TestListArchivers',
+    'TestListDigests',
     'TestListPagination',
     'TestLists',
     'TestListsMissing',
@@ -27,15 +28,22 @@ __all__ = [
 
 import unittest
 
+from datetime import timedelta
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
+from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import IAcceptableAliasSet
+from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import AcceptableAlias
-from mailman.testing.helpers import call_api
+from mailman.runners.digest import DigestRunner
+from mailman.testing.helpers import (
+    call_api, get_queue_messages, make_testable_runner,
+    specialized_message_from_string as mfs)
 from mailman.testing.layers import RESTLayer
+from mailman.utilities.datetime import now as right_now
 from urllib.error import HTTPError
 from zope.component import getUtility
 
@@ -318,7 +326,7 @@ class TestListPagination(unittest.TestCase):
     def test_zeroth_page(self):
         # Page numbers start at one.
         with self.assertRaises(HTTPError) as cm:
-            resource, response = call_api(
+            call_api(
                 'http://localhost:9001/3.0/domains/example.com/lists'
                 '?count=1&page=0')
         self.assertEqual(cm.exception.code, 400)
@@ -326,7 +334,7 @@ class TestListPagination(unittest.TestCase):
     def test_negative_page(self):
         # Negative pages are not allowed.
         with self.assertRaises(HTTPError) as cm:
-            resource, response = call_api(
+            call_api(
                 'http://localhost:9001/3.0/domains/example.com/lists'
                 '?count=1&page=-1')
         self.assertEqual(cm.exception.code, 400)
@@ -340,3 +348,66 @@ class TestListPagination(unittest.TestCase):
         self.assertEqual(resource['total_size'], 6)
         self.assertEqual(resource['start'], 6)
         self.assertNotIn('entries', resource)
+
+
+
+class TestListDigests(unittest.TestCase):
+    """Test /lists/<list-id>/digest"""
+
+    layer = RESTLayer
+
+    def setUp(self):
+        with transaction():
+            self._mlist = create_list('ant@example.com')
+            self._mlist.send_welcome_message = False
+            anne = getUtility(IUserManager).create_address('anne@example.com')
+            self._mlist.subscribe(anne)
+            anne.preferences.delivery_mode = DeliveryMode.plaintext_digests
+
+    def test_post_nothing_to_do(self):
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/digest', {})
+        self.assertEqual(response.status, 200)
+
+    def test_post_something_to_do(self):
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
+                bump=True))
+        self.assertEqual(response.status, 202)
+
+    def test_post_bad_request(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
+                    bogus=True))
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'Unexpected parameters: bogus')
+
+    def test_bump_before_send(self):
+        with transaction():
+            self._mlist.digest_volume_frequency = DigestFrequency.monthly
+            self._mlist.volume = 7
+            self._mlist.next_digest_number = 4
+            self._mlist.digest_last_sent_at = right_now() + timedelta(
+                days=-32)
+        msg = mfs("""\
+To: ant@example.com
+From: anne@example.com
+Subject: message 1
+
+""")
+        config.handlers['to-digest'].process(self._mlist, msg, {})
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
+                send=True,
+                bump=True))
+        self.assertEqual(response.status, 202)
+        make_testable_runner(DigestRunner, 'digest').run()
+        # The volume is 8 and the digest number is 2 because a digest was sent
+        # after the volume/number was bumped.
+        self.assertEqual(self._mlist.volume, 8)
+        self.assertEqual(self._mlist.next_digest_number, 2)
+        self.assertEqual(self._mlist.digest_last_sent_at, right_now())
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0].msg['subject'], 'Ant Digest, Vol 8, Issue 1')

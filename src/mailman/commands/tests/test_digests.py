@@ -377,7 +377,7 @@ Subject: message 3
         items = get_queue_messages('virgin')
         self.assertEqual(len(items), 0)
 
-    def test_bump_after_send(self):
+    def test_bump_before_send(self):
         self._mlist.digest_volume_frequency = DigestFrequency.monthly
         self._mlist.volume = 7
         self._mlist.next_digest_number = 4

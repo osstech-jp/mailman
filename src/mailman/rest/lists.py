@@ -28,6 +28,8 @@ __all__ = [
 
 
 from lazr.config import as_boolean
+from mailman.app.digests import (
+    bump_digest_number_and_volume, maybe_send_digest_now)
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
 from mailman.interfaces.domain import BadDomainSpecificationError
@@ -39,8 +41,8 @@ from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.rest.listconf import ListConfiguration
 from mailman.rest.helpers import (
-    CollectionMixin, GetterSetter, NotFound, bad_request, child, created,
-    etag, no_content, not_found, okay)
+    CollectionMixin, GetterSetter, NotFound, accepted, bad_request, child,
+    created, etag, no_content, not_found, okay)
 from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
@@ -192,6 +194,12 @@ class AList(_ListBase):
             return NotFound(), []
         return ListArchivers(self._mlist)
 
+    @child()
+    def digest(self, request, segments):
+        if self._mlist is None:
+            return NotFound(), []
+        return ListDigest(self._mlist)
+
 
 
 class AllLists(_ListBase):
@@ -307,6 +315,41 @@ class ListArchivers:
     def on_patch(self, request, response):
         """Patch some archiver statueses."""
         self.patch_put(request, response, is_optional=True)
+
+
+
+class ListDigest:
+    """Simple resource representing actions on a list's digest."""
+
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    def on_get(self, request, response):
+        resource = dict(
+            next_digest_number=self._mlist.next_digest_number,
+            volume=self._mlist.volume,
+            )
+        okay(response, etag(resource))
+
+    def on_post(self, request, response):
+        try:
+            validator = Validator(
+                send=as_boolean,
+                bump=as_boolean,
+                _optional=('send', 'bump'))
+            values = validator(request)
+        except ValueError as error:
+            bad_request(response, str(error))
+            return
+        if len(values) == 0:
+            # There's nothing to do, but that's okay.
+            okay(response)
+            return
+        if values.get('bump', False):
+            bump_digest_number_and_volume(self._mlist)
+        if values.get('send', False):
+            maybe_send_digest_now(self._mlist, force=True)
+        accepted(response)
 
 
 

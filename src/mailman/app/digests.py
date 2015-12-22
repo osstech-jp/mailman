@@ -73,7 +73,7 @@ def bump_digest_number_and_volume(mlist):
 
 
 
-def maybe_send_digest_now(mlist, force=False):
+def maybe_send_digest_now(mlist, *, force=False):
     """Send this mailing list's digest now.
 
     If there are any messages in this mailing list's digest, the
