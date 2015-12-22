@@ -18,6 +18,7 @@
 """Test the send-digests subcommand."""
 
 __all__ = [
+    'TestBumpVolume',
     'TestSendDigests',
     ]
 
@@ -25,16 +26,19 @@ __all__ = [
 import os
 import unittest
 
+from datetime import timedelta
 from io import StringIO
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_digests import Digests
 from mailman.config import config
+from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.member import DeliveryMode
 from mailman.runners.digest import DigestRunner
 from mailman.testing.helpers import (
     get_queue_messages, make_testable_runner,
     specialized_message_from_string as mfs, subscribe)
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.datetime import now as right_now
 from unittest.mock import patch
 
 
@@ -48,8 +52,6 @@ class FakeArgs:
 
 
 class TestSendDigests(unittest.TestCase):
-    """Test the send-digests subcommand."""
-
     layer = ConfigLayer
 
     def setUp(self):
@@ -361,3 +363,86 @@ Subject: message 3
         digest_contents = str(bee)
         self.assertIn('Subject: message 3', digest_contents)
         self.assertIn('Subject: message 4', digest_contents)
+
+    def test_send_no_digest_ready(self):
+        # If no messages have been sent through the mailing list, no digest
+        # can be sent.
+        mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
+        self.assertFalse(os.path.exists(mailbox_path))
+        args = FakeArgs()
+        args.send = True
+        args.lists.append('ant.example.com')
+        self._command.process(args)
+        self._runner.run()
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 0)
+
+    def test_bump_after_send(self):
+        self._mlist.digest_volume_frequency = DigestFrequency.monthly
+        self._mlist.volume = 7
+        self._mlist.next_digest_number = 4
+        self._mlist.digest_last_sent_at = right_now() + timedelta(
+            days=-32)
+        msg = mfs("""\
+To: ant@example.com
+From: anne@example.com
+Subject: message 1
+
+""")
+        self._handler.process(self._mlist, msg, {})
+        args = FakeArgs()
+        args.bump = True
+        args.send = True
+        args.lists.append('ant.example.com')
+        self._command.process(args)
+        self._runner.run()
+        # The volume is 8 and the digest number is 2 because a digest was sent
+        # after the volume/number was bumped.
+        self.assertEqual(self._mlist.volume, 8)
+        self.assertEqual(self._mlist.next_digest_number, 2)
+        self.assertEqual(self._mlist.digest_last_sent_at, right_now())
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0].msg['subject'], 'Ant Digest, Vol 8, Issue 1')
+
+
+
+class TestBumpVolume(unittest.TestCase):
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('ant@example.com')
+        self._mlist.digest_volume_frequency = DigestFrequency.monthly
+        self._mlist.volume = 7
+        self._mlist.next_digest_number = 4
+        self.right_now = right_now()
+        self._command = Digests()
+
+    def test_bump_one_list(self):
+        self._mlist.digest_last_sent_at = self.right_now + timedelta(
+            days=-32)
+        args = FakeArgs()
+        args.bump = True
+        args.lists.append('ant.example.com')
+        self._command.process(args)
+        self.assertEqual(self._mlist.volume, 8)
+        self.assertEqual(self._mlist.next_digest_number, 1)
+        self.assertEqual(self._mlist.digest_last_sent_at, self.right_now)
+
+    def test_bump_two_lists(self):
+        self._mlist.digest_last_sent_at = self.right_now + timedelta(
+            days=-32)
+        # Create the second list.
+        bee = create_list('bee@example.com')
+        bee.digest_volume_frequency = DigestFrequency.monthly
+        bee.volume = 7
+        bee.next_digest_number = 4
+        bee.digest_last_sent_at = self.right_now + timedelta(
+            days=-32)
+        args = FakeArgs()
+        args.bump = True
+        args.lists.extend(('ant.example.com', 'bee.example.com'))
+        self._command.process(args)
+        self.assertEqual(self._mlist.volume, 8)
+        self.assertEqual(self._mlist.next_digest_number, 1)
+        self.assertEqual(self._mlist.digest_last_sent_at, self.right_now)

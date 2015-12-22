@@ -28,9 +28,7 @@ import os
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.interfaces.digests import DigestFrequency
-from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.datetime import now as right_now
-from zope.component import getUtility
 
 
 
@@ -95,7 +93,10 @@ def maybe_send_digest_now(mlist, force=False):
     # us exactly how big the resulting MIME and rfc1153 digest will
     # actually be, but it's the most easily available metric to decide
     # whether the size threshold has been reached.
-    size = os.path.getsize(mailbox_path)
+    try:
+        size = os.path.getsize(mailbox_path)
+    except FileNotFoundError:
+        size = 0
     if (size >= mlist.digest_size_threshold * 1024.0 or
         (force and size > 0)):
         # Send the digest.  Because we don't want to hold up this process

@@ -24,7 +24,8 @@ __all__ = [
 
 import sys
 
-from mailman.app.digests import maybe_send_digest_now
+from mailman.app.digests import (
+    bump_digest_number_and_volume, maybe_send_digest_now)
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
@@ -59,33 +60,28 @@ class Digests:
             default=False, action='store_true',
             help=_("""Increment the digest volume number and reset the digest
                    number to one.  If given with --send, the volume number is
-                   incremented after any current digests are sent."""))
+                   incremented before any current digests are sent."""))
 
     def process(self, args):
         """See `ICLISubCommand`."""
         list_manager = getUtility(IListManager)
-        if args.send:
-            if not args.lists:
-                # Send the digests for every list.
-                for mlist in list_manager.mailing_lists:
-                    maybe_send_digest_now(mlist, force=True)
-                return
-            for list_spec in args.lists:
+        if args.lists:
+            lists = []
+            for spec in args.lists:
                 # We'll accept list-ids or fqdn list names.
-                if '@' in list_spec:
-                    mlist = list_manager.get(list_spec)
+                if '@' in spec:
+                    mlist = list_manager.get(spec)
                 else:
-                    mlist = list_manager.get_by_list_id(list_spec)
+                    mlist = list_manager.get_by_list_id(spec)
                 if mlist is None:
-                    print(_('No such list found: $list_spec'), file=sys.stderr)
-                    continue
-                maybe_send_digest_now(mlist, force=True)
-        if args.bump:
-            if not args.lists:
-                mlists = list(list_manager.mailing_lists)
-            else:
-                # We'll accept list-ids or fqdn list names.
-                if '@' in list_spec:
-                    mlist = list_manager.get(list_spec)
+                    print(_('No such list found: $spec'), file=sys.stderr)
                 else:
-                    mlist = list_manager.get_by_list_id(list_spec)
+                    lists.append(mlist)
+        else:
+           lists = list(list_manager.mailing_lists)
+        if args.bump:
+            for mlist in lists:
+                bump_digest_number_and_volume(mlist)
+        if args.send:
+            for mlist in lists:
+                maybe_send_digest_now(mlist, force=True)
