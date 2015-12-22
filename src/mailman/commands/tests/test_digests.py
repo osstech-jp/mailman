@@ -27,7 +27,7 @@ import unittest
 
 from io import StringIO
 from mailman.app.lifecycle import create_list
-from mailman.commands.cli_send_digests import Send
+from mailman.commands.cli_digests import Digests
 from mailman.config import config
 from mailman.interfaces.member import DeliveryMode
 from mailman.runners.digest import DigestRunner
@@ -42,6 +42,8 @@ from unittest.mock import patch
 class FakeArgs:
     def __init__(self):
         self.lists = []
+        self.send = False
+        self.bump = False
 
 
 
@@ -55,7 +57,7 @@ class TestSendDigests(unittest.TestCase):
         self._mlist.digests_enabled = True
         self._mlist.digest_size_threshold = 100000
         self._mlist.send_welcome_message = False
-        self._command = Send()
+        self._command = Digests()
         self._handler = config.handlers['to-digest']
         self._runner = make_testable_runner(DigestRunner, 'digest')
         # The mailing list needs at least one digest recipient.
@@ -80,6 +82,7 @@ Subject: message 1
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
+        args.send = True
         args.lists.append('ant.example.com')
         self._command.process(args)
         self._runner.run()
@@ -110,6 +113,7 @@ Subject: message 1
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
+        args.send = True
         args.lists.append('ant@example.com')
         self._command.process(args)
         self._runner.run()
@@ -140,9 +144,10 @@ Subject: message 1
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
+        args.send = True
         args.lists.append('bee.example.com')
         stderr = StringIO()
-        with patch('mailman.commands.cli_send_digests.sys.stderr', stderr):
+        with patch('mailman.commands.cli_digests.sys.stderr', stderr):
             self._command.process(args)
         self._runner.run()
         # The warning was printed to stderr.
@@ -171,9 +176,10 @@ Subject: message 1
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
+        args.send = True
         args.lists.append('bee@example.com')
         stderr = StringIO()
-        with patch('mailman.commands.cli_send_digests.sys.stderr', stderr):
+        with patch('mailman.commands.cli_digests.sys.stderr', stderr):
             self._command.process(args)
         self._runner.run()
         # The warning was printed to stderr.
@@ -202,9 +208,10 @@ Subject: message 1
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
+        args.send = True
         args.lists.extend(('ant.example.com', 'bee.example.com'))
         stderr = StringIO()
-        with patch('mailman.commands.cli_send_digests.sys.stderr', stderr):
+        with patch('mailman.commands.cli_digests.sys.stderr', stderr):
             self._command.process(args)
         self._runner.run()
         # The warning was printed to stderr.
@@ -260,6 +267,7 @@ Subject: message 3
         self.assertEqual(len(items), 0)
         # Process both list's digests.
         args = FakeArgs()
+        args.send = True
         args.lists.extend(('ant.example.com', 'bee@example.com'))
         self._command.process(args)
         self._runner.run()
@@ -327,7 +335,9 @@ Subject: message 3
         items = get_queue_messages('digest')
         self.assertEqual(len(items), 0)
         # Process all mailing list digests by not setting any arguments.
-        self._command.process(FakeArgs())
+        args = FakeArgs()
+        args.send = True
+        self._command.process(args)
         self._runner.run()
         # Now, neither list has a digest mbox and but there are plaintext
         # digest in the outgoing queue for both.
