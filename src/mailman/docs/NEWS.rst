@@ -144,6 +144,9 @@ Other
  * The mailing list "data directory" has been renamed.  Instead of using the
    fqdn listname, the subdirectory inside ``[paths]list_data_dir`` now uses
    the List-ID.
+ * The ``mailman members`` command can now be used to display members based on
+   subscription roles.  Also, the positional "list" argument can now accept
+   list names or list-ids.
 
 
 3.0.0 -- "Show Don't Tell"

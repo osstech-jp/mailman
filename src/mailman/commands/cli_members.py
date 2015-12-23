@@ -23,8 +23,8 @@ __all__ = [
 
 
 import sys
-import codecs
 
+from contextlib import ExitStack
 from email.utils import formataddr, parseaddr
 from mailman.app.membership import add_member
 from mailman.core.i18n import _
@@ -32,7 +32,7 @@ from mailman.database.transaction import transactional
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, DeliveryStatus)
+    AlreadySubscribedError, DeliveryMode, DeliveryStatus, MemberRole)
 from mailman.interfaces.subscriptions import RequestRecord
 from operator import attrgetter
 from zope.component import getUtility
@@ -63,6 +63,15 @@ class Members:
             help=_("""Display output to FILENAME instead of stdout.  FILENAME
             can be '-' to indicate standard output."""))
         command_parser.add_argument(
+            '-R', '--role',
+            default=None, metavar='ROLE',
+            choices=('any', 'owner', 'moderator', 'nonmember', 'member',
+                     'administrator'),
+            help=_("""Display only members with a given ROLE.  The role may be
+                   'any', 'member', 'nonmember', 'owner', 'moderator', or
+                   'administrator' (i.e. owners and moderators).  If not
+                   given, then delivery members are used. """))
+        command_parser.add_argument(
             '-r', '--regular',
             default=None, action='store_true',
             help=_('Display only regular delivery members.'))
@@ -89,20 +98,26 @@ class Members:
             was disabled for unknown (legacy) reasons."""))
         # Required positional argument.
         command_parser.add_argument(
-            'listname', metavar='LISTNAME', nargs=1,
+            'list', metavar='LIST', nargs=1,
             help=_("""\
-            The 'fully qualified list name', i.e. the posting address of the
-            mailing list.  It must be a valid email address and the domain
-            must be registered with Mailman.  List names are forced to lower
-            case."""))
+            The list to operate on.  This can be the fully qualified list
+            name', i.e. the posting address of the mailing list or the
+            List-ID."""))
+        command_parser.epilog = _(
+            """Display a mailing list's members, with filtering along various
+            criteria.""")
 
     def process(self, args):
         """See `ICLISubCommand`."""
-        assert len(args.listname) == 1, 'Missing mailing list name'
-        fqdn_listname = args.listname[0]
-        mlist = getUtility(IListManager).get(fqdn_listname)
+        assert len(args.list) == 1, 'Missing mailing list name'
+        list_spec = args.list[0]
+        list_manager = getUtility(IListManager)
+        if '@' in list_spec:
+            mlist = list_manager.get(list_spec)
+        else:
+            mlist = list_manager.get_by_list_id(list_spec)
         if mlist is None:
-            self.parser.error(_('No such list: $fqdn_listname'))
+            self.parser.error(_('No such list: $list_spec'))
         if args.input_filename is None:
             self.display_members(mlist, args)
         else:
@@ -116,10 +131,6 @@ class Members:
         :param args: The command line arguments.
         :type args: `argparse.Namespace`
         """
-        if args.output_filename == '-' or args.output_filename is None:
-            fp = sys.stdout
-        else:
-            fp = codecs.open(args.output_filename, 'w', 'utf-8')
         if args.digest == 'any':
             digest_types = [DeliveryMode.plaintext_digests,
                             DeliveryMode.mime_digests,
@@ -129,6 +140,7 @@ class Members:
         else:
             # Don't filter on digest type.
             pass
+
         if args.nomail is None:
             # Don't filter on delivery status.
             pass
@@ -146,31 +158,49 @@ class Members:
                             DeliveryStatus.by_moderator,
                             DeliveryStatus.unknown]
         else:
-            raise AssertionError('Unknown delivery status: %s' % args.nomail)
-        try:
-            addresses = list(mlist.members.addresses)
+            status = args.nomail
+            self.parser.error(_('Unknown delivery status: $status'))
+
+        if args.role is None:
+            # By default, filter on members.
+            roster = mlist.members
+        elif args.role == 'administrator':
+            roster = mlist.administrators
+        elif args.role == 'any':
+            roster = mlist.subscribers
+        else:
+            try:
+                roster = mlist.get_roster(MemberRole[args.role])
+            except KeyError:
+                role = args.role
+                self.parser.error(_('Unknown member role: $role'))
+
+        with ExitStack() as resources:
+            if args.output_filename == '-' or args.output_filename is None:
+                fp = sys.stdout
+            else:
+                fp = resources.enter_context(
+                    open(args.output_filename, 'w', encoding='utf-8'))
+            addresses = list(roster.addresses)
             if len(addresses) == 0:
-                print(mlist.fqdn_listname, 'has no members', file=fp)
+                print(_('$mlist.list_id has no members'), file=fp)
                 return
             for address in sorted(addresses, key=attrgetter('email')):
                 if args.regular:
-                    member = mlist.members.get_member(address.email)
+                    member = roster.get_member(address.email)
                     if member.delivery_mode != DeliveryMode.regular:
                         continue
                 if args.digest is not None:
-                    member = mlist.members.get_member(address.email)
+                    member = roster.get_member(address.email)
                     if member.delivery_mode not in digest_types:
                         continue
                 if args.nomail is not None:
-                    member = mlist.members.get_member(address.email)
+                    member = roster.get_member(address.email)
                     if member.delivery_status not in status_types:
                         continue
                 print(
                     formataddr((address.display_name, address.original_email)),
                     file=fp)
-        finally:
-            if fp is not sys.stdout:
-                fp.close()
 
     @transactional
     def add_members(self, mlist, args):
@@ -181,11 +211,12 @@ class Members:
         :param args: The command line arguments.
         :type args: `argparse.Namespace`
         """
-        if args.input_filename == '-':
-            fp = sys.stdin
-        else:
-            fp = codecs.open(args.input_filename, 'r', 'utf-8')
-        try:
+        with ExitStack() as resources:
+            if args.input_filename == '-':
+                fp = sys.stdin
+            else:
+                fp = resources.enter_context(
+                    open(args.input_filename, 'r', encoding='utf-8'))
             for line in fp:
                 # Ignore blank lines and lines that start with a '#'.
                 if line.startswith('#') or len(line.strip()) == 0:
@@ -200,8 +231,8 @@ class Members:
                 except AlreadySubscribedError:
                     # It's okay if the address is already subscribed, just
                     # print a warning and continue.
-                    print('Already subscribed (skipping):',
-                          email, display_name)
-        finally:
-            if fp is not sys.stdin:
-                fp.close()
+                    if not display_name:
+                        print(_('Already subscribed (skipping): $email'))
+                    else:
+                        print(_('Already subscribed (skipping): '
+                                '$display_name <$email>'))

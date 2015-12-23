@@ -39,7 +39,7 @@ from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.roster import IRoster
 from mailman.model.address import Address
 from mailman.model.member import Member
-from sqlalchemy import and_, or_
+from sqlalchemy import or_
 from zope.interface import implementer
 
 
