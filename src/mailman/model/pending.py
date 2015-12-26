@@ -24,9 +24,6 @@ __all__ = [
 
 
 import json
-import time
-import random
-import hashlib
 
 from lazr.config import as_timedelta
 from mailman.config import config
@@ -35,10 +32,14 @@ from mailman.database.transaction import dbconnection
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 from mailman.utilities.datetime import now
+from mailman.utilities.uid import TokenFactory
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode, and_
 from sqlalchemy.orm import aliased, relationship
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
+
+
+token_factory = TokenFactory()
 
 
 
@@ -88,17 +89,8 @@ class Pendings:
         # Calculate the token and the lifetime.
         if lifetime is None:
             lifetime = as_timedelta(config.mailman.pending_request_life)
-        # Calculate a unique token.  Algorithm vetted by the Timbot.  time()
-        # has high resolution on Linux, clock() on Windows.  random gives us
-        # about 45 bits in Python 2.2, 53 bits on Python 2.3.  The time and
-        # clock values basically help obscure the random number generator, as
-        # does the hash calculation.  The integral parts of the time values
-        # are discarded because they're the most predictable bits.
         for attempts in range(3):
-            right_now = time.time()
-            x = random.random() + right_now % 1.0 + time.clock() % 1.0
-            # Use sha1 because it produces shorter strings.
-            token = hashlib.sha1(repr(x).encode('utf-8')).hexdigest()
+            token = token_factory.new_token()
             # In practice, we'll never get a duplicate, but we'll be anal
             # about checking anyway.
             if store.query(Pended).filter_by(token=token).count() == 0:

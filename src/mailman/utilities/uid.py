@@ -28,8 +28,11 @@ __all__ = [
 
 
 import os
+import time
 import uuid
 import errno
+import random
+import hashlib
 
 from flufl.lock import Lock
 from mailman.config import config
@@ -78,7 +81,7 @@ class UniqueIDFactory:
             # may still not be ideal due to race conditions, but I think the
             # tests will be serialized enough (and the ids reset between
             # tests) that it will not be a problem.  Maybe.
-            return self._next_uid()
+            return uuid.UUID(int=self._next_uid())
         while True:
             uid = uuid.uuid4()
             try:
@@ -96,13 +99,13 @@ class UniqueIDFactory:
                     next_uid = uid + 1
                 with open(self._uid_file, 'w') as fp:
                     fp.write(str(next_uid))
-                return uuid.UUID(int=uid)
+                return uid
             except IOError as error:
                 if error.errno != errno.ENOENT:
                     raise
                 with open(self._uid_file, 'w') as fp:
                     fp.write('2')
-                return uuid.UUID(int=1)
+                return 1
 
     def reset(self):
         with self._lock:
@@ -111,4 +114,25 @@ class UniqueIDFactory:
 
 
 
-factory = UniqueIDFactory()
+class TokenFactory(UniqueIDFactory):
+
+    def __init__(self):
+        super(TokenFactory, self).__init__(context='token')
+
+    def new_token(self):
+        """
+        Calculate a unique token.  Algorithm vetted by the Timbot.  time()
+        has high resolution on Linux, clock() on Windows.  random gives us
+        about 45 bits in Python 2.2, 53 bits on Python 2.3.  The time and
+        clock values basically help obscure the random number generator, as
+        does the hash calculation.  The integral parts of the time values
+        are discarded because they're the most predictable bits.
+        """
+        if layers.is_testing():
+            # When in testing mode we want to produce predictable tokens, see
+            # UniqueIDFactory for a similar use case.
+            return str(self._next_uid()).zfill(40)
+        right_now = time.time()
+        x = random.random() + right_now % 1.0 + time.clock() % 1.0
+        # Use sha1 because it produces shorter strings.
+        return hashlib.sha1(repr(x).encode('utf-8')).hexdigest()
