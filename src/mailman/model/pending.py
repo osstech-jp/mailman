@@ -90,7 +90,7 @@ class Pendings:
         if lifetime is None:
             lifetime = as_timedelta(config.mailman.pending_request_life)
         for attempts in range(3):
-            token = token_factory.new_token()
+            token = token_factory.new()
             # In practice, we'll never get a duplicate, but we'll be anal
             # about checking anyway.
             if store.query(Pended).filter_by(token=token).count() == 0:

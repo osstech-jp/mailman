@@ -22,8 +22,8 @@ and whatnot.  These are better instrumented for testing purposes.
 """
 
 __all__ = [
-    'UniqueIDFactory',
-    'factory',
+    'UIDFactory',
+    'TokenFactory',
     ]
 
 
@@ -41,8 +41,11 @@ from mailman.testing import layers
 
 
 
-class UniqueIDFactory:
-    """A factory for unique ids."""
+class _PredictableIDGenerator:
+    """
+    A base class factory for unique ids that can have predictable values in
+    testing mode.
+    """
 
     def __init__(self, context=None):
         # We can't call reset() when the factory is created below, because
@@ -66,12 +69,8 @@ class UniqueIDFactory:
             self._lockobj = Lock(self._lock_file)
         return self._lockobj
 
-    def new_uid(self):
-        """Return a new UID.
-
-        :return: The new uid
-        :rtype: int
-        """
+    def new(self):
+        """Return a new unique ID or a predictable one if in testing mode."""
         if layers.is_testing():
             # When in testing mode we want to produce predictable id, but we
             # need to coordinate this among separate processes.  We could use
@@ -81,15 +80,12 @@ class UniqueIDFactory:
             # may still not be ideal due to race conditions, but I think the
             # tests will be serialized enough (and the ids reset between
             # tests) that it will not be a problem.  Maybe.
-            return uuid.UUID(int=self._next_uid())
-        while True:
-            uid = uuid.uuid4()
-            try:
-                UID.record(uid)
-            except ValueError:
-                pass
-            else:
-                return uid
+            return self._next_uid()
+        return self._generate()
+
+    def _generate(self):
+        """Generate a unique id when Mailman is not running in testing mode."""
+        raise NotImplementedError
 
     def _next_uid(self):
         with self._lock:
@@ -114,12 +110,36 @@ class UniqueIDFactory:
 
 
 
-class TokenFactory(UniqueIDFactory):
+class UIDFactory(_PredictableIDGenerator):
+    """A factory for unique ids."""
+
+    def _generate(self):
+        """Return a new UID.
+
+        :return: The new uid
+        :rtype: uuid.UUID
+        """
+        while True:
+            uid = uuid.uuid4()
+            try:
+                UID.record(uid)
+            except ValueError:
+                pass
+            else:
+                return uid
+
+    def _next_uid(self):
+        uid = super(UIDFactory, self)._next_uid()
+        return uuid.UUID(int=uid)
+
+
+
+class TokenFactory(_PredictableIDGenerator):
 
     def __init__(self):
         super(TokenFactory, self).__init__(context='token')
 
-    def new_token(self):
+    def _generate(self):
         """
         Calculate a unique token.  Algorithm vetted by the Timbot.  time()
         has high resolution on Linux, clock() on Windows.  random gives us
@@ -128,11 +148,11 @@ class TokenFactory(UniqueIDFactory):
         does the hash calculation.  The integral parts of the time values
         are discarded because they're the most predictable bits.
         """
-        if layers.is_testing():
-            # When in testing mode we want to produce predictable tokens, see
-            # UniqueIDFactory for a similar use case.
-            return str(self._next_uid()).zfill(40)
         right_now = time.time()
         x = random.random() + right_now % 1.0 + time.clock() % 1.0
         # Use sha1 because it produces shorter strings.
         return hashlib.sha1(repr(x).encode('utf-8')).hexdigest()
+
+    def _next_uid(self):
+        uid = super(TokenFactory, self)._next_uid()
+        return str(uid).zfill(40)

@@ -34,14 +34,14 @@ from mailman.model.address import Address
 from mailman.model.preferences import Preferences
 from mailman.model.roster import Memberships
 from mailman.utilities.datetime import factory as date_factory
-from mailman.utilities.uid import UniqueIDFactory
+from mailman.utilities.uid import UIDFactory
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Unicode
 from sqlalchemy.orm import relationship, backref
 from zope.event import notify
 from zope.interface import implementer
 
 
-uid_factory = UniqueIDFactory(context='users')
+uid_factory = UIDFactory(context='users')
 
 
 
@@ -80,7 +80,7 @@ class User(Model):
     def __init__(self, store, display_name=None, preferences=None):
         super(User, self).__init__()
         self._created_on = date_factory.now()
-        user_id = uid_factory.new_uid()
+        user_id = uid_factory.new()
         assert store.query(User).filter_by(_user_id=user_id).count() == 0, (
             'Duplicate user id {0}'.format(user_id))
         self._user_id = user_id

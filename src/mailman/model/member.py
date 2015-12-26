@@ -33,7 +33,7 @@ from mailman.interfaces.member import (
     IMember, MemberRole, MembershipError, UnsubscriptionEvent)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
-from mailman.utilities.uid import UniqueIDFactory
+from mailman.utilities.uid import UIDFactory
 from sqlalchemy import Column, ForeignKey, Integer, Unicode
 from sqlalchemy.orm import relationship
 from zope.component import getUtility
@@ -41,7 +41,7 @@ from zope.event import notify
 from zope.interface import implementer
 
 
-uid_factory = UniqueIDFactory(context='members')
+uid_factory = UIDFactory(context='members')
 
 
 
@@ -65,7 +65,7 @@ class Member(Model):
     _user = relationship('User')
 
     def __init__(self, role, list_id, subscriber):
-        self._member_id = uid_factory.new_uid()
+        self._member_id = uid_factory.new()
         self.role = role
         self.list_id = list_id
         if IAddress.providedBy(subscriber):

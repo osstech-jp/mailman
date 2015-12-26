@@ -36,8 +36,8 @@ class UID(Model):
     This is used so that unique ids don't have to be tracked by each
     individual model object that uses them.  So for example, when a user is
     deleted, we don't have to keep separate track of its uid to prevent it
-    from ever being used again.  This class, hooked up to the
-    `UniqueIDFactory` serves that purpose.
+    from ever being used again.  This class, hooked up to the `UIDFactory`
+    serves that purpose.
 
     There is no interface for this class, because it's purely an internal
     implementation detail.
