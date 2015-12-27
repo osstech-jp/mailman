@@ -42,9 +42,10 @@ from mailman.testing import layers
 
 
 class _PredictableIDGenerator:
-    """
-    A base class factory for unique ids that can have predictable values in
-    testing mode.
+    """Base class factory.
+
+    This factory provides a base class for unique ids that need to have
+    predictable values in testing mode.
     """
 
     def __init__(self, context=None):
@@ -72,7 +73,7 @@ class _PredictableIDGenerator:
     def new(self):
         """Return a new unique ID or a predictable one if in testing mode."""
         if layers.is_testing():
-            # When in testing mode we want to produce predictable id, but we
+            # When in testing mode we want to produce predictable ids, but we
             # need to coordinate this among separate processes.  We could use
             # the database, but I don't want to add schema just to handle this
             # case, and besides transactions could get aborted, causing some
@@ -80,14 +81,26 @@ class _PredictableIDGenerator:
             # may still not be ideal due to race conditions, but I think the
             # tests will be serialized enough (and the ids reset between
             # tests) that it will not be a problem.  Maybe.
-            return self._next_uid()
-        return self._generate()
+            return self._next_predictable_id()
+        return self._next_unpredictable_id()
 
-    def _generate(self):
-        """Generate a unique id when Mailman is not running in testing mode."""
+    def _next_unpredictable_id(self):
+        """Generate a unique id when Mailman is not running in testing mode.
+
+        The type of the returned id is intended to be the type that
+        makes sense for the subclass overriding this method.
+        """
         raise NotImplementedError
 
-    def _next_uid(self):
+    def _next_predictable_id(self):
+        """Generate a predictable id for when Mailman being tested.
+
+        The type of the returned id is intended to be the type that
+        makes sense for the subclass overriding this method.
+        """
+        raise NotImplementedError
+
+    def _next_id(self):
         with self._lock:
             try:
                 with open(self._uid_file) as fp:
@@ -113,7 +126,7 @@ class _PredictableIDGenerator:
 class UIDFactory(_PredictableIDGenerator):
     """A factory for unique ids."""
 
-    def _generate(self):
+    def _next_unpredictable_id(self):
         """Return a new UID.
 
         :return: The new uid
@@ -128,8 +141,8 @@ class UIDFactory(_PredictableIDGenerator):
             else:
                 return uid
 
-    def _next_uid(self):
-        uid = super(UIDFactory, self)._next_uid()
+    def _next_predictable_id(self):
+        uid = super()._next_id()
         return uuid.UUID(int=uid)
 
 
@@ -137,22 +150,23 @@ class UIDFactory(_PredictableIDGenerator):
 class TokenFactory(_PredictableIDGenerator):
 
     def __init__(self):
-        super(TokenFactory, self).__init__(context='token')
+        super().__init__(context='token')
 
-    def _generate(self):
-        """
-        Calculate a unique token.  Algorithm vetted by the Timbot.  time()
-        has high resolution on Linux, clock() on Windows.  random gives us
-        about 45 bits in Python 2.2, 53 bits on Python 2.3.  The time and
-        clock values basically help obscure the random number generator, as
-        does the hash calculation.  The integral parts of the time values
-        are discarded because they're the most predictable bits.
+    def _next_unpredictable_id(self):
+        """Calculate a unique token.
+
+        Algorithm vetted by the Timbot.  time() has high resolution on
+        Linux, clock() on Windows.  random gives us about 45 bits in
+        Python 2.2, 53 bits on Python 2.3.  The time and clock values
+        basically help obscure the random number generator, as does the
+        hash calculation.  The integral parts of the time values are
+        discarded because they're the most predictable bits.
         """
         right_now = time.time()
         x = random.random() + right_now % 1.0 + time.clock() % 1.0
         # Use sha1 because it produces shorter strings.
         return hashlib.sha1(repr(x).encode('utf-8')).hexdigest()
 
-    def _next_uid(self):
-        uid = super(TokenFactory, self)._next_uid()
+    def _next_predictable_id(self):
+        uid = super()._next_id()
         return str(uid).zfill(40)
