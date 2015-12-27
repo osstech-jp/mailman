@@ -30,7 +30,6 @@ __all__ = [
 import os
 import time
 import uuid
-import errno
 import random
 import hashlib
 
@@ -64,7 +63,7 @@ class _PredictableIDGenerator:
             # These will get automatically cleaned up by the test
             # infrastructure.
             self._uid_file = os.path.join(config.VAR_DIR, '.uid')
-            if self._context:
+            if self._context is not None:
                 self._uid_file += '.' + self._context
             self._lock_file = self._uid_file + '.lock'
             self._lockobj = Lock(self._lock_file)
@@ -90,7 +89,7 @@ class _PredictableIDGenerator:
         The type of the returned id is intended to be the type that
         makes sense for the subclass overriding this method.
         """
-        raise NotImplementedError
+        raise NotImplementedError                   # pragma: no cover
 
     def _next_predictable_id(self):
         """Generate a predictable id for when Mailman being tested.
@@ -98,20 +97,18 @@ class _PredictableIDGenerator:
         The type of the returned id is intended to be the type that
         makes sense for the subclass overriding this method.
         """
-        raise NotImplementedError
+        raise NotImplementedError                   # pragma: no cover
 
     def _next_id(self):
         with self._lock:
             try:
                 with open(self._uid_file) as fp:
                     uid = int(fp.read().strip())
-                    next_uid = uid + 1
+                    next_uid = uid + 1              # pragma: no branch
                 with open(self._uid_file, 'w') as fp:
-                    fp.write(str(next_uid))
+                    fp.write(str(next_uid))         # pragma: no branch
                 return uid
-            except IOError as error:
-                if error.errno != errno.ENOENT:
-                    raise
+            except FileNotFoundError:
                 with open(self._uid_file, 'w') as fp:
                     fp.write('2')
                 return 1
