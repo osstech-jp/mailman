@@ -50,12 +50,12 @@ class UID(Model):
 
     @dbconnection
     def __init__(self, store, uid):
-        super(UID, self).__init__()
+        super().__init__()
         self.uid = uid
         store.add(self)
 
     def __repr__(self):
-        return '<UID {0} at {1}>'.format(self.uid, id(self))
+        return '<UID {} at {}>'.format(self.uid, id(self))
 
     @staticmethod
     @dbconnection

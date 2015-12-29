@@ -85,3 +85,9 @@ class TestUID(unittest.TestCase):
         # And all the users still exist.
         non_orphans = set(user.user_id for user in manager.users)
         self.assertEqual(uids, non_orphans)
+
+    def test_repr(self):
+        uid = UID(uuid.UUID(int=1))
+        self.assertTrue(repr(uid).startswith(
+            '<UID 00000000-0000-0000-0000-000000000001 at '))
+        self.assertTrue(repr(uid).endswith('>'))

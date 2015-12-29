@@ -146,3 +146,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(state.step, 'three')
         state = self._manager.restore('bee', 'nekot')
         self.assertEqual(state.step, 'four')
+
+    def test_discard_missing_workflow(self):
+        self._manager.discard('bogus-name', 'bogus-token')
+        self.assertEqual(self._manager.count, 0)

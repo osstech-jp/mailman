@@ -28,8 +28,10 @@ import unittest
 
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import BadDomainSpecificationError
+from mailman.interfaces.listmanager import IListManager
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.testing.layers import ConfigLayer
+from zope.component import getUtility
 
 
 
@@ -55,3 +57,16 @@ class TestLifecycle(unittest.TestCase):
         self.addCleanup(shutil.rmtree, mlist.data_path)
         self.assertRaises(OSError, remove_list, mlist)
         os.chmod(mlist.data_path, 0o777)
+
+    def test_create_no_such_style(self):
+        mlist = create_list('ant@example.com', style_name='bogus')
+        # The MailmanList._preferred_language column isn't set so there's no
+        # valid mapping to an ILanguage.  Therefore this call will produce a
+        # KeyError.
+        self.assertRaises(KeyError, getattr, mlist, 'preferred_language')
+
+    def test_remove_list_without_data_path(self):
+        mlist = create_list('ant@example.com')
+        shutil.rmtree(mlist.data_path)
+        remove_list(mlist)
+        self.assertIsNone(getUtility(IListManager).get('ant@example.com'))
