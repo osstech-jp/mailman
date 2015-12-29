@@ -78,7 +78,7 @@ def scan_module(module, interface):
     for name in module.__all__:
         component = getattr(module, name, missing)
         assert component is not missing, (
-            '%s has bad __all__: %s' % (module, name))
+            '%s has bad __all__: %s' % (module, name))   # pragma: no cover
         if interface.implementedBy(component):
             yield component
 

@@ -27,6 +27,7 @@ import errno
 import tempfile
 import unittest
 
+from datetime import timedelta
 from flufl.lock import Lock
 from mailman.bin import master
 
@@ -60,8 +61,8 @@ class TestMasterLock(unittest.TestCase):
         state, lock = master.master_state(self.lock_file)
         self.assertEqual(state, master.WatcherState.none)
         # Acquire the lock as if another process had already started the
-        # master.
-        my_lock.lock()
+        # master.  Use a timeout to avoid this test deadlocking.
+        my_lock.lock(timedelta(seconds=60))
         try:
             state, lock = master.master_state(self.lock_file)
         finally:

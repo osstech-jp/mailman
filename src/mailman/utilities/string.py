@@ -117,8 +117,10 @@ def wrap(text, column=70, honor_leading_ws=True):
             # This line does not constitute a paragraph break.
             paragraph.append(line)
     # We've consumed all the lines in the original text.  Transfer the last
-    # paragraph we were collecting to the full set of paragraphs.
-    paragraphs.append(EMPTYSTRING.join(paragraph))
+    # paragraph we were collecting to the full set of paragraphs, but only if
+    # it's not empty.
+    if len(paragraph) > 0:
+        paragraphs.append(EMPTYSTRING.join(paragraph))
     # Now iterate through all paragraphs, wrapping as necessary.
     wrapped_paragraphs = []
     # The dedented wrapper.
@@ -150,7 +152,7 @@ def wrap(text, column=70, honor_leading_ws=True):
                 # dedented.  The leading whitespace on the first line of the
                 # original text will be used as the indentation for all lines
                 # in the wrapped text.
-                for i, ch in enumerate(paragraph_text):
+                for i, ch in enumerate(paragraph_text):   # pragma: no branch
                     if ch not in whitespace:
                         break
                 leading_ws = paragraph[:i]

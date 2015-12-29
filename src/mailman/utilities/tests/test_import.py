@@ -52,7 +52,8 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import LogFileMark
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.filesystem import makedirs
-from mailman.utilities.importer import import_config_pck, Import21Error
+from mailman.utilities.importer import (
+    Import21Error, check_language_code, import_config_pck)
 from mailman.utilities.string import expand
 from pickle import load
 from pkg_resources import resource_filename
@@ -294,7 +295,7 @@ class TestBasicImport(unittest.TestCase):
         except Import21Error as error:
             # Check the message.
             self.assertIn('[language.xx_XX]', str(error))
-        else:                                       # pragma: no cover
+        else:
             self.fail('Import21Error was not raised')
 
     def test_encode_ascii_prefixes(self):
@@ -865,7 +866,7 @@ class TestRosterImport(unittest.TestCase):
             import_config_pck(self._mlist, self._pckdict)
         except Import21Error as error:
             self.assertIn('[language.xx_XX]', str(error))
-        else:                                       # pragma: no cover
+        else:
             self.fail('Import21Error was not raised')
 
     def test_username(self):
@@ -1136,3 +1137,6 @@ class TestPreferencesImport(unittest.TestCase):
                 receive_list_copy=False,
                 delivery_mode=DeliveryMode.plaintext_digests,
                 ))
+
+    def test_language_code_none(self):
+        self.assertIsNone(check_language_code(None))
