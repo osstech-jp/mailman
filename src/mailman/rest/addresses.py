@@ -51,7 +51,7 @@ class _AddressBase(CollectionMixin):
             email=address.email,
             original_email=address.original_email,
             registered_on=address.registered_on,
-            self_link=self.path_to('addresses/{0}'.format(address.email)),
+            self_link=self.path_to('addresses/{}'.format(address.email)),
             )
         # Add optional attributes.  These can be None or the empty string.
         if address.display_name:
@@ -59,8 +59,9 @@ class _AddressBase(CollectionMixin):
         if address.verified_on:
             representation['verified_on'] = address.verified_on
         if address.user:
-            representation['user'] = self.path_to(
-                'users/{0}'.format(address.user.user_id.int))
+            uid = getattr(address.user.user_id,
+                          'int' if self.api_version == '3.0' else 'hex')
+            representation['user'] = self.path_to('users/{}'.format(uid))
         return representation
 
     def _get_collection(self, request):
@@ -139,7 +140,7 @@ class AnAddress(_AddressBase):
             return NotFound(), []
         child = Preferences(
             self._address.preferences,
-            'addresses/{0}'.format(self._address.email))
+            'addresses/{}'.format(self._address.email))
         return child, []
 
     @child()
@@ -177,8 +178,8 @@ class UserAddresses(_AddressBase):
     """The addresses of a user."""
 
     def __init__(self, user):
-        self._user = user
         super().__init__()
+        self._user = user
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""

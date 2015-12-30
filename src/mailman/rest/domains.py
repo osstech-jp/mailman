@@ -44,7 +44,7 @@ class _DomainBase(CollectionMixin):
             base_url=domain.base_url,
             description=domain.description,
             mail_host=domain.mail_host,
-            self_link=self.path_to('domains/{0}'.format(domain.mail_host)),
+            self_link=self.path_to('domains/{}'.format(domain.mail_host)),
             url_host=domain.url_host,
             )
 
@@ -125,7 +125,7 @@ class AllDomains(_DomainBase):
         except ValueError as error:
             bad_request(response, str(error))
         else:
-            location = self.path_to('domains/{0}'.format(domain.mail_host))
+            location = self.path_to('domains/{}'.format(domain.mail_host))
             created(response, location)
 
     def on_get(self, request, response):

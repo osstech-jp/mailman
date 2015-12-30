@@ -54,6 +54,8 @@ Bugs
    store.  Given by Aurélien Bompard, tweaked by Barry Warsaw.  (Closes: #167)
  * Fix a bug in ``SubscriptionService.find_members()`` when searching for a
    subscribed address that is not linked to a user.  Given by Aurélien Bompard.
+ * Fix a REST server crash when trying to subscribe a user without a preferred
+   address.  (Closes #185)
 
 Configuration
 -------------
@@ -101,7 +103,7 @@ REST
  * REST API version 3.1 introduced.  Mostly backward compatible with version
    3.0 except that UUIDs are represented as hex strings instead of 128-bit
    integers, since the latter are not compatible with all versions of
-   JavaScript.
+   JavaScript.  (Closes #121)
  * When creating a user via REST using an address that already exists, but
    isn't linked, the address is linked to the new user.  Given by Aurélien
    Bompard.

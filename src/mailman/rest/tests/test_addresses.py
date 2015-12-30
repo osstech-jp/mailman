@@ -18,6 +18,7 @@
 """REST address tests."""
 
 __all__ = [
+    'TestAPI31Addresses',
     'TestAddresses',
     ]
 
@@ -432,3 +433,107 @@ class TestAddresses(unittest.TestCase):
                 'http://localhost:9001/3.0/addresses/anne@example.com',
                 method='DELETE')
         self.assertEqual(cm.exception.code, 404)
+
+
+
+class TestAPI31Addresses(unittest.TestCase):
+    """UUIDs are represented as hex instead of int in API 3.1
+
+    See issue #121 for details.  This is a deliberately backward
+    incompatible change.
+    """
+
+    layer = RESTLayer
+
+    def test_address_user_id_is_hex(self):
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            user_manager.create_user('anne@example.com', 'Anne')
+        response, headers = call_api(
+            'http://localhost:9001/3.1/addresses/anne@example.com')
+        self.assertEqual(
+            response['user'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+
+    def test_addresses_user_ids_are_hex(self):
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            user_manager.create_user('anne@example.com', 'Anne')
+            user_manager.create_user('bart@example.com', 'Bart')
+        response, headers = call_api('http://localhost:9001/3.1/addresses')
+        entries = response['entries']
+        self.assertEqual(
+            entries[0]['user'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+        self.assertEqual(
+            entries[1]['user'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000002')
+
+    def test_user_subresource_post(self):
+        # If the address is not yet linked to a user, POSTing a user id to the
+        # 'user' subresource links the address to the given user.  In
+        # API 3.0, the user id must be the hex representation.
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            anne = user_manager.create_user('anne.person@example.org', 'Anne')
+            anne_addr = user_manager.create_address('anne@example.com')
+        response, headers = call_api(
+            'http://localhost:9001/3.1/addresses/anne@example.com/user', {
+                'user_id': anne.user_id.hex,
+                })
+        self.assertEqual(headers['status'], '200')
+        self.assertEqual(anne_addr.user, anne)
+        self.assertEqual(sorted([a.email for a in anne.addresses]),
+                         ['anne.person@example.org', 'anne@example.com'])
+
+    def test_user_subresource_cannot_post_int(self):
+        # If the address is not yet linked to a user, POSTing a user id to the
+        # 'user' subresource links the address to the given user.  In
+        # API 3.1, the user id must be the hex representation.
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            anne = user_manager.create_user('anne.person@example.org', 'Anne')
+            user_manager.create_address('anne@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/addresses/anne@example.com/user', {
+                    'user_id': anne.user_id.int,
+                    })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'badly formed hexadecimal UUID string')
+
+    def test_user_subresource_put(self):
+        # By PUTing to the 'user' resource, you can change the user that an
+        # address is linked to.
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            anne = user_manager.create_user('anne@example.com', 'Anne')
+            bart = user_manager.create_user(display_name='Bart')
+        response, headers = call_api(
+            'http://localhost:9001/3.1/addresses/anne@example.com/user', {
+                'user_id': bart.user_id.hex,
+                }, method='PUT')
+        self.assertEqual(headers['status'], '200')
+        self.assertEqual(anne.addresses, [])
+        self.assertEqual([address.email for address in bart.addresses],
+                         ['anne@example.com'])
+        self.assertEqual(bart,
+                         user_manager.get_address('anne@example.com').user)
+
+    def test_user_subresource_cannot_put_int(self):
+        # If the address is not yet linked to a user, POSTing a user id to the
+        # 'user' subresource links the address to the given user.  In
+        # API 3.1, the user id must be the hex representation.
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            anne = user_manager.create_user('anne.person@example.org', 'Anne')
+            user_manager.create_address('anne@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/addresses/anne@example.com/user', {
+                    'user_id': anne.user_id.int,
+                    }, method='PUT')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'badly formed hexadecimal UUID string')

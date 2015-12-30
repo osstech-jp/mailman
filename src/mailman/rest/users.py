@@ -117,8 +117,9 @@ def create_user(arguments, request, response):
         password = generate(int(config.passwords.password_length))
     user.password = config.password_context.encrypt(password)
     user.is_server_owner = is_server_owner
-    location = path_to('users/{}'.format(user.user_id.int),
-                       request.context['api_version'])
+    api_version = request.context['api_version']
+    user_id = getattr(user.user_id, 'int' if api_version == '3.0' else 'hex')
+    location = path_to('users/{}'.format(user_id), api_version)
     created(response, location)
     return user
 
@@ -127,13 +128,17 @@ def create_user(arguments, request, response):
 class _UserBase(CollectionMixin):
     """Shared base class for user representations."""
 
+    def _get_uuid(self, user):
+        return getattr(user.user_id,
+                       'int' if self.api_version == '3.0' else 'hex')
+
     def _resource_as_dict(self, user):
         """See `CollectionMixin`."""
         # The canonical URL for a user is their unique user id, although we
         # can always look up a user based on any registered and validated
         # email address associated with their account.  The user id is a UUID,
         # but we serialize its integer equivalent.
-        user_id = user.user_id.int
+        user_id = self._get_uuid(user)
         resource = dict(
             created_on=user.created_on,
             is_server_owner=user.is_server_owner,
@@ -177,24 +182,29 @@ class AllUsers(_UserBase):
 class AUser(_UserBase):
     """A user."""
 
-    def __init__(self, user_identifier):
+    def __init__(self, api_version, user_identifier):
         """Get a user by various type of identifiers.
 
         :param user_identifier: The identifier used to retrieve the user.  The
-            identifier may either be an integer user-id, or an email address
-            controlled by the user.  The type of identifier is auto-detected
+            identifier may either be an email address controlled by the user
+            or the UUID of the user.  The type of identifier is auto-detected
             by looking for an `@` symbol, in which case it's taken as an email
-            address, otherwise it's assumed to be an integer.
+            address, otherwise it's assumed to be a UUID.  However, UUIDs in
+            API 3.0 are integers, while in 3.1 are hex.
         :type user_identifier: string
         """
+        self.api_version = api_version
         user_manager = getUtility(IUserManager)
         if '@' in user_identifier:
             self._user = user_manager.get_user(user_identifier)
         else:
-            # The identifier is the string representation of an integer that
-            # must be converted to a UUID.
+            # The identifier is the string representation of a UUID, either an
+            # int in API 3.0 or a hex in API 3.1.
             try:
-                user_id = UUID(int=int(user_identifier))
+                if api_version == '3.0':
+                    user_id = UUID(int=int(user_identifier))
+                else:
+                    user_id = UUID(hex=user_identifier)
             except ValueError:
                 self._user = None
             else:
@@ -227,14 +237,14 @@ class AUser(_UserBase):
 
     @child()
     def preferences(self, request, segments):
-        """/addresses/<email>/preferences"""
+        """/users/<id>/preferences"""
         if len(segments) != 0:
             return BadRequest(), []
         if self._user is None:
             return NotFound(), []
         child = Preferences(
             self._user.preferences,
-            'users/{0}'.format(self._user.user_id.int))
+            'users/{}'.format(self._get_uuid(self._user)))
         return child, []
 
     def on_patch(self, request, response):
@@ -309,13 +319,14 @@ class AddressUser(_UserBase):
         if self._user:
             conflict(response)
             return
+        api_version = request.context['api_version']
         # When creating a linked user by POSTing, the user either must already
         # exist, or it can be automatically created, if the auto_create flag
         # is given and true (if missing, it defaults to true).  However, in
         # this case we do not accept 'email' as a POST field.
         fields = CREATION_FIELDS.copy()
         del fields['email']
-        fields['user_id'] = int
+        fields['user_id'] = (int if api_version == '3.0' else str)
         fields['auto_create'] = as_boolean
         fields['_optional'] = fields['_optional'] + (
             'user_id', 'auto_create', 'is_server_owner')
@@ -328,7 +339,12 @@ class AddressUser(_UserBase):
         user_manager = getUtility(IUserManager)
         if 'user_id' in arguments:
             raw_uid = arguments['user_id']
-            user_id = UUID(int=raw_uid)
+            kws = {('int' if api_version == '3.0' else 'hex'): raw_uid}
+            try:
+                user_id = UUID(**kws)
+            except ValueError as error:
+                bad_request(response, str(error))
+                return
             user = user_manager.get_user_by_id(user_id)
             if user is None:
                 not_found(response, b'No user with ID {}'.format(raw_uid))
@@ -348,11 +364,12 @@ class AddressUser(_UserBase):
 
     def on_put(self, request, response):
         """Set or replace the addresses's user."""
+        api_version = request.context['api_version']
         if self._user:
             self._user.unlink(self._address)
         # Process post data and check for an existing user.
         fields = CREATION_FIELDS.copy()
-        fields['user_id'] = int
+        fields['user_id'] = (int if api_version == '3.0' else str)
         fields['_optional'] = fields['_optional'] + (
             'user_id', 'email', 'is_server_owner')
         try:
@@ -364,7 +381,12 @@ class AddressUser(_UserBase):
         user_manager = getUtility(IUserManager)
         if 'user_id' in arguments:
             raw_uid = arguments['user_id']
-            user_id = UUID(int=raw_uid)
+            kws = {('int' if api_version == '3.0' else 'hex'): raw_uid}
+            try:
+                user_id = UUID(**kws)
+            except ValueError as error:
+                bad_request(response, str(error))
+                return
             user = user_manager.get_user_by_id(user_id)
             if user is None:
                 not_found(response, b'No user with ID {}'.format(raw_uid))

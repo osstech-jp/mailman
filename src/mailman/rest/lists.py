@@ -111,7 +111,7 @@ class _ListBase(CollectionMixin):
             mail_host=mlist.mail_host,
             member_count=mlist.members.member_count,
             volume=mlist.volume,
-            self_link=self.path_to('lists/{0}'.format(mlist.list_id)),
+            self_link=self.path_to('lists/{}'.format(mlist.list_id)),
             )
 
     def _get_collection(self, request):
@@ -157,7 +157,7 @@ class AList(_ListBase):
         if len(members) == 0:
             return NotFound(), []
         assert len(members) == 1, 'Too many matches'
-        return AMember(members[0].member_id)
+        return AMember(request.context['api_version'], members[0].member_id)
 
     @child(roster_matcher)
     def roster(self, request, segments, role):
@@ -234,7 +234,7 @@ class MembersOfList(MemberCollection):
     """The members of a mailing list."""
 
     def __init__(self, mailing_list, role):
-        super(MembersOfList, self).__init__()
+        super().__init__()
         self._mlist = mailing_list
         self._role = role
 
@@ -268,7 +268,7 @@ class ArchiverGetterSetter(GetterSetter):
     """Resource for updating archiver statuses."""
 
     def __init__(self, mlist):
-        super(ArchiverGetterSetter, self).__init__()
+        super().__init__()
         self._archiver_set = IListArchiverSet(mlist)
 
     def put(self, mlist, attribute, value):

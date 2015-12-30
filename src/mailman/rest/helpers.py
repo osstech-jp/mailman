@@ -111,7 +111,7 @@ def etag(resource):
     # library requires a bytes.  Use the safest possible encoding.
     hashfood = pformat(resource).encode('raw-unicode-escape')
     etag = hashlib.sha1(hashfood).hexdigest()
-    resource['http_etag'] = '"{0}"'.format(etag)
+    resource['http_etag'] = '"{}"'.format(etag)
     return json.dumps(resource, cls=ExtendedEncoder,
                       sort_keys=as_boolean(config.devmode.enabled))
 

@@ -18,6 +18,7 @@
 """REST user tests."""
 
 __all__ = [
+    'TestAPI31Users',
     'TestLP1074374',
     'TestLP1419519',
     'TestLogin',
@@ -31,6 +32,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
+from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import call_api, configuration
 from mailman.testing.layers import RESTLayer
@@ -292,6 +294,16 @@ class TestUsers(unittest.TestCase):
                 id=anne.preferences.id)
             self.assertEqual(preferences.count(), 0)
 
+    def test_preferences_self_link(self):
+        with transaction():
+            user = getUtility(IUserManager).create_user('anne@example.com')
+            user.preferences.delivery_mode = DeliveryMode.summary_digests
+        content, response = call_api(
+            'http://localhost:9001/3.0/users/1/preferences')
+        self.assertEqual(
+            content['self_link'],
+            'http://localhost:9001/3.0/users/1/preferences')
+
 
 
 class TestLogin(unittest.TestCase):
@@ -502,3 +514,69 @@ class TestLP1419519(unittest.TestCase):
         config.db.abort()
         emails = sorted(address.email for address in self.manager.addresses)
         self.assertEqual(len(emails), 0)
+
+
+
+class TestAPI31Users(unittest.TestCase):
+    """UUIDs are represented as hex in API 3.1."""
+
+    layer = RESTLayer
+
+    def test_get_user(self):
+        with transaction():
+            getUtility(IUserManager).create_user('anne@example.com')
+        content, response = call_api(
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+        self.assertEqual(
+            content['user_id'], '00000000000000000000000000000001')
+        self.assertEqual(
+            content['self_link'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+
+    def test_cannot_get_user_by_int(self):
+        with transaction():
+            getUtility(IUserManager).create_user('anne@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/users/1')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_get_all_users(self):
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            user_manager.create_user('anne@example.com')
+            user_manager.create_user('bart@example.com')
+        content, response = call_api('http://localhost:9001/3.1/users')
+        entries = content['entries']
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(
+            entries[0]['user_id'], '00000000000000000000000000000001')
+        self.assertEqual(
+            entries[0]['self_link'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+        self.assertEqual(
+            entries[1]['user_id'], '00000000000000000000000000000002')
+        self.assertEqual(
+            entries[1]['self_link'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000002')
+
+    def test_create_user(self):
+        content, response = call_api(
+            'http://localhost:9001/3.1/users', {
+                'email': 'anne@example.com',
+                })
+        self.assertEqual(response.status, 201)
+        self.assertEqual(
+            response['location'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+
+    def test_preferences_self_link(self):
+        with transaction():
+            user = getUtility(IUserManager).create_user('anne@example.com')
+            user.preferences.delivery_mode = DeliveryMode.summary_digests
+        content, response = call_api(
+            'http://localhost:9001/3.1/users'
+            '/00000000000000000000000000000001/preferences')
+        self.assertEqual(
+            content['self_link'],
+            'http://localhost:9001/3.1/users'
+            '/00000000000000000000000000000001/preferences')

@@ -55,15 +55,24 @@ class enum_validator:
             raise ValueError(exception.args[0])
 
 
-def subscriber_validator(subscriber):
-    """Convert an email-or-int to an email-or-UUID."""
-    try:
-        return UUID(int=int(subscriber))
-    except ValueError:
-        # It must be an email address.
-        if getUtility(IEmailValidator).is_valid(subscriber):
-            return subscriber
-        raise ValueError
+def subscriber_validator(api_version):
+    """Convert an email-or-(int|hex) to an email-or-UUID."""
+    def _inner(subscriber):
+        # In API 3.0, the uuid is represented by an int, so if we can int
+        # convert the value, we know it's a UUID-as-int.  In API 3.1 though,
+        # uuids are represented by the hex version, which of course cannot
+        # include an @ sign.
+        try:
+            if api_version == '3.0':
+                return UUID(int=int(subscriber))
+            else:
+                return UUID(hex=subscriber)
+        except ValueError:
+            # It must be an email address.
+            if getUtility(IEmailValidator).is_valid(subscriber):
+                return subscriber
+            raise ValueError
+    return _inner
 
 
 def language_validator(code):

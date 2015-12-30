@@ -31,7 +31,7 @@ from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
-    MembershipIsBannedError, NotAMemberError)
+    MembershipIsBannedError, MissingPreferredAddressError, NotAMemberError)
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, RequestRecord, TokenOwner)
@@ -52,16 +52,21 @@ from zope.component import getUtility
 class _MemberBase(CollectionMixin):
     """Shared base class for member representations."""
 
+    def _get_uuid(self, member):
+        return getattr(member.member_id,
+                       'int' if self.api_version == '3.0' else 'hex')
+
     def _resource_as_dict(self, member):
         """See `CollectionMixin`."""
         enum, dot, role = str(member.role).partition('.')
         # The member will always have a member id and an address id.  It will
         # only have a user id if the address is linked to a user.
         # E.g. nonmembers we've only seen via postings to lists they are not
-        # subscribed to will not have a user id.   The user_id and the
-        # member_id are UUIDs.  We need to use the integer equivalent in the
-        # URL.
-        member_id = member.member_id.int
+        # subscribed to will not have a user id.  The user_id and the
+        # member_id are UUIDs.  In API 3.0 we use the integer equivalent of
+        # the UID in the URL, but in API 3.1 we use the hex equivalent.  See
+        # issue #121 for details.
+        member_id = self._get_uuid(member)
         response = dict(
             address=self.path_to('addresses/{}'.format(member.address.email)),
             delivery_mode=member.delivery_mode,
@@ -75,8 +80,9 @@ class _MemberBase(CollectionMixin):
         # Add the user link if there is one.
         user = member.user
         if user is not None:
-            response['user'] = self.path_to(
-                'users/{}'.format(user.user_id.int))
+            user_id = getattr(user.user_id,
+                              'int' if self.api_version == '3.0' else 'hex')
+            response['user'] = self.path_to('users/{}'.format(user_id))
         return response
 
     def _get_collection(self, request):
@@ -106,13 +112,18 @@ class MemberCollection(_MemberBase):
 class AMember(_MemberBase):
     """A member."""
 
-    def __init__(self, member_id_string):
-        # REST gives us the member id as the string of an int; we have to
-        # convert it to a UUID.
+    def __init__(self, api_version, member_id_string):
+        # The member_id_string is the string representation of the member's
+        # UUID.  In API 3.0, the argument is the string representation of the
+        # int representation of the UUID.  In API 3.1 it's the hex.
+        self.api_version = api_version
         try:
-            member_id = UUID(int=int(member_id_string))
+            if api_version == '3.0':
+                member_id = UUID(int=int(member_id_string))
+            else:
+                member_id = UUID(hex=member_id_string)
         except ValueError:
-            # The string argument could not be converted to an integer.
+            # The string argument could not be converted to a UUID.
             self._member = None
         else:
             service = getUtility(ISubscriptionService)
@@ -132,9 +143,9 @@ class AMember(_MemberBase):
             return NotFound(), []
         if self._member is None:
             return NotFound(), []
+        member_id = self._get_uuid(self._member)
         child = Preferences(
-            self._member.preferences,
-            'members/{0}'.format(self._member.member_id.int))
+            self._member.preferences, 'members/{}'.format(member_id))
         return child, []
 
     @child()
@@ -146,7 +157,7 @@ class AMember(_MemberBase):
             return NotFound(), []
         child = ReadOnlyPreferences(
             self._member,
-            'members/{0}/all'.format(self._member.member_id.int))
+            'members/{}/all'.format(self._get_uuid(self._member)))
         return child, []
 
     def on_delete(self, request, response):
@@ -213,7 +224,7 @@ class AllMembers(_MemberBase):
         try:
             validator = Validator(
                 list_id=str,
-                subscriber=subscriber_validator,
+                subscriber=subscriber_validator(self.api_version),
                 display_name=str,
                 delivery_mode=enum_validator(DeliveryMode),
                 role=enum_validator(MemberRole),
@@ -276,14 +287,17 @@ class AllMembers(_MemberBase):
             except AlreadySubscribedError:
                 conflict(response, b'Member already subscribed')
                 return
+            except MissingPreferredAddressError:
+                bad_request(response, b'User has no preferred address')
+                return
             if token is None:
                 assert token_owner is TokenOwner.no_one, token_owner
                 # The subscription completed.  Let's get the resulting member
                 # and return the location to the new member.  Member ids are
                 # UUIDs and need to be converted to URLs because JSON doesn't
                 # directly support UUIDs.
-                member_id = member.member_id.int
-                location = self.path_to('members/{0}'.format(member_id))
+                member_id = self._get_uuid(member)
+                location = self.path_to('members/{}'.format(member_id))
                 created(response, location)
                 return
             # The member could not be directly subscribed because there are
@@ -332,8 +346,8 @@ class AllMembers(_MemberBase):
         # and return the location to the new member.  Member ids are
         # UUIDs and need to be converted to URLs because JSON doesn't
         # directly support UUIDs.
-        member_id = member.member_id.int
-        location = self.path_to('members/{0}'.format(member_id))
+        member_id = self._get_uuid(member)
+        location = self.path_to('members/{}'.format(member_id))
         created(response, location)
 
     def on_get(self, request, response):

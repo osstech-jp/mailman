@@ -18,6 +18,7 @@
 """REST membership tests."""
 
 __all__ = [
+    'TestAPI31Members',
     'TestMembership',
     'TestNonmembership',
     ]
@@ -28,10 +29,11 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
+from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     TestableMaster, call_api, get_lmtp_client, make_testable_runner,
-    wait_for_webservice)
+    subscribe, wait_for_webservice)
 from mailman.runners.incoming import IncomingRunner
 from mailman.testing.layers import ConfigLayer, RESTLayer
 from mailman.utilities.datetime import now
@@ -106,6 +108,21 @@ class TestMembership(unittest.TestCase):
                 })
         self.assertEqual(cm.exception.code, 409)
         self.assertEqual(cm.exception.reason, b'Member already subscribed')
+
+    def test_subscribe_user_without_preferred_address(self):
+        with transaction():
+            getUtility(IUserManager).create_user('anne@example.com')
+        # Subscribe the user to the mailing list by hex UUID.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/members', {
+                'list_id': 'test.example.com',
+                'subscriber': '00000000000000000000000000000001',
+                'pre_verified': True,
+                'pre_confirmed': True,
+                'pre_approved': True,
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'User has no preferred address')
 
     def test_add_member_with_mixed_case_email(self):
         # LP: #1425359 - Mailman is case-perserving, case-insensitive.  This
@@ -371,3 +388,135 @@ Some text.
         # previously been linked to a user record.
         self.assertEqual(nonmember['user'],
                          'http://localhost:9001/3.0/users/1')
+
+
+
+class TestAPI31Members(unittest.TestCase):
+    layer = RESTLayer
+
+    def setUp(self):
+        with transaction():
+            self._mlist = create_list('ant@example.com')
+
+    def test_member_ids_are_hex(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+            subscribe(self._mlist, 'Bart')
+        response, headers = call_api('http://localhost:9001/3.1/members')
+        entries = response['entries']
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(
+          entries[0]['self_link'],
+          'http://localhost:9001/3.1/members/00000000000000000000000000000001')
+        self.assertEqual(
+            entries[0]['member_id'],
+            '00000000000000000000000000000001')
+        self.assertEqual(
+            entries[0]['user'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+        self.assertEqual(
+          entries[1]['self_link'],
+          'http://localhost:9001/3.1/members/00000000000000000000000000000002')
+        self.assertEqual(
+            entries[1]['member_id'],
+            '00000000000000000000000000000002')
+        self.assertEqual(
+            entries[1]['user'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000002')
+
+    def test_get_member_id_by_hex(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+        response, headers = call_api(
+          'http://localhost:9001/3.1/members/00000000000000000000000000000001')
+        self.assertEqual(
+            response['member_id'],
+            '00000000000000000000000000000001')
+        self.assertEqual(
+          response['self_link'],
+          'http://localhost:9001/3.1/members/00000000000000000000000000000001')
+        self.assertEqual(
+            response['user'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+        self.assertEqual(
+            response['address'],
+            'http://localhost:9001/3.1/addresses/aperson@example.com')
+
+    def test_cannot_get_member_id_by_int(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/members/1')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_preferences(self):
+        with transaction():
+            member = subscribe(self._mlist, 'Anne')
+            member.preferences.delivery_mode = DeliveryMode.summary_digests
+        response, headers = call_api(
+            'http://localhost:9001/3.1/members'
+            '/00000000000000000000000000000001/preferences')
+        self.assertEqual(response['delivery_mode'], 'summary_digests')
+
+    def test_all_preferences(self):
+        with transaction():
+            member = subscribe(self._mlist, 'Anne')
+            member.preferences.delivery_mode = DeliveryMode.summary_digests
+        response, headers = call_api(
+            'http://localhost:9001/3.1/members'
+            '/00000000000000000000000000000001/all/preferences')
+        self.assertEqual(response['delivery_mode'], 'summary_digests')
+
+    def test_create_new_membership_by_hex(self):
+        with transaction():
+            user = getUtility(IUserManager).create_user('anne@example.com')
+            _set_preferred(user)
+        # Subscribe the user to the mailing list by hex UUID.
+        response, headers = call_api(
+            'http://localhost:9001/3.1/members', {
+                'list_id': 'ant.example.com',
+                'subscriber': '00000000000000000000000000000001',
+                'pre_verified': True,
+                'pre_confirmed': True,
+                'pre_approved': True,
+                })
+        self.assertEqual(headers.status, 201)
+        self.assertEqual(
+           headers['location'],
+           'http://localhost:9001/3.1/members/00000000000000000000000000000001'
+           )
+
+    def test_create_new_owner_by_hex(self):
+        with transaction():
+            user = getUtility(IUserManager).create_user('anne@example.com')
+            _set_preferred(user)
+        # Subscribe the user to the mailing list by hex UUID.
+        response, headers = call_api(
+            'http://localhost:9001/3.1/members', {
+                'list_id': 'ant.example.com',
+                'subscriber': '00000000000000000000000000000001',
+                'role': 'owner',
+                })
+        self.assertEqual(headers.status, 201)
+        self.assertEqual(
+           headers['location'],
+           'http://localhost:9001/3.1/members/00000000000000000000000000000001'
+           )
+
+    def test_cannot_create_new_membership_by_int(self):
+        with transaction():
+            user = getUtility(IUserManager).create_user('anne@example.com')
+            _set_preferred(user)
+        # We can't use the int representation of the UUID with API 3.1.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/members', {
+                'list_id': 'ant.example.com',
+                'subscriber': '1',
+                'pre_verified': True,
+                'pre_confirmed': True,
+                'pre_approved': True,
+                })
+        # This is a bad request because the `subscriber` value isn't something
+        # that's known to the system, in API 3.1.  It's not technically a 404
+        # because that's reserved for URL lookups.
+        self.assertEqual(cm.exception.code, 400)

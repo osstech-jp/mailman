@@ -129,13 +129,13 @@ def dump_json(url, data=None, method=None, username=None, password=None):
                 # entry is a dictionary.
                 print('entry %d:' % i)
                 for entry_key in sorted(entry):
-                    print('    {0}: {1}'.format(entry_key, entry[entry_key]))
+                    print('    {}: {}'.format(entry_key, entry[entry_key]))
         elif isinstance(value, list):
             printable_value = COMMASPACE.join(
-                "'{0}'".format(s) for s in sorted(value))
-            print('{0}: [{1}]'.format(key, printable_value))
+                "'{}'".format(s) for s in sorted(value))
+            print('{}: [{}]'.format(key, printable_value))
         else:
-            print('{0}: {1}'.format(key, value))
+            print('{}: {}'.format(key, value))
 
 
 

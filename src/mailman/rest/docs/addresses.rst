@@ -175,10 +175,10 @@ A link to the user resource is now available as a sub-resource.
     user: http://localhost:9001/3.0/users/1
 
 To prevent automatic user creation from taking place, add the `auto_create`
-parameter to the POST request and set it to a false-equivalent value like 0:
+parameter to the POST request and set it to False.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/anne@example.com/user',
-    ...           {'display_name': 'Anne User', 'auto_create': 0})
+    ...           {'display_name': 'Anne User', 'auto_create': False})
     Traceback (most recent call last):
     ...
     urllib.error.HTTPError: HTTP Error 403: ...
