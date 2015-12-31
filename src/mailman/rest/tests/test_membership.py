@@ -29,7 +29,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     TestableMaster, call_api, get_lmtp_client, make_testable_runner,
@@ -282,6 +282,32 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          b'Cannot convert parameters: moderation_action')
+
+    def test_bad_preferences_url(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members/1/preferences/bogus')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_not_a_member_preferences(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members/1/preferences')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_not_a_member_all_preferences(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members/1/all/preferences')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_delete_other_role(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne', MemberRole.moderator)
+        response, headers = call_api(
+            'http://localhost:9001/3.0/members/1',
+            method='DELETE')
+        self.assertEqual(headers.status, 204)
+        self.assertEqual(len(list(self._mlist.moderators.members)), 0)
 
 
 

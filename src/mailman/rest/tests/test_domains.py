@@ -106,6 +106,13 @@ class TestDomains(unittest.TestCase):
                 'http://localhost:9001/3.0/domains/does-not-exist.com/lists')
         self.assertEqual(cm.exception.code, 404)
 
+    def test_create_existing_domain(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/domains', dict(
+                mail_host='example.com',
+                ))
+        self.assertEqual(cm.exception.code, 400)
+
     def test_double_delete(self):
         # You cannot delete a domain twice.
         content, response = call_api(
@@ -118,7 +125,6 @@ class TestDomains(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
 
 
-
 
 class TestDomainOwners(unittest.TestCase):
     layer = RESTLayer
@@ -127,6 +133,12 @@ class TestDomainOwners(unittest.TestCase):
         # Try to get the owners of a missing domain.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/domains/example.net/owners')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_domain_owners_url(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/domains/example.com/owners/bogus')
         self.assertEqual(cm.exception.code, 404)
 
     def test_post_to_missing_domain_owners(self):

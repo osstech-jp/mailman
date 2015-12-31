@@ -126,7 +126,7 @@ class AnAddress(_AddressBase):
     def memberships(self, request, segments):
         """/addresses/<email>/memberships"""
         if len(segments) != 0:
-            return BadRequest(), []
+            return NotFound(), []
         if self._address is None:
             return NotFound(), []
         return AddressMemberships(self._address)
@@ -188,19 +188,15 @@ class UserAddresses(_AddressBase):
 
     def on_get(self, request, response):
         """/addresses"""
-        if self._user is None:
-            not_found(response)
-        else:
-            okay(response, etag(self._make_collection(request)))
+        assert self._user is not None
+        okay(response, etag(self._make_collection(request)))
 
     def on_post(self, request, response):
         """POST to /addresses
 
         Add a new address to the user record.
         """
-        if self._user is None:
-            not_found(response)
-            return
+        assert self._user is not None
         user_manager = getUtility(IUserManager)
         validator = Validator(email=str,
                               display_name=str,

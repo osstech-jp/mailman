@@ -100,7 +100,7 @@ class MemberCollection(_MemberBase):
     """
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        raise NotImplementedError
+        raise NotImplementedError                   # pragma: no cover
 
     def on_get(self, request, response):
         """roster/[members|owners|moderators]"""
@@ -170,11 +170,7 @@ class AMember(_MemberBase):
             return
         mlist = getUtility(IListManager).get_by_list_id(self._member.list_id)
         if self._member.role is MemberRole.member:
-            try:
-                delete_member(mlist, self._member.address.email, False, False)
-            except NotAMemberError:
-                not_found(response)
-                return
+            delete_member(mlist, self._member.address.email, False, False)
         else:
             self._member.unsubscribe()
         no_content(response)

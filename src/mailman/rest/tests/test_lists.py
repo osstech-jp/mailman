@@ -218,6 +218,12 @@ class TestLists(unittest.TestCase):
             call_api('http://localhost:9001/3.0/lists/bogus.example.com')
         self.assertEqual(cm.exception.code, 404)
 
+    def test_not_found_member_role(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/test.example.com'
+                     '/owner/nobody@example.com')
+        self.assertEqual(cm.exception.code, 404)
+
 
 
 class TestListArchivers(unittest.TestCase):

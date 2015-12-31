@@ -28,7 +28,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import call_api
+from mailman.testing.helpers import call_api, subscribe
 from mailman.testing.layers import RESTLayer
 from mailman.utilities.datetime import now
 from urllib.error import HTTPError
@@ -62,6 +62,13 @@ class TestAddresses(unittest.TestCase):
             call_api('http://localhost:9001/3.0/addresses/'
                      'nobody@example.com/memberships')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_membership_of_address_with_no_user(self):
+        with transaction():
+            getUtility(IUserManager).create_address('anne@example.com')
+        response, content = call_api(
+            'http://localhost:9001/3.0/addresses/anne@example.com/memberships')
+        self.assertEqual(response['total_size'], 0)
 
     def test_verify_a_missing_address(self):
         # POSTing to the 'verify' sub-resource returns a 404.
@@ -432,6 +439,40 @@ class TestAddresses(unittest.TestCase):
             response, headers = call_api(
                 'http://localhost:9001/3.0/addresses/anne@example.com',
                 method='DELETE')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_memberships_url(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/addresses/'
+                     'aperson@example.com/memberships/bogus')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_preferences_url(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/addresses/'
+                     'aperson@example.com/preferences/bogus')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_preferences_address(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/addresses/'
+                     'nobody@example.com/preferences')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_user_address(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/addresses/'
+                     'nobody@example.com/user')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_user_addresses_url(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/users/'
+                     'nobody@example.com/addresses')
         self.assertEqual(cm.exception.code, 404)
 
 

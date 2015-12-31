@@ -97,7 +97,7 @@ class ADomain(_DomainBase):
                 return NotFound()
             return OwnersForDomain(domain)
         else:
-            return BadRequest(), []
+            return NotFound(), []
 
 
 class AllDomains(_DomainBase):
@@ -121,8 +121,6 @@ class AllDomains(_DomainBase):
                 values['owners'] = owners
             domain = domain_manager.add(**values)
         except BadDomainSpecificationError as error:
-            bad_request(response, str(error))
-        except ValueError as error:
             bad_request(response, str(error))
         else:
             location = self.path_to('domains/{}'.format(domain.mail_host))

@@ -130,7 +130,7 @@ class CollectionMixin:
         :return: The representation of the resource.
         :rtype: dict
         """
-        raise NotImplementedError
+        raise NotImplementedError                   # pragma: no cover
 
     def _resource_as_json(self, resource):
         """Return the JSON formatted representation of the resource."""
@@ -147,7 +147,7 @@ class CollectionMixin:
         :return: The collection
         :rtype: list
         """
-        raise NotImplementedError
+        raise NotImplementedError                   # pragma: no cover
 
     def _paginate(self, request, collection):
         """Method to paginate through collection result lists.

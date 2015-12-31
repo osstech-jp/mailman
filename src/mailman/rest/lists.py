@@ -217,8 +217,6 @@ class AllLists(_ListBase):
         except BadDomainSpecificationError as error:
             reason = 'Domain does not exist: {}'.format(error.domain)
             bad_request(response, reason.encode('utf-8'))
-        except ValueError as error:
-            bad_request(response, str(error))
         else:
             location = self.path_to('lists/{0}'.format(mlist.list_id))
             created(response, location)
