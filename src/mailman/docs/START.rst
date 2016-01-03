@@ -4,7 +4,7 @@
 Getting started with GNU Mailman
 ================================
 
-Copyright (C) 2008-2015 by the Free Software Foundation, Inc.
+Copyright (C) 2008-2016 by the Free Software Foundation, Inc.
 
 
 Contact Us
@@ -12,9 +12,9 @@ Contact Us
 
 Contributions of code, problem reports, and feature requests are welcome.
 Please submit bug reports on the Mailman bug tracker at
-https://gitlab.com/mailman/mailman/issues (you need to have a login on Gitlab to
-do so).  You can also send email to the mailman-developers@python.org mailing
-list, or ask on IRC channel ``#mailman`` on Freenode.
+https://gitlab.com/mailman/mailman/issues (you need to have a login on Gitlab
+to do so).  You can also send email to the mailman-developers@python.org
+mailing list, or ask on IRC channel ``#mailman`` on Freenode.
 
 
 Requirements

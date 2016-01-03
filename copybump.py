@@ -69,8 +69,8 @@ def do_walk():
         owner = FSF
     for root, dirs, files in os.walk('.'):
         if root == '.':
-            remove(dirs, '.bzr')
             remove(dirs, '.git')
+            remove(dirs, '.tox')
             remove(dirs, 'bin')
             remove(dirs, 'contrib')
             remove(dirs, 'develop-eggs')
