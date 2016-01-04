@@ -89,7 +89,7 @@ class _PredictableIDGenerator:
         The type of the returned id is intended to be the type that
         makes sense for the subclass overriding this method.
         """
-        raise NotImplementedError                   # pragma: no cover
+        raise NotImplementedError
 
     def _next_predictable_id(self):
         """Generate a predictable id for when Mailman being tested.
@@ -97,7 +97,7 @@ class _PredictableIDGenerator:
         The type of the returned id is intended to be the type that
         makes sense for the subclass overriding this method.
         """
-        raise NotImplementedError                   # pragma: no cover
+        raise NotImplementedError
 
     def _next_id(self):
         with self._lock:

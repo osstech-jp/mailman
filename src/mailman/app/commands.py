@@ -35,6 +35,6 @@ def initialize():
         command = command_class()
         verifyObject(IEmailCommand, command)
         assert command_class.name not in config.commands, (
-            'Duplicate email command "{0}" found in {1}'.format(
+            'Duplicate email command "{}" found in {}'.format(
                 command_class.name, command_class.__module__))
         config.commands[command_class.name] = command_class()

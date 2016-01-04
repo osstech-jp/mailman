@@ -71,7 +71,7 @@ class TerminalChainBase:
         :param msg: The message.
         :param msgdata: The message metadata.
         """
-        raise NotImplementedError                   # pragma: no cover
+        raise NotImplementedError
 
     def get_links(self, mlist, msg, msgdata):
         """See `IChain`."""

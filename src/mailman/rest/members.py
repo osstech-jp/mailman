@@ -100,7 +100,7 @@ class MemberCollection(_MemberBase):
     """
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        raise NotImplementedError                   # pragma: no cover
+        raise NotImplementedError
 
     def on_get(self, request, response):
         """roster/[members|owners|moderators]"""

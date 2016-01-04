@@ -86,7 +86,7 @@ class ExtendedEncoder(json.JSONEncoder):
             # It's up to the decoding validator to associate this name with
             # the right Enum class.
             return obj.name
-        return json.JSONEncoder.default(self, obj)
+        return super().default(obj)
 
 
 def etag(resource):
@@ -130,7 +130,7 @@ class CollectionMixin:
         :return: The representation of the resource.
         :rtype: dict
         """
-        raise NotImplementedError                   # pragma: no cover
+        raise NotImplementedError
 
     def _resource_as_json(self, resource):
         """Return the JSON formatted representation of the resource."""
@@ -147,7 +147,7 @@ class CollectionMixin:
         :return: The collection
         :rtype: list
         """
-        raise NotImplementedError                   # pragma: no cover
+        raise NotImplementedError
 
     def _paginate(self, request, collection):
         """Method to paginate through collection result lists.
