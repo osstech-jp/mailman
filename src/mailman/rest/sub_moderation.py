@@ -79,7 +79,7 @@ class IndividualRequest(_ModerationBase):
             bad_request(response, str(error))
             return
         action = arguments['action']
-        if action is Action.defer:
+        if action in (Action.defer, Action.hold):
             # At least see if the token is in the database.
             pendable = self._pendings.confirm(self._token, expunge=False)
             if pendable is None:
@@ -100,7 +100,8 @@ class IndividualRequest(_ModerationBase):
                 not_found(response)
             else:
                 no_content(response)
-        elif action is Action.reject:
+        else:
+            assert action is Action.reject, action
             # Like discard but sends a rejection notice to the user.
             pendable = self._pendings.confirm(self._token, expunge=True)
             if pendable is None:

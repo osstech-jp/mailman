@@ -341,3 +341,25 @@ class TestSubscriptionModeration(unittest.TestCase):
                      '/requests/bogus',
                      dict(action='reject'))
         self.assertEqual(cm.exception.code, 404)
+
+    def test_hold_keeps_holding(self):
+        # POST to the request to continue holding it.
+        with transaction():
+            token, token_owner, member = self._registrar.register(self._anne)
+        # Anne's subscription request got held.
+        self.assertIsNone(member)
+        # Clear out the virgin queue, which currently contains the
+        # confirmation message sent to Anne.
+        get_queue_messages('virgin')
+        url = 'http://localhost:9001/3.0/lists/ant@example.com/requests/{}'
+        content, response = call_api(url.format(token), dict(
+            action='hold',
+            ))
+        self.assertEqual(response.status, 204)
+        # Anne is not a member.
+        self.assertIsNone(self._mlist.members.get_member('anne@example.com'))
+        # The request URL still exists.
+        content, response = call_api(url.format(token), dict(
+                action='defer',
+                ))
+        self.assertEqual(response.status, 204)
