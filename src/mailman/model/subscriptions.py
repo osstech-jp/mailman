@@ -25,7 +25,8 @@ __all__ = [
 from mailman.app.membership import delete_member
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
-from mailman.interfaces.subscriptions import ISubscriptionService
+from mailman.interfaces.subscriptions import (
+    ISubscriptionService, TooManyMembersError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.address import Address
 from mailman.model.member import Member
@@ -76,13 +77,12 @@ class SubscriptionService:
             return members[0]
 
     @dbconnection
-    def find_members(self, store, subscriber=None, list_id=None, role=None):
-        """See `ISubscriptionService`."""
+    def _find_members(self, store, subscriber, list_id, role):
         # If `subscriber` is a user id, then we'll search for all addresses
         # which are controlled by the user, otherwise we'll just search for
         # the given address.
         if subscriber is None and list_id is None and role is None:
-            return []
+            raise NoResultFound
         order = (Member.list_id, Address.email, Member.role)
         # Querying for the subscriber is the most complicated part, because
         # the parameter can either be an email address or a user id.  Start by
@@ -112,11 +112,24 @@ class SubscriptionService:
             q_address = q_address.filter(Member.role == role)
             q_user = q_user.filter(Member.role == role)
         # Do a UNION of the two queries, sort the result and generate Members.
+        return q_address.union(q_user).order_by(*order).from_self(Member)
+
+    def find_members(self, subscriber=None, list_id=None, role=None):
+        """See `ISubscriptionService`."""
         try:
-            query = q_address.union(q_user).order_by(*order).from_self(Member)
+            query = self._find_members(subscriber, list_id, role)
         except NoResultFound:
             query = None
         return QuerySequence(query)
+
+    def find_member(self, subscriber=None, list_id=None, role=None):
+        """See `ISubscriptionService`."""
+        try:
+            return self._find_members(subscriber, list_id, role).one()
+        except NoResultFound:
+            return None
+        except MultipleResultsFound:
+            raise TooManyMembersError(subscriber, list_id, role)
 
     def __iter__(self):
         for member in self.get_members():

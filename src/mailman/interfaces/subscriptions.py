@@ -22,13 +22,14 @@ __all__ = [
     'MissingUserError',
     'RequestRecord',
     'TokenOwner',
+    'TooManyMembersError',
     ]
 
 
 from collections import namedtuple
 from enum import Enum
 from mailman.interfaces.errors import MailmanError
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import DeliveryMode, MembershipError
 from zope.interface import Interface
 
 
@@ -37,11 +38,19 @@ class MissingUserError(MailmanError):
     """A an invalid user id was given."""
 
     def __init__(self, user_id):
-        super(MissingUserError, self).__init__()
+        super().__init__()
         self.user_id = user_id
 
     def __str__(self):
         return self.user_id
+
+
+class TooManyMembersError(MembershipError):
+    def __init__(self, subscriber, list_id, role):
+        super().__init__()
+        self.subscriber = subscriber
+        self.list_id = list_id
+        self.role = role
 
 
 
@@ -92,12 +101,13 @@ class ISubscriptionService(Interface):
         """
 
     def find_members(subscriber=None, list_id=None, role=None):
-        """Search for and return a specific member.
+        """Search for members matching some criteria.
 
-        The members are sorted first by fully-qualified mailing list name,
-        then by subscribed email address, then by role.  Because the user may
-        be a member of the list under multiple roles (e.g. as an owner and as
-        a digest member), the member can appear multiple times in this list.
+        The members are sorted first by list-id, then by subscribed
+        email address, then by role.  Because the user may be a member
+        of the list under multiple roles (e.g. as an owner and as a
+        digest member), the member can appear multiple times in this
+        list.
 
         :param subscriber: The email address or user id of the user getting
             subscribed.
@@ -109,6 +119,27 @@ class ISubscriptionService(Interface):
         :type role: `MemberRole`
         :return: The list of all memberships, which may be empty.
         :rtype: list of `IMember`
+        """
+
+    def find_member(subscriber=None, list_id=None, role=None):
+        """Search for a member matching some criteria.
+
+        This is like find_members() but is guaranteed to return exactly
+        one member.
+
+        :param subscriber: The email address or user id of the user getting
+            subscribed.
+        :type subscriber: string or int
+        :param list_id: The list id of the mailing list to search for the
+            subscriber's memberships on.
+        :type list_id: string
+        :param role: The member role.
+        :type role: `MemberRole`
+        :return: The member matching the given criteria or None if no
+            members match the criteria.
+        :rtype: `IMember` or None
+        :raises TooManyMembersError: when the given criteria matches
+            more than one membership.
         """
 
     def __iter__():

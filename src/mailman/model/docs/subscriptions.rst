@@ -86,8 +86,8 @@ There is an iteration shorthand for getting all the members.
         on cat@example.com as MemberRole.member>
 
 
-Finding members
-===============
+Searching for members
+=====================
 
 The subscription service can be used to find memberships based on specific
 search criteria.  For example, we can find all the mailing lists that Anne is
@@ -150,6 +150,25 @@ You can also find a specific membership by all three criteria.
     ...     print(member)
     <Member: Bart Person <bperson@example.com>
         on bee@example.com as MemberRole.owner>
+
+
+Finding a single member
+=======================
+
+If you expect only zero or one member to match your criteria, you can use a
+the more efficient ``find_member()`` method.  This takes exactly the same
+criteria as ``find_members()``.
+
+There may be no matching members.
+
+    >>> print(service.find_member('dave@example.com'))
+    None
+
+But if there is exactly one membership, it is returned.
+
+    >>> service.find_member('bperson@example.com', 'ant.example.com')
+    <Member: Bart Person <bperson@example.com>
+        on ant@example.com as MemberRole.moderator>
 
 
 Removing members
