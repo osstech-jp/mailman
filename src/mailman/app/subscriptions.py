@@ -18,7 +18,6 @@
 """Handle subscriptions."""
 
 __all__ = [
-    'SubscriptionService',
     'SubscriptionWorkflow',
     'handle_ListDeletingEvent',
     ]
@@ -30,15 +29,12 @@ import logging
 from email.utils import formataddr
 from enum import Enum
 from datetime import timedelta
-from mailman.app.membership import delete_member
 from mailman.app.workflow import Workflow
 from mailman.core.i18n import _
-from mailman.database.transaction import dbconnection
 from mailman.email.message import UserNotification
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.bans import IBanManager
-from mailman.interfaces.listmanager import (
-    IListManager, ListDeletingEvent, NoSuchListError)
+from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import MembershipIsBannedError
 from mailman.interfaces.pending import IPendable, IPendings
@@ -47,14 +43,8 @@ from mailman.interfaces.subscriptions import ISubscriptionService, TokenOwner
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.interfaces.workflow import IWorkflowStateManager
-from mailman.model.address import Address
-from mailman.model.member import Member
-from mailman.model.user import User
 from mailman.utilities.datetime import now
 from mailman.utilities.i18n import make
-from mailman.utilities.queries import QuerySequence
-from operator import attrgetter
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
@@ -331,103 +321,6 @@ class SubscriptionWorkflow(Workflow):
                          )
                     else 'do_subscription')
         self.push(next_step)
-
-
-
-@implementer(ISubscriptionService)
-class SubscriptionService:
-    """Subscription services for the REST API."""
-
-    __name__ = 'members'
-
-    def get_members(self):
-        """See `ISubscriptionService`."""
-        # {list_id -> {role -> [members]}}
-        by_list = {}
-        user_manager = getUtility(IUserManager)
-        for member in user_manager.members:
-            by_role = by_list.setdefault(member.list_id, {})
-            members = by_role.setdefault(member.role.name, [])
-            members.append(member)
-        # Flatten into single list sorted as per the interface.
-        all_members = []
-        address_of_member = attrgetter('address.email')
-        for list_id in sorted(by_list):
-            by_role = by_list[list_id]
-            all_members.extend(
-                sorted(by_role.get('owner', []), key=address_of_member))
-            all_members.extend(
-                sorted(by_role.get('moderator', []), key=address_of_member))
-            all_members.extend(
-                sorted(by_role.get('member', []), key=address_of_member))
-        return all_members
-
-    @dbconnection
-    def get_member(self, store, member_id):
-        """See `ISubscriptionService`."""
-        members = store.query(Member).filter(Member._member_id == member_id)
-        if members.count() == 0:
-            return None
-        else:
-            assert members.count() == 1, 'Too many matching members'
-            return members[0]
-
-    @dbconnection
-    def find_members(self, store, subscriber=None, list_id=None, role=None):
-        """See `ISubscriptionService`."""
-        # If `subscriber` is a user id, then we'll search for all addresses
-        # which are controlled by the user, otherwise we'll just search for
-        # the given address.
-        if subscriber is None and list_id is None and role is None:
-            return []
-        order = (Member.list_id, Address.email, Member.role)
-        # Querying for the subscriber is the most complicated part, because
-        # the parameter can either be an email address or a user id.  Start by
-        # building two queries, one joined on the member's address, and one
-        # joined on the member's user.  Add the resulting email address to the
-        # selected values to be able to sort on it later on.
-        q_address = store.query(Member, Address.email).join(Member._address)
-        q_user = store.query(Member, Address.email).join(Member._user)
-        if subscriber is not None:
-            if isinstance(subscriber, str):
-                # subscriber is an email address.
-                q_address = q_address.filter(
-                    Address.email == subscriber.lower())
-                q_user = q_user.join(User.addresses).filter(
-                    Address.email == subscriber.lower())
-            else:
-                # subscriber is a user id.
-                q_address = q_address.join(Address.user).filter(
-                    User._user_id == subscriber)
-                q_user = q_user.join(User._preferred_address).filter(
-                    User._user_id == subscriber)
-        # Add additional filters to both queries.
-        if list_id is not None:
-            q_address = q_address.filter(Member.list_id == list_id)
-            q_user = q_user.filter(Member.list_id == list_id)
-        if role is not None:
-            q_address = q_address.filter(Member.role == role)
-            q_user = q_user.filter(Member.role == role)
-        # Do a UNION of the two queries, sort the result and generate Members.
-        try:
-            query = q_address.union(q_user).order_by(*order).from_self(Member)
-        except NoResultFound:
-            query = None
-        except MultipleResultsFound:
-            raise AssertionError('Too many matches')
-        return QuerySequence(query)
-
-    def __iter__(self):
-        for member in self.get_members():
-            yield member
-
-    def leave(self, list_id, email):
-        """See `ISubscriptionService`."""
-        mlist = getUtility(IListManager).get_by_list_id(list_id)
-        if mlist is None:
-            raise NoSuchListError(list_id)
-        # XXX for now, no notification or user acknowledgment.
-        delete_member(mlist, email, False, False)
 
 
 

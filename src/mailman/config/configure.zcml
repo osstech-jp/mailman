@@ -106,7 +106,7 @@
 
   <utility
     provides="mailman.interfaces.subscriptions.ISubscriptionService"
-    factory="mailman.app.subscriptions.SubscriptionService"
+    factory="mailman.model.subscriptions.SubscriptionService"
     />
 
   <utility
