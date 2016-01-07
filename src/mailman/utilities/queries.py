@@ -26,6 +26,12 @@ from collections.abc import Sequence
 
 
 class QuerySequence(Sequence):
+    """A simple wrapper class around database query results.
+
+    Use this to provide a sequence-like API around query results, such as
+    being able to use len() and slicing, where the results objects don't
+    natively provide them.
+    """
     def __init__(self, query=None):
         super().__init__()
         self._query = query
