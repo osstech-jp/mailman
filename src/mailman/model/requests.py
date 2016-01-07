@@ -29,6 +29,7 @@ from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
+from mailman.utilities.queries import QuerySequence
 from pickle import dumps, loads
 from sqlalchemy import Column, ForeignKey, Integer, Unicode
 from sqlalchemy.orm import relationship
@@ -87,8 +88,9 @@ class ListRequests:
 
     @dbconnection
     def of_type(self, store, request_type):
-        return store.query(_Request).filter_by(
-            mailing_list=self.mailing_list, request_type=request_type)
+        return QuerySequence(
+            store.query(_Request).filter_by(
+                mailing_list=self.mailing_list, request_type=request_type))
 
     @dbconnection
     def hold_request(self, store, request_type, key, data=None):
