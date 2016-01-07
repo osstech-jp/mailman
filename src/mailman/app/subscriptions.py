@@ -52,7 +52,9 @@ from mailman.model.member import Member
 from mailman.model.user import User
 from mailman.utilities.datetime import now
 from mailman.utilities.i18n import make
+from mailman.utilities.queries import QuerySequence
 from operator import attrgetter
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
@@ -407,8 +409,13 @@ class SubscriptionService:
             q_address = q_address.filter(Member.role == role)
             q_user = q_user.filter(Member.role == role)
         # Do a UNION of the two queries, sort the result and generate Members.
-        query = q_address.union(q_user).order_by(*order).from_self(Member)
-        return query
+        try:
+            query = q_address.union(q_user).order_by(*order).from_self(Member)
+        except NoResultFound:
+            query = None
+        except MultipleResultsFound:
+            raise AssertionError('Too many matches')
+        return QuerySequence(query)
 
     def __iter__(self):
         for member in self.get_members():

@@ -167,7 +167,7 @@ class TestJoinWithDigests(unittest.TestCase):
         # digest deliveries.
         members = getUtility(ISubscriptionService).find_members(
             'anne@example.org')
-        self.assertEqual(members.count(), 1)
+        self.assertEqual(len(members), 1)
         self.assertEqual(rmember, members[0])
         return rmember
 

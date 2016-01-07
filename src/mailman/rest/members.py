@@ -31,7 +31,7 @@ from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
-    MembershipIsBannedError, MissingPreferredAddressError, NotAMemberError)
+    MembershipIsBannedError, MissingPreferredAddressError)
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, RequestRecord, TokenOwner)

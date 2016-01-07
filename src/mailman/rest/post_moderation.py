@@ -31,6 +31,7 @@ from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, etag, no_content, not_found, okay,
     path_to)
 from mailman.rest.validator import Validator, enum_validator
+from mailman.utilities.queries import QuerySequence
 from zope.component import getUtility
 
 
@@ -148,7 +149,7 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
 
     def _get_collection(self, request):
         requests = IListRequests(self._mlist)
-        return requests.of_type(RequestType.held_message)
+        return QuerySequence(requests.of_type(RequestType.held_message))
 
     def on_get(self, request, response):
         """/lists/listname/held"""

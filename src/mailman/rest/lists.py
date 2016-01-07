@@ -47,7 +47,6 @@ from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
 from mailman.rest.validator import Validator
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from zope.component import getUtility
 
 
@@ -152,14 +151,12 @@ class AList(_ListBase):
         """Return a single member representation."""
         if self._mlist is None:
             return NotFound(), []
-        try:
-            the_member = getUtility(ISubscriptionService).find_members(
-                email, self._mlist.list_id, role).one()
-        except NoResultFound:
+        members = getUtility(ISubscriptionService).find_members(
+            email, self._mlist.list_id, role)
+        if len(members) == 0:
             return NotFound(), []
-        except MultipleResultsFound:
-            raise AssertionError('Too many matches')
-        return AMember(request.context['api_version'], the_member.member_id)
+        assert len(members) == 1, 'Too many matches'
+        return AMember(request.context['api_version'], members[0].member_id)
 
     @child(roster_matcher)
     def roster(self, request, segments, role):

@@ -139,16 +139,14 @@ class CollectionMixin:
         return etag(resource)
 
     def _get_collection(self, request):
-        """Return the collection as a list-like object.
+        """Return the collection as a sequence.
 
-        The returned value must support iteration and slicing. It can for
-        example be a concrete list or an SQLAlchemy request.
-
-        This method must be implemented by subclasses.
+        The returned value must support the collections.abc.Sequence
+        API.  This method must be implemented by subclasses.
 
         :param request: An http request.
         :return: The collection
-        :rtype: list
+        :rtype: collections.abc.Sequence
         """
         raise NotImplementedError
 
@@ -165,12 +163,9 @@ class CollectionMixin:
         # get turned into HTTP 400 errors.
         count = request.get_param_as_int('count', min=0)
         page = request.get_param_as_int('page', min=1)
-        try:
-            total_size = collection.count()
-        except TypeError:
-            total_size = len(collection)
+        total_size = len(collection)
         if count is None and page is None:
-            return 0, total_size, list(collection)
+            return 0, total_size, collection
         list_start = (page - 1) * count
         list_end = page * count
         return list_start, total_size, collection[list_start:list_end]
