@@ -545,6 +545,26 @@ approval:
         # The address is now verified.
         self.assertIsNotNone(anne.verified_on)
 
+    def test_do_confirm_verify_user(self):
+        # A confirmation step is necessary when a user subscribes with their
+        # preferred address, and we are not pre-confirming.
+        anne = self._user_manager.create_user(self._anne)
+        address = list(anne.addresses)[0]
+        address.verified_on = now()
+        anne.preferred_address = address
+        # Run the workflow to model the confirmation step.  There is no
+        # subscriber attribute yet.
+        workflow = SubscriptionWorkflow(self._mlist, anne)
+        list(workflow)
+        self.assertEqual(workflow.subscriber, anne)
+        # Do a confirmation workflow, which should now set the subscriber.
+        confirm_workflow = SubscriptionWorkflow(self._mlist)
+        confirm_workflow.token = workflow.token
+        confirm_workflow.restore()
+        confirm_workflow.run_thru('do_confirm_verify')
+        # The address is now verified.
+        self.assertEqual(confirm_workflow.subscriber, anne)
+
     def test_do_confirmation_subscribes_user(self):
         # Subscriptions to the mailing list must be confirmed.  Once that's
         # done, the user's address (which is not initially verified) gets

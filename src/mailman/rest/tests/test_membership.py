@@ -124,6 +124,18 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason, b'User has no preferred address')
 
+    def test_subscribe_bogus_user_by_uid(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/members', {
+                'list_id': 'test.example.com',
+                'subscriber': '00000000000000000000000000000801',
+                'pre_verified': True,
+                'pre_confirmed': True,
+                'pre_approved': True,
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'No such user')
+
     def test_add_member_with_mixed_case_email(self):
         # LP: #1425359 - Mailman is case-perserving, case-insensitive.  This
         # test subscribes the lower case address and ensures the original mixed
@@ -250,6 +262,44 @@ class TestMembership(unittest.TestCase):
             call_api('http://localhost:9001/3.0/members/801',
                      {}, method='PATCH')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_patch_membership_with_bogus_address(self):
+        # Try to change a subscription address to one that does not yet exist.
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members/1', {
+                'address': 'bogus@example.com',
+                }, method='PATCH')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'Address not registered')
+
+    def test_patch_membership_with_unverified_address(self):
+        # Try to change a subscription address to one that is not yet verified.
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+            self._usermanager.create_address('anne.person@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members/1', {
+                'address': 'anne.person@example.com',
+                }, method='PATCH')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'Unverified address')
+
+    def test_patch_membership_of_preferred_address(self):
+        # Try to change a subscription to an address when the user is
+        # subscribed via their preferred address.
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+            anne = self._usermanager.create_address('anne.person@example.com')
+            anne.verified_on = now()
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members/1', {
+                'address': 'anne.person@example.com',
+                }, method='PATCH')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'Address is not controlled by user')
 
     def test_patch_member_bogus_attribute(self):
         # /members/<id> PATCH 'bogus' returns 400

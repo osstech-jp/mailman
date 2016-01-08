@@ -634,9 +634,14 @@ A user can be subscribed to a mailing list via the REST API, either by a
 specific address, or more generally by their preferred address.  A subscribed
 user is called a member.
 
-The list owner wants to subscribe Elly to the `ant` mailing list.  Since
-Elly's email address is not yet known to Mailman, a user is created for her.
-By default, get gets a regular delivery.
+Elly subscribes to the `ant` mailing list.  Since her email address is not yet
+known to Mailman, a user is created for her.  By default, she gets a regular
+delivery.
+
+By pre-verifying her subscription, we don't require Elly to verify that her
+email address is valid.  By pre-confirming her subscription too, no
+confirmation email will be sent.  Pre-approval means that the list moderator
+won't have to approve her subscription request.
 
     >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'list_id': 'ant.example.com',
@@ -902,6 +907,36 @@ his membership ids have not changed.
     http_etag: "..."
     start: 0
     total_size: 2
+
+When changing his subscription address, Herb may also decide to change his
+mode of delivery.
+::
+
+    >>> dump_json('http://localhost:9001/3.0/members/11', {
+    ...           'address': 'herb@example.com',
+    ...           'delivery_mode': 'mime_digests',
+    ...           }, method='PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/'
+    ...           'herb@example.com/memberships')
+    entry 0:
+        address: http://localhost:9001/3.0/addresses/herb@example.com
+        delivery_mode: mime_digests
+        email: herb@example.com
+        http_etag: "..."
+        list_id: bee.example.com
+        member_id: 11
+        moderation_action: defer
+        role: member
+        self_link: http://localhost:9001/3.0/members/11
+        user: http://localhost:9001/3.0/users/7
+    http_etag: "..."
+    start: 0
+    total_size: 1
 
 
 Moderating a member
