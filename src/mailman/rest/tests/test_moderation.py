@@ -28,8 +28,10 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
 from mailman.database.transaction import transaction
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     call_api, get_queue_messages, specialized_message_from_string as mfs)
@@ -55,7 +57,7 @@ Message-ID: <alpha>
 Something else.
 """)
 
-    def test_not_found(self):
+    def test_list_not_found(self):
         # When a bogus mailing list is given, 404 should result.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/bee@example.com/held')
@@ -66,7 +68,15 @@ Something else.
         with self.assertRaises(HTTPError) as cm:
             call_api(
                 'http://localhost:9001/3.0/lists/ant@example.com/held/bogus')
-        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_bad_held_message_request_id_post(self):
+        # Bad request when request_id is not an integer.
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/lists/ant@example.com/held/bogus',
+                dict(action='defer'))
+        self.assertEqual(cm.exception.code, 404)
 
     def test_missing_held_message_request_id(self):
         # Not found when the request_id is not in the database.
@@ -74,10 +84,19 @@ Something else.
             call_api('http://localhost:9001/3.0/lists/ant@example.com/held/99')
         self.assertEqual(cm.exception.code, 404)
 
+    def test_request_is_not_held_message(self):
+        requests = IListRequests(self._mlist)
+        with transaction():
+            request_id = requests.hold_request(RequestType.subscription, 'foo')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                     '/held/{}'.format(request_id))
+        self.assertEqual(cm.exception.code, 404)
+
     def test_bad_held_message_action(self):
         # POSTing to a held message with a bad action.
         held_id = hold_message(self._mlist, self._msg)
-        url = 'http://localhost:9001/3.0/lists/ant@example.com/held/{0}'
+        url = 'http://localhost:9001/3.0/lists/ant@example.com/held/{}'
         with self.assertRaises(HTTPError) as cm:
             call_api(url.format(held_id), {'action': 'bogus'})
         self.assertEqual(cm.exception.code, 400)
@@ -373,3 +392,29 @@ class TestSubscriptionModeration(unittest.TestCase):
                 action='defer',
                 ))
         self.assertEqual(response.status, 204)
+
+    def test_subscribe_other_role_with_no_preferred_address(self):
+        with transaction():
+            cate = getUtility(IUserManager).create_user('cate@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'ant.example.com',
+                'subscriber': cate.id,
+                'role': 'moderator',
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'User without preferred address')
+
+    def test_subscribe_other_role_banned_email_address(self):
+        bans = IBanManager(self._mlist)
+        with transaction():
+            bans.ban('anne@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'ant.example.com',
+                'subscriber': 'anne@example.com',
+                'role': 'moderator',
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'Membership is banned')

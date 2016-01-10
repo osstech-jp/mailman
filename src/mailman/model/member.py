@@ -164,11 +164,9 @@ class Member(Model):
         """See `IMember`."""
         missing = object()
         language = self._lookup('preferred_language', missing)
-        if language is missing:
-            language = ((self.mailing_list and
-                         self.mailing_list.preferred_language) or
-                        system_preferences.preferred_language)
-        return language
+        return (self.mailing_list.preferred_language
+                if language is missing
+                else language)
 
     @property
     def receive_list_copy(self):

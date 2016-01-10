@@ -46,10 +46,14 @@ class _ModerationBase:
         key, data = results
         resource = dict(key=key, request_id=request_id)
         # Flatten the IRequest payload into the JSON representation.
-        resource.update(data)
+        if data is not None:
+            resource.update(data)
         # Check for a matching request type, and insert the type name into the
         # resource.
-        request_type = RequestType[resource.pop('_request_type')]
+        try:
+            request_type = RequestType[resource.pop('_request_type', None)]
+        except KeyError:
+            request_type = None
         if request_type is not RequestType.held_message:
             return None
         resource['type'] = RequestType.held_message.name
@@ -104,7 +108,7 @@ class HeldMessage(_HeldMessageBase):
         try:
             request_id = int(self._request_id)
         except ValueError:
-            bad_request(response)
+            not_found(response)
             return
         resource = self._make_resource(request_id)
         if resource is None:
@@ -123,7 +127,7 @@ class HeldMessage(_HeldMessageBase):
         try:
             request_id = int(self._request_id)
         except ValueError:
-            bad_request(response)
+            not_found(response)
             return
         results = requests.get_request(request_id, RequestType.held_message)
         if results is None:

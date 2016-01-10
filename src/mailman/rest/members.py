@@ -332,9 +332,6 @@ class AllMembers(_MemberBase):
         record = RequestRecord(email, display_name, delivery_mode)
         try:
             member = add_member(mlist, record, role)
-        except InvalidEmailAddressError:
-            bad_request(response, b'Invalid email address')
-            return
         except MembershipIsBannedError:
             bad_request(response, b'Membership is banned')
             return
