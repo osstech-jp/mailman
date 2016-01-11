@@ -97,3 +97,10 @@ class IBanManager(Interface):
             or not.
         :rtype: bool
         """
+
+    def __iter__():
+        """Iterate over all banned addresses.
+
+        :return: The list of all banned addresses.
+        :rtype: list of `str`
+        """

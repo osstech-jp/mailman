@@ -111,3 +111,8 @@ class BanManager:
                     re.match(ban.email, email, re.IGNORECASE) is not None):
                     return True
         return False
+
+    @dbconnection
+    def __iter__(self, store):
+        """See `IBanManager`."""
+        yield from store.query(Ban).filter_by(list_id=self._list_id)

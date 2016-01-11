@@ -965,3 +965,84 @@ The moderation action for a member can be changed by PATCH'ing the
     ...
     moderation_action: hold
     ...
+
+
+Handling the list of banned addresses
+=====================================
+
+To ban an address from subscribing you can POST to the /bans child
+of any list using the REST API.
+::
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans',
+    ...           {'email': 'banned@example.com'})
+    content-length: 0
+    ...
+    location: http://localhost:9001/3.0/lists/ant.example.com/bans/banned@example.com
+    ...
+    status: 201
+
+This address is now banned, and you can get the list of banned addresses by
+issuing a GET request on the /bans child::
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans')
+    entry 0:
+        email: banned@example.com
+    ...
+
+Or checking if a single address is banned:
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans/banned@example.com')
+    email: banned@example.com
+    http_etag: ...
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans/someone-else@example.com')
+    Traceback (most recent call last):
+    ...
+    urllib.error.HTTPError: HTTP Error 404: ...
+
+Unbanning addresses is also possible by issuing a DELETE request::
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans/banned@example.com',
+    ...           method='DELETE')
+    content-length: 0
+    ...
+    status: 204
+
+After unbanning, the address is not shown in the ban list anymore::
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans/banned@example.com')
+    Traceback (most recent call last):
+    ...
+    urllib.error.HTTPError: HTTP Error 404: ...
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans')
+    http_etag: "..."
+    start: 0
+    total_size: 0
+
+To ban an address from subscribing to every list, you can use the global /bans endpoint::
+
+    >>> dump_json('http://localhost:9001/3.0/bans',
+    ...           {'email': 'banned@example.com'})
+    content-length: 0
+    ...
+    status: 201
+    >>> dump_json('http://localhost:9001/3.0/bans')
+    entry 0:
+        email: banned@example.com
+    ...
+    >>> dump_json('http://localhost:9001/3.0/bans/banned@example.com')
+    email: banned@example.com
+    http_etag: ...
+    >>> dump_json('http://localhost:9001/3.0/bans/banned@example.com',
+    ...           method='DELETE')
+    content-length: 0
+    ...
+    status: 204
+    >>> dump_json('http://localhost:9001/3.0/bans/banned@example.com')
+    Traceback (most recent call last):
+    ...
+    urllib.error.HTTPError: HTTP Error 404: ...
+    >>> dump_json('http://localhost:9001/3.0/bans')
+    http_etag: "..."
+    start: 0
+    total_size: 0

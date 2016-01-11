@@ -32,6 +32,7 @@ from mailman.core.system import system
 from mailman.interfaces.listmanager import IListManager
 from mailman.model.uid import UID
 from mailman.rest.addresses import AllAddresses, AnAddress
+from mailman.rest.bans import BannedEmail, BannedEmails
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import (
     BadRequest, NotFound, child, etag, no_content, not_found, okay)
@@ -288,6 +289,17 @@ class TopLevel:
             return AQueueFile(segments[0], segments[1]), []
         else:
             return BadRequest(), []
+
+    @child()
+    def bans(self, request, segments):
+        """/<api>/bans
+           /<api>/bans/<email>
+        """
+        if len(segments) == 0:
+            return BannedEmails(None)
+        else:
+            email = segments.pop(0)
+            return BannedEmail(None, email), segments
 
     @child()
     def reserved(self, request, segments):

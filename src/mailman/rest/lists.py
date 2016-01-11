@@ -39,6 +39,7 @@ from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.subscriptions import ISubscriptionService
+from mailman.rest.bans import BannedEmails
 from mailman.rest.listconf import ListConfiguration
 from mailman.rest.helpers import (
     CollectionMixin, GetterSetter, NotFound, accepted, bad_request, child,
@@ -197,6 +198,13 @@ class AList(_ListBase):
         if self._mlist is None:
             return NotFound(), []
         return ListDigest(self._mlist)
+
+    @child()
+    def bans(self, request, segments):
+        """Return a collection of mailing list's banned addresses."""
+        if self._mlist is None:
+            return NotFound(), []
+        return BannedEmails(self._mlist)
 
 
 
