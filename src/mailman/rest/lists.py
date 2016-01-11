@@ -151,12 +151,11 @@ class AList(_ListBase):
         """Return a single member representation."""
         if self._mlist is None:
             return NotFound(), []
-        members = getUtility(ISubscriptionService).find_members(
+        member = getUtility(ISubscriptionService).find_member(
             email, self._mlist.list_id, role)
-        if len(members) == 0:
+        if member is None:
             return NotFound(), []
-        assert len(members) == 1, 'Too many matches'
-        return AMember(request.context['api_version'], members[0].member_id)
+        return AMember(request.context['api_version'], member.member_id)
 
     @child(roster_matcher)
     def roster(self, request, segments, role):
