@@ -35,7 +35,6 @@ class QuerySequence(Sequence):
     def __init__(self, query=None):
         super().__init__()
         self._query = query
-        self._cached_results = None
 
     def __len__(self):
         return (0 if self._query is None else self._query.count())
@@ -43,6 +42,9 @@ class QuerySequence(Sequence):
     def __getitem__(self, index):
         if self._query is None:
             raise IndexError('index out of range')
-        if self._cached_results is None:
-            self._cached_results = list(self._query)
-        return self._cached_results[index]
+        return self._query[index]
+
+    def __iter__(self):
+        if self._query is None:
+            return []
+        yield from self._query

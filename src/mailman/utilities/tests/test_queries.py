@@ -33,3 +33,7 @@ class TestQueries(unittest.TestCase):
     def test_index_error(self):
         query = QuerySequence(None)
         self.assertRaises(IndexError, getitem, query, 1)
+
+    def test_iterate_with_none(self):
+        query = QuerySequence(None)
+        self.assertEqual(list(query), [])
