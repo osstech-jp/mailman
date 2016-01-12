@@ -106,8 +106,7 @@ def find_components(package, interface):
         module = sys.modules[module_name]
         if not hasattr(module, '__all__'):
             continue
-        for component in scan_module(module, interface):
-            yield component
+        yield from scan_module(module, interface)
 
 
 

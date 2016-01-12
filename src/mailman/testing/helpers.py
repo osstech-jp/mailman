@@ -220,8 +220,7 @@ class TestableMaster(Master):
     @property
     def runner_pids(self):
         """The pids of all the child runner processes."""
-        for pid in self._started_kids:
-            yield pid
+        yield from self._started_kids
 
 
 

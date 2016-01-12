@@ -82,7 +82,7 @@ class SubscriptionService:
         # which are controlled by the user, otherwise we'll just search for
         # the given address.
         if subscriber is None and list_id is None and role is None:
-            raise NoResultFound
+            return None
         order = (Member.list_id, Address.email, Member.role)
         # Querying for the subscriber is the most complicated part, because
         # the parameter can either be an email address or a user id.  Start by
@@ -116,24 +116,23 @@ class SubscriptionService:
 
     def find_members(self, subscriber=None, list_id=None, role=None):
         """See `ISubscriptionService`."""
-        try:
-            query = self._find_members(subscriber, list_id, role)
-        except NoResultFound:
-            query = None
-        return QuerySequence(query)
+        return QuerySequence(self._find_members(subscriber, list_id, role))
 
     def find_member(self, subscriber=None, list_id=None, role=None):
         """See `ISubscriptionService`."""
         try:
-            return self._find_members(subscriber, list_id, role).one()
+            result = self._find_members(subscriber, list_id, role)
+            return (result if result is None else result.one())
         except NoResultFound:
             return None
         except MultipleResultsFound:
+            # Coerce the exception into a Mailman-layer exception so call
+            # sites don't have to import from SQLAlchemy, resulting in a layer
+            # violation.
             raise TooManyMembersError(subscriber, list_id, role)
 
     def __iter__(self):
-        for member in self.get_members():
-            yield member
+        yield from self.get_members()
 
     def leave(self, list_id, email):
         """See `ISubscriptionService`."""

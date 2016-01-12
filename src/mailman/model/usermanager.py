@@ -103,8 +103,7 @@ class UserManager:
     @dbconnection
     def users(self, store):
         """See `IUserManager`."""
-        for user in store.query(User).all():
-            yield user
+        yield from store.query(User).all()
 
     @dbconnection
     def create_address(self, store, email, display_name=None):
@@ -152,19 +151,16 @@ class UserManager:
     @dbconnection
     def addresses(self, store):
         """See `IUserManager`."""
-        for address in store.query(Address).all():
-            yield address
+        yield from store.query(Address).all()
 
     @property
     @dbconnection
     def members(self, store):
         """See `IUserManager."""
-        for member in store.query(Member).all():
-            yield member
+        yield from store.query(Member).all()
 
     @property
     @dbconnection
     def server_owners(self, store):
         """ See `IUserManager."""
-        users = store.query(User).filter_by(is_server_owner=True)
-        yield from users
+        yield from store.query(User).filter_by(is_server_owner=True)

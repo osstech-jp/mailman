@@ -54,8 +54,6 @@ class BounceEvent(Model):
         self.email = email
         self.timestamp = now()
         msgid = msg['message-id']
-        if isinstance(msgid, bytes):
-            msgid = msgid.decode('ascii')
         self.message_id = msgid
         self.context = (BounceContext.normal if context is None else context)
         self.processed = False
@@ -77,12 +75,10 @@ class BounceProcessor:
     @dbconnection
     def events(self, store):
         """See `IBounceProcessor`."""
-        for event in store.query(BounceEvent).all():
-            yield event
+        yield from store.query(BounceEvent).all()
 
     @property
     @dbconnection
     def unprocessed(self, store):
         """See `IBounceProcessor`."""
-        for event in store.query(BounceEvent).filter_by(processed=False):
-            yield event
+        yield from store.query(BounceEvent).filter_by(processed=False)

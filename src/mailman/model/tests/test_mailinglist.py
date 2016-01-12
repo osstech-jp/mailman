@@ -75,6 +75,17 @@ class TestMailingList(unittest.TestCase):
         self.assertRaises(MissingPreferredAddressError,
                           self._mlist.subscribe, anne)
 
+    def test_pass_extensions(self):
+        self._mlist.pass_extensions = ('foo', 'bar', 'baz')
+        self.assertEqual(list(self._mlist.pass_extensions),
+                         ['foo', 'bar', 'baz'])
+
+    def test_get_roster_argument(self):
+        self.assertRaises(ValueError, self._mlist.get_roster, 'members')
+
+    def test_subscribe_argument(self):
+        self.assertRaises(ValueError, self._mlist.subscribe, 'anne')
+
 
 
 class TestListArchiver(unittest.TestCase):
@@ -218,3 +229,11 @@ class TestHeaderMatch(unittest.TestCase):
              ('header', 'pattern', None),
              ('subject', 'patt.*', None),
              ])
+
+    def test_clear(self):
+        header_matches = IHeaderMatchSet(self._mlist)
+        header_matches.add('Header', 'pattern')
+        self.assertEqual(len(self._mlist.header_matches), 1)
+        with transaction():
+            header_matches.clear()
+        self.assertEqual(len(self._mlist.header_matches), 0)

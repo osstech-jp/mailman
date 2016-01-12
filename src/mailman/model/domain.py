@@ -94,11 +94,9 @@ class Domain(Model):
     @dbconnection
     def mailing_lists(self, store):
         """See `IDomain`."""
-        mailing_lists = store.query(MailingList).filter(
+        yield from store.query(MailingList).filter(
             MailingList.mail_host == self.mail_host
             ).order_by(MailingList._list_id)
-        for mlist in mailing_lists:
-            yield mlist
 
     def confirm_url(self, token=''):
         """See `IDomain`."""
@@ -194,8 +192,7 @@ class DomainManager:
     @dbconnection
     def __iter__(self, store):
         """See `IDomainManager`."""
-        for domain in store.query(Domain).order_by(Domain.mail_host).all():
-            yield domain
+        yield from store.query(Domain).order_by(Domain.mail_host).all()
 
     @dbconnection
     def __contains__(self, store, mail_host):

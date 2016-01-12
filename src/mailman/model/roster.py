@@ -68,8 +68,7 @@ class AbstractRoster:
     @property
     def members(self):
         """See `IRoster`."""
-        for member in self._query():
-            yield member
+        yield from self._query()
 
     @property
     def member_count(self):
@@ -84,9 +83,7 @@ class AbstractRoster:
         # keep a set of unique users.  It's possible for the same user to be
         # subscribed to a mailing list multiple times with different
         # addresses.
-        users = set(member.address.user for member in self.members)
-        for user in users:
-            yield user
+        yield from set(member.address.user for member in self.members)
 
     @property
     def addresses(self):
@@ -189,19 +186,12 @@ class AdministratorRoster(AbstractRoster):
     @dbconnection
     def get_member(self, store, email):
         """See `IRoster`."""
-        results = store.query(Member).filter(
+        return store.query(Member).filter(
             Member.list_id == self._mlist.list_id,
             or_(Member.role == MemberRole.moderator,
                 Member.role == MemberRole.owner),
             Address.email == email,
-            Member.address_id == Address.id)
-        if results.count() == 0:
-            return None
-        elif results.count() == 1:
-            return results[0]
-        else:
-            raise AssertionError(
-                'Too many matching member results: {0}'.format(results))
+            Member.address_id == Address.id).one_or_none()
 
 
 
@@ -243,8 +233,7 @@ class RegularMemberRoster(DeliveryMemberRoster):
     @property
     def members(self):
         """See `IRoster`."""
-        for member in self._get_members(DeliveryMode.regular):
-            yield member
+        yield from self._get_members(DeliveryMode.regular)
 
 
 
@@ -256,10 +245,10 @@ class DigestMemberRoster(DeliveryMemberRoster):
     @property
     def members(self):
         """See `IRoster`."""
-        for member in self._get_members(DeliveryMode.plaintext_digests,
-                                        DeliveryMode.mime_digests,
-                                        DeliveryMode.summary_digests):
-            yield member
+        yield from self._get_members(
+            DeliveryMode.plaintext_digests,
+            DeliveryMode.mime_digests,
+            DeliveryMode.summary_digests)
 
 
 
@@ -301,8 +290,7 @@ class Memberships:
     @property
     def members(self):
         """See `IRoster`."""
-        for member in self._query():
-            yield member
+        yield from self._query()
 
     @property
     def users(self):
@@ -312,27 +300,14 @@ class Memberships:
     @property
     def addresses(self):
         """See `IRoster`."""
-        for address in self._user.addresses:
-            yield address
+        yield from self._user.addresses
 
     @dbconnection
     def get_member(self, store, email):
         """See `IRoster`."""
-        results = store.query(Member).filter(
-            Member.address_id == Address.id,
-            Address.user_id == self._user.id)
-        if results.count() == 0:
-            return None
-        elif results.count() == 1:
-            return results[0]
-        else:
-            raise AssertionError(
-                'Too many matching member results: {0}'.format(
-                    results.count()))
+        raise NotImplementedError
 
     @dbconnection
     def get_memberships(self, store, address):
         """See `IRoster`."""
-        # 2015-04-14 BAW: See LP: #1444055 -- this currently exists just to
-        # pass a test.
         raise NotImplementedError

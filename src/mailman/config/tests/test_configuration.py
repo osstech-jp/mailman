@@ -58,6 +58,21 @@ class TestConfiguration(unittest.TestCase):
                     pass
                 self.assertEqual(events, ['first', 'second', 'first'])
 
+    def test_config_template_dir_is_source(self):
+        fd, filename = tempfile.mkstemp()
+        self.addCleanup(os.remove, filename)
+        os.close(fd)
+        with open(filename, 'w') as fp:
+            print("""\
+[paths.here]
+template_dir: :source:
+""", file=fp)
+        config = Configuration()
+        config.load(filename)
+        import mailman.templates
+        self.assertEqual(config.TEMPLATE_DIR,
+                         os.path.dirname(mailman.templates.__file__))
+
 
 
 class TestExternal(unittest.TestCase):

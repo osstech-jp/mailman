@@ -114,8 +114,7 @@ class Chain:
         """Return an iterator over the links."""
         # We do it this way in order to preserve a separation of interfaces,
         # and allows .get_links() to be overridden.
-        for link in self._links:
-            yield link
+        yield from self._links
 
 
 

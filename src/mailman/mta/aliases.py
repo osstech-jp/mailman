@@ -48,7 +48,7 @@ class MailTransportAgentAliases:
         # Always return
         yield mlist.posting_address
         for destination in sorted(SUBDESTINATIONS):
-            yield '{0}-{1}@{2}'.format(
+            yield '{}-{}@{}'.format(
                 mlist.list_name, destination, mlist.mail_host)
 
     def destinations(self, mlist):
@@ -56,4 +56,4 @@ class MailTransportAgentAliases:
         # Always return
         yield mlist.list_name
         for destination in sorted(SUBDESTINATIONS):
-            yield '{0}-{1}'.format(mlist.list_name, destination)
+            yield '{}-{}'.format(mlist.list_name, destination)

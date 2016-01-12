@@ -85,8 +85,7 @@ class BasePipeline:
 
     def __iter__(self):
         """See `IPipeline`."""
-        for handler in self._handlers:
-            yield handler
+        yield from self._handlers
 
 
 

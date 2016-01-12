@@ -245,8 +245,7 @@ class Configuration:
     @property
     def runner_configs(self):
         """Iterate over all the runner configuration sections."""
-        for section in self._config.getByCategory('runner', []):
-            yield section
+        yield from self._config.getByCategory('runner', [])
 
     @property
     def archivers(self):
@@ -262,8 +261,7 @@ class Configuration:
     @property
     def language_configs(self):
         """Iterate over all the language configuration sections."""
-        for section in self._config.getByCategory('language', []):
-            yield section
+        yield from self._config.getByCategory('language', [])
 
 
 

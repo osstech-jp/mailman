@@ -431,7 +431,7 @@ class MailingList(Model):
             ContentFilter.mailing_list == self,
             ContentFilter.filter_type == FilterType.pass_extension)
         for content_filter in results:
-            yield content_filter.pass_pattern
+            yield content_filter.filter_pattern
 
     @pass_extensions.setter
     @dbconnection
@@ -459,7 +459,7 @@ class MailingList(Model):
         elif role is MemberRole.nonmember:
             return self.nonmembers
         else:
-            raise TypeError('Undefined MemberRole: {}'.format(role))
+            raise ValueError('Undefined MemberRole: {}'.format(role))
 
     @dbconnection
     def subscribe(self, store, subscriber, role=MemberRole.member):
@@ -576,10 +576,10 @@ class ListArchiver(Model):
 
     @property
     def system_archiver(self):
-        for archiver in config.archivers:
+        for archiver in config.archivers:           # pragma: no branch
             if archiver.name == self.name:
                 return archiver
-        return None
+        raise AssertionError('Archiver not found: {}'.format(self.name))
 
     @property
     def is_enabled(self):
@@ -613,8 +613,7 @@ class ListArchiverSet:
     def archivers(self, store):
         entries = store.query(ListArchiver).filter(
             ListArchiver.mailing_list == self._mailing_list)
-        for entry in entries:
-            yield entry
+        yield from entries
 
     @dbconnection
     def get(self, store, archiver_name):

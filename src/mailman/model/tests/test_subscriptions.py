@@ -234,7 +234,7 @@ class TestSubscriptionService(unittest.TestCase):
              ('test3', 'anne3', MemberRole.moderator),
              ])
 
-    def test_find_members_shortcut(self):
+    def test_find_no_members(self):
         members = self._service.find_members()
         self.assertEqual(len(members), 0)
 

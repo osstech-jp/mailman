@@ -19,15 +19,22 @@
 
 __all__ = [
     'TestMiscellaneous',
+    'TestTerminalChainBase',
     ]
 
 
 import unittest
 
 from mailman.chains.accept import AcceptChain
-from mailman.chains.base import Chain, Link
+from mailman.chains.base import Chain, Link, TerminalChainBase
 from mailman.interfaces.chain import LinkAction
 from mailman.rules.any import Any
+from mailman.testing.layers import ConfigLayer
+
+
+class SimpleChain(TerminalChainBase):
+    def _process(self, mlist, msg, msgdata):
+        pass
 
 
 
@@ -75,3 +82,12 @@ class TestMiscellaneous(unittest.TestCase):
         chain.flush()
         count = sum(1 for link in chain.get_iterator())
         self.assertEqual(count, 0)
+
+
+class TestTerminalChainBase(unittest.TestCase):
+    layer = ConfigLayer
+
+    def test_terminal_chain_iterator(self):
+        chain = SimpleChain()
+        self.assertEqual([link.action for link in chain],
+                         [LinkAction.run, LinkAction.stop])

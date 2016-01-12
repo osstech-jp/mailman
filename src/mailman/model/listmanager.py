@@ -88,15 +88,13 @@ class ListManager:
     @dbconnection
     def mailing_lists(self, store):
         """See `IListManager`."""
-        for mlist in store.query(MailingList).order_by(
-                MailingList._list_id).all():
-            yield mlist
+        yield from store.query(MailingList).order_by(
+            MailingList._list_id).all()
 
     @dbconnection
     def __iter__(self, store):
         """See `IListManager`."""
-        for mlist in store.query(MailingList).all():
-            yield mlist
+        yield from store.query(MailingList).all()
 
     @property
     @dbconnection
@@ -105,7 +103,7 @@ class ListManager:
         result_set = store.query(MailingList)
         for mail_host, list_name in result_set.values(MailingList.mail_host,
                                                       MailingList.list_name):
-            yield '{0}@{1}'.format(list_name, mail_host)
+            yield '{}@{}'.format(list_name, mail_host)
 
     @property
     @dbconnection

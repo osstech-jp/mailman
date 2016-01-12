@@ -200,3 +200,9 @@ class TestMembershipsRoster(unittest.TestCase):
         self.assertEqual(
             [record.address.email for record in memberships],
             ['anne@example.com', 'anne@example.com'])
+
+    def test_memberships_users(self):
+        self._ant.subscribe(self._anne)
+        users = list(self._anne.memberships.users)
+        self.assertEqual(len(users), 1)
+        self.assertEqual(users[0], self._anne)

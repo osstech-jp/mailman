@@ -251,8 +251,7 @@ class ConnectionCountingController(QueueController):
     @property
     def messages(self):
         """Return all the messages received by the SMTP server."""
-        for message in self:
-            yield message
+        yield from self
 
     def clear(self):
         """Clear all the messages from the queue."""
