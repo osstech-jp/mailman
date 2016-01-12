@@ -107,19 +107,21 @@ class MemberCollection(_MemberBase):
 class AMember(_MemberBase):
     """A member."""
 
-    def __init__(self, api, member_id_string):
-        # The member_id_string is the string representation of the member's
-        # UUID.  In API 3.0, the argument is the string representation of the
-        # int representation of the UUID.  In API 3.1 it's the hex.
+    def __init__(self, api, member_or_id_string):
+        # The member_or_id_string is either the member's UUID or the string
+        # representation of the member's UUID.  For the latter, in API 3.0,
+        # the argument is the string representation of the int representation
+        # of the UUID.  In API 3.1 it's the hex.
         self.api = api
-        try:
-            member_id = api.to_uuid(member_id_string)
-        except ValueError:
-            # The string argument could not be converted to a UUID.
-            self._member = None
+        if isinstance(member_or_id_string, UUID):
+            member_id = member_or_id_string
         else:
-            service = getUtility(ISubscriptionService)
-            self._member = service.get_member(member_id)
+            try:
+                member_id = api.to_uuid(member_or_id_string)
+            except ValueError:
+                # The string argument could not be converted to a UUID.
+                self._member = None
+        self._member = getUtility(ISubscriptionService).get_member(member_id)
 
     def on_get(self, request, response):
         """Return a single member end-point."""

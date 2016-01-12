@@ -518,6 +518,24 @@ class TestAPI31Members(unittest.TestCase):
             response['address'],
             'http://localhost:9001/3.1/addresses/aperson@example.com')
 
+    def test_get_list_member_id_by_email(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne', email="aperson@example.com")
+        response, headers = call_api(
+          'http://localhost:9001/3.1/lists/ant.example.com/member/aperson@example.com')
+        self.assertEqual(
+            response['member_id'],
+            '00000000000000000000000000000001')
+        self.assertEqual(
+          response['self_link'],
+          'http://localhost:9001/3.1/members/00000000000000000000000000000001')
+        self.assertEqual(
+            response['user'],
+            'http://localhost:9001/3.1/users/00000000000000000000000000000001')
+        self.assertEqual(
+            response['address'],
+            'http://localhost:9001/3.1/addresses/aperson@example.com')
+
     def test_cannot_get_member_id_by_int(self):
         with transaction():
             subscribe(self._mlist, 'Anne')
