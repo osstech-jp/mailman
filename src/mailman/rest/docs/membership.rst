@@ -988,13 +988,18 @@ issuing a GET request on the /bans child::
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans')
     entry 0:
         email: banned@example.com
+        http_etag: "..."
+        list_id: ant.example.com
+        self_link: http://localhost:9001/3.0/lists/ant.example.com/bans/banned@example.com
     ...
 
 Or checking if a single address is banned:
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans/banned@example.com')
     email: banned@example.com
-    http_etag: ...
+    http_etag: "..."
+    list_id: ant.example.com
+    self_link: http://localhost:9001/3.0/lists/ant.example.com/bans/banned@example.com
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/bans/someone-else@example.com')
     Traceback (most recent call last):
     ...
@@ -1025,14 +1030,21 @@ To ban an address from subscribing to every list, you can use the global /bans e
     ...           {'email': 'banned@example.com'})
     content-length: 0
     ...
+    location: http://localhost:9001/3.0/bans/banned@example.com
+    ...
     status: 201
     >>> dump_json('http://localhost:9001/3.0/bans')
     entry 0:
         email: banned@example.com
+        http_etag: "..."
+        list_id: None
+        self_link: http://localhost:9001/3.0/bans/banned@example.com
     ...
     >>> dump_json('http://localhost:9001/3.0/bans/banned@example.com')
     email: banned@example.com
-    http_etag: ...
+    http_etag: "..."
+    list_id: None
+    self_link: http://localhost:9001/3.0/bans/banned@example.com
     >>> dump_json('http://localhost:9001/3.0/bans/banned@example.com',
     ...           method='DELETE')
     content-length: 0

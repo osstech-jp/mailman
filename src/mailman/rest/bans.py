@@ -26,17 +26,32 @@ __all__ = [
 from mailman.interfaces.bans import IBanManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, created, etag, no_content, not_found,
-    okay)
+    okay, path_to)
 from mailman.rest.validator import Validator
 
 
 
-class BannedEmail:
+class _BannedBase:
+    """Common base class."""
+
+    def __init__(self, mailing_list):
+        self._mlist = mailing_list
+        self.ban_manager = IBanManager(self._mlist)
+
+    def _location(self, email):
+        if self._mlist is None:
+            base_location = ''
+        else:
+            base_location = 'lists/{}/'.format(self._mlist.list_id)
+        return path_to(
+            '{}bans/{}'.format(base_location, email), self.api_version)
+
+
+class BannedEmail(_BannedBase):
     """A banned email."""
 
     def __init__(self, mailing_list, email):
-        self._mlist = mailing_list
-        self.ban_manager = IBanManager(self._mlist)
+        super().__init__(mailing_list)
         self._email = email
 
     def on_get(self, request, response):
@@ -47,7 +62,11 @@ class BannedEmail:
             not_found(
                 response, 'Email {} is not banned'.format(self._email))
         else:
-            resource = dict(email=self._email)
+            resource = dict(
+                email=self._email,
+                list_id=self._mlist.list_id if self._mlist else None,
+                self_link=self._location(self._email),
+                )
             okay(response, etag(resource))
 
     def on_delete(self, request, response):
@@ -62,18 +81,15 @@ class BannedEmail:
             no_content(response)
 
 
-class BannedEmails(CollectionMixin):
+class BannedEmails(_BannedBase, CollectionMixin):
     """The list of all banned emails."""
-
-    def __init__(self, mailing_list):
-        self._mlist = mailing_list
-        self.ban_manager = IBanManager(self._mlist)
 
     def _resource_as_dict(self, ban):
         """See `CollectionMixin`."""
         return dict(
             email=ban.email,
             list_id=ban.list_id,
+            self_link=self._location(ban.email),
             )
 
     def _get_collection(self, request):
@@ -97,12 +113,7 @@ class BannedEmails(CollectionMixin):
             bad_request(response, b'Address is already banned')
         else:
             self.ban_manager.ban(email)
-            if self._mlist is None:
-                base_location = ''
-            else:
-                base_location = 'lists/{}/'.format(self._mlist.list_id)
-            location = self.path_to('{}bans/{}'.format(base_location, email))
-            created(response, location)
+            created(response, self._location(email))
 
     @child(r'^(?P<email>[^/]+)')
     def email(self, request, segments, **kw):
