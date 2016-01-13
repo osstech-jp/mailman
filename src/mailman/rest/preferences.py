@@ -66,7 +66,7 @@ class ReadOnlyPreferences:
         # Add the self link.
         resource['self_link'] = path_to(
             '{}/preferences'.format(self._base_url),
-            self.api_version)
+            self.api.version)
         okay(response, etag(resource))
 
 

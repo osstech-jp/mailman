@@ -59,8 +59,7 @@ class _AddressBase(CollectionMixin):
         if address.verified_on:
             representation['verified_on'] = address.verified_on
         if address.user:
-            uid = getattr(address.user.user_id,
-                          'int' if self.api_version == '3.0' else 'hex')
+            uid = self.api.from_uuid(address.user.user_id)
             representation['user'] = self.path_to('users/{}'.format(uid))
         return representation
 

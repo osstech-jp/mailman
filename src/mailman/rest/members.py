@@ -27,7 +27,7 @@ __all__ = [
 
 from mailman.app.membership import add_member, delete_member
 from mailman.interfaces.action import Action
-from mailman.interfaces.address import IAddress, InvalidEmailAddressError
+from mailman.interfaces.address import IAddress
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
@@ -43,7 +43,6 @@ from mailman.rest.helpers import (
 from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
-from operator import attrgetter
 from uuid import UUID
 from zope.component import getUtility
 
@@ -51,10 +50,6 @@ from zope.component import getUtility
 
 class _MemberBase(CollectionMixin):
     """Shared base class for member representations."""
-
-    def _get_uuid(self, member):
-        return getattr(member.member_id,
-                       'int' if self.api_version == '3.0' else 'hex')
 
     def _resource_as_dict(self, member):
         """See `CollectionMixin`."""
@@ -66,7 +61,7 @@ class _MemberBase(CollectionMixin):
         # member_id are UUIDs.  In API 3.0 we use the integer equivalent of
         # the UID in the URL, but in API 3.1 we use the hex equivalent.  See
         # issue #121 for details.
-        member_id = self._get_uuid(member)
+        member_id = self.api.from_uuid(member.member_id)
         response = dict(
             address=self.path_to('addresses/{}'.format(member.address.email)),
             delivery_mode=member.delivery_mode,
@@ -80,8 +75,7 @@ class _MemberBase(CollectionMixin):
         # Add the user link if there is one.
         user = member.user
         if user is not None:
-            user_id = getattr(user.user_id,
-                              'int' if self.api_version == '3.0' else 'hex')
+            user_id = self.api.from_uuid(user.user_id)
             response['user'] = self.path_to('users/{}'.format(user_id))
         return response
 
@@ -112,16 +106,13 @@ class MemberCollection(_MemberBase):
 class AMember(_MemberBase):
     """A member."""
 
-    def __init__(self, api_version, member_id_string):
+    def __init__(self, api, member_id_string):
         # The member_id_string is the string representation of the member's
         # UUID.  In API 3.0, the argument is the string representation of the
         # int representation of the UUID.  In API 3.1 it's the hex.
-        self.api_version = api_version
+        self.api = api
         try:
-            if api_version == '3.0':
-                member_id = UUID(int=int(member_id_string))
-            else:
-                member_id = UUID(hex=member_id_string)
+            member_id = api.to_uuid(member_id_string)
         except ValueError:
             # The string argument could not be converted to a UUID.
             self._member = None
@@ -143,7 +134,7 @@ class AMember(_MemberBase):
             return NotFound(), []
         if self._member is None:
             return NotFound(), []
-        member_id = self._get_uuid(self._member)
+        member_id = self.api.from_uuid(self._member.member_id)
         child = Preferences(
             self._member.preferences, 'members/{}'.format(member_id))
         return child, []
@@ -157,7 +148,8 @@ class AMember(_MemberBase):
             return NotFound(), []
         child = ReadOnlyPreferences(
             self._member,
-            'members/{}/all'.format(self._get_uuid(self._member)))
+            'members/{}/all'.format(
+                self.api.from_uuid(self._member.member_id)))
         return child, []
 
     def on_delete(self, request, response):
@@ -220,7 +212,7 @@ class AllMembers(_MemberBase):
         try:
             validator = Validator(
                 list_id=str,
-                subscriber=subscriber_validator(self.api_version),
+                subscriber=subscriber_validator(self.api),
                 display_name=str,
                 delivery_mode=enum_validator(DeliveryMode),
                 role=enum_validator(MemberRole),
@@ -292,7 +284,7 @@ class AllMembers(_MemberBase):
                 # and return the location to the new member.  Member ids are
                 # UUIDs and need to be converted to URLs because JSON doesn't
                 # directly support UUIDs.
-                member_id = self._get_uuid(member)
+                member_id = self.api.from_uuid(member.member_id)
                 location = self.path_to('members/{}'.format(member_id))
                 created(response, location)
                 return
@@ -339,7 +331,7 @@ class AllMembers(_MemberBase):
         # and return the location to the new member.  Member ids are
         # UUIDs and need to be converted to URLs because JSON doesn't
         # directly support UUIDs.
-        member_id = self._get_uuid(member)
+        member_id = self.api.from_uuid(member.member_id)
         location = self.path_to('members/{}'.format(member_id))
         created(response, location)
 
@@ -353,10 +345,10 @@ class AllMembers(_MemberBase):
 class _FoundMembers(MemberCollection):
     """The found members collection."""
 
-    def __init__(self, members, api_version):
+    def __init__(self, members, api):
         super().__init__()
         self._members = members
-        self.api_version = api_version
+        self.api = api
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
@@ -380,5 +372,5 @@ class FindMembers(_MemberBase):
             bad_request(response, str(error))
         else:
             members = service.find_members(**data)
-            resource = _FoundMembers(members, self.api_version)
+            resource = _FoundMembers(members, self.api)
             okay(response, etag(resource._make_collection(request)))

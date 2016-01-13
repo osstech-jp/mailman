@@ -155,7 +155,7 @@ class AList(_ListBase):
             email, self._mlist.list_id, role)
         if member is None:
             return NotFound(), []
-        return AMember(request.context['api_version'], member.member_id)
+        return AMember(request.context['api'], member.member_id)
 
     @child(roster_matcher)
     def roster(self, request, segments, role):

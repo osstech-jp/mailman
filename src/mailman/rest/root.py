@@ -31,6 +31,7 @@ from mailman.core.system import system
 from mailman.interfaces.listmanager import IListManager
 from mailman.model.uid import UID
 from mailman.rest.addresses import AllAddresses, AnAddress
+from mailman.rest.api import API30, API31
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import (
     BadRequest, NotFound, child, etag, no_content, not_found, okay, path_to)
@@ -59,7 +60,7 @@ class Root:
     @child('3.0')
     def api_version_30(self, request, segments):
         # API version 3.0 was introduced in Mailman 3.0.
-        request.context['api_version'] = '3.0'
+        request.context['api'] = API30
         return self._check_authorization(request, segments)
 
     @child('3.1')
@@ -68,7 +69,7 @@ class Root:
         # incompatible difference is that uuids are represented as hex strings
         # instead of 128 bit integers.  The latter is not compatible with all
         # versions of JavaScript.
-        request.context['api_version'] = '3.1'
+        request.context['api'] = API31
         return self._check_authorization(request, segments)
 
     def _check_authorization(self, request, segments):
@@ -102,8 +103,8 @@ class Versions:
         resource = dict(
             mailman_version=system.mailman_version,
             python_version=system.python_version,
-            api_version=self.api_version,
-            self_link=path_to('system/versions', self.api_version),
+            api_version=self.api.version,
+            self_link=path_to('system/versions', self.api.version),
             )
         okay(response, etag(resource))
 
@@ -179,12 +180,12 @@ class TopLevel:
         """
         if len(segments) == 0:
             resource = AllAddresses()
-            resource.api_version = request.context['api_version']
+            resource.api = request.context['api']
             return resource
         else:
             email = segments.pop(0)
             resource = AnAddress(email)
-            resource.api_version = request.context['api_version']
+            resource.api = request.context['api']
             return resource, segments
 
     @child()
@@ -218,32 +219,32 @@ class TopLevel:
     @child()
     def members(self, request, segments):
         """/<api>/members"""
-        api_version = request.context['api_version']
+        api = request.context['api']
         if len(segments) == 0:
             resource = AllMembers()
-            resource.api_version = api_version
+            resource.api = api
             return resource
         # Either the next segment is the string "find" or a member id.  They
         # cannot collide.
         segment = segments.pop(0)
         if segment == 'find':
             resource = FindMembers()
-            resource.api_version = api_version
+            resource.api = api
         else:
-            resource = AMember(api_version, segment)
+            resource = AMember(api, segment)
         return resource, segments
 
     @child()
     def users(self, request, segments):
         """/<api>/users"""
-        api_version = request.context['api_version']
+        api = request.context['api']
         if len(segments) == 0:
             resource = AllUsers()
-            resource.api_version = api_version
+            resource.api = api
             return resource
         else:
             user_id = segments.pop(0)
-            return AUser(api_version, user_id), segments
+            return AUser(api, user_id), segments
 
     @child()
     def owners(self, request, segments):
@@ -252,7 +253,7 @@ class TopLevel:
             return BadRequest(), []
         else:
             resource = ServerOwners()
-            resource.api_version = request.context['api_version']
+            resource.api = request.context['api']
             return resource, segments
 
     @child()

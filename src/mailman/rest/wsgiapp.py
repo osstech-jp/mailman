@@ -76,7 +76,7 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
 
 
 class SetAPIVersion:
-    """Falcon middleware object that sets the api_version on resources."""
+    """Falcon middleware object that sets the API on resources."""
 
     def process_resource(self, request, response, resource):
         # Set this attribute on the resource right before it is dispatched
@@ -88,7 +88,7 @@ class SetAPIVersion:
         # resource path does not exist.  This middleware method will still get
         # called, but there's nothing to set the api_version on.
         if resource is not None:
-            resource.api_version = request.context.get('api_version')
+            resource.api = request.context.get('api')
 
 
 class RootedAPI(API):

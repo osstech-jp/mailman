@@ -186,7 +186,7 @@ class CollectionMixin:
         return result
 
     def path_to(self, resource):
-        return path_to(resource, self.api_version)
+        return path_to(resource, self.api.version)
 
 
 

@@ -542,7 +542,7 @@ class TestAPI31Addresses(unittest.TestCase):
                     })
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'badly formed hexadecimal UUID string')
+                         b'Cannot convert parameters: user_id')
 
     def test_user_subresource_put(self):
         # By PUTing to the 'user' resource, you can change the user that an
@@ -577,4 +577,4 @@ class TestAPI31Addresses(unittest.TestCase):
                     }, method='PUT')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'badly formed hexadecimal UUID string')
+                         b'Cannot convert parameters: user_id')

@@ -64,7 +64,7 @@ class _ModerationBase:
         # Add a self_link.
         resource['self_link'] = path_to(
             'lists/{}/held/{}'.format(self._mlist.list_id, request_id),
-            self.api_version)
+            self.api.version)
         return resource
 
 

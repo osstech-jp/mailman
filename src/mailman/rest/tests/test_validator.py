@@ -25,6 +25,7 @@ __all__ = [
 import unittest
 
 from mailman.interfaces.usermanager import IUserManager
+from mailman.rest.api import API30, API31
 from mailman.rest.validator import (
     list_of_strings_validator, subscriber_validator)
 from mailman.testing.layers import RESTLayer
@@ -53,35 +54,35 @@ class TestValidators(unittest.TestCase):
     def test_subscriber_validator_int_uuid(self):
         # Convert from an existing user id to a UUID.
         anne = getUtility(IUserManager).make_user('anne@example.com')
-        uuid = subscriber_validator('3.0')(str(anne.user_id.int))
+        uuid = subscriber_validator(API30)(str(anne.user_id.int))
         self.assertEqual(anne.user_id, uuid)
 
     def test_subscriber_validator_hex_uuid(self):
         # Convert from an existing user id to a UUID.
         anne = getUtility(IUserManager).make_user('anne@example.com')
-        uuid = subscriber_validator('3.1')(anne.user_id.hex)
+        uuid = subscriber_validator(API31)(anne.user_id.hex)
         self.assertEqual(anne.user_id, uuid)
 
     def test_subscriber_validator_no_int_uuid(self):
         # API 3.1 does not accept ints as subscriber id's.
         anne = getUtility(IUserManager).make_user('anne@example.com')
         self.assertRaises(ValueError,
-                          subscriber_validator('3.1'), str(anne.user_id.int))
+                          subscriber_validator(API31), str(anne.user_id.int))
 
     def test_subscriber_validator_bad_int_uuid(self):
         # In API 3.0, UUIDs are ints.
         self.assertRaises(ValueError,
-                          subscriber_validator('3.0'), 'not-a-thing')
+                          subscriber_validator(API30), 'not-a-thing')
 
     def test_subscriber_validator_bad_int_hex(self):
         # In API 3.1, UUIDs are hexes.
         self.assertRaises(ValueError,
-                          subscriber_validator('3.1'), 'not-a-thing')
+                          subscriber_validator(API31), 'not-a-thing')
 
     def test_subscriber_validator_email_address_API30(self):
-        self.assertEqual(subscriber_validator('3.0')('anne@example.com'),
+        self.assertEqual(subscriber_validator(API30)('anne@example.com'),
                          'anne@example.com')
 
     def test_subscriber_validator_email_address_API31(self):
-        self.assertEqual(subscriber_validator('3.1')('anne@example.com'),
+        self.assertEqual(subscriber_validator(API31)('anne@example.com'),
                          'anne@example.com')

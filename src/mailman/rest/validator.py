@@ -31,7 +31,6 @@ from mailman.core.errors import (
     ReadOnlyPATCHRequestError, UnknownPATCHRequestError)
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.languages import ILanguageManager
-from uuid import UUID
 from zope.component import getUtility
 
 
@@ -55,18 +54,11 @@ class enum_validator:
             raise ValueError(exception.args[0])
 
 
-def subscriber_validator(api_version):
+def subscriber_validator(api):
     """Convert an email-or-(int|hex) to an email-or-UUID."""
     def _inner(subscriber):
-        # In API 3.0, the uuid is represented by an int, so if we can int
-        # convert the value, we know it's a UUID-as-int.  In API 3.1 though,
-        # uuids are represented by the hex version, which of course cannot
-        # include an @ sign.
         try:
-            if api_version == '3.0':
-                return UUID(int=int(subscriber))
-            else:
-                return UUID(hex=subscriber)
+            return api.to_uuid(subscriber)
         except ValueError:
             # It must be an email address.
             if getUtility(IEmailValidator).is_valid(subscriber):
