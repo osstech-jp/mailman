@@ -522,10 +522,10 @@ class TestAPI31Members(unittest.TestCase):
         with transaction():
             subscribe(self._mlist, 'Anne', email="aperson@example.com")
         response, headers = call_api(
-          'http://localhost:9001/3.1/lists/ant.example.com/member/aperson@example.com')
-        self.assertEqual(
-            response['member_id'],
-            '00000000000000000000000000000001')
+            'http://localhost:9001/3.1/lists/ant.example.com/member'
+            '/aperson@example.com')
+        self.assertEqual(response['member_id'],
+                         '00000000000000000000000000000001')
         self.assertEqual(
           response['self_link'],
           'http://localhost:9001/3.1/members/00000000000000000000000000000001')
