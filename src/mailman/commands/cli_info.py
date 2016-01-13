@@ -26,9 +26,9 @@ import sys
 
 from lazr.config import as_boolean
 from mailman.config import config
+from mailman.core.api import API30, API31
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
-from mailman.rest.helpers import path_to
 from mailman.version import MAILMAN_VERSION_FULL
 from zope.interface import implementer
 
@@ -68,9 +68,8 @@ class Info:
         print('devmode:',
               'ENABLED' if as_boolean(config.devmode.enabled) else 'DISABLED',
               file=output)
-        print('REST root url:',
-              path_to('/', config.webservice.api_version),
-              file=output)
+        api = (API30 if config.webservice.api_version == '3.0' else API31)
+        print('REST root url:', api.path_to('/'), file=output)
         print('REST credentials: {0}:{1}'.format(
             config.webservice.admin_user, config.webservice.admin_pass),
             file=output)

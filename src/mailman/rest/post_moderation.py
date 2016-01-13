@@ -28,8 +28,7 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, child, etag, no_content, not_found, okay,
-    path_to)
+    CollectionMixin, bad_request, child, etag, no_content, not_found, okay)
 from mailman.rest.validator import Validator, enum_validator
 from zope.component import getUtility
 
@@ -62,9 +61,8 @@ class _ModerationBase:
         # that's fine too.
         resource.pop('id', None)
         # Add a self_link.
-        resource['self_link'] = path_to(
-            'lists/{}/held/{}'.format(self._mlist.list_id, request_id),
-            self.api.version)
+        resource['self_link'] = self.api.path_to(
+            'lists/{}/held/{}'.format(self._mlist.list_id, request_id))
         return resource
 
 

@@ -26,7 +26,7 @@ __all__ = [
 from lazr.config import as_boolean
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.rest.helpers import (
-    GetterSetter, bad_request, etag, no_content, not_found, okay, path_to)
+    GetterSetter, bad_request, etag, no_content, not_found, okay)
 from mailman.rest.validator import (
     Validator, enum_validator, language_validator)
 
@@ -64,9 +64,8 @@ class ReadOnlyPreferences:
         if preferred_language is not None:
             resource['preferred_language'] = preferred_language.code
         # Add the self link.
-        resource['self_link'] = path_to(
-            '{}/preferences'.format(self._base_url),
-            self.api.version)
+        resource['self_link'] = self.api.path_to(
+            '{}/preferences'.format(self._base_url))
         okay(response, etag(resource))
 
 

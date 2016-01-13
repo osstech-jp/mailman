@@ -369,6 +369,18 @@ class TestAddresses(unittest.TestCase):
                 })
         self.assertEqual(cm.exception.code, 403)
 
+    def test_user_subresource_post_no_such_user(self):
+        # Try to link an address to a nonexistent user.
+        with transaction():
+            getUtility(IUserManager).create_address('anne@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/addresses/anne@example.com/user', {
+                    'user_id': 2,
+                    })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'No user with ID 2')
+
     def test_user_subresource_unlink(self):
         # By DELETEing the usr subresource, you can unlink a user from an
         # address.

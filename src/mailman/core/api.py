@@ -23,6 +23,8 @@ __all__ = [
     ]
 
 
+from lazr.config import as_boolean
+from mailman.config import config
 from mailman.interfaces.api import IAPI
 from uuid import UUID
 from zope.interface import implementer
@@ -32,12 +34,25 @@ from zope.interface import implementer
 class API30:
     version = '3.0'
 
+    @classmethod
+    def path_to(cls, resource):
+        """See `IAPI`."""
+        return '{}://{}:{}/{}/{}'.format(
+            ('https' if as_boolean(config.webservice.use_https) else 'http'),
+            config.webservice.hostname,
+            config.webservice.port,
+            cls.version,
+            (resource[1:] if resource.startswith('/') else resource),
+            )
+
     @staticmethod
     def from_uuid(uuid):
+        """See `IAPI`."""
         return uuid.int
 
     @staticmethod
     def to_uuid(uuid_repr):
+        """See `IAPI`."""
         return UUID(int=int(uuid_repr))
 
 
@@ -45,10 +60,23 @@ class API30:
 class API31:
     version = '3.1'
 
+    @classmethod
+    def path_to(cls, resource):
+        """See `IAPI`."""
+        return '{}://{}:{}/{}/{}'.format(
+            ('https' if as_boolean(config.webservice.use_https) else 'http'),
+            config.webservice.hostname,
+            config.webservice.port,
+            cls.version,
+            (resource[1:] if resource.startswith('/') else resource),
+            )
+
     @staticmethod
     def from_uuid(uuid):
+        """See `IAPI`."""
         return uuid.hex
 
     @staticmethod
     def to_uuid(uuid_repr):
+        """See `IAPI`."""
         return UUID(hex=uuid_repr)

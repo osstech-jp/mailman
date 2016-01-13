@@ -30,8 +30,36 @@ class IAPI(Interface):
 
     version = Attribute("""The REST API version.""")
 
-    def from_uuid(uuid):
-        """Return the string representation of a UUID."""
+    def path_to(resource):
+        """Return the full REST URL to the given resource.
 
-    def to_uuid(uuid_repr):
-        """Return the UUID from the string representation."""
+        :param resource: Resource path string without the leading scheme,
+            host, port, or API version information.
+        :type resource: str
+        :return: Full URL path to the resource, with the scheme, host, port
+            and API version prepended.
+        :rtype: str
+        """
+
+    def from_uuid(uuid):
+        """Return the string representation of a UUID.
+
+        :param uuid: The UUID to convert.
+        :type uuid: UUID
+        :return: The string representation of the UUID, as appropriate for the
+            API version.  In 3.0 this is the representation of an integer,
+            while in 3.1 it is the hex representation.
+        :rtype: str
+        """
+
+    def to_uuid(uuid):
+        """Return the UUID from the string representation.
+
+        :param uuid: The string representation of the UUID.
+        :type uuid: str
+        :return: The UUID converted from the string representation, as
+            appropriate for the API version.  In 3.0, uuid is interpreted as
+            the integer representation of a UUID, while in 3.1 it is the hex
+            representation of the UUID.
+        :rtype: UUID
+        """

@@ -63,20 +63,21 @@ class _MemberBase(CollectionMixin):
         # issue #121 for details.
         member_id = self.api.from_uuid(member.member_id)
         response = dict(
-            address=self.path_to('addresses/{}'.format(member.address.email)),
+            address=self.api.path_to(
+                'addresses/{}'.format(member.address.email)),
             delivery_mode=member.delivery_mode,
             email=member.address.email,
             list_id=member.list_id,
             member_id=member_id,
             moderation_action=member.moderation_action,
             role=role,
-            self_link=self.path_to('members/{}'.format(member_id)),
+            self_link=self.api.path_to('members/{}'.format(member_id)),
             )
         # Add the user link if there is one.
         user = member.user
         if user is not None:
             user_id = self.api.from_uuid(user.user_id)
-            response['user'] = self.path_to('users/{}'.format(user_id))
+            response['user'] = self.api.path_to('users/{}'.format(user_id))
         return response
 
     def _get_collection(self, request):
@@ -285,7 +286,7 @@ class AllMembers(_MemberBase):
                 # UUIDs and need to be converted to URLs because JSON doesn't
                 # directly support UUIDs.
                 member_id = self.api.from_uuid(member.member_id)
-                location = self.path_to('members/{}'.format(member_id))
+                location = self.api.path_to('members/{}'.format(member_id))
                 created(response, location)
                 return
             # The member could not be directly subscribed because there are
@@ -332,7 +333,7 @@ class AllMembers(_MemberBase):
         # UUIDs and need to be converted to URLs because JSON doesn't
         # directly support UUIDs.
         member_id = self.api.from_uuid(member.member_id)
-        location = self.path_to('members/{}'.format(member_id))
+        location = self.api.path_to('members/{}'.format(member_id))
         created(response, location)
 
     def on_get(self, request, response):

@@ -4,3 +4,5 @@ var
 htmlcov
 __pycache__
 .tox
+coverage.xml
+diffcov.html

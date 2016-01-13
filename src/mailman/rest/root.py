@@ -26,15 +26,15 @@ import falcon
 
 from base64 import b64decode
 from mailman.config import config
+from mailman.core.api import API30, API31
 from mailman.core.constants import system_preferences
 from mailman.core.system import system
 from mailman.interfaces.listmanager import IListManager
 from mailman.model.uid import UID
 from mailman.rest.addresses import AllAddresses, AnAddress
-from mailman.rest.api import API30, API31
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import (
-    BadRequest, NotFound, child, etag, no_content, not_found, okay, path_to)
+    BadRequest, NotFound, child, etag, no_content, not_found, okay)
 from mailman.rest.lists import AList, AllLists, Styles
 from mailman.rest.members import AMember, AllMembers, FindMembers
 from mailman.rest.preferences import ReadOnlyPreferences
@@ -104,7 +104,7 @@ class Versions:
             mailman_version=system.mailman_version,
             python_version=system.python_version,
             api_version=self.api.version,
-            self_link=path_to('system/versions', self.api.version),
+            self_link=self.api.path_to('system/versions'),
             )
         okay(response, etag(resource))
 

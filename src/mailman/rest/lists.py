@@ -110,7 +110,7 @@ class _ListBase(CollectionMixin):
             mail_host=mlist.mail_host,
             member_count=mlist.members.member_count,
             volume=mlist.volume,
-            self_link=self.path_to('lists/{}'.format(mlist.list_id)),
+            self_link=self.api.path_to('lists/{}'.format(mlist.list_id)),
             )
 
     def _get_collection(self, request):
@@ -216,7 +216,7 @@ class AllLists(_ListBase):
             reason = 'Domain does not exist: {}'.format(error.domain)
             bad_request(response, reason.encode('utf-8'))
         else:
-            location = self.path_to('lists/{0}'.format(mlist.list_id))
+            location = self.api.path_to('lists/{0}'.format(mlist.list_id))
             created(response, location)
 
     def on_get(self, request, response):

@@ -46,7 +46,7 @@ class _QueuesBase(CollectionMixin):
             directory=switchboard.queue_directory,
             count=len(files),
             files=files,
-            self_link=self.path_to('queues/{}'.format(name)),
+            self_link=self.api.path_to('queues/{}'.format(name)),
             )
 
     def _get_collection(self, request):
@@ -89,7 +89,7 @@ class AQueue(_QueuesBase):
             bad_request(response, str(error))
             return
         else:
-            location = self.path_to(
+            location = self.api.path_to(
                 'queues/{}/{}'.format(self._name, filebase))
             created(response, location)
 
@@ -122,5 +122,5 @@ class AllQueues(_QueuesBase):
     def on_get(self, request, response):
         """<api>/queues"""
         resource = self._make_collection(request)
-        resource['self_link'] = self.path_to('queues')
+        resource['self_link'] = self.api.path_to('queues')
         okay(response, etag(resource))

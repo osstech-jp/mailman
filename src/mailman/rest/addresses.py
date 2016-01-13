@@ -51,7 +51,7 @@ class _AddressBase(CollectionMixin):
             email=address.email,
             original_email=address.original_email,
             registered_on=address.registered_on,
-            self_link=self.path_to('addresses/{}'.format(address.email)),
+            self_link=self.api.path_to('addresses/{}'.format(address.email)),
             )
         # Add optional attributes.  These can be None or the empty string.
         if address.display_name:
@@ -60,7 +60,7 @@ class _AddressBase(CollectionMixin):
             representation['verified_on'] = address.verified_on
         if address.user:
             uid = self.api.from_uuid(address.user.user_id)
-            representation['user'] = self.path_to('users/{}'.format(uid))
+            representation['user'] = self.api.path_to('users/{}'.format(uid))
         return representation
 
     def _get_collection(self, request):
@@ -213,14 +213,15 @@ class UserAddresses(_AddressBase):
             address = user_manager.get_address(validator(request)['email'])
             if address.user is None:
                 address.user = self._user
-                location = self.path_to('addresses/{}'.format(address.email))
+                location = self.api.path_to(
+                    'addresses/{}'.format(address.email))
                 created(response, location)
             else:
                 bad_request(response, 'Address belongs to other user.')
         else:
             # Link the address to the current user and return it.
             address.user = self._user
-            location = self.path_to('addresses/{}'.format(address.email))
+            location = self.api.path_to('addresses/{}'.format(address.email))
             created(response, location)
 
 

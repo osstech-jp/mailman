@@ -35,7 +35,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import UserAddresses
 from mailman.rest.helpers import (
     BadRequest, CollectionMixin, GetterSetter, NotFound, bad_request, child,
-    conflict, created, etag, forbidden, no_content, not_found, okay, path_to)
+    conflict, created, etag, forbidden, no_content, not_found, okay)
 from mailman.rest.preferences import Preferences
 from mailman.rest.validator import (
     PatchValidator, Validator, list_of_strings_validator)
@@ -118,7 +118,7 @@ def create_user(arguments, request, response):
     user.is_server_owner = is_server_owner
     api = request.context['api']
     user_id = api.from_uuid(user.user_id)
-    location = path_to('users/{}'.format(user_id), api.version)
+    location = request.context.get('api').path_to('users/{}'.format(user_id))
     created(response, location)
     return user
 
@@ -137,7 +137,7 @@ class _UserBase(CollectionMixin):
         resource = dict(
             created_on=user.created_on,
             is_server_owner=user.is_server_owner,
-            self_link=self.path_to('users/{}'.format(user_id)),
+            self_link=self.api.path_to('users/{}'.format(user_id)),
             user_id=user_id,
         )
         # Add the password attribute, only if the user has a password.  Same
@@ -335,7 +335,8 @@ class AddressUser(_UserBase):
             user_id = arguments['user_id']
             user = user_manager.get_user_by_id(user_id)
             if user is None:
-                not_found(response, b'No user with ID {}'.format(user_id))
+                bad_request(response, 'No user with ID {}'.format(
+                    self.api.from_uuid(user_id)))
                 return
             okay(response)
         else:

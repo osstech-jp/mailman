@@ -25,7 +25,7 @@ __all__ = [
 import unittest
 
 from mailman.interfaces.usermanager import IUserManager
-from mailman.rest.api import API30, API31
+from mailman.core.api import API30, API31
 from mailman.rest.validator import (
     list_of_strings_validator, subscriber_validator)
 from mailman.testing.layers import RESTLayer

@@ -32,7 +32,6 @@ __all__ = [
     'no_content',
     'not_found',
     'okay',
-    'path_to',
     ]
 
 
@@ -45,27 +44,6 @@ from enum import Enum
 from lazr.config import as_boolean
 from mailman.config import config
 from pprint import pformat
-
-
-
-def path_to(resource, api_version):
-    """Return the url path to a resource.
-
-    :param resource: The canonical path to the resource, relative to the
-        system base URI.
-    :type resource: string
-    :param api_version: API version to report.
-    :type api_version: string
-    :return: The full path to the resource.
-    :rtype: bytes
-    """
-    return '{0}://{1}:{2}/{3}/{4}'.format(
-        ('https' if as_boolean(config.webservice.use_https) else 'http'),
-        config.webservice.hostname,
-        config.webservice.port,
-        api_version,
-        (resource[1:] if resource.startswith('/') else resource),
-        )
 
 
 
@@ -184,9 +162,6 @@ class CollectionMixin:
             # Create the collection resource
             result['entries'] = entries
         return result
-
-    def path_to(self, resource):
-        return path_to(resource, self.api.version)
 
 
 
