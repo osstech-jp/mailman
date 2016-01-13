@@ -131,6 +131,8 @@ REST
    values accessible through the list's configuraiton resource.  POSTing to
    the resource with either ``send=True``, ``bump=True``, or both invokes the
    given action.
+ * Global and list-centric bans can now be managed through the REST API.
+   Given by Aurélien Bompard.
 
 Other
 -----

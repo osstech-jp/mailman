@@ -1,4 +1,4 @@
-# Copyright (C) 2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,16 +26,15 @@ __all__ = [
 from mailman.interfaces.bans import IBanManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, created, etag, no_content, not_found,
-    okay, path_to)
+    okay)
 from mailman.rest.validator import Validator
-
 
 
 class _BannedBase:
     """Common base class."""
 
-    def __init__(self, mailing_list):
-        self._mlist = mailing_list
+    def __init__(self, mlist):
+        self._mlist = mlist
         self.ban_manager = IBanManager(self._mlist)
 
     def _location(self, email):
@@ -43,42 +42,36 @@ class _BannedBase:
             base_location = ''
         else:
             base_location = 'lists/{}/'.format(self._mlist.list_id)
-        return path_to(
-            '{}bans/{}'.format(base_location, email), self.api_version)
+        return self.api.path_to('{}bans/{}'.format(base_location, email))
 
 
 class BannedEmail(_BannedBase):
     """A banned email."""
 
-    def __init__(self, mailing_list, email):
-        super().__init__(mailing_list)
+    def __init__(self, mlist, email):
+        super().__init__(mlist)
         self._email = email
 
     def on_get(self, request, response):
         """Get a banned email."""
-        if self._email is None:
-            bad_request(response, 'Invalid email')
-        elif not self.ban_manager.is_banned(self._email):
-            not_found(
-                response, 'Email {} is not banned'.format(self._email))
-        else:
+        if self.ban_manager.is_banned(self._email):
             resource = dict(
                 email=self._email,
-                list_id=self._mlist.list_id if self._mlist else None,
                 self_link=self._location(self._email),
                 )
+            if self._mlist is not None:
+                resource['list_id'] = self._mlist.list_id
             okay(response, etag(resource))
+        else:
+            not_found(response, 'Email is not banned: {}'.format(self._email))
 
     def on_delete(self, request, response):
         """Remove an email from the ban list."""
-        if self._email is None:
-            bad_request(response, 'Invalid email')
-        elif not self.ban_manager.is_banned(self._email):
-            bad_request(
-                response, 'Email {} is not banned'.format(self._email))
-        else:
+        if self.ban_manager.is_banned(self._email):
             self.ban_manager.unban(self._email)
             no_content(response)
+        else:
+            not_found(response, 'Email is not banned: {}'.format(self._email))
 
 
 class BannedEmails(_BannedBase, CollectionMixin):
@@ -86,11 +79,13 @@ class BannedEmails(_BannedBase, CollectionMixin):
 
     def _resource_as_dict(self, ban):
         """See `CollectionMixin`."""
-        return dict(
+        resource = dict(
             email=ban.email,
-            list_id=ban.list_id,
             self_link=self._location(ban.email),
             )
+        if ban.list_id is not None:
+            resource['list_id'] = ban.list_id
+        return resource
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
