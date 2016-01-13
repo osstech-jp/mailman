@@ -51,9 +51,11 @@ class API30:
         return uuid.int
 
     @staticmethod
-    def to_uuid(uuid_repr):
+    def to_uuid(uuid):
         """See `IAPI`."""
-        return UUID(int=int(uuid_repr))
+        if isinstance(uuid, UUID):
+            return uuid
+        return UUID(int=int(uuid))
 
 
 @implementer(IAPI)
@@ -77,6 +79,8 @@ class API31:
         return uuid.hex
 
     @staticmethod
-    def to_uuid(uuid_repr):
+    def to_uuid(uuid):
         """See `IAPI`."""
-        return UUID(hex=uuid_repr)
+        if isinstance(uuid, UUID):
+            return uuid
+        return UUID(hex=uuid)

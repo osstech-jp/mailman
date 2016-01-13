@@ -55,11 +55,11 @@ class IAPI(Interface):
     def to_uuid(uuid):
         """Return the UUID from the string representation.
 
-        :param uuid: The string representation of the UUID.
-        :type uuid: str
-        :return: The UUID converted from the string representation, as
-            appropriate for the API version.  In 3.0, uuid is interpreted as
-            the integer representation of a UUID, while in 3.1 it is the hex
-            representation of the UUID.
+        :param uuid: A UUID, or the string representation of the UUID.
+        :type uuid: UUID or str
+        :return: The UUID, converted if needed as appropriate for the
+            API version.  In 3.0, the string representation is
+            interpreted as an integer, while in 3.1 it is the hex
+            string.
         :rtype: UUID
         """

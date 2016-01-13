@@ -111,18 +111,12 @@ class AMember(_MemberBase):
         # The member_id is either the member's UUID or the string
         # representation of the member's UUID.
         self.api = api
-        self._member = None
         service = getUtility(ISubscriptionService)
-        if isinstance(member_id, UUID):
-            self._member = service.get_member(member_id)
-        else:
-            try:
-                member_id = api.to_uuid(member_id)
-            except ValueError:
-                # The string argument could not be converted to a UUID.
-                pass
-            else:
-                self._member = service.get_member(member_id)
+        try:
+            self._member = service.get_member(api.to_uuid(member_id))
+        except ValueError:
+            # The string argument could not be converted to a UUID.
+            self._member = None
 
     def on_get(self, request, response):
         """Return a single member end-point."""
