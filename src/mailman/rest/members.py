@@ -369,7 +369,7 @@ class FindMembers(_MemberBase):
             list_id=str,
             subscriber=str,
             role=enum_validator(MemberRole),
-            # Expect pagination
+            # Allow pagination.
             page=int,
             count=int,
             _optional=('list_id', 'subscriber', 'role', 'page', 'count'))
@@ -378,7 +378,8 @@ class FindMembers(_MemberBase):
         except ValueError as error:
             bad_request(response, str(error))
         else:
-            # Remove pagination query elements, it will be handled later.
+            # Remove any optional pagination query elements; they will be
+            # handled later.
             data.pop('page', None)
             data.pop('count', None)
             members = service.find_members(**data)

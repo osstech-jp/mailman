@@ -79,6 +79,8 @@ Interfaces
    same algorithm.  (Closes #118)
  * ``IMessageStore.delete_message()`` no longer raises a ``LookupError`` when
    you attempt to delete a nonexistent message from the message store.
+ * ``ISubscriptionService.find_members()`` accepts asterisks as wildcards in
+   the ``subscriber`` argument string.  Given by Aurélien Bompard.
 
 Internal API
 ------------
@@ -133,6 +135,8 @@ REST
    given action.
  * Global and list-centric bans can now be managed through the REST API.
    Given by Aurélien Bompard.
+ * ``<api>/members/find`` accepts GET query parameters in addition to POST
+   arguments.  Given by Aurélien Bompard.
 
 Other
 -----

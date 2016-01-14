@@ -626,7 +626,7 @@ Finally, we can search for a specific member given all three criteria.
     start: 0
     total_size: 1
 
-Search can also be performed using HTTP GET requests.
+Search can also be performed using HTTP GET queries.
 
     >>> dump_json('http://localhost:9001/3.0/members/find'
     ...           '?subscriber=cperson@example.com'

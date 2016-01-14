@@ -105,7 +105,7 @@ There may be no matching memberships.
     >>> list(service.find_members('dave@example.com'))
     []
 
-The address may contain an asterisk, which will be interpreted as a joker in
+The address may contain asterisks, which will be interpreted as a wildcard in
 the search pattern.
 
     >>> for member in service.find_members('*person*'):

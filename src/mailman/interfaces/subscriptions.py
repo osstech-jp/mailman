@@ -109,11 +109,9 @@ class ISubscriptionService(Interface):
         digest member), the member can appear multiple times in this
         list.
 
-        The subscriber argument may contain an asterisk, which will be
-        interpreted as a joker in the search pattern.
-
         :param subscriber: The email address or user id of the user getting
-            subscribed.
+            subscribed.  This argument may contain asterisks, which will be
+            interpreted as wildcards in the search pattern.
         :type subscriber: string or int
         :param list_id: The list id of the mailing list to search for the
             subscriber's memberships on.
