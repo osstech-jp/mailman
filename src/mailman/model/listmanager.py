@@ -28,6 +28,7 @@ from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError, ListCreatedEvent, ListCreatingEvent,
     ListDeletedEvent, ListDeletingEvent)
 from mailman.model.autorespond import AutoResponseRecord
+from mailman.model.bans import Ban
 from mailman.model.mailinglist import (
     IAcceptableAliasSet, ListArchiver, MailingList)
 from mailman.model.mime import ContentFilter
@@ -81,6 +82,7 @@ class ListManager:
         store.query(AutoResponseRecord).filter_by(mailing_list=mlist).delete()
         store.query(ContentFilter).filter_by(mailing_list=mlist).delete()
         store.query(ListArchiver).filter_by(mailing_list=mlist).delete()
+        store.query(Ban).filter_by(list_id=mlist.list_id).delete()
         store.delete(mlist)
         notify(ListDeletedEvent(fqdn_listname))
 

@@ -39,8 +39,8 @@ class Ban(Model):
     __tablename__ = 'ban'
 
     id = Column(Integer, primary_key=True)
-    email = Column(Unicode)
-    list_id = Column(Unicode)
+    email = Column(Unicode, index=True)
+    list_id = Column(Unicode, index=True)
 
     def __init__(self, email, list_id):
         super(Ban, self).__init__()
