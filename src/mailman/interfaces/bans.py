@@ -102,5 +102,5 @@ class IBanManager(Interface):
         """Iterate over all banned addresses.
 
         :return: The list of all banned addresses.
-        :rtype: list of `str`
+        :rtype: list of `IBan`
         """
