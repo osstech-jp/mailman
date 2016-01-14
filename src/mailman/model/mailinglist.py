@@ -82,9 +82,9 @@ class MailingList(Model):
     # are currently missing.
 
     # List identity
-    list_name = Column(Unicode)
-    mail_host = Column(Unicode)
-    _list_id = Column('list_id', Unicode)
+    list_name = Column(Unicode, index=True)
+    mail_host = Column(Unicode, index=True)
+    _list_id = Column('list_id', Unicode, index=True, unique=True)
     allow_list_posts = Column(Boolean)
     include_rfc2369_headers = Column(Boolean)
     advertised = Column(Boolean)
