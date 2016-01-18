@@ -250,7 +250,6 @@ archivers are available, and whether they are enabled for this mailing list.
     http_etag: "..."
     mail-archive: True
     mhonarc: True
-    prototype: True
 
 You can set all the archiver states by putting new state flags on the
 resource.
@@ -260,7 +259,6 @@ resource.
     ...     'http://localhost:9001/3.0/lists/dog@example.com/archivers', {
     ...         'mail-archive': False,
     ...         'mhonarc': True,
-    ...         'prototype': False,
     ...         }, method='PUT')
     content-length: 0
     date: ...
@@ -271,7 +269,6 @@ resource.
     http_etag: "..."
     mail-archive: False
     mhonarc: True
-    prototype: False
 
 You can change the state of a subset of the list archivers.
 ::
@@ -289,7 +286,6 @@ You can change the state of a subset of the list archivers.
     http_etag: "..."
     mail-archive: False
     mhonarc: False
-    prototype: False
 
 
 List digests

@@ -330,13 +330,15 @@ class ListArchivers:
         """Get all the archiver statuses."""
         archiver_set = IListArchiverSet(self._mlist)
         resource = {archiver.name: archiver.is_enabled
-                    for archiver in archiver_set.archivers}
+                    for archiver in archiver_set.archivers
+                    if archiver.system_archiver.is_enabled}
         okay(response, etag(resource))
 
     def patch_put(self, request, response, is_optional):
         archiver_set = IListArchiverSet(self._mlist)
         kws = {archiver.name: ArchiverGetterSetter(self._mlist)
-               for archiver in archiver_set.archivers}
+               for archiver in archiver_set.archivers
+               if archiver.system_archiver.is_enabled}
         if is_optional:
             # For a PATCH, all attributes are optional.
             kws['_optional'] = kws.keys()

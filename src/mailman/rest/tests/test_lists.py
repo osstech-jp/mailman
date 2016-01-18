@@ -32,7 +32,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import AcceptableAlias
 from mailman.runners.digest import DigestRunner
 from mailman.testing.helpers import (
-    call_api, get_queue_messages, make_testable_runner,
+    call_api, configuration, get_queue_messages, make_testable_runner,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import RESTLayer
 from mailman.utilities.datetime import now as right_now
@@ -339,7 +339,6 @@ class TestListArchivers(unittest.TestCase):
         self.assertEqual(resource, {
             'mail-archive': True,
             'mhonarc': True,
-            'prototype': True,
             })
 
     def test_archiver_statuses_on_missing_lists(self):
@@ -375,7 +374,7 @@ class TestListArchivers(unittest.TestCase):
 
     def test_put_incomplete_statuses(self):
         # PUT requires the full resource representation.  This one forgets to
-        # specify the prototype and mhonarc archiver.
+        # specify the mhonarc archiver.
         with self.assertRaises(HTTPError) as cm:
             call_api(
                 'http://localhost:9001/3.0/lists/ant.example.com/archivers', {
@@ -384,7 +383,7 @@ class TestListArchivers(unittest.TestCase):
                 method='PUT')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Missing parameters: mhonarc, prototype')
+                         b'Missing parameters: mhonarc')
 
     def test_patch_bogus_status(self):
         # Archiver statuses must be interpretable as booleans.
@@ -392,8 +391,7 @@ class TestListArchivers(unittest.TestCase):
             call_api(
                 'http://localhost:9001/3.0/lists/ant.example.com/archivers', {
                     'mail-archive': 'sure',
-                    'mhonarc': False,
-                    'prototype': 'no'
+                    'mhonarc': 'no'
                     },
                 method='PATCH')
         self.assertEqual(cm.exception.code, 400)
