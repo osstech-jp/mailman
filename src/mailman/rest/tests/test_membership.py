@@ -29,6 +29,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
@@ -358,6 +359,18 @@ class TestMembership(unittest.TestCase):
             method='DELETE')
         self.assertEqual(headers.status, 204)
         self.assertEqual(len(list(self._mlist.moderators.members)), 0)
+
+    def test_banned_member_tries_to_join(self):
+        # A user tries to join a list they are banned from.
+        with transaction():
+            IBanManager(self._mlist).ban('anne@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': 'anne@example.com',
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'Membership is banned')
 
 
 

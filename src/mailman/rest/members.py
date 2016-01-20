@@ -276,6 +276,9 @@ class AllMembers(_MemberBase):
             except MissingPreferredAddressError:
                 bad_request(response, b'User has no preferred address')
                 return
+            except MembershipIsBannedError:
+                bad_request(response, b'Membership is banned')
+                return
             if token is None:
                 assert token_owner is TokenOwner.no_one, token_owner
                 # The subscription completed.  Let's get the resulting member
