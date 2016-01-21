@@ -108,11 +108,11 @@ class TestListArchiver(unittest.TestCase):
 
     def test_get_archiver(self):
         # Use .get() to see if a mailing list has an archiver.
-        archiver = self._set.get('prototype')
-        self.assertEqual(archiver.name, 'prototype')
+        archiver = self._set.get('mhonarc')
+        self.assertEqual(archiver.name, 'mhonarc')
         self.assertTrue(archiver.is_enabled)
         self.assertEqual(archiver.mailing_list, self._mlist)
-        self.assertEqual(archiver.system_archiver.name, 'prototype')
+        self.assertEqual(archiver.system_archiver.name, 'mhonarc')
 
     def test_get_archiver_no_such(self):
         # Using .get() on a non-existing name returns None.
@@ -124,15 +124,15 @@ class TestListArchiver(unittest.TestCase):
         # then the site-wide archiver gets disabled, so the list specific
         # archiver will also be disabled.
         archiver_set = IListArchiverSet(self._mlist)
-        archiver = archiver_set.get('prototype')
+        archiver = archiver_set.get('mhonarc')
         self.assertTrue(archiver.is_enabled)
         # Disable the site-wide archiver.
-        config.push('enable prototype', """\
-        [archiver.prototype]
+        config.push('enable mhonarc', """\
+        [archiver.mhonarc]
         enable: no
         """)
         self.assertFalse(archiver.is_enabled)
-        config.pop('enable prototype')
+        config.pop('enable mhonarc')
 
 
 class TestDisabledListArchiver(unittest.TestCase):

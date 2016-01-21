@@ -28,11 +28,11 @@ class TestArchivers(unittest.TestCase):
     layer = ConfigLayer
 
     def test_enabled(self):
-        # By default, the testing configuration enables the archivers.
+        # By default, the testing configuration enables some archivers.
         archivers = {}
         for archiver in config.archivers:
             archivers[archiver.name] = archiver
-        self.assertTrue(archivers['prototype'].is_enabled)
+        self.assertFalse(archivers['prototype'].is_enabled)
         self.assertTrue(archivers['mail-archive'].is_enabled)
         self.assertTrue(archivers['mhonarc'].is_enabled)
 
@@ -42,6 +42,6 @@ class TestArchivers(unittest.TestCase):
         archivers = {}
         for archiver in config.archivers:
             archivers[archiver.name] = archiver
-        self.assertTrue(archivers['prototype'].is_enabled)
+        self.assertFalse(archivers['prototype'].is_enabled)
         self.assertTrue(archivers['mail-archive'].is_enabled)
         self.assertFalse(archivers['mhonarc'].is_enabled)
