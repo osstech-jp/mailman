@@ -14,9 +14,6 @@ variables:
 sqlite:
   script:
   - tox
-  tags:
-  - sqlite
-
 
 pgsql:
   services:
