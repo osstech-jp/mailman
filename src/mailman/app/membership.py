@@ -79,7 +79,7 @@ def add_member(mlist, record, role=MemberRole.member):
     for address in user.addresses:
         if address.original_email == record.email:
             case_preserved = address
-        if address.email == record.email.lower():
+        if address.email == record.email.lower():   # pragma: no branch
             case_insensitive = address
     assert case_preserved is not None or case_insensitive is not None, (
         'Could not find a linked address for: {}'.format(record.email))

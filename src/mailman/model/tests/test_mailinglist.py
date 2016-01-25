@@ -36,7 +36,7 @@ from mailman.interfaces.mailinglist import (
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError)
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import configuration
+from mailman.testing.helpers import configuration, get_queue_messages
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility
@@ -85,6 +85,23 @@ class TestMailingList(unittest.TestCase):
 
     def test_subscribe_argument(self):
         self.assertRaises(ValueError, self._mlist.subscribe, 'anne')
+
+    def test_subscribe_by_user_admin_notification(self):
+        # A notification is sent to the administrator with the user's email
+        # address when a user is subscribed instead of an explicit address.
+        self._mlist.send_welcome_message = False
+        self._mlist.admin_notify_mchanges = True
+        manager = getUtility(IUserManager)
+        user = manager.make_user('anne@example.com', 'Anne Person')
+        address = manager.create_address('aperson@example.com', 'A. Person')
+        address.verified_on = now()
+        user.preferred_address = address
+        self._mlist.subscribe(user)
+        # The welcome message was sent to the preferred address.
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        self.assertIn('Anne Person <aperson@example.com>',
+                      items[0].msg.get_payload())
 
 
 
