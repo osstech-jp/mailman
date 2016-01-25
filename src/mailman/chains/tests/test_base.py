@@ -43,38 +43,38 @@ class TestMiscellaneous(unittest.TestCase):
 
     def test_link_repr(self):
         self.assertEqual(
-            repr(Link(Any)), '<Link "if any then LinkAction.defer">')
+            repr(Link(Any())), '<Link "if any then LinkAction.defer">')
 
     def test_link_repr_function(self):
         def function():
             pass
         self.assertEqual(
-            repr(Link(Any, function=function)),
+            repr(Link(Any(), function=function)),
             '<Link "if any then LinkAction.defer" function()>')
 
     def test_link_repr_chain(self):
         self.assertEqual(
-            repr(Link(Any, chain=AcceptChain)),
+            repr(Link(Any(), chain=AcceptChain())),
             '<Link "if any then LinkAction.defer" accept>')
 
     def test_link_repr_chain_and_function(self):
         def function():
             pass
         self.assertEqual(
-            repr(Link(Any, chain=AcceptChain, function=function)),
+            repr(Link(Any(), chain=AcceptChain(), function=function)),
             '<Link "if any then LinkAction.defer" accept function()>')
 
     def test_link_repr_chain_all(self):
         def function():
             pass
         self.assertEqual(
-            repr(Link(Any, LinkAction.stop, AcceptChain, function)),
+            repr(Link(Any(), LinkAction.stop, AcceptChain(), function)),
             '<Link "if any then LinkAction.stop" accept function()>')
 
     def test_flush(self):
         # Test that we can flush the links of a chain.
         chain = Chain('test', 'just a testing chain')
-        chain.append_link(Link(Any))
+        chain.append_link(Link(Any()))
         # Iterate over the links of the chain to prove there are some.
         count = sum(1 for link in chain.get_iterator())
         self.assertEqual(count, 1)

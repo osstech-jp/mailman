@@ -58,17 +58,15 @@ class TestIncoming(unittest.TestCase):
         self._mlist.posting_chain = 'test posting'
         self._mlist.owner_chain = 'test owner'
         config.chains['test posting'] = Chain('posting')
+        self.addCleanup(config.chains.pop, 'test posting')
         config.chains['test owner'] = Chain('owner')
+        self.addCleanup(config.chains.pop, 'test owner')
         self._in = make_testable_runner(IncomingRunner, 'in')
         self._msg = mfs("""\
 From: anne@example.com
 To: test@example.com
 
 """)
-
-    def tearDown(self):
-        del config.chains['test posting']
-        del config.chains['test owner']
 
     def test_posting(self):
         # A message posted to the list goes through the posting chain.

@@ -76,8 +76,6 @@ class ModerationChain:
             '{0}: Invalid moderation action: {1} for sender: {2}'.format(
                 mlist.fqdn_listname, action,
                 msgdata.get('moderation_sender', '(unknown)')))
-        truth = config.rules['truth']
-        chain = config.chains[jump_chain]
         return iter([
-            Link(truth, LinkAction.jump, chain),
+            Link('truth', LinkAction.jump, jump_chain),
             ])

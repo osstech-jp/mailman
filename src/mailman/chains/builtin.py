@@ -25,7 +25,6 @@ __all__ = [
 import logging
 
 from mailman.chains.base import Link
-from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.chain import IChain, LinkAction
 from zope.interface import implementer
@@ -73,11 +72,6 @@ class BuiltInChain:
         """See `IChain`."""
         if self._cached_links is None:
             self._cached_links = links = []
-            for rule_name, action, chain_name in self._link_descriptions:
-                # Get the named rule.
-                rule = config.rules[rule_name]
-                # Get the chain, if one is defined.
-                chain = (None if chain_name is None
-                         else config.chains[chain_name])
+            for rule, action, chain in self._link_descriptions:
                 links.append(Link(rule, action, chain))
         return iter(self._cached_links)

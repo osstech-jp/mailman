@@ -27,18 +27,22 @@ __all__ = [
 from mailman.config import config
 from mailman.interfaces.chain import (
     IChain, IChainIterator, IChainLink, IMutableChain, LinkAction)
+from mailman.interfaces.rules import IRule
 from zope.interface import implementer
 
 
-
 @implementer(IChainLink)
 class Link:
     """A chain link."""
 
     def __init__(self, rule, action=None, chain=None, function=None):
-        self.rule = rule
+        self.rule = (rule
+                     if IRule.providedBy(rule)
+                     else config.rules[rule])
         self.action = (LinkAction.defer if action is None else action)
-        self.chain = chain
+        self.chain = (chain
+                      if chain is None or IChain.providedBy(chain)
+                      else config.chains[chain])
         self.function = function
 
     def __repr__(self):
@@ -55,7 +59,6 @@ class Link:
         return message.format(self)
 
 
-
 @implementer(IChain, IChainIterator)
 class TerminalChainBase:
     """A base chain that always matches and executes a method.
@@ -79,21 +82,19 @@ class TerminalChainBase:
 
     def __iter__(self):
         """See `IChainIterator`."""
-        truth = config.rules['truth']
         # First, yield a link that always runs the process method.
-        yield Link(truth, LinkAction.run, function=self._process)
+        yield Link('truth', LinkAction.run, function=self._process)
         # Now yield a rule that stops all processing.
-        yield Link(truth, LinkAction.stop)
+        yield Link('truth', LinkAction.stop)
 
 
-
 @implementer(IMutableChain)
 class Chain:
     """Generic chain base class."""
 
     def __init__(self, name, description):
         assert name not in config.chains, (
-            'Duplicate chain name: {0}'.format(name))
+            'Duplicate chain name: {}'.format(name))
         self.name = name
         self.description = description
         self._links = []
@@ -117,7 +118,6 @@ class Chain:
         yield from self._links
 
 
-
 @implementer(IChainIterator)
 class ChainIterator:
     """Generic chain iterator."""

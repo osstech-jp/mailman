@@ -30,7 +30,6 @@ from mailman.utilities.modules import find_components
 from zope.interface.verify import verifyObject
 
 
-
 def process(mlist, msg, msgdata, start_chain='default-posting-chain'):
     """Process the message through a chain.
 
@@ -93,7 +92,6 @@ def process(mlist, msg, msgdata, start_chain='default-posting-chain'):
                 misses.append(link.rule.name)
 
 
-
 def initialize():
     """Set up chains, both built-in and from the database."""
     for chain_class in find_components('mailman.chains', IChain):
@@ -107,7 +105,7 @@ def initialize():
         chain = chain_class()
         verifyObject(IChain, chain)
         assert chain.name not in config.chains, (
-            'Duplicate chain "{0}" found in {1} (previously: {2}'.format(
+            'Duplicate chain "{}" found in {} (previously: {}'.format(
                 chain.name, chain_class, config.chains[chain.name]))
         config.chains[chain.name] = chain
     # XXX Read chains from the database and initialize them.

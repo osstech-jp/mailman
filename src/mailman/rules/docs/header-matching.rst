@@ -39,7 +39,7 @@ through the chain with no matches.
     ...         print('Rule hits:')
     ...         for rule_name in hits:
     ...             rule = config.rules[rule_name]
-    ...             print('    {0}: {1}'.format(rule.header, rule.pattern))
+    ...             print('    {}: {}'.format(rule.header, rule.pattern))
     ...     misses = msgdata.get('rule_misses', [])
     ...     if len(misses) == 0:
     ...         print('No rules missed')
@@ -47,7 +47,7 @@ through the chain with no matches.
     ...         print('Rule misses:')
     ...         for rule_name in misses:
     ...             rule = config.rules[rule_name]
-    ...             print('    {0}: {1}'.format(rule.header, rule.pattern))
+    ...             print('    {}: {}'.format(rule.header, rule.pattern))
 
 By looking at the message metadata after chain processing, we can see that
 none of the rules matched.

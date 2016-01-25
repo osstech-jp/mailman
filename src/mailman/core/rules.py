@@ -28,7 +28,6 @@ from mailman.utilities.modules import find_components
 from zope.interface.verify import verifyObject
 
 
-
 def initialize():
     """Find and register all rules in all plugins."""
     # Find rules in plugins.
@@ -36,6 +35,5 @@ def initialize():
         rule = rule_class()
         verifyObject(IRule, rule)
         assert rule.name not in config.rules, (
-            'Duplicate rule "{0}" found in {1}'.format(
-                rule.name, rule_class))
+            'Duplicate rule "{}" found in {}'.format(rule.name, rule_class))
         config.rules[rule.name] = rule

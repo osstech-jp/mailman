@@ -49,7 +49,7 @@ def make_link(header, pattern, chain=None):
     :type header: string
     :param pattern: A regular expression for matching the header value.
     :type pattern: string
-    :param chain: When given, this is the chain to jump to if the
+    :param chain: When given, this is the name of the chain to jump to if the
         pattern matches the header.
     :type chain: string
     :return: The link representing this rule check.
@@ -58,7 +58,6 @@ def make_link(header, pattern, chain=None):
     rule = HeaderMatchRule(header, pattern)
     if chain is None:
         return Link(rule)
-    chain = config.chains[chain]
     return Link(rule, LinkAction.jump, chain)
 
 
@@ -85,7 +84,7 @@ class HeaderMatchRule:
         self.record = True
         # Register this rule so that other parts of the system can query it.
         assert self.name not in config.rules, (
-            'Duplicate HeaderMatchRule: {0} [{1}: {2}]'.format(
+            'Duplicate HeaderMatchRule: {} [{}: {}]'.format(
                 self.name, self.header, self.pattern))
         config.rules[self.name] = self
 
@@ -148,9 +147,7 @@ class HeaderMatchChain(Chain):
         # action until now, so jump to the chain defined in the configuration
         # file.  For security considerations, this takes precedence over
         # list-specific matches.
-        yield Link(config.rules['any'],
-                   LinkAction.jump,
-                   config.chains[config.antispam.jump_chain])
+        yield Link('any', LinkAction.jump, config.antispam.jump_chain)
         # Then return all the list-specific header matches.
         for entry in mlist.header_matches:
             yield make_link(entry.header, entry.pattern, entry.chain)

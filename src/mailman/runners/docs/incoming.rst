@@ -183,11 +183,9 @@ new chain and set it as the mailing list's start chain.
     >>> from mailman.chains.base import Chain, Link
     >>> from mailman.interfaces.chain import LinkAction
     >>> def make_chain(name, target_chain):
-    ...     truth_rule = config.rules['truth']
-    ...     target_chain = config.chains[target_chain]
-    ...     test_chain = Chain(name, 'Testing {0}'.format(target_chain))
+    ...     test_chain = Chain(name, 'Testing {}'.format(target_chain))
     ...     config.chains[test_chain.name] = test_chain
-    ...     link = Link(truth_rule, LinkAction.jump, target_chain)
+    ...     link = Link('truth', LinkAction.jump, target_chain)
     ...     test_chain.append_link(link)
     ...     return test_chain
 
