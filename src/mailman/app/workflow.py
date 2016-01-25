@@ -63,7 +63,7 @@ class Workflow:
         name = self._next.popleft()
         step = getattr(self, '_step_{}'.format(name))
         self._count += 1
-        if self.debug:
+        if self.debug:                              # pragma: no cover
             print('[{:02d}] -> {}'.format(self._count, name), file=sys.stderr)
         return name, step
 
@@ -151,6 +151,5 @@ class Workflow:
         self._next.clear()
         if state.step:
             self._next.append(state.step)
-        if state.data is not None:
-            for attr, value in json.loads(state.data).items():
-                setattr(self, attr, value)
+        for attr, value in json.loads(state.data).items():
+            setattr(self, attr, value)

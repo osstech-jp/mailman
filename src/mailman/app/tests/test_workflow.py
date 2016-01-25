@@ -122,7 +122,15 @@ class TestWorkflow(unittest.TestCase):
         results = self._workflow.run_thru('second')
         self.assertEqual(results, ['one', 'two'])
 
+    def test_run_thru_completes(self):
+        results = self._workflow.run_thru('all of them')
+        self.assertEqual(results, ['one', 'two', 'three'])
+
     def test_run_until(self):
         # Run until (but not including) the given step.
         results = self._workflow.run_until('second')
         self.assertEqual(results, ['one'])
+
+    def test_run_until_completes(self):
+        results = self._workflow.run_until('all of them')
+        self.assertEqual(results, ['one', 'two', 'three'])
