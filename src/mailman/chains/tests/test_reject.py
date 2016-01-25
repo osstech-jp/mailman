@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Testing the reject chain."""
+"""Test the reject chain."""
 
 __all__ = [
     'TestReject',
@@ -33,7 +33,7 @@ from mailman.testing.layers import ConfigLayer
 
 
 class TestReject(unittest.TestCase):
-    """Test the `mailman.app.bounces.bounce_message()` function."""
+    """Test the reject chain."""
 
     layer = ConfigLayer
 
