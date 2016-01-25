@@ -43,9 +43,8 @@ class MyChain:
     def get_links(self, mlist, msg, msgdata):
         def set_hits(mlist, msg, msgdata):
             msgdata['rule_hits'] = ['first', 'second', 'third']
-        truth = config.rules['truth']
-        yield Link(truth, LinkAction.run, function=set_hits)
-        yield Link(truth, LinkAction.jump, config.chains['accept'])
+        yield Link('truth', LinkAction.run, function=set_hits)
+        yield Link('truth', LinkAction.jump, 'accept')
 
 
 
