@@ -54,7 +54,7 @@ class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
     """
 
     def __init__(self):
-        super(Deliver, self).__init__()
+        super().__init__()
         self.callbacks.extend([
             self.avoid_duplicates,
             self.decorate,

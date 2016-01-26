@@ -32,7 +32,7 @@ from zope.interface import Interface
 class SomeRecipientsFailed(MailmanError):
     """Delivery to some or all recipients failed"""
     def __init__(self, temporary_failures, permanent_failures):
-        super(SomeRecipientsFailed, self).__init__()
+        super().__init__()
         self.temporary_failures = temporary_failures
         self.permanent_failures = permanent_failures
 

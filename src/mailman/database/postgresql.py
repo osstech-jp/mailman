@@ -37,7 +37,7 @@ class PostgreSQLDatabase(SABaseDatabase):
         Reset the <tablename>_id_seq.last_value so that primary key ids
         restart from zero for new tests.
         """
-        super(PostgreSQLDatabase, self)._post_reset(store)
+        super()._post_reset(store)
         tables = reversed(Model.metadata.sorted_tables)
         # Recipe adapted from
         # http://stackoverflow.com/questions/544791/

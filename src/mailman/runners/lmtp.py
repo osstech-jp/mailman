@@ -171,7 +171,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         qlog.debug('LMTP server listening on %s:%s',
                    localaddr[0], localaddr[1])
         smtpd.SMTPServer.__init__(self, localaddr, remoteaddr=None)
-        super(LMTPRunner, self).__init__(name, slice)
+        super().__init__(name, slice)
 
     def handle_accept(self):
         conn, addr = self.accept()

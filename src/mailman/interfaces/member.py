@@ -109,7 +109,7 @@ class AlreadySubscribedError(MembershipError):
     """The member is already subscribed to the mailing list with this role."""
 
     def __init__(self, fqdn_listname, email, role):
-        super(AlreadySubscribedError, self).__init__()
+        super().__init__()
         self.fqdn_listname = fqdn_listname
         self.email = email
         self.role = role
@@ -136,7 +136,7 @@ class MissingPreferredAddressError(MembershipError):
     """A user without a preferred address attempted to subscribe."""
 
     def __init__(self, user):
-        super(MissingPreferredAddressError, self).__init__()
+        super().__init__()
         self._user = user
 
     def __str__(self):
@@ -147,7 +147,7 @@ class NotAMemberError(MembershipError):
     """The address is not a member of the mailing list."""
 
     def __init__(self, mlist, address):
-        super(NotAMemberError, self).__init__()
+        super().__init__()
         self._mlist = mlist
         self._address = address
 

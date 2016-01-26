@@ -41,7 +41,7 @@ class RESTRunner(Runner):
 
     def __init__(self, name, slice=None):
         """See `IRunner`."""
-        super(RESTRunner, self).__init__(name, slice)
+        super().__init__(name, slice)
         # Both the REST server and the signal handlers must run in the main
         # thread; the former because of SQLite requirements (objects created
         # in one thread cannot be shared with the other threads), and the
@@ -66,7 +66,7 @@ class RESTRunner(Runner):
         self._server.serve_forever()
 
     def signal_handler(self, signum, frame):
-        super(RESTRunner, self).signal_handler(signum, frame)
+        super().signal_handler(signum, frame)
         if signum in (signal.SIGTERM, signal.SIGINT, signal.SIGUSR1):
             # Set the flag that will terminate the TCPserver loop.
             self._event.set()

@@ -190,7 +190,7 @@ class MailingList(Model):
     welcome_message_uri = Column(Unicode)
 
     def __init__(self, fqdn_listname):
-        super(MailingList, self).__init__()
+        super().__init__()
         listname, at, hostname = fqdn_listname.partition('@')
         assert hostname, 'Bad list name: {0}'.format(fqdn_listname)
         self.list_name = listname
@@ -511,7 +511,7 @@ class AcceptableAlias(Model):
     alias = Column(Unicode, index=True, nullable=False)
 
     def __init__(self, mailing_list, alias):
-        super(AcceptableAlias, self).__init__()
+        super().__init__()
         self.mailing_list = mailing_list
         self.alias = alias
 

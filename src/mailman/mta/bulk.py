@@ -50,7 +50,7 @@ class BulkDelivery(BaseDelivery):
             big chunk.
         :type max_recipients: integer
         """
-        super(BulkDelivery, self).__init__()
+        super().__init__()
         self._max_recipients = (max_recipients
                                 if max_recipients is not None
                                 else 0)

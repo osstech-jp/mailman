@@ -254,12 +254,12 @@ class ChildError:
 
 class BadRequest(ChildError):
     def __init__(self):
-        super(BadRequest, self).__init__(falcon.HTTP_400)
+        super().__init__(falcon.HTTP_400)
 
 
 class NotFound(ChildError):
     def __init__(self):
-        super(NotFound, self).__init__(falcon.HTTP_404)
+        super().__init__(falcon.HTTP_404)
 
 
 def okay(response, body=None):

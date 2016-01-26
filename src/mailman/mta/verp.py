@@ -53,7 +53,7 @@ class VERPMixin:
         :param msgdata: Additional message metadata for this delivery.
         :type msgdata: dictionary
         """
-        sender = super(VERPMixin, self)._get_sender(mlist, msg, msgdata)
+        sender = super()._get_sender(mlist, msg, msgdata)
         if msgdata.get('verp', False):
             log.debug('VERPing %s', msg.get('message-id'))
             recipient = msgdata['recipient']
@@ -96,5 +96,5 @@ class VERPDelivery(VERPMixin, IndividualDelivery):
 
     def __init__(self):
         """See `IndividualDelivery`."""
-        super(VERPDelivery, self).__init__()
+        super().__init__()
         self.callbacks.append(self.avoid_duplicates)

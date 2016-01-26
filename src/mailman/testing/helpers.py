@@ -99,7 +99,7 @@ def make_testable_runner(runner_class, name=None, predicate=None):
         """Stop processing when the queue is empty."""
 
         def __init__(self, *args, **kws):
-            super(EmptyingRunner, self).__init__(*args, **kws)
+            super().__init__(*args, **kws)
             # We know it's an EmptyingRunner, so really we want to see the
             # super class in the log files.
             self.__class__.__name__ = runner_class.__name__
@@ -166,8 +166,7 @@ class TestableMaster(Master):
             until the pass condition is set.
         :type start_check: Callable taking no arguments, returning nothing.
         """
-        super(TestableMaster, self).__init__(
-            restartable=False, config_file=config.filename)
+        super().__init__(restartable=False, config_file=config.filename)
         self.start_check = start_check
         self.event = threading.Event()
         self.thread = threading.Thread(target=self.loop)
@@ -215,7 +214,7 @@ class TestableMaster(Master):
             self.start_check()
         # Let the blocking thread know everything's running.
         self.event.set()
-        super(TestableMaster, self).loop()
+        super().loop()
 
     @property
     def runner_pids(self):

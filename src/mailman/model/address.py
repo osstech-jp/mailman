@@ -55,7 +55,7 @@ class Address(Model):
         'Preferences', backref=backref('address', uselist=False))
 
     def __init__(self, email, display_name):
-        super(Address, self).__init__()
+        super().__init__()
         getUtility(IEmailValidator).validate(email)
         lower_case = email.lower()
         self.email = lower_case

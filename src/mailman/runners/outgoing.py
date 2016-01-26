@@ -54,7 +54,7 @@ class OutgoingRunner(Runner):
     """The outgoing runner."""
 
     def __init__(self, slice=None, numslices=1):
-        super(OutgoingRunner, self).__init__(slice, numslices)
+        super().__init__(slice, numslices)
         # We look this function up only at startup time.
         self._func = find_name(config.mta.outgoing)
         # This prevents smtp server connection problems from filling up the

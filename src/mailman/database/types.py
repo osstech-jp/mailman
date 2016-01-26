@@ -40,8 +40,8 @@ class Enum(TypeDecorator):
     impl = Integer
 
     def __init__(self, enum, *args, **kw):
+        super().__init__(*args, **kw)
         self.enum = enum
-        super(Enum, self).__init__(*args, **kw)
 
     def process_bind_param(self, value, dialect):
         if value is None:

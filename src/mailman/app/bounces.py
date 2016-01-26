@@ -146,7 +146,7 @@ class _BaseVERPParser:
 
 class StandardVERP(_BaseVERPParser):
     def __init__(self):
-        super(StandardVERP, self).__init__(config.mta.verp_regexp)
+        super().__init__(config.mta.verp_regexp)
 
     def _get_address(self, match_object):
         return '{0}@{1}'.format(*match_object.group('local', 'domain'))
@@ -154,7 +154,7 @@ class StandardVERP(_BaseVERPParser):
 
 class ProbeVERP(_BaseVERPParser):
     def __init__(self):
-        super(ProbeVERP, self).__init__(config.mta.verp_probe_regexp)
+        super().__init__(config.mta.verp_probe_regexp)
 
     def _get_address(self, match_object):
         # Extract the token and get the matching address.

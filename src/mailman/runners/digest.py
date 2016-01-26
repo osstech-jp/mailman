@@ -151,7 +151,7 @@ class MIMEDigester(Digester):
     """A MIME digester."""
 
     def __init__(self, mlist, volume, digest_number):
-        super(MIMEDigester, self).__init__(mlist, volume, digest_number)
+        super().__init__(mlist, volume, digest_number)
         masthead = MIMEText(self._masthead.encode(self._charset),
                             _charset=self._charset)
         masthead['Content-Description'] = self._subject
@@ -215,7 +215,7 @@ class RFC1153Digester(Digester):
     """A digester of the format specified by RFC 1153."""
 
     def __init__(self, mlist, volume, digest_number):
-        super(RFC1153Digester, self).__init__(mlist, volume, digest_number)
+        super().__init__(mlist, volume, digest_number)
         self._separator70 = '-' * 70
         self._separator30 = '-' * 30
         self._text = StringIO()

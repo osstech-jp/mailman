@@ -180,4 +180,4 @@ class PatchValidator(Validator):
             if converters[attribute].decoder is None:
                 raise ReadOnlyPATCHRequestError(attribute)
             validationators[attribute] = converters[attribute]
-        super(PatchValidator, self).__init__(**validationators)
+        super().__init__(**validationators)

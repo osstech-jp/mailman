@@ -56,7 +56,7 @@ class DataPendable(dict):
                 key = '_pck_' + key
                 value = dumps(value).decode('raw-unicode-escape')
             clean_mapping[key] = value
-        super(DataPendable, self).update(clean_mapping)
+        super().update(clean_mapping)
 
 
 
@@ -159,7 +159,7 @@ class _Request(Model):
     mailing_list = relationship('MailingList')
 
     def __init__(self, key, request_type, mailing_list, data_hash):
-        super(_Request, self).__init__()
+        super().__init__()
         self.key = key
         self.request_type = request_type
         self.mailing_list = mailing_list

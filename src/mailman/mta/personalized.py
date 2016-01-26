@@ -69,5 +69,5 @@ class PersonalizedDelivery(PersonalizedMixin, VERPDelivery):
 
     def __init__(self):
         """See `IndividualDelivery`."""
-        super(PersonalizedDelivery, self).__init__()
+        super().__init__()
         self.callbacks.append(self.personalize_to)

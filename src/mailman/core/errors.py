@@ -27,19 +27,10 @@ interfaces.
 
 
 __all__ = [
-    'AlreadyReceivingDigests',
-    'AlreadyReceivingRegularDeliveries',
-    'BadPasswordSchemeError',
-    'CantDigestError',
     'DiscardMessage',
     'HandlerError',
     'HoldMessage',
     'LostHeldMessage',
-    'MailmanError',
-    'MailmanException',
-    'MemberError',
-    'MustDigestError',
-    'PasswordError',
     'RESTError',
     'ReadOnlyPATCHRequestError',
     'RejectMessage',
@@ -98,22 +89,6 @@ class DiscardMessage(HandlerError):
 
 class RejectMessage(HandlerError):
     """The message will be bounced back to the sender"""
-
-
-
-class PasswordError(MailmanError):
-    """A password related error."""
-
-
-class BadPasswordSchemeError(PasswordError):
-    """A bad password scheme was given."""
-
-    def __init__(self, scheme_name='unknown'):
-        super(BadPasswordSchemeError, self).__init__()
-        self.scheme_name = scheme_name
-
-    def __str__(self):
-        return 'A bad password scheme was given: %s' % self.scheme_name
 
 
 

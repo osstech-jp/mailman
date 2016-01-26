@@ -104,7 +104,7 @@ class HeaderMatchChain(Chain):
     """
 
     def __init__(self):
-        super(HeaderMatchChain, self).__init__(
+        super().__init__(
             'header-match', _('The built-in header matching chain'))
         # This chain will dynamically calculate the links from the
         # configuration file, the database, and any explicitly added header

@@ -44,7 +44,7 @@ class Message(Model):
 
     @dbconnection
     def __init__(self, store, message_id, message_id_hash, path):
-        super(Message, self).__init__()
+        super().__init__()
         self.message_id = message_id
         self.message_id_hash = message_id_hash
         self.path = path

@@ -45,5 +45,5 @@ class DecoratingDelivery(DecoratingMixin, VERPDelivery):
 
     def __init__(self):
         """See `IndividualDelivery`."""
-        super(DecoratingDelivery, self).__init__()
+        super().__init__()
         self.callbacks.append(self.decorate)

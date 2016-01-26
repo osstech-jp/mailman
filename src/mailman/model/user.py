@@ -78,7 +78,7 @@ class User(Model):
 
     @dbconnection
     def __init__(self, store, display_name=None, preferences=None):
-        super(User, self).__init__()
+        super().__init__()
         self._created_on = date_factory.now()
         user_id = uid_factory.new()
         assert store.query(User).filter_by(_user_id=user_id).count() == 0, (

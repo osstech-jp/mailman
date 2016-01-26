@@ -43,7 +43,7 @@ class Ban(Model):
     list_id = Column(Unicode, index=True)
 
     def __init__(self, email, list_id):
-        super(Ban, self).__init__()
+        super().__init__()
         self.email = email
         self.list_id = list_id
 

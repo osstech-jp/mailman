@@ -134,7 +134,7 @@ class IndividualDelivery(BaseDelivery):
 
     def __init__(self):
         """See `BaseDelivery`."""
-        super(IndividualDelivery, self).__init__()
+        super().__init__()
         self.callbacks = []
 
     def deliver(self, mlist, msg, msgdata):

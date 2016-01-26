@@ -37,7 +37,7 @@ class BounceRunner(Runner):
     """The bounce runner."""
 
     def __init__(self, name, slice=None):
-        super(BounceRunner, self).__init__(name, slice)
+        super().__init__(name, slice)
         self._processor = getUtility(IBounceProcessor)
 
     def _dispose(self, mlist, msg, msgdata):

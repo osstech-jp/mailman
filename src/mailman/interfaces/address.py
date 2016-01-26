@@ -39,7 +39,7 @@ class EmailError(MailmanError):
     """A generic text email address-related error occurred."""
 
     def __init__(self, email):
-        super(EmailError, self).__init__()
+        super().__init__()
         self.email = email
 
     def __str__(self):
@@ -50,7 +50,7 @@ class AddressError(MailmanError):
     """A generic IAddress-related error occurred."""
 
     def __init__(self, address):
-        super(AddressError, self).__init__()
+        super().__init__()
         self.address = address
 
     def __str__(self):

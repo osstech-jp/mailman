@@ -37,7 +37,7 @@ class BadDomainSpecificationError(MailmanError):
     """The specification of a virtual domain is invalid or duplicated."""
 
     def __init__(self, domain):
-        super(BadDomainSpecificationError, self).__init__(domain)
+        super().__init__(domain)
         self.domain = domain
 
 
