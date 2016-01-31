@@ -19,6 +19,6 @@ pgsql:
   services:
   - postgres:latest
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e pg
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e {py34,py35}-pg
   tags:
   - postgres
