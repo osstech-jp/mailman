@@ -13,7 +13,7 @@ variables:
 
 sqlite:
   script:
-  - tox
+  - tox -e py34,py35
 
 pgsql:
   services:
