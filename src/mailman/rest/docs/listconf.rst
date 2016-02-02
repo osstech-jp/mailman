@@ -293,3 +293,177 @@ The mailing list has its aliases set.
     ...     print(alias)
     bar@example.net
     foo@example.com
+
+
+Header matches
+--------------
+
+Mailman can do pattern based header matching during its normal rule
+processing. Each mailing list can also be configured with a set of header
+matching regular expression rules.  These can be used to impose list-specific
+header filtering with the same semantics as the global ``[antispam]`` section,
+or to have a different action.
+
+The list of header matches for a mailing list are returned on the
+``header-matches`` child of this list.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches')
+    http_etag: "..."
+    start: 0
+    total_size: 0
+
+New header matches can be created by POSTing to the resource.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches', {
+    ...           'header': 'X-Spam-Flag',
+    ...           'pattern': '^Yes',
+    ...           })
+    content-length: 0
+    ...
+    location: .../3.0/lists/ant.example.com/header-matches/0
+    ...
+    status: 201
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches/0')
+    header: x-spam-flag
+    http_etag: "..."
+    index: 0
+    pattern: ^Yes
+    self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
+
+
+To follow the global antispam action, the header match rule must not specify
+an ``action`` key.  If the default antispam action is changed in the
+configuration file and Mailman is restarted, those rules will get the new
+jump action. If a specific action is desired, the ``action`` key must point
+to a valid action.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches', {
+    ...           'header': 'X-Spam-Status',
+    ...           'pattern': '^Yes',
+    ...           'action': 'discard',
+    ...           })
+    content-length: 0
+    ...
+    location: .../3.0/lists/ant.example.com/header-matches/1
+    ...
+    status: 201
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches/1')
+    action: discard
+    header: x-spam-status
+    http_etag: "..."
+    index: 1
+    pattern: ^Yes
+    self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
+
+The resource can be changed by PATCHing it. The ``index`` key can be used to
+change the priority of the header match in the list. If it is not supplied, the
+priority is not changed.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches/1',
+    ...           dict(pattern='^No', action='accept'),
+    ...           'PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches/1')
+    action: accept
+    header: x-spam-status
+    http_etag: "..."
+    index: 1
+    pattern: ^No
+    self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches/1',
+    ...           dict(index=0),
+    ...           'PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches')
+    entry 0:
+        action: accept
+        header: x-spam-status
+        http_etag: "..."
+        index: 0
+        pattern: ^No
+        self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
+    entry 1:
+        header: x-spam-flag
+        http_etag: "..."
+        index: 1
+        pattern: ^Yes
+        self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
+    http_etag: "..."
+    start: 0
+    total_size: 2
+
+The PUT method can replace an entire header match. The ``index`` key is
+optional: if it is omitted, the order will not be changed.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches/1',
+    ...           dict(header='X-Spam-Status',
+    ...                pattern='^Yes',
+    ...                action='hold',
+    ...           ), 'PUT')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches/1')
+    action: hold
+    header: x-spam-status
+    http_etag: "..."
+    index: 1
+    pattern: ^Yes
+    self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
+
+A header match can be removed using the DELETE method.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches/1',
+    ...           method='DELETE')
+    content-length: 0
+    ...
+    status: 204
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches')
+    entry 0:
+        action: accept
+        header: x-spam-status
+        http_etag: "..."
+        index: 0
+        pattern: ^No
+        self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
+The mailing list's header matches can be cleared by issuing a DELETE request on the top resource.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches',
+    ...           method='DELETE')
+    content-length: 0
+    ...
+    status: 204
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
+    ...           '/header-matches')
+    http_etag: "..."
+    start: 0
+    total_size: 0

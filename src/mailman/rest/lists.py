@@ -41,6 +41,7 @@ from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.rest.bans import BannedEmails
 from mailman.rest.listconf import ListConfiguration
+from mailman.rest.header_matches import HeaderMatches
 from mailman.rest.helpers import (
     CollectionMixin, GetterSetter, NotFound, accepted, bad_request, child,
     created, etag, no_content, not_found, okay)
@@ -206,6 +207,13 @@ class AList(_ListBase):
             return NotFound(), []
         return BannedEmails(self._mlist)
 
+    @child(r'^header-matches')
+    def header_matches(self, request, segments):
+        """Return a collection of mailing list's header matches."""
+        if self._mlist is None:
+            return NotFound(), []
+        return HeaderMatches(self._mlist)
+
 
 
 class AllLists(_ListBase):
@@ -302,7 +310,7 @@ class ListArchivers:
         kws = {archiver.name: ArchiverGetterSetter(self._mlist)
                for archiver in archiver_set.archivers}
         if is_optional:
-            # For a PUT, all attributes are optional.
+            # For a PATCH, all attributes are optional.
             kws['_optional'] = kws.keys()
         try:
             Validator(**kws).update(self._mlist, request)
