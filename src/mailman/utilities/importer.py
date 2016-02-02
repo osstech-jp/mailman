@@ -41,7 +41,7 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.languages import ILanguageManager
-from mailman.interfaces.mailinglist import IAcceptableAliasSet, IHeaderMatchSet
+from mailman.interfaces.mailinglist import IAcceptableAliasSet, IHeaderMatchList
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
@@ -333,7 +333,7 @@ def import_config_pck(mlist, config_dict):
             # expression.  Make that explicit for MM3.
             alias_set.add('^' + address)
     # Handle header_filter_rules conversion to header_matches.
-    header_match_set = IHeaderMatchSet(mlist)
+    header_matches = IHeaderMatchList(mlist)
     header_filter_rules = config_dict.get('header_filter_rules', [])
     for line_patterns, action, _unused in header_filter_rules:
         try:
@@ -374,7 +374,7 @@ def import_config_pck(mlist, config_dict):
                             'invalid regular expression: %r', line_pattern)
                 continue
             try:
-                header_match_set.add(header, pattern, chain)
+                header_matches.append(header, pattern, chain)
             except ValueError:
                 log.warning('Skipping duplicate header_filter rule: %r',
                             line_pattern)

@@ -21,6 +21,7 @@ __all__ = [
     'IAcceptableAlias',
     'IAcceptableAliasSet',
     'IHeaderMatch',
+    'IHeaderMatchList',
     'IListArchiver',
     'IListArchiverSet',
     'IMailingList',
@@ -873,14 +874,14 @@ class IHeaderMatch(Interface):
         """)
 
 
-class IHeaderMatchSet(Interface):
-    """The set of header matching rules for a mailing list."""
+class IHeaderMatchList(Interface):
+    """The list of header matching rules for a mailing list."""
 
     def clear():
-        """Clear the set of header matching rules."""
+        """Clear the list of header matching rules."""
 
-    def add(header, pattern, chain=None):
-        """Add the given header matching rule to this mailing list's set.
+    def append(header, pattern, chain=None):
+        """Append the given rule to this mailing list's header match list.
 
         :param header: The email header to filter on.  It will be converted to
             lower case for consistency.
@@ -894,8 +895,26 @@ class IHeaderMatchSet(Interface):
             mailing list.
         """
 
+    def insert(index, header, pattern, chain=None):
+        """Insert the given rule at the given index position in this mailing
+        list's header match list.
+
+        :param index: The index to insert the rule at.
+        :type index: integer
+        :param header: The email header to filter on.  It will be converted to
+            lower case for consistency.
+        :type header: string
+        :param pattern: The regular expression to use.
+        :type pattern: string
+        :param chain: The chain to jump to, or None to use the site-wide
+            configuration.  Defaults to None.
+        :type chain: string or None
+        :raises ValueError: if the header/pattern pair already exists for this
+            mailing list.
+        """
+
     def remove(header, pattern):
-        """Remove the given header matching rule from this mailing list's set.
+        """Remove the given rule from this mailing list's header match list.
 
         :param header: The email header part of the rule to be removed.
         :type header: string
@@ -903,8 +922,34 @@ class IHeaderMatchSet(Interface):
         :type pattern: string
         """
 
+    def __getitem__(key):
+        """Return the header match at the given index for this mailing list.
+
+        :param key: The index of the header match to return.
+        :type key: integer
+        :raises IndexError: if there is no header match at this index for
+            this mailing list.
+        :rtype: `IHeaderMatch`.
+        """
+
+    def __delitem__(key):
+        """Remove the rule at the given index from this mailing list's header
+        match list.
+
+        :param key: The index of the header match to remove.
+        :type key: integer
+        :raises IndexError: if there is no header match at this index for
+            this mailing list.
+        """
+
+    def __len__():
+        """Return the number of header matches for this mailing list.
+
+        :rtype: integer
+        """
+
     def __iter__():
-        """An iterator over all the IHeaderMatches defined in this set.
+        """An iterator over all the IHeaderMatches defined in this list.
 
         :return: iterator over `IHeaderMatch`.
         """

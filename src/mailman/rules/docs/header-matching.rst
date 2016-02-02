@@ -131,9 +131,9 @@ action.
 The list administrator wants to match not on four stars, but on three plus
 signs, but only for the current mailing list.
 
-    >>> from mailman.interfaces.mailinglist import IHeaderMatchSet
-    >>> header_matches = IHeaderMatchSet(mlist)
-    >>> header_matches.add('x-spam-score', '[+]{3,}')
+    >>> from mailman.interfaces.mailinglist import IHeaderMatchList
+    >>> header_matches = IHeaderMatchList(mlist)
+    >>> header_matches.append('x-spam-score', '[+]{3,}')
 
 A message with a spam score of two pluses does not match.
 
@@ -178,7 +178,7 @@ Now, the list administrator wants to match on three plus signs, but wants
 those emails to be discarded instead of held.
 
     >>> header_matches.remove('x-spam-score', '[+]{3,}')
-    >>> header_matches.add('x-spam-score', '[+]{3,}', 'discard')
+    >>> header_matches.append('x-spam-score', '[+]{3,}', 'discard')
 
 A message with a spam score of three pluses will still match, and the message
 will be discarded.

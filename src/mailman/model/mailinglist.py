@@ -37,7 +37,7 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAlias, IAcceptableAliasSet, IHeaderMatch, IHeaderMatchSet,
+    IAcceptableAlias, IAcceptableAliasSet, IHeaderMatch, IHeaderMatchList,
     IListArchiver, IListArchiverSet, IMailingList, Personalization,
     ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.member import (
@@ -188,6 +188,10 @@ class MailingList(Model):
     topics_bodylines_limit = Column(Integer)
     topics_enabled = Column(Boolean)
     welcome_message_uri = Column(Unicode)
+    # ORM relationships
+    header_matches = relationship(
+        'HeaderMatch', backref='mailing_list', cascade="all, delete-orphan",
+        order_by="HeaderMatch.index")
 
     def __init__(self, fqdn_listname):
         super().__init__()
@@ -631,30 +635,62 @@ class HeaderMatch(Model):
 
     id = Column(Integer, primary_key=True)
 
-    mailing_list_id = Column(Integer, ForeignKey('mailinglist.id'))
-    mailing_list = relationship('MailingList', backref='header_matches')
+    mailing_list_id = Column(
+        Integer, ForeignKey('mailinglist.id'),
+        index=True, nullable=False)
 
+    index = Column(Integer, index=True, default=0)
     header = Column(Unicode)
     pattern = Column(Unicode)
     chain = Column(Unicode, nullable=True)
 
+    @dbconnection
+    def move_to(self, store, index):
+        if index == self.index:
+            return # Nothing to do
+        elif index < self.index:
+            # Moving up: header matches between the new position and the
+            # current one must be moved down the list to make room. Those after
+            # the current position must not be changed.
+            for header_match in store.query(HeaderMatch).filter(
+                HeaderMatch.mailing_list == self.mailing_list,
+                HeaderMatch.index >= index,
+                HeaderMatch.index < self.index):
+                header_match.index = header_match.index + 1
+        elif index > self.index:
+            # Moving down: header matches between the current position and the
+            # new one must be moved up the list to make room. Those after
+            # the new position must not be changed.
+            for header_match in store.query(HeaderMatch).filter(
+                HeaderMatch.mailing_list == self.mailing_list,
+                HeaderMatch.index > self.index,
+                HeaderMatch.index <= index):
+                header_match.index = header_match.index - 1
+        self.index = index
+
 
 
-@implementer(IHeaderMatchSet)
-class HeaderMatchSet:
-    """See `IHeaderMatchSet`."""
+@implementer(IHeaderMatchList)
+class HeaderMatchList:
+    """See `IHeaderMatchList`.
+
+    All write operations must mark the mailing list's header_matches collection
+    as expired:
+    http://docs.sqlalchemy.org/en/latest/orm/session_state_management.html#refreshing-expiring
+    """
 
     def __init__(self, mailing_list):
         self._mailing_list = mailing_list
 
     @dbconnection
     def clear(self, store):
-        """See `IHeaderMatchSet`."""
+        """See `IHeaderMatchList`."""
         store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list).delete()
+        store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
-    def add(self, store, header, pattern, chain=None):
+    def append(self, store, header, pattern, chain=None):
         header = header.lower()
         existing = store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list,
@@ -662,17 +698,35 @@ class HeaderMatchSet:
             HeaderMatch.pattern == pattern).count()
         if existing > 0:
             raise ValueError('Pattern already exists')
+        last_index = store.query(HeaderMatch.index).filter(
+            HeaderMatch.mailing_list == self._mailing_list
+            ).order_by(HeaderMatch.index.desc()).limit(1).scalar()
+        if last_index is None:
+            last_index = -1
         header_match = HeaderMatch(
             mailing_list=self._mailing_list,
-            header=header, pattern=pattern, chain=chain)
+            header=header, pattern=pattern, chain=chain,
+            index=last_index + 1)
         store.add(header_match)
+        store.expire(self._mailing_list, ['header_matches'])
+
+    @dbconnection
+    def insert(self, store, index, header, pattern, chain=None):
+        self.append(header, pattern, chain)
+        # Get the header match that was just added.
+        header_match = store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self._mailing_list,
+            HeaderMatch.header == header.lower(),
+            HeaderMatch.pattern == pattern,
+            HeaderMatch.chain == chain).one()
+        header_match.move_to(index)
+        store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
     def remove(self, store, header, pattern):
         header = header.lower()
-        # Don't just filter and use delete(), or the MailingList.header_matches
-        # collection will not be updated:
-        # http://docs.sqlalchemy.org/en/rel_1_0/orm/collections.html#dynamic-relationship-loaders
+        # Query.delete() has many caveats, don't use it here:
+        # http://docs.sqlalchemy.org/en/rel_1_0/orm/query.html#sqlalchemy.orm.query.Query.delete
         try:
             existing = store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self._mailing_list,
@@ -681,9 +735,56 @@ class HeaderMatchSet:
         except NoResultFound:
             raise ValueError('Pattern does not exist')
         else:
-            self._mailing_list.header_matches.remove(existing)
+            store.delete(existing)
+        self._restore_index_sequence()
+        store.expire(self._mailing_list, ['header_matches'])
+
+    @dbconnection
+    def __getitem__(self, store, key):
+        if key < 0:
+            key = len(self) + key
+        try:
+            return store.query(HeaderMatch).filter(
+                HeaderMatch.mailing_list == self._mailing_list,
+                HeaderMatch.index == key).one()
+        except NoResultFound:
+            raise IndexError
+
+    @dbconnection
+    def __delitem__(self, store, key):
+        try:
+            existing = store.query(HeaderMatch).filter(
+                HeaderMatch.mailing_list == self._mailing_list,
+                HeaderMatch.index == key).one()
+        except NoResultFound:
+            raise IndexError
+        else:
+            store.delete(existing)
+        self._restore_index_sequence()
+        store.expire(self._mailing_list, ['header_matches'])
+
+    @dbconnection
+    def __len__(self, store):
+        return store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self._mailing_list).count()
 
     @dbconnection
     def __iter__(self, store):
         yield from store.query(HeaderMatch).filter(
-            HeaderMatch.mailing_list == self._mailing_list)
+            HeaderMatch.mailing_list == self._mailing_list
+            ).order_by(HeaderMatch.index)
+
+    @dbconnection
+    def _restore_index_sequence(self, store):
+        """Restore a continuous index sequence for this mailing list's header
+        matches.
+
+        The header match indexes may not be continuous after deleting an item.
+        It won't prevent this component from working properly, but it's cleaner
+        to restore a continuous sequence.
+        """
+        for index, header_match in enumerate(store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self._mailing_list
+            ).order_by(HeaderMatch.index)):
+            header_match.index = index
+        store.expire(self._mailing_list, ['header_matches'])

@@ -85,7 +85,9 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('header', sa.Unicode),
             sa.sql.column('pattern', sa.Unicode),
             )
-        # Downgrading.
+        # Bring the DB to the revision that is being tested.
+        alembic.command.downgrade(alembic_cfg, '42756496720')
+        # Test downgrading.
         config.db.store.execute(mlist_table.insert().values(id=1))
         config.db.store.execute(header_match_table.insert().values(
             [{'mailing_list_id': 1, 'header': hm[0], 'pattern': hm[1]}
@@ -97,7 +99,7 @@ class TestMigrations(unittest.TestCase):
         self.assertEqual(results[0].header_matches, test_header_matches)
         self.assertFalse(exists_in_db(config.db.engine, 'headermatch'))
         config.db.store.commit()
-        # Upgrading.
+        # Test upgrading.
         alembic.command.upgrade(alembic_cfg, '42756496720')
         results = config.db.store.execute(
             header_match_table.select()).fetchall()
