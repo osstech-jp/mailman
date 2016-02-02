@@ -33,6 +33,9 @@ from mailman.database.alembic import alembic_cfg
 from mailman.database.helpers import exists_in_db
 from mailman.database.model import Model
 from mailman.database.transaction import transaction
+from mailman.database.types import Enum
+from mailman.interfaces.action import Action
+from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.testing.layers import ConfigLayer
 
 
@@ -223,3 +226,43 @@ class TestMigrations(unittest.TestCase):
             os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
         self.assertTrue(os.path.exists(ant.data_path))
         self.assertTrue(os.path.exists(bee.data_path))
+
+    def test_cb7fc8476779_header_match_action(self):
+        # Create a mailing list through the standard API.
+        with transaction():
+            ant = create_list('ant@example.com')
+            # Create header matches
+            header_matches = IHeaderMatchList(ant)
+            header_matches.append('header-1', 'pattern', Action.accept)
+            header_matches.append('header-2', 'pattern', Action.hold)
+            header_matches.append('header-3', 'pattern', Action.discard)
+            header_matches.append('header-4', 'pattern', Action.reject)
+        hm_table = sa.sql.table(
+            'headermatch',
+            sa.sql.column('action', Enum(Action)),
+            sa.sql.column('chain', sa.Unicode)
+            )
+        # Downgrade and verify that the chain names are correct.
+        with transaction():
+            alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
+        results = config.db.store.execute(
+            hm_table.select()).fetchall()
+        self.assertEqual(len(results), 4)
+        for action, chain in results:
+            self.assertEqual(action.name, chain)
+        # Clear the previous values for testing.
+        with transaction():
+            config.db.store.execute(
+                hm_table.update().values(action=None))
+        for action, chain in config.db.store.execute(
+            hm_table.select()).fetchall():
+            self.assertEqual(action, None)
+        # Upgrade and verify that the actions are back to normal.
+        with transaction():
+            alembic.command.upgrade(alembic_cfg, 'cb7fc8476779')
+        results = config.db.store.execute(
+            hm_table.select()).fetchall()
+        self.assertEqual(len(results), 4)
+        for action, chain in results:
+            self.assertIsNotNone(action)
+            self.assertEqual(action.name, chain)

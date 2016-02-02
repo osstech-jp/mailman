@@ -177,8 +177,9 @@ As does a message with a spam score of four pluses.
 Now, the list administrator wants to match on three plus signs, but wants
 those emails to be discarded instead of held.
 
+    >>> from mailman.interfaces.action import Action
     >>> header_matches.remove('x-spam-score', '[+]{3,}')
-    >>> header_matches.append('x-spam-score', '[+]{3,}', 'discard')
+    >>> header_matches.append('x-spam-score', '[+]{3,}', Action.discard)
 
 A message with a spam score of three pluses will still match, and the message
 will be discarded.

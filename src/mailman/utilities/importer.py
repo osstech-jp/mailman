@@ -129,7 +129,7 @@ def nonmember_action_mapping(value):
         }[value]
 
 
-def action_to_chain(value):
+def action_to_enum(value):
     # Converts an action number in Mailman 2.1 to the name of the corresponding
     # chain in 3.x.  The actions 'approve', 'subscribe' and 'unsubscribe' are
     # ignored.  The defer action is converted to None, because it is not
@@ -137,12 +137,12 @@ def action_to_chain(value):
     return {
         0: None,
         #1: 'approve',
-        2: 'reject',
-        3: 'discard',
+        2: Action.reject,
+        3: Action.discard,
         #4: 'subscribe',
         #5: 'unsubscribe',
-        6: 'accept',
-        7: 'hold',
+        6: Action.accept,
+        7: Action.hold,
         }[value]
 
 
@@ -337,7 +337,7 @@ def import_config_pck(mlist, config_dict):
     header_filter_rules = config_dict.get('header_filter_rules', [])
     for line_patterns, action, _unused in header_filter_rules:
         try:
-            chain = action_to_chain(action)
+            action = action_to_enum(action)
         except KeyError:
             log.warning('Unsupported header_filter_rules action: %r',
                         action)
@@ -374,7 +374,7 @@ def import_config_pck(mlist, config_dict):
                             'invalid regular expression: %r', line_pattern)
                 continue
             try:
-                header_matches.append(header, pattern, chain)
+                header_matches.append(header, pattern, action)
             except ValueError:
                 log.warning('Skipping duplicate header_filter rule: %r',
                             line_pattern)
