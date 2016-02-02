@@ -294,7 +294,7 @@ class TestHeaderMatch(unittest.TestCase):
             ])
         header_match_2 = self._mlist.header_matches[2]
         self.assertEqual(header_match_2.index, 2)
-        header_match_2.move_to(1)
+        header_match_2.index = 1
         self.assertEqual(
             [(match.header, match.index) for match in header_matches], [
             ('header-0', 0),
@@ -318,7 +318,7 @@ class TestHeaderMatch(unittest.TestCase):
             ])
         header_match_1 = self._mlist.header_matches[1]
         self.assertEqual(header_match_1.index, 1)
-        header_match_1.move_to(2)
+        header_match_1.index = 2
         self.assertEqual(
             [(match.header, match.index) for match in header_matches], [
             ('header-0', 0),
@@ -337,10 +337,24 @@ class TestHeaderMatch(unittest.TestCase):
             [('header-0', 0), ('header-1', 1), ('header-2', 2)])
         header_match_1 = self._mlist.header_matches[1]
         self.assertEqual(header_match_1.index, 1)
-        header_match_1.move_to(1)
+        header_match_1.index = 1
         self.assertEqual(
             [(match.header, match.index) for match in header_matches],
             [('header-0', 0), ('header-1', 1), ('header-2', 2)])
+
+    def test_move_negative(self):
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('header', 'pattern')
+        header_match = self._mlist.header_matches[0]
+        with self.assertRaises(ValueError):
+            header_match.index = -1
+
+    def test_move_invalid(self):
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('header', 'pattern')
+        header_match = self._mlist.header_matches[0]
+        with self.assertRaises(ValueError):
+            header_match.index = 2
 
     def test_insert(self):
         header_matches = IHeaderMatchList(self._mlist)

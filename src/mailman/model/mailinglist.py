@@ -57,6 +57,7 @@ from sqlalchemy import (
     Boolean, Column, DateTime, Float, ForeignKey, Integer, Interval,
     LargeBinary, PickleType, Unicode)
 from sqlalchemy.event import listen
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
 from urllib.parse import urljoin
@@ -191,7 +192,7 @@ class MailingList(Model):
     # ORM relationships
     header_matches = relationship(
         'HeaderMatch', backref='mailing_list', cascade="all, delete-orphan",
-        order_by="HeaderMatch.index")
+        order_by="HeaderMatch._index")
 
     def __init__(self, fqdn_listname):
         super().__init__()
@@ -639,34 +640,56 @@ class HeaderMatch(Model):
         Integer, ForeignKey('mailinglist.id'),
         index=True, nullable=False)
 
-    index = Column(Integer, index=True, default=0)
+    _index = Column('index', Integer, index=True, default=0)
     header = Column(Unicode)
     pattern = Column(Unicode)
     chain = Column(Unicode, nullable=True)
 
+    def __init__(self, **kw):
+        if 'index' in kw:
+            kw['_index'] = kw['index']
+            del kw['index']
+        super().__init__(**kw)
+
+    @hybrid_property
+    def index(self):
+        """See `IHeaderMatch`."""
+        return self._index
+
+    @index.setter
     @dbconnection
-    def move_to(self, store, index):
-        if index == self.index:
+    def index(self, store, value):
+        """See `IHeaderMatch`."""
+        if value < 0:
+            raise ValueError('Negative indexes are not supported')
+        if value == self.index:
             return # Nothing to do
-        elif index < self.index:
+        existing_count = store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self.mailing_list).count()
+        if value >= existing_count:
+            raise ValueError(
+                'There are {count} header matches for this list, '
+                'the new index cannot be {count} or higher'.format(
+                count=existing_count))
+        if value < self.index:
             # Moving up: header matches between the new position and the
             # current one must be moved down the list to make room. Those after
             # the current position must not be changed.
             for header_match in store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self.mailing_list,
-                HeaderMatch.index >= index,
+                HeaderMatch.index >= value,
                 HeaderMatch.index < self.index):
-                header_match.index = header_match.index + 1
-        elif index > self.index:
+                header_match._index = header_match.index + 1
+        elif value > self.index:
             # Moving down: header matches between the current position and the
             # new one must be moved up the list to make room. Those after
             # the new position must not be changed.
             for header_match in store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self.mailing_list,
                 HeaderMatch.index > self.index,
-                HeaderMatch.index <= index):
-                header_match.index = header_match.index - 1
-        self.index = index
+                HeaderMatch.index <= value):
+                header_match._index = header_match.index - 1
+        self._index = value
 
 
 
@@ -719,7 +742,7 @@ class HeaderMatchList:
             HeaderMatch.header == header.lower(),
             HeaderMatch.pattern == pattern,
             HeaderMatch.chain == chain).one()
-        header_match.move_to(index)
+        header_match.index = index
         store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
@@ -786,5 +809,5 @@ class HeaderMatchList:
         for index, header_match in enumerate(store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list
             ).order_by(HeaderMatch.index)):
-            header_match.index = index
+            header_match._index = index
         store.expire(self._mailing_list, ['header_matches'])
