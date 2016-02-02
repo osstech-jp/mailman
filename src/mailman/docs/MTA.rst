@@ -297,6 +297,58 @@ with Exim configuration, you probably want to start with the chapter on
 .. _`how Exim receives and delivers mail`: http://www.exim.org/exim-html-current/doc/html/spec_html/ch-how_exim_receives_and_delivers_mail.html
 
 
+qmail
+=====
+
+qmail_ is a MTA written by djb_ and, though old and not updated, still
+bulletproof and occassionally in use.
+
+Mailman settings
+----------------
+
+Mostly defaults in mailman.cfg::
+
+    [mta]
+    # NullMTA is just implementing the interface and thus satisfying Mailman
+    # without doing anything fancy
+    incoming: mailman.mta.null.NullMTA
+    # Mailman should not be run as root.
+    # Use any convenient port > 1024.  8024 is a convention, but can be
+    # changed if there is a conflict with other software using that port.
+    lmtp_port: 8024
+
+This will listen on localhost:8024 with LMTP and deliver outgoing
+messages to localhost:25.  See ``mailman/config/schema.cfg`` for more
+information on these settings.
+
+qmail configuration
+-------------------
+
+It is assumed that qmail is configured to use the ``.qmail*`` files in a user’s
+home directory, however the instructions should easily be adaptable to other
+qmail configurations.  However, it is required that Mailman has a (sub)domain
+respectively a namespace on its own.  A helper script called ``qmail-lmtp`` is
+needed and can be found in the ``contrib/`` directory of the Mailman source
+tree and assumed to be on ``$PATH`` here.
+
+As qmail puts every namespace in the address, we have to filter it out again.
+If your main domain is ``example.com`` and you assign ``lists.example.com`` to
+the user ``mailman``, qmail will give you the destination address
+``mailman-spam@lists.example.com`` while it should actually be
+``spam@lists.example.com``.  The second argument to ``qmail-lmtp`` defines
+how many parts (separated by dashes) to filter out.  The first argument
+specifies the LMTP port of mailman.  Long story short, as user mailman:
+::
+
+    % chmod +t "$HOME"
+    % echo '|qmail-lmtp 1 8042' > .qmail # put appropriate values here
+    % ln -sf .qmail .qmail-default
+    % chmod -t "$HOME"
+
+.. _qmail: https://cr.yp.to/qmail.html
+.. _djb: https://cr.yp.to
+
+
 Sendmail
 ========
 
