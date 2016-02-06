@@ -20,6 +20,7 @@
 __all__ = [
     'TestMailingListRoster',
     'TestMembershipsRoster',
+    'TestUserRoster',
     ]
 
 
@@ -204,3 +205,33 @@ class TestMembershipsRoster(unittest.TestCase):
         users = list(self._anne.memberships.users)
         self.assertEqual(len(users), 1)
         self.assertEqual(users[0], self._anne)
+
+
+
+class TestUserRoster(unittest.TestCase):
+    """Test aspects of rosters when users are subscribed."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('ant@example.com')
+        user_manager = getUtility(IUserManager)
+        self._anne = user_manager.create_user('anne@example.com')
+        self._bart = user_manager.create_user('bart@example.com')
+        self._cris = user_manager.create_user('cris@example.com')
+        self._dave = user_manager.create_user('dave@example.com')
+        set_preferred(self._anne)
+        set_preferred(self._bart)
+        set_preferred(self._cris)
+        set_preferred(self._dave)
+
+    def test_narrow_get_member(self):
+        # Ensure that when multiple users are subscribed to the same mailing
+        # list via their preferred address, only the member in question is
+        # returned from .get_member().
+        self._mlist.subscribe(self._anne)
+        self._mlist.subscribe(self._bart)
+        self._mlist.subscribe(self._cris)
+        self._mlist.subscribe(self._dave)
+        member = self._mlist.members.get_member('bart@example.com')
+        self.assertEqual(member.user, self._bart)
