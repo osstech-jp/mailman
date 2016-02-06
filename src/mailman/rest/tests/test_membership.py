@@ -34,18 +34,12 @@ from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     TestableMaster, call_api, get_lmtp_client, make_testable_runner,
-    subscribe, wait_for_webservice)
+    set_preferred, subscribe, wait_for_webservice)
 from mailman.runners.incoming import IncomingRunner
 from mailman.testing.layers import ConfigLayer, RESTLayer
 from mailman.utilities.datetime import now
 from urllib.error import HTTPError
 from zope.component import getUtility
-
-
-def _set_preferred(user):
-    preferred = list(user.addresses)[0]
-    preferred.verified_on = now()
-    user.preferred_address = preferred
 
 
 
@@ -207,7 +201,7 @@ class TestMembership(unittest.TestCase):
     def test_join_as_user_with_preferred_address(self):
         with transaction():
             anne = self._usermanager.create_user('anne@example.com')
-            _set_preferred(anne)
+            set_preferred(anne)
             self._mlist.subscribe(anne)
         content, response = call_api('http://localhost:9001/3.0/members')
         self.assertEqual(response.status, 200)
@@ -226,7 +220,7 @@ class TestMembership(unittest.TestCase):
     def test_member_changes_preferred_address(self):
         with transaction():
             anne = self._usermanager.create_user('anne@example.com')
-            _set_preferred(anne)
+            set_preferred(anne)
             self._mlist.subscribe(anne)
         # Take a look at Anne's current membership.
         content, response = call_api('http://localhost:9001/3.0/members')
@@ -589,7 +583,7 @@ class TestAPI31Members(unittest.TestCase):
     def test_create_new_membership_by_hex(self):
         with transaction():
             user = getUtility(IUserManager).create_user('anne@example.com')
-            _set_preferred(user)
+            set_preferred(user)
         # Subscribe the user to the mailing list by hex UUID.
         response, headers = call_api(
             'http://localhost:9001/3.1/members', {
@@ -608,7 +602,7 @@ class TestAPI31Members(unittest.TestCase):
     def test_create_new_owner_by_hex(self):
         with transaction():
             user = getUtility(IUserManager).create_user('anne@example.com')
-            _set_preferred(user)
+            set_preferred(user)
         # Subscribe the user to the mailing list by hex UUID.
         response, headers = call_api(
             'http://localhost:9001/3.1/members', {
@@ -625,7 +619,7 @@ class TestAPI31Members(unittest.TestCase):
     def test_cannot_create_new_membership_by_int(self):
         with transaction():
             user = getUtility(IUserManager).create_user('anne@example.com')
-            _set_preferred(user)
+            set_preferred(user)
         # We can't use the int representation of the UUID with API 3.1.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.1/members', {

@@ -30,7 +30,8 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import MembershipIsBannedError
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
-from mailman.testing.helpers import LogFileMark, get_queue_messages
+from mailman.testing.helpers import (
+    LogFileMark, get_queue_messages, set_preferred)
 from mailman.testing.layers import ConfigLayer
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.usermanager import IUserManager
@@ -95,9 +96,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         # Ensure that the sanity check phase, when given an IUser with a
         # preferred address, ends up with an address.
         anne = self._user_manager.make_user(self._anne)
-        address = list(anne.addresses)[0]
-        address.verified_on = now()
-        anne.preferred_address = address
+        address = set_preferred(anne)
         workflow = SubscriptionWorkflow(self._mlist, anne)
         # The constructor sets workflow.address because the user has a
         # preferred address.
@@ -549,9 +548,7 @@ approval:
         # A confirmation step is necessary when a user subscribes with their
         # preferred address, and we are not pre-confirming.
         anne = self._user_manager.create_user(self._anne)
-        address = list(anne.addresses)[0]
-        address.verified_on = now()
-        anne.preferred_address = address
+        set_preferred(anne)
         # Run the workflow to model the confirmation step.  There is no
         # subscriber attribute yet.
         workflow = SubscriptionWorkflow(self._mlist, anne)

@@ -36,7 +36,8 @@ from mailman.interfaces.mailinglist import (
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError)
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import configuration, get_queue_messages
+from mailman.testing.helpers import (
+    configuration, get_queue_messages, set_preferred)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility
@@ -54,9 +55,7 @@ class TestMailingList(unittest.TestCase):
         # list with the same role.
         anne = getUtility(IUserManager).create_user('anne@example.com')
         # Give the user a preferred address.
-        preferred = list(anne.addresses)[0]
-        preferred.verified_on = now()
-        anne.preferred_address = preferred
+        preferred = set_preferred(anne)
         # Subscribe Anne to the mailing list as a regular member.
         member = self._mlist.subscribe(anne)
         self.assertEqual(member.address, preferred)

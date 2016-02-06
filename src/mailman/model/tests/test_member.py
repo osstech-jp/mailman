@@ -29,6 +29,7 @@ from mailman.interfaces.member import MemberRole, MembershipError
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member
+from mailman.testing.helpers import set_preferred
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility
@@ -46,9 +47,7 @@ class TestMember(unittest.TestCase):
         # A user is subscribed to a mailing list with their preferred address.
         # You cannot set the `address` attribute on such IMembers.
         anne = self._usermanager.create_user('anne@example.com')
-        preferred = list(anne.addresses)[0]
-        preferred.verified_on = now()
-        anne.preferred_address = preferred
+        set_preferred(anne)
         # Subscribe with the IUser object, not the address.  This makes Anne a
         # member via her preferred address.
         member = self._mlist.subscribe(anne)

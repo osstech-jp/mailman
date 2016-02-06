@@ -30,8 +30,8 @@ from mailman.interfaces.address import IAddress
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
+from mailman.testing.helpers import set_preferred
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
@@ -140,9 +140,7 @@ class TestMembershipsRoster(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         self._anne = user_manager.make_user(
             'anne@example.com', 'Anne Person')
-        preferred = list(self._anne.addresses)[0]
-        preferred.verified_on = now()
-        self._anne.preferred_address = preferred
+        set_preferred(self._anne)
 
     def test_no_memberships(self):
         # An unsubscribed user has no memberships.

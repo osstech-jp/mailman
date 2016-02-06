@@ -31,6 +31,7 @@ __all__ = [
     'make_digest_messages',
     'make_testable_runner',
     'reset_the_world',
+    'set_preferred',
     'specialized_message_from_string',
     'subscribe',
     'temporary_db',
@@ -554,3 +555,13 @@ message triggering a digest
         volume=1, digest_number=1)
     runner = make_testable_runner(DigestRunner, 'digest')
     runner.run()
+
+
+
+def set_preferred(user):
+    # Avoid circular imports.
+    from mailman.utilities.datetime import now
+    preferred = list(user.addresses)[0]
+    preferred.verified_on = now()
+    user.preferred_address = preferred
+    return preferred

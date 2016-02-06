@@ -32,8 +32,8 @@ from mailman.interfaces.address import (
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.preferences import Preferences
+from mailman.testing.helpers import set_preferred
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
@@ -48,9 +48,7 @@ class TestUser(unittest.TestCase):
         self._mlist = create_list('test@example.com')
         self._anne = self._manager.create_user(
             'anne@example.com', 'Anne Person')
-        preferred = list(self._anne.addresses)[0]
-        preferred.verified_on = now()
-        self._anne.preferred_address = preferred
+        set_preferred(self._anne)
 
     def test_preferred_address_memberships(self):
         self._mlist.subscribe(self._anne)

@@ -30,7 +30,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, TooManyMembersError)
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import subscribe
+from mailman.testing.helpers import set_preferred, subscribe
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility
@@ -58,9 +58,7 @@ class TestSubscriptionService(unittest.TestCase):
         # Find address-based memberships when a user is linked to the address.
         user = self._user_manager.create_user(
             'anne@example.com', 'Anne User')
-        address = user.addresses[0]
-        address.verified_on = now()
-        user.preferred_address = address
+        address = set_preferred(user)
         # Subscribe the address.
         self._mlist.subscribe(address)
         members = self._service.find_members('anne@example.com')
@@ -71,9 +69,7 @@ class TestSubscriptionService(unittest.TestCase):
         # Find user-based memberships by address.
         user = self._user_manager.create_user(
             'anne@example.com', 'Anne User')
-        address = user.addresses[0]
-        address.verified_on = now()
-        user.preferred_address = address
+        set_preferred(user)
         # Subscribe the user.
         self._mlist.subscribe(user)
         members = self._service.find_members('anne@example.com')
@@ -84,9 +80,7 @@ class TestSubscriptionService(unittest.TestCase):
         # Find user-based memberships using a secondary address.
         user = self._user_manager.create_user(
             'anne@example.com', 'Anne User')
-        address = user.addresses[0]
-        address.verified_on = now()
-        user.preferred_address = address
+        set_preferred(user)
         # Create a secondary address.
         address_2 = self._user_manager.create_address(
             'anne2@example.com', 'Anne User 2')
@@ -104,9 +98,7 @@ class TestSubscriptionService(unittest.TestCase):
         # subscription is not returned.
         user = self._user_manager.create_user(
             'anne@example.com', 'Anne User')
-        address = user.addresses[0]
-        address.verified_on = now()
-        user.preferred_address = address
+        set_preferred(user)
         # Create a secondary address.
         address_2 = self._user_manager.create_address(
             'anne2@example.com', 'Anne User 2')
@@ -122,9 +114,7 @@ class TestSubscriptionService(unittest.TestCase):
         # Find user-based memberships by user_id.
         user = self._user_manager.create_user(
             'anne@example.com', 'Anne User')
-        address = user.addresses[0]
-        address.verified_on = now()
-        user.preferred_address = address
+        set_preferred(user)
         # Subscribe the user.
         self._mlist.subscribe(user)
         members = self._service.find_members(user.user_id)
@@ -136,9 +126,7 @@ class TestSubscriptionService(unittest.TestCase):
         # subscribed.
         user = self._user_manager.create_user(
             'anne@example.com', 'Anne User')
-        address = user.addresses[0]
-        address.verified_on = now()
-        user.preferred_address = address
+        set_preferred(user)
         # Create a secondary address.
         address_2 = self._user_manager.create_address(
             'anne2@example.com', 'Anne User 2')
@@ -159,9 +147,7 @@ class TestSubscriptionService(unittest.TestCase):
         # Check that the memberships are properly sorted.
         user = self._user_manager.create_user(
             'anne1@example.com', 'Anne User')
-        address = user.addresses[0]
-        address.verified_on = now()
-        user.preferred_address = address
+        address = set_preferred(user)
         # Create a secondary address.
         address_2 = self._user_manager.create_address(
             'anne2@example.com', 'Anne User 2')

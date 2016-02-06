@@ -34,9 +34,9 @@ from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    call_api, get_queue_messages, specialized_message_from_string as mfs)
+    call_api, get_queue_messages, set_preferred,
+    specialized_message_from_string as mfs)
 from mailman.testing.layers import RESTLayer
-from mailman.utilities.datetime import now
 from urllib.error import HTTPError
 from zope.component import getUtility
 
@@ -141,9 +141,7 @@ class TestSubscriptionModeration(unittest.TestCase):
                 'anne@example.com', 'Anne Person')
             self._bart = manager.make_user(
                 'bart@example.com', 'Bart Person')
-            preferred = list(self._bart.addresses)[0]
-            preferred.verified_on = now()
-            self._bart.preferred_address = preferred
+            set_preferred(self._bart)
 
     def test_no_such_list(self):
         # Try to get the requests of a nonexistent list.
