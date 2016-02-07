@@ -58,6 +58,7 @@ Bugs
    address.  (Closes #185)
  * Fix membership query when multiple users are subscribed to a mailing list.
    Reported by Darrell Kresge.  (Closes: #190)
+ * Prevent moderation of messages held for a different list.  (Closes: #161)
 
 Configuration
 -------------

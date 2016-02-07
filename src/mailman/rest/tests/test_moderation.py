@@ -126,6 +126,29 @@ Something else.
         self.assertEqual(content['total_size'], 1)
         self.assertEqual(content['entries'][0]['request_id'], held_id)
 
+    def test_cant_get_other_lists_holds(self):
+        # Issue #161: It was possible to moderate a held message for another
+        # list via the REST API.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+            create_list('bee@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/bee.example.com'
+                     '/held/{}'.format(held_id))
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_cant_moderate_other_lists_holds(self):
+        # Issue #161: It was possible to moderate a held message for another
+        # list via the REST API.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+            create_list('bee@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/bee.example.com'
+                     '/held/{}'.format(held_id),
+                     dict(action='discard'))
+        self.assertEqual(cm.exception.code, 404)
+
 
 
 class TestSubscriptionModeration(unittest.TestCase):
