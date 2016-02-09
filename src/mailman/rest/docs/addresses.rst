@@ -379,7 +379,6 @@ Elle can get her memberships for each of her email addresses.
         http_etag: "..."
         list_id: ant.example.com
         member_id: 1
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/4
@@ -390,7 +389,6 @@ Elle can get her memberships for each of her email addresses.
         http_etag: "..."
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/4
@@ -422,7 +420,6 @@ does not show up in the list of memberships for his other address.
         http_etag: "..."
         list_id: ant.example.com
         member_id: 1
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/4
@@ -433,7 +430,6 @@ does not show up in the list of memberships for his other address.
         http_etag: "..."
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/4
@@ -450,7 +446,6 @@ does not show up in the list of memberships for his other address.
         http_etag: "..."
         list_id: bee.example.com
         member_id: 3
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/4

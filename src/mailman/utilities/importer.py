@@ -576,8 +576,6 @@ def import_roster(mlist, config_dict, members, role, action=None):
                 # option to know which action should be taken.
                 action = member_moderation_action_mapping(
                     config_dict.get("member_moderation_action"))
-            else:
-                action = Action.accept
         if action is not None:
             # Either this was set right above or in the function's arguments
             # for nonmembers.

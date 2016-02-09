@@ -273,23 +273,26 @@ automatically accepted for posting to the mailing list.
     aperson@example.com MemberRole.owner     Action.accept
     bperson@example.com MemberRole.moderator Action.accept
 
-By default, members have a *deferred* action which specifies that the posting
-should go through the normal moderation checks.
+By default, members and nonmembers have their action set to None, meaning that
+the mailing list's ``default_member_action`` or ``default_nonmember_action``
+will be used.
 
     >>> for member in sorted(mlist.members.members,
     ...                      key=attrgetter('address.email')):
     ...     print(member.address.email, member.role, member.moderation_action)
-    aperson@example.com MemberRole.member Action.defer
-    bperson@example.com MemberRole.member Action.defer
-    cperson@example.com MemberRole.member Action.defer
-    hperson@example.com MemberRole.member Action.defer
-    iperson@example.com MemberRole.member Action.defer
-
-Postings by nonmembers are held for moderator approval by default.
+    aperson@example.com MemberRole.member None
+    bperson@example.com MemberRole.member None
+    cperson@example.com MemberRole.member None
+    hperson@example.com MemberRole.member None
+    iperson@example.com MemberRole.member None
 
     >>> for member in mlist.nonmembers.members:
     ...     print(member.address.email, member.role, member.moderation_action)
-    fperson@example.com MemberRole.nonmember Action.hold
+    fperson@example.com MemberRole.nonmember None
+
+The mailing list's default action for members is *deferred*, which specifies
+that the posting should go through the normal moderation checks. Its default
+action for nonmembers is to hold for moderator approval.
 
 
 Changing subscriptions

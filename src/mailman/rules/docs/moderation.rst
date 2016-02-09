@@ -2,9 +2,10 @@
 Moderation
 ==========
 
-All members and nonmembers have a moderation action.  When the action is not
-`defer`, the `moderation` rule flags the message as needing moderation.  This
-might be to automatically accept, discard, reject, or hold the message.
+All members and nonmembers have a moderation action, which defaults to the
+list's default action.  When the action is not `defer`, the `moderation` rule
+flags the message as needing moderation.  This might be to automatically
+accept, discard, reject, or hold the message.
 
 Two separate rules check for member and nonmember moderation.  Member
 moderation happens early in the built-in chain, while nonmember moderation
@@ -30,7 +31,7 @@ postings are not moderated.
              as MemberRole.member>
 
     >>> member = mlist.members.get_member('aperson@example.com')
-    >>> print(member.moderation_action)
+    >>> print(mlist.default_member_action)
     Action.defer
 
 Because Anne is not moderated, the member moderation rule does not match.
@@ -44,9 +45,9 @@ Because Anne is not moderated, the member moderation rule does not match.
     >>> member_rule.check(mlist, member_msg, {})
     False
 
-Once the member's moderation action is set to something other than `defer`,
-the rule matches.  Also, the message metadata has a few extra pieces of
-information for the eventual moderation chain.
+Once the member's moderation action is set to something other than `defer` or
+``None``, the rule matches.  Also, the message metadata has a few extra pieces
+of information for the eventual moderation chain.
 
     >>> from mailman.interfaces.action import Action
     >>> member.moderation_action = Action.hold
@@ -78,7 +79,7 @@ Bart, who is not a member of the mailing list, sends a message to the list.
              as MemberRole.nonmember>
 
     >>> nonmember = mlist.nonmembers.get_member('bperson@example.com')
-    >>> print(nonmember.moderation_action)
+    >>> print(mlist.default_nonmember_action)
     Action.hold
 
 When Bart is registered as a nonmember of the list, his moderation action is

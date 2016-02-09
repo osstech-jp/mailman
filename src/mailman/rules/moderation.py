@@ -42,8 +42,10 @@ class MemberModeration:
         """See `IRule`."""
         for sender in msg.senders:
             member = mlist.members.get_member(sender)
-            action = (None if member is None
-                      else member.moderation_action)
+            if member is None:
+                return False
+            action = (member.moderation_action
+                      or mlist.default_member_action)
             if action is Action.defer:
                 # The regular moderation rules apply.
                 return False
@@ -112,7 +114,8 @@ class NonmemberModeration:
                         _record_action(msgdata, action, sender,
                                        reason.format(action))
                         return True
-            action = nonmember.moderation_action
+            action = (nonmember.moderation_action
+                      or mlist.default_nonmember_action)
             if action is Action.defer:
                 # The regular moderation rules apply.
                 return False

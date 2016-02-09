@@ -76,14 +76,10 @@ class Member(Model):
             raise ValueError('subscriber must be a user or address')
         if role in (MemberRole.owner, MemberRole.moderator):
             self.moderation_action = Action.accept
-        elif role is MemberRole.member:
-            self.moderation_action = getUtility(IListManager).get_by_list_id(
-                list_id).default_member_action
         else:
-            assert role is MemberRole.nonmember, (
-                'Invalid MemberRole: {}'.format(role))
-            self.moderation_action = getUtility(IListManager).get_by_list_id(
-                list_id).default_nonmember_action
+            assert role in (MemberRole.member, MemberRole.nonmember), (
+                'Invalid MemberRole: {0}'.format(role))
+            self.moderation_action = None
 
     def __repr__(self):
         return '<Member: {} on {} as {}>'.format(

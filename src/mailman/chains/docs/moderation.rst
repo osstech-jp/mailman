@@ -33,12 +33,7 @@ determined by the mailing list's settings.  By default, a mailing list is not
 set to moderate new member postings.
 ::
 
-    >>> from mailman.testing.helpers import subscribe
-    >>> member = subscribe(mlist, 'Anne', email='anne@example.com')
-    >>> member
-    <Member: Anne Person <anne@example.com> on test@example.com
-             as MemberRole.member>
-    >>> print(member.moderation_action)
+    >>> print(mlist.default_member_action)
     Action.defer
 
 In order to find out whether the message is held or accepted, we can subscribe
@@ -57,6 +52,18 @@ to Zope events that are triggered on each case.
     ...         print('Misses:')
     ...         for miss in event.msgdata.get('rule_misses', []):
     ...             print('   ', miss)
+
+The user Anne will be a list member. A list member's default moderation action
+is ``None``, meaning that it will use the mailing list's
+``default_member_action``.
+
+    >>> from mailman.testing.helpers import subscribe
+    >>> member = subscribe(mlist, 'Anne', email='anne@example.com')
+    >>> member
+    <Member: Anne Person <anne@example.com> on test@example.com
+             as MemberRole.member>
+    >>> print(member.moderation_action is None)
+    True
 
 Anne's post to the mailing list runs through the incoming runner's default
 built-in chain.  No rules hit and so the message is accepted.
@@ -173,8 +180,8 @@ Nonmembers
 ==========
 
 Registered nonmembers are handled very similarly to members, the main
-difference being that they usually have a default moderation action.  This is
-how the incoming runner adds sender addresses as nonmembers.
+difference being that the mailing list's default moderation action is
+different. This is how the incoming runner adds sender addresses as nonmembers.
 
     >>> from zope.component import getUtility
     >>> from mailman.interfaces.usermanager import IUserManager
@@ -211,5 +218,11 @@ moderator approval.
     >>> nonmember = mlist.nonmembers.get_member('bart@example.com')
     >>> nonmember
     <Member: bart@example.com on test@example.com as MemberRole.nonmember>
+
+A nonmember's default moderation action is ``None``, meaning that it will use
+the mailing list's ``default_nonmember_action``.
+
     >>> print(nonmember.moderation_action)
+    None
+    >>> print(mlist.default_nonmember_action)
     Action.hold

@@ -50,7 +50,6 @@ the REST interface.
         http_etag: ...
         list_id: bee.example.com
         member_id: 1
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
@@ -67,7 +66,6 @@ Bart's specific membership can be accessed directly:
     http_etag: ...
     list_id: bee.example.com
     member_id: 1
-    moderation_action: defer
     role: member
     self_link: http://localhost:9001/3.0/members/1
     user: http://localhost:9001/3.0/users/1
@@ -88,7 +86,6 @@ the REST interface.
         http_etag: ...
         list_id: bee.example.com
         member_id: 1
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
@@ -99,7 +96,6 @@ the REST interface.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -123,7 +119,6 @@ subscribes, she is returned first.
         http_etag: ...
         list_id: bee.example.com
         member_id: 3
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/3
@@ -134,7 +129,6 @@ subscribes, she is returned first.
         http_etag: ...
         list_id: bee.example.com
         member_id: 1
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
@@ -145,7 +139,6 @@ subscribes, she is returned first.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -175,7 +168,6 @@ User ids are different than member ids.
         http_etag: ...
         list_id: ant.example.com
         member_id: 4
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
@@ -186,7 +178,6 @@ User ids are different than member ids.
         http_etag: ...
         list_id: ant.example.com
         member_id: 5
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/5
         user: http://localhost:9001/3.0/users/2
@@ -197,7 +188,6 @@ User ids are different than member ids.
         http_etag: ...
         list_id: bee.example.com
         member_id: 3
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/3
@@ -208,7 +198,6 @@ User ids are different than member ids.
         http_etag: ...
         list_id: bee.example.com
         member_id: 1
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
@@ -219,7 +208,6 @@ User ids are different than member ids.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -238,7 +226,6 @@ We can also get just the members of a single mailing list.
         http_etag: ...
         list_id: ant.example.com
         member_id: 4
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
@@ -249,7 +236,6 @@ We can also get just the members of a single mailing list.
         http_etag: ...
         list_id: ant.example.com
         member_id: 5
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/5
         user: http://localhost:9001/3.0/users/2
@@ -276,7 +262,6 @@ page.
         http_etag: ...
         list_id: ant.example.com
         member_id: 4
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
@@ -295,7 +280,6 @@ This works with members of a single list as well as with all members.
         http_etag: ...
         list_id: ant.example.com
         member_id: 4
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
@@ -353,7 +337,6 @@ mailing list.
         http_etag: ...
         list_id: ant.example.com
         member_id: 4
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
@@ -364,7 +347,6 @@ mailing list.
         http_etag: ...
         list_id: ant.example.com
         member_id: 5
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/5
         user: http://localhost:9001/3.0/users/2
@@ -386,7 +368,6 @@ mailing list.
         http_etag: ...
         list_id: bee.example.com
         member_id: 3
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/3
@@ -397,7 +378,6 @@ mailing list.
         http_etag: ...
         list_id: bee.example.com
         member_id: 1
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
@@ -408,7 +388,6 @@ mailing list.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -467,7 +446,6 @@ example, we can search for all the memberships of a particular address.
         http_etag: ...
         list_id: ant.example.com
         member_id: 4
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
@@ -478,7 +456,6 @@ example, we can search for all the memberships of a particular address.
         http_etag: ...
         list_id: bee.example.com
         member_id: 3
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/3
@@ -498,7 +475,6 @@ Or, we can find all the memberships for a particular mailing list.
         http_etag: ...
         list_id: bee.example.com
         member_id: 3
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/3
@@ -509,7 +485,6 @@ Or, we can find all the memberships for a particular mailing list.
         http_etag: ...
         list_id: bee.example.com
         member_id: 1
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
@@ -520,7 +495,6 @@ Or, we can find all the memberships for a particular mailing list.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -553,7 +527,6 @@ list.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -585,7 +558,6 @@ Or, we can find all the memberships for an address with a specific role.
         http_etag: ...
         list_id: ant.example.com
         member_id: 5
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/5
         user: http://localhost:9001/3.0/users/2
@@ -596,7 +568,6 @@ Or, we can find all the memberships for an address with a specific role.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -618,7 +589,6 @@ Finally, we can search for a specific member given all three criteria.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -640,7 +610,6 @@ Search can also be performed using HTTP GET queries.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/2
         user: http://localhost:9001/3.0/users/2
@@ -699,7 +668,6 @@ Elly is now a known user, and a member of the mailing list.
         http_etag: ...
         list_id: ant.example.com
         member_id: 8
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/8
         user: http://localhost:9001/3.0/users/5
@@ -746,7 +714,6 @@ list with her preferred address.
         http_etag: "..."
         list_id: ant.example.com
         member_id: 9
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/9
         user: http://localhost:9001/3.0/users/6
@@ -772,7 +739,6 @@ the new address.
         http_etag: "..."
         list_id: ant.example.com
         member_id: 9
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/9
         user: http://localhost:9001/3.0/users/6
@@ -840,7 +806,6 @@ addresses.
         http_etag: "..."
         list_id: ant.example.com
         member_id: 10
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/10
         user: http://localhost:9001/3.0/users/7
@@ -852,7 +817,6 @@ addresses.
         http_etag: "..."
         list_id: bee.example.com
         member_id: 11
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/11
         user: http://localhost:9001/3.0/users/7
@@ -911,7 +875,6 @@ his membership ids have not changed.
         http_etag: "..."
         list_id: ant.example.com
         member_id: 10
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/10
         user: http://localhost:9001/3.0/users/7
@@ -922,7 +885,6 @@ his membership ids have not changed.
         http_etag: "..."
         list_id: bee.example.com
         member_id: 11
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/11
         user: http://localhost:9001/3.0/users/7
@@ -952,7 +914,6 @@ mode of delivery.
         http_etag: "..."
         list_id: bee.example.com
         member_id: 11
-        moderation_action: defer
         role: member
         self_link: http://localhost:9001/3.0/members/11
         user: http://localhost:9001/3.0/users/7
@@ -970,9 +931,14 @@ The moderation action for a member can be changed by PATCH'ing the
 
     >>> dump_json('http://localhost:9001/3.0/members/10')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
-    ...
-    moderation_action: defer
-    ...
+    delivery_mode: regular
+    email: hperson@example.com
+    http_etag: "6d544208d60e578189fc023748f1ec467290abb5"
+    list_id: ant.example.com
+    member_id: 10
+    role: member
+    self_link: http://localhost:9001/3.0/members/10
+    user: http://localhost:9001/3.0/users/7
 
     >>> dump_json('http://localhost:9001/3.0/members/10', {
     ...           'moderation_action': 'hold',

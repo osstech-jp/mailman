@@ -61,10 +61,12 @@ class _MemberBase(CollectionMixin):
             email=member.address.email,
             list_id=member.list_id,
             member_id=member_id,
-            moderation_action=member.moderation_action,
             role=role,
             self_link=self.api.path_to('members/{}'.format(member_id)),
             )
+        # Add the moderation action if there is one.
+        if member.moderation_action is not None:
+            response['moderation_action'] = member.moderation_action
         # Add the user link if there is one.
         user = member.user
         if user is not None:

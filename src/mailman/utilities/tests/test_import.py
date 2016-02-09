@@ -1112,9 +1112,10 @@ class TestPreferencesImport(unittest.TestCase):
         self._do_test(128, dict(moderation_action=Action.discard))
 
     def test_no_moderate(self):
-        # If option flag Moderate is not set, action is accept
+        # If option flag Moderate is not set, action is None (fallback to the
+        # mailing list's action).
         self._pckdict['member_moderation_action'] = 1          # reject
-        self._do_test(0, dict(moderation_action=Action.accept))
+        self._do_test(0, dict(moderation_action=None))
 
     def test_multiple_options(self):
         # DontReceiveDuplicates & DisableMime & SuppressPasswordReminder

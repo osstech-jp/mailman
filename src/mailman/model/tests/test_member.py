@@ -20,6 +20,7 @@
 import unittest
 
 from mailman.app.lifecycle import create_list
+from mailman.interfaces.action import Action
 from mailman.interfaces.member import MemberRole, MembershipError
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
@@ -100,3 +101,23 @@ class TestMember(unittest.TestCase):
         member = self._mlist.members.get_member('anne@example.com')
         member.unsubscribe()
         self.assertEqual(len(list(self._mlist.members.members)), 0)
+
+    def test_default_moderation_action(self):
+        # Owners and moderators have their posts accepted, members and
+        # nonmembers default to the mailing list's action for their type.
+        anne = self._usermanager.create_user('anne@example.com')
+        bart = self._usermanager.create_user('bart@example.com')
+        cris = self._usermanager.create_user('cris@example.com')
+        dana = self._usermanager.create_user('dana@example.com')
+        set_preferred(anne)
+        set_preferred(bart)
+        set_preferred(cris)
+        set_preferred(dana)
+        anne_member = self._mlist.subscribe(anne, MemberRole.owner)
+        bart_member = self._mlist.subscribe(bart, MemberRole.moderator)
+        cris_member = self._mlist.subscribe(cris, MemberRole.member)
+        dana_member = self._mlist.subscribe(dana, MemberRole.nonmember)
+        self.assertEqual(anne_member.moderation_action, Action.accept)
+        self.assertEqual(bart_member.moderation_action, Action.accept)
+        self.assertIsNone(cris_member.moderation_action)
+        self.assertIsNone(dana_member.moderation_action)
