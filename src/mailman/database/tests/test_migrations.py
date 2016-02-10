@@ -218,3 +218,70 @@ class TestMigrations(unittest.TestCase):
             os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
         self.assertTrue(os.path.exists(ant.data_path))
         self.assertTrue(os.path.exists(bee.data_path))
+
+    def test_7b254d88f122_moderation_action(self):
+        from mailman.database.types import Enum
+        from mailman.interfaces.action import Action
+        from mailman.interfaces.member import MemberRole
+        from mailman.interfaces.usermanager import IUserManager
+        from zope.component import getUtility
+        mailinglist_table = sa.sql.table(
+            'mailinglist',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('list_id', sa.Unicode),
+            sa.sql.column('default_member_action', Enum(Action)),
+            sa.sql.column('default_nonmember_action', Enum(Action)),
+            )
+
+        member_table = sa.sql.table(
+            'member',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('list_id', sa.Unicode),
+            sa.sql.column('address_id', sa.Integer),
+            sa.sql.column('role', Enum(MemberRole)),
+            sa.sql.column('moderation_action', Enum(Action)),
+            )
+        user_manager = getUtility(IUserManager)
+        with transaction():
+            # Start at the previous revision
+            alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
+            # Create a mailing list through the standard API.
+            ant = create_list('ant@example.com')
+            # Create members
+            anne = user_manager.create_address('anne@example.com')
+            bart = user_manager.create_address('bart@example.com')
+            cris = user_manager.create_address('cris@example.com')
+            dana = user_manager.create_address('dana@example.com')
+            config.db.store.flush() # to get the last auto-increment id.
+            config.db.store.execute(member_table.insert().values([
+                {'address_id': anne.id, 'role': MemberRole.owner,
+                 'list_id': ant.list_id, 'moderation_action': Action.accept},
+                {'address_id': bart.id, 'role': MemberRole.moderator,
+                 'list_id': ant.list_id, 'moderation_action': Action.accept},
+                {'address_id': cris.id, 'role': MemberRole.member,
+                 'list_id': ant.list_id, 'moderation_action': Action.defer},
+                {'address_id': dana.id, 'role': MemberRole.nonmember,
+                 'list_id': ant.list_id, 'moderation_action': Action.hold},
+                ]))
+        # Upgrade and check the moderation_action.
+        alembic.command.upgrade(alembic_cfg, '7b254d88f122')
+        members = config.db.store.execute(sa.select([
+            member_table.c.address_id, member_table.c.moderation_action,
+            ])).fetchall()
+        self.assertEqual(members, [
+            (anne.id, Action.accept),
+            (bart.id, Action.accept),
+            (cris.id, None),
+            (dana.id, None),
+            ])
+        # Downgrade and check.
+        alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
+        members = config.db.store.execute(sa.select([
+            member_table.c.address_id, member_table.c.moderation_action,
+            ])).fetchall()
+        self.assertEqual(members, [
+            (anne.id, Action.accept),
+            (bart.id, Action.accept),
+            (cris.id, Action.defer),
+            (dana.id, Action.hold),
+            ])
