@@ -99,7 +99,7 @@ class UserManager:
     @dbconnection
     def users(self, store):
         """See `IUserManager`."""
-        yield from store.query(User).all()
+        yield from store.query(User).order_by(User.id).all()
 
     @dbconnection
     def create_address(self, store, email, display_name=None):
