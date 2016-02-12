@@ -708,9 +708,8 @@ class HeaderMatchList:
     @dbconnection
     def clear(self, store):
         """See `IHeaderMatchList`."""
-        store.query(HeaderMatch).filter(
-            HeaderMatch.mailing_list == self._mailing_list).delete()
-        store.expire(self._mailing_list, ['header_matches'])
+        # http://docs.sqlalchemy.org/en/latest/orm/session_basics.html#deleting-from-collections
+        del self._mailing_list.header_matches[:]
 
     @dbconnection
     def append(self, store, header, pattern, action=None):
