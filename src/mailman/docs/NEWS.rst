@@ -59,6 +59,9 @@ Bugs
  * Fix membership query when multiple users are subscribed to a mailing list.
    Reported by Darrell Kresge.  (Closes: #190)
  * Prevent moderation of messages held for a different list.  (Closes: #161)
+ * When approving a subscription request via the REST API, for a user who is
+   already a member, return an HTTP 409 Conflict code instead of the previous
+   server traceback (and resulting HTTP 500 code).  (Closes: #193)
 
 Configuration
 -------------
