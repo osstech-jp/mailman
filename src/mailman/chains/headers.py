@@ -151,7 +151,8 @@ class HeaderMatchChain(Chain):
         # Then return all the list-specific header matches.
         for entry in mlist.header_matches:
             if entry.action is None:
-                chain = None
+                # Default to the default antispam chain.
+                chain = config.antispam.jump_chain
             else:
                 chain = entry.action.name
             yield make_link(entry.header, entry.pattern, chain)
