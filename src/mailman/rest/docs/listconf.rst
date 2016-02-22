@@ -45,6 +45,7 @@ All readable attributes for a list are available on a sub-resource.
     filter_content: False
     first_strip_reply_to: False
     fqdn_listname: ant@example.com
+    goodbye_message_uri:
     http_etag: "..."
     include_rfc2369_headers: True
     join_address: ant-join@example.com
@@ -107,6 +108,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             first_strip_reply_to=True,
+    ...             goodbye_message_uri='mailman:///anotherfile.txt',
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
     ...             reply_goes_to_list='point_to_list',

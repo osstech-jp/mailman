@@ -119,6 +119,7 @@ ATTRIBUTES = dict(
     digests_enabled=GetterSetter(as_boolean),
     filter_content=GetterSetter(as_boolean),
     first_strip_reply_to=GetterSetter(as_boolean),
+    goodbye_message_uri=GetterSetter(str),
     fqdn_listname=GetterSetter(None),
     mail_host=GetterSetter(None),
     allow_list_posts=GetterSetter(as_boolean),
