@@ -62,6 +62,9 @@ Bugs
  * When approving a subscription request via the REST API, for a user who is
    already a member, return an HTTP 409 Conflict code instead of the previous
    server traceback (and resulting HTTP 500 code).  (Closes: #193)
+ * In decoration URIs (e.g. ``IMailingList.header_uri`` and ``.footer_uri``)
+   you should now use the mailing list's List-ID instead of the
+   fqdn-listname.  The latter is deprecated.  (Closes #196)
 
 Configuration
 -------------
