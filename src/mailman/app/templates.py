@@ -39,9 +39,10 @@ from zope.interface import implementer
 class MailmanHandler(BaseHandler):
     # Handle internal mailman: URLs.
     def mailman_open(self, req):
+        list_manager = getUtility(IListManager)
         # Parse urls of the form:
         #
-        # mailman:///<fqdn_listname>/<language>/<template_name>
+        # mailman:///<fqdn_listname|list_id>/<language>/<template_name>
         #
         # where only the template name is required.
         mlist = code = template = None
@@ -58,19 +59,25 @@ class MailmanHandler(BaseHandler):
             template = parts[0]
         elif len(parts) == 2:
             part0, template = parts
-            # Is part0 a language code or a mailing list?  It better be one or
-            # the other, and there's no possibility of namespace collisions
-            # because language codes don't contain @ and mailing list names
-            # MUST contain @.
+            # Is part0 a language code or a mailing list?  This is rather
+            # tricky because if it's a mailing list, it could be a list-id and
+            # that will contain dots, as could the language code.
             language = getUtility(ILanguageManager).get(part0)
-            mlist = getUtility(IListManager).get(part0)
-            if language is None and mlist is None:
-                raise URLError('Bad language or list name')
-            elif mlist is None:
+            if language is None:
+                # part0 must be a fqdn-listname or list-id.
+                mlist = (list_manager.get(part0)
+                         if '@' in part0 else
+                         list_manager.get_by_list_id(part0))
+                if mlist is None:
+                    raise URLError('Bad language or list name')
+            else:
                 code = language.code
         elif len(parts) == 3:
-            fqdn_listname, code, template = parts
-            mlist = getUtility(IListManager).get(fqdn_listname)
+            part0, code, template = parts
+            # part0 could be an fqdn-listname or a list-id.
+            mlist = (getUtility(IListManager).get(part0)
+                     if '@' in part0 else
+                     getUtility(IListManager).get_by_list_id(part0))
             if mlist is None:
                 raise URLError('Missing list')
             language = getUtility(ILanguageManager).get(code)

@@ -88,18 +88,22 @@ class TestSearchOrder(unittest.TestCase):
         def nexteq(path):
             self.assertEqual(next(search_order), path)
         # 1: Use the given language argument
+        nexteq('/v/templates/lists/l.example.com/it/foo.txt')
         nexteq('/v/templates/lists/l@example.com/it/foo.txt')
         nexteq('/v/templates/domains/example.com/it/foo.txt')
         nexteq('/v/templates/site/it/foo.txt')
         # 2: Use mlist.preferred_language
+        nexteq('/v/templates/lists/l.example.com/de/foo.txt')
         nexteq('/v/templates/lists/l@example.com/de/foo.txt')
         nexteq('/v/templates/domains/example.com/de/foo.txt')
         nexteq('/v/templates/site/de/foo.txt')
         # 3: Use the site's default language
+        nexteq('/v/templates/lists/l.example.com/fr/foo.txt')
         nexteq('/v/templates/lists/l@example.com/fr/foo.txt')
         nexteq('/v/templates/domains/example.com/fr/foo.txt')
         nexteq('/v/templates/site/fr/foo.txt')
         # 4: English
+        nexteq('/v/templates/lists/l.example.com/en/foo.txt')
         nexteq('/v/templates/lists/l@example.com/en/foo.txt')
         nexteq('/v/templates/domains/example.com/en/foo.txt')
         nexteq('/v/templates/site/en/foo.txt')
@@ -114,14 +118,17 @@ class TestSearchOrder(unittest.TestCase):
         def nexteq(path):
             self.assertEqual(next(search_order), path)
         # 1: Use mlist.preferred_language
+        nexteq('/v/templates/lists/l.example.com/de/foo.txt')
         nexteq('/v/templates/lists/l@example.com/de/foo.txt')
         nexteq('/v/templates/domains/example.com/de/foo.txt')
         nexteq('/v/templates/site/de/foo.txt')
         # 2: Use the site's default language
+        nexteq('/v/templates/lists/l.example.com/fr/foo.txt')
         nexteq('/v/templates/lists/l@example.com/fr/foo.txt')
         nexteq('/v/templates/domains/example.com/fr/foo.txt')
         nexteq('/v/templates/site/fr/foo.txt')
         # 3: English
+        nexteq('/v/templates/lists/l.example.com/en/foo.txt')
         nexteq('/v/templates/lists/l@example.com/en/foo.txt')
         nexteq('/v/templates/domains/example.com/en/foo.txt')
         nexteq('/v/templates/site/en/foo.txt')

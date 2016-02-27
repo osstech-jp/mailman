@@ -217,8 +217,9 @@ def decorate(mlist, uri, extradict=None):
     # Get the decorator template.
     loader = getUtility(ITemplateLoader)
     template_uri = expand(uri, dict(
-        listname=mlist.fqdn_listname,
         language=mlist.preferred_language.code,
+        list_id=mlist.list_id,
+        listname=mlist.fqdn_listname,
         ))
     template = loader.get(template_uri)
     return decorate_template(mlist, template, extradict)

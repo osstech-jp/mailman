@@ -23,8 +23,6 @@ __all__ = [
 
 
 import os
-import shutil
-import tempfile
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -33,6 +31,7 @@ from mailman.handlers import decorate
 from mailman.interfaces.archiver import IArchiver
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
+from tempfile import TemporaryDirectory
 from zope.interface import implementer
 
 
@@ -56,19 +55,18 @@ class TestDecorate(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        self._mlist = create_list('test@example.com')
+        self._mlist = create_list('ant@example.com')
         self._msg = mfs("""\
-To: test@example.com
+To: ant@example.com
 From: aperson@example.com
-Message-ID: <somerandomid.example.com>
+Message-ID: <alpha>
 Content-Type: text/plain;
 
 This is a test message.
 """)
-        template_dir = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, template_dir)
-        site_dir = os.path.join(template_dir, 'site', 'en')
-        os.makedirs(site_dir)
+        temporary_dir = TemporaryDirectory()
+        self.addCleanup(temporary_dir.cleanup)
+        template_dir = temporary_dir.name
         config.push('archiver', """\
         [paths.testing]
         template_dir: {}
@@ -77,13 +75,44 @@ This is a test message.
         enable: yes
         """.format(template_dir))
         self.addCleanup(config.pop, 'archiver')
-        self.footer_path = os.path.join(site_dir, 'myfooter.txt')
 
     def test_decorate_footer_with_archive_url(self):
-        with open(self.footer_path, 'w', encoding='utf-8') as fp:
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
             print('${testarchiver_url}', file=fp)
         self._mlist.footer_uri = 'mailman:///myfooter.txt'
         self._mlist.preferred_language = 'en'
+        decorate.process(self._mlist, self._msg, {})
+        self.assertIn('http://example.com/link_to_message',
+                      self._msg.as_string())
+
+    def test_list_id_allowed_in_template_uri(self):
+        # Issue #196 - allow the list_id in the template uri expansion.
+        list_dir = os.path.join(
+            config.TEMPLATE_DIR, 'lists', 'ant.example.com', 'en')
+        os.makedirs(list_dir)
+        footer_path = os.path.join(list_dir, 'myfooter.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('${testarchiver_url}', file=fp)
+        self._mlist.footer_uri = 'mailman:///${list_id}/myfooter.txt'
+        self._mlist.preferred_language = 'en'
+        decorate.process(self._mlist, self._msg, {})
+        self.assertIn('http://example.com/link_to_message',
+                      self._msg.as_string())
+
+    def test_list_id_and_language_code_allowed_in_template_uri(self):
+        # Issue #196 - allow the list_id in the template uri expansion.
+        list_dir = os.path.join(
+            config.TEMPLATE_DIR, 'lists', 'ant.example.com', 'it')
+        os.makedirs(list_dir)
+        footer_path = os.path.join(list_dir, 'myfooter.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('${testarchiver_url}', file=fp)
+        self._mlist.footer_uri = (
+            'mailman:///${list_id}/${language}/myfooter.txt')
+        self._mlist.preferred_language = 'it'
         decorate.process(self._mlist, self._msg, {})
         self.assertIn('http://example.com/link_to_message',
                       self._msg.as_string())

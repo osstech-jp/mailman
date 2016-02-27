@@ -27,7 +27,6 @@ __all__ = [
 
 import os
 import sys
-import errno
 
 from itertools import product
 from mailman.config import config
@@ -61,7 +60,8 @@ def search(template_file, mlist=None, language=None):
     The <language> path component is variable, and described below.
 
     * The list-specific language directory
-      $template_dir/lists/<mlist.fqdn_listname>/<language>
+      $template_dir/lists/<mlist.list_id>/<language>
+      $template_dir/lists/<mlist.fqdn_listname>/<language> (deprecated)
 
     * The domain-specific language directory
       $template_dir/domains/<mlist.mail_host>/<language>
@@ -78,23 +78,27 @@ def search(template_file, mlist=None, language=None):
 
     Languages are iterated after each of the four locations are searched.  So
     for example, when searching for the 'foo.txt' template, where the server's
-    default language is 'fr', the mailing list's (test@example.com) language
+    default language is 'fr', the mailing list's (test.example.com) language
     is 'de' and the `language` parameter is 'it', these locations are searched
     in order:
 
-    * $template_dir/lists/test@example.com/it/foo.txt
+    * $template_dir/lists/test.example.com/it/foo.txt
+    * $template_dir/lists/test@example.com/it/foo.txt (deprecated)
     * $template_dir/domains/example.com/it/foo.txt
     * $template_dir/site/it/foo.txt
 
-    * $template_dir/lists/test@example.com/de/foo.txt
+    * $template_dir/lists/test.example.com/de/foo.txt
+    * $template_dir/lists/test@example.com/de/foo.txt (deprecated)
     * $template_dir/domains/example.com/de/foo.txt
     * $template_dir/site/de/foo.txt
 
-    * $template_dir/lists/test@example.com/fr/foo.txt
+    * $template_dir/lists/test.example.com/fr/foo.txt
+    * $template_dir/lists/test@example.com/fr/foo.txt (deprecated)
     * $template_dir/domains/example.com/fr/foo.txt
     * $template_dir/site/fr/foo.txt
 
-    * $template_dir/lists/test@example.com/en/foo.txt
+    * $template_dir/lists/test.example.com/en/foo.txt
+    * $template_dir/lists/test@example.com/en/foo.txt (deprecated)
     * $template_dir/domains/example.com/en/foo.txt
     * $template_dir/site/en/foo.txt
 
@@ -113,10 +117,13 @@ def search(template_file, mlist=None, language=None):
     # The non-language qualified $template_dir paths in search order.
     paths = [os.path.join(config.TEMPLATE_DIR, 'site')]
     if mlist is not None:
+        # Don't forget these are in REVERSE search order!
         paths.append(os.path.join(
             config.TEMPLATE_DIR, 'domains', mlist.mail_host))
         paths.append(os.path.join(
             config.TEMPLATE_DIR, 'lists', mlist.fqdn_listname))
+        paths.append(os.path.join(
+            config.TEMPLATE_DIR, 'lists', mlist.list_id))
     paths.reverse()
     for language, path in product(languages, paths):
         yield os.path.join(path, language, template_file)
@@ -151,15 +158,12 @@ def find(template_file, mlist=None, language=None, _trace=False):
             if _trace:
                 print('@@@', path, end='', file=sys.stderr)
             fp = open(path, 'r', encoding='utf-8')
-        except IOError as error:
-            if error.errno == errno.ENOENT:
-                if _trace:
-                    print('MISSING', file=sys.stderr)
-            else:
-                raise
+        except FileNotFoundError:
+            if _trace:
+                print(' MISSING', file=sys.stderr)
         else:
             if _trace:
-                print('FOUND:', path, file=sys.stderr)
+                print(' FOUND:', path, file=sys.stderr)
             return path, fp
     raise TemplateNotFoundError(template_file)
 
