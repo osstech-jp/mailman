@@ -30,7 +30,6 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
-from mailman.interfaces.action import Action
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, IHeaderMatchList, IListArchiverSet)
@@ -206,11 +205,11 @@ class TestHeaderMatch(unittest.TestCase):
         self.assertEqual(len(self._mlist.header_matches), 1)
         self.assertEqual(self._mlist.header_matches[0].header, 'header')
 
-    def test_action_defaults_to_none(self):
+    def test_chain_defaults_to_none(self):
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('header', 'pattern')
         self.assertEqual(len(self._mlist.header_matches), 1)
-        self.assertEqual(self._mlist.header_matches[0].action, None)
+        self.assertEqual(self._mlist.header_matches[0].chain, None)
 
     def test_duplicate(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -241,16 +240,16 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('Header', 'pattern')
         header_matches.append('Subject', 'patt.*')
-        header_matches.append('From', '.*@example.com', Action.discard)
-        header_matches.append('From', '.*@example.org', Action.accept)
-        matches = [(match.header, match.pattern, match.action)
+        header_matches.append('From', '.*@example.com', 'discard')
+        header_matches.append('From', '.*@example.org', 'accept')
+        matches = [(match.header, match.pattern, match.chain)
                    for match in IHeaderMatchList(self._mlist)]
         self.assertEqual(
             matches, [
             ('header', 'pattern', None),
             ('subject', 'patt.*', None),
-            ('from', '.*@example.com', Action.discard),
-            ('from', '.*@example.org', Action.accept),
+            ('from', '.*@example.com', 'discard'),
+            ('from', '.*@example.org', 'accept'),
             ])
 
     def test_clear(self):

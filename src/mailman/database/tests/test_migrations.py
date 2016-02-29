@@ -33,9 +33,6 @@ from mailman.database.alembic import alembic_cfg
 from mailman.database.helpers import exists_in_db
 from mailman.database.model import Model
 from mailman.database.transaction import transaction
-from mailman.database.types import Enum
-from mailman.interfaces.action import Action
-from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.testing.layers import ConfigLayer
 
 
@@ -226,51 +223,3 @@ class TestMigrations(unittest.TestCase):
             os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
         self.assertTrue(os.path.exists(ant.data_path))
         self.assertTrue(os.path.exists(bee.data_path))
-
-    def test_cb7fc8476779_header_match_action(self):
-        data = {
-            'header-1': Action.accept,
-            'header-2': Action.hold,
-            'header-3': Action.discard,
-            'header-4': Action.reject,
-        }
-        # Create a mailing list through the standard API.
-        with transaction():
-            ant = create_list('ant@example.com')
-            # Create header matches
-            header_matches = IHeaderMatchList(ant)
-            for header, action in data.items():
-                header_matches.append(header, 'pattern', action)
-        hm_table = sa.sql.table(
-            'headermatch',
-            sa.sql.column('header', sa.Unicode),
-            sa.sql.column('action', Enum(Action)),
-            sa.sql.column('chain', sa.Unicode),
-            )
-        # Downgrade and verify that the chain names are correct.
-        with transaction():
-            alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
-        with transaction():
-            results = config.db.store.execute(
-                sa.select([hm_table.c.header, hm_table.c.chain])).fetchall()
-        self.assertEqual(len(results), 4)
-        for header, chain in results:
-            self.assertEqual(chain, data[header].name)
-        if config.db.store.bind.dialect.name == 'sqlite':
-            # Clear the previous values for testing, since SQLite did not
-            # remove the column.
-            with transaction():
-                config.db.store.execute(
-                    hm_table.update().values(action=None))
-            for action in config.db.store.execute(
-                sa.select([hm_table.c.action])).fetchall():
-                self.assertEqual(action[0], None)
-        # Upgrade and verify that the actions are back to normal.
-        with transaction():
-            alembic.command.upgrade(alembic_cfg, 'cb7fc8476779')
-        with transaction():
-            results = config.db.store.execute(
-                sa.select([hm_table.c.header, hm_table.c.action])).fetchall()
-        self.assertEqual(len(results), 4)
-        for header, action in results:
-            self.assertEqual(action, data[header])

@@ -29,7 +29,6 @@ from mailman.chains.headers import HeaderMatchRule, make_link
 from mailman.config import config
 from mailman.core.chains import process
 from mailman.email.message import Message
-from mailman.interfaces.action import Action
 from mailman.interfaces.chain import LinkAction, HoldEvent, DiscardEvent
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from mailman.interfaces.mailinglist import IHeaderMatchList
@@ -163,9 +162,9 @@ class TestHeaderChain(unittest.TestCase):
         # properly.
         chain = config.chains['header-match']
         header_matches = IHeaderMatchList(self._mlist)
-        header_matches.append('Foo', 'a+', Action.reject)
-        header_matches.append('Bar', 'b+', Action.discard)
-        header_matches.append('Baz', 'z+', Action.accept)
+        header_matches.append('Foo', 'a+', 'reject')
+        header_matches.append('Bar', 'b+', 'discard')
+        header_matches.append('Baz', 'z+', 'accept')
         links = [link for link in chain.get_links(self._mlist, Message(), {})
                  if link.rule.name != 'any']
         self.assertEqual(len(links), 3)
@@ -196,7 +195,7 @@ A message body.
 """)
         msgdata = {}
         header_matches = IHeaderMatchList(self._mlist)
-        header_matches.append('Foo', 'foo', Action.accept)
+        header_matches.append('Foo', 'foo', 'accept')
         # This event subscriber records the event that occurs when the message
         # is processed by the owner chain.
         events = []

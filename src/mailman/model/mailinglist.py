@@ -643,7 +643,7 @@ class HeaderMatch(Model):
     _position = Column('position', Integer, index=True, default=0)
     header = Column(Unicode)
     pattern = Column(Unicode)
-    action = Column(Enum(Action), nullable=True)
+    chain = Column(Unicode, nullable=True)
 
     def __init__(self, **kw):
         if 'position' in kw:
@@ -711,7 +711,7 @@ class HeaderMatchList:
         del self._mailing_list.header_matches[:]
 
     @dbconnection
-    def append(self, store, header, pattern, action=None):
+    def append(self, store, header, pattern, chain=None):
         header = header.lower()
         existing = store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list,
@@ -726,20 +726,20 @@ class HeaderMatchList:
             last_position = -1
         header_match = HeaderMatch(
             mailing_list=self._mailing_list,
-            header=header, pattern=pattern, action=action,
+            header=header, pattern=pattern, chain=chain,
             position=last_position + 1)
         store.add(header_match)
         store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
-    def insert(self, store, index, header, pattern, action=None):
-        self.append(header, pattern, action)
+    def insert(self, store, index, header, pattern, chain=None):
+        self.append(header, pattern, chain)
         # Get the header match that was just added.
         header_match = store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list,
             HeaderMatch.header == header.lower(),
             HeaderMatch.pattern == pattern,
-            HeaderMatch.action == action).one()
+            HeaderMatch.chain == chain).one()
         header_match.position = index
         store.expire(self._mailing_list, ['header_matches'])
 

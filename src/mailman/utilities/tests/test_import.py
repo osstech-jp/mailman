@@ -367,7 +367,7 @@ class TestBasicImport(unittest.TestCase):
         error_log = LogFileMark('mailman.error')
         self._import()
         self.assertListEqual(
-            [(hm.header, hm.pattern, hm.action.name)
+            [(hm.header, hm.pattern, hm.chain)
              for hm in self._mlist.header_matches ], [
             ('x-spam-status', 'Yes.*', 'discard'),
             ('x-spam-status', 'Yes', 'reject'),
@@ -445,7 +445,7 @@ class TestBasicImport(unittest.TestCase):
             ]
         self._import()
         self.assertListEqual(
-            [(hm.header, hm.pattern, hm.action)
+            [(hm.header, hm.pattern, hm.chain)
              for hm in self._mlist.header_matches],
             [('x-spam-status', 'Yes', None)]
             )
@@ -476,7 +476,7 @@ class TestBasicImport(unittest.TestCase):
         error_log = LogFileMark('mailman.error')
         self._import()
         self.assertListEqual(
-            [(hm.header, hm.pattern, hm.action.name)
+            [(hm.header, hm.pattern, hm.chain)
              for hm in self._mlist.header_matches],
             [('someheadername', 'test-pattern', 'discard')]
             )

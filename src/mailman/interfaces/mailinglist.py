@@ -880,7 +880,7 @@ class IHeaderMatchList(Interface):
     def clear():
         """Clear the list of header matching rules."""
 
-    def append(header, pattern, action=None):
+    def append(header, pattern, chain=None):
         """Append the given rule to this mailing list's header match list.
 
         :param header: The email header to filter on.  It will be converted to
@@ -888,14 +888,14 @@ class IHeaderMatchList(Interface):
         :type header: string
         :param pattern: The regular expression to use.
         :type pattern: string
-        :param action: The Action enum pointing to the chain to jump to, or
-            None to use the site-wide configuration.  Defaults to None.
-        :type action: `Action` enum or None
+        :param chain: The chain to jump to, or None to use the site-wide
+            configuration.  Defaults to None.
+        :type chain: string or None
         :raises ValueError: if the header/pattern pair already exists for this
             mailing list.
         """
 
-    def insert(index, header, pattern, action=None):
+    def insert(index, header, pattern, chain=None):
         """Insert the given rule at the given index position in this mailing
         list's header match list.
 
@@ -906,9 +906,9 @@ class IHeaderMatchList(Interface):
         :type header: string
         :param pattern: The regular expression to use.
         :type pattern: string
-        :param action: The Action enum pointing to the chain to jump to, or
-            None to use the site-wide configuration.  Defaults to None.
-        :type action: `Action` enum or None
+        :param chain: The chain to jump to, or None to use the site-wide
+            configuration.  Defaults to None.
+        :type chain: string or None
         :raises ValueError: if the header/pattern pair already exists for this
             mailing list.
         """
