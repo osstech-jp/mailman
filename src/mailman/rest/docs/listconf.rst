@@ -299,7 +299,7 @@ Header matches
 --------------
 
 Mailman can do pattern based header matching during its normal rule
-processing. Each mailing list can also be configured with a set of header
+processing.  Each mailing list can also be configured with a set of header
 matching regular expression rules.  These can be used to impose list-specific
 header filtering with the same semantics as the global ``[antispam]`` section,
 or to have a different action.
@@ -334,11 +334,10 @@ New header matches can be created by POSTing to the resource.
     position: 0
     self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
 
-
 To follow the global antispam action, the header match rule must not specify
 an ``action`` key.  If the default antispam action is changed in the
 configuration file and Mailman is restarted, those rules will get the new
-jump action. If a specific action is desired, the ``action`` key must point
+jump action.  If a specific action is desired, the ``action`` key must point
 to a valid action.
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
@@ -362,9 +361,9 @@ to a valid action.
     position: 1
     self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
 
-The resource can be changed by PATCHing it. The ``position`` key can be used to
-change the priority of the header match in the list. If it is not supplied, the
-priority is not changed.
+The resource can be changed by PATCHing it.  The ``position`` key can be used
+to change the priority of the header match in the list.  If it is not supplied,
+the priority is not changed.
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches/1',
@@ -410,7 +409,7 @@ priority is not changed.
     start: 0
     total_size: 2
 
-The PUT method can replace an entire header match. The ``position`` key is
+The PUT method can replace an entire header match.  The ``position`` key is
 optional: if it is omitted, the order will not be changed.
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
@@ -454,7 +453,8 @@ A header match can be removed using the DELETE method.
     start: 0
     total_size: 1
 
-The mailing list's header matches can be cleared by issuing a DELETE request on the top resource.
+The mailing list's header matches can be cleared by issuing a DELETE request on
+the top resource.
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches',

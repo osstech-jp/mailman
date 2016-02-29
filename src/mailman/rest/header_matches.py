@@ -54,8 +54,8 @@ class _HeaderMatchBase:
             pattern=header_match.pattern,
             self_link=self._location(header_match.position),
             )
-        if header_match.action is not None:
-            resource['action'] = header_match.action
+        if header_match.chain is not None:
+            resource['action'] = header_match.chain
         return resource
 
 
@@ -95,10 +95,10 @@ class HeaderMatch(_HeaderMatchBase):
                       self._position))
             return
         kws = dict(
-            header=GetterSetter(lowercase),
-            pattern=GetterSetter(str),
-            position=GetterSetter(int),
-            action=GetterSetter(enum_validator(Action)),
+            header=lowercase,
+            pattern=str,
+            position=int,
+            action=enum_validator(Action),
             )
         if is_optional:
             # For a PATCH, all attributes are optional.
@@ -106,8 +106,14 @@ class HeaderMatch(_HeaderMatchBase):
         else:
             # For a PUT, position can remain unchanged and action can be None.
             kws['_optional'] = ('action', 'position')
+        validator = Validator(**kws)
         try:
-            Validator(**kws).update(header_match, request)
+            arguments = validator(request)
+            if 'action' in arguments:
+                arguments['chain'] = arguments['action'].name
+                del arguments['action']
+            for key, value in arguments.items():
+                setattr(header_match, key, value)
         except ValueError as error:
             bad_request(response, str(error))
             return
@@ -148,6 +154,9 @@ class HeaderMatches(_HeaderMatchBase, CollectionMixin):
         except ValueError as error:
             bad_request(response, str(error))
             return
+        if 'action' in arguments:
+            arguments['chain'] = arguments['action'].name
+            del arguments['action']
         try:
             self.header_matches.append(**arguments)
         except ValueError:
