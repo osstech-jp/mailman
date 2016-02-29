@@ -927,9 +927,10 @@ class IHeaderMatchList(Interface):
 
         :param key: The index of the header match to return.
         :type key: integer
+        :return: The header match at this index.
+        :rtype: `IHeaderMatch`.
         :raises IndexError: if there is no header match at this index for
             this mailing list.
-        :rtype: `IHeaderMatch`.
         """
 
     def __delitem__(key):

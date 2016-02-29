@@ -695,12 +695,11 @@ class HeaderMatch(Model):
 
 @implementer(IHeaderMatchList)
 class HeaderMatchList:
-    """See `IHeaderMatchList`.
+    """See `IHeaderMatchList`."""
 
-    All write operations must mark the mailing list's header_matches collection
-    as expired:
-    http://docs.sqlalchemy.org/en/latest/orm/session_state_management.html#refreshing-expiring
-    """
+    # All write operations must mark the mailing list's header_matches
+    # collection as expired:
+    # http://docs.sqlalchemy.org/en/latest/orm/session_state_management.html#refreshing-expiring
 
     def __init__(self, mailing_list):
         self._mailing_list = mailing_list
