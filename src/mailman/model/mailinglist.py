@@ -192,7 +192,7 @@ class MailingList(Model):
     # ORM relationships
     header_matches = relationship(
         'HeaderMatch', backref='mailing_list', cascade="all, delete-orphan",
-        order_by="HeaderMatch._index")
+        order_by="HeaderMatch._position")
 
     def __init__(self, fqdn_listname):
         super().__init__()
@@ -640,56 +640,56 @@ class HeaderMatch(Model):
         Integer, ForeignKey('mailinglist.id'),
         index=True, nullable=False)
 
-    _index = Column('index', Integer, index=True, default=0)
+    _position = Column('position', Integer, index=True, default=0)
     header = Column(Unicode)
     pattern = Column(Unicode)
     action = Column(Enum(Action), nullable=True)
 
     def __init__(self, **kw):
-        if 'index' in kw:
-            kw['_index'] = kw['index']
-            del kw['index']
+        if 'position' in kw:
+            kw['_position'] = kw['position']
+            del kw['position']
         super().__init__(**kw)
 
     @hybrid_property
-    def index(self):
+    def position(self):
         """See `IHeaderMatch`."""
-        return self._index
+        return self._position
 
-    @index.setter
+    @position.setter
     @dbconnection
-    def index(self, store, value):
+    def position(self, store, value):
         """See `IHeaderMatch`."""
         if value < 0:
             raise ValueError('Negative indexes are not supported')
-        if value == self.index:
+        if value == self.position:
             return # Nothing to do
         existing_count = store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self.mailing_list).count()
         if value >= existing_count:
             raise ValueError(
                 'There are {count} header matches for this list, '
-                'the new index cannot be {count} or higher'.format(
+                'the new position cannot be {count} or higher'.format(
                 count=existing_count))
-        if value < self.index:
+        if value < self.position:
             # Moving up: header matches between the new position and the
             # current one must be moved down the list to make room. Those after
             # the current position must not be changed.
             for header_match in store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self.mailing_list,
-                HeaderMatch.index >= value,
-                HeaderMatch.index < self.index):
-                header_match._index = header_match.index + 1
-        elif value > self.index:
+                HeaderMatch.position >= value,
+                HeaderMatch.position < self.position):
+                header_match._position = header_match.position + 1
+        elif value > self.position:
             # Moving down: header matches between the current position and the
             # new one must be moved up the list to make room. Those after
             # the new position must not be changed.
             for header_match in store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self.mailing_list,
-                HeaderMatch.index > self.index,
-                HeaderMatch.index <= value):
-                header_match._index = header_match.index - 1
-        self._index = value
+                HeaderMatch.position > self.position,
+                HeaderMatch.position <= value):
+                header_match._position = header_match.position - 1
+        self._position = value
 
 
 
@@ -720,15 +720,15 @@ class HeaderMatchList:
             HeaderMatch.pattern == pattern).count()
         if existing > 0:
             raise ValueError('Pattern already exists')
-        last_index = store.query(HeaderMatch.index).filter(
+        last_position = store.query(HeaderMatch.position).filter(
             HeaderMatch.mailing_list == self._mailing_list
-            ).order_by(HeaderMatch.index.desc()).limit(1).scalar()
-        if last_index is None:
-            last_index = -1
+            ).order_by(HeaderMatch.position.desc()).limit(1).scalar()
+        if last_position is None:
+            last_position = -1
         header_match = HeaderMatch(
             mailing_list=self._mailing_list,
             header=header, pattern=pattern, action=action,
-            index=last_index + 1)
+            position=last_position + 1)
         store.add(header_match)
         store.expire(self._mailing_list, ['header_matches'])
 
@@ -741,7 +741,7 @@ class HeaderMatchList:
             HeaderMatch.header == header.lower(),
             HeaderMatch.pattern == pattern,
             HeaderMatch.action == action).one()
-        header_match.index = index
+        header_match.position = index
         store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
@@ -758,7 +758,7 @@ class HeaderMatchList:
             raise ValueError('Pattern does not exist')
         else:
             store.delete(existing)
-        self._restore_index_sequence()
+        self._restore_position_sequence()
         store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
@@ -768,7 +768,7 @@ class HeaderMatchList:
         try:
             return store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self._mailing_list,
-                HeaderMatch.index == key).one()
+                HeaderMatch.position == key).one()
         except NoResultFound:
             raise IndexError
 
@@ -777,12 +777,12 @@ class HeaderMatchList:
         try:
             existing = store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self._mailing_list,
-                HeaderMatch.index == key).one()
+                HeaderMatch.position == key).one()
         except NoResultFound:
             raise IndexError
         else:
             store.delete(existing)
-        self._restore_index_sequence()
+        self._restore_position_sequence()
         store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
@@ -794,19 +794,19 @@ class HeaderMatchList:
     def __iter__(self, store):
         yield from store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list
-            ).order_by(HeaderMatch.index)
+            ).order_by(HeaderMatch.position)
 
     @dbconnection
-    def _restore_index_sequence(self, store):
-        """Restore a continuous index sequence for this mailing list's header
-        matches.
+    def _restore_position_sequence(self, store):
+        """Restore a continuous position sequence for this mailing list's
+        header matches.
 
-        The header match indexes may not be continuous after deleting an item.
-        It won't prevent this component from working properly, but it's cleaner
-        to restore a continuous sequence.
+        The header match positions may not be continuous after deleting an
+        item.  It won't prevent this component from working properly, but it's
+        cleaner to restore a continuous sequence.
         """
-        for index, header_match in enumerate(store.query(HeaderMatch).filter(
+        for position, header_match in enumerate(store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list
-            ).order_by(HeaderMatch.index)):
-            header_match._index = index
+            ).order_by(HeaderMatch.position)):
+            header_match._position = position
         store.expire(self._mailing_list, ['header_matches'])

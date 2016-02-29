@@ -330,8 +330,8 @@ New header matches can be created by POSTing to the resource.
     ...           '/header-matches/0')
     header: x-spam-flag
     http_etag: "..."
-    index: 0
     pattern: ^Yes
+    position: 0
     self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
 
 
@@ -358,11 +358,11 @@ to a valid action.
     action: discard
     header: x-spam-status
     http_etag: "..."
-    index: 1
     pattern: ^Yes
+    position: 1
     self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
 
-The resource can be changed by PATCHing it. The ``index`` key can be used to
+The resource can be changed by PATCHing it. The ``position`` key can be used to
 change the priority of the header match in the list. If it is not supplied, the
 priority is not changed.
 
@@ -379,13 +379,13 @@ priority is not changed.
     action: accept
     header: x-spam-status
     http_etag: "..."
-    index: 1
     pattern: ^No
+    position: 1
     self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches/1',
-    ...           dict(index=0),
+    ...           dict(position=0),
     ...           'PATCH')
     content-length: 0
     date: ...
@@ -397,20 +397,20 @@ priority is not changed.
         action: accept
         header: x-spam-status
         http_etag: "..."
-        index: 0
         pattern: ^No
+        position: 0
         self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
     entry 1:
         header: x-spam-flag
         http_etag: "..."
-        index: 1
         pattern: ^Yes
+        position: 1
         self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
     http_etag: "..."
     start: 0
     total_size: 2
 
-The PUT method can replace an entire header match. The ``index`` key is
+The PUT method can replace an entire header match. The ``position`` key is
 optional: if it is omitted, the order will not be changed.
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
@@ -429,8 +429,8 @@ optional: if it is omitted, the order will not be changed.
     action: hold
     header: x-spam-status
     http_etag: "..."
-    index: 1
     pattern: ^Yes
+    position: 1
     self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
 
 A header match can be removed using the DELETE method.
@@ -447,8 +447,8 @@ A header match can be removed using the DELETE method.
         action: accept
         header: x-spam-status
         http_etag: "..."
-        index: 0
         pattern: ^No
+        position: 0
         self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
     http_etag: "..."
     start: 0

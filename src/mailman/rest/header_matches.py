@@ -42,16 +42,17 @@ class _HeaderMatchBase:
         self._mlist = mlist
         self.header_matches = IHeaderMatchList(self._mlist)
 
-    def _location(self, index):
-        return self.api.path_to('lists/{}/header-matches/{}'.format(self._mlist.list_id, index))
+    def _location(self, position):
+        return self.api.path_to('lists/{}/header-matches/{}'.format(
+            self._mlist.list_id, position))
 
     def _resource_as_dict(self, header_match):
         """See `CollectionMixin`."""
         resource = dict(
-            index=header_match.index,
+            position=header_match.position,
             header=header_match.header,
             pattern=header_match.pattern,
-            self_link=self._location(header_match.index),
+            self_link=self._location(header_match.position),
             )
         if header_match.action is not None:
             resource['action'] = header_match.action
@@ -61,50 +62,50 @@ class _HeaderMatchBase:
 class HeaderMatch(_HeaderMatchBase):
     """A header match."""
 
-    def __init__(self, mlist, index):
+    def __init__(self, mlist, position):
         super().__init__(mlist)
-        self._index = index
+        self._position = position
 
     def on_get(self, request, response):
         """Get a header match."""
         try:
-            header_match = self.header_matches[self._index]
+            header_match = self.header_matches[self._position]
         except IndexError:
-            not_found(response, 'No header match at this index: {}'.format(
-                      self._index))
+            not_found(response, 'No header match at this position: {}'.format(
+                      self._position))
         else:
             okay(response, etag(self._resource_as_dict(header_match)))
 
     def on_delete(self, request, response):
         """Remove a header match."""
         try:
-            del self.header_matches[self._index]
+            del self.header_matches[self._position]
         except IndexError:
-            not_found(response, 'No header match at this index: {}'.format(
-                      self._index))
+            not_found(response, 'No header match at this position: {}'.format(
+                      self._position))
         else:
             no_content(response)
 
     def patch_put(self, request, response, is_optional):
         """Update the header match."""
         try:
-            header_match = self.header_matches[self._index]
+            header_match = self.header_matches[self._position]
         except IndexError:
-            not_found(response, 'No header match at this index: {}'.format(
-                      self._index))
+            not_found(response, 'No header match at this position: {}'.format(
+                      self._position))
             return
         kws = dict(
             header=GetterSetter(lowercase),
             pattern=GetterSetter(str),
-            index=GetterSetter(int),
+            position=GetterSetter(int),
             action=GetterSetter(enum_validator(Action)),
             )
         if is_optional:
             # For a PATCH, all attributes are optional.
             kws['_optional'] = kws.keys()
         else:
-            # For a PUT, index can remain unchanged and action can be None.
-            kws['_optional'] = ('action', 'index')
+            # For a PUT, position can remain unchanged and action can be None.
+            kws['_optional'] = ('action', 'position')
         try:
             Validator(**kws).update(header_match, request)
         except ValueError as error:
@@ -153,13 +154,13 @@ class HeaderMatches(_HeaderMatchBase, CollectionMixin):
             bad_request(response, b'This header match already exists')
         else:
             header_match = self.header_matches[-1]
-            created(response, self._location(header_match.index))
+            created(response, self._location(header_match.position))
 
     def on_delete(self, request, response):
         """Delete all header matches for this mailing list."""
         self.header_matches.clear()
         no_content(response)
 
-    @child(r'^(?P<index>\d+)')
+    @child(r'^(?P<position>\d+)')
     def header_match(self, request, segments, **kw):
-        return HeaderMatch(self._mlist, int(kw['index']))
+        return HeaderMatch(self._mlist, int(kw['position']))
