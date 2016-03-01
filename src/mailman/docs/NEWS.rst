@@ -146,6 +146,8 @@ REST
    Given by Aurélien Bompard.
  * ``<api>/members/find`` accepts GET query parameters in addition to POST
    arguments.  Given by Aurélien Bompard.
+ * Header match rules for individual mailing lists are now exposed in the REST
+   API.  Given by Aurélien Bompard.  (Closes: #192)
 
 Other
 -----
