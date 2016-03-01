@@ -314,6 +314,7 @@ The list of header matches for a mailing list are returned on the
     total_size: 0
 
 New header matches can be created by POSTing to the resource.
+::
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches', {
@@ -335,10 +336,11 @@ New header matches can be created by POSTing to the resource.
     self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
 
 To follow the global antispam action, the header match rule must not specify
-an ``action`` key.  If the default antispam action is changed in the
-configuration file and Mailman is restarted, those rules will get the new
-jump action.  If a specific action is desired, the ``action`` key must point
-to a valid action.
+an ``action`` key, which names the chain to jump to if the rule matches.  If
+the default antispam action is changed in the configuration file and Mailman
+is restarted, those rules will get the new jump action.  If a specific action
+is desired, the ``action`` key must name a valid chain to jump to.
+::
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches', {
@@ -364,6 +366,7 @@ to a valid action.
 The resource can be changed by PATCHing it.  The ``position`` key can be used
 to change the priority of the header match in the list.  If it is not supplied,
 the priority is not changed.
+::
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches/1',
@@ -398,19 +401,20 @@ the priority is not changed.
         http_etag: "..."
         pattern: ^No
         position: 0
-        self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
+        self_link: .../lists/ant.example.com/header-matches/0
     entry 1:
         header: x-spam-flag
         http_etag: "..."
         pattern: ^Yes
         position: 1
-        self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
+        self_link: .../lists/ant.example.com/header-matches/1
     http_etag: "..."
     start: 0
     total_size: 2
 
 The PUT method can replace an entire header match.  The ``position`` key is
-optional: if it is omitted, the order will not be changed.
+optional; if it is omitted, the order will not be changed.
+::
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches/1',
@@ -433,6 +437,7 @@ optional: if it is omitted, the order will not be changed.
     self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/1
 
 A header match can be removed using the DELETE method.
+::
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches/1',
@@ -440,6 +445,7 @@ A header match can be removed using the DELETE method.
     content-length: 0
     ...
     status: 204
+
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches')
     entry 0:
@@ -448,13 +454,14 @@ A header match can be removed using the DELETE method.
         http_etag: "..."
         pattern: ^No
         position: 0
-        self_link: http://localhost:9001/3.0/lists/ant.example.com/header-matches/0
+        self_link: .../lists/ant.example.com/header-matches/0
     http_etag: "..."
     start: 0
     total_size: 1
 
 The mailing list's header matches can be cleared by issuing a DELETE request on
 the top resource.
+::
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches',
@@ -462,6 +469,7 @@ the top resource.
     content-length: 0
     ...
     status: 204
+
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches')
     http_etag: "..."

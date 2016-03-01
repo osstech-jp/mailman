@@ -41,7 +41,8 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.languages import ILanguageManager
-from mailman.interfaces.mailinglist import IAcceptableAliasSet, IHeaderMatchList
+from mailman.interfaces.mailinglist import (
+    IAcceptableAliasSet, IHeaderMatchList)
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole

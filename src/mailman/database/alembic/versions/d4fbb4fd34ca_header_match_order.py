@@ -12,7 +12,6 @@ down_revision = 'bfda02ab3a9b'
 
 import sqlalchemy as sa
 from alembic import op
-from mailman.database.helpers import is_sqlite
 
 
 def upgrade():

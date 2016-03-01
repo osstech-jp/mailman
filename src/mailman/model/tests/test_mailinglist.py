@@ -43,7 +43,6 @@ from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
-
 class TestMailingList(unittest.TestCase):
     layer = ConfigLayer
 
@@ -103,7 +102,6 @@ class TestMailingList(unittest.TestCase):
                       items[0].msg.get_payload())
 
 
-
 class TestListArchiver(unittest.TestCase):
     layer = ConfigLayer
 
@@ -146,7 +144,6 @@ class TestListArchiver(unittest.TestCase):
         config.pop('enable prototype')
 
 
-
 class TestDisabledListArchiver(unittest.TestCase):
     layer = ConfigLayer
 
@@ -174,7 +171,6 @@ class TestDisabledListArchiver(unittest.TestCase):
         config.pop('enable prototype')
 
 
-
 class TestAcceptableAliases(unittest.TestCase):
     layer = ConfigLayer
 
@@ -192,7 +188,6 @@ class TestAcceptableAliases(unittest.TestCase):
         self.assertEqual(len(list(alias_set.aliases)), 0)
 
 
-
 class TestHeaderMatch(unittest.TestCase):
     layer = ConfigLayer
 
@@ -265,18 +260,18 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches.append('header-1', 'pattern-1')
         header_matches.append('header-2', 'pattern-2')
         header_matches.append('header-3', 'pattern-3')
-        hm = header_matches[1]
-        self.assertEqual(hm.header, 'header-2')
-        self.assertEqual(hm.pattern, 'pattern-2')
+        match = header_matches[1]
+        self.assertEqual(match.header, 'header-2')
+        self.assertEqual(match.pattern, 'pattern-2')
 
     def test_get_by_negative_index(self):
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('header-1', 'pattern-1')
         header_matches.append('header-2', 'pattern-2')
         header_matches.append('header-3', 'pattern-3')
-        hm = header_matches[-1]
-        self.assertEqual(hm.header, 'header-3')
-        self.assertEqual(hm.pattern, 'pattern-3')
+        match = header_matches[-1]
+        self.assertEqual(match.header, 'header-3')
+        self.assertEqual(match.pattern, 'pattern-3')
 
     def test_get_non_existent_by_index(self):
         header_matches = IHeaderMatchList(self._mlist)

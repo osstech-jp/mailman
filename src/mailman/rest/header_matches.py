@@ -26,8 +26,8 @@ __all__ = [
 from mailman.interfaces.action import Action
 from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.rest.helpers import (
-    CollectionMixin, GetterSetter, bad_request, child, created, etag,
-    no_content, not_found, okay)
+    CollectionMixin, bad_request, child, created, etag, no_content, not_found,
+    okay)
 from mailman.rest.validator import Validator, enum_validator
 
 
@@ -109,9 +109,9 @@ class HeaderMatch(_HeaderMatchBase):
         validator = Validator(**kws)
         try:
             arguments = validator(request)
-            if 'action' in arguments:
-                arguments['chain'] = arguments['action'].name
-                del arguments['action']
+            action = arguments.pop('action', None)
+            if action is not None:
+                arguments['chain'] = action.name
             for key, value in arguments.items():
                 setattr(header_match, key, value)
         except ValueError as error:
@@ -154,9 +154,9 @@ class HeaderMatches(_HeaderMatchBase, CollectionMixin):
         except ValueError as error:
             bad_request(response, str(error))
             return
-        if 'action' in arguments:
-            arguments['chain'] = arguments['action'].name
-            del arguments['action']
+        action = arguments.pop('action', None)
+        if action is not None:
+            arguments['chain'] = action.name
         try:
             self.header_matches.append(**arguments)
         except ValueError:

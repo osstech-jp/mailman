@@ -70,7 +70,6 @@ SPACE = ' '
 UNDERSCORE = '_'
 
 
-
 @implementer(IMailingList)
 class MailingList(Model):
     """See `IMailingList`."""
@@ -189,9 +188,10 @@ class MailingList(Model):
     topics_bodylines_limit = Column(Integer)
     topics_enabled = Column(Boolean)
     welcome_message_uri = Column(Unicode)
-    # ORM relationships
+    # ORM relationships.
     header_matches = relationship(
-        'HeaderMatch', backref='mailing_list', cascade="all, delete-orphan",
+        'HeaderMatch', backref='mailing_list',
+        cascade="all, delete-orphan",
         order_by="HeaderMatch._position")
 
     def __init__(self, fqdn_listname):
@@ -500,7 +500,6 @@ class MailingList(Model):
         return member
 
 
-
 @implementer(IAcceptableAlias)
 class AcceptableAlias(Model):
     """See `IAcceptableAlias`."""
@@ -521,7 +520,6 @@ class AcceptableAlias(Model):
         self.alias = alias
 
 
-
 @implementer(IAcceptableAliasSet)
 class AcceptableAliasSet:
     """See `IAcceptableAliasSet`."""
@@ -557,7 +555,6 @@ class AcceptableAliasSet:
             yield alias.alias
 
 
-
 @implementer(IListArchiver)
 class ListArchiver(Model):
     """See `IListArchiver`."""
@@ -627,7 +624,6 @@ class ListArchiverSet:
             ListArchiver.name == archiver_name).first()
 
 
-
 @implementer(IHeaderMatch)
 class HeaderMatch(Model):
     """See `IHeaderMatch`."""
@@ -637,7 +633,8 @@ class HeaderMatch(Model):
     id = Column(Integer, primary_key=True)
 
     mailing_list_id = Column(
-        Integer, ForeignKey('mailinglist.id'),
+        Integer,
+        ForeignKey('mailinglist.id'),
         index=True, nullable=False)
 
     _position = Column('position', Integer, index=True, default=0)
@@ -646,9 +643,9 @@ class HeaderMatch(Model):
     chain = Column(Unicode, nullable=True)
 
     def __init__(self, **kw):
-        if 'position' in kw:
-            kw['_position'] = kw['position']
-            del kw['position']
+        position = kw.pop('position', None)
+        if position is not None:
+            kw['_position'] = position
         super().__init__(**kw)
 
     @hybrid_property
@@ -663,7 +660,8 @@ class HeaderMatch(Model):
         if value < 0:
             raise ValueError('Negative indexes are not supported')
         if value == self.position:
-            return # Nothing to do
+            # Nothing to do.
+            return
         existing_count = store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self.mailing_list).count()
         if value >= existing_count:
@@ -673,26 +671,25 @@ class HeaderMatch(Model):
                 count=existing_count))
         if value < self.position:
             # Moving up: header matches between the new position and the
-            # current one must be moved down the list to make room. Those after
-            # the current position must not be changed.
+            # current one must be moved down the list to make room. Those
+            # after the current position must not be changed.
             for header_match in store.query(HeaderMatch).filter(
-                HeaderMatch.mailing_list == self.mailing_list,
-                HeaderMatch.position >= value,
-                HeaderMatch.position < self.position):
+                    HeaderMatch.mailing_list == self.mailing_list,
+                    HeaderMatch.position >= value,
+                    HeaderMatch.position < self.position):
                 header_match._position = header_match.position + 1
         elif value > self.position:
             # Moving down: header matches between the current position and the
-            # new one must be moved up the list to make room. Those after
-            # the new position must not be changed.
+            # new one must be moved up the list to make room. Those after the
+            # new position must not be changed.
             for header_match in store.query(HeaderMatch).filter(
-                HeaderMatch.mailing_list == self.mailing_list,
-                HeaderMatch.position > self.position,
-                HeaderMatch.position <= value):
+                    HeaderMatch.mailing_list == self.mailing_list,
+                    HeaderMatch.position > self.position,
+                    HeaderMatch.position <= value):
                 header_match._position = header_match.position - 1
         self._position = value
 
 
-
 @implementer(IHeaderMatchList)
 class HeaderMatchList:
     """See `IHeaderMatchList`."""
@@ -761,22 +758,22 @@ class HeaderMatchList:
         store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
-    def __getitem__(self, store, key):
-        if key < 0:
-            key = len(self) + key
+    def __getitem__(self, store, index):
+        if index < 0:
+            index = len(self) + index
         try:
             return store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self._mailing_list,
-                HeaderMatch.position == key).one()
+                HeaderMatch.position == index).one()
         except NoResultFound:
             raise IndexError
 
     @dbconnection
-    def __delitem__(self, store, key):
+    def __delitem__(self, store, index):
         try:
             existing = store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self._mailing_list,
-                HeaderMatch.position == key).one()
+                HeaderMatch.position == index).one()
         except NoResultFound:
             raise IndexError
         else:
@@ -797,15 +794,14 @@ class HeaderMatchList:
 
     @dbconnection
     def _restore_position_sequence(self, store):
-        """Restore a continuous position sequence for this mailing list's
-        header matches.
-
-        The header match positions may not be continuous after deleting an
-        item.  It won't prevent this component from working properly, but it's
-        cleaner to restore a continuous sequence.
-        """
-        for position, header_match in enumerate(store.query(HeaderMatch).filter(
-            HeaderMatch.mailing_list == self._mailing_list
-            ).order_by(HeaderMatch.position)):
-            header_match._position = position
+        # Restore a continuous position sequence for this mailing list's
+        # header matches.
+        #
+        # The header match positions may not be continuous after deleting an
+        # item.  It won't prevent this component from working properly, but
+        # it's cleaner to restore a continuous sequence.
+        for position, match in enumerate(store.query(HeaderMatch).filter(
+                HeaderMatch.mailing_list == self._mailing_list
+                ).order_by(HeaderMatch.position)):
+            match._position = position
         store.expire(self._mailing_list, ['header_matches'])

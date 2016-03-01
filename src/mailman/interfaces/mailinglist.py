@@ -36,7 +36,6 @@ from mailman.interfaces.member import MemberRole
 from zope.interface import Interface, Attribute
 
 
-
 class Personalization(Enum):
     none = 0
     # Everyone gets a unique copy of the message, and there are a few more
@@ -68,7 +67,6 @@ class SubscriptionPolicy(Enum):
     confirm_then_moderate = 3
 
 
-
 class IMailingList(Interface):
     """A mailing list."""
 
@@ -780,7 +778,6 @@ class IMailingList(Interface):
         )
 
 
-
 class IAcceptableAlias(Interface):
     """An acceptable alias for implicit destinations."""
 
@@ -819,7 +816,6 @@ class IAcceptableAliasSet(Interface):
         """An iterator over all the acceptable aliases.""")
 
 
-
 class IListArchiver(Interface):
     """An archiver for a mailing list.
 
@@ -853,7 +849,6 @@ class IListArchiverSet(Interface):
         """
 
 
-
 class IHeaderMatch(Interface):
     """A mailing list-specific message header matching rule."""
 
@@ -865,6 +860,12 @@ class IHeaderMatch(Interface):
 
     pattern = Attribute(
         """The regular expression to match.""")
+
+    position = Attribute(
+        """The ordinal position of this header match.
+
+        Set this to change the position of this header match.
+        """)
 
     chain = Attribute(
         """The chain to jump to on a match.
@@ -889,15 +890,17 @@ class IHeaderMatchList(Interface):
         :param pattern: The regular expression to use.
         :type pattern: string
         :param chain: The chain to jump to, or None to use the site-wide
-            configuration.  Defaults to None.
+            antispam jump chain via the configuration.  Defaults to None.
         :type chain: string or None
         :raises ValueError: if the header/pattern pair already exists for this
             mailing list.
         """
 
     def insert(index, header, pattern, chain=None):
-        """Insert the given rule at the given index position in this mailing
-        list's header match list.
+        """Insert a header match rule.
+
+        Inserts the given rule at the given index position in this
+        mailing list's header match list.
 
         :param index: The index to insert the rule at.
         :type index: integer
@@ -907,7 +910,7 @@ class IHeaderMatchList(Interface):
         :param pattern: The regular expression to use.
         :type pattern: string
         :param chain: The chain to jump to, or None to use the site-wide
-            configuration.  Defaults to None.
+            antispam jump chain via the configuration.  Defaults to None.
         :type chain: string or None
         :raises ValueError: if the header/pattern pair already exists for this
             mailing list.
@@ -920,25 +923,26 @@ class IHeaderMatchList(Interface):
         :type header: string
         :param pattern: The regular expression part of the rule to be removed.
         :type pattern: string
+        :raises ValueError: if the header does not exist in the list of
+            header matches.
         """
 
-    def __getitem__(key):
+    def __getitem__(index):
         """Return the header match at the given index for this mailing list.
 
-        :param key: The index of the header match to return.
-        :type key: integer
+        :param index: The index of the header match to return.
+        :type index: integer
         :return: The header match at this index.
-        :rtype: `IHeaderMatch`.
+        :rtype: `IHeaderMatch`
         :raises IndexError: if there is no header match at this index for
             this mailing list.
         """
 
-    def __delitem__(key):
-        """Remove the rule at the given index from this mailing list's header
-        match list.
+    def __delitem__(index):
+        """Remove the rule at the given index.
 
-        :param key: The index of the header match to remove.
-        :type key: integer
+        :param index: The index of the header match to remove.
+        :type index: integer
         :raises IndexError: if there is no header match at this index for
             this mailing list.
         """

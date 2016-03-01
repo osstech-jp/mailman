@@ -36,7 +36,6 @@ from mailman.database.transaction import transaction
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestMigrations(unittest.TestCase):
     layer = ConfigLayer
 
