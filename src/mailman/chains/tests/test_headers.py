@@ -30,7 +30,6 @@ from mailman.config import config
 from mailman.core.chains import process
 from mailman.email.message import Message
 from mailman.interfaces.chain import LinkAction, HoldEvent, DiscardEvent
-from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.testing.helpers import (
     LogFileMark, configuration, event_subscribers,
@@ -38,7 +37,6 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestHeaderChain(unittest.TestCase):
     """Test the header chain code."""
 
@@ -208,8 +206,8 @@ A message body.
         self.assertEqual(event.chain, config.chains['hold'])
 
     def test_no_action_defaults_to_site_wide_action(self):
-        # Test that list-specific checks with no action always follow the
-        # site-wide antispam action.
+        # If the list-specific header check matches, but there is no defined
+        # action, the site-wide antispam action is used.
         msg = mfs("""\
 From: anne@example.com
 To: test@example.com
@@ -220,33 +218,42 @@ MIME-Version: 1.0
 
 A message body.
 """)
-        msgdata = {}
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('Foo', 'foo')
         # This event subscriber records the event that occurs when the message
-        # is processed by the owner chain.
+        # is processed by the owner chain, which holds its for approval.
         events = []
-        def record_event(event):
-            if isinstance(event, ConfigurationUpdatedEvent):
+        def record_holds(event):
+            if not isinstance(event, HoldEvent):
                 return
             events.append(event)
-        with event_subscribers(record_event):
-            # The site-wide default is hold.
+        with event_subscribers(record_holds):
+            # Set the site-wide antispam action to hold the message.
             with configuration('antispam', header_checks="""
                 Spam: [*]{3,}
                 """, jump_chain='hold'):
-                process(self._mlist, msg, msgdata, start_chain='header-match')
+                process(self._mlist, msg, {}, start_chain='header-match')
             self.assertEqual(len(events), 1)
             event = events[0]
-            self.assertTrue(isinstance(event, HoldEvent))
+            self.assertIsInstance(event, HoldEvent)
             self.assertEqual(event.chain, config.chains['hold'])
-            # The site-wide default is now discard.
+            self.assertEqual(event.mlist, self._mlist)
+            self.assertEqual(event.msg, msg)
+        events = []
+        def record_discards(event):
+            if not isinstance(event, DiscardEvent):
+                return
+            events.append(event)
+        with event_subscribers(record_discards):
+            # Set the site-wide default to discard the message.
             msg.replace_header('Message-Id', '<bee>')
             with configuration('antispam', header_checks="""
                 Spam: [*]{3,}
                 """, jump_chain='discard'):
-                process(self._mlist, msg, msgdata, start_chain='header-match')
-            self.assertEqual(len(events), 2)
-            event = events[1]
-            self.assertTrue(isinstance(event, DiscardEvent))
+                process(self._mlist, msg, {}, start_chain='header-match')
+            self.assertEqual(len(events), 1)
+            event = events[0]
+            self.assertIsInstance(event, DiscardEvent)
             self.assertEqual(event.chain, config.chains['discard'])
+            self.assertEqual(event.mlist, self._mlist)
+            self.assertEqual(event.msg, msg)

@@ -36,7 +36,6 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.error')
 
 
-
 def make_link(header, pattern, chain=None):
     """Create a Link object.
 
@@ -61,7 +60,6 @@ def make_link(header, pattern, chain=None):
     return Link(rule, LinkAction.jump, chain)
 
 
-
 @implementer(IRule)
 class HeaderMatchRule:
     """Header matching rule used by header-match chain."""
@@ -96,7 +94,6 @@ class HeaderMatchRule:
         return False
 
 
-
 class HeaderMatchChain(Chain):
     """Default header matching chain.
 
@@ -151,5 +148,7 @@ class HeaderMatchChain(Chain):
         # Then return all the list-specific header matches.
         for entry in mlist.header_matches:
             # Jump to the default antispam chain if the entry chain is None.
-            chain = entry.chain or config.antispam.jump_chain
+            chain = (config.antispam.jump_chain
+                     if entry.chain is None
+                     else entry.chain)
             yield make_link(entry.header, entry.pattern, chain)
