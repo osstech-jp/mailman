@@ -48,7 +48,6 @@ from urllib.error import HTTPError
 from zope.component import getUtility
 
 
-
 class TestListsMissing(unittest.TestCase):
     """Test expected failures."""
 
@@ -83,7 +82,6 @@ class TestListsMissing(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
 
 
-
 class TestLists(unittest.TestCase):
     """Test various aspects of mailing list resources."""
 
@@ -225,7 +223,6 @@ class TestLists(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
 
 
-
 class TestListArchivers(unittest.TestCase):
     """Test corner cases for list archivers."""
 
@@ -305,7 +302,6 @@ class TestListArchivers(unittest.TestCase):
         self.assertEqual(cm.exception.reason, b'Invalid boolean value: sure')
 
 
-
 class TestListPagination(unittest.TestCase):
     """Test mailing list pagination functionality.
 
@@ -386,7 +382,6 @@ class TestListPagination(unittest.TestCase):
         self.assertNotIn('entries', resource)
 
 
-
 class TestListDigests(unittest.TestCase):
     """Test /lists/<list-id>/digest"""
 

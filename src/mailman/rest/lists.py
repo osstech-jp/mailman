@@ -52,7 +52,6 @@ from mailman.rest.validator import Validator
 from zope.component import getUtility
 
 
-
 def member_matcher(request, segments):
     """A matcher of member URLs inside mailing lists.
 
@@ -98,7 +97,6 @@ def config_matcher(request, segments):
     return None
 
 
-
 class _ListBase(CollectionMixin):
     """Shared base class for mailing list representations."""
 
@@ -215,7 +213,6 @@ class AList(_ListBase):
         return HeaderMatches(self._mlist)
 
 
-
 class AllLists(_ListBase):
     """The mailing lists."""
 
@@ -241,7 +238,6 @@ class AllLists(_ListBase):
         okay(response, etag(resource))
 
 
-
 class MembersOfList(MemberCollection):
     """The members of a mailing list."""
 
@@ -275,7 +271,6 @@ class ListsForDomain(_ListBase):
         return list(self._domain.mailing_lists)
 
 
-
 class ArchiverGetterSetter(GetterSetter):
     """Resource for updating archiver statuses."""
 
@@ -328,7 +323,6 @@ class ListArchivers:
         self.patch_put(request, response, is_optional=True)
 
 
-
 class ListDigest:
     """Simple resource representing actions on a list's digest."""
 
@@ -363,7 +357,6 @@ class ListDigest:
         accepted(response)
 
 
-
 class Styles:
     """Simple resource representing all list styles."""
 

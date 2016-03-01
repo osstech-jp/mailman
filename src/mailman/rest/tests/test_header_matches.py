@@ -27,8 +27,8 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.mailinglist import IHeaderMatchList
-from mailman.testing.layers import RESTLayer
 from mailman.testing.helpers import call_api
+from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 
 
@@ -39,7 +39,7 @@ class TestHeaderMatches(unittest.TestCase):
         with transaction():
             self._mlist = create_list('ant@example.com')
 
-    def test_get_missing_hm(self):
+    def test_get_missing_header_match(self):
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/ant.example.com'
                      '/header-matches/0')
@@ -47,7 +47,7 @@ class TestHeaderMatches(unittest.TestCase):
         self.assertEqual(cm.exception.reason,
                          b'No header match at this position: 0')
 
-    def test_delete_missing_hm(self):
+    def test_delete_missing_header_match(self):
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/ant.example.com'
                      '/header-matches/0',
@@ -69,3 +69,9 @@ class TestHeaderMatches(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          b'This header match already exists')
+
+    def test_header_match_on_missing_list(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/bee.example.com'
+                     '/header-matches/')
+        self.assertEqual(cm.exception.code, 404)
