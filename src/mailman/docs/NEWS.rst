@@ -148,6 +148,7 @@ REST
    arguments.  Given by Aurélien Bompard.
  * Header match rules for individual mailing lists are now exposed in the REST
    API.  Given by Aurélien Bompard.  (Closes: #192)
+ * Expose `goodbye_message_uri` in the REST API.  Given by Harshit Bansal.
 
 Other
 -----

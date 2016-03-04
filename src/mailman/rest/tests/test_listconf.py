@@ -46,6 +46,7 @@ RESOURCE = dict(
     admin_notify_mchanges=True,
     administrivia=False,
     advertised=False,
+    allow_list_posts=False,
     anonymous_list=True,
     archive_policy='never',
     autorespond_owner='respond_and_discard',
@@ -55,28 +56,27 @@ RESOURCE = dict(
     autoresponse_owner_text='the owner',
     autoresponse_postings_text='the mailing list',
     autoresponse_request_text='the robot',
-    display_name='Fnords',
+    collapse_alternatives=False,
+    convert_html_to_plaintext=True,
+    default_member_action='hold',
+    default_nonmember_action='discard',
     description='This is my mailing list',
-    include_rfc2369_headers=False,
-    allow_list_posts=False,
     digest_send_periodic=True,
     digest_size_threshold=10.5,
     digest_volume_frequency='monthly',
     digests_enabled=True,
-    posting_pipeline='virgin',
+    display_name='Fnords',
     filter_content=True,
     first_strip_reply_to=True,
-    convert_html_to_plaintext=True,
-    collapse_alternatives=False,
+    goodbye_message_uri='mailman:///goodbye.txt',
+    include_rfc2369_headers=False,
+    posting_pipeline='virgin',
     reply_goes_to_list='point_to_list',
     reply_to_address='bee@example.com',
     send_welcome_message=False,
     subject_prefix='[ant]',
     subscription_policy='confirm_then_moderate',
     welcome_message_uri='mailman:///welcome.txt',
-    default_member_action='hold',
-    default_nonmember_action='discard',
-    goodbye_message_uri='mailman:///somefile.txt',
     )
 
 
@@ -379,25 +379,31 @@ class TestConfiguration(unittest.TestCase):
 
     def test_get_goodbye_message_uri(self):
         with transaction():
-            self._mlist.goodbye_message_uri = 'mailman:///somefile.txt'
+            self._mlist.goodbye_message_uri = 'mailman:///goodbye.txt'
         resource, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/config'
             '/goodbye_message_uri')
-        self.assertEqual(resource['goodbye_message_uri'], 'mailman:///somefile.txt')
+        self.assertEqual(
+            resource['goodbye_message_uri'], 'mailman:///goodbye.txt')
+
+    def test_patch_goodbye_message_uri_parent(self):
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config',
+            dict(goodbye_message_uri='mailman:///salutation.txt'),
+            'PATCH')
+        self.assertEqual(response.status, 204)
+        self.assertEqual(
+            self._mlist.goodbye_message_uri, 'mailman:///salutation.txt')
 
     def test_patch_goodbye_message_uri(self):
-        with transaction():
-            self._mlist.goodbye_message_uri = 'mailman:///somefile.txt'
         resource, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/config'
             '/goodbye_message_uri',
-            dict(goodbye_message_uri='mailman:///anotherfile.txt'),
+            dict(goodbye_message_uri='mailman:///salutation.txt'),
             'PATCH')
         self.assertEqual(response.status, 204)
-        resource, response = call_api(
-            'http://localhost:9001/3.0/lists/ant.example.com/config'
-            '/goodbye_message_uri')
-        self.assertEqual(resource['goodbye_message_uri'], 'mailman:///anotherfile.txt')
+        self.assertEqual(
+            self._mlist.goodbye_message_uri, 'mailman:///salutation.txt')
 
     def test_put_goodbye_message_uri(self):
         with transaction():
@@ -405,10 +411,8 @@ class TestConfiguration(unittest.TestCase):
         resource, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/config'
             '/goodbye_message_uri',
-            dict(goodbye_message_uri='mailman:///anotherfile.txt'),
+            dict(goodbye_message_uri='mailman:///salutation.txt'),
             'PUT')
         self.assertEqual(response.status, 204)
-        resource, response = call_api(
-            'http://localhost:9001/3.0/lists/ant.example.com/config'
-            '/goodbye_message_uri')
-        self.assertEqual(resource['goodbye_message_uri'], 'mailman:///anotherfile.txt')
+        self.assertEqual(
+            self._mlist.goodbye_message_uri, 'mailman:///salutation.txt')
