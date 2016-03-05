@@ -633,3 +633,19 @@ class TestAPI31Members(unittest.TestCase):
         # that's known to the system, in API 3.1.  It's not technically a 404
         # because that's reserved for URL lookups.
         self.assertEqual(cm.exception.code, 400)
+
+    def test_duplicate_owner(self):
+        # Server failure when someone is already an owner.
+        with transaction():
+            anne = getUtility(IUserManager).create_address('anne@example.com')
+            self._mlist.subscribe(anne, MemberRole.owner)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/members', {
+                'list_id': 'ant.example.com',
+                'subscriber': anne.email,
+                'role': 'owner',
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(
+            cm.exception.reason,
+            b'anne@example.com is already an owner of ant@example.com')

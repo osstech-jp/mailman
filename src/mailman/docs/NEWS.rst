@@ -65,6 +65,9 @@ Bugs
  * In decoration URIs (e.g. ``IMailingList.header_uri`` and ``.footer_uri``)
    you should now use the mailing list's List-ID instead of the
    fqdn-listname.  The latter is deprecated.  (Closes #196)
+ * Trying to subscribe an address as a list owner (or moderator or nonmember)
+   which is already subscribed with that role produces a server error.
+   Originally given by Anirudh Dahiya.  (Closes #198)
 
 Configuration
 -------------
