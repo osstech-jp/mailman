@@ -260,6 +260,7 @@ class AllMembers(_MemberBase):
             pre_verified = arguments.pop('pre_verified', False)
             pre_confirmed = arguments.pop('pre_confirmed', False)
             pre_approved = arguments.pop('pre_approved', False)
+            # Check if the request for this email is already pending under moderation
             pendings = getUtility(IPendings).find(mlist=mlist, pend_type='subscription')
             for token,pendable in pendings:
                 if pendable['email']==subscriber.email and pendable['token_owner']=='moderator':
