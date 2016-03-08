@@ -45,7 +45,7 @@ from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
 from uuid import UUID
 from zope.component import getUtility
-
+from mailman.interfaces.pending import IPendings
 
 
 class _MemberBase(CollectionMixin):
@@ -260,6 +260,11 @@ class AllMembers(_MemberBase):
             pre_verified = arguments.pop('pre_verified', False)
             pre_confirmed = arguments.pop('pre_confirmed', False)
             pre_approved = arguments.pop('pre_approved', False)
+            pendings = getUtility(IPendings).find(mlist=mlist, pend_type='subscription')
+            for token,pendable in pendings:
+                if pendable['email']==subscriber.email and pendable['token_owner']=='moderator':
+                    conflict(response,b'Subscription request pending for moderation')
+                    return
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
             # verification, confirmation, or approval.
