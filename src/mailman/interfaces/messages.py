@@ -64,11 +64,12 @@ class IMessageStore(Interface):
 
         :param message: An email.message.Message instance containing at least
             a unique Message-ID header.  The message will be given an
-            Message-ID-Hash header, overriding any existing such header.
-        :returns: The calculated Message-ID-Hash header.
+            Message-ID-Hash header, overriding any existing such header.  If
+            the message already exists in the store, it is not added again.
+        :returns: The calculated Message-ID-Hash header or None if the message
+            already exists in the store.
+        :rtype: str or None
         :raises ValueError: if the message is missing a Message-ID header.
-            The storage service is also allowed to raise this exception if it
-            find, but disallows collisions.
         """
 
     def get_message_by_id(message_id):

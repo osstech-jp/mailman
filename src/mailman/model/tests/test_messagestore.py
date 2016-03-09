@@ -137,3 +137,22 @@ X-Message-ID-Hash: abc
         self.assertEqual(len(x_message_id_hashes), 1)
         self.assertEqual(x_message_id_hashes[0],
                          'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
+
+    def test_add_message_duplicate_okay(self):
+        msg = mfs("""\
+Subject: Once
+Message-ID: <ant>
+
+""")
+        hash32 = self._store.add(msg)
+        stored_msg = self._store.get_message_by_id('<ant>')
+        self.assertEqual(msg['subject'], stored_msg['subject'])
+        self.assertEqual(msg['message-id-hash'], hash32)
+        # A second insertion, even if headers change, does not store the
+        # message twice.
+        del msg['subject']
+        msg['Subject'] = 'Twice'
+        hash32 = self._store.add(msg)
+        stored_msg = self._store.get_message_by_id('<ant>')
+        self.assertNotEqual(msg['subject'], stored_msg['subject'])
+        self.assertIsNone(hash32)

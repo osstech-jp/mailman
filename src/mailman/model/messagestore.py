@@ -56,13 +56,11 @@ class MessageStore:
         message_id = message_ids[0]
         if isinstance(message_id, bytes):
             message_id = message_id.decode('ascii')
-        # Complain if the Message-ID already exists in the storage.
+        # If the Message-ID already exists in the store, don't store it again.
         existing = store.query(Message).filter(
             Message.message_id == message_id).first()
         if existing is not None:
-            raise ValueError(
-                'Message ID already exists in message store: {0}'.format(
-                    message_id))
+            return None
         hash32 = add_message_hash(message)
         # Calculate the path on disk where we're going to store this message
         # object, in pickled format.
