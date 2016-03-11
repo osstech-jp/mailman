@@ -263,11 +263,7 @@ class AllMembers(_MemberBase):
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
             # verification, confirmation, or approval.
-            try:
-                registrar = IRegistrar(mlist)
-            except SubscriptionPendingError:
-                conflict(response ,b'Subscrition request already pending')
-                return
+            registrar = IRegistrar(mlist)
             try:
                 token, token_owner, member = registrar.register(
                     subscriber,
@@ -282,6 +278,9 @@ class AllMembers(_MemberBase):
                 return
             except MembershipIsBannedError:
                 bad_request(response, b'Membership is banned')
+                return
+            except SubscriptionPendingError:
+                conflict(response ,b'Subscription request already pending')
                 return
             if token is None:
                 assert token_owner is TokenOwner.no_one, token_owner
