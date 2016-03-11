@@ -176,6 +176,19 @@ developed as a separate, Django-based project.  For now, the most flexible
 means of configuration is via the command line and REST API.
 
 
+Mailman Shell
+-------------
+
+The `Mailman 3 documentation`_ has examples which use the Mailman shell to
+interact with Mailman.  To start the shell type ``mailman shell`` in your
+terminal.
+
+There are some testings functions which need to be imported first before you
+use them. They can be imported from the modules available in
+``mailman.testing``.  For example, to use ``dump_list`` you first need to
+import it from the ``mailman.testing.documentation`` module.
+
+
 Mailman Web UI
 --------------
 
