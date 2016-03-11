@@ -21,6 +21,7 @@ __all__ = [
     'ISubscriptionService',
     'MissingUserError',
     'RequestRecord',
+    'SubscriptionPendingError',
     'TokenOwner',
     'TooManyMembersError',
     ]
@@ -45,13 +46,22 @@ class MissingUserError(MailmanError):
         return self.user_id
 
 
+class SubscriptionPendingError(MailmanError):
+    def __init__(self, email, list_id):
+        super().__init__()
+        self.email = email
+        self.list_id = list_id
+        
+    def __str__(self):
+        return 'Subscription request for email {0} is pending for mailing list{1}'.format(
+            self.email,self.list_id.fqdn_listname)
+
 class TooManyMembersError(MembershipError):
     def __init__(self, subscriber, list_id, role):
         super().__init__()
         self.subscriber = subscriber
         self.list_id = list_id
         self.role = role
-
 
 
 _RequestRecord = namedtuple(

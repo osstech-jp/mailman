@@ -32,9 +32,10 @@ from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
     MembershipIsBannedError, MissingPreferredAddressError)
+from mailman.interfaces.pending import IPendings
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.subscriptions import (
-    ISubscriptionService, RequestRecord, TokenOwner)
+    ISubscriptionService, RequestRecord, SubscriptionPendingError, TokenOwner)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
@@ -45,7 +46,6 @@ from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
 from uuid import UUID
 from zope.component import getUtility
-from mailman.interfaces.pending import IPendings
 
 
 class _MemberBase(CollectionMixin):
@@ -260,16 +260,23 @@ class AllMembers(_MemberBase):
             pre_verified = arguments.pop('pre_verified', False)
             pre_confirmed = arguments.pop('pre_confirmed', False)
             pre_approved = arguments.pop('pre_approved', False)
+            '''
             # Check if the request for this email is already pending under moderation
             pendings = getUtility(IPendings).find(mlist=mlist, pend_type='subscription')
             for token,pendable in pendings:
                 if pendable['email']==subscriber.email and pendable['token_owner']=='moderator':
                     conflict(response,b'Subscription request pending for moderation')
                     return
+            '''
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
             # verification, confirmation, or approval.
-            registrar = IRegistrar(mlist)
+            try:
+                registrar = IRegistrar(mlist)
+            except SubscriptionPendingError:
+                print('hi')
+                conflict(response ,b'Subscrition request already pending')
+                return
             try:
                 token, token_owner, member = registrar.register(
                     subscriber,
