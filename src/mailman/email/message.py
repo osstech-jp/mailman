@@ -50,11 +50,6 @@ class Message(email.message.Message):
         return self.__str__()
 
     def __setstate__(self, values):
-        # The base class has grown and changed attributes over time.  This can
-        # break messages sitting in Mailman's queues at the time of upgrading
-        # the email package.  We can't (yet) change the email package to be
-        # safer for pickling, so we handle such changes here.  Note that we're
-        # using Python 2.6's email package version 4.0.1 as a base line here.
         self.__dict__ = values
 
     @property
