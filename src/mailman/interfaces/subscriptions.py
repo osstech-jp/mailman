@@ -53,7 +53,7 @@ class SubscriptionPendingError(MailmanError):
         self.list_id = list_id
         
     def __str__(self):
-        return 'Subscription request for email {0} is pending for mailing list {1}'.format(
+        return 'Subscription request for email {} is pending for mailing list {}'.format(
             self.email,self.list_id.fqdn_listname)
 
 class TooManyMembersError(MembershipError):
