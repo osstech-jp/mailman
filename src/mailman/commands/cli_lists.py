@@ -153,11 +153,20 @@ class Create:
             '-q', '--quiet',
             default=False, action='store_true',
             help=_('Print less output.'))
-        command_parser.add_argument(
+        domain_options = command_parser.add_mutually_exclusive_group()
+        domain_options.add_argument(
             '-d', '--domain',
-            default=False, action='store_true',
+            default=True, action='store_true',
             help=_("""\
-            Register the mailing list's domain if not yet registered."""))
+            Register the mailing list's domain if not yet registered."""),
+            dest='domain')
+        domain_options.add_argument(
+            '-D', '--no-domain',
+            default=False, action='store_false',
+            help=_("""\
+            Do not register the mailing list's domain if not already registered."""),
+            dest='domain')
+        
         # Required positional argument.
         command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,

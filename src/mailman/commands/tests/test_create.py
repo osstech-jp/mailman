@@ -25,6 +25,7 @@ __all__ = [
 import sys
 import unittest
 
+from argparse import ArgumentParser
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_lists import Create
 from mailman.testing.layers import ConfigLayer
@@ -55,7 +56,8 @@ class TestCreate(unittest.TestCase):
 
     def setUp(self):
         self.command = Create()
-        self.command.parser = FakeParser()
+        self.parser = ArgumentParser()
+        self.command.add(FakeParser(), self.parser)
         self.args = FakeArgs()
 
     def test_cannot_create_duplicate_list(self):
@@ -90,3 +92,18 @@ class TestCreate(unittest.TestCase):
             pass
         self.assertEqual(self.command.parser.message,
                          'Illegal owner addresses: main=True')
+
+    def test_without_domain_option(self):
+        # Domain should be created if option not specified.
+        args = self.parser.parse_args('test@list.org'.split())
+        self.assertTrue(args.domain)
+
+    def test_with_domain_option(self):
+        # Domain should be created if option given.
+        args = self.parser.parse_args('-d test@list.org'.split())
+        self.assertTrue(args.domain)
+
+    def test_with_nodomain_option(self):
+        # Domain should not be created if --no-domain is given.
+        args = self.parser.parse_args('-D test@list.net'.split())
+        self.assertFalse(args.domain)

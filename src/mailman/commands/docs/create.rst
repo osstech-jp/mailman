@@ -33,6 +33,9 @@ domain.  Both the mailing list and domain will be created.
     >>> command.process(FakeArgs)
     Created mailing list: test@example.xx
 
+This is the default behaviour. Even if you do not specify any option, 
+Mailman will itself make the domain if it doesn't exist.
+
 Now both the domain and the mailing list exist in the database.
 ::
 
@@ -46,8 +49,8 @@ Now both the domain and the mailing list exist in the database.
     >>> getUtility(IDomainManager).get('example.xx')
     <Domain example.xx, base_url: http://example.xx>
 
-You can also create mailing lists in existing domains without the
-auto-creation flag.
+You can also create mailing lists in existing domains by using the
+``-D`` or ``--no-domain`` flag.
 ::
 
     >>> FakeArgs.domain = False
@@ -57,6 +60,10 @@ auto-creation flag.
 
     >>> list_manager.get('test1@example.com')
     <mailing list "test1@example.com" at ...>
+
+Although the ``--no-domain`` flag is not required when domain already 
+exists it can be used to error out when domain doesn't exist. In such
+case, Mailman will give an error message.
 
 The command can also operate quietly.
 ::
