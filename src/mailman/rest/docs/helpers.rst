@@ -121,7 +121,7 @@ But if the optional values are present, they must of course also be valid.
 
 
 Arrays
-------
+======
 
 Some ``POST`` forms include more than one value for a particular key.  This is
 how lists and arrays are modeled.  The validator does the right thing with
