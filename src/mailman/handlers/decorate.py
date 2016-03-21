@@ -40,6 +40,7 @@ from zope.interface import implementer
 
 
 log = logging.getLogger('mailman.error')
+alog = logging.getLogger('mailman.archiver')
 
 
 
@@ -64,8 +65,14 @@ def process(mlist, msg, msgdata):
     # the $<archive-name>_url placeholder for every enabled archiver.
     for archiver in IListArchiverSet(mlist).archivers:
         if archiver.is_enabled:
-            # Get the permalink of the message from the archiver.
-            archive_url = archiver.system_archiver.permalink(mlist, msg)
+            # Get the permalink of the message from the archiver.  Watch out
+            # for exceptions in the archiver plugin.
+            try:
+                archive_url = archiver.system_archiver.permalink(mlist, msg)
+            except Exception:
+                alog.exception('Exception in "{}" archiver'.format(
+                    archiver.system_archiver.name))
+                archive_url = None
             if archive_url is not None:
                 placeholder = '{}_url'.format(archiver.system_archiver.name)
                 d[placeholder] = archive_url
