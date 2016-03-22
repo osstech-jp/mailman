@@ -8,7 +8,7 @@ A system administrator can create mailing lists by the command line.
     ...     language = None
     ...     owners = []
     ...     quiet = False
-    ...     domain = None
+    ...     domain = True
     ...     listname = None
     ...     notify = False
 
@@ -22,19 +22,16 @@ You cannot create a mailing list in an unknown domain.
     ...         print(message)
     >>> command.parser = FakeParser()
 
+    >>> FakeArgs.domain = False
     >>> FakeArgs.listname = ['test@example.xx']
     >>> command.process(FakeArgs)
     Undefined domain: example.xx
 
-The ``-d`` or ``--domain`` option is used to tell Mailman to auto-register the
-domain.  Both the mailing list and domain will be created.
+By default, Mailman will create the domain if it doesn't exist.
 
     >>> FakeArgs.domain = True
     >>> command.process(FakeArgs)
     Created mailing list: test@example.xx
-
-This is the default behaviour. Even if you do not specify any option, 
-Mailman will itself make the domain if it doesn't exist.
 
 Now both the domain and the mailing list exist in the database.
 ::
@@ -49,9 +46,10 @@ Now both the domain and the mailing list exist in the database.
     >>> getUtility(IDomainManager).get('example.xx')
     <Domain example.xx, base_url: http://example.xx>
 
-You can also create mailing lists in existing domains by using the
-``-D`` or ``--no-domain`` flag.
-::
+You can prevent the creation of the domain in existing domains by using the
+``-D`` or ``--no-domain`` flag.  Although the ``--no-domain`` flag is not
+required when domain already exists it can be used to force an error when
+domain doesn't exist.
 
     >>> FakeArgs.domain = False
     >>> FakeArgs.listname = ['test1@example.com']
@@ -60,10 +58,6 @@ You can also create mailing lists in existing domains by using the
 
     >>> list_manager.get('test1@example.com')
     <mailing list "test1@example.com" at ...>
-
-Although the ``--no-domain`` flag is not required when domain already 
-exists it can be used to error out when domain doesn't exist. In such
-case, Mailman will give an error message.
 
 The command can also operate quietly.
 ::

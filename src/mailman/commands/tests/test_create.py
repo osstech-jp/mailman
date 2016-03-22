@@ -56,8 +56,7 @@ class TestCreate(unittest.TestCase):
 
     def setUp(self):
         self.command = Create()
-        self.parser = ArgumentParser()
-        self.command.add(FakeParser(), self.parser)
+        self.command.parser = FakeParser()
         self.args = FakeArgs()
 
     def test_cannot_create_duplicate_list(self):
@@ -84,7 +83,6 @@ class TestCreate(unittest.TestCase):
     def test_invalid_owner_addresses(self):
         # Cannot create a list with invalid owner addresses.  LP: #778687
         self.args.listname = ['test@example.com']
-        self.args.domain = True
         self.args.owners = ['main=True']
         try:
             self.command.process(self.args)
@@ -94,16 +92,31 @@ class TestCreate(unittest.TestCase):
                          'Illegal owner addresses: main=True')
 
     def test_without_domain_option(self):
-        # Domain should be created if option not specified.
-        args = self.parser.parse_args('test@list.org'.split())
+        # The domain will be created if no domain options are specified.
+        parser = ArgumentParser()
+        self.command.add(FakeParser(), parser)
+        args = parser.parse_args('test@example.org'.split())
         self.assertTrue(args.domain)
 
     def test_with_domain_option(self):
-        # Domain should be created if option given.
-        args = self.parser.parse_args('-d test@list.org'.split())
+        # The domain will be created if -d is given explicitly.
+        parser = ArgumentParser()
+        self.command.add(FakeParser(), parser)
+        args = parser.parse_args('-d test@example.org'.split())
         self.assertTrue(args.domain)
 
     def test_with_nodomain_option(self):
-        # Domain should not be created if --no-domain is given.
-        args = self.parser.parse_args('-D test@list.net'.split())
+        # The domain will not be created if --no-domain is given.
+        parser = ArgumentParser()
+        self.command.add(FakeParser(), parser)
+        args = parser.parse_args('-D test@example.net'.split())
         self.assertFalse(args.domain)
+
+    def test_error_when_not_creating_domain(self):
+        self.args.domain = False
+        self.args.listname = ['test@example.org']
+        with self.assertRaises(SystemExit) as cm:
+            self.command.process(self.args)
+        self.assertEqual(cm.exception.code, 1)
+        self.assertEqual(self.command.parser.message,
+                         'Undefined domain: example.org')

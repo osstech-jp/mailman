@@ -84,6 +84,14 @@ Configuration
  * The default languages from Mailman 2.1 have been ported over.  Given by
    Aurélien Bompard.
 
+Command line
+------------
+ * ``mailman create <listname@dom.ain>`` will now create missing domains
+   by default.  The ``-d``/``--domain`` option is kept for backward
+   compatibility, but now there is a ``-D``/``--no-domain`` option to prevent
+   missing domains from being create, forcing an error in those cases.
+   Given by Gurkirpal Singh.  (Closes #39)
+
 Interfaces
 ----------
  * Implement reasons for why a message is being held for moderator approval.

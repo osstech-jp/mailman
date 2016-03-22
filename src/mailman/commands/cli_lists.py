@@ -156,17 +156,19 @@ class Create:
         domain_options = command_parser.add_mutually_exclusive_group()
         domain_options.add_argument(
             '-d', '--domain',
+            dest='domain',
             default=True, action='store_true',
             help=_("""\
-            Register the mailing list's domain if not yet registered."""),
-            dest='domain')
+            Register the mailing list's domain if not yet registered.  This is
+            the default behavior, but these options are provided for backward
+            compatibility."""))
         domain_options.add_argument(
             '-D', '--no-domain',
+            dest='domain',
             default=False, action='store_false',
             help=_("""\
-            Do not register the mailing list's domain if not already registered."""),
-            dest='domain')
-        
+            Do not register the mailing list's domain if not already
+            registered."""))
         # Required positional argument.
         command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,

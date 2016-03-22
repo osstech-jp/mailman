@@ -79,8 +79,8 @@ class ICLISubCommand(Interface):
 
         :param parser: The argument parser.
         :type parser: `argparse.ArgumentParser`
-        :param subparser: The command subparser.
-        :type subparser: `argparse.ArgumentParser`
+        :param command_parser: The command subparser.
+        :type command_parser: `argparse.ArgumentParser`
         """
 
     def process(args):
