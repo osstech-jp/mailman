@@ -40,7 +40,6 @@ __all__ = [
 
 
 from mailman.chains.base import Link
-from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.chain import IChain, LinkAction
