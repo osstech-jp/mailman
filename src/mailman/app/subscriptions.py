@@ -39,7 +39,8 @@ from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import MembershipIsBannedError
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.registrar import ConfirmationNeededEvent
-from mailman.interfaces.subscriptions import ISubscriptionService, SubscriptionPendingError, TokenOwner
+from mailman.interfaces.subscriptions import (
+    ISubscriptionService, SubscriptionPendingError, TokenOwner)
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.interfaces.workflow import IWorkflowStateManager
@@ -185,12 +186,13 @@ class SubscriptionWorkflow(Workflow):
         # Is this email address banned?
         if IBanManager(self.mlist).is_banned(self.address.email):
             raise MembershipIsBannedError(self.mlist, self.address.email)
-        # Check if the request for this email is already pending under
-        # moderation
-        pendings = getUtility(IPendings).find(mlist = self.mlist,pend_type = 'subscription')
+        # Check if there is already a subscription request for this email.
+        pendings = getUtility(IPendings).find(
+            mlist=self.mlist,
+            pend_type='subscription')
         for token, pendable in pendings:
-            if pendable['email'] == self.address.email and pendable['token_owner'] == 'moderator':
-                raise SubscriptionPendingError(self.address.email, self.mlist)
+            if pendable['email'] == self.address.email:
+                raise SubscriptionPendingError(self.mlist, self.address.email)
         # Start out with the subscriber being the token owner.
         self.push('verification_checks')
 

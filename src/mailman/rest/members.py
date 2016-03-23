@@ -32,7 +32,6 @@ from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
     MembershipIsBannedError, MissingPreferredAddressError)
-from mailman.interfaces.pending import IPendings
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, RequestRecord, SubscriptionPendingError, TokenOwner)
@@ -46,6 +45,7 @@ from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
 from uuid import UUID
 from zope.component import getUtility
+
 
 
 class _MemberBase(CollectionMixin):
@@ -280,7 +280,7 @@ class AllMembers(_MemberBase):
                 bad_request(response, b'Membership is banned')
                 return
             except SubscriptionPendingError:
-                conflict(response ,b'Subscription request already pending')
+                conflict(response, b'Subscription request already pending')
                 return
             if token is None:
                 assert token_owner is TokenOwner.no_one, token_owner

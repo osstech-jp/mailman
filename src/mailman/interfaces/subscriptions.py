@@ -47,14 +47,11 @@ class MissingUserError(MailmanError):
 
 
 class SubscriptionPendingError(MailmanError):
-    def __init__(self, email, list_id):
+    def __init__(self, mlist, email):
         super().__init__()
+        self.mlist = mlist
         self.email = email
-        self.list_id = list_id
-        
-    def __str__(self):
-        return 'Subscription request for email {} is pending for mailing list {}'.format(
-            self.email,self.list_id.fqdn_listname)
+
 
 class TooManyMembersError(MembershipError):
     def __init__(self, subscriber, list_id, role):
@@ -62,6 +59,7 @@ class TooManyMembersError(MembershipError):
         self.subscriber = subscriber
         self.list_id = list_id
         self.role = role
+
 
 
 _RequestRecord = namedtuple(

@@ -30,7 +30,10 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
+from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, MemberRole
+from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     TestableMaster, call_api, get_lmtp_client, make_testable_runner,
@@ -216,6 +219,52 @@ class TestMembership(unittest.TestCase):
             entry_0['address'],
             'http://localhost:9001/3.0/addresses/anne@example.com')
         self.assertEqual(entry_0['list_id'], 'test.example.com')
+
+    def test_duplicate_pending_subscription(self):
+        # Issue #199 - a member's subscription is already pending and they try
+        # to subscribe again.
+        registrar = IRegistrar(self._mlist)
+        with transaction():
+            self._mlist.subscription_policy = SubscriptionPolicy.moderate
+            anne = self._usermanager.create_address('anne@example.com')
+            token, token_owner, member = registrar.register(
+                anne, pre_verified=True, pre_confirmed=True)
+            self.assertEqual(token_owner, TokenOwner.moderator)
+            self.assertIsNone(member)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': 'anne@example.com',
+                'pre_verified': True,
+                'pre_confirmed': True,
+                })
+        self.assertEqual(cm.exception.code, 409)
+        self.assertEqual(cm.exception.reason,
+                         b'Subscription request already pending')
+
+    def test_duplicate_other_pending_subscription(self):
+        # Issue #199 - a member's subscription is already pending and they try
+        # to subscribe again.  Unlike above, this pend is waiting for the user
+        # to confirm their subscription.
+        registrar = IRegistrar(self._mlist)
+        with transaction():
+            self._mlist.subscription_policy = (
+                SubscriptionPolicy.confirm_then_moderate)
+            anne = self._usermanager.create_address('anne@example.com')
+            token, token_owner, member = registrar.register(
+                anne, pre_verified=True)
+            self.assertEqual(token_owner, TokenOwner.subscriber)
+            self.assertIsNone(member)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': 'anne@example.com',
+                'pre_verified': True,
+                'pre_confirmed': True,
+                })
+        self.assertEqual(cm.exception.code, 409)
+        self.assertEqual(cm.exception.reason,
+                         b'Subscription request already pending')
 
     def test_member_changes_preferred_address(self):
         with transaction():
