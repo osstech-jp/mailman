@@ -1,7 +1,7 @@
 """Members and list moderation action
 
 Revision ID: 7b254d88f122
-Revises: bfda02ab3a9b
+Revises: d4fbb4fd34ca
 Create Date: 2016-02-10 11:31:04.233619
 
 This is a data-only migration. If a member has the same moderation action as
@@ -42,11 +42,21 @@ members_query = member_table.select().where(sa.or_(
     member_table.c.role == MemberRole.nonmember,
     ))
 
+DEFAULT_ACTION_CACHE = {}
 
 def _get_default_action(connection, member):
-    mailing_list = connection.execute(mailinglist_table.select().where(
-        mailinglist_table.c.list_id == member['list_id'])).fetchone()
-    return mailing_list['default_{}_action'.format(member['role'].name)]
+    list_id = member['list_id']
+    propname = 'default_{}_action'.format(member['role'].name)
+    try:
+        action = DEFAULT_ACTION_CACHE[list_id][propname]
+    except KeyError:
+        mailing_list = connection.execute(mailinglist_table.select().where(
+            mailinglist_table.c.list_id == list_id)).fetchone()
+        action = mailing_list[propname]
+        if list_id not in DEFAULT_ACTION_CACHE:
+            DEFAULT_ACTION_CACHE[list_id] = {}
+        DEFAULT_ACTION_CACHE[list_id][propname] = action
+    return action
 
 
 def upgrade():
