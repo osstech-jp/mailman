@@ -1112,10 +1112,10 @@ class TestPreferencesImport(unittest.TestCase):
         self._do_test(128, dict(moderation_action=Action.discard))
 
     def test_no_moderate(self):
-        # If option flag Moderate is not set, action is None (fallback to the
-        # mailing list's action).
+        # If option flag Moderate is not set, action is defer.
+        # See: https://gitlab.com/mailman/mailman/merge_requests/100
         self._pckdict['member_moderation_action'] = 1          # reject
-        self._do_test(0, dict(moderation_action=None))
+        self._do_test(0, dict(moderation_action=Action.defer))
 
     def test_multiple_options(self):
         # DontReceiveDuplicates & DisableMime & SuppressPasswordReminder
