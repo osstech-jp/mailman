@@ -17,13 +17,9 @@
 
 """Getting information out of a qfile."""
 
-__all__ = [
-    'QFile',
-    ]
-
-
 import pickle
 
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.utilities.interact import interact
@@ -35,7 +31,7 @@ from zope.interface import implementer
 m = []
 
 
-
+@public
 @implementer(ICLISubCommand)
 class QFile:
     """Get information out of a queue file."""
@@ -84,7 +80,7 @@ class QFile:
                 else:
                     printer.pprint(obj)
             print(_('[----- end pickle -----]'))
-        count = len(m)
+        count = len(m)                              # flake8: noqa
         banner = _("The variable 'm' contains $count objects")
         if args.interactive:
             interact(banner=banner)

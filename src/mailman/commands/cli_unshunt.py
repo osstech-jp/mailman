@@ -17,20 +17,16 @@
 
 """The 'unshunt' command."""
 
-__all__ = [
-    'Unshunt',
-    ]
-
-
 import sys
 
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Unshunt:
     """Unshunt messages."""

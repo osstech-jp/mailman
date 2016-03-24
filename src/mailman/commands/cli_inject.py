@@ -17,13 +17,9 @@
 
 """The `mailman inject` subcommand."""
 
-__all__ = [
-    'Inject',
-    ]
-
-
 import sys
 
+from mailman import public
 from mailman.app.inject import inject_text
 from mailman.config import config
 from mailman.core.i18n import _
@@ -33,7 +29,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Inject:
     """Inject a message from a file into a mailing list's queue."""

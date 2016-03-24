@@ -17,11 +17,7 @@
 
 """The 'confirm' email command."""
 
-__all__ = [
-    'Confirm',
-    ]
-
-
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.registrar import IRegistrar
@@ -29,7 +25,7 @@ from mailman.interfaces.subscriptions import TokenOwner
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IEmailCommand)
 class Confirm:
     """The email 'confirm' command."""

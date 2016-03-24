@@ -17,12 +17,6 @@
 
 """Test the `confirm` command."""
 
-__all__ = [
-    'TestConfirm',
-    'TestEmailResponses',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -39,7 +33,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestConfirm(unittest.TestCase):
     """Test the `confirm` command."""
 
@@ -62,10 +55,9 @@ class TestConfirm(unittest.TestCase):
             self._mlist, Message(), {}, (self._token,), Results())
         self.assertEqual(status, ContinueProcessing.yes)
         # There should be one messages in the queue; the welcome message.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         # Grab the welcome message.
-        welcome = messages[0].msg
+        welcome = items[0].msg
         self.assertEqual(welcome['subject'],
                          'Welcome to the "Test" mailing list')
         self.assertEqual(welcome['to'], 'Anne Person <anne@example.com>')
@@ -77,8 +69,7 @@ class TestConfirm(unittest.TestCase):
             self._mlist, Message(), {}, (self._token,), Results())
         self.assertEqual(status, ContinueProcessing.yes)
         # There will be no messages in the queue.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 0)
+        get_queue_messages('virgin', expected_count=0)
 
 
 class TestEmailResponses(unittest.TestCase):
@@ -91,8 +82,8 @@ class TestEmailResponses(unittest.TestCase):
 
     def test_confirm_then_moderate_workflow(self):
         # Issue #114 describes a problem when confirming the moderation email.
-        self._mlist.subscription_policy = \
-            SubscriptionPolicy.confirm_then_moderate
+        self._mlist.subscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
         bart = getUtility(IUserManager).create_address(
             'bart@example.com', 'Bart Person')
         # Clear any previously queued confirmation messages.
@@ -101,8 +92,7 @@ class TestEmailResponses(unittest.TestCase):
             bart)
         # There should now be one email message in the virgin queue, i.e. the
         # confirmation message sent to Bart.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         msg = items[0].msg
         # Confirmations come first, so this one goes to the subscriber.
         self.assertEqual(msg['to'], 'bart@example.com')
@@ -123,8 +113,7 @@ class TestEmailResponses(unittest.TestCase):
         # subscriber containing the results of their confirmation message, and
         # the other is to the moderators informing them that they need to
         # handle the moderation queue.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 2)
+        items = get_queue_messages('virgin', expected_count=2)
         if items[0].msg['to'] == 'bart@example.com':
             results = items[0].msg
             moderator_msg = items[1].msg

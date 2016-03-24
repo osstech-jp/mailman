@@ -17,16 +17,11 @@
 
 """The `mailman shell` subcommand."""
 
-__all__ = [
-    'Shell',
-    'Withlist',
-    ]
-
-
 import re
 import sys
 
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
@@ -43,7 +38,7 @@ m = None
 r = None
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Withlist:
     """Operate on a mailing list.
@@ -164,7 +159,7 @@ class Withlist:
     def _start_python(self, overrides, banner):
         # Set the tab completion.
         try:
-            import readline, rlcompleter
+            import readline, rlcompleter            # flake8: noqa
             readline.parse_and_bind('tab: complete')
         except ImportError:
             pass
@@ -235,7 +230,7 @@ and run this from the command line:
     % mailman withlist -r change mylist@example.com 'My List'"""))
 
 
-
+@public
 class Shell(Withlist):
     """An alias for `withlist`."""
 

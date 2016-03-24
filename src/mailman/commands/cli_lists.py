@@ -17,13 +17,7 @@
 
 """The 'lists' subcommand."""
 
-__all__ = [
-    'Create',
-    'Lists',
-    'Remove',
-    ]
-
-
+from mailman import public
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.core.constants import system_preferences
 from mailman.core.i18n import _
@@ -44,7 +38,7 @@ from zope.interface import implementer
 COMMASPACE = ', '
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Lists:
     """List all mailing lists"""
@@ -95,7 +89,7 @@ class Lists:
             if not args.quiet:
                 print(_('No matching mailing lists found'))
             return
-        count = len(mailing_lists)
+        count = len(mailing_lists)                  # flake8: noqa
         if not args.quiet:
             print(_('$count matching mailing lists found:'))
         # Calculate the longest identifier.
@@ -103,7 +97,7 @@ class Lists:
         output = []
         for mlist in mailing_lists:
             if args.names:
-                identifier = '{0} [{1}]'.format(
+                identifier = '{} [{}]'.format(
                     mlist.fqdn_listname, mlist.display_name)
             else:
                 identifier = mlist.fqdn_listname
@@ -119,7 +113,7 @@ class Lists:
                 identifier, description, longest, 70 - longest))
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Create:
     """Create a mailing list."""
@@ -204,7 +198,8 @@ class Create:
             invalid_owners = [owner for owner in args.owners
                               if not validator.is_valid(owner)]
             if invalid_owners:
-                invalid = COMMASPACE.join(sorted(invalid_owners))
+                invalid = COMMASPACE.join(          # flake8: noqa
+                    sorted(invalid_owners))
                 self.parser.error(_('Illegal owner addresses: $invalid'))
                 return
         try:
@@ -228,11 +223,11 @@ class Create:
             print(_('Created mailing list: $mlist.fqdn_listname'))
         if args.notify:
             d = dict(
-                listname        = mlist.fqdn_listname,
-                admin_url       = mlist.script_url('admin'),
-                listinfo_url    = mlist.script_url('listinfo'),
-                requestaddr     = mlist.request_address,
-                siteowner       = mlist.no_reply_address,
+                listname = mlist.fqdn_listname,
+                admin_url = mlist.script_url('admin'),
+                listinfo_url = mlist.script_url('listinfo'),
+                requestaddr = mlist.request_address,
+                siteowner = mlist.no_reply_address,
                 )
             text = make('newlist.txt', mailing_list=mlist, **d)
             # Set the I18N language to the list's preferred language so the
@@ -246,7 +241,7 @@ class Create:
                 msg.send(mlist)
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Remove:
     """Remove a mailing list."""

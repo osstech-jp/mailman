@@ -17,15 +17,11 @@
 
 """The 'members' subcommand."""
 
-__all__ = [
-    'Members',
-    ]
-
-
 import sys
 
 from contextlib import ExitStack
 from email.utils import formataddr, parseaddr
+from mailman import public
 from mailman.app.membership import add_member
 from mailman.core.i18n import _
 from mailman.database.transaction import transactional
@@ -39,7 +35,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Members:
     """Manage list memberships.  With no arguments, list all members."""
@@ -132,9 +128,11 @@ class Members:
         :type args: `argparse.Namespace`
         """
         if args.digest == 'any':
-            digest_types = [DeliveryMode.plaintext_digests,
-                            DeliveryMode.mime_digests,
-                            DeliveryMode.summary_digests]
+            digest_types = [
+                DeliveryMode.plaintext_digests,
+                DeliveryMode.mime_digests,
+                DeliveryMode.summary_digests,
+                ]
         elif args.digest is not None:
             digest_types = [DeliveryMode[args.digest + '_digests']]
         else:
@@ -153,13 +151,14 @@ class Members:
         elif args.nomail == 'unknown':
             status_types = [DeliveryStatus.unknown]
         elif args.nomail == 'any':
-            status_types = [DeliveryStatus.by_user,
-                            DeliveryStatus.by_bounces,
-                            DeliveryStatus.by_moderator,
-                            DeliveryStatus.unknown]
+            status_types = [
+                DeliveryStatus.by_user,
+                DeliveryStatus.by_bounces,
+                DeliveryStatus.by_moderator,
+                DeliveryStatus.unknown,
+                ]
         else:
-            status = args.nomail
-            self.parser.error(_('Unknown delivery status: $status'))
+            self.parser.error(_('Unknown delivery status: $args.nomail'))
 
         if args.role is None:
             # By default, filter on members.
@@ -172,8 +171,7 @@ class Members:
             try:
                 roster = mlist.get_roster(MemberRole[args.role])
             except KeyError:
-                role = args.role
-                self.parser.error(_('Unknown member role: $role'))
+                self.parser.error(_('Unknown member role: $args.role'))
 
         with ExitStack() as resources:
             if args.output_filename == '-' or args.output_filename is None:

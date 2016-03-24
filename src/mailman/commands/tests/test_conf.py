@@ -17,11 +17,6 @@
 
 """Test the conf subcommand."""
 
-__all__ = [
-    'TestConf',
-    ]
-
-
 import os
 import sys
 import tempfile
@@ -33,7 +28,6 @@ from mailman.testing.layers import ConfigLayer
 from unittest import mock
 
 
-
 class FakeArgs:
     section = None
     key = None
@@ -50,7 +44,6 @@ class FakeParser:
         sys.exit(1)
 
 
-
 class TestConf(unittest.TestCase):
     """Test the conf subcommand."""
 

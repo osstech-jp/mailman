@@ -17,16 +17,12 @@
 
 """The 'help' subcommand."""
 
-__all__ = [
-    'Help',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.command import ICLISubCommand
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Help:
     # Lowercase, to match argparse's default --help text.

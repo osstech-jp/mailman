@@ -17,12 +17,6 @@
 
 """Test the send-digests subcommand."""
 
-__all__ = [
-    'TestBumpVolume',
-    'TestSendDigests',
-    ]
-
-
 import os
 import unittest
 
@@ -42,7 +36,6 @@ from mailman.utilities.datetime import now as right_now
 from unittest.mock import patch
 
 
-
 class FakeArgs:
     def __init__(self):
         self.lists = []
@@ -50,7 +43,6 @@ class FakeArgs:
         self.bump = False
 
 
-
 class TestSendDigests(unittest.TestCase):
     layer = ConfigLayer
 
@@ -79,8 +71,7 @@ Subject: message 1
         self._handler.process(self._mlist, msg, {})
         # There are no digests already being sent, but the ant mailing list
         # does have a digest mbox collecting messages.
-        items = get_queue_messages('digest')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
@@ -91,8 +82,7 @@ Subject: message 1
         # Now, there's no digest mbox and there's a plaintext digest in the
         # outgoing queue.
         self.assertFalse(os.path.exists(mailbox_path))
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         digest_contents = str(items[0].msg)
         self.assertIn('Subject: message 1', digest_contents)
         self.assertIn('Subject: message 2', digest_contents)
@@ -110,8 +100,7 @@ Subject: message 1
         self._handler.process(self._mlist, msg, {})
         # There are no digests already being sent, but the ant mailing list
         # does have a digest mbox collecting messages.
-        items = get_queue_messages('digest')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
@@ -122,8 +111,7 @@ Subject: message 1
         # Now, there's no digest mbox and there's a plaintext digest in the
         # outgoing queue.
         self.assertFalse(os.path.exists(mailbox_path))
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         digest_contents = str(items[0].msg)
         self.assertIn('Subject: message 1', digest_contents)
         self.assertIn('Subject: message 2', digest_contents)
@@ -141,8 +129,7 @@ Subject: message 1
         self._handler.process(self._mlist, msg, {})
         # There are no digests already being sent, but the ant mailing list
         # does have a digest mbox collecting messages.
-        items = get_queue_messages('digest')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
@@ -157,8 +144,7 @@ Subject: message 1
                          'No such list found: bee.example.com\n')
         # And no digest was prepared.
         self.assertGreater(os.path.getsize(mailbox_path), 0)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('virgin', expected_count=0)
 
     def test_send_one_digest_to_missing_fqdn_listname(self):
         msg = mfs("""\
@@ -173,8 +159,7 @@ Subject: message 1
         self._handler.process(self._mlist, msg, {})
         # There are no digests already being sent, but the ant mailing list
         # does have a digest mbox collecting messages.
-        items = get_queue_messages('digest')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
@@ -189,8 +174,7 @@ Subject: message 1
                          'No such list found: bee@example.com\n')
         # And no digest was prepared.
         self.assertGreater(os.path.getsize(mailbox_path), 0)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('virgin', expected_count=0)
 
     def test_send_digest_to_one_missing_and_one_existing_list(self):
         msg = mfs("""\
@@ -205,8 +189,7 @@ Subject: message 1
         self._handler.process(self._mlist, msg, {})
         # There are no digests already being sent, but the ant mailing list
         # does have a digest mbox collecting messages.
-        items = get_queue_messages('digest')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         args = FakeArgs()
@@ -221,8 +204,7 @@ Subject: message 1
                          'No such list found: bee.example.com\n')
         # But ant's digest was still prepared.
         self.assertFalse(os.path.exists(mailbox_path))
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         digest_contents = str(items[0].msg)
         self.assertIn('Subject: message 1', digest_contents)
         self.assertIn('Subject: message 2', digest_contents)
@@ -265,8 +247,7 @@ Subject: message 3
         bee_mailbox_path = os.path.join(bee.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(bee_mailbox_path), 0)
         # Both.
-        items = get_queue_messages('digest')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('digest', expected_count=0)
         # Process both list's digests.
         args = FakeArgs()
         args.send = True
@@ -277,8 +258,7 @@ Subject: message 3
         # digest in the outgoing queue for both.
         self.assertFalse(os.path.exists(ant_mailbox_path))
         self.assertFalse(os.path.exists(bee_mailbox_path))
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 2)
+        items = get_queue_messages('virgin', expected_count=2)
         # Figure out which digest is going to ant and which to bee.
         if items[0].msg['to'] == 'ant@example.com':
             ant = items[0].msg
@@ -334,8 +314,7 @@ Subject: message 3
         bee_mailbox_path = os.path.join(bee.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(bee_mailbox_path), 0)
         # Both.
-        items = get_queue_messages('digest')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('digest', expected_count=0)
         # Process all mailing list digests by not setting any arguments.
         args = FakeArgs()
         args.send = True
@@ -345,8 +324,7 @@ Subject: message 3
         # digest in the outgoing queue for both.
         self.assertFalse(os.path.exists(ant_mailbox_path))
         self.assertFalse(os.path.exists(bee_mailbox_path))
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 2)
+        items = get_queue_messages('virgin', expected_count=2)
         # Figure out which digest is going to ant and which to bee.
         if items[0].msg['to'] == 'ant@example.com':
             ant = items[0].msg
@@ -374,8 +352,7 @@ Subject: message 3
         args.lists.append('ant.example.com')
         self._command.process(args)
         self._runner.run()
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('virgin', expected_count=0)
 
     def test_bump_before_send(self):
         self._mlist.digest_volume_frequency = DigestFrequency.monthly
@@ -401,12 +378,10 @@ Subject: message 1
         self.assertEqual(self._mlist.volume, 8)
         self.assertEqual(self._mlist.next_digest_number, 2)
         self.assertEqual(self._mlist.digest_last_sent_at, right_now())
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         self.assertEqual(items[0].msg['subject'], 'Ant Digest, Vol 8, Issue 1')
 
 
-
 class TestBumpVolume(unittest.TestCase):
     layer = ConfigLayer
 

@@ -17,11 +17,6 @@
 
 """Test the `mailman import21` subcommand."""
 
-__all__ = [
-    'TestImport',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -31,7 +26,6 @@ from pkg_resources import resource_filename
 from unittest.mock import patch
 
 
-
 class FakeArgs:
     listname = ['test@example.com']
     pickle_file = [
@@ -39,7 +33,6 @@ class FakeArgs:
         ]
 
 
-
 class TestImport(unittest.TestCase):
     layer = ConfigLayer
 

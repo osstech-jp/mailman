@@ -17,15 +17,8 @@
 
 """The email commands 'join' and 'subscribe'."""
 
-__all__ = [
-    'Join',
-    'Subscribe',
-    'Leave',
-    'Unsubscribe',
-    ]
-
-
 from email.utils import formataddr, parseaddr
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import DeliveryMode, MemberRole
@@ -36,7 +29,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
 def match_subscriber(email, display_name):
     # Return something matching the email which should be used as the
     # subscriber by the IRegistrar interface.
@@ -58,7 +50,7 @@ def match_subscriber(email, display_name):
     return list(user.addresses)[0]
 
 
-
+@public
 @implementer(IEmailCommand)
 class Join:
     """The email 'join' command."""
@@ -100,7 +92,7 @@ used.
             return ContinueProcessing.yes
         joins.add(email)
         results.joins = joins
-        person = formataddr((display_name, email))
+        person = formataddr((display_name, email))   # flake8: noqa
         # Is this person already a member of the list?  Search for all
         # matching memberships.
         members = getUtility(ISubscriptionService).find_members(
@@ -140,7 +132,7 @@ used.
         return mode
 
 
-
+@public
 class Subscribe(Join):
     """The email 'subscribe' command (an alias for 'join')."""
 
@@ -149,7 +141,7 @@ class Subscribe(Join):
     short_description = description
 
 
-
+@public
 @implementer(IEmailCommand)
 class Leave:
     """The email 'leave' command."""
@@ -195,12 +187,12 @@ You may be asked to confirm your request.""")
                 file=results)
             return ContinueProcessing.no
         member.unsubscribe()
-        person = formataddr((user.display_name, email))
+        person = formataddr((user.display_name, email))   # flake8: noqa
         print(_('$person left $mlist.fqdn_listname'), file=results)
         return ContinueProcessing.yes
 
 
-
+@public
 class Unsubscribe(Leave):
     """The email 'unsubscribe' command (an alias for 'leave')."""
 

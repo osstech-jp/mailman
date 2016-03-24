@@ -17,15 +17,11 @@
 
 """Importing list data into Mailman 3."""
 
-__all__ = [
-    'Import21',
-    ]
-
-
 import sys
 import pickle
 
 from contextlib import ExitStack, contextmanager
+from mailman import public
 from mailman.core.i18n import _
 from mailman.database.transaction import transactional
 from mailman.interfaces.command import ICLISubCommand
@@ -35,7 +31,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
 # A fake Bouncer class from Mailman 2.1, we don't use it but there are
 # instances in the .pck files.
 class Bouncer:
@@ -53,8 +48,7 @@ def hacked_sys_modules():
         del sys.modules['Mailman.Bouncer']
 
 
-
-
+@public
 @implementer(ICLISubCommand)
 class Import21:
     """Import Mailman 2.1 list data."""

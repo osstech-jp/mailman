@@ -17,14 +17,10 @@
 
 """Information about this Mailman instance."""
 
-__all__ = [
-    'Info'
-    ]
-
-
 import sys
 
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.core.api import API30, API31
 from mailman.core.i18n import _
@@ -33,7 +29,7 @@ from mailman.version import MAILMAN_VERSION_FULL
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Info:
     """Information about this Mailman instance."""
@@ -70,7 +66,7 @@ class Info:
               file=output)
         api = (API30 if config.webservice.api_version == '3.0' else API31)
         print('REST root url:', api.path_to('/'), file=output)
-        print('REST credentials: {0}:{1}'.format(
+        print('REST credentials: {}:{}'.format(
             config.webservice.admin_user, config.webservice.admin_pass),
             file=output)
         if args.verbose:

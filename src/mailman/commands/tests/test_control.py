@@ -17,14 +17,6 @@
 
 """Test some additional corner cases for starting/stopping."""
 
-__all__ = [
-    'TestBinDir',
-    'TestStart',
-    'find_master',
-    'make_config',
-    ]
-
-
 import os
 import sys
 import time
@@ -34,7 +26,7 @@ import shutil
 import socket
 import unittest
 
-from contextlib import ExitStack
+from contextlib import ExitStack, suppress
 from datetime import timedelta, datetime
 from mailman.commands.cli_control import Start, kill_watcher
 from mailman.config import Configuration, config
@@ -46,7 +38,6 @@ from tempfile import TemporaryDirectory
 SEP = '|'
 
 
-
 def make_config():
     # All we care about is the master process; normally it starts a bunch of
     # runners, but we don't care about any of them, so write a test
@@ -56,7 +47,7 @@ def make_config():
     shutil.copyfile(config.filename, config_file)
     with open(config_file, 'a') as fp:
         for runner_config in config.runner_configs:
-            print('[{0}]\nstart:no\n'.format(runner_config.name), file=fp)
+            print('[{}]\nstart:no\n'.format(runner_config.name), file=fp)
     return config_file
 
 
@@ -83,7 +74,6 @@ def find_master():
         return None
 
 
-
 class FakeArgs:
     force = None
     run_as_user = None
@@ -100,7 +90,6 @@ class FakeParser:
         sys.exit(1)
 
 
-
 class TestStart(unittest.TestCase):
     """Test various starting scenarios."""
 
@@ -152,20 +141,17 @@ class TestStart(unittest.TestCase):
         t = time.mktime(expiration_date.timetuple())
         os.utime(claim_file, (t, t))
         # Start without --force; no master will be running.
-        try:
+        with suppress(SystemExit):
             self.command.process(self.args)
-        except SystemExit:
-            pass
-        self.assertEqual(find_master(), None)
-        self.assertTrue('--force' in self.command.parser.message)
+        self.assertIsNone(find_master())
+        self.assertIn('--force', self.command.parser.message)
         # Start again, this time with --force.
         self.args.force = True
         self.command.process(self.args)
         pid = find_master()
-        self.assertNotEqual(pid, None)
+        self.assertIsNotNone(pid)
 
 
-
 class TestBinDir(unittest.TestCase):
     """Test issues related to bin_dir, e.g. issue #3"""
 

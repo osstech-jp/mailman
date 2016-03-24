@@ -17,11 +17,6 @@
 
 """Additional tests for the `help` email command."""
 
-__all__ = [
-    'TestHelp',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -32,7 +27,6 @@ from mailman.runners.command import Results
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestHelp(unittest.TestCase):
     """Test email help."""
 

@@ -17,11 +17,7 @@
 
 """The email command 'help'."""
 
-__all__ = [
-    'Help',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
@@ -32,7 +28,7 @@ from zope.interface import implementer
 SPACE = ' '
 
 
-
+@public
 @implementer(IEmailCommand)
 class Help:
     """The email 'help' command."""
@@ -63,14 +59,14 @@ class Help:
                 print(_('$self.name: no such command: $command_name'),
                       file=results)
                 return ContinueProcessing.no
-            print('{0} {1}'.format(command.name, command.argument_description),
+            print('{} {}'.format(command.name, command.argument_description),
                   file=results)
             print(command.short_description, file=results)
             if command.short_description != command.description:
                 print(wrap(command.description), file=results)
             return ContinueProcessing.yes
         else:
-            printable_arguments = SPACE.join(arguments)
+            printable_arguments = SPACE.join(arguments)   # flake8: noqa
             print(_('$self.name: too many arguments: $printable_arguments'),
                   file=results)
             return ContinueProcessing.no

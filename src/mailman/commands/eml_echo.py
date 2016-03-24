@@ -17,11 +17,7 @@
 
 """The email command 'echo'."""
 
-__all__ = [
-    'Echo',
-    ]
-
-
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from zope.interface import implementer
@@ -30,7 +26,7 @@ from zope.interface import implementer
 SPACE = ' '
 
 
-
+@public
 @implementer(IEmailCommand)
 class Echo:
     """The email 'echo' command."""

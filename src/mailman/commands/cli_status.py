@@ -17,20 +17,16 @@
 
 """The `mailman status` subcommand."""
 
-__all__ = [
-    'Status',
-    ]
-
-
 import socket
 
+from mailman import public
 from mailman.bin.master import WatcherState, master_state
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Status:
     """Status of the Mailman system."""
@@ -51,10 +47,10 @@ class Status:
             message = _('GNU Mailman is running (master pid: $pid)')
         elif status is WatcherState.stale_lock:
             hostname, pid, tempfile = lock.details
-            message =_('GNU Mailman is stopped (stale pid: $pid)')
+            message = _('GNU Mailman is stopped (stale pid: $pid)')
         else:
             hostname, pid, tempfile = lock.details
-            fqdn_name = socket.getfqdn()
+            fqdn_name = socket.getfqdn()            # flake8: noqa
             assert status is WatcherState.host_mismatch, (
                 'Invalid enum value: %s' % status)
             message = _('GNU Mailman is in an unexpected state '

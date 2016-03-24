@@ -17,21 +17,16 @@
 
 """Test the `mailman create` subcommand."""
 
-__all__ = [
-    'TestCreate',
-    ]
-
-
 import sys
 import unittest
 
 from argparse import ArgumentParser
+from contextlib import suppress
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_lists import Create
 from mailman.testing.layers import ConfigLayer
 
 
-
 class FakeArgs:
     language = None
     owners = []
@@ -50,7 +45,6 @@ class FakeParser:
         sys.exit(1)
 
 
-
 class TestCreate(unittest.TestCase):
     layer = ConfigLayer
 
@@ -63,20 +57,16 @@ class TestCreate(unittest.TestCase):
         # Cannot create a mailing list if it already exists.
         create_list('test@example.com')
         self.args.listname = ['test@example.com']
-        try:
+        with suppress(SystemExit):
             self.command.process(self.args)
-        except SystemExit:
-            pass
         self.assertEqual(self.command.parser.message,
                          'List already exists: test@example.com')
 
     def test_invalid_posting_address(self):
         # Cannot create a mailing list with an invalid posting address.
         self.args.listname = ['foo']
-        try:
+        with suppress(SystemExit):
             self.command.process(self.args)
-        except SystemExit:
-            pass
         self.assertEqual(self.command.parser.message,
                          'Illegal list name: foo')
 
@@ -84,10 +74,8 @@ class TestCreate(unittest.TestCase):
         # Cannot create a list with invalid owner addresses.  LP: #778687
         self.args.listname = ['test@example.com']
         self.args.owners = ['main=True']
-        try:
+        with suppress(SystemExit):
             self.command.process(self.args)
-        except SystemExit:
-            pass
         self.assertEqual(self.command.parser.message,
                          'Illegal owner addresses: main=True')
 

@@ -17,20 +17,13 @@
 
 """Start/stop/reopen/restart commands."""
 
-__all__ = [
-    'Reopen',
-    'Restart',
-    'Start',
-    'Stop',
-    ]
-
-
 import os
 import sys
 import errno
 import signal
 import logging
 
+from mailman import public
 from mailman.bin.master import WatcherState, master_state
 from mailman.config import config
 from mailman.core.i18n import _
@@ -41,7 +34,7 @@ from zope.interface import implementer
 qlog = logging.getLogger('mailman.runner')
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Start:
     """Start the Mailman master and runner processes."""
@@ -100,7 +93,7 @@ class Start:
                 self.parser.error(
                     _('A previous run of GNU Mailman did not exit '
                       'cleanly.  Try using --force.'))
-        def log(message):
+        def log(message):                           # flake8: noqa
             if not args.quiet:
                 print(message)
         # Try to find the path to a valid, existing configuration file, and
@@ -149,7 +142,6 @@ Use -C/--config to specify a valid configuration file."""), file=sys.stderr)
         raise RuntimeError('os.execl() failed')
 
 
-
 def kill_watcher(sig):
     try:
         with open(config.PID_FILE) as fp:
@@ -171,7 +163,6 @@ def kill_watcher(sig):
         os.unlink(config.PID_FILE)
 
 
-
 @implementer(ICLISubCommand)
 class SignalCommand:
     """Common base class for simple, signal sending commands."""
@@ -196,6 +187,7 @@ class SignalCommand:
         kill_watcher(self.signal)
 
 
+@public
 class Stop(SignalCommand):
     """Stop the Mailman master and runner processes."""
 
@@ -204,6 +196,7 @@ class Stop(SignalCommand):
     signal = signal.SIGTERM
 
 
+@public
 class Reopen(SignalCommand):
     """Signal the Mailman processes to re-open their log files."""
 
@@ -212,6 +205,7 @@ class Reopen(SignalCommand):
     signal = signal.SIGHUP
 
 
+@public
 @implementer(ICLISubCommand)
 class Restart(SignalCommand):
     """Stop and restart the Mailman runner subprocesses."""

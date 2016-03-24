@@ -17,13 +17,9 @@
 
 """The `send_digests` subcommand."""
 
-__all__ = [
-    'Digests',
-    ]
-
-
 import sys
 
+from mailman import public
 from mailman.app.digests import (
     bump_digest_number_and_volume, maybe_send_digest_now)
 from mailman.core.i18n import _
@@ -33,7 +29,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Digests:
     """Operate on digests."""
@@ -78,7 +74,7 @@ class Digests:
                 else:
                     lists.append(mlist)
         else:
-           lists = list(list_manager.mailing_lists)
+            lists = list(list_manager.mailing_lists)
         if args.bump:
             for mlist in lists:
                 bump_digest_number_and_volume(mlist)

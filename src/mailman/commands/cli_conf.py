@@ -17,22 +17,18 @@
 
 """Print the mailman configuration."""
 
-__all__ = [
-    'Conf'
-    ]
-
-
 import sys
 
 from contextlib import closing
 from lazr.config._config import Section
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Conf:
     """Print the mailman configuration."""
@@ -114,8 +110,7 @@ class Conf:
                 # We have to ensure that the current section actually exists
                 # and that it contains the given key.
                 if (self._section_exists(current_section) and
-                    hasattr(getattr(config, current_section), key)):
-                    # Then...
+                        hasattr(getattr(config, current_section), key)):
                     self._print_full_syntax(
                         current_section, key,
                         self._get_value(current_section, key),

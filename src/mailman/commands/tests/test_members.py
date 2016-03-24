@@ -17,11 +17,6 @@
 
 """Test the `mailman members` command."""
 
-__all__ = [
-    'TestCLIMembers',
-    ]
-
-
 import sys
 import unittest
 
@@ -36,7 +31,6 @@ from tempfile import NamedTemporaryFile
 from unittest.mock import patch
 
 
-
 class FakeArgs:
     input_filename = None
     output_filename = None
@@ -56,7 +50,6 @@ class FakeParser:
         sys.exit(1)
 
 
-
 class TestCLIMembers(unittest.TestCase):
     layer = ConfigLayer
 

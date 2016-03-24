@@ -17,11 +17,6 @@
 
 """Additional tests for the `lists` command line subcommand."""
 
-__all__ = [
-    'TestLists',
-    ]
-
-
 import unittest
 
 from io import StringIO

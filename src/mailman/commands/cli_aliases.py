@@ -17,11 +17,7 @@
 
 """Generate Mailman alias files for your MTA."""
 
-__all__ = [
-    'Aliases',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
@@ -29,7 +25,7 @@ from mailman.utilities.modules import call_name
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ICLISubCommand)
 class Aliases:
     """Regenerate the aliases appropriate for your MTA."""
