@@ -41,3 +41,16 @@ if 'build_sphinx' not in sys.argv:                  # pragma: no cover
     else:
         from mailman.core.i18n import initialize
     initialize()
+
+
+# I hate myself: http://bugs.python.org/issue26632
+def public(thing):
+    if isinstance(thing, str):
+        mdict = sys._getframe(1).f_globals
+        name = thing
+    else:
+        mdict = sys.modules[thing.__module__].__dict__
+        name = thing.__name__
+    dunder_all = mdict.setdefault('__all__', [])
+    dunder_all.append(name)
+    return thing

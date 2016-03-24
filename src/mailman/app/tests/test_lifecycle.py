@@ -17,11 +17,6 @@
 
 """Test the high level list lifecycle API."""
 
-__all__ = [
-    'TestLifecycle',
-    ]
-
-
 import os
 import shutil
 import unittest
@@ -34,7 +29,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestLifecycle(unittest.TestCase):
     """Test the high level list lifecycle API."""
 

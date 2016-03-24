@@ -17,17 +17,11 @@
 
 """Sending notifications."""
 
-__all__ = [
-    'send_admin_subscription_notice',
-    'send_goodbye_message',
-    'send_welcome_message',
-    ]
-
-
 import logging
 
 from email.utils import formataddr
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
@@ -42,7 +36,6 @@ from zope.component import getUtility
 log = logging.getLogger('mailman.error')
 
 
-
 def _get_message(uri_template, mlist, language):
     if not uri_template:
         return ''
@@ -60,7 +53,7 @@ def _get_message(uri_template, mlist, language):
         return wrap(message)
 
 
-
+@public
 def send_welcome_message(mlist, member, language, text=''):
     """Send a welcome message to a subscriber.
 
@@ -98,7 +91,8 @@ def send_welcome_message(mlist, member, language, text=''):
         user_address=member.address.email,
         user_options_uri=options_url,
         ))
-    digmode = ('' if member.delivery_mode is DeliveryMode.regular
+    digmode = (''                                   # flake8: noqa
+               if member.delivery_mode is DeliveryMode.regular
                else _(' (Digest mode)'))
     msg = UserNotification(
         formataddr((display_name, member.address.email)),
@@ -109,7 +103,7 @@ def send_welcome_message(mlist, member, language, text=''):
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
 
 
-
+@public
 def send_goodbye_message(mlist, address, language):
     """Send a goodbye message to a subscriber.
 
@@ -133,7 +127,7 @@ def send_goodbye_message(mlist, address, language):
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
 
 
-
+@public
 def send_admin_subscription_notice(mlist, address, display_name):
     """Send the list administrators a subscription notice.
 

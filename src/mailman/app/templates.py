@@ -17,12 +17,8 @@
 
 """Template loader."""
 
-__all__ = [
-    'TemplateLoader',
-    ]
-
-
 from contextlib import closing
+from mailman import public
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.templates import ITemplateLoader
@@ -35,7 +31,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
 class MailmanHandler(BaseHandler):
     # Handle internal mailman: URLs.
     def mailman_open(self, req):
@@ -94,7 +89,7 @@ class MailmanHandler(BaseHandler):
         return addinfourl(fp, {}, original_url)
 
 
-
+@public
 @implementer(ITemplateLoader)
 class TemplateLoader:
     """Loader of templates, with caching and support for mailman:// URIs."""

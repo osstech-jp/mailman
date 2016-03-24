@@ -17,11 +17,6 @@
 
 """One last digest."""
 
-__all__ = [
-    'OneLastDigest',
-    ]
-
-
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.digests import IOneLastDigest
@@ -30,8 +25,11 @@ from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from zope.interface import implementer
 
+__all__ = [
+    'OneLastDigest',
+    ]
 
-
+
 @implementer(IOneLastDigest)
 class OneLastDigest(Model):
     """See `IOneLastDigest`."""

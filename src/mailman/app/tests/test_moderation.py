@@ -17,12 +17,6 @@
 
 """Moderation tests."""
 
-__all__ = [
-    'TestModeration',
-    'TestUnsubscription',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -37,13 +31,13 @@ from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner, specialized_message_from_string)
+    get_queue_messages, make_testable_runner,
+    specialized_message_from_string as mfs)
 from mailman.testing.layers import SMTPLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
-
 class TestModeration(unittest.TestCase):
     """Test moderation functionality."""
 
@@ -52,7 +46,7 @@ class TestModeration(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('test@example.com')
         self._request_db = IListRequests(self._mlist)
-        self._msg = specialized_message_from_string("""\
+        self._msg = mfs("""\
 From: anne@example.com
 To: test@example.com
 Subject: hold me
@@ -78,8 +72,8 @@ Message-ID: <alpha>
         message = messages[0]
         # We don't need to test the entire posted message, just the bits that
         # prove it got sent out.
-        self.assertTrue('x-mailman-version' in message)
-        self.assertTrue('x-peer' in message)
+        self.assertIn('x-mailman-version', message)
+        self.assertIn('x-peer', message)
         # The X-Mailman-Approved-At header has local timezone information in
         # it, so test that separately.
         self.assertEqual(message['x-mailman-approved-at'][:-5],
@@ -127,11 +121,10 @@ Message-ID: <alpha>
         handle_message(self._mlist, request_id, Action.discard,
                        forward=['zack@example.com'])
         # The forwarded message lives in the virgin queue.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0].msg['subject']),
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(str(items[0].msg['subject']),
                          'Forward of moderated message')
-        self.assertEqual(messages[0].msgdata['recipients'],
+        self.assertEqual(items[0].msgdata['recipients'],
                          ['zack@example.com'])
 
     def test_survive_a_deleted_message(self):
@@ -153,7 +146,6 @@ Message-ID: <alpha>
         self.assertEqual(message['subject'], 'hold me')
 
 
-
 class TestUnsubscription(unittest.TestCase):
     """Test unsubscription requests."""
 

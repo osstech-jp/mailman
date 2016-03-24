@@ -17,18 +17,16 @@
 
 """The news moderation rule."""
 
-__all__ = [
-    'ModeratedNewsgroup',
-    ]
-
-
 from mailman.core.i18n import _
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
 
+__all__ = [
+    'ModeratedNewsgroup',
+    ]
 
-
+
 @implementer(IRule)
 class ModeratedNewsgroup:
     """The news moderation rule."""

@@ -17,18 +17,14 @@
 
 """Initialize the email commands."""
 
-__all__ = [
-    'initialize',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.command import IEmailCommand
 from mailman.utilities.modules import find_components
 from zope.interface.verify import verifyObject
 
 
-
+@public
 def initialize():
     """Initialize the email commands."""
     for command_class in find_components('mailman.commands', IEmailCommand):

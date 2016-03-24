@@ -17,18 +17,16 @@
 
 """Model for languages."""
 
-__all__ = [
-    'Language',
-    ]
-
-
 from mailman.database.model import Model
 from mailman.interfaces.languages import ILanguage
 from sqlalchemy import Column, Integer, Unicode
 from zope.interface import implementer
 
+__all__ = [
+    'Language',
+    ]
 
-
+
 @implementer(ILanguage)
 class Language(Model):
     """See `ILanguage`."""

@@ -17,17 +17,13 @@
 
 """Application level domain support."""
 
-__all__ = [
-    'handle_DomainDeletingEvent',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.domain import DomainDeletingEvent
 from mailman.interfaces.listmanager import IListManager
 from zope.component import getUtility
 
 
-
+@public
 def handle_DomainDeletingEvent(event):
     """Delete all mailing lists in a domain when the domain is deleted."""
 

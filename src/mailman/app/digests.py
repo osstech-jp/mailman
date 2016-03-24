@@ -17,21 +17,16 @@
 
 """Digest functions."""
 
-__all__ = [
-    'bump_digest_number_and_volume',
-    'maybe_send_digest_now',
-    ]
-
-
 import os
 
+from mailman import public
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.interfaces.digests import DigestFrequency
 from mailman.utilities.datetime import now as right_now
 
 
-
+@public
 def bump_digest_number_and_volume(mlist):
     """Bump the digest number and volume."""
     now = right_now()
@@ -72,7 +67,7 @@ def bump_digest_number_and_volume(mlist):
     mlist.digest_last_sent_at = now
 
 
-
+@public
 def maybe_send_digest_now(mlist, *, force=False):
     """Send this mailing list's digest now.
 
@@ -97,8 +92,7 @@ def maybe_send_digest_now(mlist, *, force=False):
         size = os.path.getsize(mailbox_path)
     except FileNotFoundError:
         size = 0
-    if (size >= mlist.digest_size_threshold * 1024.0 or
-        (force and size > 0)):
+    if (size >= mlist.digest_size_threshold * 1024.0 or (force and size > 0)):
         # Send the digest.  Because we don't want to hold up this process
         # with crafting the digest, we're going to move the digest file to
         # a safe place, then craft a fake message for the DigestRunner as

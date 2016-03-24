@@ -17,14 +17,8 @@
 
 """Application support for membership management."""
 
-__all__ = [
-    'add_member',
-    'delete_member',
-    'handle_SubscriptionEvent',
-    ]
-
-
 from email.utils import formataddr
+from mailman import public
 from mailman.app.notifications import (
     send_admin_subscription_notice, send_goodbye_message,
     send_welcome_message)
@@ -41,7 +35,7 @@ from mailman.utilities.i18n import make
 from zope.component import getUtility
 
 
-
+@public
 def add_member(mlist, record, role=MemberRole.member):
     """Add a member right now.
 
@@ -99,7 +93,7 @@ def add_member(mlist, record, role=MemberRole.member):
     return member
 
 
-
+@public
 def delete_member(mlist, email, admin_notif=None, userack=None):
     """Delete a member right now.
 
@@ -142,7 +136,7 @@ def delete_member(mlist, email, admin_notif=None, userack=None):
         msg.send(mlist)
 
 
-
+@public
 def handle_SubscriptionEvent(event):
     if not isinstance(event, SubscriptionEvent):
         return

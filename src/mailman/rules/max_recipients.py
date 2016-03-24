@@ -17,18 +17,16 @@
 
 """The maximum number of recipients rule."""
 
-__all__ = [
-    'MaximumRecipients',
-    ]
-
-
 from email.utils import getaddresses
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
 
+__all__ = [
+    'MaximumRecipients',
+    ]
 
-
+
 @implementer(IRule)
 class MaximumRecipients:
     """The maximum number of recipients rule."""

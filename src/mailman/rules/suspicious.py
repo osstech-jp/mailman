@@ -17,11 +17,6 @@
 
 """The historical 'suspicious header' rule."""
 
-__all__ = [
-    'SuspiciousHeader',
-    ]
-
-
 import re
 import logging
 
@@ -29,11 +24,14 @@ from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
 
+__all__ = [
+    'SuspiciousHeader',
+    ]
+
 
 log = logging.getLogger('mailman.error')
 
 
-
 @implementer(IRule)
 class SuspiciousHeader:
     """The historical 'suspicious header' rule."""
@@ -48,7 +46,6 @@ class SuspiciousHeader:
                 has_matching_bounce_header(mlist, msg))
 
 
-
 def _parse_matching_header_opt(mlist):
     """Return a list of triples [(field name, regex, line), ...]."""
     # - Blank lines and lines with '#' as first char are skipped.

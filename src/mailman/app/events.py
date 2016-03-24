@@ -17,11 +17,7 @@
 
 """Global events."""
 
-__all__ = [
-    'initialize',
-    ]
-
-
+from mailman import public
 from mailman.app import (
     domain, membership, moderator, registrar, subscriptions)
 from mailman.core import i18n, switchboard
@@ -31,7 +27,7 @@ from mailman.utilities import passwords
 from zope import event
 
 
-
+@public
 def initialize():
     """Initialize global event subscribers."""
     event.subscribers.extend([

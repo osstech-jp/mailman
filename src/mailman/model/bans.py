@@ -17,11 +17,6 @@
 
 """Ban manager."""
 
-__all__ = [
-    'BanManager',
-    ]
-
-
 import re
 
 from mailman.database.model import Model
@@ -30,8 +25,11 @@ from mailman.interfaces.bans import IBan, IBanManager
 from sqlalchemy import Column, Integer, Unicode
 from zope.interface import implementer
 
+__all__ = [
+    'BanManager',
+    ]
 
-
+
 @implementer(IBan)
 class Ban(Model):
     """See `IBan`."""
@@ -48,7 +46,6 @@ class Ban(Model):
         self.list_id = list_id
 
 
-
 @implementer(IBanManager)
 class BanManager:
     """See `IBanManager`."""

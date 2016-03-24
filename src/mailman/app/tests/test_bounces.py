@@ -17,16 +17,6 @@
 
 """Testing app.bounces functions."""
 
-__all__ = [
-    'TestBounceMessage',
-    'TestMaybeForward',
-    'TestProbe',
-    'TestSendProbe',
-    'TestSendProbeNonEnglish',
-    'TestVERP',
-    ]
-
-
 import os
 import uuid
 import shutil
@@ -49,7 +39,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestVERP(unittest.TestCase):
     """Test header VERP detection."""
 
@@ -184,7 +173,6 @@ Apparently-To: test-bounces+bart=example.org@example.com
                          set(['anne@example.org', 'bart@example.org']))
 
 
-
 class TestSendProbe(unittest.TestCase):
     """Test sending of the probe message."""
 
@@ -218,25 +206,25 @@ Message-ID: <first>
     def test_probe_is_multipart(self):
         # The probe is a multipart/mixed with two subparts.
         send_probe(self._member, self._msg)
-        message = get_queue_messages('virgin')[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message.get_content_type(), 'multipart/mixed')
         self.assertTrue(message.is_multipart())
         self.assertEqual(len(message.get_payload()), 2)
 
     def test_probe_sends_one_message(self):
-        # send_probe() places one message in the virgin queue.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 0)
+        # send_probe() places one message in the virgin queue.  We start out
+        # with no messages in the queue.
+        get_queue_messages('virgin', expected_count=0)
         send_probe(self._member, self._msg)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        get_queue_messages('virgin', expected_count=1)
 
     def test_probe_contains_original(self):
         # Show that send_probe() places a properly formatted message in the
         # virgin queue.
         send_probe(self._member, self._msg)
-        message = get_queue_messages('virgin')[0].msg
-        rfc822 = message.get_payload(1)
+        items = get_queue_messages('virgin', expected_count=1)
+        rfc822 = items[0].msg.get_payload(1)
         self.assertEqual(rfc822.get_content_type(), 'message/rfc822')
         self.assertTrue(rfc822.is_multipart())
         self.assertEqual(len(rfc822.get_payload()), 1)
@@ -246,7 +234,8 @@ Message-ID: <first>
     def test_notice(self):
         # Test that the notice in the first subpart is correct.
         send_probe(self._member, self._msg)
-        message = get_queue_messages('virgin')[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         notice = message.get_payload(0)
         self.assertEqual(notice.get_content_type(), 'text/plain')
         # The interesting bits are the parts that have been interpolated into
@@ -254,15 +243,16 @@ Message-ID: <first>
         # interpolation values appear in the message.  When Python 2.7 is our
         # minimum requirement, we can use assertRegexpMatches().
         body = notice.get_payload()
-        self.assertTrue('test@example.com' in body)
-        self.assertTrue('anne@example.com' in body)
-        self.assertTrue('http://example.com/anne@example.com' in body)
-        self.assertTrue('test-owner@example.com' in body)
+        self.assertIn('test@example.com', body)
+        self.assertIn('anne@example.com', body)
+        self.assertIn('http://example.com/anne@example.com', body)
+        self.assertIn('test-owner@example.com', body)
 
     def test_headers(self):
         # Check the headers of the outer message.
         token = send_probe(self._member, self._msg)
-        message = get_queue_messages('virgin')[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['from'],
                          'test-bounces+{0}@example.com'.format(token))
         self.assertEqual(message['to'], 'anne@example.com')
@@ -271,15 +261,15 @@ Message-ID: <first>
     def test_no_precedence_header(self):
         # Probe messages should not have a Precedence header (LP: #808821).
         send_probe(self._member, self._msg)
-        message = get_queue_messages('virgin')[0].msg
-        self.assertEqual(message['precedence'], None)
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertIsNone(items[0].msg['precedence'])
 
 
-
 class TestSendProbeNonEnglish(unittest.TestCase):
     """Test sending of the probe message to a non-English speaker."""
 
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
@@ -293,13 +283,15 @@ Message-ID: <first>
 """)
         # Set up the translation context.
         self._var_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self._var_dir)
         xx_template_path = os.path.join(
             self._var_dir, 'templates', 'site', 'xx', 'probe.txt')
         os.makedirs(os.path.dirname(xx_template_path))
         config.push('xx template dir', """\
         [paths.testing]
-        var_dir: {0}
+        var_dir: {}
         """.format(self._var_dir))
+        self.addCleanup(config.pop, 'xx template dir')
         language_manager = getUtility(ILanguageManager)
         language_manager.add('xx', 'utf-8', 'Freedonia')
         self._member.preferences.preferred_language = 'xx'
@@ -311,34 +303,28 @@ $address
 $optionsurl
 $owneraddr
 """, file=fp)
-        # Let assertMultiLineEqual work without bounds.
-        self.maxDiff = None
-
-    def tearDown(self):
-        config.pop('xx template dir')
-        shutil.rmtree(self._var_dir)
 
     def test_subject_with_member_nonenglish(self):
         # Test that members with non-English preferred language get a Subject
         # header in the expected language.
         send_probe(self._member, self._msg)
-        message = get_queue_messages('virgin')[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
         self.assertEqual(
-            message['subject'].encode(),
+            items[0].msg['subject'].encode(),
             '=?utf-8?q?ailing-may_ist-lay_Test_obe-pray_essage-may?=')
 
     def test_probe_notice_with_member_nonenglish(self):
         # Test that a member with non-English preferred language gets the
         # probe message in their language.
         send_probe(self._member, self._msg)
-        message = get_queue_messages('virgin')[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         notice = message.get_payload(0).get_payload()
         self.assertMultiLineEqual(notice, """\
 blah blah blah test@example.com anne@example.com
 http://example.com/anne@example.com test-owner@example.com""")
 
 
-
 class TestProbe(unittest.TestCase):
     """Test VERP probe parsing."""
 
@@ -361,7 +347,8 @@ Message-ID: <first>
         # based on the token in a probe bounce.
         token = send_probe(self._member, self._msg)
         # Simulate a bounce of the message in the virgin queue.
-        message = get_queue_messages('virgin')[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         bounce = mfs("""\
 To: {0}
 From: mail-daemon@example.com
@@ -370,10 +357,9 @@ From: mail-daemon@example.com
         addresses = ProbeVERP().get_verp(self._mlist, bounce)
         self.assertEqual(addresses, set(['anne@example.com']))
         # The pendable is no longer in the database.
-        self.assertEqual(getUtility(IPendings).confirm(token), None)
+        self.assertIsNone(getUtility(IPendings).confirm(token))
 
 
-
 class TestMaybeForward(unittest.TestCase):
     """Test forwarding of unrecognized bounces."""
 
@@ -384,6 +370,7 @@ class TestMaybeForward(unittest.TestCase):
         [mailman]
         site_owner: postmaster@example.com
         """)
+        self.addCleanup(config.pop, 'test config')
         self._mlist = create_list('test@example.com')
         self._mlist.send_welcome_message = False
         self._msg = mfs("""\
@@ -394,9 +381,6 @@ Message-ID: <first>
 
 """)
 
-    def tearDown(self):
-        config.pop('test config')
-
     def test_maybe_forward_discard(self):
         # When forward_unrecognized_bounces_to is set to discard, no bounce
         # messages are forwarded.
@@ -405,8 +389,7 @@ Message-ID: <first>
         # The only artifact of this call is a log file entry.
         mark = LogFileMark('mailman.bounce')
         maybe_forward(self._mlist, self._msg)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('virgin', expected_count=0)
         line = mark.readline()
         self.assertEqual(
             line[-40:-1],
@@ -433,8 +416,7 @@ Message-ID: <first>
         self._mlist.forward_unrecognized_bounces_to = (
             UnrecognizedBounceDisposition.administrators)
         maybe_forward(self._mlist, self._msg)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         msg = items[0].msg
         self.assertEqual(msg['subject'], 'Uncaught bounce notification')
         self.assertEqual(msg['from'], 'postmaster@example.com')
@@ -479,8 +461,7 @@ Message-ID: <first>
         self._mlist.forward_unrecognized_bounces_to = (
             UnrecognizedBounceDisposition.site_owner)
         maybe_forward(self._mlist, self._msg)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         msg = items[0].msg
         self.assertEqual(msg['subject'], 'Uncaught bounce notification')
         self.assertEqual(msg['from'], 'postmaster@example.com')
@@ -501,10 +482,9 @@ Message-ID: <first>
         # All of the owners and moderators, but none of the members, should be
         # recipients of this message.
         self.assertEqual(items[0].msgdata['recipients'],
-                         set(['postmaster@example.com',]))
+                         set(['postmaster@example.com']))
 
 
-
 class TestBounceMessage(unittest.TestCase):
     """Test the `mailman.app.bounces.bounce_message()` function."""
 
@@ -523,6 +503,5 @@ Subject: Ignore
         # The message won't be bounced if it has no discernible sender.
         del self._msg['from']
         bounce_message(self._mlist, self._msg)
-        items = get_queue_messages('virgin')
         # Nothing in the virgin queue means nothing's been bounced.
-        self.assertEqual(items, [])
+        get_queue_messages('virgin', expected_count=0)

@@ -17,11 +17,6 @@
 
 """The implicit destination rule."""
 
-__all__ = [
-    'ImplicitDestination',
-    ]
-
-
 import re
 
 from email.utils import getaddresses
@@ -30,8 +25,11 @@ from mailman.interfaces.mailinglist import IAcceptableAliasSet
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
 
+__all__ = [
+    'ImplicitDestination',
+    ]
 
-
+
 @implementer(IRule)
 class ImplicitDestination:
     """The implicit destination rule."""

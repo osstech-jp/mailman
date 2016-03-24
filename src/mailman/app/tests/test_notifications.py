@@ -17,11 +17,6 @@
 
 """Test notifications."""
 
-__all__ = [
-    'TestNotifications',
-    ]
-
-
 import os
 import shutil
 import tempfile
@@ -39,7 +34,6 @@ from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
-
 class TestNotifications(unittest.TestCase):
     """Test notifications."""
 
@@ -51,10 +45,12 @@ class TestNotifications(unittest.TestCase):
         self._mlist.welcome_message_uri = 'mailman:///welcome.txt'
         self._mlist.display_name = 'Test List'
         self.var_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.var_dir)
         config.push('template config', """\
         [paths.testing]
-        template_dir: {0}/templates
+        template_dir: {}/templates
         """.format(self.var_dir))
+        self.addCleanup(config.pop, 'template config')
         # Populate the template directories with a few fake templates.
         path = os.path.join(self.var_dir, 'templates', 'site', 'en')
         os.makedirs(path)
@@ -76,16 +72,11 @@ Welcome to the $list_name mailing list.
         # Let assertMultiLineEqual work without bounds.
         self.maxDiff = None
 
-    def tearDown(self):
-        config.pop('template config')
-        shutil.rmtree(self.var_dir)
-
     def test_welcome_message(self):
         subscribe(self._mlist, 'Anne', email='anne@example.com')
         # Now there's one message in the virgin queue.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(str(message['subject']),
                          'Welcome to the "Test List" mailing list')
         self.assertMultiLineEqual(message.get_payload(), """\
@@ -113,9 +104,8 @@ Welcome to the Test List mailing list.
         address.preferences.preferred_language = 'xx'
         self._mlist.subscribe(address)
         # Now there's one message in the virgin queue.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(str(message['subject']),
                          'Welcome to the "Test List" mailing list')
         self.assertMultiLineEqual(
@@ -126,40 +116,37 @@ Welcome to the Test List mailing list.
         # Welcome messages go only to mailing list members, not to owners.
         subscribe(self._mlist, 'Anne', MemberRole.owner, 'anne@example.com')
         # There is no welcome message in the virgin queue.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 0)
+        get_queue_messages('virgin', expected_count=0)
 
     def test_no_welcome_message_to_nonmembers(self):
         # Welcome messages go only to mailing list members, not to nonmembers.
         subscribe(self._mlist, 'Anne', MemberRole.nonmember,
                   'anne@example.com')
         # There is no welcome message in the virgin queue.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 0)
+        get_queue_messages('virgin', expected_count=0)
 
     def test_no_welcome_message_to_moderators(self):
         # Welcome messages go only to mailing list members, not to moderators.
         subscribe(self._mlist, 'Anne', MemberRole.moderator,
                   'anne@example.com')
         # There is no welcome message in the virgin queue.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 0)
+        get_queue_messages('virgin', expected_count=0)
 
     def test_member_susbcribed_address_has_display_name(self):
         address = getUtility(IUserManager).create_address(
             'anne@example.com', 'Anne Person')
         address.verified_on = now()
         self._mlist.subscribe(address)
-        messages = get_queue_messages('virgin', expected_count=1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['to'], 'Anne Person <anne@example.com>')
 
     def test_member_subscribed_address_has_no_display_name(self):
         address = getUtility(IUserManager).create_address('anne@example.com')
         address.verified_on = now()
         self._mlist.subscribe(address)
-        messages = get_queue_messages('virgin', expected_count=1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['to'], 'anne@example.com')
 
     def test_member_is_user_and_has_display_name(self):
@@ -167,16 +154,16 @@ Welcome to the Test List mailing list.
             'anne@example.com', 'Anne Person')
         set_preferred(user)
         self._mlist.subscribe(user)
-        messages = get_queue_messages('virgin', expected_count=1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['to'], 'Anne Person <anne@example.com>')
 
     def test_member_is_user_and_has_no_display_name(self):
         user = getUtility(IUserManager).create_user('anne@example.com')
         set_preferred(user)
         self._mlist.subscribe(user)
-        messages = get_queue_messages('virgin', expected_count=1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['to'], 'anne@example.com')
 
     def test_member_has_linked_user_display_name(self):
@@ -187,8 +174,8 @@ Welcome to the Test List mailing list.
         address.verified_on = now()
         user.link(address)
         self._mlist.subscribe(address)
-        messages = get_queue_messages('virgin', expected_count=1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['to'], 'Anne Person <anne2@example.com>')
 
     def test_member_has_no_linked_display_name(self):
@@ -198,8 +185,8 @@ Welcome to the Test List mailing list.
         address.verified_on = now()
         user.link(address)
         self._mlist.subscribe(address)
-        messages = get_queue_messages('virgin', expected_count=1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['to'], 'anne2@example.com')
 
     def test_member_has_address_and_user_display_name(self):
@@ -211,6 +198,6 @@ Welcome to the Test List mailing list.
         address.verified_on = now()
         user.link(address)
         self._mlist.subscribe(address)
-        messages = get_queue_messages('virgin', expected_count=1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['to'], 'Anne X Person <anne2@example.com>')

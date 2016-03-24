@@ -17,12 +17,6 @@
 
 """Domains."""
 
-__all__ = [
-    'Domain',
-    'DomainManager',
-    ]
-
-
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.domain import (
@@ -38,8 +32,12 @@ from zope.event import notify
 from zope.interface import implementer
 from zope.component import getUtility
 
+__all__ = [
+    'Domain',
+    'DomainManager',
+    ]
 
-
+
 @implementer(IDomain)
 class Domain(Model):
     """Domains."""
@@ -136,7 +134,6 @@ class Domain(Model):
         self.owners.remove(user_manager.get_user(owner))
 
 
-
 @implementer(IDomainManager)
 class DomainManager:
     """Domain manager."""

@@ -17,15 +17,11 @@
 
 """Application level list creation."""
 
-__all__ = [
-    'create_list',
-    'remove_list',
-    ]
-
-
 import shutil
 import logging
 
+from contextlib import suppress
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.domain import (
@@ -41,7 +37,7 @@ from zope.component import getUtility
 log = logging.getLogger('mailman.error')
 
 
-
+@public
 def create_list(fqdn_listname, owners=None, style_name=None):
     """Create the named list and apply styles.
 
@@ -89,14 +85,12 @@ def create_list(fqdn_listname, owners=None, style_name=None):
     return mlist
 
 
-
+@public
 def remove_list(mlist):
     """Remove the list and all associated artifacts and subscriptions."""
     # Remove the list's data directory, if it exists.
-    try:
+    with suppress(FileNotFoundError):
         shutil.rmtree(mlist.data_path)
-    except FileNotFoundError:
-        pass
     # Delete the mailing list from the database.
     getUtility(IListManager).delete(mlist)
     # Do the MTA-specific list deletion tasks

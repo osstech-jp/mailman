@@ -17,17 +17,15 @@
 
 """A rule which always matches."""
 
+from mailman.core.i18n import _
+from mailman.interfaces.rules import IRule
+from zope.interface import implementer
+
 __all__ = [
     'Truth',
     ]
 
 
-from mailman.core.i18n import _
-from mailman.interfaces.rules import IRule
-from zope.interface import implementer
-
-
-
 @implementer(IRule)
 class Truth:
     """Look for any previous rule match."""

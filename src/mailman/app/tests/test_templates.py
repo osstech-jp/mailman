@@ -17,11 +17,6 @@
 
 """Test the template downloader API."""
 
-__all__ = [
-    'TestTemplateLoader',
-    ]
-
-
 import os
 import shutil
 import tempfile
@@ -35,7 +30,6 @@ from urllib.error import URLError
 from zope.component import getUtility
 
 
-
 class TestTemplateLoader(unittest.TestCase):
     """Test the template downloader API."""
 
@@ -43,10 +37,12 @@ class TestTemplateLoader(unittest.TestCase):
 
     def setUp(self):
         self.var_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.var_dir)
         config.push('template config', """\
         [paths.testing]
         var_dir: {0}
         """.format(self.var_dir))
+        self.addCleanup(config.pop, 'template config')
         # Put a demo template in the site directory.
         path = os.path.join(self.var_dir, 'templates', 'site', 'en')
         os.makedirs(path)
@@ -54,10 +50,6 @@ class TestTemplateLoader(unittest.TestCase):
             print('Test content', end='', file=fp)
         self._loader = getUtility(ITemplateLoader)
         self._mlist = create_list('test@example.com')
-
-    def tearDown(self):
-        config.pop('template config')
-        shutil.rmtree(self.var_dir)
 
     def test_mailman_internal_uris(self):
         # mailman://demo.txt

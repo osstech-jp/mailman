@@ -17,12 +17,6 @@
 
 """Digest helper tests."""
 
-__all__ = [
-    'TestBumpDigest',
-    'TestMaybeSendDigest',
-    ]
-
-
 import os
 import unittest
 
@@ -41,7 +35,6 @@ from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import factory, now as right_now
 
 
-
 class TestBumpDigest(unittest.TestCase):
     layer = ConfigLayer
 
@@ -162,7 +155,6 @@ class TestBumpDigest(unittest.TestCase):
                           bump_digest_number_and_volume, self._mlist)
 
 
-
 class TestMaybeSendDigest(unittest.TestCase):
     layer = ConfigLayer
 
@@ -196,10 +188,9 @@ Subject: message {}
         self._runner.run()
         # There are no digests in flight now, and a single digest message has
         # been sent.
-        self.assertEqual(len(get_queue_messages('digest')), 0)
+        get_queue_messages('digest', expected_count=0)
         self.assertFalse(os.path.exists(self._mailbox_path))
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         digest_contents = str(items[0].msg)
         self.assertIn('Subject: message 1', digest_contents)
         self.assertIn('Subject: message 2', digest_contents)
@@ -212,11 +203,10 @@ Subject: message {}
         maybe_send_digest_now(self._mlist)
         self._runner.run()
         # A digest is still being collected, but none have been sent.
-        self.assertEqual(len(get_queue_messages('digest')), 0)
+        get_queue_messages('digest', expected_count=0)
         self.assertGreater(os.path.getsize(self._mailbox_path), 0)
         self.assertLess(os.path.getsize(self._mailbox_path), 100 * 1024.0)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('virgin', expected_count=0)
 
     def test_force_send_digest_under_threshold(self):
         # Put a few messages in the digest.
@@ -228,10 +218,9 @@ Subject: message {}
         self._runner.run()
         # There are no digests in flight now, and a single digest message has
         # been sent.
-        self.assertEqual(len(get_queue_messages('digest')), 0)
+        get_queue_messages('digest', expected_count=0)
         self.assertFalse(os.path.exists(self._mailbox_path))
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         digest_contents = str(items[0].msg)
         self.assertIn('Subject: message 1', digest_contents)
         self.assertIn('Subject: message 2', digest_contents)

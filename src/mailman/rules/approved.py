@@ -17,11 +17,6 @@
 
 """Look for moderator pre-approval."""
 
-__all__ = [
-    'Approved',
-    ]
-
-
 import re
 
 from email.iterators import typed_subpart_iterator
@@ -29,6 +24,10 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
+
+__all__ = [
+    'Approved',
+    ]
 
 
 EMPTYSTRING = ''
@@ -40,7 +39,6 @@ HEADERS = [
     ]
 
 
-
 @implementer(IRule)
 class Approved:
     """Look for moderator pre-approval."""
@@ -134,7 +132,6 @@ class Approved:
         return is_valid
 
 
-
 def reset_payload(part, payload):
     # Set decoded payload maintaining content-type, charset, format and delsp.
     charset = part.get_content_charset() or 'us-ascii'

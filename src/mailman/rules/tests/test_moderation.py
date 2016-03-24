@@ -17,11 +17,6 @@
 
 """Test the `member-moderation` and `nonmember-moderation` rules."""
 
-__all__ = [
-    'TestModeration',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -34,7 +29,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestModeration(unittest.TestCase):
     """Test the approved handler."""
 
@@ -147,5 +141,6 @@ A message body.
             result = rule.check(self._mlist, msg, msgdata)
             self.assertTrue(result, 'NonmemberModeration rule should hit')
             self.assertIn('moderation_action', msgdata)
-            self.assertEqual(msgdata['moderation_action'], action_name,
+            self.assertEqual(
+                msgdata['moderation_action'], action_name,
                 'Wrong action for {}: {}'.format(address, action_name))

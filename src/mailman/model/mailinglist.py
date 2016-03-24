@@ -17,11 +17,6 @@
 
 """Model for mailing lists."""
 
-__all__ = [
-    'MailingList',
-    ]
-
-
 import os
 
 from mailman.config import config
@@ -64,6 +59,10 @@ from urllib.parse import urljoin
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
+
+__all__ = [
+    'MailingList',
+    ]
 
 
 SPACE = ' '

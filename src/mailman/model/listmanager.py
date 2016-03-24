@@ -17,11 +17,6 @@
 
 """A mailing list manager."""
 
-__all__ = [
-    'ListManager',
-    ]
-
-
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import (
@@ -36,8 +31,11 @@ from mailman.utilities.datetime import now
 from zope.event import notify
 from zope.interface import implementer
 
+__all__ = [
+    'ListManager',
+    ]
 
-
+
 @implementer(IListManager)
 class ListManager:
     """An implementation of the `IListManager` interface."""

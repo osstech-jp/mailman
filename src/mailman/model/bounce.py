@@ -17,13 +17,6 @@
 
 """Bounce support."""
 
-__all__ = [
-    'BounceEvent',
-    'BounceProcessor',
-    ]
-
-
-
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
@@ -34,7 +27,6 @@ from sqlalchemy import Boolean, Column, DateTime, Integer, Unicode
 from zope.interface import implementer
 
 
-
 @implementer(IBounceEvent)
 class BounceEvent(Model):
     """See `IBounceEvent`."""
@@ -59,7 +51,6 @@ class BounceEvent(Model):
         self.processed = False
 
 
-
 @implementer(IBounceProcessor)
 class BounceProcessor:
     """See `IBounceProcessor`."""

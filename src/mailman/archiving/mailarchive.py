@@ -17,11 +17,7 @@
 
 """The Mail-Archive.com archiver."""
 
-__all__ = [
-    'MailArchive',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.config.config import external_configuration
 from mailman.interfaces.archiver import ArchivePolicy, IArchiver
@@ -29,7 +25,7 @@ from urllib.parse import quote, urljoin
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IArchiver)
 class MailArchive:
     """Public archiver at the Mail-Archive.com.

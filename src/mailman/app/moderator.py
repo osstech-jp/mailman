@@ -17,20 +17,11 @@
 
 """Application support for moderators."""
 
-__all__ = [
-    'handle_ListDeletingEvent',
-    'handle_message',
-    'handle_unsubscription',
-    'hold_message',
-    'hold_unsubscription',
-    'send_rejection',
-    ]
-
-
 import time
 import logging
 
 from email.utils import formatdate, getaddresses, make_msgid
+from mailman import public
 from mailman.app.membership import delete_member
 from mailman.config import config
 from mailman.core.i18n import _
@@ -51,7 +42,7 @@ vlog = logging.getLogger('mailman.vette')
 slog = logging.getLogger('mailman.subscribe')
 
 
-
+@public
 def hold_message(mlist, msg, msgdata=None, reason=None):
     """Hold a message for moderator approval.
 
@@ -97,7 +88,7 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
     return request_id
 
 
-
+@public
 def handle_message(mlist, id, action, comment=None, forward=None):
     message_store = getUtility(IMessageStore)
     requestdb = IListRequests(mlist)
@@ -187,7 +178,7 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         vlog.info(note, mlist.fqdn_listname, rejection, sender, subject)
 
 
-
+@public
 def hold_unsubscription(mlist, email):
     data = dict(email=email)
     requestsdb = IListRequests(mlist)
@@ -214,7 +205,7 @@ def hold_unsubscription(mlist, email):
     return request_id
 
 
-
+@public
 def handle_unsubscription(mlist, id, action, comment=None):
     requestdb = IListRequests(mlist)
     key, data = requestdb.get_request(id)
@@ -244,12 +235,12 @@ def handle_unsubscription(mlist, id, action, comment=None):
     requestdb.delete_request(id)
 
 
-
+@public
 def send_rejection(mlist, request, recip, comment, origmsg=None, lang=None):
     # As this message is going to the requester, try to set the language to
     # his/her language choice, if they are a member.  Otherwise use the list's
     # preferred language.
-    display_name = mlist.display_name
+    display_name = mlist.display_name               # flake8: noqa
     if lang is None:
         member = mlist.members.get_member(recip)
         lang = (mlist.preferred_language
@@ -276,7 +267,7 @@ def send_rejection(mlist, request, recip, comment, origmsg=None, lang=None):
     msg.send(mlist)
 
 
-
+@public
 def handle_ListDeletingEvent(event):
     if not isinstance(event, ListDeletingEvent):
         return

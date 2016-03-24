@@ -15,13 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Module stuff."""
-
-__all__ = [
-    'AutoResponseRecord',
-    'AutoResponseSet',
-    ]
-
+"""Autoresponder records."""
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -33,8 +27,13 @@ from sqlalchemy import Column, Date, ForeignKey, Integer, desc
 from sqlalchemy.orm import relationship
 from zope.interface import implementer
 
+__all__ = [
+    'AutoResponseRecord',
+    'AutoResponseSet',
+    ]
 
-
+
+
 @implementer(IAutoResponseRecord)
 class AutoResponseRecord(Model):
     """See `IAutoResponseRecord`."""
@@ -59,7 +58,6 @@ class AutoResponseRecord(Model):
         self.date_sent = today()
 
 
-
 @implementer(IAutoResponseSet)
 class AutoResponseSet:
     """See `IAutoResponseSet`."""

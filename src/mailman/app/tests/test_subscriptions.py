@@ -17,11 +17,6 @@
 
 """Tests for the subscription service."""
 
-__all__ = [
-    'TestSubscriptionWorkflow',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -40,7 +35,6 @@ from unittest.mock import patch
 from zope.component import getUtility
 
 
-
 class TestSubscriptionWorkflow(unittest.TestCase):
     layer = ConfigLayer
     maxDiff = None
@@ -230,8 +224,8 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         # The subscription policy requires user confirmation, but their
         # subscription is pre-confirmed.  Since moderation is required, that
         # check will be performed.
-        self._mlist.subscription_policy = \
-          SubscriptionPolicy.confirm_then_moderate
+        self._mlist.subscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
         anne = self._user_manager.create_address(self._anne)
         workflow = SubscriptionWorkflow(self._mlist, anne,
                                         pre_verified=True,
@@ -244,8 +238,8 @@ class TestSubscriptionWorkflow(unittest.TestCase):
     def test_confirmation_checks_confirm_and_moderate_pre_confirmed(self):
         # The subscription policy requires user confirmation and moderation,
         # but their subscription is pre-confirmed.
-        self._mlist.subscription_policy = \
-          SubscriptionPolicy.confirm_then_moderate
+        self._mlist.subscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
         anne = self._user_manager.create_address(self._anne)
         workflow = SubscriptionWorkflow(self._mlist, anne,
                                         pre_verified=True,
@@ -269,8 +263,8 @@ class TestSubscriptionWorkflow(unittest.TestCase):
     def test_confirmation_checks_moderate_confirmation_needed(self):
         # The subscription policy requires confirmation and moderation, and the
         # subscription is not pre-confirmed.
-        self._mlist.subscription_policy = \
-          SubscriptionPolicy.confirm_then_moderate
+        self._mlist.subscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
         anne = self._user_manager.create_address(self._anne)
         workflow = SubscriptionWorkflow(self._mlist, anne, pre_verified=True)
         workflow.run_thru('confirmation_checks')
@@ -340,8 +334,8 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         # An moderation-requiring subscription policy plus a pre-verified and
         # pre-approved address means the user gets subscribed to the mailing
         # list without any further confirmations or approvals.
-        self._mlist.subscription_policy = \
-          SubscriptionPolicy.confirm_then_moderate
+        self._mlist.subscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
         anne = self._user_manager.create_address(self._anne)
         workflow = SubscriptionWorkflow(self._mlist, anne,
                                         pre_verified=True,
@@ -445,8 +439,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
                                         pre_confirmed=True)
         # Consume the entire state machine.
         list(workflow)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         self.assertEqual(message['From'], 'test-owner@example.com')
         self.assertEqual(message['To'], 'test-owner@example.com')
@@ -471,8 +464,7 @@ approval:
                                         pre_confirmed=True)
         # Consume the entire state machine.
         list(workflow)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('virgin', expected_count=0)
 
     def test_send_confirmation(self):
         # A confirmation message gets sent when the address is not verified.
@@ -481,8 +473,7 @@ approval:
         # Run the workflow to model the confirmation step.
         workflow = SubscriptionWorkflow(self._mlist, anne)
         list(workflow)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         token = workflow.token
         self.assertEqual(message['Subject'], 'confirm {}'.format(token))
@@ -499,8 +490,7 @@ approval:
         # Run the workflow to model the confirmation step.
         workflow = SubscriptionWorkflow(self._mlist, anne, pre_confirmed=True)
         list(workflow)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         token = workflow.token
         self.assertEqual(
@@ -517,8 +507,7 @@ approval:
         # Run the workflow to model the confirmation step.
         workflow = SubscriptionWorkflow(self._mlist, anne, pre_verified=True)
         list(workflow)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         token = workflow.token
         self.assertEqual(
@@ -596,8 +585,8 @@ approval:
         # Ensure that if the workflow requires two confirmations, e.g. first
         # the user confirming their subscription, and then the moderator
         # approving it, that different tokens are used in these two cases.
-        self._mlist.subscription_policy = \
-          SubscriptionPolicy.confirm_then_moderate
+        self._mlist.subscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
         anne = self._user_manager.create_address(self._anne)
         workflow = SubscriptionWorkflow(self._mlist, anne, pre_verified=True)
         # Run the state machine up to the first confirmation, and cache the

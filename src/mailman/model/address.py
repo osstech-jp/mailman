@@ -17,11 +17,6 @@
 
 """Model for addresses."""
 
-__all__ = [
-    'Address',
-    ]
-
-
 from email.utils import formataddr
 from mailman.database.model import Model
 from mailman.interfaces.address import (
@@ -34,7 +29,11 @@ from zope.event import notify
 from zope.interface import implementer
 
 
-
+__all__ = [
+    'Address',
+    ]
+
+
 @implementer(IAddress)
 class Address(Model):
     """See `IAddress`."""

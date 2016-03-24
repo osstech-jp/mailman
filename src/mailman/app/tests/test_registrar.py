@@ -17,11 +17,6 @@
 
 """Test email address registration."""
 
-__all__ = [
-    'TestRegistrar',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -37,7 +32,6 @@ from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
-
 class TestRegistrar(unittest.TestCase):
     """Test registration."""
 
@@ -151,8 +145,8 @@ class TestRegistrar(unittest.TestCase):
         # approve.  Running the workflow gives us a token.  Confirming the
         # token runs the workflow a little farther, but still gives us a
         # token.  Confirming again subscribes the user.
-        self._mlist.subscription_policy = \
-          SubscriptionPolicy.confirm_then_moderate
+        self._mlist.subscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
         self._anne.verified_on = now()
         # Runs until subscription confirmation.
         token, token_owner, rmember = self._registrar.register(self._anne)
@@ -186,8 +180,8 @@ class TestRegistrar(unittest.TestCase):
         # confirm their subscription is different than the token the moderator
         # sees when they approve the subscription.  This prevents the user
         # from using a replay attack to subvert moderator approval.
-        self._mlist.subscription_policy = \
-          SubscriptionPolicy.confirm_then_moderate
+        self._mlist.subscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
         self._anne.verified_on = now()
         # Runs until subscription confirmation.
         token, token_owner, rmember = self._registrar.register(self._anne)
@@ -248,8 +242,7 @@ class TestRegistrar(unittest.TestCase):
         # Anne is now a member.
         self.assertEqual(member.address.email, 'anne@example.com')
         # And there's a notification email waiting for Bart.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         self.assertEqual(message['To'], 'ant-owner@example.com')
         self.assertEqual(message['Subject'], 'Ant subscription notification')
@@ -272,5 +265,4 @@ anne@example.com has been successfully subscribed to Ant.""")
         # Anne is now a member.
         self.assertEqual(member.address.email, 'anne@example.com')
         # There's no notification email waiting for Bart.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 0)
+        get_queue_messages('virgin', expected_count=0)

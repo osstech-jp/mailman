@@ -17,18 +17,13 @@
 
 """Handle subscriptions."""
 
-__all__ = [
-    'SubscriptionWorkflow',
-    'handle_ListDeletingEvent',
-    ]
-
-
 import uuid
 import logging
 
 from email.utils import formataddr
 from enum import Enum
 from datetime import timedelta
+from mailman import public
 from mailman.app.workflow import Workflow
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
@@ -64,7 +59,7 @@ class Pendable(dict):
     PEND_TYPE = 'subscription'
 
 
-
+@public
 class SubscriptionWorkflow(Workflow):
     """Workflow of a subscription request."""
 
@@ -225,10 +220,11 @@ class SubscriptionWorkflow(Workflow):
         # required we need to check that, otherwise we can go straight to
         # subscription.
         if self.pre_confirmed:
-            next_step = ('moderation_checks'
-                         if self.mlist.subscription_policy is
-                            SubscriptionPolicy.confirm_then_moderate
-                         else 'do_subscription')
+            next_step = (
+                'moderation_checks'
+                if self.mlist.subscription_policy is
+                    SubscriptionPolicy.confirm_then_moderate   # flake8: noqa
+                else 'do_subscription')
             self.push(next_step)
             return
         # The user must confirm their subscription.
@@ -327,11 +323,11 @@ class SubscriptionWorkflow(Workflow):
                          SubscriptionPolicy.moderate,
                          SubscriptionPolicy.confirm_then_moderate,
                          )
-                    else 'do_subscription')
+                     else 'do_subscription')
         self.push(next_step)
 
 
-
+@public
 def handle_ListDeletingEvent(event):
     """Delete a mailing list's members when the list is being deleted."""
 

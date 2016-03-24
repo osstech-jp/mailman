@@ -26,9 +26,11 @@ import os
 import errno
 import logging
 
+from contextlib import suppress
 from datetime import timedelta
 from flufl.lock import Lock, TimeOutError
 from mailbox import Maildir
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
 from zope.interface import implementer
@@ -37,7 +39,7 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.error')
 
 
-
+@public
 @implementer(IArchiver)
 class Prototype:
     """A prototype of a third party archiver.
@@ -68,13 +70,8 @@ class Prototype:
         This archiver saves messages into a maildir.
         """
         archive_dir = os.path.join(config.ARCHIVE_DIR, 'prototype')
-        try:
+        with suppress(FileExistsError):
             os.makedirs(archive_dir, 0o775)
-        except OSError as error:
-            # If this already exists, then we're fine
-            if error.errno != errno.EEXIST:
-                raise
-
         # Maildir will throw an error if the directories are partially created
         # (for instance the toplevel exists but cur, new, or tmp do not)
         # therefore we don't create the toplevel as we did above.

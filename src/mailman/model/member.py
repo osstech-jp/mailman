@@ -17,11 +17,6 @@
 
 """Model for members."""
 
-__all__ = [
-    'Member',
-    ]
-
-
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -40,11 +35,15 @@ from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
 
+__all__ = [
+    'Member',
+    ]
+
+
 
 uid_factory = UIDFactory(context='members')
 
 
-
 @implementer(IMember)
 class Member(Model):
     """See `IMember`."""

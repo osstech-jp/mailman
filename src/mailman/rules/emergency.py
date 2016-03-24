@@ -17,17 +17,15 @@
 
 """The emergency hold rule."""
 
+from mailman.core.i18n import _
+from mailman.interfaces.rules import IRule
+from zope.interface import implementer
+
 __all__ = [
     'Emergency',
     ]
 
 
-from mailman.core.i18n import _
-from mailman.interfaces.rules import IRule
-from zope.interface import implementer
-
-
-
 @implementer(IRule)
 class Emergency:
     """The emergency hold rule."""

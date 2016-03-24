@@ -17,20 +17,15 @@
 
 """Inject a message into a queue."""
 
-__all__ = [
-    'inject_message',
-    'inject_text',
-    ]
-
-
 from email import message_from_string
 from email.utils import formatdate, make_msgid
+from mailman import public
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.utilities.email import add_message_hash
 
 
-
+@public
 def inject_message(mlist, msg, recipients=None, switchboard=None, **kws):
     """Inject a message into a queue.
 
@@ -73,7 +68,7 @@ def inject_message(mlist, msg, recipients=None, switchboard=None, **kws):
     return config.switchboards[switchboard].enqueue(msg, **msgdata)
 
 
-
+@public
 def inject_text(mlist, text, recipients=None, switchboard=None, **kws):
     """Turn text into a message and inject that into a queue.
 

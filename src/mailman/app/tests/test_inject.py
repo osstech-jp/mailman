@@ -17,12 +17,6 @@
 
 """Testing app.inject functions."""
 
-__all__ = [
-    'TestInjectMessage',
-    'TestInjectText',
-    ]
-
-
 import unittest
 
 from mailman.app.inject import inject_message, inject_text
@@ -37,7 +31,6 @@ from mailman.testing.layers import ConfigLayer
 NL = '\n'
 
 
-
 class TestInjectMessage(unittest.TestCase):
     """Test message injection."""
 
@@ -59,8 +52,7 @@ Nothing.
     def test_inject_message(self):
         # Test basic inject_message() call.
         inject_message(self.mlist, self.msg)
-        items = get_queue_messages('in')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('in', expected_count=1)
         self.assertMultiLineEqual(items[0].msg.as_string(),
                                   self.msg.as_string())
         self.assertEqual(items[0].msgdata['listid'], 'test.example.com')
@@ -71,16 +63,14 @@ Nothing.
         # Explicit recipients end up in the metadata.
         recipients = ['bart@example.com', 'cris@example.com']
         inject_message(self.mlist, self.msg, recipients)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msgdata['recipients'], recipients)
 
     def test_inject_message_to_queue(self):
         # Explicitly use a different queue.
         inject_message(self.mlist, self.msg, switchboard='virgin')
-        items = get_queue_messages('in')
-        self.assertEqual(len(items), 0)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        get_queue_messages('in', expected_count=0)
+        items = get_queue_messages('virgin', expected_count=1)
         self.assertMultiLineEqual(items[0].msg.as_string(),
                                   self.msg.as_string())
         self.assertEqual(items[0].msgdata['listid'], 'test.example.com')
@@ -93,7 +83,7 @@ Nothing.
         self.assertNotIn('message-id', self.msg)
         inject_message(self.mlist, self.msg)
         self.assertIn('message-id', self.msg)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertIn('message-id', items[0].msg)
         self.assertEqual(items[0].msg['message-id'], self.msg['message-id'])
 
@@ -103,14 +93,14 @@ Nothing.
         self.assertNotIn('date', self.msg)
         inject_message(self.mlist, self.msg)
         self.assertIn('date', self.msg)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertIn('date', items[0].msg)
         self.assertEqual(items[0].msg['date'], self.msg['date'])
 
     def test_inject_message_with_keywords(self):
         # Keyword arguments are copied into the metadata.
         inject_message(self.mlist, self.msg, foo='yes', bar='no')
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msgdata['foo'], 'yes')
         self.assertEqual(items[0].msgdata['bar'], 'no')
 
@@ -118,7 +108,7 @@ Nothing.
         # When the injected message has a Message-ID header, the injected
         # message will also get an Message-ID-Hash header.
         inject_message(self.mlist, self.msg)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msg['message-id-hash'],
                          '4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB')
 
@@ -130,12 +120,11 @@ Nothing.
         self.assertNotIn('message-id', self.msg)
         self.assertNotIn('message-id-hash', self.msg)
         inject_message(self.mlist, self.msg)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertIn('message-id', items[0].msg)
         self.assertIn('message-id-hash', items[0].msg)
 
 
-
 class TestInjectText(unittest.TestCase):
     """Test text injection."""
 
@@ -161,9 +150,8 @@ Nothing.
     def test_inject_text(self):
         # Test basic inject_text() call.
         inject_text(self.mlist, self.text)
-        items = get_queue_messages('in')
-        self.assertEqual(len(items), 1)
-        self.assertTrue(isinstance(items[0].msg, Message))
+        items = get_queue_messages('in', expected_count=1)
+        self.assertIsInstance(items[0].msg, Message)
         self.assertEqual(items[0].msg['message-id-hash'],
                          'GUXXQKNCHBFQAHGBFMGCME6HKZCUUH3K')
         # Delete these headers because they don't exist in the original text.
@@ -182,16 +170,14 @@ Nothing.
         # Explicit recipients end up in the metadata.
         recipients = ['bart@example.com', 'cris@example.com']
         inject_text(self.mlist, self.text, recipients)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msgdata['recipients'], recipients)
 
     def test_inject_text_to_queue(self):
         # Explicitly use a different queue.
         inject_text(self.mlist, self.text, switchboard='virgin')
-        items = get_queue_messages('in')
-        self.assertEqual(len(items), 0)
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        get_queue_messages('in', expected_count=0)
+        items = get_queue_messages('virgin', expected_count=1)
         # Remove the Message-ID-Hash header which isn't in the original text.
         del items[0].msg['message-id-hash']
         del items[0].msg['x-message-id-hash']
@@ -209,7 +195,7 @@ Nothing.
         filtered = self._remove_line('message-id')
         self.assertNotIn('Message-ID', filtered)
         inject_text(self.mlist, filtered)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertIn('message-id', items[0].msg)
 
     def test_inject_text_without_date(self):
@@ -217,14 +203,14 @@ Nothing.
         filtered = self._remove_line('date')
         self.assertNotIn('date', filtered)
         inject_text(self.mlist, self.text)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertIn('date', items[0].msg)
 
     def test_inject_text_adds_original_size(self):
         # The metadata gets an original_size attribute that is the length of
         # the injected text.
         inject_text(self.mlist, self.text)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msgdata['original_size'],
                          # Add back the Message-ID-Hash and X-Message-ID-Hash
                          # headers which wer in the message contributing to the
@@ -235,7 +221,7 @@ Nothing.
     def test_inject_text_with_keywords(self):
         # Keyword arguments are copied into the metadata.
         inject_text(self.mlist, self.text, foo='yes', bar='no')
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msgdata['foo'], 'yes')
         self.assertEqual(items[0].msgdata['bar'], 'no')
 
@@ -243,7 +229,7 @@ Nothing.
         # When the injected message has a Message-ID header, the injected
         # message will also get an Message-ID-Hash header.
         inject_text(self.mlist, self.text)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msg['message-id-hash'],
                          'GUXXQKNCHBFQAHGBFMGCME6HKZCUUH3K')
 
@@ -255,6 +241,6 @@ Nothing.
         self.assertNotIn('Message-ID', filtered)
         self.assertNotIn('Message-ID-Hash', filtered)
         inject_text(self.mlist, filtered)
-        items = get_queue_messages('in')
+        items = get_queue_messages('in', expected_count=1)
         self.assertIn('message-id', items[0].msg)
         self.assertIn('message-id-hash', items[0].msg)

@@ -17,16 +17,15 @@
 
 """The administrivia rule."""
 
-__all__ = [
-    'Administrivia',
-    ]
-
-
 from email.iterators import typed_subpart_iterator
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
+
+__all__ = [
+    'Administrivia',
+    ]
 
 
 # The list of email commands we search for in the Subject header and payload.
@@ -48,7 +47,6 @@ EMAIL_COMMANDS = {
     }
 
 
-
 @implementer(IRule)
 class Administrivia:
     """The administrivia rule."""

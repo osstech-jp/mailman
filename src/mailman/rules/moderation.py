@@ -17,12 +17,6 @@
 
 """Membership related rules."""
 
-__all__ = [
-    'MemberModeration',
-    'NonmemberModeration',
-    ]
-
-
 import re
 
 from mailman.core.i18n import _
@@ -33,8 +27,12 @@ from mailman.interfaces.usermanager import IUserManager
 from zope.component import getUtility
 from zope.interface import implementer
 
+__all__ = [
+    'MemberModeration',
+    'NonmemberModeration',
+    ]
 
-
+
 @implementer(IRule)
 class MemberModeration:
     """The member moderation rule."""
@@ -65,7 +63,6 @@ class MemberModeration:
         return False
 
 
-
 def _record_action(msgdata, action, sender, reason):
     msgdata['moderation_action'] = action
     msgdata['moderation_sender'] = sender
@@ -88,13 +85,13 @@ class NonmemberModeration:
         # list, make them nonmembers.
         for sender in msg.senders:
             if (mlist.members.get_member(sender) is None and
-                mlist.nonmembers.get_member(sender) is None):
+                    mlist.nonmembers.get_member(sender) is None):
                 # The address is neither a member nor nonmember.
                 address = user_manager.get_address(sender)
                 assert address is not None, (
                     'Posting address is not registered: {0}'.format(sender))
                 mlist.subscribe(address, MemberRole.nonmember)
-        ## # If a member is found, the member-moderation rule takes precedence.
+        # If a member is found, the member-moderation rule takes precedence.
         for sender in msg.senders:
             if mlist.members.get_member(sender) is not None:
                 return False

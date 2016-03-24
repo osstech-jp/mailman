@@ -17,21 +17,10 @@
 
 """Application level auto-reply code."""
 
-# XXX This should undergo a rewrite to move this functionality off of the
-# mailing list.  The reply governor should really apply site-wide per
-# recipient (I think).
-
-__all__ = [
-    'can_acknowledge',
-    ]
-
-import logging
+from mailman import public
 
 
-log = logging.getLogger('mailman.vette')
-
-
-
+@public
 def can_acknowledge(msg):
     """A boolean specifying whether this message can be acknowledged.
 

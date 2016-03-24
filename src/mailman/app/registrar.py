@@ -17,14 +17,9 @@
 
 """Implementation of the IRegistrar interface."""
 
-__all__ = [
-    'Registrar',
-    'handle_ConfirmationNeededEvent',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.app.subscriptions import SubscriptionWorkflow
 from mailman.core.i18n import _
 from mailman.database.transaction import flush
@@ -40,13 +35,12 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.error')
 
 
-
 @implementer(IPendable)
 class PendableRegistration(dict):
     PEND_TYPE = 'registration'
 
 
-
+@public
 @implementer(IRegistrar)
 class Registrar:
     """Handle registrations and confirmations for subscriptions."""
@@ -81,7 +75,7 @@ class Registrar:
                 SubscriptionWorkflow.__name__, token)
 
 
-
+@public
 def handle_ConfirmationNeededEvent(event):
     if not isinstance(event, ConfirmationNeededEvent):
         return
@@ -93,13 +87,13 @@ def handle_ConfirmationNeededEvent(event):
     subject = 'confirm ' + event.token
     confirm_address = event.mlist.confirm_address(event.token)
     # For i18n interpolation.
-    confirm_url = event.mlist.domain.confirm_url(event.token)
+    confirm_url = event.mlist.domain.confirm_url(event.token)   # flake8: noqa
     email_address = event.email
-    domain_name = event.mlist.domain.mail_host
-    contact_address = event.mlist.owner_address
+    domain_name = event.mlist.domain.mail_host      # flake8: noqa
+    contact_address = event.mlist.owner_address     # flake8: noqa
     # Send a verification email to the address.
     template = getUtility(ITemplateLoader).get(
-        'mailman:///{0}/{1}/confirm.txt'.format(
+        'mailman:///{}/{}/confirm.txt'.format(
             event.mlist.fqdn_listname,
             event.mlist.preferred_language.code))
     text = _(template)

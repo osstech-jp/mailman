@@ -17,15 +17,6 @@
 
 """Application level bounce handling."""
 
-__all__ = [
-    'ProbeVERP',
-    'StandardVERP',
-    'bounce_message',
-    'maybe_forward',
-    'send_probe',
-    ]
-
-
 import re
 import uuid
 import logging
@@ -33,6 +24,7 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import parseaddr
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
@@ -55,7 +47,7 @@ blog = logging.getLogger('mailman.bounce')
 DOT = '.'
 
 
-
+@public
 def bounce_message(mlist, msg, error=None):
     """Bounce the message back to the original author.
 
@@ -91,7 +83,6 @@ def bounce_message(mlist, msg, error=None):
     bmsg.send(mlist)
 
 
-
 class _BaseVERPParser:
     """Base class for parsing VERP messages.
 
@@ -143,7 +134,7 @@ class _BaseVERPParser:
         return verp_matches
 
 
-
+@public
 class StandardVERP(_BaseVERPParser):
     def __init__(self):
         super().__init__(config.mta.verp_regexp)
@@ -152,6 +143,7 @@ class StandardVERP(_BaseVERPParser):
         return '{0}@{1}'.format(*match_object.group('local', 'domain'))
 
 
+@public
 class ProbeVERP(_BaseVERPParser):
     def __init__(self):
         super().__init__(config.mta.verp_probe_regexp)
@@ -172,13 +164,13 @@ class ProbeVERP(_BaseVERPParser):
         return member.address.email
 
 
-
 @implementer(IPendable)
 class _ProbePendable(dict):
     """The pendable dictionary for probe messages."""
     PEND_TYPE = 'probe'
 
 
+@public
 def send_probe(member, msg):
     """Send a VERP probe to the member.
 
@@ -231,7 +223,7 @@ def send_probe(member, msg):
     return token
 
 
-
+@public
 def maybe_forward(mlist, msg):
     """Possibly forward bounce messages with no recognizable addresses.
 
@@ -249,7 +241,7 @@ def maybe_forward(mlist, msg):
     # (owners and moderators), or to the site administrators.  Most of the
     # notification is exactly the same in either case.
     adminurl = mlist.script_url('admin') + '/bounce'
-    subject=_('Uncaught bounce notification')
+    subject = _('Uncaught bounce notification')
     text = MIMEText(
         make('unrecognized.txt', mlist, adminurl=adminurl),
         _charset=mlist.preferred_language.charset)
@@ -258,7 +250,7 @@ def maybe_forward(mlist, msg):
             is UnrecognizedBounceDisposition.administrators):
         keywords = dict(roster=mlist.administrators)
     elif (mlist.forward_unrecognized_bounces_to
-              is UnrecognizedBounceDisposition.site_owner):
+          is UnrecognizedBounceDisposition.site_owner):
         keywords = {}
     else:
         raise AssertionError('Invalid forwarding disposition: {0}'.format(

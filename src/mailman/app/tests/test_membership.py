@@ -17,12 +17,6 @@
 
 """Tests of application level membership functions."""
 
-__all__ = [
-    'TestAddMember',
-    'TestDeleteMember',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -38,7 +32,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestAddMember(unittest.TestCase):
     layer = ConfigLayer
 
@@ -229,7 +222,6 @@ class TestAddMember(unittest.TestCase):
         self.assertEqual(cm.exception.email, email.lower())
 
 
-
 class TestDeleteMember(unittest.TestCase):
     layer = ConfigLayer
 

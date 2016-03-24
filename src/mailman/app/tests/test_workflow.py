@@ -17,11 +17,6 @@
 
 """App-level workflow tests."""
 
-__all__ = [
-    'TestWorkflow',
-    ]
-
-
 import unittest
 
 from mailman.app.workflow import Workflow
@@ -52,7 +47,6 @@ class MyWorkflow(Workflow):
         return 'three'
 
 
-
 class TestWorkflow(unittest.TestCase):
     layer = ConfigLayer
 

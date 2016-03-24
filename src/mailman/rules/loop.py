@@ -17,17 +17,15 @@
 
 """Look for a posting loop."""
 
+from mailman.core.i18n import _
+from mailman.interfaces.rules import IRule
+from zope.interface import implementer
+
 __all__ = [
     'Loop',
     ]
 
 
-from mailman.core.i18n import _
-from mailman.interfaces.rules import IRule
-from zope.interface import implementer
-
-
-
 @implementer(IRule)
 class Loop:
     """Look for a posting loop."""

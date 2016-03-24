@@ -17,15 +17,6 @@
 
 """Test the `approved` handler."""
 
-__all__ = [
-    'TestApproved',
-    'TestApprovedNonASCII',
-    'TestApprovedPseudoHeader',
-    'TestApprovedPseudoHeaderMIME',
-    'TestPasswordHashMigration',
-    ]
-
-
 import os
 import unittest
 
@@ -37,7 +28,6 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestApproved(unittest.TestCase):
     """Test the approved handler."""
 
@@ -145,7 +135,6 @@ A message body.
         self.assertFalse(result)
 
 
-
 class TestApprovedPseudoHeader(unittest.TestCase):
     """Test the approved handler."""
 
@@ -278,7 +267,6 @@ X-Approve: not the password
         self.assertFalse('X-Approve' in self._msg.get_payload())
 
 
-
 class TestApprovedPseudoHeaderMIME(unittest.TestCase):
     """Test the approved handler."""
 
@@ -392,7 +380,6 @@ An important message.
         self.assertFalse('X-Approve' in msg.get_payload(1).get_payload())
 
 
-
 class TestApprovedNonASCII(unittest.TestCase):
     """Test the approved handler with non-ascii messages."""
 
@@ -514,7 +501,6 @@ deprecated = roundup_plaintext
                          '{plaintext}super secret')
 
 
-
 class TestApprovedNoTextPlainPart(unittest.TestCase):
     """Test the approved handler with HTML-only messages."""
 
