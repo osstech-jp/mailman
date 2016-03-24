@@ -17,11 +17,6 @@
 
 """The runner process."""
 
-__all__ = [
-    'main',
-    ]
-
-
 import os
 import sys
 import signal
@@ -29,6 +24,7 @@ import logging
 import argparse
 import traceback
 
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.initialize import initialize
@@ -45,7 +41,6 @@ if os.environ.get('COVERAGE_PROCESS_START') is not None:
     coverage.process_startup()
 
 
-
 class ROptionAction(argparse.Action):
     """Callback for -r/--runner option."""
     def __call__(self, parser, namespace, values, option_string=None):
@@ -65,7 +60,6 @@ class ROptionAction(argparse.Action):
         setattr(namespace, self.dest, (runner, rslice, rrange))
 
 
-
 def make_runner(name, slice, range, once=False):
     # Several conventions for specifying the runner name are supported.  It
     # could be one of the shortcut names.  If the name is a full module path,
@@ -100,7 +94,7 @@ def make_runner(name, slice, range, once=False):
     return runner_class(name, slice)
 
 
-
+@public
 def main():
     global log
 
@@ -192,7 +186,8 @@ def main():
         longest = max(len(name) for name in descriptions)
         for shortname in sorted(descriptions):
             classname = descriptions[shortname]
-            name = (' ' * (longest - len(shortname))) + shortname
+            spaces = longest - len(shortname)
+            name = (' ' * spaces) + shortname                 # flake8: noqa
             print(_('$name runs $classname'))
         sys.exit(0)
 

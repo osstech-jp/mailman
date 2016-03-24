@@ -17,11 +17,6 @@
 
 """Test mailman command utilities."""
 
-__all__ = [
-    'TestMailmanCommand',
-    ]
-
-
 import unittest
 
 from io import StringIO
@@ -29,7 +24,6 @@ from mailman.bin.mailman import main
 from unittest.mock import patch
 
 
-
 class TestMailmanCommand(unittest.TestCase):
     def test_mailman_command_without_subcommand_prints_help(self):
         # Issue #137: Running `mailman` without a subcommand raises an

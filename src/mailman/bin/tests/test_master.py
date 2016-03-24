@@ -17,22 +17,16 @@
 
 """Test master watcher utilities."""
 
-__all__ = [
-    'TestMasterLock',
-    ]
-
-
 import os
-import errno
 import tempfile
 import unittest
 
+from contextlib import suppress
 from datetime import timedelta
 from flufl.lock import Lock
 from mailman.bin import master
 
 
-
 class TestMasterLock(unittest.TestCase):
     def setUp(self):
         fd, self.lock_file = tempfile.mkstemp()
@@ -43,11 +37,8 @@ class TestMasterLock(unittest.TestCase):
     def tearDown(self):
         # Unlocking removes the lock file, but just to be safe (i.e. in case
         # of errors).
-        try:
+        with suppress(FileNotFoundError):
             os.remove(self.lock_file)
-        except OSError as error:
-            if error.errno != errno.ENOENT:
-                raise
 
     def test_acquire_lock_1(self):
         lock = master.acquire_lock_1(False, self.lock_file)

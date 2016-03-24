@@ -17,12 +17,6 @@
 
 """Master subprocess watcher."""
 
-__all__ = [
-    'Loop',
-    'main',
-    ]
-
-
 import os
 import sys
 import errno
@@ -34,6 +28,7 @@ from datetime import timedelta
 from enum import Enum
 from flufl.lock import Lock, NotLockedError, TimeOutError
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.logging import reopen
@@ -52,7 +47,6 @@ PRESERVE_ENVS = (
     )
 
 
-
 class MasterOptions(Options):
     """Options for the master watcher."""
 
@@ -111,7 +105,6 @@ given.  The values for -r are passed straight through to bin/runner."""))
             self.parser.error(_('Too many arguments'))
 
 
-
 class WatcherState(Enum):
     """Enum for the state of the master process watcher."""
     # No lock has been acquired by any process.
@@ -200,7 +193,7 @@ The master lock could not be acquired because it appears as though another
 master is already running.""")
         elif status is WatcherState.stale_lock:
             # Hostname matches but the process does not exist.
-            program = sys.argv[0]
+            program = sys.argv[0]                   # flake8: noqa
             message = _("""\
 The master lock could not be acquired.  It appears as though there is a stale
 master lock.  Try re-running $program with the --force flag.""")
@@ -231,7 +224,6 @@ Exiting.""")
         config.options.parser.error(message)
 
 
-
 class PIDWatcher:
     """A class which safely manages child process ids."""
 
@@ -291,7 +283,7 @@ class PIDWatcher:
         return self._pids.pop(pid, None)
 
 
-
+@public
 class Loop:
     """Main control loop class."""
 
@@ -307,33 +299,33 @@ class Loop:
         # Set up our signal handlers.  Also set up a SIGALRM handler to
         # refresh the lock once per day.  The lock lifetime is 1 day + 6 hours
         # so this should be plenty.
-        def sigalrm_handler(signum, frame):
+        def sigalrm_handler(signum, frame):         # flake8: noqa
             self._lock.refresh()
             signal.alarm(SECONDS_IN_A_DAY)
         signal.signal(signal.SIGALRM, sigalrm_handler)
         signal.alarm(SECONDS_IN_A_DAY)
         # SIGHUP tells the runners to close and reopen their log files.
-        def sighup_handler(signum, frame):
+        def sighup_handler(signum, frame):          # flake8: noqa
             reopen()
             for pid in self._kids:
                 os.kill(pid, signal.SIGHUP)
             log.info('Master watcher caught SIGHUP.  Re-opening log files.')
         signal.signal(signal.SIGHUP, sighup_handler)
         # SIGUSR1 is used by 'mailman restart'.
-        def sigusr1_handler(signum, frame):
+        def sigusr1_handler(signum, frame):         # flake8: noqa
             for pid in self._kids:
                 os.kill(pid, signal.SIGUSR1)
             log.info('Master watcher caught SIGUSR1.  Exiting.')
         signal.signal(signal.SIGUSR1, sigusr1_handler)
         # SIGTERM is what init will kill this process with when changing run
         # levels.  It's also the signal 'mailman stop' uses.
-        def sigterm_handler(signum, frame):
+        def sigterm_handler(signum, frame):         # flake8: noqa
             for pid in self._kids:
                 os.kill(pid, signal.SIGTERM)
             log.info('Master watcher caught SIGTERM.  Exiting.')
         signal.signal(signal.SIGTERM, sigterm_handler)
         # SIGINT is what control-C gives.
-        def sigint_handler(signum, frame):
+        def sigint_handler(signum, frame):          # flake8: noqa
             for pid in self._kids:
                 os.kill(pid, signal.SIGINT)
             log.info('Master watcher caught SIGINT.  Restarting.')
@@ -401,8 +393,8 @@ class Loop:
             for runner_config in config.runner_configs:
                 # Strip off the 'runner.' prefix.
                 assert runner_config.name.startswith('runner.'), (
-                    'Unexpected runner configuration section name: {0}'.format(
-                    runner_config.name))
+                    'Unexpected runner configuration section name: {}'.format(
+                        runner_config.name))
                 runner_names.append(runner_config.name[7:])
         # For each runner we want to start, find their config section, which
         # will tell us the name of the class to instantiate, along with the
@@ -522,7 +514,7 @@ Runner {0} reached maximum restart limit of {1:d}, not restarting.""",
                 raise
 
 
-
+@public
 def main():
     """Main process."""
 

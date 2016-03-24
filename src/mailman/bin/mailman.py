@@ -17,15 +17,11 @@
 
 """The 'mailman' command dispatcher."""
 
-__all__ = [
-    'main',
-    ]
-
-
 import os
 import argparse
 
 from functools import cmp_to_key
+from mailman import public
 from mailman.core.i18n import _
 from mailman.core.initialize import initialize
 from mailman.interfaces.command import ICLISubCommand
@@ -34,7 +30,24 @@ from mailman.version import MAILMAN_VERSION_FULL
 from zope.interface.verify import verifyObject
 
 
-
+# --help should display the subcommands by alphabetical order, except that
+# 'mailman help' should be first.
+def _help_sorter(command, other):
+    """Sorting helper."""
+    if command.name == 'help':
+        return -1
+    elif other.name == 'help':
+        return 1
+    elif command.name < other.name:
+        return -1
+    elif command.name == other.name:
+        return 0
+    else:
+        assert command.name > other.name
+        return 1
+
+
+@public
 def main():
     """The `mailman` command dispatcher."""
     # Create the basic parser and add all globally common options.
@@ -66,22 +79,7 @@ def main():
         command = command_class()
         verifyObject(ICLISubCommand, command)
         subcommands.append(command)
-    # --help should display the subcommands by alphabetical order, except that
-    # 'mailman help' should be first.
-    def sort_function(command, other):
-        """Sorting helper."""
-        if command.name == 'help':
-            return -1
-        elif other.name == 'help':
-            return 1
-        elif command.name < other.name:
-            return -1
-        elif command.name == other.name:
-            return 0
-        else:
-            assert command.name > other.name
-            return 1
-    subcommands.sort(key=cmp_to_key(sort_function))
+    subcommands.sort(key=cmp_to_key(_help_sorter))
     for command in subcommands:
         command_parser = subparser.add_parser(
             command.name, help=_(command.__doc__))
