@@ -17,11 +17,6 @@
 
 """Test the owner chain."""
 
-__all__ = [
-    'TestOwnerChain',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -34,7 +29,6 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestOwnerChain(unittest.TestCase):
     """Test the owner chain."""
 
@@ -56,18 +50,17 @@ Message-ID: <ant>
         # This event subscriber records the event that occurs when the message
         # is processed by the owner chain.
         events = []
-        def catch_event(event):
+        def catch_event(event):                                 # flake8: noqa
             if isinstance(event, AcceptOwnerEvent):
                 events.append(event)
         with event_subscribers(catch_event):
             process(self._mlist, self._msg, {}, 'default-owner-chain')
         self.assertEqual(len(events), 1)
         event = events[0]
-        self.assertTrue(isinstance(event, AcceptOwnerEvent))
+        self.assertIsInstance(event, AcceptOwnerEvent)
         self.assertEqual(event.mlist, self._mlist)
         self.assertEqual(event.msg['message-id'], '<ant>')
-        self.assertTrue(isinstance(event.chain, BuiltInOwnerChain))
-        messages = get_queue_messages('pipeline')
-        self.assertEqual(len(messages), 1)
-        message = messages[0].msg
+        self.assertIsInstance(event.chain, BuiltInOwnerChain)
+        items = get_queue_messages('pipeline', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['message-id'], '<ant>')

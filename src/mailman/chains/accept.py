@@ -17,13 +17,9 @@
 
 """The terminal 'accept' chain."""
 
-__all__ = [
-    'AcceptChain',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.chains.base import TerminalChainBase
 from mailman.config import config
 from mailman.core.i18n import _
@@ -35,7 +31,7 @@ log = logging.getLogger('mailman.vette')
 SEMISPACE = '; '
 
 
-
+@public
 class AcceptChain(TerminalChainBase):
     """Accept the message for posting."""
 

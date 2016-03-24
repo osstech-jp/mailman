@@ -17,11 +17,6 @@
 
 """Test the reject chain."""
 
-__all__ = [
-    'TestReject',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -31,7 +26,6 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestReject(unittest.TestCase):
     """Test the reject chain."""
 
@@ -53,8 +47,7 @@ Subject: Ignore
             'TEST-REASON-2',
             ])
         process_chain(self._mlist, self._msg, msgdata, start_chain='reject')
-        bounces = get_queue_messages('virgin')
-        self.assertEqual(len(bounces), 1)
+        bounces = get_queue_messages('virgin', expected_count=1)
         payload = bounces[0].msg.get_payload(0).as_string()
         self.assertIn('TEST-REASON-1', payload)
         self.assertIn('TEST-REASON-2', payload)
@@ -62,7 +55,6 @@ Subject: Ignore
     def test_no_reason(self):
         # There may be no moderation reasons.
         process_chain(self._mlist, self._msg, {}, start_chain='reject')
-        bounces = get_queue_messages('virgin')
-        self.assertEqual(len(bounces), 1)
+        bounces = get_queue_messages('virgin', expected_count=1)
         payload = bounces[0].msg.get_payload(0).as_string()
         self.assertIn('No bounce details are available', payload)

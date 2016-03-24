@@ -17,12 +17,6 @@
 
 """Test the base chain stuff."""
 
-__all__ = [
-    'TestMiscellaneous',
-    'TestTerminalChainBase',
-    ]
-
-
 import unittest
 
 from mailman.chains.accept import AcceptChain
@@ -37,7 +31,6 @@ class SimpleChain(TerminalChainBase):
         pass
 
 
-
 class TestMiscellaneous(unittest.TestCase):
     """Reach additional code coverage."""
 

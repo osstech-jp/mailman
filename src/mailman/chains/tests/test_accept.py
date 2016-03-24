@@ -17,11 +17,6 @@
 
 """Test the accept chain."""
 
-__all__ = [
-    'TestAccept',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -47,7 +42,6 @@ class MyChain:
         yield Link('truth', LinkAction.jump, 'accept')
 
 
-
 class TestAccept(unittest.TestCase):
     """Test the accept chain."""
 
@@ -66,7 +60,7 @@ Subject: Ignore
         config.chains['mine'] = MyChain()
         self.addCleanup(config.chains.pop, 'mine')
         hits = None
-        def handler(event):
+        def handler(event):                         # flake8: noqa
             nonlocal hits
             if isinstance(event, AcceptEvent):
                 hits = event.msg['x-mailman-rule-hits']

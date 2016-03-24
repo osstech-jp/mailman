@@ -17,13 +17,7 @@
 
 """Base class for terminal chains."""
 
-__all__ = [
-    'Chain',
-    'Link',
-    'TerminalChainBase',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.chain import (
     IChain, IChainIterator, IChainLink, IMutableChain, LinkAction)
@@ -31,6 +25,7 @@ from mailman.interfaces.rules import IRule
 from zope.interface import implementer
 
 
+@public
 @implementer(IChainLink)
 class Link:
     """A chain link."""
@@ -59,6 +54,7 @@ class Link:
         return message.format(self)
 
 
+@public
 @implementer(IChain, IChainIterator)
 class TerminalChainBase:
     """A base chain that always matches and executes a method.
@@ -88,6 +84,7 @@ class TerminalChainBase:
         yield Link('truth', LinkAction.stop)
 
 
+@public
 @implementer(IMutableChain)
 class Chain:
     """Generic chain base class."""
@@ -118,6 +115,7 @@ class Chain:
         yield from self._links
 
 
+@public
 @implementer(IChainIterator)
 class ChainIterator:
     """Generic chain iterator."""

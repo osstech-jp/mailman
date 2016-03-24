@@ -17,12 +17,6 @@
 
 """Additional tests for the hold chain."""
 
-__all__ = [
-    'TestAutorespond',
-    'TestHoldChain',
-    ]
-
-
 import unittest
 
 from email import message_from_bytes as mfb
@@ -40,16 +34,14 @@ from pkg_resources import resource_filename
 from zope.component import getUtility
 
 
-
 class TestAutorespond(unittest.TestCase):
     """Test autorespond_to_sender()"""
 
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
-        # Let assertMultiLineEqual work without bounds.
-        self.maxDiff = None
 
     @configuration('mta', max_autoresponses_per_day=1)
     def test_max_autoresponses_per_day(self):
@@ -70,9 +62,9 @@ class TestAutorespond(unittest.TestCase):
         self.assertEqual(len(messages), 1)
         # Remove the variable headers.
         message = messages[0].msg
-        self.assertTrue('message-id' in message)
+        self.assertIn('message-id', message)
         del message['message-id']
-        self.assertTrue('date' in message)
+        self.assertIn('date', message)
         del message['date']
         self.assertMultiLineEqual(messages[0].msg.as_string(), """\
 MIME-Version: 1.0
@@ -95,7 +87,6 @@ If you believe this message is in error, or if you have any questions,
 please contact the list owner at test-owner@example.com.""")
 
 
-
 class TestHoldChain(unittest.TestCase):
     """Test the hold chain code."""
 
@@ -120,8 +111,7 @@ A message body.
             ])
         logfile = LogFileMark('mailman.vette')
         process_chain(self._mlist, msg, msgdata, start_chain='hold')
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 2)
+        messages = get_queue_messages('virgin', expected_count=2)
         payloads = {}
         for item in messages:
             if item.msg['to'] == 'test-owner@example.com':
@@ -150,8 +140,7 @@ A message body.
         process_chain(self._mlist, msg, {}, start_chain='hold')
         # The postauth.txt message is now in the virgin queue awaiting
         # delivery to the moderators.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         msgdata = items[0].msgdata
         self.assertTrue(msgdata['tomoderators'])
         self.assertEqual(msgdata['recipients'], {'test-owner@example.com'})
@@ -180,11 +169,10 @@ A message body.
 """)
         process_chain(self._mlist, msg, {}, start_chain='hold')
         process_chain(mlist2, msg, {}, start_chain='hold')
-        items = get_queue_messages('virgin')
         # There are four items in the virgin queue.  Two of them are for the
         # list owners who need to moderate the held message, and the other is
         # for anne telling her that her message was held for approval.
-        self.assertEqual(len(items), 4)
+        items = get_queue_messages('virgin', expected_count=4)
         anne_froms = set()
         owner_tos = set()
         for item in items:

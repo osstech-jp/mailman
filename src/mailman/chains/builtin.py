@@ -17,13 +17,9 @@
 
 """The default built-in starting chain."""
 
-__all__ = [
-    'BuiltInChain',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.chains.base import Link
 from mailman.core.i18n import _
 from mailman.interfaces.chain import IChain, LinkAction
@@ -33,7 +29,7 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.vette')
 
 
-
+@public
 @implementer(IChain)
 class BuiltInChain:
     """Default built-in chain."""

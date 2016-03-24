@@ -17,14 +17,10 @@
 
 """The header-matching chain."""
 
-__all__ = [
-    'HeaderMatchChain',
-    ]
-
-
 import re
 import logging
 
+from mailman import public
 from mailman.chains.base import Chain, Link
 from mailman.config import config
 from mailman.core.i18n import _
@@ -94,6 +90,7 @@ class HeaderMatchRule:
         return False
 
 
+@public
 class HeaderMatchChain(Chain):
     """Default header matching chain.
 

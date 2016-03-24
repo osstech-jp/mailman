@@ -17,13 +17,9 @@
 
 """The standard -owner posting chain."""
 
-__all__ = [
-    'BuiltInOwnerChain',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.chains.base import TerminalChainBase
 from mailman.config import config
 from mailman.core.i18n import _
@@ -34,7 +30,7 @@ from zope.event import notify
 log = logging.getLogger('mailman.vette')
 
 
-
+@public
 class BuiltInOwnerChain(TerminalChainBase):
     """Default built-in -owner address chain."""
 

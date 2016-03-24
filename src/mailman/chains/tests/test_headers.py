@@ -17,11 +17,6 @@
 
 """Test the header chain."""
 
-__all__ = [
-    'TestHeaderChain',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -173,7 +168,7 @@ class TestHeaderChain(unittest.TestCase):
             [('foo', 'a+', LinkAction.jump, 'reject'),
              ('bar', 'b+', LinkAction.jump, 'discard'),
              ('baz', 'z+', LinkAction.jump, 'accept'),
-            ])
+            ])                                      # flake8: noqa
 
     @configuration('antispam', header_checks="""
     Foo: foo
@@ -202,7 +197,7 @@ A message body.
         self.assertEqual(len(events), 1)
         event = events[0]
         # Site-wide wants to hold the message, the list wants to accept it.
-        self.assertTrue(isinstance(event, HoldEvent))
+        self.assertIsInstance(event, HoldEvent)
         self.assertEqual(event.chain, config.chains['hold'])
 
     def test_no_action_defaults_to_site_wide_action(self):
@@ -223,7 +218,7 @@ A message body.
         # This event subscriber records the event that occurs when the message
         # is processed by the owner chain, which holds its for approval.
         events = []
-        def record_holds(event):
+        def record_holds(event):                    # flake8: noqa
             if not isinstance(event, HoldEvent):
                 return
             events.append(event)
@@ -231,7 +226,7 @@ A message body.
             # Set the site-wide antispam action to hold the message.
             with configuration('antispam', header_checks="""
                 Spam: [*]{3,}
-                """, jump_chain='hold'):
+                """, jump_chain='hold'):            # flake8: noqa
                 process(self._mlist, msg, {}, start_chain='header-match')
             self.assertEqual(len(events), 1)
             event = events[0]
@@ -240,7 +235,7 @@ A message body.
             self.assertEqual(event.mlist, self._mlist)
             self.assertEqual(event.msg, msg)
         events = []
-        def record_discards(event):
+        def record_discards(event):                 # flake8: noqa
             if not isinstance(event, DiscardEvent):
                 return
             events.append(event)
@@ -249,7 +244,7 @@ A message body.
             msg.replace_header('Message-Id', '<bee>')
             with configuration('antispam', header_checks="""
                 Spam: [*]{3,}
-                """, jump_chain='discard'):
+                """, jump_chain='discard'):         # flake8: noqa
                 process(self._mlist, msg, {}, start_chain='header-match')
             self.assertEqual(len(events), 1)
             event = events[0]

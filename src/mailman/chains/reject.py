@@ -17,13 +17,9 @@
 
 """The terminal 'reject' chain."""
 
-__all__ = [
-    'RejectChain',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.app.bounces import bounce_message
 from mailman.chains.base import TerminalChainBase
 from mailman.core.errors import RejectMessage
@@ -38,7 +34,7 @@ NEWLINE = '\n'
 SEMISPACE = '; '
 
 
-
+@public
 class RejectChain(TerminalChainBase):
     """Reject/bounce a message."""
 
@@ -68,8 +64,8 @@ reasons:
 
 The original message as received by Mailman is attached.
 """).format(
-    list_name=mlist.display_name,
-    reasons=NEWLINE.join(reasons)
+    list_name=mlist.display_name,                   # flake8: noqa
+    reasons=NEWLINE.join(reasons)                   # flake8: noqa
     ))
         bounce_message(mlist, msg, error)
         log.info('REJECT: %s', msg.get('message-id', 'n/a'))

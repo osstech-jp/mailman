@@ -17,13 +17,9 @@
 
 """The terminal 'discard' chain."""
 
-__all__ = [
-    'DiscardChain',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.chains.base import TerminalChainBase
 from mailman.core.i18n import _
 from mailman.interfaces.chain import DiscardEvent
@@ -33,7 +29,7 @@ from zope.event import notify
 log = logging.getLogger('mailman.vette')
 
 
-
+@public
 class DiscardChain(TerminalChainBase):
     """Discard a message."""
 
