@@ -17,13 +17,7 @@
 
 """Prototypical permalinking archiver."""
 
-__all__ = [
-    'Prototype',
-    ]
-
-
 import os
-import errno
 import logging
 
 from contextlib import suppress

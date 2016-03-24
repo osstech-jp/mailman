@@ -17,11 +17,6 @@
 
 """Test the MHonArc archiver."""
 
-__all__ = [
-    'TestMhonarc',
-    ]
-
-
 import os
 import sys
 import shutil

@@ -17,11 +17,6 @@
 
 """Test the prototype archiver."""
 
-__all__ = [
-    'TestPrototypeArchiver',
-    ]
-
-
 import os
 import shutil
 import tempfile
@@ -63,10 +58,12 @@ but the water deserves to be swum.
         # Set up a temporary directory for the prototype archiver so that it's
         # easier to clean up.
         self._tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self._tempdir)
         config.push('prototype', """
         [paths.testing]
-        archive_dir: {0}
+        archive_dir: {}
         """.format(self._tempdir))
+        self.addCleanup(config.pop, 'prototype')
         # Capture the structure of a maildir.
         self._expected_dir_structure = set(
             (os.path.join(config.ARCHIVE_DIR, path) for path in (
@@ -77,10 +74,6 @@ but the water deserves to be swum.
                 os.path.join('prototype', self._mlist.fqdn_listname, 'tmp'),
                 )))
         self._expected_dir_structure.add(config.ARCHIVE_DIR)
-
-    def tearDown(self):
-        shutil.rmtree(self._tempdir)
-        config.pop('prototype')
 
     def _find(self, path):
         all_filenames = set()
