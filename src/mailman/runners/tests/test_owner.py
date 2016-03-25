@@ -22,11 +22,6 @@
 # tests.  They're not exactly integration tests, but they do touch lots of
 # parts of the system.
 
-__all__ = [
-    'TestEmailToOwner',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -44,7 +39,6 @@ from operator import itemgetter
 from zope.component import getUtility
 
 
-
 class TestEmailToOwner(unittest.TestCase):
     """Test emailing a mailing list's -owner address."""
 

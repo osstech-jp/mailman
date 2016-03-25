@@ -17,11 +17,6 @@
 
 """Digest runner."""
 
-__all__ = [
-    'DigestRunner',
-    ]
-
-
 import re
 import logging
 
@@ -31,6 +26,7 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formatdate, getaddresses, make_msgid
 from io import StringIO
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.runner import Runner
@@ -46,7 +42,6 @@ from urllib.error import URLError
 log = logging.getLogger('mailman.error')
 
 
-
 class Digester:
     """Base digester class."""
 
@@ -85,7 +80,7 @@ class Digester:
                 self._header = decorate(mlist, mlist.digest_header_uri)
             except URLError:
                 log.exception(
-                    'Digest header decorator URI not found ({0}): {1}'.format(
+                    'Digest header decorator URI not found ({}): {}'.format(
                         mlist.fqdn_listname, mlist.digest_header_uri))
                 self._header = ''
         self._toc = StringIO()
@@ -110,8 +105,8 @@ class Digester:
             if not username:
                 username = addresses[0][1]
         if username:
-            username = ' ({0})'.format(username)
-        lines = wrap('{0:2}. {1}'. format(count, subject), 65).split('\n')
+            username = ' ({})'.format(username)
+        lines = wrap('{:2}. {}'. format(count, subject), 65).split('\n')
         # See if the user's name can fit on the last line
         if len(lines[-1]) + len(username) > 70:
             lines.append(username)
@@ -145,8 +140,6 @@ class Digester:
         msg['Message'] = count.decode('utf-8')
 
 
-
-
 class MIMEDigester(Digester):
     """A MIME digester."""
 
@@ -176,7 +169,8 @@ class MIMEDigester(Digester):
                                 _charset=self._charset)
         except UnicodeError:
             toc_part = MIMEText(toc_text.encode('utf-8'), _charset='utf-8')
-        toc_part['Content-Description']= _("Today's Topics ($count messages)")
+        toc_part['Content-Description'] = _(
+            "Today's Topics ($count messages)")
         self._message.attach(toc_part)
 
     def add_message(self, msg, count):
@@ -210,7 +204,6 @@ class MIMEDigester(Digester):
         return self._message
 
 
-
 class RFC1153Digester(Digester):
     """A digester of the format specified by RFC 1153."""
 
@@ -247,7 +240,7 @@ class RFC1153Digester(Digester):
         for header in config.digests.plain_digest_keep_headers.split():
             if header in msg:
                 value = oneline(msg[header], in_unicode=True)
-                value = wrap('{0}: {1}'.format(header, value))
+                value = wrap('{}: {}'.format(header, value))
                 value = '\n\t'.join(value.split('\n'))
                 print(value, file=self._text)
         print(file=self._text)
@@ -277,7 +270,7 @@ class RFC1153Digester(Digester):
                     self._mlist, self._mlist.digest_footer_uri)
             except URLError:
                 log.exception(
-                    'Digest footer decorator URI not found ({0}): {1}'.format(
+                    'Digest footer decorator URI not found ({}): {}'.format(
                         self._mlist.fqdn_listname,
                         self._mlist.digest_footer_uri))
                 footer_text = ''
@@ -307,7 +300,7 @@ class RFC1153Digester(Digester):
         return self._message
 
 
-
+@public
 class DigestRunner(Runner):
     """The digest runner."""
 
@@ -364,7 +357,7 @@ class DigestRunner(Runner):
                 mime_recipients.add(email_address)
             else:
                 raise AssertionError(
-                    'Digest member "{0}" unexpected delivery mode: {1}'.format(
+                    'Digest member "{}" unexpected delivery mode: {}'.format(
                         email_address, member.delivery_mode))
         # Add also the folks who are receiving one last digest.
         for address, delivery_mode in mlist.last_digest_recipients:
@@ -376,7 +369,7 @@ class DigestRunner(Runner):
                 mime_recipients.add(address.original_email)
             else:
                 raise AssertionError(
-                    'OLD recipient "{0}" unexpected delivery mode: {1}'.format(
+                    'OLD recipient "{}" unexpected delivery mode: {}'.format(
                         address, delivery_mode))
         # Send the digests to the virgin queue for final delivery.
         queue = config.switchboards['virgin']

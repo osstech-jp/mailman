@@ -17,11 +17,6 @@
 
 """Test the `confirm` command."""
 
-__all__ = [
-    'TestConfirm',
-    ]
-
-
 import unittest
 
 from datetime import datetime
@@ -39,7 +34,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestConfirm(unittest.TestCase):
     """Test confirmations."""
 
@@ -57,7 +51,7 @@ class TestConfirm(unittest.TestCase):
             self._token, token_owner, member = registrar.register(anne)
 
     def test_confirm_with_re_prefix(self):
-        subject = 'Re: confirm {0}'.format(self._token)
+        subject = 'Re: confirm {}'.format(self._token)
         msg = mfs("""\
 From: anne@example.org
 To: test-confirm@example.com
@@ -77,7 +71,7 @@ To: test-confirm@example.com
         self.assertEqual(address.email, 'anne@example.org')
 
     def test_confirm_with_random_ascii_prefix(self):
-        subject = '\x99AW: confirm {0}'.format(self._token)
+        subject = '\x99AW: confirm {}'.format(self._token)
         msg = mfs("""\
 From: anne@example.org
 To: test-confirm@example.com
@@ -100,8 +94,8 @@ To: test-confirm@example.com
         # Clear out the virgin queue so that the test below only sees the
         # reply to the confirmation message.
         get_queue_messages('virgin')
-        subject = 'Re: confirm {0}'.format(self._token)
-        to = 'test-confirm+{0}@example.com'.format(self._token)
+        subject = 'Re: confirm {}'.format(self._token)
+        to = 'test-confirm+{}@example.com'.format(self._token)
         msg = mfs("""\
 From: Anne Person <anne@example.org>
 MIME-Version: 1.0
@@ -151,17 +145,16 @@ Franziskanerstra=C3=9Fe
         self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
         address = manager.get_address('anne@example.org')
         self.assertEqual(address.email, 'anne@example.org')
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata['recipients'],
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msgdata['recipients'],
                          set(['anne@example.org']))
 
     def test_confirm_with_no_command_in_utf8_body(self):
         # Clear out the virgin queue so that the test below only sees the
         # reply to the confirmation message.
         get_queue_messages('virgin')
-        subject = 'Re: confirm {0}'.format(self._token)
-        to = 'test-confirm+{0}@example.com'.format(self._token)
+        subject = 'Re: confirm {}'.format(self._token)
+        to = 'test-confirm+{}@example.com'.format(self._token)
         msg = mfs("""\
 From: Anne Person <anne@example.org>
 MIME-Version: 1.0
@@ -184,9 +177,8 @@ Franziskanerstra=C3=9Fe
         self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
         address = manager.get_address('anne@example.org')
         self.assertEqual(address.email, 'anne@example.org')
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata['recipients'],
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msgdata['recipients'],
                          set(['anne@example.org']))
 
     def test_double_confirmation(self):
@@ -196,8 +188,8 @@ Franziskanerstra=C3=9Fe
         # Clear out the virgin queue so that the test below only sees the
         # reply to the confirmation message.
         get_queue_messages('virgin')
-        subject = 'Re: confirm {0}'.format(self._token)
-        to = 'test-confirm+{0}@example.com'.format(self._token)
+        subject = 'Re: confirm {}'.format(self._token)
+        to = 'test-confirm+{}@example.com'.format(self._token)
         msg = mfs("""\
 From: Anne Person <anne@example.org>
 
@@ -213,13 +205,12 @@ From: Anne Person <anne@example.org>
         user = manager.get_user('anne@example.org')
         self.assertEqual(list(user.addresses)[0].email, 'anne@example.org')
         # Make sure that the confirmation was not attempted twice.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         # Search the contents of the results message.  There should be just
         # one 'Confirmation email' line.
         confirmation_lines = []
         in_results = False
-        for line in body_line_iterator(messages[0].msg):
+        for line in body_line_iterator(items[0].msg):
             line = line.strip()
             if in_results:
                 if line.startswith('- Done'):
@@ -229,7 +220,7 @@ From: Anne Person <anne@example.org>
             if line.strip() == '- Results:':
                 in_results = True
         self.assertEqual(len(confirmation_lines), 1)
-        self.assertFalse('did not match' in confirmation_lines[0])
+        self.assertNotIn('did not match', confirmation_lines[0])
 
     def test_welcome_message_after_confirmation(self):
         # Confirmations with a welcome message set.
@@ -241,8 +232,8 @@ From: Anne Person <anne@example.org>
         # Clear out the virgin queue so that the test below only sees the
         # reply to the confirmation message.
         get_queue_messages('virgin')
-        subject = 'Re: confirm {0}'.format(self._token)
-        to = 'test-confirm+{0}@example.com'.format(self._token)
+        subject = 'Re: confirm {}'.format(self._token)
+        to = 'test-confirm+{}@example.com'.format(self._token)
         msg = mfs("""\
 From: Anne Person <anne@example.org>
 
@@ -254,8 +245,7 @@ From: Anne Person <anne@example.org>
         self._runner.run()
         # Now there's a email command notification and a welcome message.  All
         # we care about for this test is the welcome message.
-        messages = get_queue_messages('virgin', sort_on='subject')
-        self.assertEqual(len(messages), 2)
-        message = messages[1].msg
-        self.assertEqual(str(message['subject']),
+        items = get_queue_messages('virgin', sort_on='subject',
+                                   expected_count=2)
+        self.assertEqual(str(items[1].msg['subject']),
                          'Welcome to the "Test" mailing list')

@@ -23,16 +23,12 @@ to go through some minimal processing before they can be sent out to the
 recipient.
 """
 
-__all__ = [
-    'VirginRunner',
-    ]
-
-
+from mailman import public
 from mailman.core.pipelines import process
 from mailman.core.runner import Runner
 
 
-
+@public
 class VirginRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
         # We need to fast track this message through any pipeline handlers

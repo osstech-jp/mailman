@@ -17,16 +17,12 @@
 
 """Outgoing runner."""
 
-__all__ = [
-    'OutgoingRunner',
-    ]
-
-
 import socket
 import logging
 
 from datetime import datetime
 from lazr.config import as_boolean, as_timedelta
+from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor
@@ -49,7 +45,7 @@ smtp_log = logging.getLogger('mailman.smtp')
 debug_log = logging.getLogger('mailman.debug')
 
 
-
+@public
 class OutgoingRunner(Runner):
     """The outgoing runner."""
 
@@ -92,7 +88,7 @@ class OutgoingRunner(Runner):
             # VERP every 'interval' number of times.
             msgdata['verp'] = (mlist.post_id % interval == 0)
         try:
-            debug_log.debug('[outgoing] {0}: {1}'.format(
+            debug_log.debug('[outgoing] {}: {}'.format(
                 self._func, msg.get('message-id', 'n/a')))
             self._func(mlist, msg, msgdata)
             self._logged = False
@@ -154,7 +150,7 @@ class OutgoingRunner(Runner):
                         if current_time > deliver_until:
                             smtp_log.error('Discarding message with '
                                            'persistent temporary failures: '
-                                           '{0}'.format(msg['message-id']))
+                                           '{}'.format(msg['message-id']))
                             return False
                     else:
                         # We made some progress, so keep trying to delivery

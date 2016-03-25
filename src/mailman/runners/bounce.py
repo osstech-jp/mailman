@@ -20,6 +20,7 @@
 import logging
 
 from flufl.bounce import all_failures, scan_message
+from mailman import public
 from mailman.app.bounces import ProbeVERP, StandardVERP, maybe_forward
 from mailman.core.runner import Runner
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor
@@ -32,7 +33,7 @@ log = logging.getLogger('mailman.bounce')
 elog = logging.getLogger('mailman.error')
 
 
-
+@public
 class BounceRunner(Runner):
     """The bounce runner."""
 
@@ -79,7 +80,7 @@ class BounceRunner(Runner):
                         address = address.decode('utf-8')
                     except UnicodeError:
                         log.exception('Ignoring non-UTF-8 encoded '
-                                      'address: {0}'.format(address))
+                                      'address: {}'.format(address))
                         continue
                 self._processor.register(mlist, address, msg, context)
         else:

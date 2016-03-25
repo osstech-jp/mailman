@@ -17,11 +17,6 @@
 
 """-request robot command runner."""
 
-__all__ = [
-    'CommandRunner',
-    'Results',
-    ]
-
 # See the delivery diagram in IncomingRunner.py.  This module handles all
 # email destined for mylist-request, -join, and -leave.  It no longer handles
 # bounce messages (i.e. -admin or -bounces), nor does it handle mail to
@@ -34,6 +29,7 @@ from email.errors import HeaderParseError
 from email.header import decode_header, make_header
 from email.iterators import typed_subpart_iterator
 from io import StringIO
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.runner import Runner
@@ -48,7 +44,6 @@ NL = '\n'
 log = logging.getLogger('mailman.vette')
 
 
-
 class CommandFinder:
     """Generate commands from the content of a message."""
 
@@ -120,7 +115,7 @@ class CommandFinder:
             yield parts
 
 
-
+@public
 @implementer(IEmailResults)
 class Results:
     """The email command results."""
@@ -143,7 +138,7 @@ The results of your email command are provided below.
         return value
 
 
-
+@public
 class CommandRunner(Runner):
     """The email command runner."""
 
@@ -173,9 +168,9 @@ class CommandRunner(Runner):
         # Include just a few key pieces of information from the original: the
         # sender, date, and message id.
         print(_('- Original message details:'), file=results)
-        subject = msg.get('subject', 'n/a')
-        date = msg.get('date', 'n/a')
-        from_ = msg.get('from', 'n/a')
+        subject = msg.get('subject', 'n/a')         # flake8: noqa
+        date = msg.get('date', 'n/a')               # flake8: noqa
+        from_ = msg.get('from', 'n/a')              # flake8: noqa
         print(_('    From: $from_'), file=results)
         print(_('    Subject: $subject'), file=results)
         print(_('    Date: $date'), file=results)

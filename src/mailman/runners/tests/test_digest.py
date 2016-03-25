@@ -17,12 +17,6 @@
 
 """Test the digest runner."""
 
-__all__ = [
-    'TestDigest',
-    'TestI18nDigest',
-    ]
-
-
 import unittest
 
 from email.iterators import _structure as structure
@@ -42,7 +36,6 @@ from mailman.testing.layers import ConfigLayer
 from string import Template
 
 
-
 class TestDigest(unittest.TestCase):
     """Test the digest runner."""
 
@@ -62,12 +55,11 @@ class TestDigest(unittest.TestCase):
     def _check_virgin_queue(self):
         # There should be two messages in the virgin queue: the digest as
         # plain-text and as multipart.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 2)
+        items = get_queue_messages('virgin', expected_count=2)
         self.assertEqual(
-            sorted(item.msg.get_content_type() for item in messages),
+            sorted(item.msg.get_content_type() for item in items),
             ['multipart/mixed', 'text/plain'])
-        for item in messages:
+        for item in items:
             self.assertEqual(item.msg['subject'],
                              'Test Digest, Vol 1, Issue 1')
 
@@ -132,8 +124,7 @@ Here is message $i
         # Run the digest runner to create the MIME and RFC 1153 digests.
         runner = make_testable_runner(DigestRunner)
         runner.run()
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 2)
+        items = get_queue_messages('virgin', expected_count=2)
         # Find the MIME one.
         mime_digest = None
         for item in items:
@@ -166,8 +157,7 @@ multipart/mixed
         make_digest_messages(self._mlist)
         # There should be one message in the outgoing queue, destined for
         # Bart, formatted as a MIME digest.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         # Bart is the only recipient.
         self.assertEqual(items[0].msgdata['recipients'],
                          set(['bperson@example.com']))
@@ -192,8 +182,7 @@ multipart/mixed
         make_digest_messages(self._mlist)
         # There should be one message in the outgoing queue, destined for
         # Bart, formatted as a MIME digest.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         # Bart is the only recipient.
         self.assertEqual(items[0].msgdata['recipients'],
                          set(['bperson@example.com']))
@@ -210,7 +199,6 @@ multipart/mixed
 """)
 
 
-
 class TestI18nDigest(unittest.TestCase):
     layer = ConfigLayer
     maxDiff = None
@@ -252,12 +240,11 @@ Content-Transfer-Encoding: 7bit
         self._runner.run()
         # There are two digests in the virgin queue; one is the MIME digest
         # and the other is the RFC 1153 digest.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 2)
-        if messages[0].msg.is_multipart():
-            mime, rfc1153 = messages[0].msg, messages[1].msg
+        items = get_queue_messages('virgin', expected_count=2)
+        if items[0].msg.is_multipart():
+            mime, rfc1153 = items[0].msg, items[1].msg
         else:
-            rfc1153, mime = messages[0].msg, messages[1].msg
+            rfc1153, mime = items[0].msg, items[1].msg
         # The MIME version contains a mix of French and Japanese.  The digest
         # chrome added by Mailman is in French.
         self.assertEqual(mime['subject'].encode(),

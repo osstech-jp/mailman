@@ -17,11 +17,6 @@
 
 """Test the REST runner."""
 
-__all__ = [
-    'TestRESTRunner',
-    ]
-
-
 import os
 import signal
 import unittest
@@ -30,7 +25,6 @@ from mailman.testing.helpers import call_api, wait_for_webservice
 from mailman.testing.layers import RESTLayer
 
 
-
 class TestRESTRunner(unittest.TestCase):
     """Test the REST runner."""
 

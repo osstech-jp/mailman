@@ -17,12 +17,6 @@
 
 """Test the NNTP runner and related utilities."""
 
-__all__ = [
-    'TestPrepareMessage',
-    'TestNNTPRunner',
-    ]
-
-
 import socket
 import nntplib
 import unittest
@@ -38,7 +32,6 @@ from mailman.testing.layers import ConfigLayer
 from unittest import mock
 
 
-
 class TestPrepareMessage(unittest.TestCase):
     """Test message preparation."""
 
@@ -228,7 +221,6 @@ Testing
         self.assertEqual(fakes, ['one', 'two', 'three'])
 
 
-
 class TestNNTPRunner(unittest.TestCase):
     """The NNTP runner hands messages off to the NNTP server."""
 
@@ -331,10 +323,9 @@ Testing
         log_message = mark.readline()[:-1]
         self.assertTrue(log_message.endswith(
             'NNTP unexpected exception for test@example.com'))
-        messages = get_queue_messages('nntp')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata['listid'], 'test.example.com')
-        self.assertEqual(messages[0].msg['subject'], 'A newsgroup posting')
+        items = get_queue_messages('nntp', expected_count=1)
+        self.assertEqual(items[0].msgdata['listid'], 'test.example.com')
+        self.assertEqual(items[0].msg['subject'], 'A newsgroup posting')
 
     @mock.patch('nntplib.NNTP', side_effect=nntplib.NNTPTemporaryError)
     def test_connection_never_gets_quit_after_failures(self, class_mock):

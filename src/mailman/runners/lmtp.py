@@ -34,17 +34,13 @@ so that the peer mail server can provide better diagnostics.
     http://www.faqs.org/rfcs/rfc2033.html
 """
 
-__all__ = [
-    'LMTPRunner',
-    ]
-
-
 import sys
 import email
 import logging
 import asyncore
 
 from email.utils import parseaddr
+from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.database.transaction import transactional
@@ -94,8 +90,8 @@ SUBADDRESS_QUEUES = dict(
     request='command',
     )
 
-DASH    = '-'
-CRLF    = '\r\n'
+DASH = '-'
+CRLF = '\r\n'
 ERR_451 = '451 Requested action aborted: error in processing'
 ERR_501 = '501 Message has defects'
 ERR_502 = '502 Error: command HELO not implemented'
@@ -106,7 +102,6 @@ ERR_550_MID = '550 No Message-ID header provided'
 smtpd.__version__ = 'GNU Mailman LMTP runner 1.1'
 
 
-
 def split_recipient(address):
     """Split an address into listname, subaddress and domain parts.
 
@@ -134,7 +129,6 @@ def split_recipient(address):
     return listname, subaddress, domain
 
 
-
 class Channel(smtpd.SMTPChannel):
     """An LMTP channel."""
 
@@ -151,13 +145,12 @@ class Channel(smtpd.SMTPChannel):
         """HELO is not a valid LMTP command."""
         self.push(ERR_502)
 
-    ## def push(self, arg):
-    ##     import pdb; pdb.set_trace()
-    ##     return super().push(arg)
+    # def push(self, arg):
+    #     import pdb; pdb.set_trace()
+    #     return super().push(arg)
 
 
-
-
+@public
 class LMTPRunner(Runner, smtpd.SMTPServer):
     # Only __init__ is called on startup. Asyncore is responsible for later
     # connections from the MTA.  slice and numslices are ignored and are

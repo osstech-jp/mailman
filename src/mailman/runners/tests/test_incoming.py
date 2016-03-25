@@ -17,11 +17,6 @@
 
 """Test the incoming queue runner."""
 
-__all__ = [
-    'TestIncoming',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -34,7 +29,6 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 class Chain(TerminalChainBase):
     name = 'test'
     description = 'a test chain'
@@ -47,7 +41,6 @@ class Chain(TerminalChainBase):
         config.switchboards['out'].enqueue(msg, msgdata)
 
 
-
 class TestIncoming(unittest.TestCase):
     """Test the incoming queue runner."""
 
@@ -73,9 +66,8 @@ To: test@example.com
         msgdata = dict(listid='test.example.com')
         config.switchboards['in'].enqueue(self._msg, msgdata)
         self._in.run()
-        messages = get_queue_messages('out')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata.get('marker'), 'posting')
+        items = get_queue_messages('out', expected_count=1)
+        self.assertEqual(items[0].msgdata.get('marker'), 'posting')
 
     def test_owner(self):
         # A message posted to the list goes through the posting chain.
@@ -83,6 +75,5 @@ To: test@example.com
                        to_owner=True)
         config.switchboards['in'].enqueue(self._msg, msgdata)
         self._in.run()
-        messages = get_queue_messages('out')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata.get('marker'), 'owner')
+        items = get_queue_messages('out', expected_count=1)
+        self.assertEqual(items[0].msgdata.get('marker'), 'owner')

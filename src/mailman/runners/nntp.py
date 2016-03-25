@@ -17,11 +17,6 @@
 
 """NNTP runner."""
 
-__all__ = [
-    'NNTPRunner',
-    ]
-
-
 import re
 import email
 import socket
@@ -29,6 +24,7 @@ import logging
 import nntplib
 
 from io import StringIO
+from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.nntp import NewsgroupModeration
@@ -53,7 +49,7 @@ mcre = re.compile(r"""
     """, re.VERBOSE)
 
 
-
+@public
 class NNTPRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
         # Get NNTP server connection information.
@@ -65,7 +61,7 @@ class NNTPRunner(Runner):
             try:
                 port = int(port)
             except (TypeError, ValueError):
-                log.exception('Bad [nntp]port value: {0}'.format(port))
+                log.exception('Bad [nntp]port value: {}'.format(port))
                 port = 119
         # Make sure we have the most up-to-date state
         if not msgdata.get('prepped'):
@@ -80,15 +76,15 @@ class NNTPRunner(Runner):
                                 password=config.nntp.password)
             conn.post(fp)
         except nntplib.NNTPTemporaryError:
-            log.exception('{0} NNTP error for {1}'.format(
+            log.exception('{} NNTP error for {}'.format(
                 msg.get('message-id', 'n/a'), mlist.fqdn_listname))
         except socket.error:
-            log.exception('{0} NNTP socket error for {1}'.format(
+            log.exception('{} NNTP socket error for {}'.format(
                 msg.get('message-id', 'n/a'), mlist.fqdn_listname))
         except Exception:
             # Some other exception occurred, which we definitely did not
             # expect, so set this message up for requeuing.
-            log.exception('{0} NNTP unexpected exception for {1}'.format(
+            log.exception('{} NNTP unexpected exception for {}'.format(
                 msg.get('message-id', 'n/a'), mlist.fqdn_listname))
             return True
         finally:
@@ -97,7 +93,6 @@ class NNTPRunner(Runner):
         return False
 
 
-
 def prepare_message(mlist, msg, msgdata):
     # If the newsgroup is moderated, we need to add this header for the Usenet
     # software to accept the posting, and not forward it on to the n.g.'s
@@ -170,7 +165,7 @@ def prepare_message(mlist, msg, msgdata):
     if len(dup_headers) % 2 != 0:
         # There are an odd number of headers; ignore the last one.
         bad_header = dup_headers.pop()
-        log.error('Ignoring odd [nntp]rewrite_duplicate_headers: {0}'.format(
+        log.error('Ignoring odd [nntp]rewrite_duplicate_headers: {}'.format(
             bad_header))
     dup_headers.reverse()
     while dup_headers:

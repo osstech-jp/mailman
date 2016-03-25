@@ -17,11 +17,6 @@
 
 """Test the archive runner."""
 
-__all__ = [
-    'TestArchiveRunner',
-    ]
-
-
 import os
 import unittest
 
@@ -39,7 +34,6 @@ from mailman.utilities.datetime import RFC822_DATE_FMT, factory, now
 from zope.interface import implementer
 
 
-
 @implementer(IArchiver)
 class DummyArchiver:
     name = 'dummy'
@@ -80,7 +74,6 @@ class BrokenArchiver:
         raise RuntimeError('Cannot archive message')
 
 
-
 class TestArchiveRunner(unittest.TestCase):
     """Test the archive runner."""
 
@@ -282,4 +275,4 @@ First post!
         log_messages = mark.read()
         self.assertIn('Exception in "broken" archiver', log_messages)
         self.assertIn('RuntimeError: Cannot archive message', log_messages)
-        self.assertEqual(len(get_queue_messages('shunt')), 0)
+        get_queue_messages('shunt', expected_count=0)

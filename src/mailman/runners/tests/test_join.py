@@ -17,12 +17,6 @@
 
 """Test mailing list joins."""
 
-__all__ = [
-    'TestJoin',
-    'TestJoinWithDigests',
-    ]
-
-
 import unittest
 
 from email.iterators import body_line_iterator
@@ -34,13 +28,12 @@ from mailman.interfaces.subscriptions import ISubscriptionService, TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner, reset_the_world,
+    get_queue_messages, make_testable_runner,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestJoin(unittest.TestCase):
     """Test mailing list joins."""
 
@@ -51,9 +44,6 @@ class TestJoin(unittest.TestCase):
         self._mlist.send_welcome_message = False
         self._commandq = config.switchboards['command']
         self._runner = make_testable_runner(CommandRunner, 'command')
-
-    def tearDown(self):
-        reset_the_world()
 
     def test_double_confirmation(self):
         # A join request comes in using both the -join address and the word
@@ -74,16 +64,16 @@ subscribe
         # There will be two messages in the queue.  The first one is a reply
         # to Anne notifying her of the status of her command email.  The
         # second one is the confirmation message of her join request.
-        messages = get_queue_messages('virgin', sort_on='subject')
-        self.assertEqual(len(messages), 2)
-        self.assertTrue(str(messages[1].msg['subject']).startswith('confirm'))
-        self.assertEqual(messages[0].msg['subject'],
+        items = get_queue_messages('virgin', sort_on='subject',
+                                   expected_count=2)
+        self.assertTrue(str(items[1].msg['subject']).startswith('confirm'))
+        self.assertEqual(items[0].msg['subject'],
                          'The results of your email commands')
         # Search the contents of the results message.  There should be just
         # one 'Confirmation email' line.
         confirmation_lines = []
         in_results = False
-        for line in body_line_iterator(messages[0].msg):
+        for line in body_line_iterator(items[0].msg):
             line = line.strip()
             if in_results:
                 if line.startswith('- Done'):
@@ -95,7 +85,7 @@ subscribe
         # There should be exactly one confirmation line.
         self.assertEqual(len(confirmation_lines), 1)
         # And the confirmation line should name Anne's email address.
-        self.assertTrue('anne@example.org' in confirmation_lines[0])
+        self.assertIn('anne@example.org', confirmation_lines[0])
 
     def test_join_when_already_a_member(self):
         anne = getUtility(IUserManager).create_user('anne@example.org')
@@ -113,15 +103,14 @@ Subject: join
         # There will be one message in the queue - a reply to Anne notifying
         # her of the status of her command email.  Because Anne is already
         # subscribed to the list, she gets and needs no confirmation.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msg['subject'],
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msg['subject'],
                          'The results of your email commands')
         # Search the contents of the results message.  There should be just
         # one 'Confirmation email' line.
         confirmation_lines = []
         in_results = False
-        for line in body_line_iterator(messages[0].msg):
+        for line in body_line_iterator(items[0].msg):
             line = line.strip()
             if in_results:
                 if line.startswith('- Done'):
@@ -133,10 +122,9 @@ Subject: join
         # There should be exactly one confirmation line.
         self.assertEqual(len(confirmation_lines), 1)
         # And the confirmation line should name Anne's email address.
-        self.assertTrue('anne@example.org' in confirmation_lines[0])
+        self.assertIn('anne@example.org', confirmation_lines[0])
 
 
-
 class TestJoinWithDigests(unittest.TestCase):
     """Test mailing list joins with the digests=<no|mime|plain> argument."""
 
@@ -147,17 +135,14 @@ class TestJoinWithDigests(unittest.TestCase):
         self._commandq = config.switchboards['command']
         self._runner = make_testable_runner(CommandRunner, 'command')
 
-    def tearDown(self):
-        reset_the_world()
-
     def _confirm(self):
         # There will be two messages in the queue - the confirmation messages,
         # and a reply to Anne notifying her of the status of her command
         # email.  We need to dig the confirmation token out of the Subject
         # header of the latter so that we can confirm the subscription.
-        messages = get_queue_messages('virgin', sort_on='subject')
-        self.assertEqual(len(messages), 2)
-        subject_words = str(messages[1].msg['subject']).split()
+        items = get_queue_messages('virgin', sort_on='subject',
+                                   expected_count=2)
+        subject_words = str(items[1].msg['subject']).split()
         self.assertEqual(subject_words[0], 'confirm')
         token = subject_words[1]
         token, token_owner, rmember = IRegistrar(self._mlist).confirm(token)

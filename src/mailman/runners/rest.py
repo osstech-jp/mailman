@@ -17,15 +17,11 @@
 
 """Start the administrative HTTP server."""
 
-__all__ = [
-    'RESTRunner',
-    ]
-
-
 import signal
 import logging
 import threading
 
+from mailman import public
 from mailman.core.runner import Runner
 from mailman.rest.wsgiapp import make_server
 
@@ -33,7 +29,7 @@ from mailman.rest.wsgiapp import make_server
 log = logging.getLogger('mailman.http')
 
 
-
+@public
 class RESTRunner(Runner):
     # Don't install the standard signal handlers because as defined, they
     # won't actually stop the TCPServer started by .serve_forever().
@@ -54,7 +50,7 @@ class RESTRunner(Runner):
         # server.
         self._server = make_server()
         self._event = threading.Event()
-        def stopper(event, server):
+        def stopper(event, server):                 # flake8: noqa
             event.wait()
             server.shutdown()
         self._thread = threading.Thread(

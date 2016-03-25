@@ -17,17 +17,13 @@
 
 """Archive runner."""
 
-__all__ = [
-    'ArchiveRunner',
-    ]
-
-
 import copy
 import logging
 
 from email.utils import parsedate_tz, mktime_tz
 from datetime import datetime
 from lazr.config import as_timedelta
+from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.archiver import ClobberDate
@@ -38,7 +34,6 @@ from mailman.interfaces.mailinglist import IListArchiverSet
 log = logging.getLogger('mailman.archiver')
 
 
-
 def _should_clobber(msg, msgdata, archiver):
     """Should the Date header in the original message get clobbered?"""
     # Calculate the Date header of the message as a datetime.  What if there
@@ -49,12 +44,12 @@ def _should_clobber(msg, msgdata, archiver):
         return True
     section = getattr(config.archiver, archiver, None)
     if section is None:
-        log.error('No archiver config section found: {0}'.format(archiver))
+        log.error('No archiver config section found: {}'.format(archiver))
         return False
     try:
         clobber = ClobberDate[section.clobber_date]
     except ValueError:
-        log.error('Invalid clobber_date for "{0}": {1}'.format(
+        log.error('Invalid clobber_date for "{}": {}'.format(
             archiver, section.clobber_date))
         return False
     if clobber is ClobberDate.always:
@@ -81,7 +76,7 @@ def _should_clobber(msg, msgdata, archiver):
     return (abs(now() - claimed_date) > skew)
 
 
-
+@public
 class ArchiveRunner(Runner):
     """The archive runner."""
 

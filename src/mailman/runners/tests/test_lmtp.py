@@ -17,11 +17,6 @@
 
 """Tests for the LMTP server."""
 
-__all__ = [
-    'TestLMTP',
-    ]
-
-
 import os
 import smtplib
 import unittest
@@ -34,7 +29,6 @@ from mailman.testing.helpers import get_lmtp_client, get_queue_messages
 from mailman.testing.layers import LMTPLayer
 
 
-
 class TestLMTP(unittest.TestCase):
     """Test various aspects of the LMTP server."""
 
@@ -45,9 +39,7 @@ class TestLMTP(unittest.TestCase):
             self._mlist = create_list('test@example.com')
         self._lmtp = get_lmtp_client(quiet=True)
         self._lmtp.lhlo('remote.example.org')
-
-    def tearDown(self):
-        self._lmtp.close()
+        self.addCleanup(self._lmtp.close)
 
     def test_message_id_required(self):
         # The message is rejected if it does not have a Message-ID header.
@@ -73,9 +65,8 @@ Message-ID: <ant>
 Subject: This has a Message-ID but no Message-ID-Hash
 
 """)
-        messages = get_queue_messages('in')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msg['message-id-hash'],
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual(items[0].msg['message-id-hash'],
                          'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
 
     def test_original_message_id_hash_is_overwritten(self):
@@ -87,11 +78,10 @@ Message-ID-Hash: IGNOREME
 Subject: This has a Message-ID but no Message-ID-Hash
 
 """)
-        messages = get_queue_messages('in')
-        self.assertEqual(len(messages), 1)
-        all_headers = messages[0].msg.get_all('message-id-hash')
+        items = get_queue_messages('in', expected_count=1)
+        all_headers = items[0].msg.get_all('message-id-hash')
         self.assertEqual(len(all_headers), 1)
-        self.assertEqual(messages[0].msg['message-id-hash'],
+        self.assertEqual(items[0].msg['message-id-hash'],
                          'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
 
     def test_received_time(self):
@@ -103,9 +93,8 @@ Subject: This has no Message-ID header
 Message-ID: <ant>
 
 """)
-        messages = get_queue_messages('in')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata['received_time'],
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual(items[0].msgdata['received_time'],
                          datetime(2005, 8, 1, 7, 49, 23))
 
     def test_queue_directory(self):
@@ -157,8 +146,8 @@ Subject: This should not be recognized as a join command
 
 """)
         # The message is in the incoming queue but not the command queue.
-        self.assertEqual(len(get_queue_messages('in')), 1)
-        self.assertEqual(len(get_queue_messages('command')), 0)
+        get_queue_messages('in', expected_count=1)
+        get_queue_messages('command', expected_count=0)
 
     def test_mailing_list_with_subaddress_command(self):
         # Like above, but we can still send a command to the mailing list.
@@ -173,11 +162,10 @@ Subject: This will be recognized as a join command.
 
 """)
         # The message is in the command queue but not the incoming queue.
-        self.assertEqual(len(get_queue_messages('in')), 0)
-        self.assertEqual(len(get_queue_messages('command')), 1)
+        get_queue_messages('in', expected_count=0)
+        get_queue_messages('command', expected_count=1)
 
 
-
 class TestBugs(unittest.TestCase):
     """Test some LMTP related bugs."""
 
@@ -198,9 +186,8 @@ Subject: My subject
 Message-ID: <alpha>
 
 """)
-        messages = get_queue_messages('in')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata['listid'],
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual(items[0].msgdata['listid'],
                          'my-list.example.com')
 
     def test_issue140(self):
@@ -215,6 +202,5 @@ Message-ID: <alpha>
 
 \xa0
 """)
-        messages = get_queue_messages('in')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msg['message-id'], '<alpha>')
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual(items[0].msg['message-id'], '<alpha>')

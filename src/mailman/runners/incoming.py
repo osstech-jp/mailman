@@ -26,11 +26,7 @@ prepared for delivery.  Rejections, discards, and holds are processed
 immediately.
 """
 
-__all__ = [
-    'IncomingRunner',
-    ]
-
-
+from mailman import public
 from mailman.core.chains import process
 from mailman.core.runner import Runner
 from mailman.database.transaction import transaction
@@ -39,7 +35,7 @@ from mailman.interfaces.usermanager import IUserManager
 from zope.component import getUtility
 
 
-
+@public
 class IncomingRunner(Runner):
     """The incoming runner."""
 

@@ -17,13 +17,6 @@
 
 """Test the bounce runner."""
 
-__all__ = [
-    'TestBounceRunner',
-    'TestBounceRunnerBug876774',
-    'TestStyle',
-    ]
-
-
 import unittest
 
 from mailman.app.bounces import send_probe
@@ -43,7 +36,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
 class TestBounceRunner(unittest.TestCase):
     """Test the bounce runner."""
 
@@ -69,9 +61,7 @@ Message-Id: <first>
         [mailman]
         site_owner: postmaster@example.com
         """)
-
-    def tearDown(self):
-        config.pop('site owner')
+        self.addCleanup(config.pop, 'site owner')
 
     def test_does_no_processing(self):
         # If the mailing list does no bounce processing, the messages are
@@ -79,7 +69,7 @@ Message-Id: <first>
         self._mlist.process_bounces = False
         self._bounceq.enqueue(self._msg, self._msgdata)
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        get_queue_messages('bounces', expected_count=0)
         self.assertEqual(len(list(self._processor.events)), 0)
 
     def test_verp_detection(self):
@@ -87,7 +77,7 @@ Message-Id: <first>
         # event will be registered.
         self._bounceq.enqueue(self._msg, self._msgdata)
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0].email, 'anne@example.com')
@@ -115,7 +105,7 @@ Original-Recipient: rfc822; somebody@example.com
 """)
         self._bounceq.enqueue(nonfatal, self._msgdata)
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 0)
 
@@ -127,7 +117,8 @@ Original-Recipient: rfc822; somebody@example.com
         #
         # Start be simulating a probe bounce.
         send_probe(self._member, self._msg)
-        message = get_queue_messages('virgin')[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         bounce = message_from_string("""\
 To: {0}
 From: mail-daemon@example.com
@@ -136,7 +127,7 @@ Message-Id: <second>
 """.format(message['From']))
         self._bounceq.enqueue(bounce, self._msgdata)
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0].email, 'anne@example.com')
@@ -166,7 +157,7 @@ Original-Recipient: rfc822; bart@example.com
 """)
         self._bounceq.enqueue(dsn, self._msgdata)
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0].email, 'bart@example.com')
@@ -196,7 +187,7 @@ Original-Recipient: rfc822; bart@example.com
 """)
         self._bounceq.enqueue(dsn, self._msgdata)
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 0)
 
@@ -215,7 +206,7 @@ Message-Id: <third>
         self._bounceq.enqueue(bogus, self._msgdata)
         mark = LogFileMark('mailman.bounce')
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 0)
         line = mark.readline()
@@ -223,12 +214,10 @@ Message-Id: <third>
             line[-51:-1],
             'Bounce message w/no discernable addresses: <third>')
         # Here's the forwarded message to the site owners.
-        forwards = get_queue_messages('virgin')
-        self.assertEqual(len(forwards), 1)
-        self.assertEqual(forwards[0].msg['to'], 'postmaster@example.com')
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msg['to'], 'postmaster@example.com')
 
 
-
 # Create a style for the mailing list which sets the absolute minimum
 # attributes.  In particular, this will not set the bogus `bounce_processing`
 # attribute which the default style set (before LP: #876774 was fixed).
@@ -244,7 +233,6 @@ class TestStyle:
         mailing_list.preferred_language = 'en'
 
 
-
 class TestBounceRunnerBug876774(unittest.TestCase):
     """Test LP: #876774.
 
@@ -261,14 +249,12 @@ class TestBounceRunnerBug876774(unittest.TestCase):
         self._style = TestStyle()
         self._style_manager = getUtility(IStyleManager)
         self._style_manager.register(self._style)
+        self.addCleanup(self._style_manager.unregister, self._style)
         # Now we can create the mailing list.
         self._mlist = create_list('test@example.com', style_name='test')
         self._bounceq = config.switchboards['bounces']
         self._processor = getUtility(IBounceProcessor)
         self._runner = make_testable_runner(BounceRunner, 'bounces')
-
-    def tearDown(self):
-        self._style_manager.unregister(self._style)
 
     def test_bug876774(self):
         # LP: #876774, see above.
@@ -281,6 +267,6 @@ Message-Id: <first>
         self._bounceq.enqueue(bounce, dict(listid='test.example.com'))
         self.assertEqual(len(self._bounceq.files), 1)
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 0)

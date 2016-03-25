@@ -17,11 +17,6 @@
 
 """Test the retry runner."""
 
-__all__ = [
-    'TestRetryRunner',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -33,7 +28,6 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestRetryRunner(unittest.TestCase):
     """Test the retry runner."""
 
@@ -55,4 +49,4 @@ Message-Id: <first>
     def test_message_put_in_outgoing_queue(self):
         self._retryq.enqueue(self._msg, self._msgdata)
         self._runner.run()
-        self.assertEqual(len(get_queue_messages('out')), 1)
+        get_queue_messages('out', expected_count=1)

@@ -17,18 +17,14 @@
 
 """Retry delivery."""
 
-__all__ = [
-    'RetryRunner',
-    ]
-
-
 import time
 
+from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 
 
-
+@public
 class RetryRunner(Runner):
     """Retry delivery."""
 
