@@ -17,11 +17,6 @@
 
 """Site-wide archiver configuration tests."""
 
-__all__ = [
-    'TestArchivers',
-    ]
-
-
 import unittest
 
 from mailman.config import config
@@ -29,7 +24,6 @@ from mailman.testing.helpers import configuration
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestArchivers(unittest.TestCase):
     layer = ConfigLayer
 

@@ -17,11 +17,7 @@
 
 """Mailman configuration package."""
 
-__all__ = [
-    'config',
-    ]
-
-
 from mailman.config.config import Configuration
 
 config = Configuration()
+__all__ = ['config']
