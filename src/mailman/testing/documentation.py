@@ -21,13 +21,8 @@ Note that doctest extraction does not currently work for zip file
 distributions.  doctest discovery currently requires file system traversal.
 """
 
-__all__ = [
-    'setup',
-    'teardown'
-    ]
-
-
 from inspect import isfunction, ismethod
+from mailman import public
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.testing.helpers import call_api, specialized_message_from_string
@@ -38,7 +33,6 @@ DOT = '.'
 COMMASPACE = ', '
 
 
-
 def stop():
     """Call into pdb.set_trace()"""
     # Do the import here so that you get the wacky special hacked pdb instead
@@ -138,7 +132,7 @@ def dump_json(url, data=None, method=None, username=None, password=None):
             print('{}: {}'.format(key, value))
 
 
-
+@public
 def setup(testobj):
     """Test setup."""
     # In general, I don't like adding convenience functions, since I think
@@ -159,7 +153,7 @@ def setup(testobj):
     testobj.globs['cleanups'] = []
 
 
-
+@public
 def teardown(testobj):
     for cleanup in testobj.globs['cleanups']:
         if isfunction(cleanup) or ismethod(cleanup):

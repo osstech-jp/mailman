@@ -17,16 +17,12 @@
 
 """nose2 test infrastructure."""
 
-__all__ = [
-    'NosePlugin',
-    ]
-
-
 import os
 import re
 import doctest
 import importlib
 
+from mailman import public
 from mailman.testing.documentation import setup, teardown
 from mailman.testing.layers import ConfigLayer, MockAndMonkeyLayer, SMTPLayer
 from nose2.events import Plugin
@@ -38,7 +34,7 @@ FLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE | doctest.REPORT_NDIFF
 TOPDIR = os.path.dirname(resource_filename('mailman', '__init__.py'))
 
 
-
+@public
 class NosePlugin(Plugin):
     configSection = 'mailman'
 
@@ -46,7 +42,7 @@ class NosePlugin(Plugin):
         super().__init__()
         self.patterns = []
         self.stderr = False
-        def set_stderr(ignore):
+        def set_stderr(ignore):                     # flake8: noqa
             self.stderr = True
         self.addArgument(self.patterns, 'P', 'pattern',
                          'Add a test matching pattern')
@@ -55,7 +51,7 @@ class NosePlugin(Plugin):
 
     def startTestRun(self, event):
         MockAndMonkeyLayer.testing_mode = True
-        if (    self.stderr or
+        if (self.stderr or
                 len(os.environ.get('MM_VERBOSE_TESTLOG', '').strip()) > 0):
             ConfigLayer.stderr = True
 
@@ -115,8 +111,8 @@ class NosePlugin(Plugin):
         test.shortDescription = lambda: None
         event.extraTests.append(test)
 
-    ## def startTest(self, event):
-    ##     import sys; print('vvvvv', event.test, file=sys.stderr)
+    # def startTest(self, event):
+    #     import sys; print('vvvvv', event.test, file=sys.stderr)
 
-    ## def stopTest(self, event):
-    ##     import sys; print('^^^^^', event.test, file=sys.stderr)
+    # def stopTest(self, event):
+    #     import sys; print('^^^^^', event.test, file=sys.stderr)

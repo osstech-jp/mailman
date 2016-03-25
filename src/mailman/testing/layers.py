@@ -24,16 +24,6 @@
 # the full test run.  For now, I'll ignore that, but I do want to eventually
 # get rid of the layers and use something like testresources or some such.
 
-__all__ = [
-    'ConfigLayer',
-    'LMTPLayer',
-    'MockAndMonkeyLayer',
-    'RESTLayer',
-    'SMTPLayer',
-    'is_testing',
-    ]
-
-
 import os
 import sys
 import shutil
@@ -42,6 +32,7 @@ import datetime
 import tempfile
 
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.core import initialize
 from mailman.core.initialize import INHIBIT_CONFIG_FILE
@@ -61,7 +52,7 @@ TEST_TIMEOUT = datetime.timedelta(seconds=5)
 NL = '\n'
 
 
-
+@public
 class MockAndMonkeyLayer:
     """Layer for mocking and monkey patching for testing."""
 
@@ -81,7 +72,7 @@ class MockAndMonkeyLayer:
         cls._resets.append(reset)
 
 
-
+@public
 class ConfigLayer(MockAndMonkeyLayer):
     """Layer for pushing and popping test configurations."""
 
@@ -120,11 +111,11 @@ class ConfigLayer(MockAndMonkeyLayer):
         [mailman]
         layout: testing
         [paths.testing]
-        var_dir: {0}
+        var_dir: {}
         [devmode]
         testing: yes
         [mta]
-        configuration: {1}
+        configuration: {}
         """.format(cls.var_dir, postfix_cfg))
         # Read the testing config and push it.
         more = resource_bytes('mailman.testing', 'testing.cfg')
@@ -228,7 +219,7 @@ class ConfigLayer(MockAndMonkeyLayer):
         cls.root_directory = directory
 
 
-
+@public
 class SMTPLayer(ConfigLayer):
     """Layer for starting, stopping, and accessing a test SMTP server."""
 
@@ -260,7 +251,7 @@ class SMTPLayer(ConfigLayer):
         cls.smtpd.clear()
 
 
-
+@public
 class LMTPLayer(ConfigLayer):
     """Layer for starting, stopping, and accessing a test LMTP server."""
 
@@ -289,7 +280,7 @@ class LMTPLayer(ConfigLayer):
         pass
 
 
-
+@public
 class RESTLayer(SMTPLayer):
     """Layer for starting, stopping, and accessing the test REST layer."""
 
@@ -308,7 +299,7 @@ class RESTLayer(SMTPLayer):
         cls.server = None
 
 
-
+@public
 def is_testing():
     """Return a 'testing' flag for use with the predictable factories.
 

@@ -17,15 +17,11 @@
 
 """Fake MTA for testing purposes."""
 
-__all__ = [
-    'FakeMTA',
-    ]
-
-
 import logging
 
 from lazr.smtptest.controller import QueueController
 from lazr.smtptest.server import Channel, QueueServer
+from mailman import public
 from mailman.interfaces.mta import IMailTransportAgentLifecycle
 from queue import Empty, Queue
 from zope.interface import implementer
@@ -34,7 +30,7 @@ from zope.interface import implementer
 log = logging.getLogger('lazr.smtptest')
 
 
-
+@public
 @implementer(IMailTransportAgentLifecycle)
 class FakeMTA:
     """Fake MTA for testing purposes."""
@@ -49,7 +45,6 @@ class FakeMTA:
         pass
 
 
-
 class StatisticsChannel(Channel):
     """A channel that can answers to the fake STAT command."""
 
@@ -134,7 +129,6 @@ class StatisticsChannel(Channel):
             super().found_terminator()
 
 
-
 class ConnectionCountingServer(QueueServer):
     """Count the number of SMTP connections opened."""
 
@@ -210,7 +204,6 @@ class ConnectionCountingServer(QueueServer):
         self._oob_queue.put(arg)
 
 
-
 class ConnectionCountingController(QueueController):
     """Count the number of SMTP connections opened."""
 

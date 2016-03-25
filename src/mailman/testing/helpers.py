@@ -17,28 +17,6 @@
 
 """Various test helpers."""
 
-__all__ = [
-    'LogFileMark',
-    'TestableMaster',
-    'call_api',
-    'chdir',
-    'configuration',
-    'digest_mbox',
-    'event_subscribers',
-    'get_lmtp_client',
-    'get_nntp_server',
-    'get_queue_messages',
-    'make_digest_messages',
-    'make_testable_runner',
-    'reset_the_world',
-    'set_preferred',
-    'specialized_message_from_string',
-    'subscribe',
-    'temporary_db',
-    'wait_for_webservice',
-    ]
-
-
 import os
 import json
 import time
@@ -57,6 +35,7 @@ from contextlib import contextmanager
 from email import message_from_string
 from httplib2 import Http
 from lazr.config import as_timedelta
+from mailman import public
 from mailman.bin.master import Loop as Master
 from mailman.config import config
 from mailman.database.transaction import transaction
@@ -77,7 +56,7 @@ from zope.component import getUtility
 NL = '\n'
 
 
-
+@public
 def make_testable_runner(runner_class, name=None, predicate=None):
     """Create a runner that runs until its queue is empty.
 
@@ -115,13 +94,13 @@ def make_testable_runner(runner_class, name=None, predicate=None):
     return EmptyingRunner(name)
 
 
-
 class _Bag:
     def __init__(self, **kws):
         for key, value in kws.items():
             setattr(self, key, value)
 
 
+@public
 def get_queue_messages(queue_name, sort_on=None, expected_count=None):
     """Return and clear all the messages in the given queue.
 
@@ -147,7 +126,7 @@ def get_queue_messages(queue_name, sort_on=None, expected_count=None):
     return messages
 
 
-
+@public
 def digest_mbox(mlist):
     """The mailing list's pending digest as a mailbox.
 
@@ -158,8 +137,8 @@ def digest_mbox(mlist):
     return Mailbox(path)
 
 
-
 # Remember, Master is mailman.bin.master.Loop.
+@public
 class TestableMaster(Master):
     """A testable master loop watcher."""
 
@@ -228,7 +207,6 @@ class TestableMaster(Master):
         yield from self._started_kids
 
 
-
 class LMTP(smtplib.SMTP):
     """Like a normal SMTP client, but for LMTP."""
     def lhlo(self, name=''):
@@ -238,12 +216,13 @@ class LMTP(smtplib.SMTP):
         return code, msg
 
 
+@public
 def get_lmtp_client(quiet=False):
     """Return a connected LMTP client."""
     # It's possible the process has started but is not yet accepting
     # connections.  Wait a little while.
     lmtp = LMTP()
-    #lmtp.debuglevel = 1
+    # lmtp.debuglevel = 1
     until = datetime.datetime.now() + as_timedelta(config.devmode.wait)
     while datetime.datetime.now() < until:
         try:
@@ -261,7 +240,7 @@ def get_lmtp_client(quiet=False):
         raise RuntimeError('Connection refused')
 
 
-
+@public
 def get_nntp_server(cleanups):
     """Create and start an NNTP server mock.
 
@@ -272,14 +251,14 @@ def get_nntp_server(cleanups):
     cleanups.append(patcher.stop)
     nntpd = server_class()
     # A class for more convenient access to the posted message.
-    class NNTPProxy:
+    class NNTPProxy:                                # flake8: noqa
         def get_message(self):
             args = nntpd.post.call_args
             return specialized_message_from_string(args[0][0].read())
     return NNTPProxy()
 
 
-
+@public
 def wait_for_webservice():
     """Wait for the REST server to start serving requests."""
     until = datetime.datetime.now() + as_timedelta(config.devmode.wait)
@@ -298,6 +277,7 @@ def wait_for_webservice():
         raise RuntimeError('Connection refused')
 
 
+@public
 def call_api(url, data=None, method=None, username=None, password=None):
     """'Call a URL with a given HTTP method and return the resulting object.
 
@@ -351,7 +331,7 @@ def call_api(url, data=None, method=None, username=None, password=None):
     return json.loads(content), response
 
 
-
+@public
 @contextmanager
 def event_subscribers(*subscribers):
     """Temporarily extend the Zope event subscribers list.
@@ -368,7 +348,7 @@ def event_subscribers(*subscribers):
         event.subscribers[:] = old_subscribers
 
 
-
+@public
 class configuration:
     """A decorator/context manager for temporarily setting configurations."""
 
@@ -410,7 +390,7 @@ class configuration:
         return wrapper
 
 
-
+@public
 @contextmanager
 def temporary_db(db):
     real_db = config.db
@@ -421,7 +401,7 @@ def temporary_db(db):
         config.db = real_db
 
 
-
+@public
 class chdir:
     """A context manager for temporary directory changing."""
     def __init__(self, directory):
@@ -438,16 +418,16 @@ class chdir:
         return False
 
 
-
+@public
 def subscribe(mlist, first_name, role=MemberRole.member, email=None):
     """Helper for subscribing a sample person to a mailing list.
 
     Returns the newly created member object.
     """
     user_manager = getUtility(IUserManager)
-    email = ('{0}person@example.com'.format(first_name[0].lower())
+    email = ('{}person@example.com'.format(first_name[0].lower())
              if email is None else email)
-    full_name = '{0} Person'.format(first_name)
+    full_name = '{} Person'.format(first_name)
     with transaction():
         person = user_manager.get_user(email)
         if person is None:
@@ -464,7 +444,7 @@ def subscribe(mlist, first_name, role=MemberRole.member, email=None):
         return roster.get_member(email)
 
 
-
+@public
 def reset_the_world():
     """Reset everything:
 
@@ -504,7 +484,7 @@ def reset_the_world():
     config.chains['header-match'].flush()
 
 
-
+@public
 def specialized_message_from_string(unicode_text):
     """Parse text into a message object.
 
@@ -523,7 +503,7 @@ def specialized_message_from_string(unicode_text):
     return message
 
 
-
+@public
 class LogFileMark:
     def __init__(self, log_name):
         self._log = logging.getLogger(log_name)
@@ -541,7 +521,7 @@ class LogFileMark:
             return fp.read()
 
 
-
+@public
 def make_digest_messages(mlist, msg=None):
     if msg is None:
         msg = specialized_message_from_string("""\
@@ -562,7 +542,7 @@ message triggering a digest
     runner.run()
 
 
-
+@public
 def set_preferred(user):
     # Avoid circular imports.
     from mailman.utilities.datetime import now

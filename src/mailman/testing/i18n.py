@@ -17,19 +17,13 @@
 
 """Internationalization for the tests."""
 
-__all__ = [
-    'TestingStrategy',
-    'initialize',
-    ]
-
-
 from contextlib import closing
 from flufl.i18n import registry
 from gettext import GNUTranslations, NullTranslations
+from mailman import public
 from pkg_resources import resource_stream
 
 
-
 class TestingStrategy:
     """A strategy that finds catalogs in the testing directory."""
 
@@ -44,7 +38,7 @@ class TestingStrategy:
             return GNUTranslations(fp)
 
 
-
+@public
 def initialize():
     """Install a global underscore function for testing purposes."""
     # Avoid circular imports.
