@@ -17,5 +17,4 @@
 
 """Module stuff."""
 
-__all__ = [
-    ]
+from mailman import public

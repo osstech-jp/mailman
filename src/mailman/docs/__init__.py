@@ -17,11 +17,7 @@
 
 """General Mailman doc tests."""
 
-__all__ = [
-    'layer',
-    ]
-
-
-
 from mailman.testing.layers import ConfigLayer
+
 layer = ConfigLayer
+__all__ = ['layer']

@@ -20,20 +20,15 @@
 import mailman.messages
 
 from flufl.i18n import PackageStrategy, registry
+from mailman import public
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 
 
-# We can't use @mailman.public here because of circular imports.
-__all__ = [
-    '_',
-    'handle_ConfigurationUpdatedEvent',
-    'initialize',
-    ]
-
-
 _ = None
+__all__ = ['_']
 
 
+@public
 def initialize(application=None):
     """Initialize the i18n subsystem.
 
@@ -49,6 +44,7 @@ def initialize(application=None):
     _ = application._
 
 
+@public
 def handle_ConfigurationUpdatedEvent(event):
     if isinstance(event, ConfigurationUpdatedEvent):
         _.default = event.config.mailman.default_language
