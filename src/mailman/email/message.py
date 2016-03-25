@@ -23,27 +23,20 @@ safe pickle deserialization, even if the email package adds additional Message
 attributes.
 """
 
-__all__ = [
-    'Message',
-    'MultipartDigestMessage',
-    'OwnerNotification',
-    'UserNotification',
-    ]
-
-
 import email
 import email.message
 import email.utils
 
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
+from mailman import public
 from mailman.config import config
 
 
 COMMASPACE = ', '
 
 
-
+@public
 class Message(email.message.Message):
     # BAW: For debugging w/ bin/dumpdb.  Apparently pprint uses repr.
     def __repr__(self):
@@ -113,12 +106,12 @@ class Message(email.message.Message):
         return clean_senders
 
 
-
+@public
 class MultipartDigestMessage(MIMEMultipart, Message):
     """Mix-in class for MIME digest messages."""
 
 
-
+@public
 class UserNotification(Message):
     """Class for internally crafted messages."""
 
@@ -182,7 +175,7 @@ class UserNotification(Message):
         virginq.enqueue(self, **enqueue_kws)
 
 
-
+@public
 class OwnerNotification(UserNotification):
     """Like user notifications, but this message goes to some owners."""
 

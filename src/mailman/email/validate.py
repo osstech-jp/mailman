@@ -17,13 +17,9 @@
 
 """Email address validation."""
 
-__all__ = [
-    'Validator',
-    ]
-
-
 import re
 
+from mailman import public
 from mailman.interfaces.address import (
     IEmailValidator, InvalidEmailAddressError)
 from mailman.utilities.email import split_email
@@ -34,7 +30,7 @@ from zope.interface import implementer
 _badchars = re.compile(r'[][()<>|;^,\000-\037\177-\377]')
 
 
-
+@public
 @implementer(IEmailValidator)
 class Validator:
     """An email address validator."""

@@ -17,12 +17,6 @@
 
 """Test the message API."""
 
-__all__ = [
-    'TestMessage',
-    'TestMessageSubclass',
-    ]
-
-
 import unittest
 
 from email.parser import FeedParser
@@ -32,7 +26,6 @@ from mailman.testing.helpers import get_queue_messages
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestMessage(unittest.TestCase):
     """Test the message API."""
 
@@ -53,13 +46,11 @@ class TestMessage(unittest.TestCase):
         self.assertEqual(self._msg['precedence'], None)
         self._msg['Precedence'] = 'omg wtf bbq'
         self._msg.send(self._mlist)
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msg.get_all('precedence'),
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msg.get_all('precedence'),
                          ['omg wtf bbq'])
 
 
-
 class TestMessageSubclass(unittest.TestCase):
     def test_i18n_filenames(self):
         parser = FeedParser(_factory=Message)
