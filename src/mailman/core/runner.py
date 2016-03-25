@@ -17,11 +17,6 @@
 
 """The process runner base class."""
 
-__all__ = [
-    'Runner',
-    ]
-
-
 import time
 import signal
 import logging
@@ -29,6 +24,7 @@ import traceback
 
 from io import StringIO
 from lazr.config import as_boolean, as_timedelta
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.logging import reopen
@@ -47,7 +43,7 @@ elog = logging.getLogger('mailman.error')
 rlog = logging.getLogger('mailman.runner')
 
 
-
+@public
 @implementer(IRunner)
 class Runner:
     is_queue_runner = True
@@ -74,7 +70,7 @@ class Runner:
                 name, self.queue_directory, slice, numslices, True)
         else:
             self.queue_directory = None
-            self.switchboard= None
+            self.switchboard = None
         self.sleep_time = as_timedelta(section.sleep_time)
         # sleep_time is a timedelta; turn it into a float for time.sleep().
         self.sleep_float = (86400 * self.sleep_time.days +
@@ -86,7 +82,7 @@ class Runner:
         self.status = 0
 
     def __repr__(self):
-        return '<{0} at {1:#x}>'.format(self.__class__.__name__, id(self))
+        return '<{} at {:#x}>'.format(self.__class__.__name__, id(self))
 
     def signal_handler(self, signum, frame):
         signame = {

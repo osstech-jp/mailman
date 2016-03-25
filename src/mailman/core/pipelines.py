@@ -17,24 +17,15 @@
 
 """Built-in pipelines."""
 
-__all__ = [
-    'BasePipeline',
-    'OwnerPipeline',
-    'PostingPipeline',
-    'VirginPipeline',
-    'initialize',
-    'process',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.app.bounces import bounce_message
 from mailman.config import config
-from mailman.core import errors
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
-from mailman.interfaces.pipeline import IPipeline
+from mailman.interfaces.pipeline import (
+    DiscardMessage, IPipeline, RejectMessage)
 from mailman.utilities.modules import find_components
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
@@ -44,7 +35,7 @@ dlog = logging.getLogger('mailman.debug')
 vlog = logging.getLogger('mailman.vette')
 
 
-
+@public
 def process(mlist, msg, msgdata, pipeline_name='built-in'):
     """Process the message through the given pipeline.
 
@@ -56,22 +47,22 @@ def process(mlist, msg, msgdata, pipeline_name='built-in'):
     message_id = msg.get('message-id', 'n/a')
     pipeline = config.pipelines[pipeline_name]
     for handler in pipeline:
-        dlog.debug('{0} pipeline {1} processing: {2}'.format(
+        dlog.debug('{} pipeline {} processing: {}'.format(
             message_id, pipeline_name, handler.name))
         try:
             handler.process(mlist, msg, msgdata)
-        except errors.DiscardMessage as error:
+        except DiscardMessage as error:
             vlog.info(
-                '{0} discarded by "{1}" pipeline handler "{2}": {3}'.format(
+                '{} discarded by "{}" pipeline handler "{}": {}'.format(
                     message_id, pipeline_name, handler.name, error.message))
-        except errors.RejectMessage as error:
+        except RejectMessage as error:
             vlog.info(
-                '{0} rejected by "{1}" pipeline handler "{2}": {3}'.format(
+                '{} rejected by "{}" pipeline handler "{}": {}'.format(
                     message_id, pipeline_name, handler.name, error.message))
             bounce_message(mlist, msg, error)
 
 
-
+@public
 @implementer(IPipeline)
 class BasePipeline:
     """Base pipeline implementation."""
@@ -88,7 +79,7 @@ class BasePipeline:
         yield from self._handlers
 
 
-
+@public
 class OwnerPipeline(BasePipeline):
     """The built-in owner pipeline."""
 
@@ -101,6 +92,7 @@ class OwnerPipeline(BasePipeline):
         )
 
 
+@public
 class PostingPipeline(BasePipeline):
     """The built-in posting pipeline."""
 
@@ -127,6 +119,7 @@ class PostingPipeline(BasePipeline):
         )
 
 
+@public
 class VirginPipeline(BasePipeline):
     """The processing pipeline for virgin messages.
 
@@ -141,7 +134,7 @@ class VirginPipeline(BasePipeline):
         )
 
 
-
+@public
 def initialize():
     """Initialize the pipelines."""
     # Find all handlers in the registered plugins.
@@ -149,7 +142,7 @@ def initialize():
         handler = handler_class()
         verifyObject(IHandler, handler)
         assert handler.name not in config.handlers, (
-            'Duplicate handler "{0}" found in {1}'.format(
+            'Duplicate handler "{}" found in {}'.format(
                 handler.name, handler_class))
         config.handlers[handler.name] = handler
     # Set up some pipelines.

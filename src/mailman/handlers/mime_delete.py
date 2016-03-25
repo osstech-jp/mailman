@@ -42,11 +42,11 @@ from email.mime.text import MIMEText
 from itertools import count
 from lazr.config import as_boolean
 from mailman.config import config
-from mailman.core import errors
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.interfaces.action import FilterAction
 from mailman.interfaces.handler import IHandler
+from mailman.interfaces.pipeline import DiscardMessage, RejectMessage
 from mailman.utilities.string import oneline
 from mailman.version import VERSION
 from string import Template
@@ -60,7 +60,7 @@ log = logging.getLogger('mailman.error')
 def dispose(mlist, msg, msgdata, why):
     if mlist.filter_action is FilterAction.reject:
         # Bounce the message to the original author.
-        raise errors.RejectMessage(why)
+        raise RejectMessage(why)
     elif mlist.filter_action is FilterAction.forward:
         # Forward it on to the list moderators.
         text=_("""\
@@ -90,7 +90,7 @@ message.
             '{1} invalid FilterAction: {0}.  Treating as discard'.format(
                 mlist.fqdn_listname, mlist.filter_action.name))
     # Most cases also discard the message
-    raise errors.DiscardMessage(why)
+    raise DiscardMessage(why)
 
 
 

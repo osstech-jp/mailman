@@ -27,14 +27,31 @@ __all__ = [
     ]
 
 
-from mailman.core.errors import (
-    ReadOnlyPATCHRequestError, UnknownPATCHRequestError)
 from mailman.interfaces.address import IEmailValidator
+from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
 from zope.component import getUtility
 
 
 COMMASPACE = ', '
+
+
+class RESTError(MailmanError):
+    """Base class for REST API errors."""
+
+
+class UnknownPATCHRequestError(RESTError):
+    """A PATCH request contained an unknown attribute."""
+
+    def __init__(self, attribute):
+        self.attribute = attribute
+
+
+class ReadOnlyPATCHRequestError(RESTError):
+    """A PATCH request contained a read-only attribute."""
+
+    def __init__(self, attribute):
+        self.attribute = attribute
 
 
 

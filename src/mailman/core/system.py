@@ -17,11 +17,6 @@
 
 """System information."""
 
-__all__ = [
-    'system',
-    ]
-
-
 import sys
 
 from mailman import version
@@ -29,7 +24,6 @@ from mailman.interfaces.system import ISystem
 from zope.interface import implementer
 
 
-
 @implementer(ISystem)
 class System:
     """See `ISystem`."""
@@ -46,3 +40,4 @@ class System:
 
 
 system = System()
+__all__ = ['system']

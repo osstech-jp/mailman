@@ -31,7 +31,6 @@ import logging
 import datetime
 
 from mailman.config import config
-from mailman.core.errors import MailmanError
 from mailman.handlers.decorate import decorate, decorate_template
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IEmailValidator
@@ -40,6 +39,7 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
+from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, IHeaderMatchList)

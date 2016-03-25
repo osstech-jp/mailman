@@ -17,12 +17,7 @@
 
 """Application support for chain processing."""
 
-__all__ = [
-    'initialize',
-    'process',
-    ]
-
-
+from mailman import public
 from mailman.chains.base import Chain, TerminalChainBase
 from mailman.config import config
 from mailman.interfaces.chain import LinkAction, IChain
@@ -30,6 +25,7 @@ from mailman.utilities.modules import find_components
 from zope.interface.verify import verifyObject
 
 
+@public
 def process(mlist, msg, msgdata, start_chain='default-posting-chain'):
     """Process the message through a chain.
 
@@ -85,13 +81,14 @@ def process(mlist, msg, msgdata, start_chain='default-posting-chain'):
                 link.function(mlist, msg, msgdata)
             else:
                 raise AssertionError(
-                    'Bad link action: {0}'.format(link.action))
+                    'Bad link action: {}'.format(link.action))
         else:
             # The rule did not match; keep going.
             if link.rule.record:
                 misses.append(link.rule.name)
 
 
+@public
 def initialize():
     """Set up chains, both built-in and from the database."""
     for chain_class in find_components('mailman.chains', IChain):

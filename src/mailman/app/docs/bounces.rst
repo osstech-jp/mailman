@@ -66,7 +66,7 @@ An error message can be given when the message is bounced, and this will be
 included in the payload of the text/plain part.  The error message must be
 passed in as an instance of a ``RejectMessage`` exception.
 
-    >>> from mailman.core.errors import RejectMessage
+    >>> from mailman.interfaces.pipeline import RejectMessage
     >>> error = RejectMessage("This wasn't very important after all.")
     >>> bounce_message(mlist, msg, error)
     >>> items = get_queue_messages('virgin')

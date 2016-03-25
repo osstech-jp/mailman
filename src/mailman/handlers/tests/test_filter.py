@@ -26,8 +26,8 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
-from mailman.core.errors import DiscardMessage
 from mailman.interfaces.mime import FilterAction
+from mailman.interfaces.pipeline import DiscardMessage
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 

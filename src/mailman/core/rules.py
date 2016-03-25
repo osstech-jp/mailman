@@ -17,17 +17,14 @@
 
 """Various rule helpers"""
 
-__all__ = [
-    'initialize',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.rules import IRule
 from mailman.utilities.modules import find_components
 from zope.interface.verify import verifyObject
 
 
+@public
 def initialize():
     """Find and register all rules in all plugins."""
     # Find rules in plugins.

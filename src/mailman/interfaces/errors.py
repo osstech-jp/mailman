@@ -22,11 +22,11 @@ components.  More specific exceptions will be located in the relevant
 interfaces.
 """
 
+# We can't use @mailman.public here because of circular imports.
 __all__ = [
     'MailmanError',
     ]
 
 
-
 class MailmanError(Exception):
     """Base class for all Mailman exceptions."""

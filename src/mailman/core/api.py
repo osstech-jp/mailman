@@ -17,19 +17,15 @@
 
 """REST web service API contexts."""
 
-__all__ = [
-    'API30',
-    'API31',
-    ]
-
-
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.api import IAPI
 from uuid import UUID
 from zope.interface import implementer
 
 
+@public
 @implementer(IAPI)
 class API30:
     version = '3.0'
@@ -58,6 +54,7 @@ class API30:
         return UUID(int=int(uuid))
 
 
+@public
 @implementer(IAPI)
 class API31:
     version = '3.1'

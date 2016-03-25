@@ -17,24 +17,23 @@
 
 """Internationalization."""
 
-__all__ = [
-    '_',
-    'ctime',
-    'initialize',
-    ]
-
-
-import time
 import mailman.messages
 
 from flufl.i18n import PackageStrategy, registry
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 
 
+# We can't use @mailman.public here because of circular imports.
+__all__ = [
+    '_',
+    'handle_ConfigurationUpdatedEvent',
+    'initialize',
+    ]
+
+
 _ = None
 
 
-
 def initialize(application=None):
     """Initialize the i18n subsystem.
 
@@ -50,70 +49,6 @@ def initialize(application=None):
     _ = application._
 
 
-
-def ctime(date):
-    """Translate a ctime.
-
-    :param date: The date to translate.
-    :type date: str or time float
-    :return: The translated date.
-    :rtype: string
-    """
-    # Don't make these module globals since we have to do runtime translation
-    # of the strings anyway.
-    daysofweek = [
-        _('Mon'), _('Tue'), _('Wed'), _('Thu'),
-        _('Fri'), _('Sat'), _('Sun')
-        ]
-    months = [
-        '',
-        _('Jan'), _('Feb'), _('Mar'), _('Apr'), _('May'), _('Jun'),
-        _('Jul'), _('Aug'), _('Sep'), _('Oct'), _('Nov'), _('Dec')
-        ]
-
-    tzname = _('Server Local Time')
-    if isinstance(date, str):
-        try:
-            year, mon, day, hh, mm, ss, wday, ydat, dst = time.strptime(date)
-            if dst in (0, 1):
-                tzname = time.tzname[dst]
-            else:
-                # MAS: No exception but dst = -1 so try
-                return ctime(time.mktime((year, mon, day, hh, mm, ss, wday,
-                                          ydat, dst)))
-        except (ValueError, AttributeError):
-            try:
-                wday, mon, day, hms, year = date.split()
-                hh, mm, ss = hms.split(':')
-                year = int(year)
-                day = int(day)
-                hh = int(hh)
-                mm = int(mm)
-                ss = int(ss)
-            except ValueError:
-                return date
-            else:
-                for i in range(0, 7):
-                    wconst = (1999, 1, 1, 0, 0, 0, i, 1, 0)
-                    if wday.lower() == time.strftime('%a', wconst).lower():
-                        wday = i
-                        break
-                for i in range(1, 13):
-                    mconst = (1999, i, 1, 0, 0, 0, 0, 1, 0)
-                    if mon.lower() == time.strftime('%b', mconst).lower():
-                        mon = i
-                        break
-    else:
-        year, mon, day, hh, mm, ss, wday, yday, dst = time.localtime(date)
-        if dst in (0, 1):
-            tzname = time.tzname[dst]
-
-    wday = daysofweek[wday]
-    mon = months[mon]
-    return _('$wday $mon $day $hh:$mm:$ss $tzname $year')
-
-
-
 def handle_ConfigurationUpdatedEvent(event):
     if isinstance(event, ConfigurationUpdatedEvent):
         _.default = event.config.mailman.default_language

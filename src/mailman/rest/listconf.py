@@ -24,8 +24,6 @@ __all__ = [
 
 from lazr.config import as_boolean, as_timedelta
 from mailman.config import config
-from mailman.core.errors import (
-    ReadOnlyPATCHRequestError, UnknownPATCHRequestError)
 from mailman.interfaces.action import Action
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
@@ -35,7 +33,8 @@ from mailman.interfaces.mailinglist import (
 from mailman.rest.helpers import (
     GetterSetter, bad_request, etag, no_content, not_found, okay)
 from mailman.rest.validator import (
-    PatchValidator, Validator, enum_validator, list_of_strings_validator)
+    PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
+    Validator, enum_validator, list_of_strings_validator)
 
 
 

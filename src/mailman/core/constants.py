@@ -17,11 +17,6 @@
 
 """Various constants and enumerations."""
 
-__all__ = [
-    'system_preferences',
-    ]
-
-
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
@@ -30,7 +25,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
 @implementer(IPreferences)
 class SystemDefaultPreferences:
     """The default system preferences."""
@@ -48,5 +42,5 @@ class SystemDefaultPreferences:
         return getUtility(ILanguageManager)[config.mailman.default_language]
 
 
-
 system_preferences = SystemDefaultPreferences()
+__all__ = ['system_preferences']

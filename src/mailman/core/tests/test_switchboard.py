@@ -17,11 +17,6 @@
 
 """Switchboard tests."""
 
-__all__ = [
-    'TestSwitchboard',
-    ]
-
-
 import unittest
 
 from mailman.config import config

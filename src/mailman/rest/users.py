@@ -28,8 +28,6 @@ __all__ = [
 
 from lazr.config import as_boolean
 from mailman.config import config
-from mailman.core.errors import (
-    ReadOnlyPATCHRequestError, UnknownPATCHRequestError)
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import UserAddresses
@@ -38,7 +36,8 @@ from mailman.rest.helpers import (
     conflict, created, etag, forbidden, no_content, not_found, okay)
 from mailman.rest.preferences import Preferences
 from mailman.rest.validator import (
-    PatchValidator, Validator, list_of_strings_validator)
+    PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
+    Validator, list_of_strings_validator)
 from passlib.utils import generate_password as generate
 from zope.component import getUtility
 

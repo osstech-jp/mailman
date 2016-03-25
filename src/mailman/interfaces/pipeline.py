@@ -17,15 +17,41 @@
 
 """Interface for describing pipelines."""
 
-__all__ = [
-    'IPipeline',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+# For i18n extraction.
+def _(s):
+    return s
+
+
+# These are thrown but they aren't exceptions so don't inherit from
+# mailman.interfaces.errors.MailmanError.  Python requires that they inherit
+# from BaseException.
+@public
+class DiscardMessage(BaseException):
+    """The message can be discarded with no further action"""
+
+    def __init__(self, message=None):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+@public
+class RejectMessage(BaseException):
+    """The message will be bounced back to the sender"""
+
+    def __init__(self, message=None):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+@public
 class IPipeline(Interface):
     """A pipeline of handlers."""
 

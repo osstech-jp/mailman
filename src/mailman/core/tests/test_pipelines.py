@@ -17,31 +17,25 @@
 
 """Test the core modification pipelines."""
 
-__all__ = [
-    'TestOwnerPipeline',
-    'TestPostingPipeline',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
-from mailman.core.errors import DiscardMessage, RejectMessage
 from mailman.core.pipelines import process
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.member import MemberRole
-from mailman.interfaces.pipeline import IPipeline
+from mailman.interfaces.pipeline import (
+    DiscardMessage, IPipeline, RejectMessage)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, digest_mbox, get_queue_messages, reset_the_world,
+    LogFileMark, digest_mbox, get_queue_messages,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
+from operator import delitem
 from zope.component import getUtility
 from zope.interface import implementer
 
 
-
 @implementer(IHandler)
 class DiscardingHandler:
     name = 'discarding'
@@ -76,7 +70,6 @@ class RejectingPipeline:
         yield RejectHandler()
 
 
-
 class TestPostingPipeline(unittest.TestCase):
     """Test various aspects of the built-in postings pipeline."""
 
@@ -85,7 +78,9 @@ class TestPostingPipeline(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('test@example.com')
         config.pipelines['test-discarding'] = DiscardingPipeline()
+        self.addCleanup(delitem, config.pipelines, 'test-discarding')
         config.pipelines['test-rejecting'] = RejectingPipeline()
+        self.addCleanup(delitem, config.pipelines, 'test-rejecting')
         self._msg = mfs("""\
 From: Anne Person <anne@example.org>
 To: test@example.com
@@ -94,11 +89,6 @@ Message-ID: <ant>
 
 testing
 """)
-
-    def tearDown(self):
-        reset_the_world()
-        del config.pipelines['test-discarding']
-        del config.pipelines['test-rejecting']
 
     def test_rfc2369_headers(self):
         # Ensure that RFC 2369 List-* headers are added.
@@ -129,9 +119,8 @@ testing
             '"rejecting": by test handler'))
         # In the rejection case, the original message will also be in the
         # virgin queue.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0].msg['subject']), 'a test')
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(str(items[0].msg['subject']), 'a test')
 
     def test_decorate_bulk(self):
         # Ensure that bulk postings get decorated with the footer.
@@ -160,18 +149,14 @@ testing
         process(self._mlist, self._msg, {},
                 pipeline_name='default-posting-pipeline')
         for queue in ('archive', 'nntp'):
-            messages = get_queue_messages(queue)
-            self.assertEqual(
-                len(messages), 1,
-                'Queue {} has {} messages'.format(queue, len(messages)))
-            payload = messages[0].msg.get_payload()
+            items = get_queue_messages(queue, expected_count=1)
+            payload = items[0].msg.get_payload()
             self.assertNotIn('Test mailing list', payload)
         self.assertEqual(len(digest_mbox(self._mlist)), 1)
         payload = digest_mbox(self._mlist)[0].get_payload()
         self.assertNotIn('Test mailing list', payload)
 
 
-
 class TestOwnerPipeline(unittest.TestCase):
     """Test various aspects of the built-in owner pipeline."""
 
@@ -204,7 +189,6 @@ To: test-owner@example.com
         # outgoing queue.
         process(self._mlist, self._msg, {},
                 pipeline_name='default-owner-pipeline')
-        messages = get_queue_messages('out', sort_on='to')
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata['recipients'],
+        items = get_queue_messages('out', sort_on='to', expected_count=1)
+        self.assertEqual(items[0].msgdata['recipients'],
                          set(('anne@example.com', 'bart@example.com')))

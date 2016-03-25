@@ -17,11 +17,6 @@
 
 """Test some Runner base class behavior."""
 
-__all__ = [
-    'TestRunner',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -38,13 +33,11 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 class CrashingRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
         raise RuntimeError('borked')
 
 
-
 class TestRunner(unittest.TestCase):
     """Test the Runner base class behavior."""
 
@@ -77,17 +70,16 @@ Message-ID: <ant>
         # message, and metadata.
         self.assertEqual(len(self._events), 1)
         event = self._events[0]
-        self.assertTrue(isinstance(event, RunnerCrashEvent))
+        self.assertIsInstance(event, RunnerCrashEvent)
         self.assertEqual(event.mailing_list, self._mlist)
         self.assertEqual(event.message['message-id'], '<ant>')
         self.assertEqual(event.metadata['listid'], 'test.example.com')
-        self.assertTrue(isinstance(event.error, RuntimeError))
+        self.assertIsInstance(event.error, RuntimeError)
         self.assertEqual(str(event.error), 'borked')
-        self.assertTrue(isinstance(event.runner, CrashingRunner))
+        self.assertIsInstance(event.runner, CrashingRunner)
         # The message should also have ended up in the shunt queue.
-        shunted = get_queue_messages('shunt')
-        self.assertEqual(len(shunted), 1)
-        self.assertEqual(shunted[0].msg['message-id'], '<ant>')
+        items = get_queue_messages('shunt', expected_count=1)
+        self.assertEqual(items[0].msg['message-id'], '<ant>')
 
     def test_digest_messages(self):
         # In LP: #1130697, the digest runner creates MIME digests using the
@@ -112,18 +104,17 @@ Message-ID: <ant>
         runner.run()
         error_text = error_log.read()
         self.assertEqual(len(error_text), 0, error_text)
-        self.assertEqual(len(get_queue_messages('shunt')), 0)
-        messages = get_queue_messages('out')
-        self.assertEqual(len(messages), 2)
+        get_queue_messages('shunt', expected_count=0)
+        items = get_queue_messages('out', expected_count=2)
         # Which one is the MIME digest?
         mime_digest = None
-        for bag in messages:
-            if bag.msg.get_content_type() == 'multipart/mixed':
+        for item in items:
+            if item.msg.get_content_type() == 'multipart/mixed':
                 assert mime_digest is None, 'Found two MIME digests'
-                mime_digest = bag.msg
+                mime_digest = item.msg
         # The cook-headers handler ran.
         self.assertIn('x-mailman-version', mime_digest)
         self.assertEqual(mime_digest['precedence'], 'list')
         # The list's -request address is the original sender.
-        self.assertEqual(bag.msgdata['original_sender'],
+        self.assertEqual(item.msgdata['original_sender'],
                          'test-request@example.com')

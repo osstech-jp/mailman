@@ -24,20 +24,12 @@ line argument parsing, since some of the initialization behavior is controlled
 by the command line arguments.
 """
 
-__all__ = [
-    'initialize',
-    'initialize_1',
-    'initialize_2',
-    'initialize_3',
-    'INHIBIT_CONFIG_FILE',
-    ]
-
-
 import os
 import sys
 import mailman.config.config
 import mailman.core.logging
 
+from mailman import public
 from mailman.interfaces.database import IDatabaseFactory
 from mailman.utilities.modules import call_name
 from pkg_resources import resource_string as resource_bytes
@@ -49,9 +41,9 @@ from zope.configuration import xmlconfig
 # existing configuration file.  Otherwise the existence of say a
 # ~/.mailman.cfg file can break tests.
 INHIBIT_CONFIG_FILE = object()
+__all__ = ['INHIBIT_CONFIG_FILE']
 
 
-
 def search_for_configuration_file():
     """Search the file system for a configuration file to use.
 
@@ -89,12 +81,12 @@ def search_for_configuration_file():
     return None
 
 
-
 # These initialization calls are separated for the testing framework, which
 # needs to do some internal calculations after config file loading and log
 # initialization, but before database initialization.  Generally all other
 # code will just call initialize().
 
+@public
 def initialize_1(config_path=None):
     """First initialization step.
 
@@ -135,6 +127,7 @@ def initialize_1(config_path=None):
         mailman.config.config.push('extra testing config', extra_cfg)
 
 
+@public
 def initialize_2(debug=False, propagate_logs=None, testing=False):
     """Second initialization step.
 
@@ -174,6 +167,7 @@ def initialize_2(debug=False, propagate_logs=None, testing=False):
     initialize_commands()
 
 
+@public
 def initialize_3():
     """Third initialization step.
 
@@ -185,7 +179,7 @@ def initialize_3():
         call_name(config.mailman.post_hook)
 
 
-
+@public
 def initialize(config_path=None, propagate_logs=None):
     initialize_1(config_path)
     initialize_2(propagate_logs=propagate_logs)

@@ -24,12 +24,6 @@ written.  First, the message is written to the pickle, then the metadata
 dictionary is written.
 """
 
-__all__ = [
-    'Switchboard',
-    'handle_ConfigurationUpdatedEvent',
-    ]
-
-
 import os
 import time
 import email
@@ -37,6 +31,7 @@ import pickle
 import hashlib
 import logging
 
+from mailman import public
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
@@ -60,7 +55,7 @@ MAX_BAK_COUNT = 3
 elog = logging.getLogger('mailman.error')
 
 
-
+@public
 @implementer(ISwitchboard)
 class Switchboard:
     """See `ISwitchboard`."""
@@ -83,7 +78,7 @@ class Switchboard:
         :type recover: bool
         """
         assert (numslices & (numslices - 1)) == 0, (
-            'Not a power of 2: {0}'.format(numslices))
+            'Not a power of 2: {}'.format(numslices))
         self.name = name
         self.queue_directory = queue_directory
         # If configured to, create the directory if it doesn't yet exist.
@@ -253,7 +248,7 @@ class Switchboard:
                         os.rename(src, dst)
 
 
-
+@public
 def handle_ConfigurationUpdatedEvent(event):
     """Initialize the global switchboards for input/output."""
     if not isinstance(event, ConfigurationUpdatedEvent):

@@ -31,8 +31,8 @@ import sys
 from itertools import product
 from mailman.config import config
 from mailman.core.constants import system_preferences
-from mailman.core.errors import MailmanError
 from mailman.core.i18n import _
+from mailman.interfaces.errors import MailmanError
 from mailman.utilities.string import expand, wrap as wrap_text
 from pkg_resources import resource_filename
 

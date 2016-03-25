@@ -28,7 +28,7 @@ __all__ = [
     ]
 
 
-from mailman.core.errors import MailmanError
+from mailman.interfaces.errors import MailmanError
 from zope.interface import Interface, Attribute
 
 

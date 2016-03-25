@@ -17,25 +17,19 @@
 
 """Logging initialization, using Python's standard logging package."""
 
-__all__ = [
-    'initialize',
-    'reopen',
-    ]
-
-
 import os
 import sys
 import codecs
 import logging
 
 from lazr.config import as_boolean, as_log_level
+from mailman import public
 from mailman.config import config
 
 
 _handlers = {}
 
 
-
 # XXX I would love to simplify things and use Python's WatchedFileHandler, but
 # there are two problems.  First, it's more difficult to handle the test
 # suite's need to reopen the file handler to a different path.
@@ -50,7 +44,7 @@ class ReopenableFileHandler(logging.Handler):
     """A file handler that supports reopening."""
 
     def __init__(self, name, filename):
-        logging.Handler.__init__(self)
+        super().__init__()
         self.name = name
         self.filename = filename
         self._stream = self._open()
@@ -70,9 +64,9 @@ class ReopenableFileHandler(logging.Handler):
         try:
             msg = self.format(record)
             try:
-                stream.write('{0}'.format(msg))
+                stream.write('{}'.format(msg))
             except UnicodeError:
-                stream.write('{0}'.format(msg.encode('string-escape')))
+                stream.write('{}'.format(msg.encode('string-escape')))
             if msg[-1] != '\n':
                 stream.write('\n')
             self.flush()
@@ -83,7 +77,7 @@ class ReopenableFileHandler(logging.Handler):
         self.flush()
         self._stream.close()
         self._stream = None
-        logging.Handler.close(self)
+        super().close()
 
     def reopen(self, filename=None):
         """Reopen the output stream.
@@ -98,7 +92,6 @@ class ReopenableFileHandler(logging.Handler):
         self._stream = self._open()
 
 
-
 def _init_logger(propagate, sub_name, log, logger_config):
     # Get settings from log configuration file (or defaults).
     log_format = logger_config.format
@@ -120,6 +113,7 @@ def _init_logger(propagate, sub_name, log, logger_config):
     log.addHandler(handler)
 
 
+@public
 def initialize(propagate=None):
     """Initialize all logs.
 
@@ -158,14 +152,15 @@ def initialize(propagate=None):
             log = logging.getLogger(logger_name)
         _init_logger(propagate, sub_name, log, logger_config)
 
-
+
+@public
 def reopen():
     """Re-open all log files."""
     for handler in _handlers.values():
         handler.reopen()
 
 
-
+@public
 def get_handler(sub_name):
     """Return the handler associated with a named logger.
 
