@@ -17,11 +17,7 @@
 
 """Template finder."""
 
-__all__ = [
-    'TemplateFinder',
-    ]
-
-
+from mailman import public
 from mailman.rest.helpers import not_found
 from mailman.utilities.i18n import TemplateNotFoundError, find
 
@@ -33,7 +29,7 @@ EXTENSIONS = {
     }
 
 
-
+@public
 class TemplateFinder:
     """Template finder resource."""
 

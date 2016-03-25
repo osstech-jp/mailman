@@ -17,17 +17,8 @@
 
 """REST for mailing lists."""
 
-__all__ = [
-    'AList',
-    'AllLists',
-    'ListArchivers',
-    'ListConfiguration',
-    'ListsForDomain',
-    'Styles',
-    ]
-
-
 from lazr.config import as_boolean
+from mailman import public
 from mailman.app.digests import (
     bump_digest_number_and_volume, maybe_send_digest_now)
 from mailman.app.lifecycle import create_list, remove_list
@@ -118,6 +109,7 @@ class _ListBase(CollectionMixin):
         return list(getUtility(IListManager))
 
 
+@public
 class AList(_ListBase):
     """A mailing list."""
 
@@ -213,6 +205,7 @@ class AList(_ListBase):
         return HeaderMatches(self._mlist)
 
 
+@public
 class AllLists(_ListBase):
     """The mailing lists."""
 
@@ -238,6 +231,7 @@ class AllLists(_ListBase):
         okay(response, etag(resource))
 
 
+@public
 class MembersOfList(MemberCollection):
     """The members of a mailing list."""
 
@@ -255,6 +249,7 @@ class MembersOfList(MemberCollection):
             role=self._role)
 
 
+@public
 class ListsForDomain(_ListBase):
     """The mailing lists for a particular domain."""
 
@@ -271,6 +266,7 @@ class ListsForDomain(_ListBase):
         return list(self._domain.mailing_lists)
 
 
+@public
 class ArchiverGetterSetter(GetterSetter):
     """Resource for updating archiver statuses."""
 
@@ -287,6 +283,7 @@ class ArchiverGetterSetter(GetterSetter):
         archiver.is_enabled = as_boolean(value)
 
 
+@public
 class ListArchivers:
     """The archivers for a list, with their enabled flags."""
 
@@ -323,6 +320,7 @@ class ListArchivers:
         self.patch_put(request, response, is_optional=True)
 
 
+@public
 class ListDigest:
     """Simple resource representing actions on a list's digest."""
 
@@ -357,6 +355,7 @@ class ListDigest:
         accepted(response)
 
 
+@public
 class Styles:
     """Simple resource representing all list styles."""
 

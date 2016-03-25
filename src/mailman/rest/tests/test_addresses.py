@@ -17,12 +17,6 @@
 
 """REST address tests."""
 
-__all__ = [
-    'TestAPI31Addresses',
-    'TestAddresses',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -35,7 +29,6 @@ from urllib.error import HTTPError
 from zope.component import getUtility
 
 
-
 class TestAddresses(unittest.TestCase):
     layer = RESTLayer
 
@@ -488,7 +481,6 @@ class TestAddresses(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
 
 
-
 class TestAPI31Addresses(unittest.TestCase):
     """UUIDs are represented as hex instead of int in API 3.1
 

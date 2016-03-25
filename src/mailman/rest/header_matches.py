@@ -17,12 +17,7 @@
 
 """REST API for a mailing list's header matches."""
 
-__all__ = [
-    'HeaderMatch',
-    'HeaderMatches',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.action import Action
 from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.rest.helpers import (
@@ -59,6 +54,7 @@ class _HeaderMatchBase:
         return resource
 
 
+@public
 class HeaderMatch(_HeaderMatchBase):
     """A header match."""
 
@@ -129,6 +125,7 @@ class HeaderMatch(_HeaderMatchBase):
         self.patch_put(request, response, is_optional=True)
 
 
+@public
 class HeaderMatches(_HeaderMatchBase, CollectionMixin):
     """The list of all header matches."""
 

@@ -17,12 +17,7 @@
 
 """REST API for held message moderation."""
 
-__all__ = [
-    'HeldMessage',
-    'HeldMessages',
-    ]
-
-
+from mailman import public
 from mailman.app.moderator import handle_message
 from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
@@ -33,7 +28,6 @@ from mailman.rest.validator import Validator, enum_validator
 from zope.component import getUtility
 
 
-
 class _ModerationBase:
     """Common base class."""
 
@@ -66,7 +60,6 @@ class _ModerationBase:
         return resource
 
 
-
 class _HeldMessageBase(_ModerationBase):
     """Held messages are a little different."""
 
@@ -95,6 +88,7 @@ class _HeldMessageBase(_ModerationBase):
         return resource
 
 
+@public
 class HeldMessage(_HeldMessageBase):
     """Resource for moderating a held message."""
 
@@ -135,7 +129,7 @@ class HeldMessage(_HeldMessageBase):
             no_content(response)
 
 
-
+@public
 class HeldMessages(_HeldMessageBase, CollectionMixin):
     """Resource for messages held for moderation."""
 

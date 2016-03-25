@@ -17,16 +17,8 @@
 
 """REST for users."""
 
-__all__ = [
-    'AUser',
-    'AddressUser',
-    'AllUsers',
-    'Login',
-    'OwnersForDomain',
-    ]
-
-
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
@@ -42,24 +34,27 @@ from passlib.utils import generate_password as generate
 from zope.component import getUtility
 
 
-
 # Attributes of a user which can be changed via the REST API.
+@public
 class PasswordEncrypterGetterSetter(GetterSetter):
     def __init__(self):
         super().__init__(config.password_context.encrypt)
+
     def get(self, obj, attribute):
         assert attribute == 'cleartext_password'
         super().get(obj, 'password')
+
     def put(self, obj, attribute, value):
         assert attribute == 'cleartext_password'
         super().put(obj, 'password', value)
 
 
+@public
 class ListOfDomainOwners(GetterSetter):
     def get(self, domain, attribute):
         assert attribute == 'owner', (
             'Unexpected attribute: {}'.format(attribute))
-        def sort_key(owner):
+        def sort_key(owner):                        # flake8: noqa
             return owner.addresses[0].email
         return sorted(domain.owners, key=sort_key)
 
@@ -85,7 +80,6 @@ CREATION_FIELDS = dict(
     )
 
 
-
 def create_user(arguments, request, response):
     """Create a new user."""
     # We can't pass the 'password' argument to the user creation method, so
@@ -122,7 +116,6 @@ def create_user(arguments, request, response):
     return user
 
 
-
 class _UserBase(CollectionMixin):
     """Shared base class for user representations."""
 
@@ -152,7 +145,7 @@ class _UserBase(CollectionMixin):
         return list(getUtility(IUserManager).users)
 
 
-
+@public
 class AllUsers(_UserBase):
     """The users."""
 
@@ -172,7 +165,7 @@ class AllUsers(_UserBase):
         create_user(arguments, request, response)
 
 
-
+@public
 class AUser(_UserBase):
     """A user."""
 
@@ -284,7 +277,7 @@ class AUser(_UserBase):
         return Login(self._user)
 
 
-
+@public
 class AddressUser(_UserBase):
     """The user linked to an address."""
 
@@ -381,7 +374,7 @@ class AddressUser(_UserBase):
         user.link(self._address)
 
 
-
+@public
 class Login:
     """<api>/users/<uid>/login"""
 
@@ -409,7 +402,7 @@ class Login:
             forbidden(response)
 
 
-
+@public
 class OwnersForDomain(_UserBase):
     """Owners for a particular domain."""
 
@@ -461,7 +454,7 @@ class OwnersForDomain(_UserBase):
         return list(self._domain.owners)
 
 
-
+@public
 class ServerOwners(_UserBase):
     """All server owners."""
 

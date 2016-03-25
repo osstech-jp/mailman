@@ -21,11 +21,6 @@ There is no doctest for this functionality, since it's only useful for testing
 of external clients of the REST API.
 """
 
-__all__ = [
-    'TestUIDs',
-    ]
-
-
 import unittest
 
 from mailman.config import config
@@ -37,7 +32,6 @@ from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
 
 
-
 class TestUIDs(unittest.TestCase):
     layer = RESTLayer
 

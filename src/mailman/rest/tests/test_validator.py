@@ -17,11 +17,6 @@
 
 """Test REST validators."""
 
-__all__ = [
-    'TestValidators',
-    ]
-
-
 import unittest
 
 from mailman.interfaces.usermanager import IUserManager
@@ -32,7 +27,6 @@ from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
 
 
-
 class TestValidators(unittest.TestCase):
     layer = RESTLayer
 

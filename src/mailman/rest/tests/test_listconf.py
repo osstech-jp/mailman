@@ -17,11 +17,6 @@
 
 """Test list configuration via the REST API."""
 
-__all__ = [
-    'TestConfiguration',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -80,7 +75,6 @@ RESOURCE = dict(
     )
 
 
-
 class TestConfiguration(unittest.TestCase):
     """Test list configuration via the REST API."""
 
@@ -168,7 +162,7 @@ class TestConfiguration(unittest.TestCase):
             call_api('http://localhost:9001/3.0/lists/ant.example.com'
                      '/config/mail_host',
                      dict(mail_host='foo.example.com'),
-                    'PUT')
+                     'PUT')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          b'Read-only attribute: mail_host')
@@ -213,8 +207,8 @@ class TestConfiguration(unittest.TestCase):
     def test_unknown_patch_attribute(self):
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/ant.example.com/config',
-                    dict(bogus=1),
-                    'PATCH')
+                     dict(bogus=1),
+                     'PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason, b'Unknown attribute: bogus')
 
@@ -223,7 +217,7 @@ class TestConfiguration(unittest.TestCase):
             call_api('http://localhost:9001/3.0/lists/ant.example.com'
                      '/config/mail_host',
                      dict(mail_host='foo.example.com'),
-                    'PATCH')
+                     'PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          b'Read-only attribute: mail_host')

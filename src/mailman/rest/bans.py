@@ -17,12 +17,7 @@
 
 """REST for banned emails."""
 
-__all__ = [
-    'BannedEmail',
-    'BannedEmails',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.bans import IBanManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, created, etag, no_content, not_found,
@@ -45,6 +40,7 @@ class _BannedBase:
         return self.api.path_to('{}bans/{}'.format(base_location, email))
 
 
+@public
 class BannedEmail(_BannedBase):
     """A banned email."""
 
@@ -74,6 +70,7 @@ class BannedEmail(_BannedBase):
             not_found(response, 'Email is not banned: {}'.format(self._email))
 
 
+@public
 class BannedEmails(_BannedBase, CollectionMixin):
     """The list of all banned emails."""
 

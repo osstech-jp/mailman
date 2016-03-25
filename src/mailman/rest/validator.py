@@ -17,16 +17,7 @@
 
 """REST web form validation."""
 
-__all__ = [
-    'PatchValidator',
-    'Validator',
-    'enum_validator',
-    'language_validator',
-    'list_of_strings_validator',
-    'subscriber_validator',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
@@ -36,10 +27,12 @@ from zope.component import getUtility
 COMMASPACE = ', '
 
 
+@public
 class RESTError(MailmanError):
     """Base class for REST API errors."""
 
 
+@public
 class UnknownPATCHRequestError(RESTError):
     """A PATCH request contained an unknown attribute."""
 
@@ -47,6 +40,7 @@ class UnknownPATCHRequestError(RESTError):
         self.attribute = attribute
 
 
+@public
 class ReadOnlyPATCHRequestError(RESTError):
     """A PATCH request contained a read-only attribute."""
 
@@ -54,7 +48,7 @@ class ReadOnlyPATCHRequestError(RESTError):
         self.attribute = attribute
 
 
-
+@public
 class enum_validator:
     """Convert an enum value name into an enum value."""
 
@@ -71,6 +65,7 @@ class enum_validator:
             raise ValueError(exception.args[0])
 
 
+@public
 def subscriber_validator(api):
     """Convert an email-or-(int|hex) to an email-or-UUID."""
     def _inner(subscriber):
@@ -84,11 +79,13 @@ def subscriber_validator(api):
     return _inner
 
 
+@public
 def language_validator(code):
     """Convert a language code to a Language object."""
     return getUtility(ILanguageManager)[code]
 
 
+@public
 def list_of_strings_validator(values):
     """Turn a list of things, or a single thing, into a list of unicodes."""
     if not isinstance(values, (list, tuple)):
@@ -99,7 +96,7 @@ def list_of_strings_validator(values):
     return values
 
 
-
+@public
 class Validator:
     """A validator of parameter input."""
 
@@ -139,17 +136,17 @@ class Validator:
         # Make sure there are no unexpected values.
         if len(extras) != 0:
             extras = COMMASPACE.join(sorted(extras))
-            raise ValueError('Unexpected parameters: {0}'.format(extras))
+            raise ValueError('Unexpected parameters: {}'.format(extras))
         # Make sure everything could be converted.
         if len(cannot_convert) != 0:
             bad = COMMASPACE.join(sorted(cannot_convert))
-            raise ValueError('Cannot convert parameters: {0}'.format(bad))
+            raise ValueError('Cannot convert parameters: {}'.format(bad))
         # Make sure nothing's missing.
         value_keys = set(values)
         required_keys = set(self._converters) - self._optional
         if value_keys & required_keys != required_keys:
             missing = COMMASPACE.join(sorted(required_keys - value_keys))
-            raise ValueError('Missing parameters: {0}'.format(missing))
+            raise ValueError('Missing parameters: {}'.format(missing))
         return values
 
     def update(self, obj, request):
@@ -167,7 +164,7 @@ class Validator:
             self._converters[key].put(obj, key, value)
 
 
-
+@public
 class PatchValidator(Validator):
     """Create a special validator for PATCH requests.
 

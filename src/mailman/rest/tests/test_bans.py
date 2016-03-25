@@ -17,11 +17,6 @@
 
 """Test address bans."""
 
-__all__ = [
-    'TestBans',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list

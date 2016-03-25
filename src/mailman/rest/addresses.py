@@ -17,13 +17,7 @@
 
 """REST for addresses."""
 
-__all__ = [
-    'AllAddresses',
-    'AnAddress',
-    'UserAddresses',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.address import (
     ExistingAddressError, InvalidEmailAddressError)
 from mailman.interfaces.usermanager import IUserManager
@@ -38,7 +32,6 @@ from operator import attrgetter
 from zope.component import getUtility
 
 
-
 class _AddressBase(CollectionMixin):
     """Shared base class for address representations."""
 
@@ -68,7 +61,7 @@ class _AddressBase(CollectionMixin):
         return list(getUtility(IUserManager).addresses)
 
 
-
+@public
 class AllAddresses(_AddressBase):
     """The addresses."""
 
@@ -78,7 +71,6 @@ class AllAddresses(_AddressBase):
         okay(response, etag(resource))
 
 
-
 class _VerifyResource:
     """A helper resource for verify/unverify POSTS."""
 
@@ -96,6 +88,7 @@ class _VerifyResource:
         no_content(response)
 
 
+@public
 class AnAddress(_AddressBase):
     """An address."""
 
@@ -172,7 +165,7 @@ class AnAddress(_AddressBase):
         return AddressUser(self._address)
 
 
-
+@public
 class UserAddresses(_AddressBase):
     """The addresses of a user."""
 
@@ -225,12 +218,12 @@ class UserAddresses(_AddressBase):
             created(response, location)
 
 
-
 def membership_key(member):
     # Sort first by mailing list, then by address, then by role.
     return member.list_id, member.address.email, member.role.value
 
 
+@public
 class AddressMemberships(MemberCollection):
     """All the memberships of a particular email address."""
 

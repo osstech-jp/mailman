@@ -17,11 +17,7 @@
 
 """REST API for held subscription requests."""
 
-__all__ = [
-    'SubscriptionRequests',
-    ]
-
-
+from mailman import public
 from mailman.app.moderator import send_rejection
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError
@@ -35,7 +31,6 @@ from mailman.utilities.i18n import _
 from zope.component import getUtility
 
 
-
 class _ModerationBase:
     """Common base class."""
 
@@ -52,7 +47,7 @@ class _ModerationBase:
         return resource
 
 
-
+@public
 class IndividualRequest(_ModerationBase):
     """Resource for moderating a membership change."""
 
@@ -118,7 +113,7 @@ class IndividualRequest(_ModerationBase):
                     _('[No reason given]'))
 
 
-
+@public
 class SubscriptionRequests(_ModerationBase, CollectionMixin):
     """Resource for membership change requests."""
 

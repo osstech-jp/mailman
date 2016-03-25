@@ -17,11 +17,6 @@
 
 """Test system configuration read-only access."""
 
-__all__ = [
-    'TestSystemConfiguration',
-    ]
-
-
 import unittest
 
 from mailman.testing.helpers import call_api
@@ -29,7 +24,6 @@ from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 
 
-
 class TestSystemConfiguration(unittest.TestCase):
     layer = RESTLayer
     maxDiff = None
@@ -87,7 +81,6 @@ class TestSystemConfiguration(unittest.TestCase):
             'x-trace',
             'xref',
             ])
-
 
     def test_all_sections(self):
         # Getting the top level configuration object returns a list of all

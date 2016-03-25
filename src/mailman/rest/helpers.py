@@ -17,24 +17,6 @@
 
 """Web service helpers."""
 
-__all__ = [
-    'BadRequest',
-    'ChildError',
-    'CollectionMixin',
-    'GetterSetter',
-    'NotFound',
-    'bad_request',
-    'child',
-    'conflict',
-    'created',
-    'etag',
-    'forbidden',
-    'no_content',
-    'not_found',
-    'okay',
-    ]
-
-
 import json
 import falcon
 import hashlib
@@ -42,11 +24,11 @@ import hashlib
 from datetime import datetime, timedelta
 from enum import Enum
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from pprint import pformat
 
 
-
 class ExtendedEncoder(json.JSONEncoder):
     """An extended JSON encoder which knows about other data types."""
 
@@ -58,8 +40,8 @@ class ExtendedEncoder(json.JSONEncoder):
             # to floating seconds, but only if there are any seconds.
             if obj.seconds > 0 or obj.microseconds > 0:
                 seconds = obj.seconds + obj.microseconds / 1000000.0
-                return '{0}d{1}s'.format(obj.days, seconds)
-            return '{0}d'.format(obj.days)
+                return '{}d{}s'.format(obj.days, seconds)
+            return '{}d'.format(obj.days)
         elif isinstance(obj, Enum):
             # It's up to the decoding validator to associate this name with
             # the right Enum class.
@@ -67,6 +49,7 @@ class ExtendedEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
+@public
 def etag(resource):
     """Calculate the etag and return a JSON representation.
 
@@ -94,7 +77,7 @@ def etag(resource):
                       sort_keys=as_boolean(config.devmode.enabled))
 
 
-
+@public
 class CollectionMixin:
     """Mixin class for common collection-ish things."""
 
@@ -164,7 +147,7 @@ class CollectionMixin:
         return result
 
 
-
+@public
 class GetterSetter:
     """Get and set attributes on an object.
 
@@ -225,9 +208,9 @@ class GetterSetter:
         return self.decoder(value)
 
 
-
 # Falcon REST framework add-ons.
 
+@public
 def child(matcher=None):
     def decorator(func):
         if matcher is None:
@@ -238,6 +221,7 @@ def child(matcher=None):
     return decorator
 
 
+@public
 class ChildError:
     def __init__(self, status):
         self._status = status
@@ -252,55 +236,65 @@ class ChildError:
     on_delete = _oops
 
 
+@public
 class BadRequest(ChildError):
     def __init__(self):
         super().__init__(falcon.HTTP_400)
 
 
+@public
 class NotFound(ChildError):
     def __init__(self):
         super().__init__(falcon.HTTP_404)
 
 
+@public
 def okay(response, body=None):
     response.status = falcon.HTTP_200
     if body is not None:
         response.body = body
 
 
+@public
 def no_content(response):
     response.status = falcon.HTTP_204
 
 
+@public
 def not_found(response, body=b'404 Not Found'):
     response.status = falcon.HTTP_404
     if body is not None:
         response.body = body
 
 
+@public
 def accepted(response, body=None):
     response.status = falcon.HTTP_202
     if body is not None:
         response.body = body
 
 
+@public
 def bad_request(response, body='400 Bad Request'):
     response.status = falcon.HTTP_400
     if body is not None:
         response.body = body
 
 
+@public
 def created(response, location):
     response.status = falcon.HTTP_201
     response.location = location
 
 
+@public
 def conflict(response, body=b'409 Conflict'):
     response.status = falcon.HTTP_409
     if body is not None:
         response.body = body
 
 
+@public
 def forbidden(response, body=b'403 Forbidden'):
     response.status = falcon.HTTP_403
     if body is not None:

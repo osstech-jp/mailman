@@ -17,12 +17,6 @@
 
 """REST moderation tests."""
 
-__all__ = [
-    'TestPostModeration',
-    'TestSubscriptionModeration',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -41,7 +35,6 @@ from urllib.error import HTTPError
 from zope.component import getUtility
 
 
-
 class TestPostModeration(unittest.TestCase):
     layer = RESTLayer
 
@@ -150,7 +143,6 @@ Something else.
         self.assertEqual(cm.exception.code, 404)
 
 
-
 class TestSubscriptionModeration(unittest.TestCase):
     layer = RESTLayer
     maxDiff = None

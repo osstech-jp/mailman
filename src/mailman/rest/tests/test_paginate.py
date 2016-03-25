@@ -17,11 +17,6 @@
 
 """paginate helper tests."""
 
-__all__ = [
-    'TestPaginateHelper',
-    ]
-
-
 import unittest
 
 from falcon import HTTPInvalidParam, Request
@@ -31,7 +26,6 @@ from mailman.rest.helpers import CollectionMixin
 from mailman.testing.layers import RESTLayer
 
 
-
 class _FakeRequest(Request):
     def __init__(self, count=None, page=None):
         self._params = {}
@@ -41,7 +35,6 @@ class _FakeRequest(Request):
             self._params['page'] = page
 
 
-
 class TestPaginateHelper(unittest.TestCase):
     """Test the @paginate decorator."""
 
@@ -55,7 +48,7 @@ class TestPaginateHelper(unittest.TestCase):
         class Resource(CollectionMixin):
             def _get_collection(self, request):
                 return ['one', 'two', 'three', 'four', 'five']
-            def _resource_as_dict(self, res):
+            def _resource_as_dict(self, res):       # flake8: noqa
                 return {'value': res}
         return Resource()
 

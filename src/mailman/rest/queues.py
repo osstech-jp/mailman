@@ -17,13 +17,7 @@
 
 """<api>/queues."""
 
-__all__ = [
-    'AQueue',
-    'AQueueFile',
-    'AllQueues',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.app.inject import inject_text
 from mailman.interfaces.listmanager import IListManager
@@ -33,7 +27,6 @@ from mailman.rest.validator import Validator
 from zope.component import getUtility
 
 
-
 class _QueuesBase(CollectionMixin):
     """Shared base class for queues."""
 
@@ -54,7 +47,7 @@ class _QueuesBase(CollectionMixin):
         return sorted(config.switchboards)
 
 
-
+@public
 class AQueue(_QueuesBase):
     """A single queue."""
 
@@ -94,7 +87,7 @@ class AQueue(_QueuesBase):
             created(response, location)
 
 
-
+@public
 class AQueueFile:
     def __init__(self, name, filebase):
         self._name = name
@@ -115,7 +108,7 @@ class AQueueFile:
             no_content(response)
 
 
-
+@public
 class AllQueues(_QueuesBase):
     """All queues."""
 

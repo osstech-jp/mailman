@@ -17,11 +17,6 @@
 
 """Test various preference functionality."""
 
-__all__ = [
-    'TestPreferences',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -33,7 +28,6 @@ from urllib.error import HTTPError
 from zope.component import getUtility
 
 
-
 class TestPreferences(unittest.TestCase):
     """Test various preference functionality."""
 

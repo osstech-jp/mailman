@@ -17,11 +17,6 @@
 
 """API version tests."""
 
-__all__ = [
-    'TestAPIVersion',
-    ]
-
-
 import unittest
 
 from mailman.core.system import system
@@ -30,7 +25,6 @@ from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 
 
-
 class TestAPIVersion(unittest.TestCase):
     layer = RESTLayer
 

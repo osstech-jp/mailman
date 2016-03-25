@@ -17,11 +17,6 @@
 
 """Test the `queues` resource."""
 
-__all__ = [
-    'TestQueues',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -41,7 +36,6 @@ Message-ID: <ant>
 """
 
 
-
 class TestQueues(unittest.TestCase):
     layer = RESTLayer
 

@@ -17,11 +17,6 @@
 
 """REST root object tests."""
 
-__all__ = [
-    'TestRoot',
-    ]
-
-
 import os
 import json
 import unittest
@@ -35,7 +30,6 @@ from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 
 
-
 class TestRoot(unittest.TestCase):
     layer = RESTLayer
 

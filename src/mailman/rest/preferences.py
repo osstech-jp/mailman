@@ -17,13 +17,8 @@
 
 """Preferences."""
 
-__all__ = [
-    'ReadOnlyPreferences',
-    'Preferences',
-    ]
-
-
 from lazr.config import as_boolean
+from mailman import public
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.rest.helpers import (
     GetterSetter, bad_request, etag, no_content, not_found, okay)
@@ -42,7 +37,7 @@ PREFERENCES = (
     )
 
 
-
+@public
 class ReadOnlyPreferences:
     """.../<object>/preferences"""
 
@@ -69,7 +64,7 @@ class ReadOnlyPreferences:
         okay(response, etag(resource))
 
 
-
+@public
 class Preferences(ReadOnlyPreferences):
     """Preferences which can be changed."""
 
@@ -79,7 +74,7 @@ class Preferences(ReadOnlyPreferences):
             return
         kws = dict(
             acknowledge_posts=GetterSetter(as_boolean),
-            hide_address = GetterSetter(as_boolean),
+            hide_address=GetterSetter(as_boolean),
             delivery_mode=GetterSetter(enum_validator(DeliveryMode)),
             delivery_status=GetterSetter(enum_validator(DeliveryStatus)),
             preferred_language=GetterSetter(language_validator),

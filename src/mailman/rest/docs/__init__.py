@@ -17,11 +17,7 @@
 
 """Doctest layer setup."""
 
-__all__ = [
-    'layer',
-    ]
-
-
-
 from mailman.testing.layers import RESTLayer
+
 layer = RESTLayer
+__all__ = ['layer']

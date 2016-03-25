@@ -17,12 +17,8 @@
 
 """Mailing list configuration via REST API."""
 
-__all__ = [
-    'ListConfiguration',
-    ]
-
-
 from lazr.config import as_boolean, as_timedelta
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.action import Action
 from mailman.interfaces.archiver import ArchivePolicy
@@ -37,7 +33,6 @@ from mailman.rest.validator import (
     Validator, enum_validator, list_of_strings_validator)
 
 
-
 class AcceptableAliases(GetterSetter):
     """Resource for the acceptable aliases of a mailing list."""
 
@@ -63,7 +58,6 @@ class AcceptableAliases(GetterSetter):
             alias_set.add(alias)
 
 
-
 # Additional validators for converting from web request strings to internal
 # data types.  See below for details.
 
@@ -74,7 +68,6 @@ def pipeline_validator(pipeline_name):
     raise ValueError('Unknown pipeline: {}'.format(pipeline_name))
 
 
-
 # This is the list of IMailingList attributes that are exposed through the
 # REST API.  The values of the keys are the GetterSetter instance holding the
 # decoder used to convert the web request string to an internally valid value.
@@ -153,7 +146,7 @@ for attribute, gettersetter in list(VALIDATORS.items()):
         del VALIDATORS[attribute]
 
 
-
+@public
 class ListConfiguration:
     """A mailing list configuration resource."""
 

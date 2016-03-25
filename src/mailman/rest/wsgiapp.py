@@ -17,18 +17,13 @@
 
 """Basic WSGI Application object for REST server."""
 
-__all__ = [
-    'make_application',
-    'make_server',
-    ]
-
-
 import re
 import logging
 
 from falcon import API
 from falcon.responders import path_not_found
 from falcon.routing import create_http_method_map
+from mailman import public
 from mailman.config import config
 from mailman.database.transaction import transactional
 from mailman.rest.root import Root
@@ -42,7 +37,6 @@ SLASH = '/'
 EMPTYSTRING = ''
 
 
-
 class AdminWSGIServer(WSGIServer):
     """Server class that integrates error handling with our log files."""
 
@@ -51,6 +45,19 @@ class AdminWSGIServer(WSGIServer):
         # our log file rather than stderr.
         log.exception('REST server exception during request from %s',
                       client_address)
+
+
+class StderrLogger:
+    def __init__(self):
+        self._buffer = []
+
+    def write(self, message):
+        self._buffer.append(message)
+
+    def flush(self):
+        self._buffer.insert(0, 'REST request handler error:\n')
+        log.error(EMPTYSTRING.join(self._buffer))
+        self._buffer = []
 
 
 class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
@@ -63,15 +70,6 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
     def get_stderr(self):
         # Return a fake stderr object that will actually write its output to
         # the log file.
-        class StderrLogger:
-            def __init__(self):
-                self._buffer = []
-            def write(self, message):
-                self._buffer.append(message)
-            def flush(self):
-                self._buffer.insert(0, 'REST request handler error:\n')
-                log.error(EMPTYSTRING.join(self._buffer))
-                self._buffer = []
         return StderrLogger()
 
 
@@ -182,7 +180,7 @@ class RootedAPI(API):
                 return path_not_found, {}, None
 
 
-
+@public
 def make_application():
     """Create the WSGI application.
 
@@ -192,6 +190,7 @@ def make_application():
     return RootedAPI(Root())
 
 
+@public
 def make_server():
     """Create the Mailman REST server.
 

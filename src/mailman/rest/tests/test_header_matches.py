@@ -17,11 +17,6 @@
 
 """Test REST header matches."""
 
-__all__ = [
-    'TestHeaderMatches',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list

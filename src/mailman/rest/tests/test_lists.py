@@ -17,15 +17,6 @@
 
 """REST list tests."""
 
-__all__ = [
-    'TestListArchivers',
-    'TestListDigests',
-    'TestListPagination',
-    'TestLists',
-    'TestListsMissing',
-    ]
-
-
 import unittest
 
 from datetime import timedelta

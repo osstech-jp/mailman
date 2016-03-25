@@ -17,15 +17,6 @@
 
 """REST user tests."""
 
-__all__ = [
-    'TestAPI31Users',
-    'TestLP1074374',
-    'TestLP1419519',
-    'TestLogin',
-    'TestUsers',
-    ]
-
-
 import os
 import unittest
 
@@ -41,7 +32,6 @@ from zope.component import getUtility
 from mailman.model.preferences import Preferences
 
 
-
 class TestUsers(unittest.TestCase):
     layer = RESTLayer
 
@@ -305,7 +295,6 @@ class TestUsers(unittest.TestCase):
             'http://localhost:9001/3.0/users/1/preferences')
 
 
-
 class TestLogin(unittest.TestCase):
     """Test user 'login' (really just password verification)."""
 
@@ -384,7 +373,6 @@ schemes = hex_md5
         self.assertEqual(self.anne.password, '{plaintext}abc123')
 
 
-
 class TestLP1074374(unittest.TestCase):
     """LP: #1074374 - deleting a user left their address records active."""
 
@@ -472,7 +460,6 @@ class TestLP1074374(unittest.TestCase):
         self.assertEqual(member['role'], 'member')
 
 
-
 class TestLP1419519(unittest.TestCase):
     # LP: #1419519 - deleting a user with many linked addresses does not delete
     # all address records.
@@ -516,7 +503,6 @@ class TestLP1419519(unittest.TestCase):
         self.assertEqual(len(emails), 0)
 
 
-
 class TestAPI31Users(unittest.TestCase):
     """UUIDs are represented as hex in API 3.1."""
 

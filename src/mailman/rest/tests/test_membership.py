@@ -17,13 +17,6 @@
 
 """REST membership tests."""
 
-__all__ = [
-    'TestAPI31Members',
-    'TestMembership',
-    'TestNonmembership',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -45,7 +38,6 @@ from urllib.error import HTTPError
 from zope.component import getUtility
 
 
-
 class TestMembership(unittest.TestCase):
     layer = RESTLayer
 
@@ -428,7 +420,6 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(cm.exception.reason, b'Membership is banned')
 
 
-
 class CustomLayer(ConfigLayer):
     """Custom layer which starts both the REST and LMTP servers."""
 
@@ -487,7 +478,7 @@ Some text.
         # Now use the REST API to try to find the nonmember.
         response, content = call_api(
             'http://localhost:9001/3.0/members/find', {
-                #'list_id': 'test.example.com',
+                # 'list_id': 'test.example.com',
                 'role': 'nonmember',
                 })
         self.assertEqual(response['total_size'], 1)
@@ -518,7 +509,7 @@ Some text.
         # Now use the REST API to try to find the nonmember.
         response, content = call_api(
             'http://localhost:9001/3.0/members/find', {
-                #'list_id': 'test.example.com',
+                # 'list_id': 'test.example.com',
                 'role': 'nonmember',
                 })
         self.assertEqual(response['total_size'], 1)
@@ -534,7 +525,6 @@ Some text.
                          'http://localhost:9001/3.0/users/1')
 
 
-
 class TestAPI31Members(unittest.TestCase):
     layer = RESTLayer
 

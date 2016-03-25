@@ -17,11 +17,6 @@
 
 """Additional tests for helpers."""
 
-__all__ = [
-    'TestHelpers',
-    ]
-
-
 import unittest
 
 from datetime import timedelta
@@ -38,7 +33,6 @@ class Unserializable:
     pass
 
 
-
 class TestHelpers(unittest.TestCase):
     layer = ConfigLayer
 

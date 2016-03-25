@@ -17,14 +17,7 @@
 
 """REST for members."""
 
-__all__ = [
-    'AMember',
-    'AllMembers',
-    'FindMembers',
-    'MemberCollection',
-    ]
-
-
+from mailman import public
 from mailman.app.membership import add_member, delete_member
 from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
@@ -47,7 +40,6 @@ from uuid import UUID
 from zope.component import getUtility
 
 
-
 class _MemberBase(CollectionMixin):
     """Shared base class for member representations."""
 
@@ -85,7 +77,7 @@ class _MemberBase(CollectionMixin):
         return list(getUtility(ISubscriptionService))
 
 
-
+@public
 class MemberCollection(_MemberBase):
     """Abstract class for supporting submemberships.
 
@@ -103,7 +95,7 @@ class MemberCollection(_MemberBase):
         okay(response, etag(resource))
 
 
-
+@public
 class AMember(_MemberBase):
     """A member."""
 
@@ -201,7 +193,7 @@ class AMember(_MemberBase):
         no_content(response)
 
 
-
+@public
 class AllMembers(_MemberBase):
     """The members."""
 
@@ -350,7 +342,6 @@ class AllMembers(_MemberBase):
         okay(response, etag(resource))
 
 
-
 class _FoundMembers(MemberCollection):
     """The found members collection."""
 
@@ -364,6 +355,7 @@ class _FoundMembers(MemberCollection):
         return self._members
 
 
+@public
 class FindMembers(_MemberBase):
     """/members/find"""
 

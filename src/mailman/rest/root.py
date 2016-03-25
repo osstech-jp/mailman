@@ -17,14 +17,10 @@
 
 """The root of the REST API."""
 
-__all__ = [
-    'Root',
-    ]
-
-
 import falcon
 
 from base64 import b64decode
+from mailman import public
 from mailman.config import config
 from mailman.core.api import API30, API31
 from mailman.core.constants import system_preferences
@@ -48,7 +44,7 @@ from zope.component import getUtility
 SLASH = '/'
 
 
-
+@public
 class Root:
     """The RESTful root resource.
 
@@ -90,7 +86,7 @@ class Root:
             credentials = b64decode(request.auth[6:]).decode('utf-8')
             username, password = credentials.split(':', 1)
             if (username != config.webservice.admin_user or
-                password != config.webservice.admin_pass):
+                    password != config.webservice.admin_pass):
                 # Not authorized.
                 raise falcon.HTTPUnauthorized(
                     '401 Unauthorized',
@@ -98,6 +94,7 @@ class Root:
         return TopLevel()
 
 
+@public
 class Versions:
     def on_get(self, request, response):
         """/<api>/system/versions"""
@@ -110,6 +107,7 @@ class Versions:
         okay(response, etag(resource))
 
 
+@public
 class SystemConfiguration:
     def __init__(self, section=None):
         self._section = section
@@ -131,6 +129,7 @@ class SystemConfiguration:
         okay(response, etag(resource))
 
 
+@public
 class Reserved:
     """Top level API for reserved operations.
 
@@ -150,6 +149,7 @@ class Reserved:
         no_content(response)
 
 
+@public
 class TopLevel:
     """Top level collections and entries."""
 

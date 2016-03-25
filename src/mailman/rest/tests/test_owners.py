@@ -17,11 +17,6 @@
 
 """Additional tests for the top-level owners resource."""
 
-__all__ = [
-    'TestOwners',
-    ]
-
-
 import unittest
 
 from mailman.testing.helpers import call_api
@@ -29,7 +24,6 @@ from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 
 
-
 class TestOwners(unittest.TestCase):
     layer = RESTLayer
 

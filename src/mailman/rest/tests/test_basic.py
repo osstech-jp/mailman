@@ -20,11 +20,6 @@
 For example, test the integration between Mailman and Falcon.
 """
 
-__all__ = [
-    'TestBasicREST',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -33,7 +28,6 @@ from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 
 
-
 class TestBasicREST(unittest.TestCase):
     """Test basic REST integration and functionality."""
 

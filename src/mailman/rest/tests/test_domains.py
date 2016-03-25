@@ -17,12 +17,6 @@
 
 """REST domain tests."""
 
-__all__ = [
-    'TestDomainOwners',
-    'TestDomains',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -35,7 +29,6 @@ from urllib.error import HTTPError
 from zope.component import getUtility
 
 
-
 class TestDomains(unittest.TestCase):
     layer = RESTLayer
 
@@ -125,7 +118,6 @@ class TestDomains(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
 
 
-
 class TestDomainOwners(unittest.TestCase):
     layer = RESTLayer
 

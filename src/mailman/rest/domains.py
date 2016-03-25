@@ -17,12 +17,7 @@
 
 """REST for domains."""
 
-__all__ = [
-    'ADomain',
-    'AllDomains',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.rest.helpers import (
@@ -34,7 +29,6 @@ from mailman.rest.validator import Validator, list_of_strings_validator
 from zope.component import getUtility
 
 
-
 class _DomainBase(CollectionMixin):
     """Shared base class for domain representations."""
 
@@ -53,6 +47,7 @@ class _DomainBase(CollectionMixin):
         return list(getUtility(IDomainManager))
 
 
+@public
 class ADomain(_DomainBase):
     """A domain."""
 
@@ -100,6 +95,7 @@ class ADomain(_DomainBase):
             return NotFound(), []
 
 
+@public
 class AllDomains(_DomainBase):
     """The domains."""
 
