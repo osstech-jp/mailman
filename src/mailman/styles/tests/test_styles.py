@@ -17,11 +17,6 @@
 
 """Test styles."""
 
-__all__ = [
-    'TestStyle',
-    ]
-
-
 import unittest
 
 from mailman.interfaces.styles import (
@@ -32,7 +27,6 @@ from zope.interface import implementer
 from zope.interface.exceptions import DoesNotImplement
 
 
-
 @implementer(IStyle)
 class DummyStyle:
 
@@ -46,7 +40,6 @@ class DummyStyle:
         styles.append(self)
 
 
-
 class TestStyle(unittest.TestCase):
     """Test styles."""
 

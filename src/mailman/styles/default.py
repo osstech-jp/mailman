@@ -17,12 +17,7 @@
 
 """Application of list styles to new and existing lists."""
 
-__all__ = [
-    'LegacyDefaultStyle',
-    'LegacyAnnounceOnly',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.styles import IStyle
 from mailman.styles.base import (
     Announcement, BasicOperation, Bounces, Discussion, Identity, Moderation,
@@ -30,7 +25,7 @@ from mailman.styles.base import (
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IStyle)
 class LegacyDefaultStyle(
         Identity, BasicOperation, Bounces, Public, Discussion, Moderation):
@@ -49,6 +44,7 @@ class LegacyDefaultStyle(
         Moderation.apply(self, mailing_list)
 
 
+@public
 @implementer(IStyle)
 class LegacyAnnounceOnly(
         Identity, BasicOperation, Bounces, Public, Announcement, Moderation):

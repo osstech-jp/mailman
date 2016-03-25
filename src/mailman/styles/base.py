@@ -23,18 +23,8 @@ methods in your compositional derived class.
 """
 
 
-__all__ = [
-    'Announcement',
-    'BasicOperation',
-    'Bounces',
-    'Discussion',
-    'Identity',
-    'Moderation',
-    'Public',
-    ]
-
-
 from datetime import timedelta
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.archiver import ArchivePolicy
@@ -46,7 +36,7 @@ from mailman.interfaces.mailinglist import (
 from mailman.interfaces.nntp import NewsgroupModeration
 
 
-
+@public
 class Identity:
     """Set basic identify attributes."""
 
@@ -65,7 +55,7 @@ class Identity:
             mlist.preferred_language.charset != 'us-ascii')
 
 
-
+@public
 class BasicOperation:
     """Set basic operational attributes."""
 
@@ -90,7 +80,7 @@ class BasicOperation:
         mlist.digests_enabled = True
         mlist.digest_is_default = False
         mlist.mime_is_default_digest = False
-        mlist.digest_size_threshold = 30 # KB
+        mlist.digest_size_threshold = 30          # KB
         mlist.digest_send_periodic = True
         mlist.digest_header_uri = None
         mlist.digest_footer_uri = (
@@ -144,7 +134,7 @@ class BasicOperation:
         mlist.scrub_nondigest = False
 
 
-
+@public
 class Bounces:
     """Basic bounce processing."""
 
@@ -189,7 +179,7 @@ class Bounces:
         mlist.owner_pipeline = 'default-owner-pipeline'
 
 
-
+@public
 class Public:
     """Settings for public mailing lists."""
 
@@ -203,7 +193,7 @@ class Public:
         mlist.archive_policy = ArchivePolicy.public
 
 
-
+@public
 class Announcement:
     """Settings for announce-only lists."""
 
@@ -218,6 +208,7 @@ class Announcement:
         mlist.goodbye_message_uri = ''
 
 
+@public
 class Discussion:
     """Settings for standard discussion lists."""
 
@@ -232,7 +223,7 @@ class Discussion:
         mlist.goodbye_message_uri = ''
 
 
-
+@public
 class Moderation:
     """Settings for basic moderation."""
 
@@ -240,7 +231,7 @@ class Moderation:
         # For cut-n-paste convenience.
         mlist = mailing_list
         mlist.max_num_recipients = 10
-        mlist.max_message_size = 40 # KB
+        mlist.max_message_size = 40               # KB
         mlist.require_explicit_destination = True
         mlist.bounce_matching_headers = """
 # Lines that *start* with a '#' are comments.

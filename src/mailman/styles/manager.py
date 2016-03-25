@@ -17,12 +17,7 @@
 
 """Style manager."""
 
-__all__ = [
-    'StyleManager',
-    'handle_ConfigurationUpdatedEvent',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from mailman.interfaces.styles import (
     DuplicateStyleError, IStyle, IStyleManager)
@@ -32,7 +27,7 @@ from zope.interface import implementer
 from zope.interface.verify import verifyObject
 
 
-
+@public
 @implementer(IStyleManager)
 class StyleManager:
     """The built-in style manager."""
@@ -53,7 +48,7 @@ class StyleManager:
                 style = style_class()
                 verifyObject(IStyle, style)
                 assert style.name not in self._styles, (
-                    'Duplicate style "{0}" found in {1}'.format(
+                    'Duplicate style "{}" found in {}'.format(
                         style.name, style_class))
                 self._styles[style.name] = style
 
@@ -80,7 +75,7 @@ class StyleManager:
         del self._styles[style.name]
 
 
-
+@public
 def handle_ConfigurationUpdatedEvent(event):
     if isinstance(event, ConfigurationUpdatedEvent):
         getUtility(IStyleManager).populate()
