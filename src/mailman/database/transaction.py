@@ -17,19 +17,12 @@
 
 """Transactional support."""
 
-__all__ = [
-    'dbconnection',
-    'flush',
-    'transaction',
-    'transactional',
-    ]
-
-
 from contextlib import contextmanager
+from mailman import public
 from mailman.config import config
 
 
-
+@public
 @contextmanager
 def transaction():
     """Context manager for ensuring the transaction is complete."""
@@ -42,7 +35,7 @@ def transaction():
         config.db.commit()
 
 
-
+@public
 def transactional(function):
     """Decorator for transactional support.
 
@@ -63,7 +56,7 @@ def transactional(function):
     return wrapper
 
 
-
+@public
 @contextmanager
 def flush():
     """Context manager for flushing SQLAlchemy.
@@ -79,7 +72,7 @@ def flush():
     config.db.store.flush()
 
 
-
+@public
 def dbconnection(function):
     """Decorator for getting at the database connection.
 

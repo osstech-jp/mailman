@@ -6,15 +6,16 @@ Create Date: 2015-12-19 12:05:42.202998
 
 """
 
-# revision identifiers, used by Alembic.
-revision = '70af5a4e5790'
-down_revision = '47294d3a604'
-
 import os
 import sqlalchemy as sa
 
 from alembic import op
 from mailman.config import config
+
+
+# Revision identifiers, used by Alembic.
+revision = '70af5a4e5790'
+down_revision = '47294d3a604'
 
 
 def upgrade():

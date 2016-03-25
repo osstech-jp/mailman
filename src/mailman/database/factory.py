@@ -17,12 +17,6 @@
 
 """Database factory."""
 
-__all__ = [
-    'DatabaseFactory',
-    'DatabaseTestingFactory',
-    ]
-
-
 import os
 import types
 import alembic.command
@@ -30,6 +24,7 @@ import alembic.command
 from alembic.migration import MigrationContext
 from alembic.script import ScriptDirectory
 from flufl.lock import Lock
+from mailman import public
 from mailman.config import config
 from mailman.database.alembic import alembic_cfg
 from mailman.database.model import Model
@@ -44,7 +39,7 @@ from zope.interface.verify import verifyObject
 LAST_STORM_SCHEMA_VERSION = '20130406000000'
 
 
-
+@public
 @implementer(IDatabaseFactory)
 class DatabaseFactory:
     """Create a new database."""
@@ -62,7 +57,7 @@ class DatabaseFactory:
             return database
 
 
-
+@public
 class SchemaManager:
     "Manage schema migrations."""
 
@@ -89,7 +84,7 @@ class SchemaManager:
         current_rev = context.get_current_revision()
         head_rev = self._script.get_current_head()
         if current_rev == head_rev:
-             # We're already at the latest revision so there's nothing to do.
+            # We're already at the latest revision so there's nothing to do.
             return head_rev
         if current_rev is None:
             # No Alembic information is available.
@@ -112,7 +107,6 @@ class SchemaManager:
         return head_rev
 
 
-
 def _reset(self):
     """See `IDatabase`."""
     # Avoid a circular import at module level.
@@ -124,6 +118,7 @@ def _reset(self):
     self.store.commit()
 
 
+@public
 @implementer(IDatabaseFactory)
 class DatabaseTestingFactory:
     """Create a new database for testing."""

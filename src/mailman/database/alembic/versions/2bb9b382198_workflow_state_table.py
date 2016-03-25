@@ -6,16 +6,19 @@ Create Date: 2015-03-25 18:09:18.338790
 
 """
 
-# revision identifiers, used by Alembic.
+import sqlalchemy as sa
+
+from alembic import op
+
+
+# Revision identifiers, used by Alembic.
 revision = '2bb9b382198'
 down_revision = '16c2b25c7b'
 
-from alembic import op
-import sqlalchemy as sa
-
 
 def upgrade():
-    op.create_table('workflowstate',
+    op.create_table(
+        'workflowstate',
         sa.Column('name', sa.Unicode(), nullable=False),
         sa.Column('token', sa.Unicode(), nullable=False),
         sa.Column('step', sa.Unicode(), nullable=True),

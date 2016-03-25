@@ -17,19 +17,15 @@
 
 """Alembic migration environment."""
 
-__all__ = [
-    'run_migrations_offline',
-    'run_migrations_online',
-    ]
-
-
 from alembic import context
 from contextlib import closing
+from mailman import public
 from mailman.core.initialize import initialize_1
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.utilities.string import expand
 from sqlalchemy import create_engine
+
 
 try:
     url = expand(config.database.url, config.paths)
@@ -38,7 +34,8 @@ except AttributeError:
     initialize_1()
     url = expand(config.database.url, config.paths)
 
-
+
+@public
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
 
@@ -54,6 +51,7 @@ def run_migrations_offline():
         context.run_migrations()
 
 
+@public
 def run_migrations_online():
     """Run migrations in 'online' mode.
 

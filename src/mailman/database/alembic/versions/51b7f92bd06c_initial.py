@@ -29,13 +29,8 @@ Revises: None
 Create Date: 2014-10-10 09:53:35.624472
 """
 
-__all__ = [
-    'downgrade',
-    'upgrade',
-    ]
-
-
 import sqlalchemy as sa
+
 from alembic import op
 from mailman.database.helpers import is_sqlite, exists_in_db
 

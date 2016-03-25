@@ -9,14 +9,15 @@ Create Date: 2015-12-02 11:46:47.295174
 
 """
 
-# revision identifiers, used by Alembic.
-revision = '47294d3a604'
-down_revision = '3e09bb4a5dc'
-
 import json
 import sqlalchemy as sa
 
 from alembic import op
+
+
+# revision identifiers, used by Alembic.
+revision = '47294d3a604'
+down_revision = '3e09bb4a5dc'
 
 
 TYPE_CLUES = {

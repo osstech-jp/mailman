@@ -17,20 +17,15 @@
 
 """Database type conversions."""
 
-__all__ = [
-    'Enum',
-    'UUID',
-    ]
-
-
 import uuid
 
+from mailman import public
 from sqlalchemy import Integer
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.types import TypeDecorator, CHAR
 
 
-
+@public
 class Enum(TypeDecorator):
     """Handle Python 3.4 style enums.
 
@@ -54,7 +49,7 @@ class Enum(TypeDecorator):
         return self.enum(value)
 
 
-
+@public
 class UUID(TypeDecorator):
     """Platform-independent GUID type.
 

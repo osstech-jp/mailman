@@ -17,11 +17,6 @@
 
 """Test database schema migrations"""
 
-__all__ = [
-    'TestSchemaManager',
-    ]
-
-
 import unittest
 import alembic.command
 
@@ -37,9 +32,7 @@ from sqlalchemy.schema import Index
 from unittest.mock import patch
 
 
-
 class TestSchemaManager(unittest.TestCase):
-
     layer = ConfigLayer
 
     def setUp(self):

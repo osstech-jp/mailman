@@ -23,13 +23,15 @@ Create Date: 2015-03-20 16:01:25.007242
 
 """
 
+import sqlalchemy as sa
+
+from alembic import op
+from mailman.database.helpers import is_sqlite, exists_in_db
+
+
 # Revision identifiers, used by Alembic.
 revision = '46e92facee7'
 down_revision = '33e1f5f6fa8'
-
-from alembic import op
-import sqlalchemy as sa
-from mailman.database.helpers import is_sqlite, exists_in_db
 
 
 def upgrade():

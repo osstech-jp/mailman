@@ -17,13 +17,7 @@
 
 """Base class for all database classes."""
 
-__all__ = [
-    'Model',
-    ]
-
-
-import contextlib
-
+from contextlib import closing
 from mailman.config import config
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -37,7 +31,7 @@ class ModelMeta:
     """
     @staticmethod
     def _reset(db):
-        with contextlib.closing(config.db.engine.connect()) as connection:
+        with closing(config.db.engine.connect()) as connection:
             transaction = connection.begin()
             try:
                 # Delete all the tables in reverse foreign key dependency
@@ -52,3 +46,4 @@ class ModelMeta:
 
 
 Model = declarative_base(cls=ModelMeta)
+__all__ = ['Model']

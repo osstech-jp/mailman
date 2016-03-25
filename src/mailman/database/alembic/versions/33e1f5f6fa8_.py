@@ -25,18 +25,13 @@ Create Date: 2015-01-20 17:32:30.144083
 
 """
 
-__all__ = [
-    'downgrade',
-    'upgrade',
-    ]
-
+import sqlalchemy as sa
 
 from alembic import op
-import sqlalchemy as sa
 from mailman.database.helpers import is_sqlite
 
 
-# revision identifiers, used by Alembic.
+# Revision identifiers, used by Alembic.
 revision = '33e1f5f6fa8'
 down_revision = '51b7f92bd06c'
 
@@ -66,8 +61,9 @@ def downgrade():
         if op.get_bind().dialect.name == 'postgresql':
             # PostgreSQL needs the USING clause that Alembic does not support
             # yet.
-            op.execute(('ALTER TABLE "{table}" ALTER COLUMN "{column}" '
-                        'TYPE BYTEA USING decode("{column}", \'UTF8\')').format(
-                       table=table, column=column))
+            op.execute(
+                ('ALTER TABLE "{table}" ALTER COLUMN "{column}" '
+                 'TYPE BYTEA USING decode("{column}", \'UTF8\')').format(
+                     table=table, column=column))
         else:
             op.alter_column(table, column, type_=sa.LargeBinary)

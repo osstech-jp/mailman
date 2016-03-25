@@ -6,14 +6,15 @@ Create Date: 2015-09-11 10:11:38.310315
 
 """
 
-# revision identifiers, used by Alembic.
-revision = '42756496720'
-down_revision = '2bb9b382198'
-
 import sqlalchemy as sa
 
 from alembic import op
 from mailman.database.helpers import is_sqlite, exists_in_db
+
+
+# Revision identifiers, used by Alembic.
+revision = '42756496720'
+down_revision = '2bb9b382198'
 
 
 def upgrade():

@@ -17,13 +17,9 @@
 
 """Common database support."""
 
-__all__ = [
-    'SABaseDatabase',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.database import IDatabase
 from mailman.utilities.string import expand
@@ -35,7 +31,7 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.database')
 
 
-
+@public
 @implementer(IDatabase)
 class SABaseDatabase:
     """The database base class for use with SQLAlchemy.

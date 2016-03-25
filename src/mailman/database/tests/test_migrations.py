@@ -17,11 +17,6 @@
 
 """Test database schema migrations with Alembic"""
 
-__all__ = [
-    'TestMigrations',
-    ]
-
-
 import os
 import unittest
 import alembic.command
@@ -102,7 +97,8 @@ class TestMigrations(unittest.TestCase):
         alembic.command.upgrade(alembic_cfg, '42756496720')
         results = config.db.store.execute(
             header_match_table.select()).fetchall()
-        self.assertEqual(results,
+        self.assertEqual(
+            results,
             [(1, hm[0], hm[1]) for hm in test_header_matches])
 
     def test_47294d3a604_pendable_keyvalues(self):
@@ -127,7 +123,7 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('value', sa.Unicode),
             sa.sql.column('pended_id', sa.Integer),
             )
-        def get_from_db():
+        def get_from_db():                          # flake8: noqa
             results = {}
             for i in range(1, 6):
                 query = sa.sql.select(

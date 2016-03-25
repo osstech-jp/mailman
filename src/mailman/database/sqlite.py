@@ -17,18 +17,14 @@
 
 """SQLite database support."""
 
-__all__ = [
-    'SQLiteDatabase',
-    ]
-
-
 import os
 
+from mailman import public
 from mailman.database.base import SABaseDatabase
 from urllib.parse import urlparse
 
 
-
+@public
 class SQLiteDatabase(SABaseDatabase):
     """Database class for SQLite."""
 
@@ -39,7 +35,10 @@ class SQLiteDatabase(SABaseDatabase):
         # Ensure that the SQLite database file has the proper permissions,
         # since SQLite doesn't play nice with umask.
         path = os.path.normpath(parts.path)
-        fd = os.open(path, os.O_WRONLY |  os.O_NONBLOCK | os.O_CREAT, 0o666)
+        fd = os.open(
+            path,
+            os.O_WRONLY |  os.O_NONBLOCK | os.O_CREAT,   # flake8: noqa
+            0o666)
         # Ignore errors
         if fd > 0:
             os.close(fd)

@@ -17,20 +17,17 @@
 
 """Common database helpers."""
 
-__all__ = [
-    'exists_in_db',
-    'is_sqlite',
-    ]
-
-
 import sqlalchemy as sa
 
+from mailman import public
 
-
+
+@public
 def is_sqlite(bind):
     return bind.dialect.name == 'sqlite'
 
 
+@public
 def exists_in_db(bind, tablename, columnname=None):
     md = sa.MetaData()
     md.reflect(bind=bind)

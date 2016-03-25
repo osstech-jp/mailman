@@ -17,17 +17,13 @@
 
 """PostgreSQL database support."""
 
-__all__ = [
-    'PostgreSQLDatabase',
-    ]
-
-
+from mailman import public
 from mailman.database.base import SABaseDatabase
 from mailman.database.model import Model
 from sqlalchemy import Integer
 
 
-
+@public
 class PostgreSQLDatabase(SABaseDatabase):
     """Database class for PostgreSQL."""
 
@@ -45,8 +41,8 @@ class PostgreSQLDatabase(SABaseDatabase):
         for table in tables:
             for column in table.primary_key:
                 if (column.autoincrement
-                        and isinstance(column.type, Integer)
-                        and not column.foreign_keys):
+                        and isinstance(column.type, Integer)   # flake8: noqa
+                        and not column.foreign_keys):          # flake8: noqa
                     store.execute("""\
                         SELECT setval('"{0}_{1}_seq"', coalesce(max("{1}"), 1),
                                       max("{1}") IS NOT null)
