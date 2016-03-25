@@ -17,15 +17,11 @@
 
 """NNTP and newsgroup interfaces."""
 
-__all__ = [
-    'NewsgroupModeration',
-    ]
-
-
 from enum import Enum
+from mailman import public
 
 
-
+@public
 class NewsgroupModeration(Enum):
     # The newsgroup is not moderated.
     none = 0

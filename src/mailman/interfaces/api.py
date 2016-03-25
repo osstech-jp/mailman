@@ -17,14 +17,11 @@
 
 """REST web service API context."""
 
-__all__ = [
-    'IAPI',
-    ]
-
-
+from mailman import public
 from zope.interface import Attribute, Interface
 
 
+@public
 class IAPI(Interface):
     """The REST web service context."""
 

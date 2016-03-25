@@ -17,23 +17,17 @@
 
 """Interfaces for list styles."""
 
-__all__ = [
-    'DuplicateStyleError',
-    'IStyle',
-    'IStyleManager',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class DuplicateStyleError(MailmanError):
     """A style with the same name is already registered."""
 
 
-
+@public
 class IStyle(Interface):
     """Application of a style to an existing mailing list."""
 
@@ -47,7 +41,8 @@ class IStyle(Interface):
         :param mailing_list: the mailing list to apply the style to.
         """
 
-
+
+@public
 class IStyleManager(Interface):
     """A manager of styles."""
 

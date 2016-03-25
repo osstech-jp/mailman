@@ -22,16 +22,11 @@ etc. than the IUserManager.  The latter does no validation, syntax checking,
 or confirmation, while this interface does.
 """
 
-__all__ = [
-    'ConfirmationNeededEvent',
-    'IRegistrar',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface
 
 
-
+@public
 class ConfirmationNeededEvent:
     """Triggered when an address needs confirmation.
 
@@ -45,7 +40,7 @@ class ConfirmationNeededEvent:
         self.email = email
 
 
-
+@public
 class IRegistrar(Interface):
     """Interface for subscribing addresses and users.
 

@@ -17,15 +17,11 @@
 
 """Interface for switchboards."""
 
-__all__ = [
-    'ISwitchboard',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class ISwitchboard(Interface):
     """The switchboard."""
 

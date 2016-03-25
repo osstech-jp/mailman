@@ -17,16 +17,11 @@
 
 """The message storage service."""
 
-__all__ = [
-    'IMessage',
-    'IMessageStore',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class IMessageStore(Interface):
     """The interface of the global message storage service.
 
@@ -57,7 +52,7 @@ class IMessageStore(Interface):
     the globally unique URI would be:
 
     http://archive.example.com/RXTJ357KFOTJP3NFJA6KMO65X7VQOHJI
-"""
+    """
 
     def add(message):
         """Add the message to the store.
@@ -100,7 +95,7 @@ class IMessageStore(Interface):
         """An iterator over all messages in this message store.""")
 
 
-
+@public
 class IMessage(Interface):
     """The representation of an email message."""
 

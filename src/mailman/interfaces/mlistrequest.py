@@ -17,15 +17,11 @@
 
 """Interface for a web request accessing a mailing list."""
 
-__all__ = [
-    'IMailingListRequest',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class IMailingListRequest(Interface):
     """The web request accessing a mailing list."""
 

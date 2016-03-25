@@ -17,15 +17,11 @@
 
 """Interface for preferences."""
 
-__all__ = [
-    'IPreferences',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class IPreferences(Interface):
     """Delivery related information."""
 

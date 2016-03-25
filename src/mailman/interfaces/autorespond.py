@@ -17,24 +17,17 @@
 
 """Autoresponder."""
 
-__all__ = [
-    'ALWAYS_REPLY',
-    'IAutoResponseRecord',
-    'IAutoResponseSet',
-    'Response',
-    'ResponseAction',
-    ]
-
-
 from datetime import timedelta
 from enum import Enum
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
 ALWAYS_REPLY = timedelta()
+__all__ = ['ALWAYS_REPLY']
 
 
-
+@public
 class Response(Enum):
     # Your message was held for approval.
     hold = 1
@@ -46,7 +39,7 @@ class Response(Enum):
     postings = 4
 
 
-
+@public
 class ResponseAction(Enum):
     # No automatic response.
     none = 0
@@ -56,7 +49,7 @@ class ResponseAction(Enum):
     respond_and_continue = 2
 
 
-
+@public
 class IAutoResponseRecord(Interface):
     """An auto-response record.
 
@@ -75,7 +68,7 @@ class IAutoResponseRecord(Interface):
     response_type = Attribute("""The type of response sent.""")
 
 
-
+@public
 class IAutoResponseSet(Interface):
     """Matching and setting auto-responses.
 

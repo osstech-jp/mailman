@@ -17,19 +17,12 @@
 
 """Interface to bounce detection components."""
 
-__all__ = [
-    'BounceContext',
-    'IBounceEvent',
-    'IBounceProcessor',
-    'UnrecognizedBounceDisposition',
-    ]
-
-
 from enum import Enum
+from mailman import public
 from zope.interface import Attribute, Interface
 
 
-
+@public
 class BounceContext(Enum):
     """The context in which the bounce was detected."""
 
@@ -42,7 +35,7 @@ class BounceContext(Enum):
     probe = 2
 
 
-
+@public
 class UnrecognizedBounceDisposition(Enum):
     # Just throw the message away.
     discard = 0
@@ -53,7 +46,7 @@ class UnrecognizedBounceDisposition(Enum):
     site_owner = 2
 
 
-
+@public
 class IBounceEvent(Interface):
     """Registration record for a single bounce event."""
 
@@ -76,7 +69,7 @@ class IBounceEvent(Interface):
         """Has this bounce event been processed?""")
 
 
-
+@public
 class IBounceProcessor(Interface):
     """Manager/processor of bounce events."""
 

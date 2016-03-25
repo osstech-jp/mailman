@@ -17,18 +17,12 @@
 
 """Configuration system interface."""
 
-__all__ = [
-    'ConfigurationUpdatedEvent',
-    'IConfiguration',
-    'MissingConfigurationFileError',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from zope.interface import Interface
 
 
-
+@public
 class MissingConfigurationFileError(MailmanError):
     """A named configuration file was not found."""
 
@@ -36,13 +30,14 @@ class MissingConfigurationFileError(MailmanError):
         self.path = path
 
 
-
+@public
 class IConfiguration(Interface):
     """Marker interface; used for adaptation in the REST API."""
 
 
-
+@public
 class ConfigurationUpdatedEvent:
     """The system-wide global configuration was updated."""
+
     def __init__(self, config):
         self.config = config

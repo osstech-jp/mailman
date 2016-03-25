@@ -17,22 +17,17 @@
 
 """Interfaces for database interaction."""
 
-__all__ = [
-    'DatabaseError',
-    'IDatabase',
-    'IDatabaseFactory',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from zope.interface import Attribute, Interface
 
 
+@public
 class DatabaseError(MailmanError):
     """A problem with the database occurred."""
 
 
-
+@public
 class IDatabase(Interface):
     """Database layer interface."""
 
@@ -58,7 +53,7 @@ class IDatabase(Interface):
         """The underlying database object on which you can do queries.""")
 
 
-
+@public
 class IDatabaseFactory(Interface):
     "Interface for creating new databases."""
 

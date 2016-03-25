@@ -17,15 +17,11 @@
 
 """Template downloader with cache."""
 
-__all__ = [
-    'ITemplateLoader',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface
 
 
-
+@public
 class ITemplateLoader(Interface):
     """The template downloader utility."""
 

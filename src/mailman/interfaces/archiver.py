@@ -17,32 +17,26 @@
 
 """Interface for archiving schemes."""
 
-__all__ = [
-    'ArchivePolicy',
-    'ClobberDate',
-    'IArchiver',
-    ]
-
-
 from enum import Enum
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class ArchivePolicy(Enum):
     never = 0
     private = 1
     public = 2
 
 
-
+@public
 class ClobberDate(Enum):
     never = 1
     maybe = 2
     always = 3
 
 
-
+@public
 class IArchiver(Interface):
     """An interface to the archiver."""
 

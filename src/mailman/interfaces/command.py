@@ -17,33 +17,26 @@
 
 """Interfaces defining email commands."""
 
-__all__ = [
-    'ContinueProcessing',
-    'ICLISubCommand',
-    'IEmailCommand',
-    'IEmailResults',
-    ]
-
-
 from enum import Enum
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class ContinueProcessing(Enum):
     """Should `IEmailCommand.process()` continue or not."""
     no = 0
     yes = 1
 
 
-
+@public
 class IEmailResults(Interface):
     """The email command results object."""
 
     output = Attribute('An output file object for printing results to.')
 
 
-
+@public
 class IEmailCommand(Interface):
     """An email command."""
 
@@ -66,7 +59,7 @@ class IEmailCommand(Interface):
         """
 
 
-
+@public
 class ICLISubCommand(Interface):
     """A command line interface subcommand."""
 

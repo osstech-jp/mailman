@@ -17,18 +17,12 @@
 
 """MIME content filtering."""
 
-__all__ = [
-    'FilterAction',
-    'FilterType',
-    'IContentFilter',
-    ]
-
-
 from enum import Enum
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class FilterAction(Enum):
     # Discard a message that matches the content type filter.
     discard = 0
@@ -40,6 +34,7 @@ class FilterAction(Enum):
     preserve = 3
 
 
+@public
 class FilterType(Enum):
     # Filter MIME type.
     filter_mime = 0
@@ -51,7 +46,7 @@ class FilterType(Enum):
     pass_extension = 3
 
 
-
+@public
 class IContentFilter(Interface):
     """A single content filter settings for a mailing list."""
 

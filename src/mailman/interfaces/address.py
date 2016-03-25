@@ -17,24 +17,12 @@
 
 """Interface for email address related information."""
 
-__all__ = [
-    'AddressAlreadyLinkedError',
-    'AddressError',
-    'AddressNotLinkedError',
-    'AddressVerificationEvent',
-    'EmailError',
-    'ExistingAddressError',
-    'IAddress',
-    'IEmailValidator',
-    'InvalidEmailAddressError',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class EmailError(MailmanError):
     """A generic text email address-related error occurred."""
 
@@ -46,6 +34,7 @@ class EmailError(MailmanError):
         return self.email
 
 
+@public
 class AddressError(MailmanError):
     """A generic IAddress-related error occurred."""
 
@@ -57,23 +46,27 @@ class AddressError(MailmanError):
         return str(self.address)
 
 
+@public
 class ExistingAddressError(AddressError):
     """The given email address already exists."""
 
 
+@public
 class AddressAlreadyLinkedError(AddressError):
     """The address is already linked to a user."""
 
 
+@public
 class AddressNotLinkedError(AddressError):
     """The address is not linked to the user."""
 
 
+@public
 class InvalidEmailAddressError(EmailError):
     """Email address is invalid."""
 
 
-
+@public
 class AddressVerificationEvent:
     """Triggered when an address gets verified or unverified."""
 
@@ -81,14 +74,14 @@ class AddressVerificationEvent:
         self.address = address
 
     def __str__(self):
-        return '<{0} {1} {2}>'.format(
+        return '<{} {} {}>'.format(
             self.__class__.__name__,
             self.address.email,
             ('unverified' if self.address.verified_on is None
              else self.address.verified_on))
 
 
-
+@public
 class IAddress(Interface):
     """Email address related information."""
 
@@ -128,7 +121,7 @@ class IAddress(Interface):
         """This address's preferences.""")
 
 
-
+@public
 class IEmailValidator(Interface):
     """An email validator."""
 

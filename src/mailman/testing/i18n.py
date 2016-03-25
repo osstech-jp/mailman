@@ -26,7 +26,6 @@ __all__ = [
 from contextlib import closing
 from flufl.i18n import registry
 from gettext import GNUTranslations, NullTranslations
-from mailman.core.i18n import initialize as core_initialize
 from pkg_resources import resource_stream
 
 
@@ -48,6 +47,8 @@ class TestingStrategy:
 
 def initialize():
     """Install a global underscore function for testing purposes."""
+    # Avoid circular imports.
+    from mailman.core.i18n import initialize as core_initialize
     strategy = TestingStrategy('mailman-testing')
     application = registry.register(strategy)
     core_initialize(application)

@@ -17,16 +17,12 @@
 
 """One last digest."""
 
-__all__ = [
-    'IOneLastDigest'
-    ]
-
-
 from enum import Enum
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class DigestFrequency(Enum):
     yearly = 0
     monthly = 1
@@ -35,7 +31,7 @@ class DigestFrequency(Enum):
     daily = 4
 
 
-
+@public
 class IOneLastDigest(Interface):
     """Users who should receive one last digest."""
 

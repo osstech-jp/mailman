@@ -17,15 +17,11 @@
 
 """Interface describing the user management service."""
 
-__all__ = [
-    'IUserManager',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class IUserManager(Interface):
     """The global user management service."""
 

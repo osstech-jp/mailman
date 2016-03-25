@@ -17,16 +17,11 @@
 
 """Interface for runners."""
 
-__all__ = [
-    'IRunner',
-    'RunnerCrashEvent',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class RunnerCrashEvent:
     """Triggered when a runner encounters an exception in _dispose()."""
 
@@ -38,7 +33,7 @@ class RunnerCrashEvent:
         self.error = error
 
 
-
+@public
 class IRunner(Interface):
     """The runner."""
 

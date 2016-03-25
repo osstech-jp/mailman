@@ -29,6 +29,19 @@ except ImportError:                                 # pragma: no cover
     __path__ = pkgutil.extend_path(__path__, __name__)
 
 
+# I hate myself: http://bugs.python.org/issue26632
+def public(thing):
+    if isinstance(thing, str):
+        mdict = sys._getframe(1).f_globals
+        name = thing
+    else:
+        mdict = sys.modules[thing.__module__].__dict__
+        name = thing.__name__
+    dunder_all = mdict.setdefault('__all__', [])
+    dunder_all.append(name)
+    return thing
+
+
 # We have to initialize the i18n subsystem before anything else happens,
 # however, we'll initialize it differently for tests.  We have to do it this
 # early so that module contents is set up before anything that needs it is
@@ -41,16 +54,3 @@ if 'build_sphinx' not in sys.argv:                  # pragma: no cover
     else:
         from mailman.core.i18n import initialize
     initialize()
-
-
-# I hate myself: http://bugs.python.org/issue26632
-def public(thing):
-    if isinstance(thing, str):
-        mdict = sys._getframe(1).f_globals
-        name = thing
-    else:
-        mdict = sys.modules[thing.__module__].__dict__
-        name = thing.__name__
-    dunder_all = mdict.setdefault('__all__', [])
-    dunder_all.append(name)
-    return thing

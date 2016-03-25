@@ -17,16 +17,11 @@
 
 """Interfaces describing the state of a workflow."""
 
-__all__ = [
-    'IWorkflowState',
-    'IWorkflowStateManager',
-    ]
-
-
+from mailman import public
 from zope.interface import Attribute, Interface
 
 
-
+@public
 class IWorkflowState(Interface):
     """The state of a workflow."""
 
@@ -39,7 +34,7 @@ class IWorkflowState(Interface):
     data = Attribute('Additional data (may be JSON-encoded).')
 
 
-
+@public
 class IWorkflowStateManager(Interface):
     """The workflow states manager."""
 

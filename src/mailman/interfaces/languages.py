@@ -17,16 +17,11 @@
 
 """Interfaces for managing languages."""
 
-__all__ = [
-    'ILanguage',
-    'ILanguageManager',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class ILanguage(Interface):
     """The representation of a language."""
 
@@ -37,7 +32,7 @@ class ILanguage(Interface):
     description = Attribute("The language's description.")
 
 
-
+@public
 class ILanguageManager(Interface):
     """A language manager.
 

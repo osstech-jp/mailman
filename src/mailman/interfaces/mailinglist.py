@@ -17,25 +17,13 @@
 
 """Interface for a mailing list."""
 
-__all__ = [
-    'IAcceptableAlias',
-    'IAcceptableAliasSet',
-    'IHeaderMatch',
-    'IHeaderMatchList',
-    'IListArchiver',
-    'IListArchiverSet',
-    'IMailingList',
-    'Personalization',
-    'ReplyToMunging',
-    'SubscriptionPolicy',
-    ]
-
-
 from enum import Enum
+from mailman import public
 from mailman.interfaces.member import MemberRole
 from zope.interface import Interface, Attribute
 
 
+@public
 class Personalization(Enum):
     none = 0
     # Everyone gets a unique copy of the message, and there are a few more
@@ -46,6 +34,7 @@ class Personalization(Enum):
     full = 2
 
 
+@public
 class ReplyToMunging(Enum):
     # The Reply-To header is passed through untouched
     no_munging = 0
@@ -55,6 +44,7 @@ class ReplyToMunging(Enum):
     explicit_header = 2
 
 
+@public
 class SubscriptionPolicy(Enum):
     # Neither confirmation, nor moderator approval is required.
     open = 0
@@ -67,6 +57,7 @@ class SubscriptionPolicy(Enum):
     confirm_then_moderate = 3
 
 
+@public
 class IMailingList(Interface):
     """A mailing list."""
 
@@ -778,6 +769,7 @@ class IMailingList(Interface):
         )
 
 
+@public
 class IAcceptableAlias(Interface):
     """An acceptable alias for implicit destinations."""
 
@@ -786,6 +778,7 @@ class IAcceptableAlias(Interface):
     address = Attribute('The address or pattern to match against recipients.')
 
 
+@public
 class IAcceptableAliasSet(Interface):
     """The set of acceptable aliases for a mailing list."""
 
@@ -816,6 +809,7 @@ class IAcceptableAliasSet(Interface):
         """An iterator over all the acceptable aliases.""")
 
 
+@public
 class IListArchiver(Interface):
     """An archiver for a mailing list.
 
@@ -833,6 +827,7 @@ class IListArchiver(Interface):
         'The associated system-wide IArchiver instance.')
 
 
+@public
 class IListArchiverSet(Interface):
     """The set of archivers (enabled or disabled) for a mailing list."""
 
@@ -849,6 +844,7 @@ class IListArchiverSet(Interface):
         """
 
 
+@public
 class IHeaderMatch(Interface):
     """A mailing list-specific message header matching rule."""
 
@@ -875,6 +871,7 @@ class IHeaderMatch(Interface):
         """)
 
 
+@public
 class IHeaderMatchList(Interface):
     """The list of header matching rules for a mailing list."""
 

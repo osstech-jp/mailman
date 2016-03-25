@@ -17,26 +17,12 @@
 
 """Interfaces describing the basics of chains and links."""
 
-__all__ = [
-    'AcceptEvent',
-    'AcceptOwnerEvent',
-    'ChainEvent',
-    'DiscardEvent',
-    'HoldEvent',
-    'IChain',
-    'IChainIterator',
-    'IChainLink',
-    'IMutableChain',
-    'LinkAction',
-    'RejectEvent',
-    ]
-
-
 from enum import Enum
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class ChainEvent:
     """Base class for chain notification events."""
 
@@ -47,27 +33,32 @@ class ChainEvent:
         self.chain = chain
 
 
+@public
 class AcceptEvent(ChainEvent):
     """A notification event signaling that a message is being accepted."""
 
 
+@public
 class AcceptOwnerEvent(ChainEvent):
     """An event signaling that a message is accepted to the -owner address."""
 
 
+@public
 class DiscardEvent(ChainEvent):
     """A notification event signaling that a message is being discarded."""
 
 
+@public
 class HoldEvent(ChainEvent):
     """A notification event signaling that a message is being held."""
 
 
+@public
 class RejectEvent(ChainEvent):
     """A notification event signaling that a message is being rejected."""
 
 
-
+@public
 class LinkAction(Enum):
     # Jump to another chain.
     jump = 0
@@ -82,7 +73,7 @@ class LinkAction(Enum):
     run = 4
 
 
-
+@public
 class IChainLink(Interface):
     """A link in the chain."""
 
@@ -102,7 +93,7 @@ class IChainLink(Interface):
         """)
 
 
-
+@public
 class IChain(Interface):
     """A chain of rules."""
 
@@ -119,7 +110,7 @@ class IChain(Interface):
         """
 
 
-
+@public
 class IChainIterator(Interface):
     """An iterator over chain rules."""
 
@@ -130,7 +121,7 @@ class IChainIterator(Interface):
         """
 
 
-
+@public
 class IMutableChain(IChain):
     """Like `IChain` but can be mutated."""
 

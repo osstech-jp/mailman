@@ -17,18 +17,12 @@
 
 """Interface for mail transport agent integration."""
 
-__all__ = [
-    'IMailTransportAgentAliases',
-    'IMailTransportAgentDelivery',
-    'IMailTransportAgentLifecycle',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from zope.interface import Interface
 
 
-
+@public
 class SomeRecipientsFailed(MailmanError):
     """Delivery to some or all recipients failed"""
     def __init__(self, temporary_failures, permanent_failures):
@@ -37,7 +31,7 @@ class SomeRecipientsFailed(MailmanError):
         self.permanent_failures = permanent_failures
 
 
-
+@public
 class IMailTransportAgentAliases(Interface):
     """Interface to the MTA utility for generating all the aliases."""
 
@@ -70,7 +64,7 @@ class IMailTransportAgentAliases(Interface):
         """
 
 
-
+@public
 class IMailTransportAgentLifecycle(Interface):
     """Interface to the MTA for creating and deleting a mailing list."""
 
@@ -89,7 +83,7 @@ class IMailTransportAgentLifecycle(Interface):
         """
 
 
-
+@public
 class IMailTransportAgentDelivery(Interface):
     """Interface to the MTA delivery strategies."""
 

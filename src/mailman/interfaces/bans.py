@@ -17,16 +17,11 @@
 
 """Manager of email address bans."""
 
-__all__ = [
-    'IBan',
-    'IBanManager',
-    ]
-
-
+from mailman import public
 from zope.interface import Attribute, Interface
 
 
-
+@public
 class IBan(Interface):
     """A specific ban.
 
@@ -43,7 +38,7 @@ class IBan(Interface):
         """)
 
 
-
+@public
 class IBanManager(Interface):
     """The global manager of email address bans.
 

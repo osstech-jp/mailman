@@ -17,24 +17,15 @@
 
 """Membership interface for REST."""
 
-__all__ = [
-    'ISubscriptionService',
-    'MissingUserError',
-    'RequestRecord',
-    'SubscriptionPendingError',
-    'TokenOwner',
-    'TooManyMembersError',
-    ]
-
-
 from collections import namedtuple
 from enum import Enum
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.member import DeliveryMode, MembershipError
 from zope.interface import Interface
 
 
-
+@public
 class MissingUserError(MailmanError):
     """A an invalid user id was given."""
 
@@ -46,6 +37,7 @@ class MissingUserError(MailmanError):
         return self.user_id
 
 
+@public
 class SubscriptionPendingError(MailmanError):
     def __init__(self, mlist, email):
         super().__init__()
@@ -53,6 +45,7 @@ class SubscriptionPendingError(MailmanError):
         self.email = email
 
 
+@public
 class TooManyMembersError(MembershipError):
     def __init__(self, subscriber, list_id, role):
         super().__init__()
@@ -61,10 +54,12 @@ class TooManyMembersError(MembershipError):
         self.role = role
 
 
-
 _RequestRecord = namedtuple(
     'RequestRecord',
     'email display_name delivery_mode, language')
+
+
+@public
 def RequestRecord(email, display_name='',
                   delivery_mode=DeliveryMode.regular,
                   language=None):
@@ -74,7 +69,7 @@ def RequestRecord(email, display_name='',
     return _RequestRecord(email, display_name, delivery_mode, language)
 
 
-
+@public
 class TokenOwner(Enum):
     """Who 'owns' the token returned from the registrar?"""
     no_one = 0
@@ -82,7 +77,7 @@ class TokenOwner(Enum):
     moderator = 2
 
 
-
+@public
 class ISubscriptionService(Interface):
     """General Subscription services."""
 

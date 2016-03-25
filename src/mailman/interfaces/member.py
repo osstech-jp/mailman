@@ -17,28 +17,13 @@
 
 """Interface describing the basics of a member."""
 
-__all__ = [
-    'AlreadySubscribedError',
-    'DeliveryMode',
-    'DeliveryStatus',
-    'IMember',
-    'MemberRole',
-    'MembershipChangeEvent',
-    'MembershipError',
-    'MembershipIsBannedError',
-    'MissingPreferredAddressError',
-    'NotAMemberError',
-    'SubscriptionEvent',
-    'UnsubscriptionEvent',
-    ]
-
-
 from enum import Enum
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class DeliveryMode(Enum):
     # Regular (i.e. non-digest) delivery
     regular = 1
@@ -50,7 +35,7 @@ class DeliveryMode(Enum):
     summary_digests = 4
 
 
-
+@public
 class DeliveryStatus(Enum):
     # Delivery is enabled
     enabled = 1
@@ -64,7 +49,7 @@ class DeliveryStatus(Enum):
     unknown = 5
 
 
-
+@public
 class MemberRole(Enum):
     member = 1
     owner = 2
@@ -72,7 +57,7 @@ class MemberRole(Enum):
     nonmember = 4
 
 
-
+@public
 class MembershipChangeEvent:
     """Base class for subscription/unsubscription events."""
 
@@ -81,6 +66,7 @@ class MembershipChangeEvent:
         self.member = member
 
 
+@public
 class SubscriptionEvent(MembershipChangeEvent):
     """Event which gets triggered when a user joins a mailing list."""
 
@@ -88,6 +74,7 @@ class SubscriptionEvent(MembershipChangeEvent):
         return '{0} joined {1}'.format(self.member.address, self.mlist.list_id)
 
 
+@public
 class UnsubscriptionEvent(MembershipChangeEvent):
     """Event which gets triggered when a user leaves a mailing list.
 
@@ -100,11 +87,12 @@ class UnsubscriptionEvent(MembershipChangeEvent):
         return '{0} left {1}'.format(self.member.address, self.mlist.list_id)
 
 
-
+@public
 class MembershipError(MailmanError):
     """Base exception for all membership errors."""
 
 
+@public
 class AlreadySubscribedError(MembershipError):
     """The member is already subscribed to the mailing list with this role."""
 
@@ -119,6 +107,7 @@ class AlreadySubscribedError(MembershipError):
             self.email, self.role, self.fqdn_listname)
 
 
+@public
 class MembershipIsBannedError(MembershipError):
     """The address is not allowed to subscribe to the mailing list."""
 
@@ -132,6 +121,7 @@ class MembershipIsBannedError(MembershipError):
             self._address, self._mlist)
 
 
+@public
 class MissingPreferredAddressError(MembershipError):
     """A user without a preferred address attempted to subscribe."""
 
@@ -143,6 +133,7 @@ class MissingPreferredAddressError(MembershipError):
         return 'User must have a preferred address: {0}'.format(self._user)
 
 
+@public
 class NotAMemberError(MembershipError):
     """The address is not a member of the mailing list."""
 
@@ -156,7 +147,7 @@ class NotAMemberError(MembershipError):
             self._address, self._mlist)
 
 
-
+@public
 class IMember(Interface):
     """A member of a mailing list."""
 

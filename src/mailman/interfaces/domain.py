@@ -17,22 +17,12 @@
 
 """Interface representing domains."""
 
-__all__ = [
-    'BadDomainSpecificationError',
-    'DomainCreatedEvent',
-    'DomainCreatingEvent',
-    'DomainDeletedEvent',
-    'DomainDeletingEvent',
-    'IDomain',
-    'IDomainManager',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class BadDomainSpecificationError(MailmanError):
     """The specification of a virtual domain is invalid or duplicated."""
 
@@ -41,6 +31,7 @@ class BadDomainSpecificationError(MailmanError):
         self.domain = domain
 
 
+@public
 class DomainCreatingEvent:
     """A domain is about to be created."""
 
@@ -48,6 +39,7 @@ class DomainCreatingEvent:
         self.mail_host = mail_host
 
 
+@public
 class DomainCreatedEvent:
     """A domain was created."""
 
@@ -55,6 +47,7 @@ class DomainCreatedEvent:
         self.domain = domain
 
 
+@public
 class DomainDeletingEvent:
     """A domain is about to be deleted."""
 
@@ -62,6 +55,7 @@ class DomainDeletingEvent:
         self.domain = domain
 
 
+@public
 class DomainDeletedEvent:
     """A domain was deleted."""
 
@@ -69,7 +63,7 @@ class DomainDeletedEvent:
         self.mail_host = mail_host
 
 
-
+@public
 class IDomain(Interface):
     """Interface representing domains."""
 
@@ -107,7 +101,7 @@ class IDomain(Interface):
         """
 
 
-
+@public
 class IDomainManager(Interface):
     """The manager of domains."""
 

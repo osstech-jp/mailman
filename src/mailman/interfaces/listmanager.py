@@ -17,22 +17,12 @@
 
 """Interface for list storage, deleting, and finding."""
 
-__all__ = [
-    'IListManager',
-    'ListAlreadyExistsError',
-    'ListCreatedEvent',
-    'ListCreatingEvent',
-    'ListDeletedEvent',
-    'ListDeletingEvent',
-    'NoSuchListError',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.errors import MailmanError
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class ListAlreadyExistsError(MailmanError):
     """Attempted to create a mailing list that already exists.
 
@@ -41,6 +31,7 @@ class ListAlreadyExistsError(MailmanError):
     """
 
 
+@public
 class NoSuchListError(MailmanError):
     """Attempt to access a mailing list that does not exist."""
 
@@ -51,6 +42,7 @@ class NoSuchListError(MailmanError):
         return 'No such mailing list: {0.fqdn_listname}'.format(self)
 
 
+@public
 class ListCreatingEvent:
     """A mailing list is about to be created."""
 
@@ -58,6 +50,7 @@ class ListCreatingEvent:
         self.fqdn_listname = fqdn_listname
 
 
+@public
 class ListCreatedEvent:
     """A mailing list was created."""
 
@@ -65,6 +58,7 @@ class ListCreatedEvent:
         self.mailing_list = mlist
 
 
+@public
 class ListDeletingEvent:
     """A mailing list is about to be deleted."""
 
@@ -72,6 +66,7 @@ class ListDeletingEvent:
         self.mailing_list = mailing_list
 
 
+@public
 class ListDeletedEvent:
     """A mailing list was deleted."""
 
@@ -79,8 +74,7 @@ class ListDeletedEvent:
         self.fqdn_listname = fqdn_listname
 
 
-
-
+@public
 class IListManager(Interface):
     """The interface of the global list manager.
 

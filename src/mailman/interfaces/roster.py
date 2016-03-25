@@ -17,15 +17,11 @@
 
 """Interface for a roster of members."""
 
-__all__ = [
-    'IRoster',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class IRoster(Interface):
     """A roster is a collection of `IMembers`."""
 

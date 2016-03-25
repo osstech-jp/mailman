@@ -21,24 +21,19 @@ The request database handles events that must be approved by the list
 moderators, such as subscription requests and held messages.
 """
 
-__all__ = [
-    'IListRequests',
-    'RequestType',
-    ]
-
-
 from enum import Enum
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class RequestType(Enum):
     held_message = 1
     subscription = 2
     unsubscription = 3
 
 
-
+@public
 class IListRequests(Interface):
     """Held requests for a specific mailing list."""
 

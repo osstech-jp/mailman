@@ -17,23 +17,17 @@
 
 """Interface describing the basics of a user."""
 
-__all__ = [
-    'IUser',
-    'PasswordChangeEvent',
-    'UnverifiedAddressError',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.address import AddressError
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class UnverifiedAddressError(AddressError):
     """Unverified address cannot be used as a user's preferred address."""
 
 
-
+@public
 class PasswordChangeEvent:
     """Event which gets triggered when a user changes their password."""
 
@@ -41,11 +35,11 @@ class PasswordChangeEvent:
         self.user = user
 
     def __str__(self):
-        return '<{0} {1}>'.format(self.__class__.__name__,
-                                  self.user.display_name)
+        return '<{} {}>'.format(
+            self.__class__.__name__, self.user.display_name)
 
 
-
+@public
 class IUser(Interface):
     """A basic user."""
 

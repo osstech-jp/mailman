@@ -17,15 +17,11 @@
 
 """System information."""
 
-__all__ = [
-    'ISystem',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class ISystem(Interface):
     """Information about the Mailman system."""
 

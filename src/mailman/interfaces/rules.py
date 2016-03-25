@@ -17,15 +17,11 @@
 
 """Interface describing the basics of rules."""
 
-__all__ = [
-    'IRule',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class IRule(Interface):
     """A basic rule."""
 

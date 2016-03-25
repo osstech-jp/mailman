@@ -17,29 +17,25 @@
 
 """Message actions."""
 
-__all__ = [
-    'Action',
-    'FilterAction',
-    ]
-
-
 from enum import Enum
+from mailman import public
 
 
-
+@public
 class Action(Enum):
-    hold    = 0
-    reject  = 1
+    hold = 0
+    reject = 1
     discard = 2
-    accept  = 3
-    defer   = 4
+    accept = 3
+    defer = 4
 
 
+@public
 class FilterAction(Enum):
-    hold    = 0
-    reject  = 1
+    hold = 0
+    reject = 1
     discard = 2
-    accept  = 3
-    defer   = 4
+    accept = 3
+    defer = 4
     forward = 5
     preserve = 6

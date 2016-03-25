@@ -22,18 +22,11 @@ maps these events to a unique hash that can be used as a token for end user
 confirmation.
 """
 
-__all__ = [
-    'IPendable',
-    'IPended',
-    'IPendedKeyValue',
-    'IPendings',
-    ]
-
-
+from mailman import public
 from zope.interface import Interface, Attribute
 
 
-
+@public
 class IPendable(Interface):
     """A pendable object."""
 
@@ -58,7 +51,7 @@ class IPendable(Interface):
         """
 
 
-
+@public
 class IPended(Interface):
     """A pended event, tied to a token."""
 
@@ -67,7 +60,7 @@ class IPended(Interface):
     expiration_date = Attribute("""The expiration date of the pended event.""")
 
 
-
+@public
 class IPendedKeyValue(Interface):
     """A pended key/value pair."""
 
@@ -76,7 +69,7 @@ class IPendedKeyValue(Interface):
     value = Attribute("""The pended value.""")
 
 
-
+@public
 class IPendings(Interface):
     """Interface to pending database."""
 

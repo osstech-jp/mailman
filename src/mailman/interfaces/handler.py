@@ -17,15 +17,11 @@
 
 """Interface describing a pipeline handler."""
 
-__all__ = [
-    'IHandler',
-    ]
-
-
+from mailman import public
 from zope.interface import Attribute, Interface
 
 
-
+@public
 class IHandler(Interface):
     """A basic pipeline handler."""
 
