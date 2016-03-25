@@ -20,18 +20,16 @@
 import re
 import logging
 
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
-
-__all__ = [
-    'SuspiciousHeader',
-    ]
 
 
 log = logging.getLogger('mailman.error')
 
 
+@public
 @implementer(IRule)
 class SuspiciousHeader:
     """The historical 'suspicious header' rule."""

@@ -17,15 +17,13 @@
 
 """The no-Subject header rule."""
 
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
 
-__all__ = [
-    'NoSubject',
-    ]
 
-
+@public
 @implementer(IRule)
 class NoSubject:
     """The no-Subject rule."""

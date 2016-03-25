@@ -17,15 +17,13 @@
 
 """The maximum message size rule."""
 
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
 
-__all__ = [
-    'MaximumSize',
-    ]
 
-
+@public
 @implementer(IRule)
 class MaximumSize:
     """The implicit destination rule."""

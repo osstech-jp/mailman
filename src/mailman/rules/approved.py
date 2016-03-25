@@ -20,14 +20,11 @@
 import re
 
 from email.iterators import typed_subpart_iterator
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from zope.interface import implementer
-
-__all__ = [
-    'Approved',
-    ]
 
 
 EMPTYSTRING = ''
@@ -39,6 +36,7 @@ HEADERS = [
     ]
 
 
+@public
 @implementer(IRule)
 class Approved:
     """Look for moderator pre-approval."""

@@ -19,6 +19,7 @@
 
 import re
 
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import MemberRole
@@ -27,12 +28,8 @@ from mailman.interfaces.usermanager import IUserManager
 from zope.component import getUtility
 from zope.interface import implementer
 
-__all__ = [
-    'MemberModeration',
-    'NonmemberModeration',
-    ]
 
-
+@public
 @implementer(IRule)
 class MemberModeration:
     """The member moderation rule."""
@@ -69,6 +66,7 @@ def _record_action(msgdata, action, sender, reason):
     msgdata.setdefault('moderation_reasons', []).append(reason)
 
 
+@public
 @implementer(IRule)
 class NonmemberModeration:
     """The nonmember moderation rule."""
@@ -89,7 +87,7 @@ class NonmemberModeration:
                 # The address is neither a member nor nonmember.
                 address = user_manager.get_address(sender)
                 assert address is not None, (
-                    'Posting address is not registered: {0}'.format(sender))
+                    'Posting address is not registered: {}'.format(sender))
                 mlist.subscribe(address, MemberRole.nonmember)
         # If a member is found, the member-moderation rule takes precedence.
         for sender in msg.senders:
@@ -99,7 +97,7 @@ class NonmemberModeration:
         for sender in msg.senders:
             nonmember = mlist.nonmembers.get_member(sender)
             assert nonmember is not None, (
-                'Sender not added to the nonmembers: {0}'.format(sender))
+                'Sender not added to the nonmembers: {}'.format(sender))
             # Check the '*_these_nonmembers' properties first.  XXX These are
             # legacy attributes from MM2.1; their database type is 'pickle' and
             # they should eventually get replaced.
@@ -108,7 +106,7 @@ class NonmemberModeration:
                 checklist = getattr(mlist, legacy_attribute_name)
                 for addr in checklist:
                     if ((addr.startswith('^') and re.match(addr, sender))
-                            or addr == sender):
+                            or addr == sender):     # flake8: noqa
                         # The reason will get translated at the point of use.
                         reason = 'The sender is in the nonmember {} list'
                         _record_action(msgdata, action, sender,
