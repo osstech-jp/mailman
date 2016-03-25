@@ -17,22 +17,14 @@
 
 """Package and module utilities."""
 
-__all__ = [
-    'call_name',
-    'expand_path',
-    'find_components',
-    'find_name',
-    'scan_module',
-    ]
-
-
 import os
 import sys
 
+from mailman import public
 from pkg_resources import resource_filename, resource_listdir
 
 
-
+@public
 def find_name(dotted_name):
     """Import and return the named object in package space.
 
@@ -46,7 +38,7 @@ def find_name(dotted_name):
     return getattr(sys.modules[package_path], object_name)
 
 
-
+@public
 def call_name(dotted_name, *args, **kws):
     """Imports and calls the named object in package space.
 
@@ -63,7 +55,7 @@ def call_name(dotted_name, *args, **kws):
     return named_callable(*args, **kws)
 
 
-
+@public
 def scan_module(module, interface):
     """Return all the items in a module that conform to an interface.
 
@@ -83,7 +75,7 @@ def scan_module(module, interface):
             yield component
 
 
-
+@public
 def find_components(package, interface):
     """Find components which conform to a given interface.
 
@@ -101,7 +93,7 @@ def find_components(package, interface):
         basename, extension = os.path.splitext(filename)
         if extension != '.py':
             continue
-        module_name = '{0}.{1}'.format(package, basename)
+        module_name = '{}.{}'.format(package, basename)
         __import__(module_name, fromlist='*')
         module = sys.modules[module_name]
         if not hasattr(module, '__all__'):
@@ -109,7 +101,7 @@ def find_components(package, interface):
         yield from scan_module(module, interface)
 
 
-
+@public
 def expand_path(url):
     """Expand a python: path, returning the absolute file system path."""
     # Is the context coming from a file system or Python path?

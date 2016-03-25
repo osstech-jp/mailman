@@ -31,7 +31,7 @@ class Language:
     def __init__(self, code, charset, description):
         self.code = code
         self.charset = charset
-        self.description  = description
+        self.description = description
 
     def __str__(self):
         return '<Language [{0.code}] {0.description}>'.format(self)

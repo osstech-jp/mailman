@@ -17,17 +17,11 @@
 
 """Test the string utilities."""
 
-__all__ = [
-    'TestString',
-    ]
-
-
 import unittest
 
 from mailman.utilities import string
 
 
-
 class TestString(unittest.TestCase):
     def test_oneline_bogus_charset(self):
         self.assertEqual(string.oneline('foo', 'bogus'), 'foo')

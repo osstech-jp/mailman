@@ -17,19 +17,17 @@
 
 """Provide an interactive prompt, mimicking the Python interpreter."""
 
-__all__ = [
-    'interact',
-    ]
-
-
 import os
 import sys
 import code
 
+from mailman import public
+
+
 DEFAULT_BANNER = ''
 
 
-
+@public
 def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     """Start an interactive interpreter prompt.
 
@@ -54,7 +52,7 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     interp = code.InteractiveConsole(namespace)
     # Try to import the readline module, but don't worry if it's unavailable.
     try:
-        import readline
+        import readline                             # flake8: noqa
     except ImportError:
         pass
     # Mimic the real interactive interpreter's loading of any $PYTHONSTARTUP

@@ -17,13 +17,6 @@
 
 """Testing i18n template search and interpolation."""
 
-__all__ = [
-    'TestFind',
-    'TestMake',
-    'TestSearchOrder',
-    ]
-
-
 import os
 import shutil
 import tempfile
@@ -38,7 +31,6 @@ from pkg_resources import resource_filename
 from zope.component import getUtility
 
 
-
 class TestSearchOrder(unittest.TestCase):
     """Test internal search order for language templates."""
 
@@ -51,7 +43,7 @@ class TestSearchOrder(unittest.TestCase):
         [mailman]
         default_language: fr
         [paths.testing]
-        var_dir: {0}
+        var_dir: {}
         """.format(self.var_dir))
         self.addCleanup(config.pop, 'no template dir')
         self.mlist = create_list('l@example.com')
@@ -85,7 +77,7 @@ class TestSearchOrder(unittest.TestCase):
     def test_fully_specified_search_order(self):
         search_order = self._stripped_search_order('foo.txt', self.mlist, 'it')
         # For convenience.
-        def nexteq(path):
+        def nexteq(path):                           # flake8: noqa
             self.assertEqual(next(search_order), path)
         # 1: Use the given language argument
         nexteq('/v/templates/lists/l.example.com/it/foo.txt')
@@ -115,7 +107,7 @@ class TestSearchOrder(unittest.TestCase):
     def test_no_language_argument_search_order(self):
         search_order = self._stripped_search_order('foo.txt', self.mlist)
         # For convenience.
-        def nexteq(path):
+        def nexteq(path):                           # flakeq: noqa
             self.assertEqual(next(search_order), path)
         # 1: Use mlist.preferred_language
         nexteq('/v/templates/lists/l.example.com/de/foo.txt')
@@ -140,7 +132,7 @@ class TestSearchOrder(unittest.TestCase):
     def test_no_mailing_list_argument_search_order(self):
         search_order = self._stripped_search_order('foo.txt', language='it')
         # For convenience.
-        def nexteq(path):
+        def nexteq(path):                           # flake8: noqa
             self.assertEqual(next(search_order), path)
         # 1: Use the given language argument
         nexteq('/v/templates/site/it/foo.txt')
@@ -156,7 +148,7 @@ class TestSearchOrder(unittest.TestCase):
     def test_no_optional_arguments_search_order(self):
         search_order = self._stripped_search_order('foo.txt')
         # For convenience.
-        def nexteq(path):
+        def nexteq(path):                           # flake8: noqa
             self.assertEqual(next(search_order), path)
         # 1: Use the site's default language
         nexteq('/v/templates/site/fr/foo.txt')
@@ -168,7 +160,6 @@ class TestSearchOrder(unittest.TestCase):
         nexteq('/m/templates/en/foo.txt')
 
 
-
 class TestFind(unittest.TestCase):
     """Test template search."""
 
@@ -176,10 +167,12 @@ class TestFind(unittest.TestCase):
 
     def setUp(self):
         self.var_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.var_dir)
         config.push('template config', """\
         [paths.testing]
-        var_dir: {0}
+        var_dir: {}
         """.format(self.var_dir))
+        self.addCleanup(config.pop, 'template config')
         # The following MUST happen AFTER the push() above since pushing a new
         # config also clears out the language manager.
         getUtility(ILanguageManager).add('xx', 'utf-8', 'Xlandia')
@@ -187,7 +180,7 @@ class TestFind(unittest.TestCase):
         self.mlist.preferred_language = 'xx'
         self.fp = None
         # Populate the template directories with a few fake templates.
-        def write(text, path):
+        def write(text, path):                      # flake8: noqa
             os.makedirs(os.path.dirname(path))
             with open(path, 'w') as fp:
                 fp.write(text)
@@ -206,8 +199,6 @@ class TestFind(unittest.TestCase):
     def tearDown(self):
         if self.fp is not None:
             self.fp.close()
-        config.pop('template config')
-        shutil.rmtree(self.var_dir)
 
     def test_find_site_template(self):
         filename, self.fp = find('site.txt', language='xx')
@@ -230,7 +221,6 @@ class TestFind(unittest.TestCase):
         self.assertEqual(cm.exception.template_file, 'missing.txt')
 
 
-
 class TestMake(unittest.TestCase):
     """Test template interpolation."""
 
@@ -238,10 +228,12 @@ class TestMake(unittest.TestCase):
 
     def setUp(self):
         self.var_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.var_dir)
         config.push('template config', """\
         [paths.testing]
-        var_dir: {0}
+        var_dir: {}
         """.format(self.var_dir))
+        self.addCleanup(config.pop, 'template config')
         # The following MUST happen AFTER the push() above since pushing a new
         # config also clears out the language manager.
         getUtility(ILanguageManager).add('xx', 'utf-8', 'Xlandia')
@@ -268,10 +260,6 @@ This is a $kind template.
 It has $howmany substitutions.
 It will not be wrapped.
 """, file=fp)
-
-    def tearDown(self):
-        config.pop('template config')
-        shutil.rmtree(self.var_dir)
 
     def test_no_substitutions(self):
         self.assertEqual(make('nosub.txt', self.mlist), """\

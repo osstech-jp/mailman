@@ -17,11 +17,6 @@
 
 """Test queries."""
 
-__all__ = [
-    'TestQueries',
-    ]
-
-
 import unittest
 
 from mailman.utilities.queries import QuerySequence

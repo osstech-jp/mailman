@@ -17,11 +17,6 @@
 
 """Test the uid module."""
 
-__all__ = [
-    'TestUID',
-    ]
-
-
 import os
 import uuid
 import unittest
@@ -33,7 +28,6 @@ from mailman.utilities import uid
 from unittest.mock import patch
 
 
-
 class TestUID(unittest.TestCase):
     layer = ConfigLayer
 
@@ -60,7 +54,7 @@ class TestUID(unittest.TestCase):
 
     def test_uid_record_try_again(self):
         called = False
-        def record_second(ignore):
+        def record_second(ignore):                  # flake8: noqa
             nonlocal called
             if not called:
                 called = True

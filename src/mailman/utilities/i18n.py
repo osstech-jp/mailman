@@ -17,18 +17,11 @@
 
 """i18n template search and interpolation."""
 
-__all__ = [
-    'TemplateNotFoundError',
-    'find',
-    'make',
-    'search',
-    ]
-
-
 import os
 import sys
 
 from itertools import product
+from mailman import public
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.core.i18n import _
@@ -37,7 +30,7 @@ from mailman.utilities.string import expand, wrap as wrap_text
 from pkg_resources import resource_filename
 
 
-
+@public
 class TemplateNotFoundError(MailmanError):
     """The named template was not found."""
 
@@ -48,7 +41,7 @@ class TemplateNotFoundError(MailmanError):
         return self.template_file
 
 
-
+@public
 def search(template_file, mlist=None, language=None):
     """Generator that provides file system search order.
 
@@ -132,7 +125,7 @@ def search(template_file, mlist=None, language=None):
     yield os.path.join(templates_dir, 'en', template_file)
 
 
-
+@public
 def find(template_file, mlist=None, language=None, _trace=False):
     """Use Mailman's internal template search order to find a template.
 
@@ -168,6 +161,7 @@ def find(template_file, mlist=None, language=None, _trace=False):
     raise TemplateNotFoundError(template_file)
 
 
+@public
 def make(template_file, mlist=None, language=None, wrap=True,
          _trace=False, **kw):
     """Locate and 'make' a template file.

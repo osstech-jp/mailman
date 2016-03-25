@@ -17,17 +17,13 @@
 
 """Filesystem utilities."""
 
-__all__ = [
-    'makedirs',
-    'umask',
-    ]
-
-
 import os
 import errno
 
+from mailman import public
 
-
+
+@public
 class umask:
     """Manage the umask for the with statement."""
 
@@ -46,7 +42,7 @@ class umask:
         return False
 
 
-
+@public
 def makedirs(path, mode=0o2775):
     """Create a directory hierarchy, ensuring permissions.
 

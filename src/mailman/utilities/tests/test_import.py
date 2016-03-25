@@ -17,17 +17,6 @@
 
 """Tests for config.pck imports."""
 
-__all__ = [
-    'TestArchiveImport',
-    'TestBasicImport',
-    'TestConvertToURI',
-    'TestFilterActionImport',
-    'TestMemberActionImport',
-    'TestPreferencesImport',
-    'TestRosterImport',
-    ]
-
-
 import os
 import unittest
 
@@ -61,7 +50,6 @@ from unittest import mock
 from zope.component import getUtility
 
 
-
 NL = '\n'
 
 
@@ -74,7 +62,6 @@ def list_to_string(data):
     return NL.join(data).encode('utf-8')
 
 
-
 class TestBasicImport(unittest.TestCase):
     layer = ConfigLayer
 
@@ -148,9 +135,9 @@ class TestBasicImport(unittest.TestCase):
         self.assertEqual(self._mlist.autoresponse_owner_text, '')
 
     def test_administrativia(self):
-       self._mlist.administrivia = None
-       self._import()
-       self.assertTrue(self._mlist.administrivia)
+        self._mlist.administrivia = None
+        self._import()
+        self.assertTrue(self._mlist.administrivia)
 
     def test_filter_pass_renames(self):
         # mime_types -> types
@@ -164,8 +151,9 @@ class TestBasicImport(unittest.TestCase):
         self.assertEqual(list(self._mlist.filter_extensions),
                          ['exe', 'bat', 'cmd', 'com', 'pif',
                           'scr', 'vbs', 'cpl'])
-        self.assertEqual(list(self._mlist.pass_types),
-                ['multipart/mixed', 'multipart/alternative', 'text/plain'])
+        self.assertEqual(
+            list(self._mlist.pass_types),
+            ['multipart/mixed', 'multipart/alternative', 'text/plain'])
         self.assertEqual(list(self._mlist.pass_extensions), [])
 
     def test_process_bounces(self):
@@ -249,7 +237,7 @@ class TestBasicImport(unittest.TestCase):
     def test_acceptable_aliases_as_list(self):
         # In some versions of the pickle, this can be a list, not a string
         # (seen in the wild).
-        aliases = [b'alias1@example.com', b'alias2@exemple.com' ]
+        aliases = [b'alias1@example.com', b'alias2@exemple.com']
         self._pckdict['acceptable_aliases'] = aliases
         self._import()
         alias_set = IAcceptableAliasSet(self._mlist)
@@ -368,40 +356,40 @@ class TestBasicImport(unittest.TestCase):
         self._import()
         self.assertListEqual(
             [(hm.header, hm.pattern, hm.chain)
-             for hm in self._mlist.header_matches ], [
-            ('x-spam-status', 'Yes.*', 'discard'),
-            ('x-spam-status', 'Yes', 'reject'),
-            ('x-spam-level', '\\*\\*\\*.*$', 'discard'),
-            ('x-spam-level', '\\*\\*', 'discard'),
-            ('x-spam', '\\Yes', 'discard'),
-            ('subject', '\\[SPAM\\].*', 'discard'),
-            ('subject', '.*loan.*', 'discard'),
-            ('original-received', 'from *linkedin.com*', 'discard'),
-            ('x-git-module', 'rhq.*git', 'accept'),
-            ('approved', 'verysecretpassword', 'accept'),
-            ('subject', 'dev-', 'discard'),
-            ('subject', 'staging-', 'discard'),
-            ('from', '.*info@aolanchem.com', 'reject'),
-            ('from', '.*@jw-express.com', 'reject'),
-            ('received', 'from smtp-.*\\.fedoraproject\\.org', 'hold'),
-            ('received', 'from mx.*\\.redhat.com', 'hold'),
-            ('resent-date', '.*', 'hold'),
-            ('resent-from', '.*', 'hold'),
-            ('resent-message-id', '.*', 'hold'),
-            ('resent-to', '.*', 'hold'),
-            ('subject', '[^mtv]', 'hold'),
-            ('received', 'from fedorahosted\\.org.*by fedorahosted\\.org',
-             'accept'),
-            ('received',
-             'from hosted.*\\.fedoraproject.org.*by '
-                'hosted.*\\.fedoraproject\\.org', 'accept'),
-            ('received',
-             'from hosted.*\\.fedoraproject.org.*by '
-                'fedoraproject\\.org', 'accept'),
-            ('received',
-             'from hosted.*\\.fedoraproject.org.*by '
-                'fedorahosted\\.org', 'accept'),
-            ])
+             for hm in self._mlist.header_matches], [
+                ('x-spam-status', 'Yes.*', 'discard'),
+                ('x-spam-status', 'Yes', 'reject'),
+                ('x-spam-level', '\\*\\*\\*.*$', 'discard'),
+                ('x-spam-level', '\\*\\*', 'discard'),
+                ('x-spam', '\\Yes', 'discard'),
+                ('subject', '\\[SPAM\\].*', 'discard'),
+                ('subject', '.*loan.*', 'discard'),
+                ('original-received', 'from *linkedin.com*', 'discard'),
+                ('x-git-module', 'rhq.*git', 'accept'),
+                ('approved', 'verysecretpassword', 'accept'),
+                ('subject', 'dev-', 'discard'),
+                ('subject', 'staging-', 'discard'),
+                ('from', '.*info@aolanchem.com', 'reject'),
+                ('from', '.*@jw-express.com', 'reject'),
+                ('received', 'from smtp-.*\\.fedoraproject\\.org', 'hold'),
+                ('received', 'from mx.*\\.redhat.com', 'hold'),
+                ('resent-date', '.*', 'hold'),
+                ('resent-from', '.*', 'hold'),
+                ('resent-message-id', '.*', 'hold'),
+                ('resent-to', '.*', 'hold'),
+                ('subject', '[^mtv]', 'hold'),
+                ('received', 'from fedorahosted\\.org.*by fedorahosted\\.org',
+                 'accept'),
+                ('received',
+                 'from hosted.*\\.fedoraproject.org.*by '
+                    'hosted.*\\.fedoraproject\\.org', 'accept'),
+                ('received',
+                 'from hosted.*\\.fedoraproject.org.*by '
+                    'fedoraproject\\.org', 'accept'),
+                ('received',
+                 'from hosted.*\\.fedoraproject.org.*by '
+                    'fedorahosted\\.org', 'accept'),
+                ])
         loglines = error_log.read().strip()
         self.assertEqual(len(loglines), 0)
 
@@ -484,7 +472,6 @@ class TestBasicImport(unittest.TestCase):
                       error_log.readline())
 
 
-
 class TestArchiveImport(unittest.TestCase):
     """Test conversion of the archive policies.
 
@@ -537,7 +524,6 @@ class TestArchiveImport(unittest.TestCase):
         self._do_test(dict(archive=True), ArchivePolicy.private)
 
 
-
 class TestFilterActionImport(unittest.TestCase):
     # The mlist.filter_action enum values have changed.  In Mailman 2.1 the
     # order was 'Discard', 'Reject', 'Forward to List Owner', 'Preserve'.
@@ -565,7 +551,6 @@ class TestFilterActionImport(unittest.TestCase):
         self._do_test(3, FilterAction.preserve)
 
 
-
 class TestMemberActionImport(unittest.TestCase):
     # The mlist.default_member_action and mlist.default_nonmember_action enum
     # values are different in Mailman 2.1; they have been merged into a
@@ -637,7 +622,6 @@ class TestMemberActionImport(unittest.TestCase):
         self._do_test(dict(default_nonmember_action=Action.discard))
 
 
-
 class TestConvertToURI(unittest.TestCase):
     # The following values were plain text, and are now URIs in Mailman 3:
     # - welcome_message_uri
@@ -673,9 +657,10 @@ class TestConvertToURI(unittest.TestCase):
             import_config_pck(self._mlist, self._pckdict)
             newattr = getattr(self._mlist, newvar)
             text = decorate(self._mlist, newattr)
-            self.assertEqual(text, 'TEST VALUE',
-                    'Old variable %s was not properly imported to %s'
-                    % (oldvar, newvar))
+            self.assertEqual(
+                text, 'TEST VALUE',
+                'Old variable %s was not properly imported to %s'
+                % (oldvar, newvar))
 
     def test_substitutions(self):
         test_text = ('UNIT TESTING %(real_name)s mailing list\n'
@@ -712,8 +697,9 @@ class TestConvertToURI(unittest.TestCase):
             old_value = getattr(self._mlist, newvar)
             import_config_pck(self._mlist, self._pckdict)
             new_value = getattr(self._mlist, newvar)
-            self.assertEqual(old_value, new_value,
-                    'Default value was not preserved for %s' % newvar)
+            self.assertEqual(
+                old_value, new_value,
+                'Default value was not preserved for %s' % newvar)
 
     def test_keep_default_if_fqdn_changed(self):
         # Use case: importing the old a@ex.com into b@ex.com.  We can't check
@@ -729,7 +715,8 @@ class TestConvertToURI(unittest.TestCase):
             with mock.patch('sys.stderr'):
                 import_config_pck(self._mlist, self._pckdict)
             new_value = getattr(self._mlist, newvar)
-            self.assertEqual(old_value, new_value,
+            self.assertEqual(
+                old_value, new_value,
                 'Default value was not preserved for %s' % newvar)
 
     def test_unicode(self):
@@ -758,7 +745,7 @@ class TestConvertToURI(unittest.TestCase):
         text = decorate(self._mlist, self._mlist.footer_uri)
         self.assertEqual(text, 'NEW-VALUE')
 
-
+
 class TestRosterImport(unittest.TestCase):
     """Test that rosters are imported correctly."""
 
@@ -776,22 +763,23 @@ class TestRosterImport(unittest.TestCase):
                 'dave@example.com': b'dave@ExampLe.Com',
             },
             'passwords': {
-                'anne@example.com' : b'annepass',
-                'bob@example.com'  : b'bobpass',
+                'anne@example.com': b'annepass',
+                'bob@example.com': b'bobpass',
                 'cindy@example.com': b'cindypass',
-                'dave@example.com' : b'davepass',
+                'dave@example.com': b'davepass',
             },
             'language': {
-                'anne@example.com' : b'fr',
-                'bob@example.com'  : b'de',
+                'anne@example.com': b'fr',
+                'bob@example.com': b'de',
                 'cindy@example.com': b'es',
-                'dave@example.com' : b'it',
+                'dave@example.com': b'it',
             },
-            'usernames': { # Usernames are unicode strings in the pickle
-                'anne@example.com' : 'Anne',
-                'bob@example.com'  : 'Bob',
+            # Usernames are unicode strings in the pickle
+            'usernames': {
+                'anne@example.com': 'Anne',
+                'bob@example.com': 'Bob',
                 'cindy@example.com': 'Cindy',
-                'dave@example.com' : 'Dave',
+                'dave@example.com': 'Dave',
             },
             'owner': [
                 'anne@example.com',
@@ -878,9 +866,11 @@ class TestRosterImport(unittest.TestCase):
             self.assertIsNotNone(user, 'User %s was not imported' % addr)
             self.assertIsNotNone(address, 'Address %s was not imported' % addr)
             display_name = self._pckdict['usernames'][addr]
-            self.assertEqual(user.display_name, display_name,
+            self.assertEqual(
+                user.display_name, display_name,
                 'The display name was not set for User %s' % addr)
-            self.assertEqual(address.display_name, display_name,
+            self.assertEqual(
+                address.display_name, display_name,
                 'The display name was not set for Address %s' % addr)
 
     def test_owner(self):
@@ -907,7 +897,7 @@ class TestRosterImport(unittest.TestCase):
                          'Address fred@ was wrongly added to the members list')
 
     def test_password(self):
-        #self.anne.password = config.password_context.encrypt('abc123')
+        # self.anne.password = config.password_context.encrypt('abc123')
         import_config_pck(self._mlist, self._pckdict)
         for name in ('anne', 'bob', 'cindy', 'dave'):
             addr = '%s@example.com' % name
@@ -920,7 +910,7 @@ class TestRosterImport(unittest.TestCase):
     def test_same_user(self):
         # Adding the address of an existing User must not create another user.
         user = self._usermanager.create_user('anne@example.com', 'Anne')
-        user.register('bob@example.com') # secondary email
+        user.register('bob@example.com')                   # secondary email
         import_config_pck(self._mlist, self._pckdict)
         member = self._mlist.members.get_member('bob@example.com')
         self.assertEqual(member.user, user)
@@ -1023,7 +1013,6 @@ class TestRosterImport(unittest.TestCase):
             self.assertTrue(all(addr.startswith('^') for addr in list_prop))
 
 
-
 class TestPreferencesImport(unittest.TestCase):
     """Preferences get imported too."""
 
@@ -1124,7 +1113,7 @@ class TestPreferencesImport(unittest.TestCase):
 
     def test_no_moderate(self):
         # If option flag Moderate is not set, action is accept
-        self._pckdict['member_moderation_action'] = 1 # reject
+        self._pckdict['member_moderation_action'] = 1          # reject
         self._do_test(0, dict(moderation_action=Action.accept))
 
     def test_multiple_options(self):

@@ -17,12 +17,6 @@
 
 """Testing functions in the email utilities."""
 
-__all__ = [
-    'TestEmail',
-    'TestMessageIDHash',
-    ]
-
-
 import unittest
 
 from mailman.interfaces.messages import IMessageStore
@@ -33,7 +27,6 @@ from mailman.utilities.email import add_message_hash, split_email
 from zope.component import getUtility
 
 
-
 class TestEmail(unittest.TestCase):
     """Testing functions in the email utilities."""
 
@@ -119,9 +112,7 @@ Message-ID: aardvark>
         self.assertEqual(hash32, '5KH3RA7ZM4VM6XOZXA7AST2XN2X4S3WY')
 
 
-
 class TestMessageIDHash(unittest.TestCase):
-
     layer = ConfigLayer
 
     def setUp(self):

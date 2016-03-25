@@ -17,17 +17,11 @@
 
 """String utilities."""
 
-__all__ = [
-    'expand',
-    'oneline',
-    'wrap',
-    ]
-
-
 import logging
 
 from email.errors import HeaderParseError
 from email.header import decode_header, make_header
+from mailman import public
 from string import Template, whitespace
 from textwrap import TextWrapper, dedent
 
@@ -38,7 +32,7 @@ NL = '\n'
 log = logging.getLogger('mailman.error')
 
 
-
+@public
 def expand(template, substitutions, template_class=Template):
     """Expand string template with substitutions.
 
@@ -54,7 +48,7 @@ def expand(template, substitutions, template_class=Template):
     return template_class(template).safe_substitute(substitutions)
 
 
-
+@public
 def oneline(s, cset='us-ascii', in_unicode=False):
     """Decode a header string in one line and convert into specified charset.
 
@@ -81,7 +75,7 @@ def oneline(s, cset='us-ascii', in_unicode=False):
         return EMPTYSTRING.join(s.splitlines())
 
 
-
+@public
 def wrap(text, column=70, honor_leading_ws=True):
     """Wrap and fill the text to the specified column.
 
@@ -156,8 +150,8 @@ def wrap(text, column=70, honor_leading_ws=True):
                     if ch not in whitespace:
                         break
                 leading_ws = paragraph[:i]
-                iwrapper.initial_indent=leading_ws
-                iwrapper.subsequent_indent=leading_ws
+                iwrapper.initial_indent = leading_ws
+                iwrapper.subsequent_indent = leading_ws
                 paragraph_text = dedent(paragraph_text)
                 wrapped_paragraphs.append(iwrapper.fill(paragraph_text))
                 add_paragraph_break = True

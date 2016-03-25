@@ -17,13 +17,6 @@
 
 """Test configuration file searching."""
 
-__all__ = [
-    'TestConfigFileBase',
-    'TestConfigFileSearch',
-    'TestConfigFileSearchWithChroot',
-    ]
-
-
 import os
 import sys
 import shutil
@@ -34,7 +27,6 @@ from contextlib import contextmanager
 from mailman.core.initialize import search_for_configuration_file
 
 
-
 # Here are a couple of context managers that make our tests easier to read.
 @contextmanager
 def fakedirs(path):
@@ -82,7 +74,6 @@ def argv0(new_argv0):
         sys.argv[0] = old_argv0
 
 
-
 class TestConfigFileBase(unittest.TestCase):
     """Common test infrastructure."""
 
@@ -106,7 +97,6 @@ class TestConfigFileBase(unittest.TestCase):
         return os.path.join(self._root, path)
 
 
-
 class TestConfigFileSearch(TestConfigFileBase):
     """Test various aspects of searching for configuration files.
 
@@ -128,7 +118,6 @@ class TestConfigFileSearch(TestConfigFileBase):
                 self.assertEqual(found, config_file)
 
 
-
 class TestConfigFileSearchWithChroot(TestConfigFileBase):
     """Like `TestConfigFileSearch` but with a special os.path.exists()."""
 
@@ -140,7 +129,7 @@ class TestConfigFileSearchWithChroot(TestConfigFileBase):
         # system that we can write to and test is to hack os.path.exists() to
         # prepend a temporary directory onto the path it tests.
         self._os_path_exists = os.path.exists
-        def exists(path):
+        def exists(path):                           # flake8: noqa
             # Strip off the leading slash, otherwise we'll end up with path.
             return self._os_path_exists(self._make_fake(path))
         os.path.exists = exists

@@ -22,19 +22,9 @@ datetime.datetime.now() and datetime.date.today().  These are better
 instrumented for testing purposes.
 """
 
-__all__ = [
-    'DateFactory',
-    'RFC822_DATE_FMT',
-    'UTC',
-    'factory',
-    'now',
-    'today',
-    'utc',
-    ]
-
-
 import datetime
 
+from mailman import public
 from mailman.testing import layers
 
 
@@ -43,26 +33,31 @@ from mailman.testing import layers
 # no library better do it either!) this will safely give us expected RFC 5322
 # Date headers.
 RFC822_DATE_FMT = '%a, %d %b %Y %H:%M:%S %z'
+__all__ = ['RFC822_DATE_FMT']
 
 
-
 # Definition of UTC timezone, taken from
 # http://docs.python.org/library/datetime.html
 ZERO = datetime.timedelta(0)
 
+
+@public
 class UTC(datetime.tzinfo):
     def utcoffset(self, dt):
         return ZERO
+
     def tzname(self, dt):
         return 'UTC'
+
     def dst(self, dt):
         return ZERO
 
+
 utc = UTC()
+__all__.append('utc')
 _missing = object()
 
 
-
 class DateFactory:
     """A factory for today() and now() that works with testing."""
 
@@ -107,3 +102,9 @@ factory.reset()
 today = factory.today
 now = factory.now
 layers.MockAndMonkeyLayer.register_reset(factory.reset)
+
+__all__.extend([
+    'factory',
+    'now',
+    'today',
+    ])

@@ -17,15 +17,11 @@
 
 """Common argument parsing."""
 
-__all__ = [
-    'Options',
-    ]
-
-
 import os
 import sys
 
 from copy import copy
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.initialize import initialize
@@ -33,7 +29,6 @@ from mailman.version import MAILMAN_VERSION
 from optparse import Option, OptionParser, OptionValueError
 
 
-
 def check_unicode(option, opt, value):
     """Check that the value is a unicode string."""
     if not isinstance(value, bytes):
@@ -42,14 +37,14 @@ def check_unicode(option, opt, value):
         return value.decode(sys.getdefaultencoding())
     except UnicodeDecodeError:
         raise OptionValueError(
-            'option {0}: Cannot decode: {1}'.format(opt, value))
+            'option {}: Cannot decode: {}'.format(opt, value))
 
 
 def check_yesno(option, opt, value):
     """Check that the value is 'yes' or 'no'."""
     value = value.lower()
     if value not in ('yes', 'no', 'y', 'n'):
-        raise OptionValueError('option {0}: invalid: {1}'.format(opt, value))
+        raise OptionValueError('option {}: invalid: {}'.format(opt, value))
     return value[0] == 'y'
 
 
@@ -85,7 +80,7 @@ class SafeOptionParser(OptionParser):
         return OptionParser.add_option(self, *new_args, **kwargs)
 
 
-
+@public
 class Options:
     """Common argument parser."""
 

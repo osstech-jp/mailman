@@ -17,17 +17,12 @@
 
 """A wrapper around passlib."""
 
-__all__ = [
-    'handle_ConfigurationUpdatedEvent',
-    ]
-
-
+from mailman import public
 from mailman.config.config import load_external
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from passlib.context import CryptContext
 
 
-
 class PasswordContext:
     def __init__(self, config):
         """Create a password context for hashing and verification.
@@ -66,7 +61,7 @@ class PasswordContext:
         return self._context.verify_and_update(password, hashed)
 
 
-
+@public
 def handle_ConfigurationUpdatedEvent(event):
     if isinstance(event, ConfigurationUpdatedEvent):
         # Just reset the password context.

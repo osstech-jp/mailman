@@ -17,17 +17,11 @@
 
 """Test text wrapping."""
 
-__all__ = [
-    'TestWrap',
-    ]
-
-
 import unittest
 
 from mailman.utilities.string import wrap
 
 
-
 class TestWrap(unittest.TestCase):
     """Test text wrapping."""
 

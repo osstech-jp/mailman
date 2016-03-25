@@ -17,11 +17,6 @@
 
 """MMDF helper for digests."""
 
-__all__ = [
-    'Mailbox',
-    ]
-
-
 # Use a single file format for the digest mailbox because this makes it easier
 # to calculate the current size of the mailbox.  This way, we don't have to
 # carry around or store the size of the mailbox, we can just stat the file to
@@ -29,9 +24,10 @@ __all__ = [
 # for us is that it does no 'From' mangling.
 # mangling.
 from mailbox import MMDF
+from mailman import public
 
 
-
+@public
 class Mailbox(MMDF):
     """A mailbox that interoperates with the 'with' statement."""
 

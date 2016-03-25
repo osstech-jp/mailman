@@ -17,14 +17,11 @@
 
 """Some helpers for queries."""
 
-__all__ = [
-    'QuerySequence',
-    ]
-
-
 from collections.abc import Sequence
+from mailman import public
 
 
+@public
 class QuerySequence(Sequence):
     """A simple wrapper class around database query results.
 

@@ -17,12 +17,6 @@
 
 """Importer routines."""
 
-__all__ = [
-    'Import21Error',
-    'import_config_pck',
-    ]
-
-
 import os
 import re
 import sys
@@ -30,6 +24,7 @@ import codecs
 import logging
 import datetime
 
+from mailman import public
 from mailman.config import config
 from mailman.handlers.decorate import decorate, decorate_template
 from mailman.interfaces.action import Action, FilterAction
@@ -57,12 +52,11 @@ from zope.component import getUtility
 log = logging.getLogger('mailman.error')
 
 
-
+@public
 class Import21Error(MailmanError):
     """An import from a Mailman 2.1 list failed."""
 
 
-
 def bytes_to_str(value):
     # Convert a string to unicode when the encoding is not declared.
     if not isinstance(value, bytes):
@@ -94,7 +88,6 @@ def list_members_to_unicode(value):
     return [bytes_to_str(item) for item in value]
 
 
-
 def filter_action_mapping(value):
     # The filter_action enum values have changed.  In Mailman 2.1 the order
     # was 'Discard', 'Reject', 'Forward to List Owner', 'Preserve'.  In MM3
@@ -137,17 +130,16 @@ def action_to_chain(value):
     # a jump to a terminal chain.
     return {
         0: None,
-        #1: 'approve',
+        # 1: 'approve',
         2: 'reject',
         3: 'discard',
-        #4: 'subscribe',
-        #5: 'unsubscribe',
+        # 4: 'subscribe',
+        # 5: 'unsubscribe',
         6: 'accept',
         7: 'hold',
         }[value]
 
 
-
 def check_language_code(code):
     if code is None:
         return None
@@ -168,7 +160,6 @@ enabled: yes
     return code
 
 
-
 # Attributes in Mailman 2 which have a different type in Mailman 3.  Some
 # types (e.g. bools) are autodetected from their SA column types.
 TYPES = dict(
@@ -233,7 +224,7 @@ EXCLUDES = set((
     ))
 
 
-
+@public
 def import_config_pck(mlist, config_dict):
     """Apply a config.pck configuration dictionary to a mailing list.
 
@@ -431,7 +422,7 @@ def import_config_pck(mlist, config_dict):
             text = text.decode('utf-8', 'replace')
         for oldph, newph in convert_placeholders:
             text = text.replace(oldph, newph)
-        default_value, default_text  = defaults.get(newvar, (None, None))
+        default_value, default_text = defaults.get(newvar, (None, None))
         if not text and not (default_value or default_text):
             # Both are empty, leave it.
             continue
@@ -448,8 +439,8 @@ def import_config_pck(mlist, config_dict):
                   'with value "{}"'.format(text),
                   file=sys.stderr)
             continue
-        if (expanded_text and default_text
-                and expanded_text.strip() == default_text.strip()):
+        if (expanded_text and default_text and
+                expanded_text.strip() == default_text.strip()):
             # Keep the default.
             continue
         # Write the custom value to the right file.
@@ -494,7 +485,6 @@ def import_config_pck(mlist, config_dict):
         mlist.send_welcome_message = send_welcome_message
 
 
-
 def import_roster(mlist, config_dict, members, role, action=None):
     """Import members lists from a config.pck configuration dictionary.
 
@@ -562,7 +552,7 @@ def import_roster(mlist, config_dict, members, role, action=None):
         if email in config_dict.get('usernames', {}):
             address.display_name = \
                 bytes_to_str(config_dict['usernames'][email])
-            user.display_name    = \
+            user.display_name = \
                 bytes_to_str(config_dict['usernames'][email])
         if email in config_dict.get('passwords', {}):
             user.password = config.password_context.encrypt(

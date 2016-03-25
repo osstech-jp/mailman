@@ -17,11 +17,6 @@
 
 """Testing the password utility."""
 
-__all__ = [
-    'TestPasswords',
-    ]
-
-
 import os
 import unittest
 
@@ -30,7 +25,6 @@ from mailman.testing.helpers import configuration
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestPasswords(unittest.TestCase):
     layer = ConfigLayer
 

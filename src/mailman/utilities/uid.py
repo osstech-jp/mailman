@@ -21,12 +21,6 @@ Use these functions to create unique ids rather than inlining calls to hashlib
 and whatnot.  These are better instrumented for testing purposes.
 """
 
-__all__ = [
-    'UIDFactory',
-    'TokenFactory',
-    ]
-
-
 import os
 import time
 import uuid
@@ -34,12 +28,12 @@ import random
 import hashlib
 
 from flufl.lock import Lock
+from mailman import public
 from mailman.config import config
 from mailman.model.uid import UID
 from mailman.testing import layers
 
 
-
 class _PredictableIDGenerator:
     """Base class factory.
 
@@ -119,7 +113,7 @@ class _PredictableIDGenerator:
                 fp.write('1')
 
 
-
+@public
 class UIDFactory(_PredictableIDGenerator):
     """A factory for unique ids."""
 
@@ -143,7 +137,7 @@ class UIDFactory(_PredictableIDGenerator):
         return uuid.UUID(int=uid)
 
 
-
+@public
 class TokenFactory(_PredictableIDGenerator):
 
     def __init__(self):

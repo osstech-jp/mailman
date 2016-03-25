@@ -17,18 +17,12 @@
 
 """Email helpers."""
 
-__all__ = [
-    'add_message_hash',
-    'split_email',
-    ]
-
-
 from base64 import b32encode
 from hashlib import sha1
+from mailman import public
 
 
-
-
+@public
 def split_email(address):
     """Split an email address into a user name and domain.
 
@@ -45,6 +39,7 @@ def split_email(address):
     return local_part, domain.split('.')
 
 
+@public
 def add_message_hash(msg):
     """Add a Message-ID-Hash header derived from Message-ID.
 
