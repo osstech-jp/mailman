@@ -17,11 +17,6 @@
 
 """Test the to_digest handler."""
 
-__all__ = [
-    'TestToDigest',
-    ]
-
-
 import os
 import unittest
 
@@ -31,7 +26,6 @@ from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestToDigest(unittest.TestCase):
     """Test the to_digest handler."""
 

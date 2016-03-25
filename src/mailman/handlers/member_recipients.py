@@ -23,11 +23,7 @@ on the `recipients' attribute of the message.  This attribute is used by the
 SendmailDeliver and BulkDeliver modules.
 """
 
-__all__ = [
-    'MemberRecipients',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -37,7 +33,7 @@ from mailman.utilities.string import wrap
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class MemberRecipients:
     """Calculate the regular (i.e. non-digest) recipients of the message."""
@@ -92,12 +88,13 @@ for delivery.  The original message as received by Mailman is attached.
             recipients.remove(member.address.email)
         # Handle topic classifications
         # XXX: Disabled for now until we fix it properly
-        #do_topic_filters(mlist, msg, msgdata, recipients)
+        #
+        # do_topic_filters(mlist, msg, msgdata, recipients)
+        #
         # Bookkeeping
         msgdata['recipients'] = recipients
 
 
-
 def do_topic_filters(mlist, msg, msgdata, recipients):
     """Filter out recipients based on topics."""
     if not mlist.topics_enabled:
@@ -135,7 +132,7 @@ def do_topic_filters(mlist, msg, msgdata, recipients):
                 # this message by default.
                 continue
             if not mlist.getMemberOption(
-                user, config.ReceiveNonmatchingTopics):
+                    user, config.ReceiveNonmatchingTopics):
                 # The user has interest in some topics, but elects not to
                 # receive message that match no topics, so zap him.
                 zap_recipients.append(user)

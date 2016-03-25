@@ -25,19 +25,15 @@ and it will also give the MTA the opportunity to regenerate valid keys
 originating at the Mailman server for the outgoing message.
 """
 
-__all__ = [
-    'CleanseDKIM',
-    ]
-
-
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class CleanseDKIM:
     """Remove DomainKeys headers."""

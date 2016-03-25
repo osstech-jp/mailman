@@ -17,11 +17,6 @@
 
 """Test the rfc_2369 handler."""
 
-__all__ = [
-    'TestRFC2369',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -35,7 +30,6 @@ from urllib.parse import urljoin
 from zope.interface import implementer
 
 
-
 @implementer(IArchiver)
 class DummyArchiver:
     """An example archiver which does nothing but return URLs."""
@@ -74,7 +68,6 @@ class BrokenArchiver:
         raise RuntimeError('Cannot archive message')
 
 
-
 class TestRFC2369(unittest.TestCase):
     """Test the rfc_2369 handler."""
 

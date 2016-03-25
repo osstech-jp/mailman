@@ -17,13 +17,9 @@
 
 """Handler for automatic responses."""
 
-__all__ = [
-    'Replybot',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import (
@@ -39,7 +35,7 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.error')
 
 
-
+@public
 @implementer(IHandler)
 class Replybot:
     """Send automatic responses."""
@@ -101,12 +97,13 @@ class Replybot:
             'Auto-response for your message to the "$display_name" '
             'mailing list')
         # Do string interpolation into the autoresponse text
-        d = dict(list_name = mlist.list_name,
-                 display_name = display_name,
-                 listurl = mlist.script_url('listinfo'),
-                 requestemail = mlist.request_address,
-                 owneremail = mlist.owner_address,
-                 )
+        d = dict(
+            list_name=mlist.list_name,
+            display_name=display_name,
+            listurl=mlist.script_url('listinfo'),
+            requestemail=mlist.request_address,
+            owneremail=mlist.owner_address,
+            )
         # Interpolation and Wrap the response text.
         text = wrap(expand(response_text, d))
         outmsg = UserNotification(msg.sender, mlist.bounces_address,

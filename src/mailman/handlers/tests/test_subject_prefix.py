@@ -17,11 +17,6 @@
 
 """Test the Subject header prefix munging.."""
 
-__all__ = [
-    'TestSubjectPrefix',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -30,7 +25,6 @@ from mailman.email.message import Message
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestSubjectPrefix(unittest.TestCase):
     layer = ConfigLayer
 
@@ -120,7 +114,7 @@ class TestSubjectPrefix(unittest.TestCase):
         self._mlist.post_id = 456
         msg = Message()
         msg['Subject'] = \
-          '[Test 123] Re: =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?='
+            '[Test 123] Re: =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?='
         self._process(self._mlist, msg, {})
         subject = msg['subject']
         self.assertEqual(

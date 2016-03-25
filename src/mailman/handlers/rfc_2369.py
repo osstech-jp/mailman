@@ -17,14 +17,10 @@
 
 """RFC 2369 List-* and related headers."""
 
-__all__ = [
-    'RFC2369',
-    ]
-
-
 import logging
 
 from email.utils import formataddr
+from mailman import public
 from mailman.core.i18n import _
 from mailman.handlers.cook_headers import uheader
 from mailman.interfaces.archiver import ArchivePolicy
@@ -38,7 +34,6 @@ CONTINUATION = ',\n\t'
 log = logging.getLogger('mailman.archiver')
 
 
-
 def process(mlist, msg, msgdata):
     """Add the RFC 2369 List-* and related headers."""
     # Some people really hate the List-* headers.  It seems that the free
@@ -126,7 +121,7 @@ def process(mlist, msg, msgdata):
         msg[h] = v
 
 
-
+@public
 @implementer(IHandler)
 class RFC2369:
     """Add the RFC 2369 List-* headers."""

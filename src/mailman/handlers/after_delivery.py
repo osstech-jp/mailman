@@ -17,18 +17,14 @@
 
 """Perform some bookkeeping after a successful post."""
 
-__all__ = [
-    'AfterDelivery',
-    ]
-
-
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.utilities.datetime import now
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class AfterDelivery:
     """Perform some bookkeeping after a successful post."""

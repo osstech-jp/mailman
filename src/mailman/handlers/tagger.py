@@ -17,15 +17,11 @@
 
 """Extract topics from the original mail message."""
 
-__all__ = [
-    'Tagger',
-    ]
-
-
 import re
 import email.iterators
 import email.parser
 
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from zope.interface import implementer
@@ -37,7 +33,6 @@ EMPTYSTRING = ''
 NLTAB = '\n\t'
 
 
-
 def process(mlist, msg, msgdata):
     """Tag the message for topics."""
     if not mlist.topics_enabled:
@@ -75,7 +70,6 @@ def process(mlist, msg, msgdata):
         msg['X-Topics'] = NLTAB.join(sorted(hits))
 
 
-
 def scanbody(msg, numlines=None):
     """Scan the body for keywords."""
     # We only scan the body of the message if it is of MIME type text/plain,
@@ -84,8 +78,8 @@ def scanbody(msg, numlines=None):
     found = None
     if msg.get_content_type() == 'text/plain':
         found = msg
-    elif msg.is_multipart()\
-         and msg.get_content_type() == 'multipart/alternative':
+    elif (msg.is_multipart() and
+            msg.get_content_type() == 'multipart/alternative'):
         for found in msg.get_payload():
             if found.get_content_type() == 'text/plain':
                 break
@@ -115,7 +109,6 @@ def scanbody(msg, numlines=None):
     return msg.get_all('subject', []) + msg.get_all('keywords', [])
 
 
-
 class _ForgivingParser(email.parser.HeaderParser):
     """An lax email parser.
 
@@ -173,7 +166,7 @@ class _ForgivingParser(email.parser.HeaderParser):
             container[lastheader] = NLTAB.join(lastvalue)
 
 
-
+@public
 @implementer(IHandler)
 class Tagger:
     """Tag messages with topic matches."""

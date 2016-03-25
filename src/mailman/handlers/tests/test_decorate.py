@@ -17,12 +17,6 @@
 
 """Test the decorate handler."""
 
-__all__ = [
-    'TestBrokenPermalink',
-    'TestDecorate',
-    ]
-
-
 import os
 import unittest
 
@@ -37,7 +31,6 @@ from tempfile import TemporaryDirectory
 from zope.interface import implementer
 
 
-
 @implementer(IArchiver)
 class TestArchiver:
     """A test archiver"""
@@ -60,7 +53,6 @@ class BrokenArchiver:
         raise RuntimeError('Cannot get permalink')
 
 
-
 class TestDecorate(unittest.TestCase):
     """Test the cook_headers handler."""
 

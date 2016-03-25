@@ -17,13 +17,6 @@
 
 """Test the mime_delete handler."""
 
-__all__ = [
-    'TestDispose',
-    'TestHTMLFilter',
-    'dummy_script',
-    ]
-
-
 import os
 import sys
 import shutil
@@ -45,7 +38,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 @contextmanager
 def dummy_script():
     with ExitStack() as resources:
@@ -66,7 +58,6 @@ html_to_plain_text_command = {exe} {script} $filename
         yield
 
 
-
 class TestDispose(unittest.TestCase):
     """Test the mime_delete handler."""
 
@@ -94,7 +85,7 @@ Message-ID: <ant>
             mime_delete.dispose(self._mlist, self._msg, {}, 'discarding')
         self.assertEqual(cm.exception.message, 'discarding')
         # There should be no messages in the 'bad' queue.
-        self.assertEqual(len(get_queue_messages('bad')), 0)
+        get_queue_messages('bad', expected_count=0)
 
     def test_dispose_bounce(self):
         self._mlist.filter_action = FilterAction.reject
@@ -102,7 +93,7 @@ Message-ID: <ant>
             mime_delete.dispose(self._mlist, self._msg, {}, 'rejecting')
         self.assertEqual(cm.exception.message, 'rejecting')
         # There should be no messages in the 'bad' queue.
-        self.assertEqual(len(get_queue_messages('bad')), 0)
+        get_queue_messages('bad', expected_count=0)
 
     def test_dispose_forward(self):
         # The disposed message gets forwarded to the list moderators.  So
@@ -119,9 +110,8 @@ Message-ID: <ant>
         self.assertEqual(cm.exception.message, 'forwarding')
         # There should now be a multipart message in the virgin queue destined
         # for the mailing list owners.
-        messages = get_queue_messages('virgin')
-        self.assertEqual(len(messages), 1)
-        message = messages[0].msg
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message.get_content_type(), 'multipart/mixed')
         # Anne and Bart should be recipients of the message, but it will look
         # like the message is going to the list owners.
@@ -160,7 +150,7 @@ message.
             mime_delete.dispose(self._mlist, self._msg, {}, 'not preserved')
         self.assertEqual(cm.exception.message, 'not preserved')
         # There should be no messages in the 'bad' queue.
-        self.assertEqual(len(get_queue_messages('bad')), 0)
+        get_queue_messages('bad', expected_count=0)
 
     @configuration('mailman', filtered_messages_are_preservable='yes')
     def test_dispose_preservable(self):
@@ -173,9 +163,8 @@ message.
             mime_delete.dispose(self._mlist, self._msg, {}, 'preserved')
         self.assertEqual(cm.exception.message, 'preserved')
         # There should be no messages in the 'bad' queue.
-        messages = get_queue_messages('bad')
-        self.assertEqual(len(messages), 1)
-        message = messages[0].msg
+        items = get_queue_messages('bad', expected_count=1)
+        message = items[0].msg
         self.assertEqual(message['subject'], 'A disposable message')
         self.assertEqual(message['message-id'], '<ant>')
 
@@ -194,11 +183,10 @@ message.
             self.assertEqual(cm.exception.message, 'bad action')
             line = mark.readline()[:-1]
             self.assertTrue(line.endswith(
-                '{0} invalid FilterAction: test@example.com.  '
+                'test@example.com invalid FilterAction: {}.  '
                 'Treating as discard'.format(action.name)))
 
 
-
 class TestHTMLFilter(unittest.TestCase):
     """Test the conversion of HTML to plaintext."""
 

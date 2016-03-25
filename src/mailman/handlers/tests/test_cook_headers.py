@@ -17,11 +17,6 @@
 
 """Test the cook_headers handler."""
 
-__all__ = [
-    'TestCookHeaders',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -32,7 +27,6 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestCookHeaders(unittest.TestCase):
     """Test the cook_headers handler."""
 
@@ -49,11 +43,10 @@ class TestCookHeaders(unittest.TestCase):
         bart = subscribe(self._mlist, 'Bart')
         bart.preferences.delivery_mode = DeliveryMode.plaintext_digests
         make_digest_messages(self._mlist)
-        messages = [bag.msg for bag in get_queue_messages('virgin')]
-        self.assertEqual(len(messages), 2)
-        for msg in messages:
+        items = get_queue_messages('virgin', expected_count=2)
+        for item in items:
             try:
-                cook_headers.process(self._mlist, msg, {})
+                cook_headers.process(self._mlist, item.msg, {})
             except AttributeError as error:
                 # LP: #1130696 would raise an AttributeError on .sender
                 self.fail(error)

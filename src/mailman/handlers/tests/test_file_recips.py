@@ -17,11 +17,6 @@
 
 """Test file-recips handler."""
 
-__all__ = [
-    'TestFileRecips',
-    ]
-
-
 import os
 import unittest
 
@@ -31,7 +26,6 @@ from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestFileRecips(unittest.TestCase):
     layer = ConfigLayer
 

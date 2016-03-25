@@ -17,11 +17,7 @@
 
 """Add the message to the archives."""
 
-__all__ = [
-    'ToArchive',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.archiver import ArchivePolicy
@@ -29,7 +25,7 @@ from mailman.interfaces.handler import IHandler
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class ToArchive:
     """Add the message to the archives."""
@@ -41,7 +37,7 @@ class ToArchive:
         """See `IHandler`."""
         # Short circuits.
         if (msgdata.get('isdigest') or
-            mlist.archive_policy is ArchivePolicy.never):
+                mlist.archive_policy is ArchivePolicy.never):
             return
         # Common practice seems to favor "X-No-Archive: yes".  No other value
         # for this header seems to make sense, so we'll just test for it's

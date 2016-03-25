@@ -22,18 +22,14 @@ posted to the list membership.  Anything else that needs to go out to some
 recipient should just be placed in the out queue directly.
 """
 
-__all__ = [
-    'ToOutgoing',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class ToOutgoing:
     """Send the message to the outgoing queue."""

@@ -17,20 +17,16 @@
 
 """Get the normal delivery recipients from a Sendmail style :include: file."""
 
-__all__ = [
-    'FileRecipients',
-    ]
-
-
 import os
 import errno
 
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class FileRecipients:
     """Get the normal delivery recipients from an include file."""

@@ -17,13 +17,9 @@
 
 """Move the message to the mail->news queue."""
 
-__all__ = [
-    'ToUsenet',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -34,7 +30,7 @@ COMMASPACE = ', '
 log = logging.getLogger('mailman.error')
 
 
-
+@public
 @implementer(IHandler)
 class ToUsenet:
     """Move the message to the outgoing news queue."""
@@ -46,8 +42,8 @@ class ToUsenet:
         """See `IHandler`."""
         # Short circuits.
         if (not mlist.gateway_to_news or
-            msgdata.get('isdigest') or
-            msgdata.get('fromusenet')):
+                msgdata.get('isdigest') or
+                msgdata.get('fromusenet')):
             # Short-circuit.
             return
         # Sanity checks.

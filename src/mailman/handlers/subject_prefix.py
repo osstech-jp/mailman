@@ -17,14 +17,10 @@
 
 """Subject header prefix munging."""
 
-__all__ = [
-    'SubjectPrefix',
-    ]
-
-
 import re
 
 from email.header import Header, make_header, decode_header
+from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from zope.interface import implementer
@@ -35,7 +31,6 @@ ASCII_CHARSETS = (None, 'ascii', 'us-ascii')
 EMPTYSTRING = ''
 
 
-
 def ascii_header(mlist, msgdata, subject, prefix, prefix_pattern, ws):
     if mlist.preferred_language.charset not in ASCII_CHARSETS:
         return None
@@ -127,7 +122,7 @@ def mixed_charsets(mlist, msgdata, subject, prefix, prefix_pattern, ws):
     return make_header(chunks, continuation_ws=ws)
 
 
-
+@public
 @implementer(IHandler)
 class SubjectPrefix:
     """Add a list-specific prefix to the Subject header value."""

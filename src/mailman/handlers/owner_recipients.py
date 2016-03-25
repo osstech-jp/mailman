@@ -17,11 +17,7 @@
 
 """Calculate the list owner recipients (includes moderators)."""
 
-__all__ = [
-    'OwnerRecipients',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -29,7 +25,7 @@ from mailman.interfaces.member import DeliveryStatus
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class OwnerRecipients:
     """Calculate the owner (and moderator) recipients for -owner postings."""

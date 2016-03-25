@@ -24,11 +24,6 @@ wrapping only single sections after other processing are replaced by their
 contents.
 """
 
-__all__ = [
-    'MIMEDelete',
-    ]
-
-
 import os
 import shutil
 import logging
@@ -41,6 +36,7 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from itertools import count
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
@@ -56,21 +52,20 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.error')
 
 
-
 def dispose(mlist, msg, msgdata, why):
     if mlist.filter_action is FilterAction.reject:
         # Bounce the message to the original author.
         raise RejectMessage(why)
     elif mlist.filter_action is FilterAction.forward:
         # Forward it on to the list moderators.
-        text=_("""\
+        text = _("""\
 The attached message matched the $mlist.display_name mailing list's content
 filtering rules and was prevented from being forwarded on to the list
 membership.  You are receiving the only remaining copy of the discarded
 message.
 
 """)
-        subject=_('Content filter message notification')
+        subject = _('Content filter message notification')
         notice = OwnerNotification(mlist, subject, roster=mlist.moderators)
         notice.set_type('multipart/mixed')
         notice.attach(MIMEText(text))
@@ -83,17 +78,16 @@ message.
             # placed in the 'bad' queue should the site administrator want to
             # inspect the message.
             filebase = config.switchboards['bad'].enqueue(msg, msgdata)
-            log.info('{0} preserved in file base {1}'.format(
+            log.info('{} preserved in file base {}'.format(
                 msg.get('message-id', 'n/a'), filebase))
     else:
         log.error(
-            '{1} invalid FilterAction: {0}.  Treating as discard'.format(
+            '{} invalid FilterAction: {}.  Treating as discard'.format(
                 mlist.fqdn_listname, mlist.filter_action.name))
     # Most cases also discard the message
     raise DiscardMessage(why)
 
 
-
 def process(mlist, msg, msgdata):
     # We also don't care about our own digests or plaintext
     ctype = msg.get_content_type()
@@ -115,11 +109,13 @@ def process(mlist, msg, msgdata):
     fext = get_file_ext(msg)
     if fext:
         if fext in filterexts:
-            dispose(mlist, msg, msgdata,
-                 _("The message's file extension was explicitly disallowed"))
+            dispose(
+                mlist, msg, msgdata,
+                _("The message's file extension was explicitly disallowed"))
         if passexts and not (fext in passexts):
-            dispose(mlist, msg, msgdata,
-                 _("The message's file extension was not explicitly allowed"))
+            dispose(
+                mlist, msg, msgdata,
+                _("The message's file extension was not explicitly allowed"))
     numparts = len([subpart for subpart in msg.walk()])
     # If the message is a multipart, filter out matching subparts
     if msg.is_multipart():
@@ -158,10 +154,9 @@ def process(mlist, msg, msgdata):
             reset_payload(msg, useful)
             changedp = 1
     if changedp:
-        msg['X-Content-Filtered-By'] = 'Mailman/MimeDel {0}'.format(VERSION)
+        msg['X-Content-Filtered-By'] = 'Mailman/MimeDel {}'.format(VERSION)
 
 
-
 def reset_payload(msg, subpart):
     # Reset payload of msg to contents of subpart, and fix up content headers
     payload = subpart.get_payload()
@@ -182,7 +177,6 @@ def reset_payload(msg, subpart):
         msg['Content-Description'] = cdesc
 
 
-
 def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
     # Look at all the message's subparts, and recursively filter
     if not msg.is_multipart():
@@ -220,7 +214,6 @@ def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
     return True
 
 
-
 def collapse_multipart_alternatives(msg):
     if not msg.is_multipart():
         return
@@ -237,7 +230,6 @@ def collapse_multipart_alternatives(msg):
     msg.set_payload(newpayload)
 
 
-
 def to_plaintext(msg):
     changedp = 0
     counter = count()
@@ -265,7 +257,6 @@ def to_plaintext(msg):
     return changedp
 
 
-
 def get_file_ext(m):
     """
     Get filename extension. Caution: some virus don't put filename
@@ -274,7 +265,7 @@ def get_file_ext(m):
     fext = ''
     filename = m.get_filename('') or m.get_param('name', '')
     if filename:
-        fext = os.path.splitext(oneline(filename,'utf-8'))[1]
+        fext = os.path.splitext(oneline(filename, 'utf-8'))[1]
         if len(fext) > 1:
             fext = fext[1:]
         else:
@@ -282,7 +273,7 @@ def get_file_ext(m):
     return fext
 
 
-
+@public
 @implementer(IHandler)
 class MIMEDelete:
     """Filter the MIME content of messages."""

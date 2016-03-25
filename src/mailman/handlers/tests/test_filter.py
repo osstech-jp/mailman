@@ -17,11 +17,6 @@
 
 """Test the filter handler."""
 
-__all__ = [
-    'TestFilters',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -32,7 +27,6 @@ from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestFilters(unittest.TestCase):
     layer = ConfigLayer
 

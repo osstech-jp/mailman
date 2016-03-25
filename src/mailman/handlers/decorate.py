@@ -17,17 +17,11 @@
 
 """Decorate a message by sticking the header and footer around it."""
 
-__all__ = [
-    'Decorate',
-    'decorate',
-    'decorate_template',
-    ]
-
-
 import re
 import logging
 
 from email.mime.text import MIMEText
+from mailman import public
 from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
@@ -43,7 +37,6 @@ log = logging.getLogger('mailman.error')
 alog = logging.getLogger('mailman.archiver')
 
 
-
 def process(mlist, msg, msgdata):
     """Decorate the message with headers and footers."""
     # Digests and Mailman-craft messages should not get additional headers.
@@ -216,7 +209,7 @@ def process(mlist, msg, msgdata):
     msg['Content-Type'] = 'multipart/mixed'
 
 
-
+@public
 def decorate(mlist, uri, extradict=None):
     """Expand the decoration template from its URI."""
     if uri is None:
@@ -232,22 +225,25 @@ def decorate(mlist, uri, extradict=None):
     return decorate_template(mlist, template, extradict)
 
 
-
+@public
 def decorate_template(mlist, template, extradict=None):
     """Expand the decoration template."""
     # Create a dictionary which includes the default set of interpolation
     # variables allowed in headers and footers.  These will be augmented by
     # any key/value pairs in the extradict.
-    substitutions = dict(
-        fqdn_listname = mlist.fqdn_listname,
-        list_name     = mlist.list_name,
-        host_name     = mlist.mail_host,
-        display_name  = mlist.display_name,
-        listinfo_uri  = mlist.script_url('listinfo'),
-        list_requests = mlist.request_address,
-        description   = mlist.description,
-        info          = mlist.info,
-        )
+    substitutions = {
+        key: getattr(mlist, key)
+        for key in ('fqdn_listname',
+                    'list_name',
+                    'mail_host',
+                    'display_name',
+                    'request_address',
+                    'description',
+                    'info',
+                    )
+        }
+    # This must eventually go away.
+    substitutions['listinfo_uri'] = mlist.script_url('listinfo')
     if extradict is not None:
         substitutions.update(extradict)
     text = expand(template, substitutions)
@@ -255,7 +251,7 @@ def decorate_template(mlist, template, extradict=None):
     return re.sub(r' *\r?\n', r'\n', text)
 
 
-
+@public
 @implementer(IHandler)
 class Decorate:
     """Decorate a message with headers and footers."""

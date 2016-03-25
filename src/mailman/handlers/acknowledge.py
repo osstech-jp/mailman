@@ -20,11 +20,7 @@
 This only happens if the sender has set their AcknowledgePosts attribute.
 """
 
-__all__ = [
-    'Acknowledge',
-    ]
-
-
+from mailman import public
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.handler import IHandler
@@ -35,7 +31,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class Acknowledge:
     """Send an acknowledgment."""

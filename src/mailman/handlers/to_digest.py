@@ -17,13 +17,9 @@
 
 """Add the message to the list's current digest."""
 
-__all__ = [
-    'ToDigest',
-    ]
-
-
 import os
 
+from mailman import public
 from mailman.app.digests import maybe_send_digest_now
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -31,7 +27,7 @@ from mailman.utilities.mailbox import Mailbox
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IHandler)
 class ToDigest:
     """Add the message to the digest, possibly sending it."""

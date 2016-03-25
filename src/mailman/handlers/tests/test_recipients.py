@@ -17,12 +17,6 @@
 
 """Testing various recipients stuff."""
 
-__all__ = [
-    'TestMemberRecipients',
-    'TestOwnerRecipients',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -35,7 +29,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestMemberRecipients(unittest.TestCase):
     """Test regular member recipient calculation."""
 
@@ -87,7 +80,6 @@ To: test@example.com
                                                      'dave@example.com')))
 
 
-
 class TestOwnerRecipients(unittest.TestCase):
     """Test owner recipient calculation."""
 
