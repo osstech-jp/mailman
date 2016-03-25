@@ -17,17 +17,12 @@
 
 """Individualized delivery with header/footer decorations."""
 
-__all__ = [
-    'DecoratingDelivery',
-    'DecoratingMixin',
-    ]
-
-
+from mailman import public
 from mailman.config import config
 from mailman.mta.verp import VERPDelivery
 
 
-
+@public
 class DecoratingMixin:
     """Decorate a message with recipient-specific headers and footers."""
 
@@ -39,7 +34,7 @@ class DecoratingMixin:
         msgdata['nodecorate'] = True
 
 
-
+@public
 class DecoratingDelivery(DecoratingMixin, VERPDelivery):
     """Add recipient-specific headers and footers."""
 

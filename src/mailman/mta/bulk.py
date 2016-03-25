@@ -17,11 +17,7 @@
 
 """Bulk message delivery."""
 
-__all__ = [
-    'BulkDelivery',
-    ]
-
-
+from mailman import public
 from mailman.mta.base import BaseDelivery
 
 
@@ -38,7 +34,7 @@ CHUNKMAP = dict(
     )
 
 
-
+@public
 class BulkDelivery(BaseDelivery):
     """Deliver messages to the MSA in as few sessions as possible."""
 

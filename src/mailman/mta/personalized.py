@@ -17,21 +17,16 @@
 
 """Personalized delivery."""
 
-__all__ = [
-    'PersonalizedDelivery',
-    'PersonalizedMixin',
-    ]
-
-
 from email.header import Header
 from email.utils import formataddr
+from mailman import public
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.usermanager import IUserManager
 from mailman.mta.verp import VERPDelivery
 from zope.component import getUtility
 
 
-
+@public
 class PersonalizedMixin:
     """Personalize the message's To header.
 
@@ -63,7 +58,7 @@ class PersonalizedMixin:
             msg.replace_header('To', formataddr((name, recipient)))
 
 
-
+@public
 class PersonalizedDelivery(PersonalizedMixin, VERPDelivery):
     """Personalize the message's To header."""
 

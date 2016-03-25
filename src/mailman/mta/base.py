@@ -17,17 +17,12 @@
 
 """Base delivery class."""
 
-__all__ = [
-    'BaseDelivery',
-    'IndividualDelivery',
-    ]
-
-
 import copy
 import socket
 import logging
 import smtplib
 
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.mta import IMailTransportAgentDelivery
 from mailman.mta.connection import Connection
@@ -37,7 +32,7 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.smtp')
 
 
-
+@public
 @implementer(IMailTransportAgentDelivery)
 class BaseDelivery:
     """Base delivery class."""
@@ -118,7 +113,7 @@ class BaseDelivery:
         return sender
 
 
-
+@public
 class IndividualDelivery(BaseDelivery):
     """Deliver a unique individual message to each recipient.
 

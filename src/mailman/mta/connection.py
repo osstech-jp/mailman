@@ -17,22 +17,19 @@
 
 """MTA connections."""
 
-__all__ = [
-    'Connection',
-    ]
-
-
 import logging
 import smtplib
 
+from contextlib import suppress
 from lazr.config import as_boolean
+from mailman import public
 from mailman.config import config
 
 
 log = logging.getLogger('mailman.smtp')
 
 
-
+@public
 class Connection:
     """Manage a connection to the SMTP server."""
     def __init__(self, host, port, sessions_per_connection,
@@ -103,8 +100,6 @@ class Connection:
         """Mimic `smtplib.SMTP.quit`."""
         if self._connection is None:
             return
-        try:
+        with suppress(smtplib.SMTPException):
             self._connection.quit()
-        except smtplib.SMTPException:
-            pass
         self._connection = None

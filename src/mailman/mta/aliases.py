@@ -17,11 +17,7 @@
 
 """Utility for generating all the aliases of a mailing list."""
 
-__all__ = [
-    'MailTransportAgentAliases',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.mta import IMailTransportAgentAliases
 from zope.interface import implementer
 
@@ -38,7 +34,7 @@ SUBDESTINATIONS = (
     )
 
 
-
+@public
 @implementer(IMailTransportAgentAliases)
 class MailTransportAgentAliases:
     """Utility for generating all the aliases of a mailing list."""

@@ -17,14 +17,10 @@
 
 """Generic delivery."""
 
-__all__ = [
-    'deliver',
-    ]
-
-
 import time
 import logging
 
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
@@ -40,7 +36,7 @@ COMMA = ','
 log = logging.getLogger('mailman.smtp')
 
 
-
+@public
 class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
               IndividualDelivery):
     """Deliver one message to one recipient.
@@ -62,7 +58,7 @@ class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
             ])
 
 
-
+@public
 def deliver(mlist, msg, msgdata):
     """Deliver a message to the outgoing mail server."""
     # If there are no recipients, there's nothing to do.
@@ -94,15 +90,15 @@ def deliver(mlist, msg, msgdata):
     if size is None:
         size = len(msg.as_string())
     substitutions = dict(
-        msgid       = msg.get('message-id', 'n/a'),
-        listname    = mlist.fqdn_listname,
-        sender      = original_sender,
-        recip       = len(original_recipients),
-        size        = size,
-        time        = t1 - t0,
-        refused     = len(refused),
-        smtpcode    = 'n/a',
-        smtpmsg     = 'n/a',
+        msgid       = msg.get('message-id', 'n/a'),   # flake8: noqa
+        listname    = mlist.fqdn_listname,            # flake8: noqa
+        sender      = original_sender,                # flake8: noqa
+        recip       = len(original_recipients),       # flake8: noqa
+        size        = size,                           # flake8: noqa
+        time        = t1 - t0,                        # flake8: noqa
+        refused     = len(refused),                   # flake8: noqa
+        smtpcode    = 'n/a',                          # flake8: noqa
+        smtpmsg     = 'n/a',                          # flake8: noqa
         )
     template = config.logging.smtp.every
     if template.lower() != 'no':
@@ -145,9 +141,9 @@ def deliver(mlist, msg, msgdata):
         template = config.logging.smtp.failure
         if template.lower() != 'no':
             substitutions.update(
-                recip       = recipient,
-                smtpcode    = code,
-                smtpmsg     = smtp_message,
+                recip       = recipient,            # flake8: noqa
+                smtpcode    = code,                 # flake8: noqa
+                smtpmsg     = smtp_message,         # flake8: noqa
                 )
             log.info('%s', expand(template, substitutions))
     # Return the results

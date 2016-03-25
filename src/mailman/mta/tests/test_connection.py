@@ -17,11 +17,6 @@
 
 """Test MTA connections."""
 
-__all__ = [
-    'TestConnection',
-    ]
-
-
 import unittest
 
 from mailman.config import config
@@ -30,7 +25,6 @@ from mailman.testing.layers import SMTPLayer
 from smtplib import SMTPAuthenticationError
 
 
-
 class TestConnection(unittest.TestCase):
     layer = SMTPLayer
 

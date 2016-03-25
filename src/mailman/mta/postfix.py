@@ -17,15 +17,11 @@
 
 """Creation/deletion hooks for the Postfix MTA."""
 
-__all__ = [
-    'LMTP',
-    ]
-
-
 import os
 import logging
 
 from flufl.lock import Lock
+from mailman import public
 from mailman.config import config
 from mailman.config.config import external_configuration
 from mailman.interfaces.listmanager import IListManager
@@ -42,17 +38,16 @@ ALIASTMPL = '{0:{2}}lmtp:[{1.mta.lmtp_host}]:{1.mta.lmtp_port}'
 NL = '\n'
 
 
-
 class _FakeList:
     """Duck-typed list for the `IMailTransportAgentAliases` interface."""
 
     def __init__(self, list_name, mail_host):
         self.list_name = list_name
         self.mail_host = mail_host
-        self.posting_address = '{0}@{1}'.format(list_name, mail_host)
+        self.posting_address = '{}@{}'.format(list_name, mail_host)
 
 
-
+@public
 @implementer(IMailTransportAgentLifecycle)
 class LMTP:
     """Connect Mailman to Postfix via LMTP."""

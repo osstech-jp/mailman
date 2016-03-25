@@ -17,11 +17,6 @@
 
 """Test various aspects of email delivery."""
 
-__all__ = [
-    'TestIndividualDelivery',
-    ]
-
-
 import os
 import shutil
 import tempfile
@@ -36,9 +31,9 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 
 
-
 # Global test capture.
 _deliveries = []
+
 
 # Derive this from the default individual delivery class.  The point being
 # that we don't want to *actually* attempt delivery of the message to the MTA,
@@ -51,7 +46,6 @@ class DeliverTester(Deliver):
         return []
 
 
-
 class TestIndividualDelivery(unittest.TestCase):
     """Test personalized delivery details."""
 
@@ -72,6 +66,7 @@ Subject: test
 """)
         # Set up a personalized footer for decoration.
         self._template_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self._template_dir)
         path = os.path.join(self._template_dir,
                             'site', 'en', 'member-footer.txt')
         os.makedirs(os.path.dirname(path))
@@ -87,15 +82,14 @@ options  : $user_optionsurl
         [paths.testing]
         template_dir: {0}
         """.format(self._template_dir))
+        self.addCleanup(config.pop, 'templates')
         self._mlist.footer_uri = 'mailman:///member-footer.txt'
         # Let assertMultiLineEqual work without bounds.
         self.maxDiff = None
 
     def tearDown(self):
-        # Free references.
+        # Free global references.
         del _deliveries[:]
-        shutil.rmtree(self._template_dir)
-        config.pop('templates')
 
     def test_member_key(self):
         # 'personalize' should end up in the metadata dictionary so that

@@ -17,12 +17,6 @@
 
 """Test the MTA file generating utility."""
 
-__all__ = [
-    'TestAliases',
-    'TestPostfix',
-    ]
-
-
 import os
 import shutil
 import tempfile
@@ -44,7 +38,6 @@ def _strip_header(contents):
     return NL.join(lines[7:])
 
 
-
 class TestAliases(unittest.TestCase):
 
     layer = ConfigLayer
@@ -94,7 +87,7 @@ class TestAliases(unittest.TestCase):
             def __init__(self, list_name, mail_host):
                 self.list_name = list_name
                 self.mail_host = mail_host
-                self.posting_address = '{0}@{1}'.format(list_name, mail_host)
+                self.posting_address = '{}@{}'.format(list_name, mail_host)
         duck_list = Duck('sample', 'example.net')
         aliases = list(self.utility.aliases(duck_list))
         self.assertEqual(aliases, [
@@ -129,7 +122,6 @@ class TestAliases(unittest.TestCase):
             ])
 
 
-
 class TestPostfix(unittest.TestCase):
     """Test the Postfix LMTP alias generator."""
 
@@ -137,14 +129,12 @@ class TestPostfix(unittest.TestCase):
 
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.tempdir)
         self.utility = getUtility(IMailTransportAgentAliases)
         self.mlist = create_list('test@example.com')
         self.postfix = LMTP()
         # Let assertMultiLineEqual work without bounds.
         self.maxDiff = None
-
-    def tearDown(self):
-        shutil.rmtree(self.tempdir)
 
     def test_aliases(self):
         # Test the format of the Postfix alias generator.

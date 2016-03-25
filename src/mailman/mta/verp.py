@@ -17,14 +17,9 @@
 
 """VERP delivery."""
 
-__all__ = [
-    'VERPDelivery',
-    'VERPMixin',
-    ]
-
-
 import logging
 
+from mailman import public
 from mailman.config import config
 from mailman.mta.base import IndividualDelivery
 from mailman.utilities.email import split_email
@@ -35,7 +30,7 @@ DOT = '.'
 log = logging.getLogger('mailman.smtp')
 
 
-
+@public
 class VERPMixin:
     """Mixin for VERP functionality.
 
@@ -90,7 +85,7 @@ class VERPMixin:
             msg['X-Mailman-Copy'] = 'yes'
 
 
-
+@public
 class VERPDelivery(VERPMixin, IndividualDelivery):
     """Deliver a unique message to the MSA for each recipient."""
 

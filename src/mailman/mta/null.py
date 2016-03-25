@@ -20,16 +20,12 @@
 Exim one example of an MTA that Just Works.
 """
 
-__all__ = [
-    'NullMTA',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.mta import IMailTransportAgentLifecycle
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IMailTransportAgentLifecycle)
 class NullMTA:
     """Null MTA that just satisfies the interface."""
