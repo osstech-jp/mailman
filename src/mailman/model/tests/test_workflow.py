@@ -17,11 +17,6 @@
 
 """Test the workflow model."""
 
-__all__ = [
-    'TestWorkflow',
-    ]
-
-
 import unittest
 
 from mailman.interfaces.workflow import IWorkflowStateManager
@@ -29,7 +24,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestWorkflow(unittest.TestCase):
     layer = ConfigLayer
 

@@ -17,11 +17,7 @@
 
 """The content filter."""
 
-__all__ = [
-    'ContentFilter'
-    ]
-
-
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.mime import IContentFilter, FilterType
@@ -30,7 +26,7 @@ from sqlalchemy.orm import relationship
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IContentFilter)
 class ContentFilter(Model):
     """A single filter criteria."""

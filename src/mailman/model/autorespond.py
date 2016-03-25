@@ -17,6 +17,7 @@
 
 """Autoresponder records."""
 
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
@@ -27,13 +28,8 @@ from sqlalchemy import Column, Date, ForeignKey, Integer, desc
 from sqlalchemy.orm import relationship
 from zope.interface import implementer
 
-__all__ = [
-    'AutoResponseRecord',
-    'AutoResponseSet',
-    ]
 
-
-
+@public
 @implementer(IAutoResponseRecord)
 class AutoResponseRecord(Model):
     """See `IAutoResponseRecord`."""
@@ -58,6 +54,7 @@ class AutoResponseRecord(Model):
         self.date_sent = today()
 
 
+@public
 @implementer(IAutoResponseSet)
 class AutoResponseSet:
     """See `IAutoResponseSet`."""

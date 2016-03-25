@@ -17,13 +17,6 @@
 
 """Test rosters."""
 
-__all__ = [
-    'TestMailingListRoster',
-    'TestMembershipsRoster',
-    'TestUserRoster',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -36,7 +29,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestMailingListRoster(unittest.TestCase):
     """Test various aspects of a mailing list's roster."""
 
@@ -129,7 +121,6 @@ class TestMailingListRoster(unittest.TestCase):
         self.assertEqual(self._mlist.subscribers.member_count, 4)
 
 
-
 class TestMembershipsRoster(unittest.TestCase):
     """Test the memberships roster."""
 
@@ -207,7 +198,6 @@ class TestMembershipsRoster(unittest.TestCase):
         self.assertEqual(users[0], self._anne)
 
 
-
 class TestUserRoster(unittest.TestCase):
     """Test aspects of rosters when users are subscribed."""
 

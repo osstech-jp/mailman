@@ -17,11 +17,6 @@
 
 """Test the subscription service."""
 
-__all__ = [
-    'TestSubscriptionService',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list

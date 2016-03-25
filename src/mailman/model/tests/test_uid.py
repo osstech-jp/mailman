@@ -17,11 +17,6 @@
 
 """Test the UID model class."""
 
-__all__ = [
-    'TestUID',
-    ]
-
-
 import uuid
 import unittest
 
@@ -32,7 +27,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestUID(unittest.TestCase):
     layer = ConfigLayer
 

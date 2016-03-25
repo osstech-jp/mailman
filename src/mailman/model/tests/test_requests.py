@@ -17,11 +17,6 @@
 
 """Test the various pending requests interfaces."""
 
-__all__ = [
-    'TestRequests',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -31,7 +26,6 @@ from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestRequests(unittest.TestCase):
     layer = ConfigLayer
 

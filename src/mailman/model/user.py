@@ -17,12 +17,7 @@
 
 """Model for users."""
 
-__all__ = [
-    'DomainOwner',
-    'User',
-    ]
-
-
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import UUID
@@ -44,7 +39,7 @@ from zope.interface import implementer
 uid_factory = UIDFactory(context='users')
 
 
-
+@public
 @implementer(IUser)
 class User(Model):
     """Mailman users."""
@@ -60,7 +55,7 @@ class User(Model):
 
     addresses = relationship(
         'Address', backref='user',
-        primaryjoin=(id==Address.user_id))
+        primaryjoin=(id == Address.user_id))
 
     _preferred_address_id = Column(
         Integer,
@@ -69,7 +64,7 @@ class User(Model):
                    ondelete='SET NULL'))
 
     _preferred_address = relationship(
-        'Address', primaryjoin=(_preferred_address_id==Address.id),
+        'Address', primaryjoin=(_preferred_address_id == Address.id),
         post_update=True)
 
     preferences_id = Column(Integer, ForeignKey('preferences.id'), index=True)
@@ -82,7 +77,7 @@ class User(Model):
         self._created_on = date_factory.now()
         user_id = uid_factory.new()
         assert store.query(User).filter_by(_user_id=user_id).count() == 0, (
-            'Duplicate user id {0}'.format(user_id))
+            'Duplicate user id {}'.format(user_id))
         self._user_id = user_id
         self.display_name = ('' if display_name is None else display_name)
         if preferences is not None:
@@ -180,7 +175,7 @@ class User(Model):
         return Memberships(self)
 
 
-
+@public
 class DomainOwner(Model):
     """Internal table for associating domains to their owners."""
 

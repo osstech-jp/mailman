@@ -17,11 +17,6 @@
 
 """Test the message store."""
 
-__all__ = [
-    'TestMessageStore',
-    ]
-
-
 import os
 import unittest
 
@@ -35,7 +30,6 @@ from mailman.utilities.email import add_message_hash
 from zope.component import getUtility
 
 
-
 class TestMessageStore(unittest.TestCase):
     layer = ConfigLayer
 

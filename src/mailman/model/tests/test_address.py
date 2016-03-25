@@ -17,11 +17,6 @@
 
 """Test addresses."""
 
-__all__ = [
-    'TestAddress',
-    ]
-
-
 import unittest
 
 from mailman.email.validate import InvalidEmailAddressError
@@ -32,7 +27,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestAddress(unittest.TestCase):
     """Test addresses."""
 
@@ -43,8 +37,8 @@ class TestAddress(unittest.TestCase):
         self._address = self._usermgr.create_address('FPERSON@example.com')
 
     def test_invalid_email_string_raises_exception(self):
-        with self.assertRaises(InvalidEmailAddressError):
-            Address('not_a_valid_email_string', '')
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'not_a_valid_email_string', '')
 
     def test_local_part_differs_only_by_case(self):
         with self.assertRaises(ExistingAddressError) as cm:

@@ -18,6 +18,7 @@
 """Model for addresses."""
 
 from email.utils import formataddr
+from mailman import public
 from mailman.database.model import Model
 from mailman.interfaces.address import (
     AddressVerificationEvent, IAddress, IEmailValidator)
@@ -29,11 +30,7 @@ from zope.event import notify
 from zope.interface import implementer
 
 
-__all__ = [
-    'Address',
-    ]
-
-
+@public
 @implementer(IAddress)
 class Address(Model):
     """See `IAddress`."""
@@ -70,10 +67,10 @@ class Address(Model):
         verified = ('verified' if self.verified_on else 'not verified')
         address_str = str(self)
         if self._original is None:
-            return '<Address: {0} [{1}] at {2:#x}>'.format(
+            return '<Address: {} [{}] at {:#x}>'.format(
                 address_str, verified, id(self))
         else:
-            return '<Address: {0} [{1}] key: {2} at {3:#x}>'.format(
+            return '<Address: {} [{}] key: {} at {:#x}>'.format(
                 address_str, verified, self.email, id(self))
 
     @property

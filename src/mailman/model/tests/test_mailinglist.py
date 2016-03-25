@@ -17,14 +17,6 @@
 
 """Test MailingLists and related model objects.."""
 
-__all__ = [
-    'TestAcceptableAliases',
-    'TestDisabledListArchiver',
-    'TestListArchiver',
-    'TestMailingList',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -96,8 +88,7 @@ class TestMailingList(unittest.TestCase):
         user.preferred_address = address
         self._mlist.subscribe(user)
         # The welcome message was sent to the preferred address.
-        items = get_queue_messages('virgin')
-        self.assertEqual(len(items), 1)
+        items = get_queue_messages('virgin', expected_count=1)
         self.assertIn('Anne Person <aperson@example.com>',
                       items[0].msg.get_payload())
 
@@ -204,7 +195,7 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('header', 'pattern')
         self.assertEqual(len(self._mlist.header_matches), 1)
-        self.assertEqual(self._mlist.header_matches[0].chain, None)
+        self.assertIsNone(self._mlist.header_matches[0].chain)
 
     def test_duplicate(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -241,11 +232,11 @@ class TestHeaderMatch(unittest.TestCase):
                    for match in IHeaderMatchList(self._mlist)]
         self.assertEqual(
             matches, [
-            ('header', 'pattern', None),
-            ('subject', 'patt.*', None),
-            ('from', '.*@example.com', 'discard'),
-            ('from', '.*@example.org', 'accept'),
-            ])
+                ('header', 'pattern', None),
+                ('subject', 'patt.*', None),
+                ('from', '.*@example.com', 'discard'),
+                ('from', '.*@example.org', 'accept'),
+                ])
 
     def test_clear(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -286,21 +277,21 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches.append('header-3', 'pattern')
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-1', 1),
-            ('header-2', 2),
-            ('header-3', 3),
-            ])
+                ('header-0', 0),
+                ('header-1', 1),
+                ('header-2', 2),
+                ('header-3', 3),
+                ])
         header_match_2 = self._mlist.header_matches[2]
         self.assertEqual(header_match_2.position, 2)
         header_match_2.position = 1
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-2', 1),
-            ('header-1', 2),
-            ('header-3', 3),
-            ])
+                ('header-0', 0),
+                ('header-2', 1),
+                ('header-1', 2),
+                ('header-3', 3),
+                ])
 
     def test_move_down(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -310,21 +301,21 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches.append('header-3', 'pattern')
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-1', 1),
-            ('header-2', 2),
-            ('header-3', 3),
-            ])
+                ('header-0', 0),
+                ('header-1', 1),
+                ('header-2', 2),
+                ('header-3', 3),
+                ])
         header_match_1 = self._mlist.header_matches[1]
         self.assertEqual(header_match_1.position, 1)
         header_match_1.position = 2
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-2', 1),
-            ('header-1', 2),
-            ('header-3', 3),
-            ])
+                ('header-0', 0),
+                ('header-2', 1),
+                ('header-1', 2),
+                ('header-3', 3),
+                ])
 
     def test_move_identical(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -333,19 +324,19 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches.append('header-2', 'pattern')
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-1', 1),
-            ('header-2', 2),
-            ])
+                ('header-0', 0),
+                ('header-1', 1),
+                ('header-2', 2),
+                ])
         header_match_1 = self._mlist.header_matches[1]
         self.assertEqual(header_match_1.position, 1)
         header_match_1.position = 1
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-1', 1),
-            ('header-2', 2),
-            ])
+                ('header-0', 0),
+                ('header-1', 1),
+                ('header-2', 2),
+                ])
 
     def test_move_negative(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -367,16 +358,16 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches.append('header-1', 'pattern')
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-1', 1),
-            ])
+                ('header-0', 0),
+                ('header-1', 1),
+                ])
         header_matches.insert(1, 'header-2', 'pattern')
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-2', 1),
-            ('header-1', 2),
-            ])
+                ('header-0', 0),
+                ('header-2', 1),
+                ('header-1', 2),
+                ])
 
     def test_rebuild_sequence_after_remove(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -385,16 +376,16 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches.append('header-2', 'pattern')
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-0', 0),
-            ('header-1', 1),
-            ('header-2', 2),
-            ])
+                ('header-0', 0),
+                ('header-1', 1),
+                ('header-2', 2),
+                ])
         del header_matches[0]
         self.assertEqual(
             [(match.header, match.position) for match in header_matches], [
-            ('header-1', 0),
-            ('header-2', 1),
-            ])
+                ('header-1', 0),
+                ('header-2', 1),
+                ])
         header_matches.remove('header-1', 'pattern')
         self.assertEqual(
             [(match.header, match.position) for match in header_matches],

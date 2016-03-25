@@ -17,11 +17,6 @@
 
 """Test bounce model objects."""
 
-__all__ = [
-    'TestBounceEvents',
-    ]
-
-
 import unittest
 
 from datetime import datetime
@@ -34,7 +29,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestBounceEvents(unittest.TestCase):
     layer = ConfigLayer
 
@@ -70,7 +64,7 @@ Message-Id: <first>
         self.assertEqual(event.timestamp, datetime(2005, 8, 1, 7, 49, 23))
         self.assertEqual(event.message_id, '<first>')
         self.assertEqual(event.context, BounceContext.normal)
-        self.assertEqual(event.processed, False)
+        self.assertFalse(event.processed)
 
     def test_unprocessed_events_iterator(self):
         with transaction():

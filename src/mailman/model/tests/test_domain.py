@@ -17,12 +17,6 @@
 
 """Test domains."""
 
-__all__ = [
-    'TestDomainLifecycleEvents',
-    'TestDomainManager',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -36,7 +30,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestDomainManager(unittest.TestCase):
     layer = ConfigLayer
 
@@ -53,9 +46,9 @@ class TestDomainManager(unittest.TestCase):
         with event_subscribers(self._record_event):
             domain = self._manager.add('example.org')
         self.assertEqual(len(self._events), 2)
-        self.assertTrue(isinstance(self._events[0], DomainCreatingEvent))
+        self.assertIsInstance(self._events[0], DomainCreatingEvent)
         self.assertEqual(self._events[0].mail_host, 'example.org')
-        self.assertTrue(isinstance(self._events[1], DomainCreatedEvent))
+        self.assertIsInstance(self._events[1], DomainCreatedEvent)
         self.assertEqual(self._events[1].domain, domain)
 
     def test_delete_domain_event(self):
@@ -65,9 +58,9 @@ class TestDomainManager(unittest.TestCase):
         with event_subscribers(self._record_event):
             self._manager.remove('example.org')
         self.assertEqual(len(self._events), 2)
-        self.assertTrue(isinstance(self._events[0], DomainDeletingEvent))
+        self.assertIsInstance(self._events[0], DomainDeletingEvent)
         self.assertEqual(self._events[0].domain, domain)
-        self.assertTrue(isinstance(self._events[1], DomainDeletedEvent))
+        self.assertIsInstance(self._events[1], DomainDeletedEvent)
         self.assertEqual(self._events[1].mail_host, 'example.org')
 
     def test_lookup_missing_domain(self):
@@ -129,7 +122,7 @@ class TestDomainManager(unittest.TestCase):
         self.assertEqual(
             sorted(owner.addresses[0].email for owner in domain.owners),
             ['anne@example.com', 'bart@example.com'])
-        def sort_key(owner):
+        def sort_key(owner):                        # flake8: noqa
             return owner.addresses[0].email
         self.assertEqual(sorted(domain.owners, key=sort_key), [anne, bart])
 
@@ -172,7 +165,6 @@ class TestDomainManager(unittest.TestCase):
                          ['anne@example.org', 'bart@example.net'])
 
 
-
 class TestDomainLifecycleEvents(unittest.TestCase):
     layer = ConfigLayer
 

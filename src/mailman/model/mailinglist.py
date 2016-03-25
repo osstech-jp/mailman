@@ -19,6 +19,7 @@
 
 import os
 
+from mailman import public
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -60,15 +61,12 @@ from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
 
-__all__ = [
-    'MailingList',
-    ]
-
 
 SPACE = ' '
 UNDERSCORE = '_'
 
 
+@public
 @implementer(IMailingList)
 class MailingList(Model):
     """See `IMailingList`."""
@@ -101,7 +99,7 @@ class MailingList(Model):
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
-    accept_these_nonmembers = Column(PickleType) # XXX
+    accept_these_nonmembers = Column(PickleType)       # XXX
     admin_immed_notify = Column(Boolean)
     admin_notify_mchanges = Column(Boolean)
     administrivia = Column(Boolean)
@@ -120,13 +118,13 @@ class MailingList(Model):
     collapse_alternatives = Column(Boolean)
     convert_html_to_plaintext = Column(Boolean)
     # Bounces.
-    bounce_info_stale_after = Column(Interval) # XXX
-    bounce_matching_headers = Column(Unicode) # XXX
-    bounce_notify_owner_on_disable = Column(Boolean) # XXX
-    bounce_notify_owner_on_removal = Column(Boolean) # XXX
-    bounce_score_threshold = Column(Integer) # XXX
-    bounce_you_are_disabled_warnings = Column(Integer) # XXX
-    bounce_you_are_disabled_warnings_interval = Column(Interval) # XXX
+    bounce_info_stale_after = Column(Interval)                   # XXX
+    bounce_matching_headers = Column(Unicode)                    # XXX
+    bounce_notify_owner_on_disable = Column(Boolean)             # XXX
+    bounce_notify_owner_on_removal = Column(Boolean)             # XXX
+    bounce_score_threshold = Column(Integer)                     # XXX
+    bounce_you_are_disabled_warnings = Column(Integer)           # XXX
+    bounce_you_are_disabled_warnings_interval = Column(Interval)  # XXX
     forward_unrecognized_bounces_to = Column(
         Enum(UnrecognizedBounceDisposition))
     process_bounces = Column(Boolean)
@@ -160,7 +158,7 @@ class MailingList(Model):
     member_moderation_notice = Column(Unicode)
     mime_is_default_digest = Column(Boolean)
     # FIXME: There should be no moderator_password
-    moderator_password = Column(LargeBinary) # TODO : was RawStr()
+    moderator_password = Column(LargeBinary)             # TODO : was RawStr()
     newsgroup_moderation = Column(Enum(NewsgroupModeration))
     nntp_prefix_subject_too = Column(Boolean)
     nonmember_rejection_notice = Column(Unicode)
@@ -277,49 +275,49 @@ class MailingList(Model):
     @property
     def no_reply_address(self):
         """See `IMailingList`."""
-        return '{0}@{1}'.format(config.mailman.noreply_address, self.mail_host)
+        return '{}@{}'.format(config.mailman.noreply_address, self.mail_host)
 
     @property
     def owner_address(self):
         """See `IMailingList`."""
-        return '{0}-owner@{1}'.format(self.list_name, self.mail_host)
+        return '{}-owner@{}'.format(self.list_name, self.mail_host)
 
     @property
     def request_address(self):
         """See `IMailingList`."""
-        return '{0}-request@{1}'.format(self.list_name, self.mail_host)
+        return '{}-request@{}'.format(self.list_name, self.mail_host)
 
     @property
     def bounces_address(self):
         """See `IMailingList`."""
-        return '{0}-bounces@{1}'.format(self.list_name, self.mail_host)
+        return '{}-bounces@{}'.format(self.list_name, self.mail_host)
 
     @property
     def join_address(self):
         """See `IMailingList`."""
-        return '{0}-join@{1}'.format(self.list_name, self.mail_host)
+        return '{}-join@{}'.format(self.list_name, self.mail_host)
 
     @property
     def leave_address(self):
         """See `IMailingList`."""
-        return '{0}-leave@{1}'.format(self.list_name, self.mail_host)
+        return '{}-leave@{}'.format(self.list_name, self.mail_host)
 
     @property
     def subscribe_address(self):
         """See `IMailingList`."""
-        return '{0}-subscribe@{1}'.format(self.list_name, self.mail_host)
+        return '{}-subscribe@{}'.format(self.list_name, self.mail_host)
 
     @property
     def unsubscribe_address(self):
         """See `IMailingList`."""
-        return '{0}-unsubscribe@{1}'.format(self.list_name, self.mail_host)
+        return '{}-unsubscribe@{}'.format(self.list_name, self.mail_host)
 
     def confirm_address(self, cookie):
         """See `IMailingList`."""
         local_part = expand(config.mta.verp_confirm_format, dict(
-            address = '{0}-confirm'.format(self.list_name),
-            cookie  = cookie))
-        return '{0}@{1}'.format(local_part, self.mail_host)
+            address='{}-confirm'.format(self.list_name),
+            cookie=cookie))
+        return '{}@{}'.format(local_part, self.mail_host)
 
     @property
     def preferred_language(self):
@@ -499,6 +497,7 @@ class MailingList(Model):
         return member
 
 
+@public
 @implementer(IAcceptableAlias)
 class AcceptableAlias(Model):
     """See `IAcceptableAlias`."""
@@ -519,6 +518,7 @@ class AcceptableAlias(Model):
         self.alias = alias
 
 
+@public
 @implementer(IAcceptableAliasSet)
 class AcceptableAliasSet:
     """See `IAcceptableAliasSet`."""
@@ -554,6 +554,7 @@ class AcceptableAliasSet:
             yield alias.alias
 
 
+@public
 @implementer(IListArchiver)
 class ListArchiver(Model):
     """See `IListArchiver`."""
@@ -591,6 +592,7 @@ class ListArchiver(Model):
         self._is_enabled = value
 
 
+@public
 @implementer(IListArchiverSet)
 class ListArchiverSet:
     @dbconnection
@@ -623,6 +625,7 @@ class ListArchiverSet:
             ListArchiver.name == archiver_name).one_or_none()
 
 
+@public
 @implementer(IHeaderMatch)
 class HeaderMatch(Model):
     """See `IHeaderMatch`."""
@@ -667,7 +670,7 @@ class HeaderMatch(Model):
             raise ValueError(
                 'There are {count} header matches for this list, '
                 'the new position cannot be {count} or higher'.format(
-                count=existing_count))
+                    count=existing_count))
         if value < self.position:
             # Moving up: header matches between the new position and the
             # current one must be moved down the list to make room. Those
@@ -689,6 +692,7 @@ class HeaderMatch(Model):
         self._position = value
 
 
+@public
 @implementer(IHeaderMatchList)
 class HeaderMatchList:
     """See `IHeaderMatchList`."""

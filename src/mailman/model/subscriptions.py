@@ -17,11 +17,7 @@
 
 """Subscription services."""
 
-__all__ = [
-    'SubscriptionService',
-    ]
-
-
+from mailman import public
 from mailman.app.membership import delete_member
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
@@ -38,6 +34,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
+@public
 @implementer(ISubscriptionService)
 class SubscriptionService:
     """Subscription services for the REST API."""

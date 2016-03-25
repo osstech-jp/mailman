@@ -19,17 +19,15 @@
 
 import re
 
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.bans import IBan, IBanManager
 from sqlalchemy import Column, Integer, Unicode
 from zope.interface import implementer
 
-__all__ = [
-    'BanManager',
-    ]
 
-
+@public
 @implementer(IBan)
 class Ban(Model):
     """See `IBan`."""
@@ -46,6 +44,7 @@ class Ban(Model):
         self.list_id = list_id
 
 
+@public
 @implementer(IBanManager)
 class BanManager:
     """See `IBanManager`."""
@@ -84,7 +83,7 @@ class BanManager:
             bans = store.query(Ban).filter_by(list_id=None)
             for ban in bans:
                 if (ban.email.startswith('^') and
-                    re.match(ban.email, email, re.IGNORECASE) is not None):
+                        re.match(ban.email, email, re.IGNORECASE) is not None):
                     return True
         else:
             # This is a list-specific ban.
@@ -99,13 +98,13 @@ class BanManager:
             bans = store.query(Ban).filter_by(list_id=list_id)
             for ban in bans:
                 if (ban.email.startswith('^') and
-                    re.match(ban.email, email, re.IGNORECASE) is not None):
+                        re.match(ban.email, email, re.IGNORECASE) is not None):
                     return True
             # And now try global pattern bans.
             bans = store.query(Ban).filter_by(list_id=None)
             for ban in bans:
                 if (ban.email.startswith('^') and
-                    re.match(ban.email, email, re.IGNORECASE) is not None):
+                        re.match(ban.email, email, re.IGNORECASE) is not None):
                     return True
         return False
 

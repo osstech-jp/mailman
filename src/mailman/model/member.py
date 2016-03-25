@@ -17,6 +17,7 @@
 
 """Model for members."""
 
+from mailman import public
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -35,15 +36,11 @@ from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
 
-__all__ = [
-    'Member',
-    ]
-
-
 
 uid_factory = UIDFactory(context='members')
 
 
+@public
 @implementer(IMember)
 class Member(Model):
     """See `IMember`."""
@@ -84,12 +81,12 @@ class Member(Model):
                 list_id).default_member_action
         else:
             assert role is MemberRole.nonmember, (
-                'Invalid MemberRole: {0}'.format(role))
+                'Invalid MemberRole: {}'.format(role))
             self.moderation_action = getUtility(IListManager).get_by_list_id(
                 list_id).default_nonmember_action
 
     def __repr__(self):
-        return '<Member: {0} on {1} as {2}>'.format(
+        return '<Member: {} on {} as {}>'.format(
             self.address, self.mailing_list.fqdn_listname, self.role)
 
     @property

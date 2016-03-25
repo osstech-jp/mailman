@@ -22,18 +22,7 @@ the ones that fit a particular role.  These are used as the member, owner,
 moderator, and administrator roster filters.
 """
 
-__all__ = [
-    'AdministratorRoster',
-    'DigestMemberRoster',
-    'MemberRoster',
-    'Memberships',
-    'ModeratorRoster',
-    'OwnerRoster',
-    'RegularMemberRoster',
-    'Subscribers',
-    ]
-
-
+from mailman import public
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.roster import IRoster
@@ -43,7 +32,7 @@ from sqlalchemy import or_
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IRoster)
 class AbstractRoster:
     """An abstract IRoster class.
@@ -139,7 +128,7 @@ class AbstractRoster:
         return memberships
 
 
-
+@public
 class MemberRoster(AbstractRoster):
     """Return all the members of a list."""
 
@@ -147,7 +136,7 @@ class MemberRoster(AbstractRoster):
     role = MemberRole.member
 
 
-
+@public
 class NonmemberRoster(AbstractRoster):
     """Return all the nonmembers of a list."""
 
@@ -155,7 +144,7 @@ class NonmemberRoster(AbstractRoster):
     role = MemberRole.nonmember
 
 
-
+@public
 class OwnerRoster(AbstractRoster):
     """Return all the owners of a list."""
 
@@ -163,7 +152,7 @@ class OwnerRoster(AbstractRoster):
     role = MemberRole.owner
 
 
-
+@public
 class ModeratorRoster(AbstractRoster):
     """Return all the owners of a list."""
 
@@ -171,7 +160,7 @@ class ModeratorRoster(AbstractRoster):
     role = MemberRole.moderator
 
 
-
+@public
 class AdministratorRoster(AbstractRoster):
     """Return all the administrators of a list."""
 
@@ -195,7 +184,7 @@ class AdministratorRoster(AbstractRoster):
             Member.address_id == Address.id).one_or_none()
 
 
-
+@public
 class DeliveryMemberRoster(AbstractRoster):
     """Return all the members having a particular kind of delivery."""
 
@@ -219,13 +208,14 @@ class DeliveryMemberRoster(AbstractRoster):
         :rtype: generator
         """
         results = store.query(Member).filter_by(
-            list_id = self._mlist.list_id,
-            role = MemberRole.member)
+            list_id=self._mlist.list_id,
+            role=MemberRole.member)
         for member in results:
             if member.delivery_mode in delivery_modes:
                 yield member
 
 
+@public
 class RegularMemberRoster(DeliveryMemberRoster):
     """Return all the regular delivery members of a list."""
 
@@ -237,7 +227,7 @@ class RegularMemberRoster(DeliveryMemberRoster):
         yield from self._get_members(DeliveryMode.regular)
 
 
-
+@public
 class DigestMemberRoster(DeliveryMemberRoster):
     """Return all the regular delivery members of a list."""
 
@@ -252,7 +242,7 @@ class DigestMemberRoster(DeliveryMemberRoster):
             DeliveryMode.summary_digests)
 
 
-
+@public
 class Subscribers(AbstractRoster):
     """Return all subscribed members regardless of their role."""
 
@@ -260,10 +250,10 @@ class Subscribers(AbstractRoster):
 
     @dbconnection
     def _query(self, store):
-        return store.query(Member).filter_by(list_id = self._mlist.list_id)
+        return store.query(Member).filter_by(list_id=self._mlist.list_id)
 
 
-
+@public
 @implementer(IRoster)
 class Memberships:
     """A roster of a single user's memberships."""

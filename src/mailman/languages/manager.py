@@ -17,11 +17,7 @@
 
 """Language manager."""
 
-__all__ = [
-    'LanguageManager',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from mailman.interfaces.languages import ILanguageManager
 from mailman.languages.language import Language
@@ -29,7 +25,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ILanguageManager)
 class LanguageManager:
     """Language manager."""
@@ -73,7 +69,7 @@ class LanguageManager:
         self._languages.clear()
 
 
-
+@public
 def handle_ConfigurationUpdatedEvent(event):
     if not isinstance(event, ConfigurationUpdatedEvent):
         return

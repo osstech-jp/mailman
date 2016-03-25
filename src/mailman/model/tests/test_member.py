@@ -17,11 +17,6 @@
 
 """Test members."""
 
-__all__ = [
-    'TestMember',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -35,7 +30,6 @@ from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
-
 class TestMember(unittest.TestCase):
     layer = ConfigLayer
 

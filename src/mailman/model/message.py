@@ -17,11 +17,7 @@
 
 """Model for messages."""
 
-__all__ = [
-    'Message',
-    ]
-
-
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.messages import IMessage
@@ -29,7 +25,7 @@ from sqlalchemy import Column, Integer, Unicode
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IMessage)
 class Message(Model):
     """A message in the message store."""

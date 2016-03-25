@@ -17,11 +17,7 @@
 
 """A user manager."""
 
-__all__ = [
-    'UserManager',
-    ]
-
-
+from mailman import public
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
@@ -34,7 +30,7 @@ from mailman.model.user import User
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IUserManager)
 class UserManager:
     """See `IUserManager`."""
@@ -108,7 +104,7 @@ class UserManager:
     @dbconnection
     def create_address(self, store, email, display_name=None):
         """See `IUserManager`."""
-        addresses = store.query(Address).filter(Address.email==email.lower())
+        addresses = store.query(Address).filter(Address.email == email.lower())
         if addresses.count() == 1:
             found = addresses[0]
             raise ExistingAddressError(found.original_email)

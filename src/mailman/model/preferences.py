@@ -17,11 +17,7 @@
 
 """Model for preferences."""
 
-__all__ = [
-    'Preferences',
-    ]
-
-
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.languages import ILanguageManager
@@ -32,7 +28,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IPreferences)
 class Preferences(Model):
     """See `IPreferences`."""
@@ -49,7 +45,7 @@ class Preferences(Model):
     delivery_status = Column(Enum(DeliveryStatus))
 
     def __repr__(self):
-        return '<Preferences object at {0:#x}>'.format(id(self))
+        return '<Preferences object at {:#x}>'.format(id(self))
 
     @property
     def preferred_language(self):

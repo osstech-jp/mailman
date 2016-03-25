@@ -17,11 +17,6 @@
 
 """Test the IUserManager implementation."""
 
-__all__ = [
-    'TestUserManager',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -35,7 +30,6 @@ from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
-
 class TestUserManager(unittest.TestCase):
     layer = ConfigLayer
 

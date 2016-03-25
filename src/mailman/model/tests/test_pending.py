@@ -17,11 +17,6 @@
 
 """Test pendings."""
 
-__all__ = [
-    'TestPendings',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -38,7 +33,6 @@ class SimplePendable(dict):
     PEND_TYPE = 'simple'
 
 
-
 class TestPendings(unittest.TestCase):
     """Test pendings."""
 

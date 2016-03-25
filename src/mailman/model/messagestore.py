@@ -17,15 +17,11 @@
 
 """Model for message stores."""
 
-__all__ = [
-    'MessageStore',
-    ]
-
-
 import os
 import errno
 import pickle
 
+from mailman import public
 from mailman.config import config
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.messages import IMessageStore
@@ -41,7 +37,7 @@ MAX_SPLITS = 2
 EMPTYSTRING = ''
 
 
-
+@public
 @implementer(IMessageStore)
 class MessageStore:
     """See `IMessageStore`."""

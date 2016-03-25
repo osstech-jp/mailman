@@ -17,12 +17,7 @@
 
 """Model for workflow states."""
 
-__all__ = [
-    'WorkflowState',
-    'WorkflowStateManager',
-    ]
-
-
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.workflow import IWorkflowState, IWorkflowStateManager
@@ -30,7 +25,7 @@ from sqlalchemy import Column, Unicode
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IWorkflowState)
 class WorkflowState(Model):
     """Workflow states."""
@@ -43,7 +38,7 @@ class WorkflowState(Model):
     data = Column(Unicode)
 
 
-
+@public
 @implementer(IWorkflowStateManager)
 class WorkflowStateManager:
     """See `IWorkflowStateManager`."""

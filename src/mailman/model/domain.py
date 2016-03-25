@@ -17,6 +17,7 @@
 
 """Domains."""
 
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.domain import (
@@ -32,12 +33,8 @@ from zope.event import notify
 from zope.interface import implementer
 from zope.component import getUtility
 
-__all__ = [
-    'Domain',
-    'DomainManager',
-    ]
 
-
+@public
 @implementer(IDomain)
 class Domain(Model):
     """Domains."""
@@ -134,6 +131,7 @@ class Domain(Model):
         self.owners.remove(user_manager.get_user(owner))
 
 
+@public
 @implementer(IDomainManager)
 class DomainManager:
     """Domain manager."""
@@ -149,7 +147,7 @@ class DomainManager:
         # a constraint that should (also) be maintained in the database.
         if self.get(mail_host) is not None:
             raise BadDomainSpecificationError(
-                'Duplicate email host: %s' % mail_host)
+                'Duplicate email host: {}'.format(mail_host))
         notify(DomainCreatingEvent(mail_host))
         domain = Domain(mail_host, description, base_url, owners)
         store.add(domain)

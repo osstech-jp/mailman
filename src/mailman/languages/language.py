@@ -18,16 +18,12 @@
 """The representation of a language."""
 
 
-__all__ = [
-    'Language',
-    ]
-
-
+from mailman import public
 from mailman.interfaces.languages import ILanguage
 from zope.interface import implementer
 
 
-
+@public
 @implementer(ILanguage)
 class Language:
     """The representation of a language."""

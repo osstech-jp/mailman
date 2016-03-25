@@ -17,19 +17,14 @@
 
 """Unique IDs."""
 
-__all__ = [
-    'UID',
-    ]
-
-
-
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import UUID
 from sqlalchemy import Column, Integer
 
 
-
+@public
 class UID(Model):
     """Enforce uniqueness of uids through a database table.
 

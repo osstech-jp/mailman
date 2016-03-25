@@ -17,13 +17,6 @@
 
 """Test the ListManager."""
 
-__all__ = [
-    'TestListCreation',
-    'TestListLifecycleEvents',
-    'TestListManager',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -46,7 +39,6 @@ from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-
 class TestListManager(unittest.TestCase):
     layer = ConfigLayer
 
@@ -62,9 +54,9 @@ class TestListManager(unittest.TestCase):
         with event_subscribers(self._record_event):
             mlist = getUtility(IListManager).create('test@example.com')
         self.assertEqual(len(self._events), 2)
-        self.assertTrue(isinstance(self._events[0], ListCreatingEvent))
+        self.assertIsInstance(self._events[0], ListCreatingEvent)
         self.assertEqual(self._events[0].fqdn_listname, 'test@example.com')
-        self.assertTrue(isinstance(self._events[1], ListCreatedEvent))
+        self.assertIsInstance(self._events[1], ListCreatedEvent)
         self.assertEqual(self._events[1].mailing_list, mlist)
 
     def test_delete_list_event(self):
@@ -74,9 +66,9 @@ class TestListManager(unittest.TestCase):
         with event_subscribers(self._record_event):
             getUtility(IListManager).delete(mlist)
         self.assertEqual(len(self._events), 2)
-        self.assertTrue(isinstance(self._events[0], ListDeletingEvent))
+        self.assertIsInstance(self._events[0], ListDeletingEvent)
         self.assertEqual(self._events[0].mailing_list, mlist)
-        self.assertTrue(isinstance(self._events[1], ListDeletedEvent))
+        self.assertIsInstance(self._events[1], ListDeletedEvent)
         self.assertEqual(self._events[1].fqdn_listname, 'another@example.com')
 
     def test_list_manager_list_ids(self):
@@ -112,7 +104,6 @@ class TestListManager(unittest.TestCase):
         self.assertIsNone(list_manager.get('ant@example.com'))
 
 
-
 class TestListLifecycleEvents(unittest.TestCase):
     layer = ConfigLayer
 
@@ -137,8 +128,8 @@ class TestListLifecycleEvents(unittest.TestCase):
         # We deleted the ant@example.com mailing list.  Anne's and Bart's
         # membership in this list should now be removed, but Anne's membership
         # in bee@example.com should still exist.
-        self.assertEqual(service.get_member(anne_ant_id), None)
-        self.assertEqual(service.get_member(bart_ant_id), None)
+        self.assertIsNone(service.get_member(anne_ant_id))
+        self.assertIsNone(service.get_member(bart_ant_id))
         self.assertEqual(service.get_member(anne_bee_id), anne_bee)
 
     def test_requests_are_deleted_when_mailing_list_is_deleted(self):
@@ -171,11 +162,10 @@ Message-ID: <argon>
             setattr(self._ant, name, ['test-filter-1', 'test-filter-2'])
         getUtility(IListManager).delete(self._ant)
         filters = config.db.store.query(ContentFilter).filter_by(
-            mailing_list = self._ant)
+            mailing_list=self._ant)
         self.assertEqual(filters.count(), 0)
 
 
-
 class TestListCreation(unittest.TestCase):
     layer = ConfigLayer
 

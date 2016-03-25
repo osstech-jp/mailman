@@ -17,13 +17,8 @@
 
 """Implementations of the pending requests interfaces."""
 
-__all__ = [
-    'DataPendable',
-    'ListRequests',
-    ]
-
-
 from datetime import timedelta
+from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
@@ -37,7 +32,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-
+@public
 @implementer(IPendable)
 class DataPendable(dict):
     """See `IPendable`."""
@@ -59,7 +54,7 @@ class DataPendable(dict):
         super().update(clean_mapping)
 
 
-
+@public
 @implementer(IListRequests)
 class ListRequests:
     """See `IListRequests`."""
@@ -144,7 +139,6 @@ class ListRequests:
         store.delete(request)
 
 
-
 class _Request(Model):
     """Table for mailing list hold requests."""
 

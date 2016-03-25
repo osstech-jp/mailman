@@ -17,15 +17,10 @@
 
 """Implementations of the IPendable and IPending interfaces."""
 
-__all__ = [
-    'Pended',
-    'Pendings',
-    ]
-
-
 import json
 
 from lazr.config import as_timedelta
+from mailman import public
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -42,7 +37,7 @@ from zope.interface.verify import verifyObject
 token_factory = TokenFactory()
 
 
-
+@public
 @implementer(IPendedKeyValue)
 class PendedKeyValue(Model):
     """A pended key/value pair, tied to a token."""
@@ -59,7 +54,7 @@ class PendedKeyValue(Model):
         self.value = value
 
 
-
+@public
 @implementer(IPended)
 class Pended(Model):
     """A pended event, tied to a token."""
@@ -72,13 +67,13 @@ class Pended(Model):
     key_values = relationship('PendedKeyValue', cascade="all, delete-orphan")
 
 
-
+@public
 @implementer(IPendable)
 class UnpendedPendable(dict):
     PEND_TYPE = 'unpended'
 
 
-
+@public
 @implementer(IPendings)
 class Pendings:
     """Implementation of the IPending interface."""
@@ -113,8 +108,8 @@ class Pendings:
                 key = key.decode('utf-8')
             if isinstance(value, bytes):
                 # Make sure we can turn this back into a bytes.
-                value  = dict(__encoding__='utf-8',
-                              value=value.decode('utf-8'))
+                value = dict(__encoding__='utf-8',
+                             value=value.decode('utf-8'))
             keyval = PendedKeyValue(key=key, value=json.dumps(value))
             pending.key_values.append(keyval)
         store.add(pending)
@@ -128,7 +123,7 @@ class Pendings:
         if pendings.count() == 0:
             return None
         assert pendings.count() == 1, (
-            'Unexpected token count: {0}'.format(pendings.count()))
+            'Unexpected token count: {}'.format(pendings.count()))
         pending = pendings[0]
         pendable = UnpendedPendable()
         # Iterate on PendedKeyValue entries that are associated with the
