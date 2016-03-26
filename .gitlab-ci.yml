@@ -11,6 +11,10 @@ variables:
   MYSQL_USER_PASSWORD: "runner"
   MYSQL_DATABASE: "test_mailman"
 
+qa:
+  script:
+  - tox -e qa
+
 sqlite:
   script:
   - tox -e py34,py35
