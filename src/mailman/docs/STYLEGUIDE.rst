@@ -8,53 +8,43 @@ Copyright (C) 2002-2016 Barry A. Warsaw
 Python coding style guide for GNU Mailman
 =========================================
 
-*NOTE*: The canonical version of this style guide can be found at:
-
-http://barry.warsaw.us/software/STYLEGUIDE.txt
-
 This document contains a style guide for Python programming, as used in GNU
-Mailman.  `PEP 8`_ is the basis for this style guide so it's recommendations
+Mailman.  `PEP 8`_ is the basis for this style guide so its recommendations
 should be followed except for the differences outlined here.  This document
 assumes the use of Python 3.
 
-* After file comments (e.g. license block), add an ``__all__`` section that
-  names, one-per-line, all the public names exported by this module.  See the
-  `GNU Mailman Python template`_ as an example.
+* When creating new modules, start with the `GNU Mailman Python template`_ as
+  an example.
+
+* Names which should be imported by ``from-import`` should be added to
+  ``__all__`` but use the ``@public`` decorator from the top-level ``mailman``
+  package to do this for all classes and functions.  Constants and other
+  simple name bindings must be added to ``__all__`` explicitly.
 
 * Imports are always put at the top of the file, just after any module
-  comments and docstrings, and before module globals and constants, but after
-  any ``__all__`` definitions.
+  comments and docstrings, and before module globals and constants.
 
   Imports should be grouped, with the order being:
 
-  1. non-from imports, grouped from shorted module name to longest module
+  1. non-``from`` imports, grouped from shortest module name to longest module
      name, with ties being broken by alphabetical order.
-  2. from-imports grouped alphabetically.
+  2. ``from``-imports grouped alphabetically.
 
-* In general, there should be one class per module.  This is not a
-  hard-and-fast rule.  Keep files small, but it's okay to group related code
-  together.  List everything exported from the module in the ``__all__``.
+  Put a single blank line between the non-``from`` import and the
+  ``from``-imports.
 
 * Right hanging comments are discouraged, in favor of preceding comments.
   E.g. bad::
 
-    foo = blarzigop(bar)  # if you don't blarzigop it, it'll shlorp
+    foo = baz(bar)  # This has a side-effect of fooing the bar.
 
   Good::
 
-    # If you don't blarzigop it, it'll shlorp.
+    # This has a side-effect of fooing the bar.
     foo = blarzigop(bar)
 
   Comments should always be complete sentences, with proper capitalization and
-  full stops at the end.
-
-* Major sections of code in a module should be separated by form feed
-  characters (e.g. ``^L`` -- that's a single character control-L not two
-  characters).  This helps with Emacs navigation.
-
-  Put a ``^L`` before module-level functions, before class definitions, before
-  big blocks of constants which follow imports, and any place else that would
-  be convenient to jump to.  Always put two blank lines before a ``^L``.
+  full stops (periods) at the end.  We use two spaces after periods.
 
 * Put two blank lines between any top level construct or block of code
   (e.g. after import blocks).  Put only one blank line between methods in a
@@ -63,7 +53,7 @@ assumes the use of Python 3.
 
 * Try to minimize the vertical whitespace in a class or function.  If you're
   inclined to separate stanzas of code for readability, consider putting a
-  comment in describing what the next stanza's purpose is.  Don't put stupid
+  comment in describing what the next stanza's purpose is.  Don't put useless
   or obvious comments in just to avoid vertical whitespace though.
 
 * Unless internal quote characters would mess things up, the general rule is
