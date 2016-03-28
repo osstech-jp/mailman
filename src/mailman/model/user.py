@@ -31,7 +31,7 @@ from mailman.model.roster import Memberships
 from mailman.utilities.datetime import factory as date_factory
 from mailman.utilities.uid import UIDFactory
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Unicode
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import backref, relationship
 from zope.event import notify
 from zope.interface import implementer
 

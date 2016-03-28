@@ -81,7 +81,22 @@ class ImportOrder:
                 if last_import.itype is ImportType.from_import:
                     yield self._error(record, 'B401',
                                       'Non-from import follows from-import')
-                if len(last_import.names[0]) > len(record.names[0]):
+                # Shorter imports should always precede longer import *except*
+                # when they are dotted imports and everything but the last
+                # path component are the same.  In that case, they should be
+                # sorted alphabetically.
+                last_name = last_import.names[0]
+                this_name = record.names[0]
+                if '.' in last_name and '.' in this_name:
+                    last_parts = last_name.split('.')
+                    this_parts = this_name.split('.')
+                    if (last_parts[:-1] == this_parts[:-1] and
+                            last_parts[-1] > this_parts[-1]):
+                        yield self._error(
+                            record, 'B410',
+                            'Dotted non-from import not sorted '
+                            'alphabetically')
+                elif len(last_name) > len(this_name):
                     yield self._error(
                         record, 'B403',
                         'Shorter non-from import follows longer')

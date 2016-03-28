@@ -20,7 +20,7 @@
 from mailman import public
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces.mime import IContentFilter, FilterType
+from mailman.interfaces.mime import FilterType, IContentFilter
 from sqlalchemy import Column, ForeignKey, Integer, Unicode
 from sqlalchemy.orm import relationship
 from zope.interface import implementer

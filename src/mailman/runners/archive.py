@@ -21,7 +21,7 @@ import copy
 import logging
 
 from datetime import datetime
-from email.utils import parsedate_tz, mktime_tz
+from email.utils import mktime_tz, parsedate_tz
 from lazr.config import as_timedelta
 from mailman import public
 from mailman.config import config

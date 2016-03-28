@@ -24,7 +24,7 @@ from mailman.interfaces.address import (
     AddressVerificationEvent, IAddress, IEmailValidator)
 from mailman.utilities.datetime import now
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import backref, relationship
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer

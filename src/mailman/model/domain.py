@@ -29,9 +29,9 @@ from mailman.model.mailinglist import MailingList
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
 from urllib.parse import urljoin, urlparse
+from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
-from zope.component import getUtility
 
 
 @public

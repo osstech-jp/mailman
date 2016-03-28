@@ -22,7 +22,7 @@ from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.digests import IOneLastDigest
 from mailman.interfaces.member import DeliveryMode
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from zope.interface import implementer
 
