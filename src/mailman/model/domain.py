@@ -26,9 +26,9 @@ from mailman.interfaces.domain import (
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import MailingList
-from urllib.parse import urljoin, urlparse
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
+from urllib.parse import urljoin, urlparse
 from zope.event import notify
 from zope.interface import implementer
 from zope.component import getUtility

@@ -25,11 +25,11 @@ from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.usermanager import IUserManager
+from mailman.model.preferences import Preferences
 from mailman.testing.helpers import call_api, configuration
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 from zope.component import getUtility
-from mailman.model.preferences import Preferences
 
 
 class TestUsers(unittest.TestCase):

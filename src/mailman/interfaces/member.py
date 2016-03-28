@@ -20,7 +20,7 @@
 from enum import Enum
 from mailman import public
 from mailman.interfaces.errors import MailmanError
-from zope.interface import Interface, Attribute
+from zope.interface import Attribute, Interface
 
 
 @public

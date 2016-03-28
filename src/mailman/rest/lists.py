@@ -31,11 +31,11 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.rest.bans import BannedEmails
-from mailman.rest.listconf import ListConfiguration
 from mailman.rest.header_matches import HeaderMatches
 from mailman.rest.helpers import (
     CollectionMixin, GetterSetter, NotFound, accepted, bad_request, child,
     created, etag, no_content, not_found, okay)
+from mailman.rest.listconf import ListConfiguration
 from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests

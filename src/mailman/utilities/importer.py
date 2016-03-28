@@ -37,9 +37,8 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, IHeaderMatchList)
-from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
-from mailman.interfaces.mailinglist import SubscriptionPolicy
+    IAcceptableAliasSet, IHeaderMatchList, Personalization, ReplyToMunging,
+    SubscriptionPolicy)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.usermanager import IUserManager

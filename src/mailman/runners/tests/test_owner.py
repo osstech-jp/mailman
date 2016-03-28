@@ -29,11 +29,11 @@ from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import (
-    TestableMaster, get_lmtp_client, make_testable_runner)
 from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.runners.pipeline import PipelineRunner
+from mailman.testing.helpers import (
+    TestableMaster, get_lmtp_client, make_testable_runner)
 from mailman.testing.layers import SMTPLayer
 from operator import itemgetter
 from zope.component import getUtility

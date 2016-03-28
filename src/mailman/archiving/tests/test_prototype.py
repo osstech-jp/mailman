@@ -29,9 +29,8 @@ from mailman.app.lifecycle import create_list
 from mailman.archiving.prototype import Prototype
 from mailman.config import config
 from mailman.database.transaction import transaction
-from mailman.testing.helpers import LogFileMark
 from mailman.testing.helpers import (
-    specialized_message_from_string as mfs)
+    LogFileMark, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.email import add_message_hash
 

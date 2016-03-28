@@ -29,7 +29,7 @@ from mailman.model.member import Member
 from mailman.model.user import User
 from mailman.utilities.queries import QuerySequence
 from operator import attrgetter
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from zope.component import getUtility
 from zope.interface import implementer
 

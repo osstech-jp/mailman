@@ -21,10 +21,10 @@ import os
 import shutil
 import unittest
 
+from mailman.app.lifecycle import create_list, remove_list
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import IListManager
-from mailman.app.lifecycle import create_list, remove_list
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

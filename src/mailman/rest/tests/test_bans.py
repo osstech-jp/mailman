@@ -22,8 +22,8 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
-from mailman.testing.layers import RESTLayer
 from mailman.testing.helpers import call_api
+from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 
 

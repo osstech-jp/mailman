@@ -18,7 +18,7 @@
 """Interface describing the basics of rules."""
 
 from mailman import public
-from zope.interface import Interface, Attribute
+from zope.interface import Attribute, Interface
 
 
 @public

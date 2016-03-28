@@ -21,13 +21,13 @@ import os
 import sys
 import time
 import errno
-import signal
 import shutil
+import signal
 import socket
 import unittest
 
 from contextlib import ExitStack, suppress
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from mailman.commands.cli_control import Start, kill_watcher
 from mailman.config import Configuration, config
 from mailman.testing.helpers import configuration

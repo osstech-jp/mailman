@@ -101,7 +101,7 @@ case second `m'.  Any other spelling is incorrect.""",
     include_package_data = True,
     entry_points    = {
         'console_scripts' : list(scripts),
-        'flake8.extension': ['MM40 = mailman.testing.flake8:ImportOrder'],
+        'flake8.extension': ['B40 = mailman.testing.flake8:ImportOrder'],
         },
     install_requires = [
         'alembic',

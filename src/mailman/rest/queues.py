@@ -18,8 +18,8 @@
 """<api>/queues."""
 
 from mailman import public
-from mailman.config import config
 from mailman.app.inject import inject_text
+from mailman.config import config
 from mailman.interfaces.listmanager import IListManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, created, etag, no_content, not_found, okay)

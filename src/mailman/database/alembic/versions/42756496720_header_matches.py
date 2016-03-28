@@ -9,7 +9,7 @@ Create Date: 2015-09-11 10:11:38.310315
 import sqlalchemy as sa
 
 from alembic import op
-from mailman.database.helpers import is_sqlite, exists_in_db
+from mailman.database.helpers import exists_in_db, is_sqlite
 
 
 # Revision identifiers, used by Alembic.

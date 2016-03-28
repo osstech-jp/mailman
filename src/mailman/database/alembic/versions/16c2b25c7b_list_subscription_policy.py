@@ -6,11 +6,11 @@ Create Date: 2015-03-21 11:00:44.634883
 
 """
 
-from alembic import op
 import sqlalchemy as sa
 
+from alembic import op
+from mailman.database.helpers import exists_in_db, is_sqlite
 from mailman.database.types import Enum
-from mailman.database.helpers import is_sqlite, exists_in_db
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 
 

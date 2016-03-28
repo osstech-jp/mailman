@@ -19,7 +19,7 @@
 
 from mailman import public
 from mailman.interfaces.address import AddressError
-from zope.interface import Interface, Attribute
+from zope.interface import Attribute, Interface
 
 
 @public

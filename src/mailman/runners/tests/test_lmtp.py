@@ -22,8 +22,8 @@ import smtplib
 import unittest
 
 from datetime import datetime
-from mailman.config import config
 from mailman.app.lifecycle import create_list
+from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.testing.helpers import get_lmtp_client, get_queue_messages
 from mailman.testing.layers import LMTPLayer

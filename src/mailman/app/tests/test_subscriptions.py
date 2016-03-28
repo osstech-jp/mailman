@@ -22,14 +22,14 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.app.subscriptions import SubscriptionWorkflow
 from mailman.interfaces.bans import IBanManager
+from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import MembershipIsBannedError
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
+from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     LogFileMark, get_queue_messages, set_preferred)
 from mailman.testing.layers import ConfigLayer
-from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import now
 from unittest.mock import patch
 from zope.component import getUtility

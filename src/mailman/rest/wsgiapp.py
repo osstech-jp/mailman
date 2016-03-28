@@ -27,8 +27,8 @@ from mailman import public
 from mailman.config import config
 from mailman.database.transaction import transactional
 from mailman.rest.root import Root
-from wsgiref.simple_server import WSGIRequestHandler, WSGIServer
-from wsgiref.simple_server import make_server as wsgi_server
+from wsgiref.simple_server import (
+    WSGIRequestHandler, WSGIServer, make_server as wsgi_server)
 
 
 log = logging.getLogger('mailman.http')

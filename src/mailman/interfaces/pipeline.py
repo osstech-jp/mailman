@@ -18,7 +18,7 @@
 """Interface for describing pipelines."""
 
 from mailman import public
-from zope.interface import Interface, Attribute
+from zope.interface import Attribute, Interface
 
 
 # For i18n extraction.
