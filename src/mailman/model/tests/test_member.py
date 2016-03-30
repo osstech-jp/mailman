@@ -91,3 +91,12 @@ class TestMember(unittest.TestCase):
         self.assertRaises(ValueError, Member, MemberRole.member,
                           self._mlist.list_id,
                           'aperson@example.com')
+
+    def test_unsubscribe(self):
+        address = self._usermanager.create_address('anne@example.com')
+        address.verified_on = now()
+        self._mlist.subscribe(address)
+        self.assertEqual(len(list(self._mlist.members.members)), 1)
+        member = self._mlist.members.get_member('anne@example.com')
+        member.unsubscribe()
+        self.assertEqual(len(list(self._mlist.members.members)), 0)
