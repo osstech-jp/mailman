@@ -410,3 +410,17 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(response.status, 204)
         self.assertEqual(
             self._mlist.goodbye_message_uri, 'mailman:///salutation.txt')
+
+    def test_advertised(self):
+        # GL issue #220 claimed advertised was read-only.
+        with transaction():
+            self._mlist.advertised = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/advertised')
+        self.assertFalse(resource['advertised'])
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config',
+            dict(advertised=True),
+            'PATCH')
+        self.assertTrue(self._mlist.advertised)
