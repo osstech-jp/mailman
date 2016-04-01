@@ -10,15 +10,19 @@ fallback to the list's default.
 
 """
 
-# revision identifiers, used by Alembic.
-revision = '7b254d88f122'
-down_revision = 'd4fbb4fd34ca'
 
 import sqlalchemy as sa
+
 from alembic import op
 from mailman.database.types import Enum
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import MemberRole
+
+
+# revision identifiers, used by Alembic.
+revision = '7b254d88f122'
+down_revision = 'd4fbb4fd34ca'
+
 
 mailinglist_table = sa.sql.table(
     'mailinglist',
@@ -28,6 +32,7 @@ mailinglist_table = sa.sql.table(
     sa.sql.column('default_nonmember_action', Enum(Action)),
     )
 
+
 member_table = sa.sql.table(
     'member',
     sa.sql.column('id', sa.Integer),
@@ -36,13 +41,16 @@ member_table = sa.sql.table(
     sa.sql.column('moderation_action', Enum(Action)),
     )
 
+
 # This migration only considers members and nonmembers.
 members_query = member_table.select().where(sa.or_(
     member_table.c.role == MemberRole.member,
     member_table.c.role == MemberRole.nonmember,
     ))
 
+
 DEFAULT_ACTION_CACHE = {}
+
 
 def _get_default_action(connection, member):
     list_id = member['list_id']
@@ -75,7 +83,7 @@ def upgrade():
 def downgrade():
     connection = op.get_bind()
     for member in connection.execute(members_query.where(
-            member_table.c.moderation_action == None)).fetchall():
+            member_table.c.moderation_action == None)).fetchall():   # noqa
         default_action = _get_default_action(connection, member)
         # Use the mailing list's default action
         connection.execute(member_table.update().where(
