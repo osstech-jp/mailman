@@ -130,6 +130,13 @@ class SystemConfiguration:
 
 
 @public
+class Pipelines:
+    def on_get(self, request, response):
+        resource = dict(pipelines=list(config.pipelines.keys()))
+        okay(response, etag(resource))
+
+
+@public
 class Reserved:
     """Top level API for reserved operations.
 
@@ -171,6 +178,10 @@ class TopLevel:
             if len(segments) <= 2:
                 return SystemConfiguration(*segments[1:]), []
             return BadRequest(), []
+        elif segments[0] == 'pipelines':
+            if len(segments) > 1:
+                return BadRequest(), []
+            return Pipelines(), []
         else:
             return NotFound(), []
 
