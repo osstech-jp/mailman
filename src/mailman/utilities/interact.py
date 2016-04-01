@@ -60,10 +60,8 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     # than once, this could cause a problem.
     startup = os.environ.get('PYTHONSTARTUP')
     if startup:
-        try:
-            execfile(startup, namespace)
-        except:
-            pass
+        with open(startup, 'r', encoding='utf-8') as fp:
+            interp.runsource(fp.read(), startup)
     # We don't want the funky console object in parentheses in the banner.
     if banner == DEFAULT_BANNER:
         banner = '''\
