@@ -126,6 +126,10 @@ Message handling
    non-member posts instead of always holding them for moderator review.
    Given by Aurélien Bompard.  (Closes #163)
  * Bounces can now contain rejection messages.  Given by Aurélien Bompard.
+ * The `moderation_action` for members and nonmember can now be ``None`` which
+   signals falling back to the appropriate list default action,
+   e.g. `default_member_action` and `default_nonmember_action`.  Given by
+   Aurélien Bompard.  (Closes #189)
 
 REST
 ----

@@ -64,7 +64,7 @@ class _MemberBase(CollectionMixin):
             role=role,
             self_link=self.api.path_to('members/{}'.format(member_id)),
             )
-        # Add the moderation action if there is one.
+        # Add the moderation action if overriding the list's default.
         if member.moderation_action is not None:
             response['moderation_action'] = member.moderation_action
         # Add the user link if there is one.

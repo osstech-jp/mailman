@@ -19,8 +19,8 @@
 
 import os
 import unittest
-import alembic.command
 import sqlalchemy as sa
+import alembic.command
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
@@ -28,7 +28,12 @@ from mailman.database.alembic import alembic_cfg
 from mailman.database.helpers import exists_in_db
 from mailman.database.model import Model
 from mailman.database.transaction import transaction
+from mailman.database.types import Enum
+from mailman.interfaces.action import Action
+from mailman.interfaces.member import MemberRole
+from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
+from zope.component import getUtility
 
 
 class TestMigrations(unittest.TestCase):
@@ -123,7 +128,9 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('value', sa.Unicode),
             sa.sql.column('pended_id', sa.Integer),
             )
-        def get_from_db():                          # flake8: noqa
+
+        # https://github.com/PyCQA/pycodestyle/issues/28
+        def get_from_db():                          # noqa
             results = {}
             for i in range(1, 6):
                 query = sa.sql.select(
@@ -220,19 +227,13 @@ class TestMigrations(unittest.TestCase):
         self.assertTrue(os.path.exists(bee.data_path))
 
     def test_7b254d88f122_moderation_action(self):
-        from mailman.database.types import Enum
-        from mailman.interfaces.action import Action
-        from mailman.interfaces.member import MemberRole
-        from mailman.interfaces.usermanager import IUserManager
-        from zope.component import getUtility
-        mailinglist_table = sa.sql.table(
+        mailinglist_table = sa.sql.table(           # noqa
             'mailinglist',
             sa.sql.column('id', sa.Integer),
             sa.sql.column('list_id', sa.Unicode),
             sa.sql.column('default_member_action', Enum(Action)),
             sa.sql.column('default_nonmember_action', Enum(Action)),
             )
-
         member_table = sa.sql.table(
             'member',
             sa.sql.column('id', sa.Integer),
@@ -243,16 +244,18 @@ class TestMigrations(unittest.TestCase):
             )
         user_manager = getUtility(IUserManager)
         with transaction():
-            # Start at the previous revision
+            # Start at the previous revision.
             alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
             # Create a mailing list through the standard API.
             ant = create_list('ant@example.com')
-            # Create members
+            # Create some members.
             anne = user_manager.create_address('anne@example.com')
             bart = user_manager.create_address('bart@example.com')
             cris = user_manager.create_address('cris@example.com')
             dana = user_manager.create_address('dana@example.com')
-            config.db.store.flush() # to get the last auto-increment id.
+            # Flush the database to get the last auto-increment id.
+            config.db.store.flush()
+            # Assign some moderation actions to the members created above.
             config.db.store.execute(member_table.insert().values([
                 {'address_id': anne.id, 'role': MemberRole.owner,
                  'list_id': ant.list_id, 'moderation_action': Action.accept},
@@ -263,7 +266,16 @@ class TestMigrations(unittest.TestCase):
                 {'address_id': dana.id, 'role': MemberRole.nonmember,
                  'list_id': ant.list_id, 'moderation_action': Action.hold},
                 ]))
-        # Upgrade and check the moderation_action.
+        # Cris and Dana have actions which match the list default action for
+        # members and nonmembers respectively.
+        self.assertEqual(
+            ant.members.get_member('cris@example.com').moderation_action,
+            ant.default_member_action)
+        self.assertEqual(
+            ant.nonmembers.get_member('dana@example.com').moderation_action,
+            ant.default_nonmember_action)
+        # Upgrade and check the moderation_actions.   Cris's and Dana's
+        # actions have been set to None to fall back to the list defaults.
         alembic.command.upgrade(alembic_cfg, '7b254d88f122')
         members = config.db.store.execute(sa.select([
             member_table.c.address_id, member_table.c.moderation_action,
@@ -274,7 +286,8 @@ class TestMigrations(unittest.TestCase):
             (cris.id, None),
             (dana.id, None),
             ])
-        # Downgrade and check.
+        # Downgrade and check that Cris's and Dana's actions have been set
+        # explicitly.
         alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
         members = config.db.store.execute(sa.select([
             member_table.c.address_id, member_table.c.moderation_action,

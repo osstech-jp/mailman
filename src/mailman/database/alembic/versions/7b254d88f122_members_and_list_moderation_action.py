@@ -1,13 +1,12 @@
-"""Members and list moderation action
+"""Members and list moderation action.
 
 Revision ID: 7b254d88f122
 Revises: d4fbb4fd34ca
 Create Date: 2016-02-10 11:31:04.233619
 
-This is a data-only migration. If a member has the same moderation action as
+This is a data-only migration.  If a member has the same moderation action as
 the mailing list's default, then set its moderation action to None and use the
 fallback to the list's default.
-
 """
 
 
@@ -19,7 +18,7 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.member import MemberRole
 
 
-# revision identifiers, used by Alembic.
+# Revision identifiers, used by Alembic.
 revision = '7b254d88f122'
 down_revision = 'd4fbb4fd34ca'
 
@@ -49,21 +48,24 @@ members_query = member_table.select().where(sa.or_(
     ))
 
 
+# list-id -> {property-name -> action}
+#
+# where property-name will be either default_member_action or
+# default_nonmember_action.
 DEFAULT_ACTION_CACHE = {}
+MISSING = object()
 
 
 def _get_default_action(connection, member):
     list_id = member['list_id']
-    propname = 'default_{}_action'.format(member['role'].name)
-    try:
-        action = DEFAULT_ACTION_CACHE[list_id][propname]
-    except KeyError:
+    property_name = 'default_{}_action'.format(member['role'].name)
+    list_mapping = DEFAULT_ACTION_CACHE.setdefault(list_id, {})
+    action = list_mapping.get(property_name, MISSING)
+    if action is MISSING:
         mailing_list = connection.execute(mailinglist_table.select().where(
             mailinglist_table.c.list_id == list_id)).fetchone()
-        action = mailing_list[propname]
-        if list_id not in DEFAULT_ACTION_CACHE:
-            DEFAULT_ACTION_CACHE[list_id] = {}
-        DEFAULT_ACTION_CACHE[list_id][propname] = action
+        action = mailing_list[property_name]
+        list_mapping[property_name] = action
     return action
 
 
@@ -72,7 +74,7 @@ def upgrade():
     for member in connection.execute(members_query).fetchall():
         default_action = _get_default_action(connection, member)
         # If the (non)member's moderation action is the same as the mailing
-        # list's default, then set it to None. The moderation rule will
+        # list's default, then set it to None.  The moderation rule will
         # fallback to the list's default.
         if member['moderation_action'] == default_action:
             connection.execute(member_table.update().where(

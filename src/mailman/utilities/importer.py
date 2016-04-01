@@ -575,7 +575,7 @@ def import_roster(mlist, config_dict, members, role, action=None):
                 # The member is moderated.  Check the member_moderation_action
                 # option to know which action should be taken.
                 action = member_moderation_action_mapping(
-                    config_dict.get("member_moderation_action"))
+                    config_dict.get('member_moderation_action'))
             else:
                 # Member is not moderated: defer is the best option, as
                 # discussed on merge request 100.

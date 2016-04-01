@@ -44,8 +44,9 @@ class MemberModeration:
             member = mlist.members.get_member(sender)
             if member is None:
                 return False
-            action = (member.moderation_action
-                      or mlist.default_member_action)
+            action = (mlist.default_member_action
+                      if member.moderation_action is None
+                      else member.moderation_action)
             if action is Action.defer:
                 # The regular moderation rules apply.
                 return False
@@ -114,8 +115,9 @@ class NonmemberModeration:
                         _record_action(msgdata, action, sender,
                                        reason.format(action))
                         return True
-            action = (nonmember.moderation_action
-                      or mlist.default_nonmember_action)
+            action = (mlist.default_nonmember_action
+                      if nonmember.moderation_action is None
+                      else nonmember.moderation_action)
             if action is Action.defer:
                 # The regular moderation rules apply.
                 return False

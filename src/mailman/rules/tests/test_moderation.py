@@ -160,15 +160,19 @@ MIME-Version: 1.0
 
 A message body.
 """)
-        # First, the message should get held
+        # First, the message should get held.
         msgdata = {}
         result = rule.check(self._mlist, msg, msgdata)
         self.assertTrue(result)
-        self.assertEqual(msgdata.get('moderation_action'), 'hold')
-        # Then the list's default nonmember action is changed
+        self.assertEqual(msgdata['moderation_action'], 'hold')
+        # As a side-effect, Anne has been added as a nonmember with a
+        # moderation action that falls back to the list's default.
+        anne = self._mlist.nonmembers.get_member('anne@example.com')
+        self.assertIsNone(anne.moderation_action)
+        # Then the list's default nonmember action is changed.
         self._mlist.default_nonmember_action = Action.discard
-        msg.replace_header('Message-ID', '<ant2>')
-        # This time, the message should be discarded
+        msg.replace_header('Message-ID', '<bee>')
+        # This time, the message should be discarded.
         result = rule.check(self._mlist, msg, msgdata)
         self.assertTrue(result)
         self.assertEqual(msgdata.get('moderation_action'), 'discard')
@@ -178,7 +182,9 @@ A message body.
         self._mlist.default_member_action = Action.accept
         user_manager = getUtility(IUserManager)
         anne = user_manager.create_address('anne@example.com')
-        self._mlist.subscribe(anne, MemberRole.member)
+        member = self._mlist.subscribe(anne, MemberRole.member)
+        # Anne's moderation rule falls back to the list default.
+        self.assertIsNone(member.moderation_action)
         rule = moderation.MemberModeration()
         msg = mfs("""\
 From: anne@example.com
@@ -189,15 +195,15 @@ MIME-Version: 1.0
 
 A message body.
 """)
-        # First, the message should get held
+        # First, the message gets accepted.
         msgdata = {}
         result = rule.check(self._mlist, msg, msgdata)
         self.assertTrue(result)
         self.assertEqual(msgdata.get('moderation_action'), 'accept')
-        # Then the list's default nonmember action is changed
+        # Then the list's default member action is changed.
         self._mlist.default_member_action = Action.hold
-        msg.replace_header('Message-ID', '<ant2>')
-        # This time, the message should be discarded
+        msg.replace_header('Message-ID', '<bee>')
+        # This time, the message is held.
         result = rule.check(self._mlist, msg, msgdata)
         self.assertTrue(result)
         self.assertEqual(msgdata.get('moderation_action'), 'hold')

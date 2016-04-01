@@ -78,7 +78,7 @@ class Member(Model):
             self.moderation_action = Action.accept
         else:
             assert role in (MemberRole.member, MemberRole.nonmember), (
-                'Invalid MemberRole: {0}'.format(role))
+                'Invalid MemberRole: {}'.format(role))
             self.moderation_action = None
 
     def __repr__(self):

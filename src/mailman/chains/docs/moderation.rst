@@ -14,10 +14,14 @@ such as seeing if the message has a matching `Approved:` header, or if the
 emergency flag has been set on the mailing list, or whether a mail loop has
 been detected.
 
-After those, the moderation action for the sender is checked.  Members
-generally have a `defer` action, meaning the normal moderation checks are
-done, but it is also common for first-time posters to have a `hold` action,
-meaning that their messages are held for moderator approval for a while.
+Mailing lists have a default moderation action, one for members and another
+for nonmembers.  If a member's moderation action is ``None``, then the member
+moderation check falls back to the appropriate list default.
+
+A moderation action of `defer` means that no explicit moderation check is
+performed and the rest of the rule chain processing proceeds as normal.  But
+it is also common for first-time posters to have a `hold` action, meaning that
+their messages are held for moderator approval for a while.
 
 Nonmembers almost always have a `hold` action, though some mailing lists may
 choose to set this default action to `discard`, meaning their posts would be
@@ -31,14 +35,12 @@ Posts by list members are moderated if the member's moderation action is not
 deferred.  The default setting for the moderation action of new members is
 determined by the mailing list's settings.  By default, a mailing list is not
 set to moderate new member postings.
-::
 
     >>> print(mlist.default_member_action)
     Action.defer
 
 In order to find out whether the message is held or accepted, we can subscribe
-to Zope events that are triggered on each case.
-::
+to internal events that are triggered on each case.
 
     >>> from mailman.interfaces.chain import ChainEvent
     >>> def on_chain(event):
@@ -53,17 +55,16 @@ to Zope events that are triggered on each case.
     ...         for miss in event.msgdata.get('rule_misses', []):
     ...             print('   ', miss)
 
-The user Anne will be a list member. A list member's default moderation action
-is ``None``, meaning that it will use the mailing list's
-``default_member_action``.
+Anne is a list member with moderation action of ``None`` so that moderation
+will fall back to the mailing list's ``default_member_action``.
 
     >>> from mailman.testing.helpers import subscribe
     >>> member = subscribe(mlist, 'Anne', email='anne@example.com')
     >>> member
     <Member: Anne Person <anne@example.com> on test@example.com
              as MemberRole.member>
-    >>> print(member.moderation_action is None)
-    True
+    >>> print(member.moderation_action)
+    None
 
 Anne's post to the mailing list runs through the incoming runner's default
 built-in chain.  No rules hit and so the message is accepted.
@@ -126,7 +127,7 @@ moderator approval.
         emergency
         loop
 
-The list's member moderation action can also be set to `discard`...
+Anne's moderation action can also be set to `discard`...
 ::
 
     >>> member.moderation_action = Action.discard
@@ -179,9 +180,9 @@ The list's member moderation action can also be set to `discard`...
 Nonmembers
 ==========
 
-Registered nonmembers are handled very similarly to members, the main
-difference being that the mailing list's default moderation action is
-different. This is how the incoming runner adds sender addresses as nonmembers.
+Registered nonmembers are handled very similarly to members, except that a
+different list default setting is used when moderating nonmemberds.  This is
+how the incoming runner adds sender addresses as nonmembers.
 
     >>> from zope.component import getUtility
     >>> from mailman.interfaces.usermanager import IUserManager
@@ -219,7 +220,7 @@ moderator approval.
     >>> nonmember
     <Member: bart@example.com on test@example.com as MemberRole.nonmember>
 
-A nonmember's default moderation action is ``None``, meaning that it will use
+When a nonmember's default moderation action is ``None``, the rule will use
 the mailing list's ``default_nonmember_action``.
 
     >>> print(nonmember.moderation_action)

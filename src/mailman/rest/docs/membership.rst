@@ -926,8 +926,8 @@ Moderating a member
 ===================
 
 The moderation action for a member can be changed by PATCH'ing the
-`moderation_action` attribute.
-::
+`moderation_action` attribute.  When the member action falls back to the list
+default, there is no such attribute in the resource.
 
     >>> dump_json('http://localhost:9001/3.0/members/10')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
@@ -939,6 +939,10 @@ The moderation action for a member can be changed by PATCH'ing the
     role: member
     self_link: http://localhost:9001/3.0/members/10
     user: http://localhost:9001/3.0/users/7
+
+Patching the moderation action both changes it for the given user, and adds
+the attribute to the member's resource.
+::
 
     >>> dump_json('http://localhost:9001/3.0/members/10', {
     ...           'moderation_action': 'hold',
