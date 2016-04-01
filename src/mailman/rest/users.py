@@ -54,7 +54,7 @@ class ListOfDomainOwners(GetterSetter):
     def get(self, domain, attribute):
         assert attribute == 'owner', (
             'Unexpected attribute: {}'.format(attribute))
-        def sort_key(owner):                        # flake8: noqa
+        def sort_key(owner):                        # noqa
             return owner.addresses[0].email
         return sorted(domain.owners, key=sort_key)
 

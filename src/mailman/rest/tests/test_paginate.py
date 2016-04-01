@@ -48,7 +48,7 @@ class TestPaginateHelper(unittest.TestCase):
         class Resource(CollectionMixin):
             def _get_collection(self, request):
                 return ['one', 'two', 'three', 'four', 'five']
-            def _resource_as_dict(self, res):       # flake8: noqa
+            def _resource_as_dict(self, res):       # noqa
                 return {'value': res}
         return Resource()
 

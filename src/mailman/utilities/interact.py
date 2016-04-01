@@ -52,7 +52,7 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     interp = code.InteractiveConsole(namespace)
     # Try to import the readline module, but don't worry if it's unavailable.
     try:
-        import readline                             # flake8: noqa
+        import readline                             # noqa
     except ImportError:
         pass
     # Mimic the real interactive interpreter's loading of any $PYTHONSTARTUP

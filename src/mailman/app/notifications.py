@@ -91,7 +91,7 @@ def send_welcome_message(mlist, member, language, text=''):
         user_address=member.address.email,
         user_options_uri=options_url,
         ))
-    digmode = (''                                   # flake8: noqa
+    digmode = (''                                   # noqa
                if member.delivery_mode is DeliveryMode.regular
                else _(' (Digest mode)'))
     msg = UserNotification(

@@ -50,7 +50,7 @@ class RESTRunner(Runner):
         # server.
         self._server = make_server()
         self._event = threading.Event()
-        def stopper(event, server):                 # flake8: noqa
+        def stopper(event, server):                 # noqa
             event.wait()
             server.shutdown()
         self._thread = threading.Thread(

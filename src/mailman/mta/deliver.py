@@ -90,15 +90,15 @@ def deliver(mlist, msg, msgdata):
     if size is None:
         size = len(msg.as_string())
     substitutions = dict(
-        msgid       = msg.get('message-id', 'n/a'),   # flake8: noqa
-        listname    = mlist.fqdn_listname,            # flake8: noqa
-        sender      = original_sender,                # flake8: noqa
-        recip       = len(original_recipients),       # flake8: noqa
-        size        = size,                           # flake8: noqa
-        time        = t1 - t0,                        # flake8: noqa
-        refused     = len(refused),                   # flake8: noqa
-        smtpcode    = 'n/a',                          # flake8: noqa
-        smtpmsg     = 'n/a',                          # flake8: noqa
+        msgid       = msg.get('message-id', 'n/a'),   # noqa
+        listname    = mlist.fqdn_listname,            # noqa
+        sender      = original_sender,                # noqa
+        recip       = len(original_recipients),       # noqa
+        size        = size,                           # noqa
+        time        = t1 - t0,                        # noqa
+        refused     = len(refused),                   # noqa
+        smtpcode    = 'n/a',                          # noqa
+        smtpmsg     = 'n/a',                          # noqa
         )
     template = config.logging.smtp.every
     if template.lower() != 'no':
@@ -141,9 +141,9 @@ def deliver(mlist, msg, msgdata):
         template = config.logging.smtp.failure
         if template.lower() != 'no':
             substitutions.update(
-                recip       = recipient,            # flake8: noqa
-                smtpcode    = code,                 # flake8: noqa
-                smtpmsg     = smtp_message,         # flake8: noqa
+                recip       = recipient,            # noqa
+                smtpcode    = code,                 # noqa
+                smtpmsg     = smtp_message,         # noqa
                 )
             log.info('%s', expand(template, substitutions))
     # Return the results

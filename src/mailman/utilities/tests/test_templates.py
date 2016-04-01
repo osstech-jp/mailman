@@ -77,7 +77,7 @@ class TestSearchOrder(unittest.TestCase):
     def test_fully_specified_search_order(self):
         search_order = self._stripped_search_order('foo.txt', self.mlist, 'it')
         # For convenience.
-        def nexteq(path):                           # flake8: noqa
+        def nexteq(path):                           # noqa
             self.assertEqual(next(search_order), path)
         # 1: Use the given language argument
         nexteq('/v/templates/lists/l.example.com/it/foo.txt')
@@ -132,7 +132,7 @@ class TestSearchOrder(unittest.TestCase):
     def test_no_mailing_list_argument_search_order(self):
         search_order = self._stripped_search_order('foo.txt', language='it')
         # For convenience.
-        def nexteq(path):                           # flake8: noqa
+        def nexteq(path):                           # noqa
             self.assertEqual(next(search_order), path)
         # 1: Use the given language argument
         nexteq('/v/templates/site/it/foo.txt')
@@ -148,7 +148,7 @@ class TestSearchOrder(unittest.TestCase):
     def test_no_optional_arguments_search_order(self):
         search_order = self._stripped_search_order('foo.txt')
         # For convenience.
-        def nexteq(path):                           # flake8: noqa
+        def nexteq(path):                           # noqa
             self.assertEqual(next(search_order), path)
         # 1: Use the site's default language
         nexteq('/v/templates/site/fr/foo.txt')
@@ -180,7 +180,7 @@ class TestFind(unittest.TestCase):
         self.mlist.preferred_language = 'xx'
         self.fp = None
         # Populate the template directories with a few fake templates.
-        def write(text, path):                      # flake8: noqa
+        def write(text, path):                      # noqa
             os.makedirs(os.path.dirname(path))
             with open(path, 'w') as fp:
                 fp.write(text)

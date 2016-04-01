@@ -168,7 +168,7 @@ class TestHeaderChain(unittest.TestCase):
             [('foo', 'a+', LinkAction.jump, 'reject'),
              ('bar', 'b+', LinkAction.jump, 'discard'),
              ('baz', 'z+', LinkAction.jump, 'accept'),
-            ])                                      # flake8: noqa
+            ])                                      # noqa
 
     @configuration('antispam', header_checks="""
     Foo: foo
@@ -218,7 +218,7 @@ A message body.
         # This event subscriber records the event that occurs when the message
         # is processed by the owner chain, which holds its for approval.
         events = []
-        def record_holds(event):                    # flake8: noqa
+        def record_holds(event):                    # noqa
             if not isinstance(event, HoldEvent):
                 return
             events.append(event)
@@ -226,7 +226,7 @@ A message body.
             # Set the site-wide antispam action to hold the message.
             with configuration('antispam', header_checks="""
                 Spam: [*]{3,}
-                """, jump_chain='hold'):            # flake8: noqa
+                """, jump_chain='hold'):            # noqa
                 process(self._mlist, msg, {}, start_chain='header-match')
             self.assertEqual(len(events), 1)
             event = events[0]
@@ -235,7 +235,7 @@ A message body.
             self.assertEqual(event.mlist, self._mlist)
             self.assertEqual(event.msg, msg)
         events = []
-        def record_discards(event):                 # flake8: noqa
+        def record_discards(event):                 # noqa
             if not isinstance(event, DiscardEvent):
                 return
             events.append(event)
@@ -244,7 +244,7 @@ A message body.
             msg.replace_header('Message-Id', '<bee>')
             with configuration('antispam', header_checks="""
                 Spam: [*]{3,}
-                """, jump_chain='discard'):         # flake8: noqa
+                """, jump_chain='discard'):         # noqa
                 process(self._mlist, msg, {}, start_chain='header-match')
             self.assertEqual(len(events), 1)
             event = events[0]

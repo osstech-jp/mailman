@@ -50,7 +50,7 @@ class Status:
             message = _('GNU Mailman is stopped (stale pid: $pid)')
         else:
             hostname, pid, tempfile = lock.details
-            fqdn_name = socket.getfqdn()            # flake8: noqa
+            fqdn_name = socket.getfqdn()            # noqa
             assert status is WatcherState.host_mismatch, (
                 'Invalid enum value: %s' % status)
             message = _('GNU Mailman is in an unexpected state '

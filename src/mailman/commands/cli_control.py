@@ -93,7 +93,7 @@ class Start:
                 self.parser.error(
                     _('A previous run of GNU Mailman did not exit '
                       'cleanly.  Try using --force.'))
-        def log(message):                           # flake8: noqa
+        def log(message):                           # noqa
             if not args.quiet:
                 print(message)
         # Try to find the path to a valid, existing configuration file, and

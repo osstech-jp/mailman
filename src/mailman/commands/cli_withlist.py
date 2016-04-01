@@ -159,7 +159,7 @@ class Withlist:
     def _start_python(self, overrides, banner):
         # Set the tab completion.
         try:
-            import readline, rlcompleter            # flake8: noqa
+            import readline, rlcompleter            # noqa
             readline.parse_and_bind('tab: complete')
         except ImportError:
             pass

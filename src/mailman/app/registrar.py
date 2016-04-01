@@ -87,10 +87,10 @@ def handle_ConfirmationNeededEvent(event):
     subject = 'confirm ' + event.token
     confirm_address = event.mlist.confirm_address(event.token)
     # For i18n interpolation.
-    confirm_url = event.mlist.domain.confirm_url(event.token)   # flake8: noqa
+    confirm_url = event.mlist.domain.confirm_url(event.token)   # noqa
     email_address = event.email
-    domain_name = event.mlist.domain.mail_host      # flake8: noqa
-    contact_address = event.mlist.owner_address     # flake8: noqa
+    domain_name = event.mlist.domain.mail_host      # noqa
+    contact_address = event.mlist.owner_address     # noqa
     # Send a verification email to the address.
     template = getUtility(ITemplateLoader).get(
         'mailman:///{}/{}/confirm.txt'.format(

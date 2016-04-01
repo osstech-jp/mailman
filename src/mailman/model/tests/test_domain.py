@@ -122,7 +122,7 @@ class TestDomainManager(unittest.TestCase):
         self.assertEqual(
             sorted(owner.addresses[0].email for owner in domain.owners),
             ['anne@example.com', 'bart@example.com'])
-        def sort_key(owner):                        # flake8: noqa
+        def sort_key(owner):                        # noqa
             return owner.addresses[0].email
         self.assertEqual(sorted(domain.owners, key=sort_key), [anne, bart])
 

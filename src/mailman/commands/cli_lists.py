@@ -89,7 +89,7 @@ class Lists:
             if not args.quiet:
                 print(_('No matching mailing lists found'))
             return
-        count = len(mailing_lists)                  # flake8: noqa
+        count = len(mailing_lists)                  # noqa
         if not args.quiet:
             print(_('$count matching mailing lists found:'))
         # Calculate the longest identifier.
@@ -198,8 +198,7 @@ class Create:
             invalid_owners = [owner for owner in args.owners
                               if not validator.is_valid(owner)]
             if invalid_owners:
-                invalid = COMMASPACE.join(          # flake8: noqa
-                    sorted(invalid_owners))
+                invalid = COMMASPACE.join(sorted(invalid_owners))   # noqa
                 self.parser.error(_('Illegal owner addresses: $invalid'))
                 return
         try:

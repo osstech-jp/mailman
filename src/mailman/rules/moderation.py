@@ -109,7 +109,7 @@ class NonmemberModeration:
                 checklist = getattr(mlist, legacy_attribute_name)
                 for addr in checklist:
                     if ((addr.startswith('^') and re.match(addr, sender))
-                            or addr == sender):     # flake8: noqa
+                            or addr == sender):     # noqa
                         # The reason will get translated at the point of use.
                         reason = 'The sender is in the nonmember {} list'
                         _record_action(msgdata, action, sender,

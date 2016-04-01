@@ -42,7 +42,7 @@ class NosePlugin(Plugin):
         super().__init__()
         self.patterns = []
         self.stderr = False
-        def set_stderr(ignore):                     # flake8: noqa
+        def set_stderr(ignore):                     # noqa
             self.stderr = True
         self.addArgument(self.patterns, 'P', 'pattern',
                          'Add a test matching pattern')

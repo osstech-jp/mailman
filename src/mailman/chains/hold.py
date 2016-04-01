@@ -163,10 +163,10 @@ class HoldChain(TerminalChainBase):
             bytes_subject = oneline_subject.encode(charset, 'replace')
             original_subject = bytes_subject.decode(charset)
         substitutions = dict(
-            listname    = mlist.fqdn_listname,         # flake8: noqa
-            subject     = original_subject,            # flake8: noqa
-            sender      = msg.sender,                  # flake8: noqa
-            reasons     = _compose_reasons(msgdata),   # flake8: noqa
+            listname    = mlist.fqdn_listname,         # noqa
+            subject     = original_subject,            # noqa
+            sender      = msg.sender,                  # noqa
+            reasons     = _compose_reasons(msgdata),   # noqa
             )
         # At this point the message is held, but now we have to craft at least
         # two responses.  The first will go to the original author of the

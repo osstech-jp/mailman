@@ -80,7 +80,7 @@ class QFile:
                 else:
                     printer.pprint(obj)
             print(_('[----- end pickle -----]'))
-        count = len(m)                              # flake8: noqa
+        count = len(m)                              # noqa
         banner = _("The variable 'm' contains $count objects")
         if args.interactive:
             interact(banner=banner)

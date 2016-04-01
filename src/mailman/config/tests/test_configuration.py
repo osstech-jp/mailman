@@ -39,7 +39,7 @@ class TestConfiguration(unittest.TestCase):
         # Pushing a new configuration onto the stack triggers a
         # post-processing event.
         events = []
-        def on_event(event):                        # flake8: noqa
+        def on_event(event):                        # noqa
             if isinstance(event, ConfigurationUpdatedEvent):
                 # Record both the event and the top overlay.
                 events.append(event.config.overlays[0].name)

@@ -187,7 +187,7 @@ def main():
         for shortname in sorted(descriptions):
             classname = descriptions[shortname]
             spaces = longest - len(shortname)
-            name = (' ' * spaces) + shortname                 # flake8: noqa
+            name = (' ' * spaces) + shortname                 # noqa
             print(_('$name runs $classname'))
         sys.exit(0)
 

@@ -129,7 +129,7 @@ class TestConfigFileSearchWithChroot(TestConfigFileBase):
         # system that we can write to and test is to hack os.path.exists() to
         # prepend a temporary directory onto the path it tests.
         self._os_path_exists = os.path.exists
-        def exists(path):                           # flake8: noqa
+        def exists(path):                           # noqa
             # Strip off the leading slash, otherwise we'll end up with path.
             return self._os_path_exists(self._make_fake(path))
         os.path.exists = exists
