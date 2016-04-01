@@ -24,7 +24,7 @@ from mailman.chains.headers import HeaderMatchRule, make_link
 from mailman.config import config
 from mailman.core.chains import process
 from mailman.email.message import Message
-from mailman.interfaces.chain import LinkAction, HoldEvent, DiscardEvent
+from mailman.interfaces.chain import DiscardEvent, HoldEvent, LinkAction
 from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.testing.helpers import (
     LogFileMark, configuration, event_subscribers,

@@ -20,7 +20,7 @@
 import re
 
 from email.header import Header
-from email.utils import parseaddr, formataddr, getaddresses
+from email.utils import formataddr, getaddresses, parseaddr
 from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -139,7 +139,7 @@ def process(mlist, msg, msgdata):
         # is already in From and Reply-To in this case.
         if (mlist.personalize is Personalization.full and
                 mlist.reply_goes_to_list is not
-                    ReplyToMunging.point_to_list and
+                    ReplyToMunging.point_to_list and      # noqa
                 not mlist.anonymous_list):
             # Watch out for existing Cc headers, merge, and remove dups.  Note
             # that RFC 2822 says only zero or one Cc header is allowed.

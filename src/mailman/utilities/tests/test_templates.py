@@ -107,7 +107,7 @@ class TestSearchOrder(unittest.TestCase):
     def test_no_language_argument_search_order(self):
         search_order = self._stripped_search_order('foo.txt', self.mlist)
         # For convenience.
-        def nexteq(path):                           # flakeq: noqa
+        def nexteq(path):                           # noqa
             self.assertEqual(next(search_order), path)
         # 1: Use mlist.preferred_language
         nexteq('/v/templates/lists/l.example.com/de/foo.txt')

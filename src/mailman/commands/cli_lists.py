@@ -222,11 +222,11 @@ class Create:
             print(_('Created mailing list: $mlist.fqdn_listname'))
         if args.notify:
             d = dict(
-                listname = mlist.fqdn_listname,
-                admin_url = mlist.script_url('admin'),
-                listinfo_url = mlist.script_url('listinfo'),
-                requestaddr = mlist.request_address,
-                siteowner = mlist.no_reply_address,
+                listname        = mlist.fqdn_listname,          # noqa
+                admin_url       = mlist.script_url('admin'),    # noqa
+                listinfo_url    = mlist.script_url('listinfo'), # noqa
+                requestaddr     = mlist.request_address,        # noqa
+                siteowner       = mlist.no_reply_address,       # noqa
                 )
             text = make('newlist.txt', mailing_list=mlist, **d)
             # Set the I18N language to the list's preferred language so the

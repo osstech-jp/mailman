@@ -20,9 +20,9 @@
 import uuid
 import logging
 
+from datetime import timedelta
 from email.utils import formataddr
 from enum import Enum
-from datetime import timedelta
 from mailman import public
 from mailman.app.workflow import Workflow
 from mailman.core.i18n import _

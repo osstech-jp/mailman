@@ -24,11 +24,11 @@ from mailman import public
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
+from mailman.mta.base import IndividualDelivery
+from mailman.mta.bulk import BulkDelivery
 from mailman.mta.decorating import DecoratingMixin
 from mailman.mta.personalized import PersonalizedMixin
 from mailman.mta.verp import VERPMixin
-from mailman.mta.base import IndividualDelivery
-from mailman.mta.bulk import BulkDelivery
 from mailman.utilities.string import expand
 
 

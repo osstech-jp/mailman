@@ -128,9 +128,7 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('value', sa.Unicode),
             sa.sql.column('pended_id', sa.Integer),
             )
-
-        # https://github.com/PyCQA/pycodestyle/issues/28
-        def get_from_db():                          # noqa
+        def get_from_db():                                 # noqa
             results = {}
             for i in range(1, 6):
                 query = sa.sql.select(
