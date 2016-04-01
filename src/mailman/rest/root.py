@@ -137,6 +137,13 @@ class Pipelines:
 
 
 @public
+class Chains:
+    def on_get(self, request, response):
+        resource = dict(chains=list(config.chains.keys()))
+        okay(response, etag(resource))
+
+
+@public
 class Reserved:
     """Top level API for reserved operations.
 
@@ -182,6 +189,10 @@ class TopLevel:
             if len(segments) > 1:
                 return BadRequest(), []
             return Pipelines(), []
+        elif segments[0] == 'chains':
+            if len(segments) > 1:
+                return BadRequest(), []
+            return Chains(), []
         else:
             return NotFound(), []
 
