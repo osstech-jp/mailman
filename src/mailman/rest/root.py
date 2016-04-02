@@ -132,14 +132,14 @@ class SystemConfiguration:
 @public
 class Pipelines:
     def on_get(self, request, response):
-        resource = dict(pipelines=list(config.pipelines.keys()))
+        resource = dict(pipelines=sorted(config.pipelines))
         okay(response, etag(resource))
 
 
 @public
 class Chains:
     def on_get(self, request, response):
-        resource = dict(chains=list(config.chains.keys()))
+        resource = dict(chains=sorted(config.chains))
         okay(response, etag(resource))
 
 

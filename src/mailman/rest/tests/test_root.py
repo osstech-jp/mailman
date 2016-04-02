@@ -64,7 +64,8 @@ class TestRoot(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
 
     def test_system_pipelines_are_exposed(self):
-        call_api('http://localhost:9001/3.0/system/pipelines')
+        json, response = call_api('http://localhost:9001/3.0/system/pipelines')
+        self.assertEqual(json['pipelines'], sorted(config.pipelines))
 
     def test_system_pipelines_are_read_only(self):
         with self.assertRaises(HTTPError) as cm:
@@ -79,7 +80,8 @@ class TestRoot(unittest.TestCase):
         self.assertEqual(cm.exception.code, 405)
 
     def test_system_chains_are_exposed(self):
-        call_api('http://localhost:9001/3.0/system/chains')
+        json, response = call_api('http://localhost:9001/3.0/system/chains')
+        self.assertEqual(json['chains'], sorted(config.chains))
 
     def test_system_chains_are_read_only(self):
         with self.assertRaises(HTTPError) as cm:
