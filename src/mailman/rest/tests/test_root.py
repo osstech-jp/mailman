@@ -63,38 +63,6 @@ class TestRoot(unittest.TestCase):
             call_api('http://localhost:9001/3.0/system/foo')
         self.assertEqual(cm.exception.code, 404)
 
-    def test_system_pipelines_are_exposed(self):
-        json, response = call_api('http://localhost:9001/3.0/system/pipelines')
-        self.assertEqual(json['pipelines'], sorted(config.pipelines))
-
-    def test_system_pipelines_are_read_only(self):
-        with self.assertRaises(HTTPError) as cm:
-            call_api('http://localhost:9001/3.0/system/pipelines', {
-                     'pipelines': ['pipeline_1', 'pipeline_2']
-                     }, method='PATCH')
-        self.assertEqual(cm.exception.code, 405)
-        with self.assertRaises(HTTPError) as cm:
-            call_api('http://localhost:9001/3.0/system/pipelines', {
-                     'pipelines': ['pipeline_1', 'pipeline_2']
-                     }, method='PUT')
-        self.assertEqual(cm.exception.code, 405)
-
-    def test_system_chains_are_exposed(self):
-        json, response = call_api('http://localhost:9001/3.0/system/chains')
-        self.assertEqual(json['chains'], sorted(config.chains))
-
-    def test_system_chains_are_read_only(self):
-        with self.assertRaises(HTTPError) as cm:
-            call_api('http://localhost:9001/3.0/system/chains', {
-                     'chains': ['chain_1', 'chain_2']
-                     }, method='PATCH')
-        self.assertEqual(cm.exception.code, 405)
-        with self.assertRaises(HTTPError) as cm:
-            call_api('http://localhost:9001/3.0/system/chains', {
-                     'chains': ['chain_1', 'chain_2']
-                     }, method='PUT')
-        self.assertEqual(cm.exception.code, 405)
-
     def test_system_preferences_are_read_only(self):
         # /system/preferences are read-only.
         with self.assertRaises(HTTPError) as cm:
@@ -157,3 +125,45 @@ class TestRoot(unittest.TestCase):
             call_api('http://localhost:9001/3.0/reserved/uids/assigned',
                      method='DELETE')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_system_pipelines_are_exposed(self):
+        json, response = call_api('http://localhost:9001/3.0/system/pipelines')
+        self.assertEqual(json['pipelines'], sorted(config.pipelines))
+
+    def test_system_pipelines_bad_request(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/system/pipelines/bogus')
+        self.assertEqual(cm.exception.code, 400)
+
+    def test_system_pipelines_are_read_only(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/system/pipelines', {
+                'pipelines': ['pipeline_1', 'pipeline_2']
+                }, method='PATCH')
+        self.assertEqual(cm.exception.code, 405)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/system/pipelines', {
+                'pipelines': ['pipeline_1', 'pipeline_2']
+                }, method='PUT')
+        self.assertEqual(cm.exception.code, 405)
+
+    def test_system_chains_are_exposed(self):
+        json, response = call_api('http://localhost:9001/3.0/system/chains')
+        self.assertEqual(json['chains'], sorted(config.chains))
+
+    def test_system_chains_bad_request(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/system/chains/bogus')
+        self.assertEqual(cm.exception.code, 400)
+
+    def test_system_chains_are_read_only(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/system/chains', {
+                'chains': ['chain_1', 'chain_2']
+                }, method='PATCH')
+        self.assertEqual(cm.exception.code, 405)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/system/chains', {
+                'chains': ['chain_1', 'chain_2']
+                }, method='PUT')
+        self.assertEqual(cm.exception.code, 405)

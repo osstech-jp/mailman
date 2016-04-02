@@ -173,6 +173,8 @@ REST
  * Expose `goodbye_message_uri` in the REST API.  Given by Harshit Bansal.
  * New subscription requests are rejected if there is already one pending.
    With thanks to Anirudh Dahiya.  (Closes #199)
+ * Expose the system pipelines and chains via ``<api>/system/pipelines`` and
+   ``<api>/system/chains`` respectively.  Given by Simon Hanna.  (Closes #66)
 
 Other
 -----
