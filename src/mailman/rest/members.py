@@ -140,7 +140,7 @@ class AMember(_MemberBase):
             self._member, 'members/{}/all'.format(member_id))
         return child, []
 
-    def on_delete(self, context, response):
+    def on_delete(self, request, response):
         """Delete the member (i.e. unsubscribe)."""
         # Leaving a list is a bit different than deleting a moderator or
         # owner.  Handle the former case first.  For now too, we will not send
@@ -155,7 +155,7 @@ class AMember(_MemberBase):
             self._member.unsubscribe()
         no_content(response)
 
-    def on_patch(self, context, response):
+    def on_patch(self, request, response):
         """Patch the membership.
 
         This is how subscription changes are done.
@@ -169,7 +169,7 @@ class AMember(_MemberBase):
                 delivery_mode=enum_validator(DeliveryMode),
                 moderation_action=enum_validator(Action),
                 _optional=('address', 'delivery_mode', 'moderation_action'),
-                )(context)
+                )(request)
         except ValueError as error:
             bad_request(response, str(error))
             return
@@ -195,7 +195,7 @@ class AMember(_MemberBase):
 class AllMembers(_MemberBase):
     """The members."""
 
-    def on_post(self, context, response):
+    def on_post(self, request, response):
         """Create a new member."""
         try:
             validator = Validator(
@@ -209,7 +209,7 @@ class AllMembers(_MemberBase):
                 pre_approved=bool,
                 _optional=('delivery_mode', 'display_name', 'role',
                            'pre_verified', 'pre_confirmed', 'pre_approved'))
-            arguments = validator(context)
+            arguments = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
             return
@@ -334,9 +334,9 @@ class AllMembers(_MemberBase):
         location = self.api.path_to('members/{}'.format(member_id))
         created(response, location)
 
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         """/members"""
-        resource = self._make_collection(context)
+        resource = self._make_collection(request)
         okay(response, etag(resource))
 
 
@@ -348,7 +348,7 @@ class _FoundMembers(MemberCollection):
         self._members = members
         self.api = api
 
-    def _get_collection(self, context):
+    def _get_collection(self, request):
         """See `CollectionMixin`."""
         return self._members
 
@@ -357,13 +357,13 @@ class _FoundMembers(MemberCollection):
 class FindMembers(_MemberBase):
     """/members/find"""
 
-    def on_get(self, context, response):
-        return self._find(context, response)
+    def on_get(self, request, response):
+        return self._find(request, response)
 
-    def on_post(self, context, response):
-        return self._find(context, response)
+    def on_post(self, request, response):
+        return self._find(request, response)
 
-    def _find(self, context, response):
+    def _find(self, request, response):
         """Find a member"""
         service = getUtility(ISubscriptionService)
         validator = Validator(
@@ -375,7 +375,7 @@ class FindMembers(_MemberBase):
             count=int,
             _optional=('list_id', 'subscriber', 'role', 'page', 'count'))
         try:
-            data = validator(context)
+            data = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
         else:
@@ -385,4 +385,4 @@ class FindMembers(_MemberBase):
             data.pop('count', None)
             members = service.find_members(**data)
             resource = _FoundMembers(members, self.api)
-            okay(response, etag(resource._make_collection(context)))
+            okay(response, etag(resource._make_collection(request)))

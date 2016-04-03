@@ -209,13 +209,13 @@ class AList(_ListBase):
 class AllLists(_ListBase):
     """The mailing lists."""
 
-    def on_post(self, context, response):
+    def on_post(self, request, response):
         """Create a new mailing list."""
         try:
             validator = Validator(fqdn_listname=str,
                                   style_name=str,
                                   _optional=('style_name',))
-            mlist = create_list(**validator(context))
+            mlist = create_list(**validator(request))
         except ListAlreadyExistsError:
             bad_request(response, b'Mailing list exists')
         except BadDomainSpecificationError as error:
@@ -225,9 +225,9 @@ class AllLists(_ListBase):
             location = self.api.path_to('lists/{0}'.format(mlist.list_id))
             created(response, location)
 
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         """/lists"""
-        resource = self._make_collection(context)
+        resource = self._make_collection(request)
         okay(response, etag(resource))
 
 
@@ -240,7 +240,7 @@ class MembersOfList(MemberCollection):
         self._mlist = mailing_list
         self._role = role
 
-    def _get_collection(self, context):
+    def _get_collection(self, request):
         """See `CollectionMixin`."""
         # Overrides _MemberBase._get_collection() because we only want to
         # return the members from the contexted roster.
@@ -256,12 +256,12 @@ class ListsForDomain(_ListBase):
     def __init__(self, domain):
         self._domain = domain
 
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         """/domains/<domain>/lists"""
-        resource = self._make_collection(context)
+        resource = self._make_collection(request)
         okay(response, etag(resource))
 
-    def _get_collection(self, context):
+    def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(self._domain.mailing_lists)
 
@@ -290,14 +290,14 @@ class ListArchivers:
     def __init__(self, mlist):
         self._mlist = mlist
 
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         """Get all the archiver statuses."""
         archiver_set = IListArchiverSet(self._mlist)
         resource = {archiver.name: archiver.is_enabled
                     for archiver in archiver_set.archivers}
         okay(response, etag(resource))
 
-    def patch_put(self, context, response, is_optional):
+    def patch_put(self, request, response, is_optional):
         archiver_set = IListArchiverSet(self._mlist)
         kws = {archiver.name: ArchiverGetterSetter(self._mlist)
                for archiver in archiver_set.archivers}
@@ -305,19 +305,19 @@ class ListArchivers:
             # For a PATCH, all attributes are optional.
             kws['_optional'] = kws.keys()
         try:
-            Validator(**kws).update(self._mlist, context)
+            Validator(**kws).update(self._mlist, request)
         except ValueError as error:
             bad_request(response, str(error))
         else:
             no_content(response)
 
-    def on_put(self, context, response):
+    def on_put(self, request, response):
         """Update all the archiver statuses."""
-        self.patch_put(context, response, is_optional=False)
+        self.patch_put(request, response, is_optional=False)
 
-    def on_patch(self, context, response):
+    def on_patch(self, request, response):
         """Patch some archiver statueses."""
-        self.patch_put(context, response, is_optional=True)
+        self.patch_put(request, response, is_optional=True)
 
 
 @public
@@ -327,20 +327,20 @@ class ListDigest:
     def __init__(self, mlist):
         self._mlist = mlist
 
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         resource = dict(
             next_digest_number=self._mlist.next_digest_number,
             volume=self._mlist.volume,
             )
         okay(response, etag(resource))
 
-    def on_post(self, context, response):
+    def on_post(self, request, response):
         try:
             validator = Validator(
                 send=as_boolean,
                 bump=as_boolean,
                 _optional=('send', 'bump'))
-            values = validator(context)
+            values = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
             return

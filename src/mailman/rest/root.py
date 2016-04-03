@@ -69,7 +69,7 @@ class Root:
 
 @public
 class Versions:
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         """/<api>/system/versions"""
         resource = dict(
             mailman_version=system.mailman_version,
@@ -85,7 +85,7 @@ class SystemConfiguration:
     def __init__(self, section=None):
         self._section = section
 
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         if self._section is None:
             resource = dict(
                 sections=sorted(section.name for section in config))
@@ -104,14 +104,14 @@ class SystemConfiguration:
 
 @public
 class Pipelines:
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         resource = dict(pipelines=sorted(config.pipelines))
         okay(response, etag(resource))
 
 
 @public
 class Chains:
-    def on_get(self, context, response):
+    def on_get(self, request, response):
         resource = dict(chains=sorted(config.chains))
         okay(response, etag(resource))
 
@@ -128,7 +128,7 @@ class Reserved:
     def __init__(self, segments):
         self._resource_path = SLASH.join(segments)
 
-    def on_delete(self, context, response):
+    def on_delete(self, request, response):
         if self._resource_path != 'uids/orphans':
             not_found(response)
             return
