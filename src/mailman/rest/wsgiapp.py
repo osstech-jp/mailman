@@ -101,7 +101,7 @@ class Middleware:
             # Not authorized.
             raise HTTPUnauthorized(
                 '401 Unauthorized',
-                'User is not authorized for the REST API',
+                'REST API authorization failed',
                 challenges=['Basic realm=Mailman3'])
 
 

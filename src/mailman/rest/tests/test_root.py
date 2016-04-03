@@ -100,7 +100,7 @@ class TestRoot(unittest.TestCase):
         content = json.loads(raw_content.decode('utf-8'))
         self.assertEqual(content['title'], '401 Unauthorized')
         self.assertEqual(content['description'],
-                         'The REST API requires authentication')
+                         'REST API authorization failed')
 
     def test_unauthorized(self):
         # Bad Basic Auth credentials results in a 401 error.
@@ -116,7 +116,7 @@ class TestRoot(unittest.TestCase):
         content = json.loads(raw_content.decode('utf-8'))
         self.assertEqual(content['title'], '401 Unauthorized')
         self.assertEqual(content['description'],
-                         'User is not authorized for the REST API')
+                         'REST API authorization failed')
 
     def test_reserved_bad_subpath(self):
         # Only <api>/reserved/uids/orphans is a defined resource.  DELETEing
