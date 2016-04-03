@@ -256,7 +256,7 @@ class TopLevel:
     def templates(self, context, segments):
         """/<api>/templates/<fqdn_listname>/<template>/[<language>]
 
-        Use content negotiation to request language and suffix (content-type).
+        Use content negotiation to context language and suffix (content-type).
         """
         if len(segments) == 3:
             fqdn_listname, template, language = segments
@@ -268,7 +268,7 @@ class TopLevel:
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             return NotFound(), []
-        # XXX dig out content-type from request.
+        # XXX dig out content-type from context.
         content_type = None
         return TemplateFinder(
             fqdn_listname, template, language, content_type)

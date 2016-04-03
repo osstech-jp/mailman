@@ -115,7 +115,7 @@ class AnAddress(_AddressBase):
             no_content(response)
 
     @child()
-    def memberships(self, request, segments):
+    def memberships(self, context, segments):
         """/addresses/<email>/memberships"""
         if len(segments) != 0:
             return NotFound(), []
@@ -124,7 +124,7 @@ class AnAddress(_AddressBase):
         return AddressMemberships(self._address)
 
     @child()
-    def preferences(self, request, segments):
+    def preferences(self, context, segments):
         """/addresses/<email>/preferences"""
         if len(segments) != 0:
             return NotFound(), []
@@ -136,7 +136,7 @@ class AnAddress(_AddressBase):
         return child, []
 
     @child()
-    def verify(self, request, segments):
+    def verify(self, context, segments):
         """/addresses/<email>/verify"""
         if len(segments) != 0:
             return BadRequest(), []
@@ -146,7 +146,7 @@ class AnAddress(_AddressBase):
         return child, []
 
     @child()
-    def unverify(self, request, segments):
+    def unverify(self, context, segments):
         """/addresses/<email>/verify"""
         if len(segments) != 0:
             return BadRequest(), []
@@ -156,7 +156,7 @@ class AnAddress(_AddressBase):
         return child, []
 
     @child()
-    def user(self, request, segments):
+    def user(self, context, segments):
         """/addresses/<email>/user"""
         if self._address is None:
             return NotFound(), []

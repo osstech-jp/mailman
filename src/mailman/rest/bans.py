@@ -108,5 +108,5 @@ class BannedEmails(_BannedBase, CollectionMixin):
             created(response, self._location(email))
 
     @child(r'^(?P<email>[^/]+)')
-    def email(self, request, segments, **kw):
+    def email(self, context, segments, **kw):
         return BannedEmail(self._mlist, kw['email'])

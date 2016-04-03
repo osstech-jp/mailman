@@ -132,5 +132,5 @@ class SubscriptionRequests(_ModerationBase, CollectionMixin):
         okay(response, etag(resource))
 
     @child(r'^(?P<token>[^/]+)')
-    def subscription(self, request, segments, **kw):
+    def subscription(self, context, segments, **kw):
         return IndividualRequest(self._mlist, kw['token'])

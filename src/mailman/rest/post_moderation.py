@@ -152,5 +152,5 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
         okay(response, etag(resource))
 
     @child(r'^(?P<id>[^/]+)')
-    def message(self, request, segments, **kw):
+    def message(self, context, segments, **kw):
         return HeldMessage(self._mlist, kw['id'])

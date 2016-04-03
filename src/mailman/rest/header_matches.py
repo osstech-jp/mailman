@@ -168,5 +168,5 @@ class HeaderMatches(_HeaderMatchBase, CollectionMixin):
         no_content(response)
 
     @child(r'^(?P<position>\d+)')
-    def header_match(self, request, segments, **kw):
+    def header_match(self, context, segments, **kw):
         return HeaderMatch(self._mlist, int(kw['position']))

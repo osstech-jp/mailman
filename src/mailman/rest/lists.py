@@ -150,55 +150,55 @@ class AList(_ListBase):
         return AMember(context['api'], member.member_id)
 
     @child(roster_matcher)
-    def roster(self, request, segments, role):
+    def roster(self, context, segments, role):
         """Return the collection of all a mailing list's members."""
         if self._mlist is None:
             return NotFound(), []
         return MembersOfList(self._mlist, role)
 
     @child(config_matcher)
-    def config(self, request, segments, attribute=None):
+    def config(self, context, segments, attribute=None):
         """Return a mailing list configuration object."""
         if self._mlist is None:
             return NotFound(), []
         return ListConfiguration(self._mlist, attribute)
 
     @child()
-    def held(self, request, segments):
+    def held(self, context, segments):
         """Return a list of held messages for the mailing list."""
         if self._mlist is None:
             return NotFound(), []
         return HeldMessages(self._mlist)
 
     @child()
-    def requests(self, request, segments):
+    def requests(self, context, segments):
         """Return a list of subscription/unsubscription requests."""
         if self._mlist is None:
             return NotFound(), []
         return SubscriptionRequests(self._mlist)
 
     @child()
-    def archivers(self, request, segments):
+    def archivers(self, context, segments):
         """Return a representation of mailing list archivers."""
         if self._mlist is None:
             return NotFound(), []
         return ListArchivers(self._mlist)
 
     @child()
-    def digest(self, request, segments):
+    def digest(self, context, segments):
         if self._mlist is None:
             return NotFound(), []
         return ListDigest(self._mlist)
 
     @child()
-    def bans(self, request, segments):
+    def bans(self, context, segments):
         """Return a collection of mailing list's banned addresses."""
         if self._mlist is None:
             return NotFound(), []
         return BannedEmails(self._mlist)
 
     @child(r'^header-matches')
-    def header_matches(self, request, segments):
+    def header_matches(self, context, segments):
         """Return a collection of mailing list's header matches."""
         if self._mlist is None:
             return NotFound(), []
@@ -209,13 +209,13 @@ class AList(_ListBase):
 class AllLists(_ListBase):
     """The mailing lists."""
 
-    def on_post(self, request, response):
+    def on_post(self, context, response):
         """Create a new mailing list."""
         try:
             validator = Validator(fqdn_listname=str,
                                   style_name=str,
                                   _optional=('style_name',))
-            mlist = create_list(**validator(request))
+            mlist = create_list(**validator(context))
         except ListAlreadyExistsError:
             bad_request(response, b'Mailing list exists')
         except BadDomainSpecificationError as error:
@@ -225,9 +225,9 @@ class AllLists(_ListBase):
             location = self.api.path_to('lists/{0}'.format(mlist.list_id))
             created(response, location)
 
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         """/lists"""
-        resource = self._make_collection(request)
+        resource = self._make_collection(context)
         okay(response, etag(resource))
 
 
@@ -240,10 +240,10 @@ class MembersOfList(MemberCollection):
         self._mlist = mailing_list
         self._role = role
 
-    def _get_collection(self, request):
+    def _get_collection(self, context):
         """See `CollectionMixin`."""
         # Overrides _MemberBase._get_collection() because we only want to
-        # return the members from the requested roster.
+        # return the members from the contexted roster.
         return getUtility(ISubscriptionService).find_members(
             list_id=self._mlist.list_id,
             role=self._role)
@@ -256,12 +256,12 @@ class ListsForDomain(_ListBase):
     def __init__(self, domain):
         self._domain = domain
 
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         """/domains/<domain>/lists"""
-        resource = self._make_collection(request)
+        resource = self._make_collection(context)
         okay(response, etag(resource))
 
-    def _get_collection(self, request):
+    def _get_collection(self, context):
         """See `CollectionMixin`."""
         return list(self._domain.mailing_lists)
 
@@ -290,14 +290,14 @@ class ListArchivers:
     def __init__(self, mlist):
         self._mlist = mlist
 
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         """Get all the archiver statuses."""
         archiver_set = IListArchiverSet(self._mlist)
         resource = {archiver.name: archiver.is_enabled
                     for archiver in archiver_set.archivers}
         okay(response, etag(resource))
 
-    def patch_put(self, request, response, is_optional):
+    def patch_put(self, context, response, is_optional):
         archiver_set = IListArchiverSet(self._mlist)
         kws = {archiver.name: ArchiverGetterSetter(self._mlist)
                for archiver in archiver_set.archivers}
@@ -305,19 +305,19 @@ class ListArchivers:
             # For a PATCH, all attributes are optional.
             kws['_optional'] = kws.keys()
         try:
-            Validator(**kws).update(self._mlist, request)
+            Validator(**kws).update(self._mlist, context)
         except ValueError as error:
             bad_request(response, str(error))
         else:
             no_content(response)
 
-    def on_put(self, request, response):
+    def on_put(self, context, response):
         """Update all the archiver statuses."""
-        self.patch_put(request, response, is_optional=False)
+        self.patch_put(context, response, is_optional=False)
 
-    def on_patch(self, request, response):
+    def on_patch(self, context, response):
         """Patch some archiver statueses."""
-        self.patch_put(request, response, is_optional=True)
+        self.patch_put(context, response, is_optional=True)
 
 
 @public
@@ -327,20 +327,20 @@ class ListDigest:
     def __init__(self, mlist):
         self._mlist = mlist
 
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         resource = dict(
             next_digest_number=self._mlist.next_digest_number,
             volume=self._mlist.volume,
             )
         okay(response, etag(resource))
 
-    def on_post(self, request, response):
+    def on_post(self, context, response):
         try:
             validator = Validator(
                 send=as_boolean,
                 bump=as_boolean,
                 _optional=('send', 'bump'))
-            values = validator(request)
+            values = validator(context)
         except ValueError as error:
             bad_request(response, str(error))
             return

@@ -73,7 +73,7 @@ class ADomain(_DomainBase):
             no_content(response)
 
     @child()
-    def lists(self, request, segments):
+    def lists(self, context, segments):
         """/domains/<domain>/lists"""
         if len(segments) == 0:
             domain = getUtility(IDomainManager).get(self._domain)
@@ -84,7 +84,7 @@ class ADomain(_DomainBase):
             return BadRequest(), []
 
     @child()
-    def owners(self, request, segments):
+    def owners(self, context, segments):
         """/domains/<domain>/owners"""
         if len(segments) == 0:
             domain = getUtility(IDomainManager).get(self._domain)
@@ -99,7 +99,7 @@ class ADomain(_DomainBase):
 class AllDomains(_DomainBase):
     """The domains."""
 
-    def on_post(self, request, response):
+    def on_post(self, context, response):
         """Create a new domain."""
         domain_manager = getUtility(IDomainManager)
         try:
@@ -109,7 +109,7 @@ class AllDomains(_DomainBase):
                                   owner=list_of_strings_validator,
                                   _optional=(
                                       'description', 'base_url', 'owner'))
-            values = validator(request)
+            values = validator(context)
             # For consistency, owners are passed in as multiple `owner` keys,
             # but .add() requires an `owners` keyword.  Match impedence.
             owners = values.pop('owner', None)
@@ -122,7 +122,7 @@ class AllDomains(_DomainBase):
             location = self.api.path_to('domains/{}'.format(domain.mail_host))
             created(response, location)
 
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         """/domains"""
-        resource = self._make_collection(request)
+        resource = self._make_collection(context)
         okay(response, etag(resource))

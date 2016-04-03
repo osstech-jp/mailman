@@ -78,9 +78,9 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
 class Middleware:
     """Falcon middleware object for Mailman's REST API.
 
-    This does two things.  It sets the API version on the resource object so
-    that it is acceptable to all http mapped methods, and it verifies that the
-    proper authentication has been performed.
+    This does two things.  It sets the API version on the resource
+    object, and it verifies that the proper authentication has been
+    performed.
     """
     def process_resource(self, request, response, resource, params):
         # Set this attribute on the resource right before it is dispatched to.
@@ -118,6 +118,7 @@ class ObjectRouter:
         self._root = root
 
     def add_route(self, uri_template, method_map, resource):
+        # We don't need this method for object-based routing.
         raise NotImplementedError
 
     def find(self, uri):
