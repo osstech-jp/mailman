@@ -17,9 +17,6 @@
 
 """The root of the REST API."""
 
-import falcon
-
-from base64 import b64decode
 from mailman import public
 from mailman.config import config
 from mailman.core.api import API30, API31
@@ -55,48 +52,24 @@ class Root:
     """
 
     @child('3.0')
-    def api_version_30(self, request, segments):
+    def api_version_30(self, context, segments):
         # API version 3.0 was introduced in Mailman 3.0.
-        request.context['api'] = API30
-        return self._check_authorization(request, segments)
+        context['api'] = API30
+        return TopLevel()
 
     @child('3.1')
-    def api_version_31(self, request, segments):
+    def api_version_31(self, context, segments):
         # API version 3.1 was introduced in Mailman 3.1.  Primary backward
         # incompatible difference is that uuids are represented as hex strings
         # instead of 128 bit integers.  The latter is not compatible with all
         # versions of JavaScript.
-        request.context['api'] = API31
-        return self._check_authorization(request, segments)
-
-    def _check_authorization(self, request, segments):
-        # We have to do this here instead of in a @falcon.before() handler
-        # because those handlers are not compatible with our custom traversal
-        # logic.  Specifically, falcon's before/after handlers will call the
-        # responder, but the method we're wrapping isn't a responder, it's a
-        # child traversal method.  There's no way to cause the thing that
-        # calls the before hook to follow through with the child traversal in
-        # the case where no error is raised.
-        if request.auth is None:
-            raise falcon.HTTPUnauthorized(
-                '401 Unauthorized',
-                'The REST API requires authentication')
-        if request.auth.startswith('Basic '):
-            # b64decode() returns bytes, but we require a str.
-            credentials = b64decode(request.auth[6:]).decode('utf-8')
-            username, password = credentials.split(':', 1)
-            if (username != config.webservice.admin_user or
-                    password != config.webservice.admin_pass):
-                # Not authorized.
-                raise falcon.HTTPUnauthorized(
-                    '401 Unauthorized',
-                    'User is not authorized for the REST API')
+        context['api'] = API31
         return TopLevel()
 
 
 @public
 class Versions:
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         """/<api>/system/versions"""
         resource = dict(
             mailman_version=system.mailman_version,
@@ -112,7 +85,7 @@ class SystemConfiguration:
     def __init__(self, section=None):
         self._section = section
 
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         if self._section is None:
             resource = dict(
                 sections=sorted(section.name for section in config))
@@ -131,14 +104,14 @@ class SystemConfiguration:
 
 @public
 class Pipelines:
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         resource = dict(pipelines=sorted(config.pipelines))
         okay(response, etag(resource))
 
 
 @public
 class Chains:
-    def on_get(self, request, response):
+    def on_get(self, context, response):
         resource = dict(chains=sorted(config.chains))
         okay(response, etag(resource))
 
@@ -155,7 +128,7 @@ class Reserved:
     def __init__(self, segments):
         self._resource_path = SLASH.join(segments)
 
-    def on_delete(self, request, response):
+    def on_delete(self, context, response):
         if self._resource_path != 'uids/orphans':
             not_found(response)
             return
@@ -168,7 +141,7 @@ class TopLevel:
     """Top level collections and entries."""
 
     @child()
-    def system(self, request, segments):
+    def system(self, context, segments):
         """/<api>/system"""
         if len(segments) == 0:
             # This provides backward compatibility; see /system/versions.
@@ -197,22 +170,22 @@ class TopLevel:
             return NotFound(), []
 
     @child()
-    def addresses(self, request, segments):
+    def addresses(self, context, segments):
         """/<api>/addresses
            /<api>/addresses/<email>
         """
         if len(segments) == 0:
             resource = AllAddresses()
-            resource.api = request.context['api']
+            resource.api = context['api']
             return resource
         else:
             email = segments.pop(0)
             resource = AnAddress(email)
-            resource.api = request.context['api']
+            resource.api = context['api']
             return resource, segments
 
     @child()
-    def domains(self, request, segments):
+    def domains(self, context, segments):
         """/<api>/domains
            /<api>/domains/<domain>
         """
@@ -223,7 +196,7 @@ class TopLevel:
             return ADomain(domain), segments
 
     @child()
-    def lists(self, request, segments):
+    def lists(self, context, segments):
         """/<api>/lists
            /<api>/lists/styles
            /<api>/lists/<list>
@@ -240,9 +213,9 @@ class TopLevel:
             return AList(list_identifier), segments
 
     @child()
-    def members(self, request, segments):
+    def members(self, context, segments):
         """/<api>/members"""
-        api = request.context['api']
+        api = context['api']
         if len(segments) == 0:
             resource = AllMembers()
             resource.api = api
@@ -258,9 +231,9 @@ class TopLevel:
         return resource, segments
 
     @child()
-    def users(self, request, segments):
+    def users(self, context, segments):
         """/<api>/users"""
-        api = request.context['api']
+        api = context['api']
         if len(segments) == 0:
             resource = AllUsers()
             resource.api = api
@@ -270,17 +243,17 @@ class TopLevel:
             return AUser(api, user_id), segments
 
     @child()
-    def owners(self, request, segments):
+    def owners(self, context, segments):
         """/<api>/owners"""
         if len(segments) != 0:
             return BadRequest(), []
         else:
             resource = ServerOwners()
-            resource.api = request.context['api']
+            resource.api = context['api']
             return resource, segments
 
     @child()
-    def templates(self, request, segments):
+    def templates(self, context, segments):
         """/<api>/templates/<fqdn_listname>/<template>/[<language>]
 
         Use content negotiation to request language and suffix (content-type).
@@ -295,13 +268,13 @@ class TopLevel:
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             return NotFound(), []
-        # XXX dig out content-type from request
+        # XXX dig out content-type from request.
         content_type = None
         return TemplateFinder(
             fqdn_listname, template, language, content_type)
 
     @child()
-    def queues(self, request, segments):
+    def queues(self, context, segments):
         """/<api>/queues[/<name>[/file]]"""
         if len(segments) == 0:
             return AllQueues()
@@ -313,7 +286,7 @@ class TopLevel:
             return BadRequest(), []
 
     @child()
-    def bans(self, request, segments):
+    def bans(self, context, segments):
         """/<api>/bans
            /<api>/bans/<email>
         """
@@ -324,6 +297,6 @@ class TopLevel:
             return BannedEmail(None, email), segments
 
     @child()
-    def reserved(self, request, segments):
+    def reserved(self, context, segments):
         """/<api>/reserved/[...]"""
         return Reserved(segments), []

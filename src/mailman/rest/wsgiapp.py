@@ -20,8 +20,8 @@
 import re
 import logging
 
-from falcon import API
-from falcon.responders import path_not_found
+from base64 import b64decode
+from falcon import API, HTTPUnauthorized
 from falcon.routing import create_http_method_map
 from mailman import public
 from mailman.config import config
@@ -32,9 +32,11 @@ from wsgiref.simple_server import (
 
 
 log = logging.getLogger('mailman.http')
-_missing = object()
+
+MISSING = object()
 SLASH = '/'
 EMPTYSTRING = ''
+REALM = 'mailman3-rest'
 
 
 class AdminWSGIServer(WSGIServer):
@@ -73,53 +75,68 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
         return StderrLogger()
 
 
-class SetAPIVersion:
-    """Falcon middleware object that sets the API on resources."""
+class Middleware:
+    """Falcon middleware object for Mailman's REST API.
 
-    def process_resource(self, request, response, resource):
-        # Set this attribute on the resource right before it is dispatched
-        # too.  This can be used by the resource to provide different
-        # responses based on the API version, and for path_to() to provide an
-        # API version-specific path.
-        #
-        # Note that it's possible that resource is None, e.g. such as when a
-        # resource path does not exist.  This middleware method will still get
-        # called, but there's nothing to set the api_version on.
-        if resource is not None:
-            resource.api = request.context.get('api')
+    This does two things.  It sets the API version on the resource object so
+    that it is acceptable to all http mapped methods, and it verifies that the
+    proper authentication has been performed.
+    """
+    def process_resource(self, request, response, resource, params):
+        # Set this attribute on the resource right before it is dispatched to.
+        # This can be used by the resource to provide different responses
+        # based on the API version, and for path_to() to provide an API
+        # version-specific path.
+        resource.api = params.pop('api')
+        # We have to do this here instead of in a @falcon.before() handler
+        # because those handlers are not compatible with our custom traversal
+        # logic.  Specifically, falcon's before/after handlers will call the
+        # responder, but the method we're wrapping isn't a responder, it's a
+        # child traversal method.  There's no way to cause the thing that
+        # calls the before hook to follow through with the child traversal in
+        # the case where no error is raised.
+        if request.auth is None:
+            raise HTTPUnauthorized(
+                '401 Unauthorized',
+                'The REST API requires authentication',
+                challenges=['Basic realm=Mailman3'])
+        if request.auth.startswith('Basic '):
+            # b64decode() returns bytes, but we require a str.
+            credentials = b64decode(request.auth[6:]).decode('utf-8')
+            username, password = credentials.split(':', 1)
+            if (username != config.webservice.admin_user or
+                    password != config.webservice.admin_pass):
+                # Not authorized.
+                raise HTTPUnauthorized(
+                    '401 Unauthorized',
+                    'User is not authorized for the REST API',
+                    challenges=['Basic realm=Mailman3'])
 
 
-class RootedAPI(API):
-    def __init__(self, root, *args, **kws):
+class ObjectRouter:
+    def __init__(self, root):
         self._root = root
-        super().__init__(*args, middleware=SetAPIVersion(), **kws)
 
-    @transactional
-    def __call__(self, environ, start_response):
-        # Override the base class implementation to wrap a transactional
-        # handler around the call, such that the current transaction is
-        # committed if no errors occur, and aborted otherwise.
-        return super().__call__(environ, start_response)
+    def add_route(self, uri_template, method_map, resource):
+        raise NotImplementedError
 
-    def _get_responder(self, req):
-        path = req.path
-        method = req.method
-        path_segments = path.split('/')
+    def find(self, uri):
+        segments = uri.split(SLASH)
         # Since the path is always rooted at /, skip the first segment, which
         # will always be the empty string.
-        path_segments.pop(0)
-        this_segment = path_segments.pop(0)
+        segments.pop(0)
+        this_segment = segments.pop(0)
         resource = self._root
+        context = {}
         while True:
-            # See if there's a child matching the current segment.
             # See if any of the resource's child links match the next segment.
             for name in dir(resource):
                 if name.startswith('__') and name.endswith('__'):
                     continue
-                attribute = getattr(resource, name, _missing)
-                assert attribute is not _missing, name
-                matcher = getattr(attribute, '__matcher__', _missing)
-                if matcher is _missing:
+                attribute = getattr(resource, name, MISSING)
+                assert attribute is not MISSING, name
+                matcher = getattr(attribute, '__matcher__', MISSING)
+                if matcher is MISSING:
                     continue
                 result = None
                 if isinstance(matcher, str):
@@ -128,15 +145,15 @@ class RootedAPI(API):
                     if matcher.startswith('^'):
                         cre = re.compile(matcher)
                         # Search against the entire remaining path.
-                        tmp_path_segments = path_segments[:]
-                        tmp_path_segments.insert(0, this_segment)
-                        remaining_path = SLASH.join(tmp_path_segments)
+                        tmp_segments = segments[:]
+                        tmp_segments.insert(0, this_segment)
+                        remaining_path = SLASH.join(tmp_segments)
                         mo = cre.match(remaining_path)
                         if mo:
                             result = attribute(
-                                req, path_segments, **mo.groupdict())
+                                context, segments, **mo.groupdict())
                     elif matcher == this_segment:
-                        result = attribute(req, path_segments)
+                        result = attribute(context, segments)
                 else:
                     # The matcher is a callable.  It returns None if it
                     # doesn't match, and if it does, it returns a 3-tuple
@@ -145,39 +162,54 @@ class RootedAPI(API):
                     # then called with these arguments.  Note that the matcher
                     # wants to see the full remaining path components, which
                     # includes the current hop.
-                    tmp_path_segments = path_segments[:]
-                    tmp_path_segments.insert(0, this_segment)
-                    matcher_result = matcher(req, tmp_path_segments)
+                    tmp_segments = segments[:]
+                    tmp_segments.insert(0, this_segment)
+                    matcher_result = matcher(tmp_segments)
                     if matcher_result is not None:
-                        positional, keyword, path_segments = matcher_result
+                        positional, keyword, segments = matcher_result
                         result = attribute(
-                            req, path_segments, *positional, **keyword)
+                            context, segments, *positional, **keyword)
                 # The attribute could return a 2-tuple giving the resource and
-                # remaining path segments, or it could just return the
-                # result.  Of course, if the result is None, then the matcher
-                # did not match.
+                # remaining path segments, or it could just return the result.
+                # Of course, if the result is None, then the matcher did not
+                # match.
                 if result is None:
                     continue
                 elif isinstance(result, tuple):
-                    resource, path_segments = result
+                    resource, segments = result
                 else:
                     resource = result
                 # The method could have truncated the remaining segments,
                 # meaning, it's consumed all the path segments, or this is the
                 # last path segment.  In that case the resource we're left at
                 # is the responder.
-                if len(path_segments) == 0:
+                if len(segments) == 0:
                     # We're at the end of the path, so the root must be the
                     # responder.
-                    method_map = create_http_method_map(resource, None, None)
-                    responder = method_map[method]
-                    return responder, {}, resource
-                this_segment = path_segments.pop(0)
+                    method_map = create_http_method_map(resource)
+                    return resource, method_map, context
+                this_segment = segments.pop(0)
                 break
             else:
                 # None of the attributes matched this path component, so the
                 # response is a 404.
-                return path_not_found, {}, None
+                return None, None, None
+
+
+class RootedAPI(API):
+    def __init__(self, root, *args, **kws):
+        super().__init__(
+            *args,
+            middleware=Middleware(),
+            router=ObjectRouter(root),
+            **kws)
+
+    @transactional
+    def __call__(self, environ, start_response):
+        # Override the base class implementation to wrap a transactional
+        # handler around the call, such that the current transaction is
+        # committed if no errors occur, and aborted otherwise.
+        return super().__call__(environ, start_response)
 
 
 @public

@@ -80,7 +80,7 @@ CREATION_FIELDS = dict(
     )
 
 
-def create_user(arguments, request, response):
+def create_user(api, arguments, response):
     """Create a new user."""
     # We can't pass the 'password' argument to the user creation method, so
     # strip that out (if it exists), then create the user, adding the password
@@ -109,9 +109,8 @@ def create_user(arguments, request, response):
         password = generate(int(config.passwords.password_length))
     user.password = config.password_context.encrypt(password)
     user.is_server_owner = is_server_owner
-    api = request.context['api']
     user_id = api.from_uuid(user.user_id)
-    location = request.context.get('api').path_to('users/{}'.format(user_id))
+    location = api.path_to('users/{}'.format(user_id))
     created(response, location)
     return user
 
@@ -162,7 +161,7 @@ class AllUsers(_UserBase):
         except ValueError as error:
             bad_request(response, str(error))
             return
-        create_user(arguments, request, response)
+        create_user(self.api, arguments, response)
 
 
 @public
@@ -204,7 +203,7 @@ class AUser(_UserBase):
             okay(response, self._resource_as_json(self._user))
 
     @child()
-    def addresses(self, request, segments):
+    def addresses(self, context, segments):
         """/users/<uid>/addresses"""
         if self._user is None:
             return NotFound(), []
@@ -222,7 +221,7 @@ class AUser(_UserBase):
         no_content(response)
 
     @child()
-    def preferences(self, request, segments):
+    def preferences(self, context, segments):
         """/users/<id>/preferences"""
         if len(segments) != 0:
             return BadRequest(), []
@@ -270,7 +269,7 @@ class AUser(_UserBase):
             no_content(response)
 
     @child()
-    def login(self, request, segments):
+    def login(self, context, segments):
         """Log the user in, sort of, by verifying a given password."""
         if self._user is None:
             return NotFound(), []
@@ -302,17 +301,17 @@ class AddressUser(_UserBase):
 
     def on_post(self, request, response):
         """Link a user to the address, and create it if needed."""
+        import pdb; pdb.set_trace()
         if self._user:
             conflict(response)
             return
-        api = request.context['api']
         # When creating a linked user by POSTing, the user either must already
         # exist, or it can be automatically created, if the auto_create flag
         # is given and true (if missing, it defaults to true).  However, in
         # this case we do not accept 'email' as a POST field.
         fields = CREATION_FIELDS.copy()
         del fields['email']
-        fields['user_id'] = api.to_uuid
+        fields['user_id'] = self.api.to_uuid
         fields['auto_create'] = as_boolean
         fields['_optional'] = fields['_optional'] + (
             'user_id', 'auto_create', 'is_server_owner')
@@ -335,7 +334,7 @@ class AddressUser(_UserBase):
             auto_create = arguments.pop('auto_create', True)
             if auto_create:
                 # This sets the 201 or 400 status.
-                user = create_user(arguments, request, response)
+                user = create_user(self.api, arguments, response)
                 if user is None:
                     return
             else:
@@ -368,7 +367,7 @@ class AddressUser(_UserBase):
                 return
             okay(response)
         else:
-            user = create_user(arguments, request, response)
+            user = create_user(self.api, arguments, response)
             if user is None:
                 return
         user.link(self._address)

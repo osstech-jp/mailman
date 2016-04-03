@@ -43,7 +43,7 @@ from mailman.rest.validator import Validator
 from zope.component import getUtility
 
 
-def member_matcher(request, segments):
+def member_matcher(segments):
     """A matcher of member URLs inside mailing lists.
 
     e.g. /<role>/aperson@example.org
@@ -58,7 +58,7 @@ def member_matcher(request, segments):
     return (), dict(role=role, email=segments[1]), ()
 
 
-def roster_matcher(request, segments):
+def roster_matcher(segments):
     """A matcher of all members URLs inside mailing lists.
 
     e.g. /roster/<role>
@@ -72,7 +72,7 @@ def roster_matcher(request, segments):
         return None
 
 
-def config_matcher(request, segments):
+def config_matcher(segments):
     """A matcher for a mailing list's configuration resource.
 
     e.g. /config
