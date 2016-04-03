@@ -175,6 +175,7 @@ REST
    With thanks to Anirudh Dahiya.  (Closes #199)
  * Expose the system pipelines and chains via ``<api>/system/pipelines`` and
    ``<api>/system/chains`` respectively.  Given by Simon Hanna.  (Closes #66)
+ * Port to Falcon 1.0 (Closes #20)
 
 Other
 -----
