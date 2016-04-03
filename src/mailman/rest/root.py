@@ -175,14 +175,10 @@ class TopLevel:
            /<api>/addresses/<email>
         """
         if len(segments) == 0:
-            resource = AllAddresses()
-            resource.api = context['api']
-            return resource
+            return AllAddresses()
         else:
             email = segments.pop(0)
-            resource = AnAddress(email)
-            resource.api = context['api']
-            return resource, segments
+            return AnAddress(email), segments
 
     @child()
     def domains(self, context, segments):
@@ -215,32 +211,29 @@ class TopLevel:
     @child()
     def members(self, context, segments):
         """/<api>/members"""
-        api = context['api']
         if len(segments) == 0:
-            resource = AllMembers()
-            resource.api = api
-            return resource
+            return AllMembers()
         # Either the next segment is the string "find" or a member id.  They
         # cannot collide.
         segment = segments.pop(0)
         if segment == 'find':
             resource = FindMembers()
-            resource.api = api
         else:
-            resource = AMember(api, segment)
+            try:
+                member_id = context['api'].to_uuid(segment)
+            except ValueError:
+                member_id = None
+            resource = AMember(member_id)
         return resource, segments
 
     @child()
     def users(self, context, segments):
         """/<api>/users"""
-        api = context['api']
         if len(segments) == 0:
-            resource = AllUsers()
-            resource.api = api
-            return resource
+            return AllUsers()
         else:
-            user_id = segments.pop(0)
-            return AUser(api, user_id), segments
+            user_identifier = segments.pop(0)
+            return AUser(context['api'], user_identifier), segments
 
     @child()
     def owners(self, context, segments):
@@ -248,9 +241,7 @@ class TopLevel:
         if len(segments) != 0:
             return BadRequest(), []
         else:
-            resource = ServerOwners()
-            resource.api = context['api']
-            return resource, segments
+            return ServerOwners(), segments
 
     @child()
     def templates(self, context, segments):

@@ -101,16 +101,13 @@ class MemberCollection(_MemberBase):
 class AMember(_MemberBase):
     """A member."""
 
-    def __init__(self, api, member_id):
+    def __init__(self, member_id):
         # The member_id is either the member's UUID or the string
         # representation of the member's UUID.
-        self.api = api
         service = getUtility(ISubscriptionService)
-        try:
-            self._member = service.get_member(api.to_uuid(member_id))
-        except ValueError:
-            # The string argument could not be converted to a UUID.
-            self._member = None
+        self._member_id = member_id
+        self._member = (None if member_id is None
+                        else service.get_member(member_id))
 
     def on_get(self, request, response):
         """Return a single member end-point."""
@@ -126,7 +123,7 @@ class AMember(_MemberBase):
             return NotFound(), []
         if self._member is None:
             return NotFound(), []
-        member_id = self.api.from_uuid(self._member.member_id)
+        member_id = context['api'].from_uuid(self._member_id)
         child = Preferences(
             self._member.preferences, 'members/{}'.format(member_id))
         return child, []
@@ -138,10 +135,9 @@ class AMember(_MemberBase):
             return NotFound(), []
         if self._member is None:
             return NotFound(), []
+        member_id = context['api'].from_uuid(self._member_id)
         child = ReadOnlyPreferences(
-            self._member,
-            'members/{}/all'.format(
-                self.api.from_uuid(self._member.member_id)))
+            self._member, 'members/{}/all'.format(member_id))
         return child, []
 
     def on_delete(self, context, response):
