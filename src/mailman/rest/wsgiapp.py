@@ -88,29 +88,21 @@ class Middleware:
         # based on the API version, and for path_to() to provide an API
         # version-specific path.
         resource.api = params.pop('api')
-        # We have to do this here instead of in a @falcon.before() handler
-        # because those handlers are not compatible with our custom traversal
-        # logic.  Specifically, falcon's before/after handlers will call the
-        # responder, but the method we're wrapping isn't a responder, it's a
-        # child traversal method.  There's no way to cause the thing that
-        # calls the before hook to follow through with the child traversal in
-        # the case where no error is raised.
-        if request.auth is None:
-            raise HTTPUnauthorized(
-                '401 Unauthorized',
-                'The REST API requires authentication',
-                challenges=['Basic realm=Mailman3'])
-        if request.auth.startswith('Basic '):
+        # Check the authorization credentials.
+        authorized = False
+        if request.auth is not None and request.auth.startswith('Basic '):
             # b64decode() returns bytes, but we require a str.
             credentials = b64decode(request.auth[6:]).decode('utf-8')
             username, password = credentials.split(':', 1)
-            if (username != config.webservice.admin_user or
-                    password != config.webservice.admin_pass):
-                # Not authorized.
-                raise HTTPUnauthorized(
-                    '401 Unauthorized',
-                    'User is not authorized for the REST API',
-                    challenges=['Basic realm=Mailman3'])
+            if (username == config.webservice.admin_user and
+                    password == config.webservice.admin_pass):
+                authorized = True
+        if not authorized:
+            # Not authorized.
+            raise HTTPUnauthorized(
+                '401 Unauthorized',
+                'User is not authorized for the REST API',
+                challenges=['Basic realm=Mailman3'])
 
 
 class ObjectRouter:
@@ -204,13 +196,15 @@ class RootedAPI(API):
             middleware=Middleware(),
             router=ObjectRouter(root),
             **kws)
+        # Let Falcon parse the form data into the request object's
+        # .params attribute.
         self.req_options.auto_parse_form_urlencoded = True
 
+    # Override the base class implementation to wrap a transactional
+    # handler around the call, so that the current transaction is
+    # committed if no errors occur, and aborted otherwise.
     @transactional
     def __call__(self, environ, start_response):
-        # Override the base class implementation to wrap a transactional
-        # handler around the call, such that the current transaction is
-        # committed if no errors occur, and aborted otherwise.
         return super().__call__(environ, start_response)
 
 
