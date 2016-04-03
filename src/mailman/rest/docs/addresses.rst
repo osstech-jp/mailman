@@ -146,6 +146,7 @@ sub-resource of the address.  If the user does not exist, it will be created.
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user',
     ...           {'display_name': 'Cris X. Person'})
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/users/1
     server: ...
@@ -217,13 +218,16 @@ The address and the user can be unlinked by sending a DELETE request on the
 
 You can link an existing user to an address by passing the user's ID in the
 POST request.
+::
 
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user',
     ...           {'user_id': 1})
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     server: ...
     status: 200
+
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user')
     created_on: ...
     display_name: Cris X. Person
@@ -234,14 +238,17 @@ POST request.
 
 To link an address to a different user, you can either send a DELETE request
 followed by a POST request, or you can send a PUT request.
+::
 
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user',
     ...           {'display_name': 'Cris Q Person'}, method="PUT")
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/users/2
     server: ...
     status: 201
+
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user')
     created_on: ...
     display_name: Cris Q Person
@@ -290,6 +297,7 @@ addresses to an existing user.
     ...           'email': 'dave.person@example.org'
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/addresses/dave.person@example.org
     server: ...
@@ -303,6 +311,7 @@ When you add the new address, you can give it an optional display name.
     ...           'display_name': 'Davie P',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/addresses/dp@example.org
     server: ...

@@ -302,6 +302,7 @@ mailing list.
     ...           'role': 'moderator',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/members/6
     server: ...
@@ -313,6 +314,7 @@ mailing list.
     ...           'role': 'owner',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/members/7
     server: ...
@@ -643,6 +645,7 @@ won't have to approve her subscription request.
     ...           'pre_approved': True,
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/members/8
     server: ...
@@ -699,6 +702,7 @@ list with her preferred address.
     ...     'pre_approved': True,
     ...     })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/members/9
     server: ...

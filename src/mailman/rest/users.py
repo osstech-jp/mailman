@@ -301,7 +301,6 @@ class AddressUser(_UserBase):
 
     def on_post(self, request, response):
         """Link a user to the address, and create it if needed."""
-        import pdb; pdb.set_trace()
         if self._user:
             conflict(response)
             return
@@ -344,12 +343,11 @@ class AddressUser(_UserBase):
 
     def on_put(self, request, response):
         """Set or replace the addresses's user."""
-        api = request.context['api']
         if self._user:
             self._user.unlink(self._address)
         # Process post data and check for an existing user.
         fields = CREATION_FIELDS.copy()
-        fields['user_id'] = api.to_uuid
+        fields['user_id'] = self.api.to_uuid
         fields['_optional'] = fields['_optional'] + (
             'user_id', 'email', 'is_server_owner')
         try:

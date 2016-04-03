@@ -108,6 +108,7 @@ the user's email address must be provided.
     ...           'email': 'cris@example.com',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/users/3
     server: ...
@@ -154,6 +155,7 @@ When a user is added, a display name can be provided.
     ...           'display_name': 'Dave Person',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/users/4
     server: ...
@@ -186,6 +188,7 @@ before being stored.
     ...           'password': 'supersekrit',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/users/5
     server: ...
@@ -483,6 +486,7 @@ Gwen, a new users, takes over as a server owner.
     ...           'is_server_owner': True,
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/users/7
     server: ...
@@ -519,6 +523,7 @@ Now, a user creation request is received, using Herb's email address.
     ...           'display_name': 'Herb Person',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/users/8
     server: ...

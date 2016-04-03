@@ -111,6 +111,7 @@ example.com domain does not contain any mailing lists.
     ...           'fqdn_listname': 'test-domains@example.com',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/lists/test-domains.example.com
     ...
@@ -145,6 +146,7 @@ New domains can be created by posting to the ``domains`` url.
     ...           'mail_host': 'lists.example.com',
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/domains/lists.example.com
     ...
@@ -178,6 +180,7 @@ address.
     ...           'base_url': 'http://allmy.example.com'
     ...           })
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/domains/my.example.com
     ...
@@ -273,6 +276,7 @@ New domains can be created with owners.
     ...           ('owner', 'bart@example.com'),
     ...           ))
     content-length: 0
+    content-type: application/json; charset=UTF-8
     date: ...
     location: http://localhost:9001/3.0/domains/your.example.com
     server: ...

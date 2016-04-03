@@ -203,6 +203,7 @@ class RootedAPI(API):
             middleware=Middleware(),
             router=ObjectRouter(root),
             **kws)
+        self.req_options.auto_parse_form_urlencoded = True
 
     @transactional
     def __call__(self, environ, start_response):

@@ -139,7 +139,7 @@ class AList(_ListBase):
             no_content(response)
 
     @child(member_matcher)
-    def member(self, request, segments, role, email):
+    def member(self, context, segments, role, email):
         """Return a single member representation."""
         if self._mlist is None:
             return NotFound(), []
@@ -147,7 +147,7 @@ class AList(_ListBase):
             email, self._mlist.list_id, role)
         if member is None:
             return NotFound(), []
-        return AMember(request.context['api'], member.member_id)
+        return AMember(context['api'], member.member_id)
 
     @child(roster_matcher)
     def roster(self, request, segments, role):
