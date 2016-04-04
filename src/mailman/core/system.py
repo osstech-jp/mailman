@@ -19,7 +19,7 @@
 
 import sys
 
-from mailman import version
+from mailman import public, version
 from mailman.interfaces.system import ISystem
 from zope.interface import implementer
 
@@ -39,5 +39,4 @@ class System:
         return sys.version
 
 
-system = System()
-__all__ = ['system']
+public(system=System())

@@ -40,8 +40,7 @@ from zope.configuration import xmlconfig
 # The test infrastructure uses this to prevent the search and loading of any
 # existing configuration file.  Otherwise the existence of say a
 # ~/.mailman.cfg file can break tests.
-INHIBIT_CONFIG_FILE = object()
-__all__ = ['INHIBIT_CONFIG_FILE']
+public(INHIBIT_CONFIG_FILE=object())
 
 
 def search_for_configuration_file():

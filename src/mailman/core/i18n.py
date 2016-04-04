@@ -24,8 +24,7 @@ from mailman import public
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 
 
-_ = None
-__all__ = ['_']
+public(_=None)
 
 
 @public

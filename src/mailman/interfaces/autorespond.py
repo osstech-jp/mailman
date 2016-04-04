@@ -23,8 +23,7 @@ from mailman import public
 from zope.interface import Attribute, Interface
 
 
-ALWAYS_REPLY = timedelta()
-__all__ = ['ALWAYS_REPLY']
+public(ALWAYS_REPLY=timedelta())
 
 
 @public

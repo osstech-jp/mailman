@@ -17,7 +17,8 @@
 
 """Doctest layer setup."""
 
+from mailman import public
 from mailman.testing.layers import RESTLayer
 
-layer = RESTLayer
-__all__ = ['layer']
+
+public(layer=RESTLayer)

@@ -32,8 +32,7 @@ from mailman.testing import layers
 # locale.setlocale(locale.LC_ALL, '').  Since we never do this in Mailman (and
 # no library better do it either!) this will safely give us expected RFC 5322
 # Date headers.
-RFC822_DATE_FMT = '%a, %d %b %Y %H:%M:%S %z'
-__all__ = ['RFC822_DATE_FMT']
+public(RFC822_DATE_FMT='%a, %d %b %Y %H:%M:%S %z')
 
 
 # Definition of UTC timezone, taken from
@@ -53,8 +52,7 @@ class UTC(datetime.tzinfo):
         return ZERO
 
 
-utc = UTC()
-__all__.append('utc')
+public(utc=UTC())
 _missing = object()
 
 
@@ -69,7 +67,7 @@ class DateFactory:
         # We can't automatically fast-forward because some tests require us to
         # stay on the same day for a while, e.g. autorespond.txt.
         if tz is _missing:
-            tz = utc
+            tz = utc                                # noqa
         # Storm cannot yet handle datetimes with tz suffixes.  Assume we're
         # using UTC datetimes everywhere, so set the tzinfo to None.  This
         # does *not* change the actual time values.  LP: #280708
@@ -97,14 +95,8 @@ class DateFactory:
         cls.predictable_today = cls.predictable_now.date()
 
 
-factory = DateFactory()
-factory.reset()
-today = factory.today
-now = factory.now
-layers.MockAndMonkeyLayer.register_reset(factory.reset)
-
-__all__.extend([
-    'factory',
-    'now',
-    'today',
-    ])
+public(factory=DateFactory())
+factory.reset()                                             # noqa
+public(today=factory.today)                                 # noqa
+public(now=factory.now)                                     # noqa
+layers.MockAndMonkeyLayer.register_reset(factory.reset)     # noqa

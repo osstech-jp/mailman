@@ -17,7 +17,8 @@
 
 """General Mailman doc tests."""
 
+from mailman import public
 from mailman.testing.layers import ConfigLayer
 
-layer = ConfigLayer
-__all__ = ['layer']
+
+public(layer=ConfigLayer)

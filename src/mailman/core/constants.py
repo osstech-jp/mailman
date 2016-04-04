@@ -17,6 +17,7 @@
 
 """Various constants and enumerations."""
 
+from mailman import public
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
@@ -42,5 +43,4 @@ class SystemDefaultPreferences:
         return getUtility(ILanguageManager)[config.mailman.default_language]
 
 
-system_preferences = SystemDefaultPreferences()
-__all__ = ['system_preferences']
+public(system_preferences=SystemDefaultPreferences())

@@ -18,6 +18,7 @@
 """Base class for all database classes."""
 
 from contextlib import closing
+from mailman import public
 from mailman.config import config
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -36,7 +37,7 @@ class ModelMeta:
             try:
                 # Delete all the tables in reverse foreign key dependency
                 # order.  http://tinyurl.com/on8dy6f
-                for table in reversed(Model.metadata.sorted_tables):
+                for table in reversed(Model.metadata.sorted_tables):   # noqa
                     connection.execute(table.delete())
             except:
                 transaction.rollback()
@@ -45,5 +46,4 @@ class ModelMeta:
                 transaction.commit()
 
 
-Model = declarative_base(cls=ModelMeta)
-__all__ = ['Model']
+public(Model=declarative_base(cls=ModelMeta))

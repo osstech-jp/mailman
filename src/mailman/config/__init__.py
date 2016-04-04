@@ -17,7 +17,8 @@
 
 """Mailman configuration package."""
 
+from mailman import public
 from mailman.config.config import Configuration
 
-config = Configuration()
-__all__ = ['config']
+
+public(config=Configuration())
