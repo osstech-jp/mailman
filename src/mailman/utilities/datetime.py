@@ -86,7 +86,7 @@ class DateFactory:
     @classmethod
     def reset(cls):
         cls.predictable_now = datetime.datetime(2005, 8, 1, 7, 49, 23,
-                                                tzinfo=utc)
+                                                tzinfo=utc)   # noqa
         cls.predictable_today = cls.predictable_now.date()
 
     @classmethod

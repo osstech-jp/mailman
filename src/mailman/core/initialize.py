@@ -112,7 +112,7 @@ def initialize_1(config_path=None):
     # configuration file is searched for in the file system.
     if config_path is None:
         config_path = search_for_configuration_file()
-    elif config_path is INHIBIT_CONFIG_FILE:
+    elif config_path is INHIBIT_CONFIG_FILE:        # noqa
         # For the test suite, force this back to not using a config file.
         config_path = None
     mailman.config.config.load(config_path)
