@@ -75,6 +75,7 @@ Bugs
    (Closes #208)
  * Fix "None" as display name in welcome message.  Given by Aditya Divekar.
    (Closes #194)
+ * Fix ``mailman shell`` processing of ``$PYTHONSTARTUP``.  (Closes #224)
 
 Configuration
 -------------

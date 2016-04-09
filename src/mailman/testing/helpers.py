@@ -550,3 +550,23 @@ def set_preferred(user):
     preferred.verified_on = now()
     user.preferred_address = preferred
     return preferred
+
+
+@public
+@contextmanager
+def hackenv(envar, new_value):
+    """Hack the environment temporarily, then reset it."""
+    old_value = os.getenv(envar)
+    if new_value is None:
+        if envar in os.environ:
+            del os.environ[envar]
+    else:
+        os.environ[envar] = new_value
+    try:
+        yield
+    finally:
+        if old_value is None:
+            if envar in os.environ:
+                del os.environ[envar]
+        else:
+            os.environ[envar] = old_value
