@@ -53,7 +53,7 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     # Try to import the readline module, but don't worry if it's unavailable.
     try:
         import readline                             # noqa
-    except ImportError:
+    except ImportError:                             # pragma: no cover
         pass
     # Mimic the real interactive interpreter's loading of any $PYTHONSTARTUP
     # file.  Note that if the startup file is not prepared to be exec'd more
