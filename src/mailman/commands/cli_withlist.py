@@ -20,6 +20,7 @@
 import re
 import sys
 
+from functools import partial
 from lazr.config import as_boolean
 from mailman import public
 from mailman.config import config
@@ -28,6 +29,7 @@ from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.interact import DEFAULT_BANNER, interact
 from mailman.utilities.modules import call_name
+from traceback import print_exc
 from zope.component import getUtility
 from zope.interface import implementer
 
@@ -36,6 +38,27 @@ from zope.interface import implementer
 m = None
 # Global holding the results of --run.
 r = None
+
+
+def _start_ipython1(overrides, banner, *, debug=False):
+    try:
+        from IPython.frontend.terminal.embed import InteractiveShellEmbed
+    except ImportError:
+        if debug:
+            print_exc()
+        return None
+    return InteractiveShellEmbed(banner1=banner, user_ns=overrides)
+
+
+def _start_ipython4(overrides, banner, *, debug=False):
+    try:
+        from IPython.terminal.embed import InteractiveShellEmbed
+        shell = InteractiveShellEmbed()
+    except ImportError:
+        if debug:
+            print_exc()
+        return None
+    return partial(shell.mainloop, local_ns=overrides, display_banner=banner)
 
 
 @public
@@ -144,17 +167,29 @@ class Withlist:
                 )
             banner = config.shell.banner + '\n' + (
                 banner if isinstance(banner, str) else '')
-            if as_boolean(config.shell.use_ipython):
-                self._start_ipython(overrides, banner)
+            try:
+                use_ipython = as_boolean(config.shell.use_ipython)
+            except ValueError:
+                if config.shell.use_ipython == 'debug':
+                    use_ipython = True
+                    debug = True
+                else:
+                    raise
+            else:
+                debug = False
+            if use_ipython:
+                self._start_ipython(overrides, banner, debug)
             else:
                 self._start_python(overrides, banner)
 
-    def _start_ipython(self, overrides, banner):
-        try:
-            from IPython.frontend.terminal.embed import InteractiveShellEmbed
-            ipshell = InteractiveShellEmbed(banner1=banner, user_ns=overrides)
-            ipshell()
-        except ImportError:
+    def _start_ipython(self, overrides, banner, debug):
+        shell = None
+        for starter in (_start_ipython4, _start_ipython1):
+            shell = starter(overrides, banner, debug=debug)
+            if shell is not None:
+                shell()
+                break
+        else:
             print(_('ipython is not available, set use_ipython to no'))
 
     def _start_python(self, overrides, banner):
