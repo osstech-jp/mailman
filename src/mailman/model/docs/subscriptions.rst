@@ -209,3 +209,58 @@ Members can be removed via this service.
         on bee@example.com as MemberRole.owner>
     <Member: Anne Person <anne@example.com>
         on cat@example.com as MemberRole.member>
+
+
+Mass Removal
+============
+
+The subscription service can be used to perform mass removals. You are
+required to pass the list id of the respective mailing list and a list
+of email addresses to be removed.
+
+    >>> bart_2 = subscribe(ant, 'Bart')
+    >>> cris_2 = subscribe(ant, 'Cris')
+    >>> for member in service:
+    ...     print(member)
+    <Member: Anne Person <aperson@example.com>
+        on ant@example.com as MemberRole.owner>
+    <Member: Bart Person <bperson@example.com>
+        on ant@example.com as MemberRole.moderator>
+    <Member: Anne Person <aperson@example.com>
+        on ant@example.com as MemberRole.member>
+    <Member: Bart Person <bperson@example.com>
+        on ant@example.com as MemberRole.member>
+    <Member: Cris Person <cperson@example.com>
+        on ant@example.com as MemberRole.member>
+    <Member: Bart Person <bperson@example.com>
+        on bee@example.com as MemberRole.owner>
+    <Member: Anne Person <anne@example.com>
+        on cat@example.com as MemberRole.member>
+    >>> len(service.get_members())
+    7
+    >>> print(service.find_member('bogus@example.com'))
+    None
+    >>> success, fail = service.unsubscribe_members(
+    ...         'ant.example.com', ['aperson@example.com',
+    ...                             'cperson@example.com',
+    ...                             'bogus@example.com',
+    ...                            ])
+    >>> dump_list(success)
+    aperson@example.com
+    cperson@example.com
+    >>> dump_list(fail)
+    bogus@example.com
+    >>> for member in service:
+    ...     print(member)
+    <Member: Anne Person <aperson@example.com>
+        on ant@example.com as MemberRole.owner>
+    <Member: Bart Person <bperson@example.com>
+        on ant@example.com as MemberRole.moderator>
+    <Member: Bart Person <bperson@example.com>
+        on ant@example.com as MemberRole.member>
+    <Member: Bart Person <bperson@example.com>
+        on bee@example.com as MemberRole.owner>
+    <Member: Anne Person <anne@example.com>
+        on cat@example.com as MemberRole.member>
+    >>> len(service.get_members())
+    5

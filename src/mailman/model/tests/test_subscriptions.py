@@ -239,3 +239,124 @@ class TestSubscriptionService(unittest.TestCase):
         # Trying to leave a nonexistent list raises an exception.
         self.assertRaises(NoSuchListError, self._service.leave,
                           'bogus.example.com', 'anne@example.com')
+
+    def test_unsubscribe_members_no_such_list(self):
+        # Raises an exception if an invalid list_id is passed
+        self.assertRaises(NoSuchListError, self._service.unsubscribe_members,
+                          'bogus.example.com', 'anne@example.com')
+
+    def test_unsubscribe_members(self):
+        # Check that memberships are properly unsubscribed
+        # Create lists for testing.
+        mlist1 = create_list('test1@example.com')
+        mlist1.admin_immed_notify = False
+        mlist2 = create_list('test2@example.com')
+        mlist2.admin_immed_notify = False
+        # Create users and addresses
+        user = self._user_manager.create_user(
+            'anne1@example.com', 'Anne User')
+        address_1 = set_preferred(user)
+        address_2 = self._user_manager.create_address(
+            'anne2@example.com', 'Anne User 2')
+        address_2.verified_on = now()
+        address_2.user = user
+        address_3 = self._user_manager.create_address(
+            'anne3@example.com', 'Anne User 3')
+        address_3.verified_on = now()
+        address_3.user = user
+        address_4 = self._user_manager.create_address(
+            'addr1@example.com', 'Address 1')
+        address_4.verified_on = now()
+        address_5 = self._user_manager.create_address(
+            'addr2@example.com', 'Address 2')
+        address_5.verified_on = now()
+        address_6 = self._user_manager.create_address(
+            'addr3@example.com', 'Address 3')
+        address_6.verified_on = now()
+        user_1 = self._user_manager.create_user(
+            'user1@example.com', 'User 1')
+        set_preferred(user_1)
+        address_8 = self._user_manager.create_address(
+            'user2@example.com', 'User 2')
+        address_8.verified_on = now()
+        address_8.user = user_1
+        # Subscribe the addresses to mailing lists
+        mlist1.subscribe(user, MemberRole.member)
+        mlist1.subscribe(user, MemberRole.moderator)
+        mlist1.subscribe(user, MemberRole.owner)
+        mlist1.subscribe(address_1, MemberRole.member)
+        mlist1.subscribe(address_2, MemberRole.member)
+        mlist1.subscribe(address_2, MemberRole.moderator)
+        mlist1.subscribe(address_3, MemberRole.member)
+        mlist1.subscribe(address_4, MemberRole.member)
+        mlist1.subscribe(address_5, MemberRole.member)
+        mlist1.subscribe(address_5, MemberRole.moderator)
+        mlist1.subscribe(address_6, MemberRole.member)
+        mlist1.subscribe(user_1, MemberRole.member)
+        mlist1.subscribe(address_8, MemberRole.member)
+        mlist2.subscribe(user, MemberRole.member)
+        mlist2.subscribe(user, MemberRole.moderator)
+        mlist2.subscribe(address_1, MemberRole.member)
+        mlist2.subscribe(address_1, MemberRole.moderator)
+        mlist2.subscribe(address_2, MemberRole.member)
+        mlist2.subscribe(address_2, MemberRole.owner)
+        mlist2.subscribe(address_4, MemberRole.member)
+        mlist2.subscribe(address_5, MemberRole.member)
+        mlist2.subscribe(address_6, MemberRole.member)
+        mlist2.subscribe(address_6, MemberRole.moderator)
+        # Unsubscribe members from mlist1
+        success, fail = self._service.unsubscribe_members(mlist1.list_id,
+                                                          ['anne1@example.com',
+                                                           'anne2@example.com',
+                                                           'addr1@example.com',
+                                                           'addr2@example.com',
+                                                           'user2@example.com',
+                                                           'bogus@example.com',
+                                                           ])
+        self.assertListEqual(success, ['anne1@example.com',
+                                       'anne2@example.com',
+                                       'addr1@example.com',
+                                       'addr2@example.com',
+                                       'user2@example.com',
+                                       ])
+        self.assertListEqual(fail, ['bogus@example.com'])
+        # Obtain rosters
+        members_1 = mlist1.get_roster(MemberRole.member)
+        moderators_1 = mlist1.get_roster(MemberRole.moderator)
+        owners_1 = mlist1.get_roster(MemberRole.owner)
+        members_2 = mlist2.get_roster(MemberRole.member)
+        moderators_2 = mlist2.get_roster(MemberRole.moderator)
+        owners_2 = mlist2.get_roster(MemberRole.owner)
+        self.assertListEqual(
+            [address.email for address in members_1.addresses],
+            ['anne3@example.com',
+             'addr3@example.com',
+             'user1@example.com',
+             ])
+        self.assertListEqual(
+            [address.email for address in moderators_1.addresses],
+            ['anne1@example.com',
+             'anne2@example.com',
+             'addr2@example.com',
+             ])
+        self.assertListEqual(
+            [address.email for address in owners_1.addresses],
+            ['anne1@example.com'])
+        self.assertListEqual(
+            [address.email for address in members_2.addresses],
+            ['anne1@example.com',
+             'anne1@example.com',
+             'anne2@example.com',
+             'addr1@example.com',
+             'addr2@example.com',
+             'addr3@example.com',
+             ])
+        self.assertListEqual(
+            [address.email for address in moderators_2.addresses],
+            ['anne1@example.com',
+             'anne1@example.com',
+             'addr3@example.com',
+             ])
+        self.assertListEqual(
+            [address.email for address in owners_2.addresses],
+            ['anne2@example.com'])

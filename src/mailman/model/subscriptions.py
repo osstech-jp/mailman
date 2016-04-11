@@ -21,6 +21,7 @@ from mailman import public
 from mailman.app.membership import delete_member
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, TooManyMembersError)
 from mailman.interfaces.usermanager import IUserManager
@@ -146,3 +147,29 @@ class SubscriptionService:
             raise NoSuchListError(list_id)
         # XXX for now, no notification or user acknowledgment.
         delete_member(mlist, email, False, False)
+
+    @dbconnection
+    def unsubscribe_members(self, store, list_id, emails):
+        """See 'ISubscriptionService'."""
+        successful = []
+        unsuccessful = []
+        mlist = getUtility(IListManager).get_by_list_id(list_id)
+        if mlist is None:
+            raise NoSuchListError(list_id)
+        q_mem = store.query(Member).filter(
+            Member.list_id == list_id, Member.role == MemberRole.member)
+        for email in emails:
+            unsubscribed = False
+            q_addr = q_mem.join(Member._address).filter(
+                Address.email == email)
+            q_user = q_mem.join(Member._user).join(
+                User._preferred_address).filter(Address.email == email)
+            members = q_addr.union(q_user).all()
+            for member in members:
+                member.unsubscribe()
+                unsubscribed = True
+            if unsubscribed:
+                successful.append(email)
+            else:
+                unsuccessful.append(email)
+        return successful, unsuccessful

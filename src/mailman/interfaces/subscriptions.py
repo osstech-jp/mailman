@@ -162,3 +162,18 @@ class ISubscriptionService(Interface):
         :raises NotAMemberError: if the given address is not a member of the
             mailing list.
         """
+
+    def unsubscribe_members(list_id, emails):
+        """Unsubscribe a batch of members from a mailing list.
+
+        :param list_id: The list id to operate on.
+        :type list_id: string
+        :param emails: A list of email addresses of the users getting
+            unsubscribed.
+        :type emails: list of strings
+        :return: A two item tuple whose first item is a list of all the
+            successfully unsubscribed email addresses and second item is
+            a list of all unsuccessfull email addresses.
+        :rtype: Tuple
+        :raises NoSuchListError: if the named mailing list does not exist.
+        """
