@@ -41,6 +41,8 @@ class FakeArgs:
         self.lists = []
         self.send = False
         self.bump = False
+        self.dry_run = False
+        self.verbose = False
 
 
 class TestSendDigests(unittest.TestCase):
@@ -421,3 +423,29 @@ class TestBumpVolume(unittest.TestCase):
         self.assertEqual(self._mlist.volume, 8)
         self.assertEqual(self._mlist.next_digest_number, 1)
         self.assertEqual(self._mlist.digest_last_sent_at, self.right_now)
+
+    def test_bump_verbose(self):
+        args = FakeArgs()
+        args.bump = True
+        args.verbose = True
+        args.lists.append('ant.example.com')
+        output = StringIO()
+        with patch('sys.stdout', output):
+            self._command.process(args)
+        self.assertMultiLineEqual(output.getvalue(), """\
+ant.example.com is at volume 7, number 4
+ant.example.com bumped to volume 7, number 5
+""")
+
+    def test_send_verbose(self):
+        args = FakeArgs()
+        args.send = True
+        args.verbose = True
+        args.dry_run = True
+        args.lists.append('ant.example.com')
+        output = StringIO()
+        with patch('sys.stdout', output):
+            self._command.process(args)
+        self.assertMultiLineEqual(output.getvalue(), """\
+ant.example.com sent volume 7, number 4
+""")

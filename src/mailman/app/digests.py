@@ -56,8 +56,7 @@ def bump_digest_number_and_volume(mlist):
         bump = (now.toordinal() > mlist.digest_last_sent_at.toordinal())
     else:
         raise AssertionError(
-            'Bad DigestFrequency: {0}'.format(
-                mlist.digest_volume_frequency))
+            'Bad DigestFrequency: {}'.format(mlist.digest_volume_frequency))
     if bump:
         mlist.volume += 1
         mlist.next_digest_number = 1

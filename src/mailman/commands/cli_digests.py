@@ -57,6 +57,15 @@ class Digests:
             help=_("""Increment the digest volume number and reset the digest
                    number to one.  If given with --send, the volume number is
                    incremented before any current digests are sent."""))
+        command_parser.add_argument(
+            '-n', '--dry-run',
+            default=False, action='store_true',
+            help=_("""Don't actually do anything, but in conjunction with
+                   --verbose, show what would happen."""))
+        command_parser.add_argument(
+            '-v', '--verbose',
+            default=False, action='store_true',
+            help=_("""Print some additional status."""))
 
     def process(self, args):
         """See `ICLISubCommand`."""
@@ -77,7 +86,20 @@ class Digests:
             lists = list(list_manager.mailing_lists)
         if args.bump:
             for mlist in lists:
-                bump_digest_number_and_volume(mlist)
+                if args.verbose:
+                    print(_('\
+$mlist.list_id is at volume $mlist.volume, number \
+${mlist.next_digest_number}'))
+                if not args.dry_run:
+                    bump_digest_number_and_volume(mlist)
+                    if args.verbose:
+                        print(_('\
+$mlist.list_id bumped to volume $mlist.volume, number \
+${mlist.next_digest_number}'))
         if args.send:
             for mlist in lists:
-                maybe_send_digest_now(mlist, force=True)
+                if args.verbose:
+                    print(_('\
+$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}'))
+                if not args.dry_run:
+                    maybe_send_digest_now(mlist, force=True)

@@ -94,6 +94,9 @@ Command line
    compatibility, but now there is a ``-D``/``--no-domain`` option to prevent
    missing domains from being create, forcing an error in those cases.
    Given by Gurkirpal Singh.  (Closes #39)
+ * ``mailman`` subcommands now properly commit any outstanding transactions.
+   (Closes #223)
+ * ``mailman digests`` has grown ``--verbose`` and ``-dry-run`` options.
 
 Interfaces
 ----------
