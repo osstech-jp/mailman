@@ -149,6 +149,8 @@ class TestHeaderChain(unittest.TestCase):
         self.assertEqual(links[0].chain.name, config.antispam.jump_chain)
         self.assertEqual(links[0].rule.header, 'foo')
         self.assertEqual(links[0].rule.pattern, 'a+')
+        self.assertTrue(links[0].rule.name.startswith(
+            'header-match-test.example.com-'))
 
     def test_list_complex_rule(self):
         # Test that the mailing-list header-match complex rules are read
@@ -252,3 +254,30 @@ A message body.
             self.assertEqual(event.chain, config.chains['discard'])
             self.assertEqual(event.mlist, self._mlist)
             self.assertEqual(event.msg, msg)
+
+    @configuration('antispam', header_checks="""
+    Header1: a+
+    """, jump_chain='hold')
+    def test_reuse_rules(self):
+        # Test that existing header-match rules are used instead of creating
+        # new ones.
+        chain = config.chains['header-match']
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('Header2', 'b+')
+        header_matches.append('Header3', 'c+')
+        def get_links():  # flake8: noqa
+            return [
+                link for link in chain.get_links(self._mlist, Message(), {})
+                if link.rule.name != 'any'
+                ]
+        links = get_links()
+        self.assertEqual(len(links), 3)
+        links_2 = get_links()
+        self.assertEqual(
+            [l.rule.name for l in links],
+            [l.rule.name for l in links_2],
+            )
+        self.assertEqual(
+            [id(l.rule) for l in links],
+            [id(l.rule) for l in links_2],
+            )

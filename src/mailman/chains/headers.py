@@ -32,7 +32,7 @@ from zope.interface import implementer
 log = logging.getLogger('mailman.error')
 
 
-def make_link(header, pattern, chain=None):
+def make_link(header, pattern, chain=None, name=None):
     """Create a Link object.
 
     The link action is to defer by default, since at the end of all the
@@ -47,13 +47,30 @@ def make_link(header, pattern, chain=None):
     :param chain: When given, this is the name of the chain to jump to if the
         pattern matches the header.
     :type chain: string
+    :param name: An optional name for the rule.
+    :type name: string
     :return: The link representing this rule check.
     :rtype: `ILink`
     """
-    rule = HeaderMatchRule(header, pattern)
+    rule_name = get_rule_name(name)
+    if rule_name in config.rules:
+        rule = config.rules[rule_name]
+    else:
+        rule = HeaderMatchRule(header, pattern, name)
     if chain is None:
         return Link(rule)
     return Link(rule, LinkAction.jump, chain)
+
+
+def get_rule_name(suffix):
+    name = ['header-match']
+    if suffix:
+        name.append(suffix)
+    else:
+        name.append('{0:02}'.format(
+            HeaderMatchRule._count
+            ))
+    return '-'.join(name)
 
 
 @implementer(IRule)
@@ -63,10 +80,10 @@ class HeaderMatchRule:
     # Sequential rule counter.
     _count = 1
 
-    def __init__(self, header, pattern):
+    def __init__(self, header, pattern, name=None):
         self.header = header
         self.pattern = pattern
-        self.name = 'header-match-{0:02}'.format(HeaderMatchRule._count)
+        self.name = get_rule_name(name)
         HeaderMatchRule._count += 1
         self.description = '{0}: {1}'.format(header, pattern)
         # XXX I think we should do better here, somehow recording that a
@@ -126,7 +143,8 @@ class HeaderMatchChain(Chain):
     def get_links(self, mlist, msg, msgdata):
         """See `IChain`."""
         # First return all the configuration file links.
-        for line in config.antispam.header_checks.splitlines():
+        for index, line in enumerate(
+                config.antispam.header_checks.splitlines()):
             if len(line.strip()) == 0:
                 continue
             parts = line.split(':', 1)
@@ -134,7 +152,8 @@ class HeaderMatchChain(Chain):
                 log.error('Configuration error: [antispam]header_checks '
                           'contains bogus line: {}'.format(line))
                 continue
-            yield make_link(parts[0], parts[1].lstrip())
+            rule_name = 'config-{0}'.format(index)
+            yield make_link(parts[0], parts[1].lstrip(), name=rule_name)
         # Then return all the explicitly added links.
         yield from self._extended_links
         # If any of the above rules matched, they will have deferred their
@@ -143,9 +162,10 @@ class HeaderMatchChain(Chain):
         # list-specific matches.
         yield Link('any', LinkAction.jump, config.antispam.jump_chain)
         # Then return all the list-specific header matches.
-        for entry in mlist.header_matches:
+        for index, entry in enumerate(mlist.header_matches):
             # Jump to the default antispam chain if the entry chain is None.
             chain = (config.antispam.jump_chain
                      if entry.chain is None
                      else entry.chain)
-            yield make_link(entry.header, entry.pattern, chain)
+            rule_name = '{0}-{1}'.format(mlist.list_id, index)
+            yield make_link(entry.header, entry.pattern, chain, rule_name)
