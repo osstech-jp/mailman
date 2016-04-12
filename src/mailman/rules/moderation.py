@@ -22,6 +22,7 @@ import re
 from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.rules import IRule
 from mailman.interfaces.usermanager import IUserManager
@@ -40,8 +41,21 @@ class MemberModeration:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
+        user_manager = getUtility(IUserManager)
         for sender in msg.senders:
+            # The member-moderation rule is not set if the address is banned,
+            # even if it is linked to a subscribed addresses.
+            if IBanManager(mlist).is_banned(sender):
+                return False
+            # Check for subscribed members linked to the address
             member = mlist.members.get_member(sender)
+            if member is None:
+                user = user_manager.get_user(sender)
+                if user is not None:
+                    for address in user.addresses:
+                        if mlist.members.get_member(address.email) is not None:
+                            member = mlist.members.get_member(address.email)
+                            break
             if member is None:
                 return False
             action = (mlist.default_member_action
@@ -51,8 +65,8 @@ class MemberModeration:
                 # The regular moderation rules apply.
                 return False
             elif action is not None:
-                # We must stringify the moderation action so that it can be
-                # stored in the pending request table.
+                # We must stringify the moderation action so that
+                # it can be stored in the pending request table.
                 msgdata['moderation_action'] = action.name
                 msgdata['moderation_sender'] = sender
                 msgdata.setdefault('moderation_reasons', []).append(
@@ -84,17 +98,35 @@ class NonmemberModeration:
         # First ensure that all senders are already either members or
         # nonmembers.  If they are not subscribed in some role to the mailing
         # list, make them nonmembers.
+        # Maintain a record of which senders have linked subscribed users
+        found_linked_membership = {}
         for sender in msg.senders:
-            if (mlist.members.get_member(sender) is None and
-                    mlist.nonmembers.get_member(sender) is None):
-                # The address is neither a member nor nonmember.
+            found_linked_membership[sender] = 'False'
+            # Check for linked user membership
+            member = mlist.members.get_member(sender)
+            if member is not None:
+                found_linked_membership[sender] = 'True'
+            else:
+                user = user_manager.get_user(sender)
+                if user is not None:
+                    for address in user.addresses:
+                        if mlist.members.get_member(address.email) is not None:
+                            found_linked_membership[sender] = 'True'
+            # If the posting addres is banned, the post is not allowed
+            # to pass even if the address is linked to subscribed user.
+            if IBanManager(mlist).is_banned(sender):
+                found_linked_membership[sender] = 'False'
+            if (mlist.nonmembers.get_member(sender) is None and
+                    found_linked_membership.get(sender) == 'False'):
+                # The address is neither a member nor nonmember
+                # and has no linked subscribed user
                 address = user_manager.get_address(sender)
                 assert address is not None, (
                     'Posting address is not registered: {}'.format(sender))
                 mlist.subscribe(address, MemberRole.nonmember)
         # If a member is found, the member-moderation rule takes precedence.
         for sender in msg.senders:
-            if mlist.members.get_member(sender) is not None:
+            if found_linked_membership.get(sender) == 'True':
                 return False
         # Do nonmember moderation check.
         for sender in msg.senders:
