@@ -21,10 +21,12 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.interfaces.action import Action
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rules import moderation
-from mailman.testing.helpers import specialized_message_from_string as mfs
+from mailman.testing.helpers import (
+    set_preferred, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -207,3 +209,77 @@ A message body.
         result = rule.check(self._mlist, msg, msgdata)
         self.assertTrue(result)
         self.assertEqual(msgdata.get('moderation_action'), 'hold')
+
+    def test_linked_address_nonmembermoderation(self):
+        self._mlist.default_member_action = Action.accept
+        self._mlist.default_nonmember_action = Action.hold
+        user_manager = getUtility(IUserManager)
+        kane = user_manager.create_user('kane@example.com')
+        set_preferred(kane)
+        self._mlist.subscribe(kane, MemberRole.member)
+        kane.link(user_manager.create_address('kane2@example.com'))
+        rule = moderation.NonmemberModeration()
+        msg = mfs("""\
+From: kane2@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        # The NonmemberModeration rule should evaluate
+        # to False since the linked user is subscribed to the list
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(result)
+
+    def test_linked_address_membermoderation(self):
+        self._mlist.default_member_action = Action.accept
+        self._mlist.default_nonmember_action = Action.hold
+        user_manager = getUtility(IUserManager)
+        kane = user_manager.create_user('kane@example.com')
+        set_preferred(kane)
+        self._mlist.subscribe(kane, MemberRole.member)
+        kane.link(user_manager.create_address('kane2@example.com'))
+        rule = moderation.MemberModeration()
+        msg = mfs("""\
+From: kane2@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        # The MemberModeration rule should evaluate
+        # to True since the linked user is subscribed to the list
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertTrue(result)
+
+    def test_banned_address_linked_to_user_moderation(self):
+        self._mlist.default_member_action = Action.accept
+        self._mlist.default_nonmember_action = Action.hold
+        user_manager = getUtility(IUserManager)
+        kane = user_manager.create_user('kane@example.com')
+        set_preferred(kane)
+        self._mlist.subscribe(kane, MemberRole.member)
+        kane.link(user_manager.create_address('kane2@example.com'))
+        IBanManager(self._mlist).ban('kane2@example.com')
+        rule = moderation.MemberModeration()
+        msg = mfs("""\
+From: kane2@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(result)
+        rule = moderation.NonmemberModeration()
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertTrue(result)
