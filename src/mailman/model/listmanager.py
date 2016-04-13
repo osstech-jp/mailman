@@ -92,7 +92,8 @@ class ListManager:
     @dbconnection
     def __iter__(self, store):
         """See `IListManager`."""
-        yield from store.query(MailingList).all()
+        yield from store.query(MailingList).order_by(
+            MailingList._list_id).all()
 
     @property
     @dbconnection
