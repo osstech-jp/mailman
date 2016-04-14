@@ -771,6 +771,53 @@ Elly is no longer a member of the mailing list.
     set()
 
 
+Mass Unsubscriptions
+====================
+A batch of users can be unsubscribed from the mailing list via the REST API
+just by supplying their email addresses.
+
+    >>> m_list = create_list('mytest@example.com')
+    >>> subscribe(m_list, 'Joe')
+    <Member: Joe Person <jperson@example.com> on mytest@example.com as MemberRole.member>
+    >>> subscribe(m_list, 'Ken')
+    <Member: Ken Person <kperson@example.com> on mytest@example.com as MemberRole.member>
+    >>> subscribe(m_list, 'Mat')
+    <Member: Mat Person <mperson@example.com> on mytest@example.com as MemberRole.member>
+    >>> dump_json('http://localhost:9001/3.0/lists/mytest.example.com'
+    ...           '/roster/member', {'emails': ['kperson@example.com',
+    ...                                         'mperson@example.com',
+    ...                                         'kperson@example.com',
+    ...                                         'tim@example.com']}, 'DELETE')
+    http_etag: "..."
+    kperson@example.com: Member already deleted.
+    tim@example.com: No such member.
+    >>> dump_json('http://localhost:9001/3.0/lists/mytest.example.com'
+    ...     '/roster/member')
+    entry 0:
+        address: http://localhost:9001/3.0/addresses/jperson@example.com
+        delivery_mode: regular
+        email: jperson@example.com
+        http_etag: "..."
+        list_id: mytest.example.com
+        member_id: 10
+        role: member
+        self_link: http://localhost:9001/3.0/members/10
+        user: http://localhost:9001/3.0/users/7
+    ...
+    total_size: 1
+
+Ken and Mat have been unsubscribed successfully while tim@example.com can't
+be unsubscribed since he was not a member of the list. Similarly Joe can be
+unsubscribed from the mailing list.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/mytest.example.com'
+    ...     '/roster/member', {'emails': ['jperson@example.com']}, 'DELETE')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+
 Changing delivery address
 =========================
 
@@ -809,10 +856,10 @@ addresses.
         email: herb@example.com
         http_etag: "..."
         list_id: ant.example.com
-        member_id: 10
+        member_id: 13
         role: member
-        self_link: http://localhost:9001/3.0/members/10
-        user: http://localhost:9001/3.0/users/7
+        self_link: http://localhost:9001/3.0/members/13
+        user: http://localhost:9001/3.0/users/10
     ...
     entry 9:
         address: http://localhost:9001/3.0/addresses/herb@example.com
@@ -820,10 +867,10 @@ addresses.
         email: herb@example.com
         http_etag: "..."
         list_id: bee.example.com
-        member_id: 11
+        member_id: 14
         role: member
-        self_link: http://localhost:9001/3.0/members/11
-        user: http://localhost:9001/3.0/users/7
+        self_link: http://localhost:9001/3.0/members/14
+        user: http://localhost:9001/3.0/users/10
     http_etag: "..."
     start: 0
     total_size: 10
@@ -837,13 +884,13 @@ Herb must iterate through his memberships explicitly.
     >>> memberships = [entry['self_link'] for entry in content['entries']]
     >>> for url in sorted(memberships):
     ...     print(url)
-    http://localhost:9001/3.0/members/10
-    http://localhost:9001/3.0/members/11
+    http://localhost:9001/3.0/members/13
+    http://localhost:9001/3.0/members/14
 
 For each membership resource, the subscription address is changed by PATCH'ing
 the `address` attribute.
 
-    >>> dump_json('http://localhost:9001/3.0/members/10', {
+    >>> dump_json('http://localhost:9001/3.0/members/13', {
     ...           'address': 'hperson@example.com',
     ...           }, method='PATCH')
     content-length: 0
@@ -851,7 +898,7 @@ the `address` attribute.
     server: ...
     status: 204
 
-    >>> dump_json('http://localhost:9001/3.0/members/11', {
+    >>> dump_json('http://localhost:9001/3.0/members/14', {
     ...           'address': 'hperson@example.com',
     ...           }, method='PATCH')
     content-length: 0
@@ -878,20 +925,20 @@ his membership ids have not changed.
         email: hperson@example.com
         http_etag: "..."
         list_id: ant.example.com
-        member_id: 10
+        member_id: 13
         role: member
-        self_link: http://localhost:9001/3.0/members/10
-        user: http://localhost:9001/3.0/users/7
+        self_link: http://localhost:9001/3.0/members/13
+        user: http://localhost:9001/3.0/users/10
     entry 1:
         address: http://localhost:9001/3.0/addresses/hperson@example.com
         delivery_mode: regular
         email: hperson@example.com
         http_etag: "..."
         list_id: bee.example.com
-        member_id: 11
+        member_id: 14
         role: member
-        self_link: http://localhost:9001/3.0/members/11
-        user: http://localhost:9001/3.0/users/7
+        self_link: http://localhost:9001/3.0/members/14
+        user: http://localhost:9001/3.0/users/10
     http_etag: "..."
     start: 0
     total_size: 2
@@ -900,7 +947,7 @@ When changing his subscription address, Herb may also decide to change his
 mode of delivery.
 ::
 
-    >>> dump_json('http://localhost:9001/3.0/members/11', {
+    >>> dump_json('http://localhost:9001/3.0/members/14', {
     ...           'address': 'herb@example.com',
     ...           'delivery_mode': 'mime_digests',
     ...           }, method='PATCH')
@@ -917,10 +964,10 @@ mode of delivery.
         email: herb@example.com
         http_etag: "..."
         list_id: bee.example.com
-        member_id: 11
+        member_id: 14
         role: member
-        self_link: http://localhost:9001/3.0/members/11
-        user: http://localhost:9001/3.0/users/7
+        self_link: http://localhost:9001/3.0/members/14
+        user: http://localhost:9001/3.0/users/10
     http_etag: "..."
     start: 0
     total_size: 1
@@ -933,22 +980,22 @@ The moderation action for a member can be changed by PATCH'ing the
 `moderation_action` attribute.  When the member action falls back to the list
 default, there is no such attribute in the resource.
 
-    >>> dump_json('http://localhost:9001/3.0/members/10')
+    >>> dump_json('http://localhost:9001/3.0/members/13')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
     delivery_mode: regular
     email: hperson@example.com
-    http_etag: "6d544208d60e578189fc023748f1ec467290abb5"
+    http_etag: "..."
     list_id: ant.example.com
-    member_id: 10
+    member_id: 13
     role: member
-    self_link: http://localhost:9001/3.0/members/10
-    user: http://localhost:9001/3.0/users/7
+    self_link: http://localhost:9001/3.0/members/13
+    user: http://localhost:9001/3.0/users/10
 
 Patching the moderation action both changes it for the given user, and adds
 the attribute to the member's resource.
 ::
 
-    >>> dump_json('http://localhost:9001/3.0/members/10', {
+    >>> dump_json('http://localhost:9001/3.0/members/13', {
     ...           'moderation_action': 'hold',
     ...           }, method='PATCH')
     content-length: 0
@@ -956,7 +1003,7 @@ the attribute to the member's resource.
     server: ...
     status: 204
 
-    >>> dump_json('http://localhost:9001/3.0/members/10')
+    >>> dump_json('http://localhost:9001/3.0/members/13')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
     ...
     moderation_action: hold

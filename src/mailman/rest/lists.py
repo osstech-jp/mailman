@@ -39,7 +39,7 @@ from mailman.rest.listconf import ListConfiguration
 from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
-from mailman.rest.validator import Validator
+from mailman.rest.validator import Validator, list_of_strings_validator
 from zope.component import getUtility
 
 
@@ -247,6 +247,28 @@ class MembersOfList(MemberCollection):
         return getUtility(ISubscriptionService).find_members(
             list_id=self._mlist.list_id,
             role=self._role)
+
+    def on_delete(self, request, response):
+        """Delete the members of the named mailing list."""
+        status = {}
+        success = []
+        fail = []
+        try:
+            validator = Validator(emails=list_of_strings_validator)
+            arguments = validator(request)
+            emails = arguments.pop('emails')
+        except ValueError:
+            return bad_request(response, b'Invalid Input.')
+        success, fail = getUtility(ISubscriptionService).unsubscribe_members(
+            self._mlist.list_id, emails)
+        if len(fail) == 0:
+            return no_content(response)
+        for email in fail:
+            if email in success:
+                status[email] = 'Member already deleted.'
+            else:
+                status[email] = 'No such member.'
+        okay(response, etag(status))
 
 
 @public

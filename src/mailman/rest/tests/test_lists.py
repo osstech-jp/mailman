@@ -213,6 +213,39 @@ class TestLists(unittest.TestCase):
                      '/owner/nobody@example.com')
         self.assertEqual(cm.exception.code, 404)
 
+    def test_list_mass_unsubscribe(self):
+        with transaction():
+            aperson = self._usermanager.create_address('aperson@test.com')
+            bperson = self._usermanager.create_address('bperson@test.com')
+            cperson = self._usermanager.create_address('cperson@test.com')
+            mlist = create_list('testlist@example.com')
+            mlist.subscribe(aperson)
+            mlist.subscribe(bperson)
+            mlist.subscribe(cperson)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/bogus.example.com'
+                     '/roster/member', None, 'DELETE')
+        self.assertEqual(cm.exception.code, 404)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/testlist.example.com'
+                     '/roster/member', None, 'DELETE')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'Invalid Input.')
+        resource, response = call_api(
+            'http://127.0.0.1:9001/3.0/lists/testlist.example.com'
+            '/roster/member', {'emails': ['aperson@test.com']}, 'DELETE')
+        self.assertEqual(response.status, 204)
+        resource, response = call_api(
+            'http://127.0.0.1:9001/3.0/lists/testlist.example.com'
+            '/roster/member', {'emails': ['bperson@test.com',
+                                          'cperson@test.com',
+                                          'bperson@test.com',
+                                          'bogus@test.com']}, 'DELETE')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(resource['bperson@test.com'],
+                         'Member already deleted.')
+        self.assertEqual(resource['bogus@test.com'], 'No such member.')
+
 
 class TestListArchivers(unittest.TestCase):
     """Test corner cases for list archivers."""
