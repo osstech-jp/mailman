@@ -112,6 +112,8 @@ Interfaces
    you attempt to delete a nonexistent message from the message store.
  * ``ISubscriptionService.find_members()`` accepts asterisks as wildcards in
    the ``subscriber`` argument string.  Given by Aurélien Bompard.
+ * ``ISubscriptionService`` now supports mass unsubscribes.  Given by Harshit
+   Bansal.  (Closes #171)
 
 Internal API
 ------------

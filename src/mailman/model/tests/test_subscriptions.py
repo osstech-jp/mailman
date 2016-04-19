@@ -243,120 +243,156 @@ class TestSubscriptionService(unittest.TestCase):
     def test_unsubscribe_members_no_such_list(self):
         # Raises an exception if an invalid list_id is passed
         self.assertRaises(NoSuchListError, self._service.unsubscribe_members,
-                          'bogus.example.com', 'anne@example.com')
+                          'bogus.example.com', ['anne@example.com'])
 
     def test_unsubscribe_members(self):
-        # Check that memberships are properly unsubscribed
-        # Create lists for testing.
-        mlist1 = create_list('test1@example.com')
-        mlist1.admin_immed_notify = False
-        mlist2 = create_list('test2@example.com')
-        mlist2.admin_immed_notify = False
-        # Create users and addresses
-        user = self._user_manager.create_user(
-            'anne1@example.com', 'Anne User')
-        address_1 = set_preferred(user)
-        address_2 = self._user_manager.create_address(
-            'anne2@example.com', 'Anne User 2')
-        address_2.verified_on = now()
-        address_2.user = user
-        address_3 = self._user_manager.create_address(
-            'anne3@example.com', 'Anne User 3')
-        address_3.verified_on = now()
-        address_3.user = user
-        address_4 = self._user_manager.create_address(
-            'addr1@example.com', 'Address 1')
-        address_4.verified_on = now()
-        address_5 = self._user_manager.create_address(
-            'addr2@example.com', 'Address 2')
-        address_5.verified_on = now()
-        address_6 = self._user_manager.create_address(
-            'addr3@example.com', 'Address 3')
-        address_6.verified_on = now()
-        user_1 = self._user_manager.create_user(
-            'user1@example.com', 'User 1')
-        set_preferred(user_1)
-        address_8 = self._user_manager.create_address(
-            'user2@example.com', 'User 2')
-        address_8.verified_on = now()
-        address_8.user = user_1
-        # Subscribe the addresses to mailing lists
-        mlist1.subscribe(user, MemberRole.member)
-        mlist1.subscribe(user, MemberRole.moderator)
-        mlist1.subscribe(user, MemberRole.owner)
-        mlist1.subscribe(address_1, MemberRole.member)
-        mlist1.subscribe(address_2, MemberRole.member)
-        mlist1.subscribe(address_2, MemberRole.moderator)
-        mlist1.subscribe(address_3, MemberRole.member)
-        mlist1.subscribe(address_4, MemberRole.member)
-        mlist1.subscribe(address_5, MemberRole.member)
-        mlist1.subscribe(address_5, MemberRole.moderator)
-        mlist1.subscribe(address_6, MemberRole.member)
-        mlist1.subscribe(user_1, MemberRole.member)
-        mlist1.subscribe(address_8, MemberRole.member)
-        mlist2.subscribe(user, MemberRole.member)
-        mlist2.subscribe(user, MemberRole.moderator)
-        mlist2.subscribe(address_1, MemberRole.member)
-        mlist2.subscribe(address_1, MemberRole.moderator)
-        mlist2.subscribe(address_2, MemberRole.member)
-        mlist2.subscribe(address_2, MemberRole.owner)
-        mlist2.subscribe(address_4, MemberRole.member)
-        mlist2.subscribe(address_5, MemberRole.member)
-        mlist2.subscribe(address_6, MemberRole.member)
-        mlist2.subscribe(address_6, MemberRole.moderator)
-        # Unsubscribe members from mlist1
-        success, fail = self._service.unsubscribe_members(mlist1.list_id,
-                                                          ['anne1@example.com',
-                                                           'anne2@example.com',
-                                                           'addr1@example.com',
-                                                           'addr2@example.com',
-                                                           'user2@example.com',
-                                                           'bogus@example.com',
-                                                           ])
-        self.assertListEqual(success, ['anne1@example.com',
-                                       'anne2@example.com',
-                                       'addr1@example.com',
-                                       'addr2@example.com',
-                                       'user2@example.com',
-                                       ])
-        self.assertListEqual(fail, ['bogus@example.com'])
-        # Obtain rosters
-        members_1 = mlist1.get_roster(MemberRole.member)
-        moderators_1 = mlist1.get_roster(MemberRole.moderator)
-        owners_1 = mlist1.get_roster(MemberRole.owner)
-        members_2 = mlist2.get_roster(MemberRole.member)
-        moderators_2 = mlist2.get_roster(MemberRole.moderator)
-        owners_2 = mlist2.get_roster(MemberRole.owner)
-        self.assertListEqual(
-            [address.email for address in members_1.addresses],
-            ['anne3@example.com',
-             'addr3@example.com',
-             'user1@example.com',
+        # Check that memberships are properly unsubscribed.
+        #
+        # Start by creating the mailing lists we'll use.  Make sure that
+        # subscriptions don't send any notifications.
+        ant = create_list('ant@example.com')
+        ant.admin_immed_notify = False
+        bee = create_list('bee@example.com')
+        bee.admin_immed_notify = False
+        # Anne is a user with a preferred address and several linked
+        # secondary addresses.
+        anne = self._user_manager.create_user('anne_0@example.com')
+        anne_0 = set_preferred(anne)
+        anne_1 = self._user_manager.create_address('anne_1@example.com')
+        anne_1.verified_on = now()
+        anne_1.user = anne
+        anne_2 = self._user_manager.create_address('anne_2@example.com')
+        anne_2.verified_on = now()
+        anne_2.user = anne
+        # These folks will subscribe with addresses only.
+        bart = self._user_manager.create_address('bart@example.com')
+        bart.verified_on = now()
+        cris = self._user_manager.create_address('cris@example.com')
+        cris.verified_on = now()
+        dave = self._user_manager.create_address('dave@example.com')
+        dave.verified_on = now()
+        # Elle is another user with a preferred address and a linked
+        # secondary address.
+        elle = self._user_manager.create_user('elle_0@example.com')
+        elle_0 = set_preferred(elle)
+        elle_1 = self._user_manager.create_address('elle_1@example.com')
+        elle_1.verified_on = now()
+        # Fred will also subscribe with just his address.
+        fred = self._user_manager.create_address('fred@example.com')
+        # Gwen will only be subscribed to the second mailing list.
+        gwen = self._user_manager.create_address('gwen@example.com')
+        # Now we're going to create some subscriptions, with various
+        # combinations of user or address subscribers, and various
+        # roles.
+        ant.subscribe(anne, MemberRole.member)
+        ant.subscribe(anne, MemberRole.moderator)
+        ant.subscribe(anne, MemberRole.owner)
+        bee.subscribe(anne, MemberRole.member)
+        bee.subscribe(anne, MemberRole.moderator)
+        ant.subscribe(anne_0, MemberRole.member)
+        bee.subscribe(anne_0, MemberRole.member)
+        bee.subscribe(anne_0, MemberRole.moderator)
+        ant.subscribe(anne_1, MemberRole.member)
+        ant.subscribe(anne_1, MemberRole.moderator)
+        bee.subscribe(anne_1, MemberRole.member)
+        bee.subscribe(anne_1, MemberRole.owner)
+        ant.subscribe(anne_2, MemberRole.member)
+        # Now for Bart.
+        ant.subscribe(bart, MemberRole.member)
+        bee.subscribe(bart, MemberRole.member)
+        # And Cris.
+        ant.subscribe(cris, MemberRole.member)
+        ant.subscribe(cris, MemberRole.moderator)
+        bee.subscribe(cris, MemberRole.member)
+        # Now Dave.
+        ant.subscribe(dave, MemberRole.member)
+        bee.subscribe(dave, MemberRole.member)
+        bee.subscribe(dave, MemberRole.moderator)
+        # Elle-the-user.
+        ant.subscribe(elle, MemberRole.member)
+        # Elle-the-address.
+        bee.subscribe(elle_0, MemberRole.member)
+        # Fred and Gwen.
+        ant.subscribe(fred, MemberRole.member)
+        bee.subscribe(gwen, MemberRole.member)
+        # Now it's time to do the mass unsubscribe from the ant mailing
+        # list.  We choose a set of addresses that have multiple
+        # memberships across both lists, with various roles.  We're only
+        # going to unsubscribe those addresses which are subscribed to
+        # the ant mailing list with the role of member.  Throw in a few
+        # bogus or not-subscribed addresses.
+        success, fail = self._service.unsubscribe_members(
+            ant.list_id, set([
+                'anne_0@example.com',
+                'anne_1@example.com',
+                'bart@example.com',
+                'cris@example.com',
+                'fred@example.com',
+                'elle_0@example.com',
+                'gwen@example.com',
+                'bogus@example.com',
+                ]))
+        # We should have successfully unsubscribed these addresses,
+        # which were subscribed in various ways to the ant mailing list
+        # as members.
+        self.assertEqual(success, set([
+            'anne_0@example.com',
+            'anne_1@example.com',
+            'bart@example.com',
+            'cris@example.com',
+            'elle_0@example.com',
+            'fred@example.com',
+            ]))
+        # These two addresses were failed, in one case because it's not
+        # a valid email address, and in the other because it's not
+        # subscribed to the mailing list.
+        self.assertEqual(fail, set([
+            'bogus@example.com',
+            'gwen@example.com',
+            ]))
+        # Now obtain various rosters and ensure that they have the
+        # memberships we expect, after the mass unsubscribe.
+        ant_members = ant.get_roster(MemberRole.member)
+        self.assertEqual(
+            [address.email for address in ant_members.addresses],
+            ['anne_2@example.com',
+             'dave@example.com',
              ])
-        self.assertListEqual(
-            [address.email for address in moderators_1.addresses],
-            ['anne1@example.com',
-             'anne2@example.com',
-             'addr2@example.com',
+        bee_members = bee.get_roster(MemberRole.member)
+        # anne_0 is in the list twice, once because she's subscribed
+        # with her preferred address, and again because she's subscribed
+        # with her explicit address.
+        self.assertEqual(
+            [address.email for address in bee_members.addresses],
+            ['anne_0@example.com',
+             'anne_0@example.com',
+             'anne_1@example.com',
+             'bart@example.com',
+             'cris@example.com',
+             'dave@example.com',
+             'elle_0@example.com',
+             'gwen@example.com',
              ])
-        self.assertListEqual(
-            [address.email for address in owners_1.addresses],
-            ['anne1@example.com'])
-        self.assertListEqual(
-            [address.email for address in members_2.addresses],
-            ['anne1@example.com',
-             'anne1@example.com',
-             'anne2@example.com',
-             'addr1@example.com',
-             'addr2@example.com',
-             'addr3@example.com',
+        ant_moderators = ant.get_roster(MemberRole.moderator)
+        self.assertEqual(
+            [address.email for address in ant_moderators.addresses],
+            ['anne_0@example.com',
+             'anne_1@example.com',
+             'cris@example.com',
              ])
-        self.assertListEqual(
-            [address.email for address in moderators_2.addresses],
-            ['anne1@example.com',
-             'anne1@example.com',
-             'addr3@example.com',
+        bee_moderators = bee.get_roster(MemberRole.moderator)
+        # As above, anne_0 shows up the moderators twice.
+        self.assertEqual(
+            [address.email for address in bee_moderators.addresses],
+            ['anne_0@example.com',
+             'anne_0@example.com',
+             'dave@example.com',
              ])
-        self.assertListEqual(
-            [address.email for address in owners_2.addresses],
-            ['anne2@example.com'])
+        ant_owners = ant.get_roster(MemberRole.owner)
+        self.assertEqual(
+            [address.email for address in ant_owners.addresses],
+            ['anne_0@example.com'])
+        bee_owners = bee.get_roster(MemberRole.owner)
+        self.assertEqual(
+            [address.email for address in bee_owners.addresses],
+            ['anne_1@example.com'])

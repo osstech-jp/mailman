@@ -151,25 +151,26 @@ class SubscriptionService:
     @dbconnection
     def unsubscribe_members(self, store, list_id, emails):
         """See 'ISubscriptionService'."""
-        successful = []
-        unsuccessful = []
+        success = set()
+        fail = set()
         mlist = getUtility(IListManager).get_by_list_id(list_id)
         if mlist is None:
             raise NoSuchListError(list_id)
-        q_mem = store.query(Member).filter(
-            Member.list_id == list_id, Member.role == MemberRole.member)
+        # Start with a query on the matching list-id and role.
+        q_member = store.query(Member).filter(
+            Member.list_id == list_id,
+            Member.role == MemberRole.member)
         for email in emails:
             unsubscribed = False
-            q_addr = q_mem.join(Member._address).filter(
+            # Join with a queries matching the email address and preferred
+            # address of any subscribed user.
+            q_address = q_member.join(Member._address).filter(
                 Address.email == email)
-            q_user = q_mem.join(Member._user).join(
+            q_user = q_member.join(Member._user).join(
                 User._preferred_address).filter(Address.email == email)
-            members = q_addr.union(q_user).all()
+            members = q_address.union(q_user).all()
             for member in members:
                 member.unsubscribe()
                 unsubscribed = True
-            if unsubscribed:
-                successful.append(email)
-            else:
-                unsuccessful.append(email)
-        return successful, unsuccessful
+            (success if unsubscribed else fail).add(email)
+        return success, fail

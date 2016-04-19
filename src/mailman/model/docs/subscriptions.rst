@@ -214,7 +214,7 @@ Members can be removed via this service.
 Mass Removal
 ============
 
-The subscription service can be used to perform mass removals. You are
+The subscription service can be used to perform mass removals.  You are
 required to pass the list id of the respective mailing list and a list
 of email addresses to be removed.
 
@@ -236,20 +236,41 @@ of email addresses to be removed.
         on bee@example.com as MemberRole.owner>
     <Member: Anne Person <anne@example.com>
         on cat@example.com as MemberRole.member>
+
+There are now two more memberships.
+
     >>> len(service.get_members())
     7
+
+But this address is not subscribed to any mailing list.
+
     >>> print(service.find_member('bogus@example.com'))
     None
+
+We can unsubscribe some addresses from the ant mailing list.  Note that even
+though Anne is subscribed several times, only her ant membership with role
+``member`` will be removed.
+
     >>> success, fail = service.unsubscribe_members(
-    ...         'ant.example.com', ['aperson@example.com',
-    ...                             'cperson@example.com',
-    ...                             'bogus@example.com',
-    ...                            ])
+    ...     'ant.example.com', [
+    ...         'aperson@example.com',
+    ...         'cperson@example.com',
+    ...         'bogus@example.com',
+    ...         ])
+
+There were some successes...
+
     >>> dump_list(success)
     aperson@example.com
     cperson@example.com
+
+...and some failures.
+
     >>> dump_list(fail)
     bogus@example.com
+
+And now there are 5 memberships again.
+
     >>> for member in service:
     ...     print(member)
     <Member: Anne Person <aperson@example.com>

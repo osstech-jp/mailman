@@ -168,12 +168,13 @@ class ISubscriptionService(Interface):
 
         :param list_id: The list id to operate on.
         :type list_id: string
-        :param emails: A list of email addresses of the users getting
-            unsubscribed.
+        :param emails: A list of email addresses of the members getting
+            unsubscribed.  Only list members with a role of `member` can be
+            unsubscribed via this interface.
         :type emails: list of strings
-        :return: A two item tuple whose first item is a list of all the
+        :return: A two item tuple whose first item is a set of all the
             successfully unsubscribed email addresses and second item is
-            a list of all unsuccessfull email addresses.
-        :rtype: Tuple
+            a set of all unsuccessful email addresses.
+        :rtype: 2-tuple of (set-of-strings, set-of-strings)
         :raises NoSuchListError: if the named mailing list does not exist.
         """
