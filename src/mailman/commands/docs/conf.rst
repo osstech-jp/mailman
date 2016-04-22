@@ -33,6 +33,7 @@ You can list all the key-value pairs of a specific section.
     >>> FakeArgs.section = 'shell'
     >>> command.process(FakeArgs)
     [shell] banner: Welcome to the GNU Mailman shell
+    [shell] history_file:
     [shell] prompt: >>>
     [shell] use_ipython: no
 

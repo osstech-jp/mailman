@@ -20,6 +20,7 @@
 import re
 import sys
 
+from contextlib import ExitStack
 from functools import partial
 from lazr.config import as_boolean
 from mailman import public
@@ -29,6 +30,7 @@ from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.interact import DEFAULT_BANNER, interact
 from mailman.utilities.modules import call_name
+from string import Template
 from traceback import print_exc
 from zope.component import getUtility
 from zope.interface import implementer
@@ -164,7 +166,16 @@ class Withlist:
                 commit=config.db.commit,
                 abort=config.db.abort,
                 config=config,
+                getUtility=getUtility
                 )
+            # Bootstrap some useful names into the namespace, mostly to make
+            # the component architecture and interfaces easily available.
+            for module_name in sys.modules:
+                if not module_name.startswith('mailman.interfaces.'):
+                    continue
+                module = sys.modules[module_name]
+                for name in module.__all__:
+                    overrides[name] = getattr(module, name)
             banner = config.shell.banner + '\n' + (
                 banner if isinstance(banner, str) else '')
             try:
@@ -194,13 +205,32 @@ class Withlist:
 
     def _start_python(self, overrides, banner):
         # Set the tab completion.
-        try:
-            import readline, rlcompleter            # noqa
-            readline.parse_and_bind('tab: complete')
-        except ImportError:
-            pass
-        sys.ps1 = config.shell.prompt + ' '
-        interact(upframe=False, banner=banner, overrides=overrides)
+        with ExitStack() as resources:
+            try:                                    # pragma: no cover
+                import readline, rlcompleter        # noqa
+            except ImportError:                     # pragma: no cover
+                print(_('readline not available'), file=sys.stderr)
+                pass
+            else:
+                readline.parse_and_bind('tab: complete')
+                history_file_template = config.shell.history_file.strip()
+                if len(history_file_template) > 0:
+                    # Expand substitutions.
+                    substitutions = {
+                        key.lower(): getattr(config, key)
+                        for key in dir(config) if key.endswith('_DIR')
+                        }
+                    history_file = Template(
+                        history_file_template).safe_substitute(substitutions)
+                    try:
+                        readline.read_history_file(history_file)
+                    except FileNotFoundError:
+                        pass
+                    resources.callback(
+                        readline.write_history_file,
+                        history_file)
+            sys.ps1 = config.shell.prompt + ' '
+            interact(upframe=False, banner=banner, overrides=overrides)
 
     def _details(self):
         """Print detailed usage."""

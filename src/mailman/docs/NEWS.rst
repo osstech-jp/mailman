@@ -97,6 +97,9 @@ Command line
  * ``mailman`` subcommands now properly commit any outstanding transactions.
    (Closes #223)
  * ``mailman digests`` has grown ``--verbose`` and ``-dry-run`` options.
+ * ``mailman shell`` now supports readline history if you set the
+   ``[shell]history_file`` variable in mailman.cfg.  Also, many useful names
+   are pre-populated in the namespace of the shell.  (Closes: #228)
 
 Interfaces
 ----------
