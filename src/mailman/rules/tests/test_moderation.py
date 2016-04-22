@@ -211,16 +211,14 @@ A message body.
         self.assertEqual(msgdata.get('moderation_action'), 'hold')
 
     def test_linked_address_nonmembermoderation(self):
-        self._mlist.default_member_action = Action.accept
-        self._mlist.default_nonmember_action = Action.hold
         user_manager = getUtility(IUserManager)
-        kane = user_manager.create_user('kane@example.com')
-        set_preferred(kane)
-        self._mlist.subscribe(kane, MemberRole.member)
-        kane.link(user_manager.create_address('kane2@example.com'))
+        anne = user_manager.create_user('anne@example.com')
+        set_preferred(anne)
+        self._mlist.subscribe(anne, MemberRole.member)
+        anne.link(user_manager.create_address('anne2@example.com'))
         rule = moderation.NonmemberModeration()
         msg = mfs("""\
-From: kane2@example.com
+From: anne2@example.com
 To: test@example.com
 Subject: A test message
 Message-ID: <ant>
@@ -236,15 +234,14 @@ A message body.
 
     def test_linked_address_membermoderation(self):
         self._mlist.default_member_action = Action.accept
-        self._mlist.default_nonmember_action = Action.hold
         user_manager = getUtility(IUserManager)
-        kane = user_manager.create_user('kane@example.com')
-        set_preferred(kane)
-        self._mlist.subscribe(kane, MemberRole.member)
-        kane.link(user_manager.create_address('kane2@example.com'))
+        anne = user_manager.create_user('anne@example.com')
+        set_preferred(anne)
+        self._mlist.subscribe(anne, MemberRole.member)
+        anne.link(user_manager.create_address('anne2@example.com'))
         rule = moderation.MemberModeration()
         msg = mfs("""\
-From: kane2@example.com
+From: anne2@example.com
 To: test@example.com
 Subject: A test message
 Message-ID: <ant>
@@ -258,18 +255,16 @@ A message body.
         result = rule.check(self._mlist, msg, msgdata)
         self.assertTrue(result)
 
-    def test_banned_address_linked_to_user_moderation(self):
-        self._mlist.default_member_action = Action.accept
-        self._mlist.default_nonmember_action = Action.hold
+    def test_banned_address_linked_to_user(self):
         user_manager = getUtility(IUserManager)
-        kane = user_manager.create_user('kane@example.com')
-        set_preferred(kane)
-        self._mlist.subscribe(kane, MemberRole.member)
-        kane.link(user_manager.create_address('kane2@example.com'))
-        IBanManager(self._mlist).ban('kane2@example.com')
+        anne = user_manager.create_user('anne@example.com')
+        set_preferred(anne)
+        self._mlist.subscribe(anne, MemberRole.member)
+        anne.link(user_manager.create_address('anne2@example.com'))
+        IBanManager(self._mlist).ban('anne2@example.com')
         rule = moderation.MemberModeration()
         msg = mfs("""\
-From: kane2@example.com
+From: anne2@example.com
 To: test@example.com
 Subject: A test message
 Message-ID: <ant>
@@ -282,4 +277,24 @@ A message body.
         self.assertFalse(result)
         rule = moderation.NonmemberModeration()
         result = rule.check(self._mlist, msg, msgdata)
-        self.assertTrue(result)
+        self.assertFalse(result)
+
+    def test_banned_sender_among_multiple_senders(self):
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('ted@example.com')
+        user_manager.create_address('cris@example.com')
+        IBanManager(self._mlist).ban('cris@example.com')
+        rule = moderation.NonmemberModeration()
+        msg = mfs("""\
+From: ted@example.com
+Sender: cris@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(result)

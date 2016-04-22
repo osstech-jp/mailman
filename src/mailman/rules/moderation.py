@@ -42,12 +42,13 @@ class MemberModeration:
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
         user_manager = getUtility(IUserManager)
+        # The MemberModeration rule is unconditionally false if any of
+        # the senders are banned.
         for sender in msg.senders:
-            # The member-moderation rule is not set if the address is banned,
-            # even if it is linked to a subscribed addresses.
             if IBanManager(mlist).is_banned(sender):
                 return False
-            # Check for subscribed members linked to the address
+        for sender in msg.senders:
+            # Check for subscribed members linked to the address.
             member = mlist.members.get_member(sender)
             if member is None:
                 user = user_manager.get_user(sender)
@@ -55,7 +56,6 @@ class MemberModeration:
                     for address in user.addresses:
                         if mlist.members.get_member(address.email) is not None:
                             member = mlist.members.get_member(address.email)
-                            break
             if member is None:
                 return False
             action = (mlist.default_member_action
@@ -95,38 +95,36 @@ class NonmemberModeration:
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
         user_manager = getUtility(IUserManager)
+        # Initial check. If any of the senders are banned, we bail.
+        for sender in msg.senders:
+            if IBanManager(mlist).is_banned(sender):
+                return False
         # First ensure that all senders are already either members or
         # nonmembers.  If they are not subscribed in some role to the mailing
         # list, make them nonmembers.
-        # Maintain a record of which senders have linked subscribed users
-        found_linked_membership = {}
+        # Maintain a record of which senders have linked subscribed users.
+        found_linked_membership = set()
         for sender in msg.senders:
-            found_linked_membership[sender] = 'False'
-            # Check for linked user membership
             member = mlist.members.get_member(sender)
             if member is not None:
-                found_linked_membership[sender] = 'True'
+                found_linked_membership.add(sender)
             else:
                 user = user_manager.get_user(sender)
                 if user is not None:
                     for address in user.addresses:
                         if mlist.members.get_member(address.email) is not None:
-                            found_linked_membership[sender] = 'True'
-            # If the posting addres is banned, the post is not allowed
-            # to pass even if the address is linked to subscribed user.
-            if IBanManager(mlist).is_banned(sender):
-                found_linked_membership[sender] = 'False'
+                            found_linked_membership.add(sender)
             if (mlist.nonmembers.get_member(sender) is None and
-                    found_linked_membership.get(sender) == 'False'):
+                    sender not in found_linked_membership):
                 # The address is neither a member nor nonmember
-                # and has no linked subscribed user
+                # and has no linked subscribed user.
                 address = user_manager.get_address(sender)
                 assert address is not None, (
                     'Posting address is not registered: {}'.format(sender))
                 mlist.subscribe(address, MemberRole.nonmember)
-        # If a member is found, the member-moderation rule takes precedence.
+        # If a membership is found, the MemberModeration rule takes precedence.
         for sender in msg.senders:
-            if found_linked_membership.get(sender) == 'True':
+            if sender in found_linked_membership:
                 return False
         # Do nonmember moderation check.
         for sender in msg.senders:
