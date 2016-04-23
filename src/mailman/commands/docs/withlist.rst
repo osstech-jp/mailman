@@ -2,12 +2,10 @@
 Operating on mailing lists
 ==========================
 
-The ``withlist`` command is a pretty powerful way to operate on mailing lists
-from the command line.  This command allows you to interact with a list at a
-Python prompt, or process one or more mailing lists through custom made Python
-functions.
-
-XXX Test the interactive operation of withlist
+The ``shell`` (alias: ``withlist``) command is a pretty powerful way to
+operate on mailing lists from the command line.  This command allows you to
+interact with a list at a Python prompt, or process one or more mailing lists
+through custom made Python functions.
 
 
 Getting detailed help
@@ -119,20 +117,45 @@ You also get an error if no mailing list is named.
     --run requires a mailing list name
 
 
+Interactive use
+===============
+
+You can also get an interactive prompt which allows you to inspect a live
+Mailman system directly.  Through the ``mailman.cfg`` file, you can set the
+prompt and banner, and you can choose between the standard Python REPL_ or
+IPython.
+
+If the `GNU readline`_ library is available, it will be enabled automatically,
+giving you command line editing and other features.  You can also set the
+``[shell]history_file`` variable in the ``mailman.cfg`` file and when the
+normal Python REPL is used, your interactive commands will be written to and
+read from this file.
+
+Note that the ``$PYTHONSTARTUP`` environment variable will also be honored if
+set, and any file named by this variable will be read at start up time.  It's
+common practice to *also* enable GNU readline history in a ``$PYTHONSTARTUP``
+file and if you do this, be aware that it will interact badly with
+``[shell]history_file``, causing your history to be written twice.  To disable
+this when using the interactive ``shell`` command, do something like::
+
+    $ PYTHONSTARTUP= mailman shell
+
+to temporarily unset the environment variable.
+
+
 IPython
-=======
+-------
 
-You can use `IPython`_ as the interactive shell by changing certain
-configuration variables in the `[shell]` section of your `mailman.cfg` file.
-Set `use_ipython` to "yes" to switch to IPython, which must be installed on
-your system.
+You can use IPython_ as the interactive shell by setting the
+``[shell]use_ipython`` variables in your `mailman.cfg` file to ``yes``.
+IPython must be installed and available on your system
 
-Other configuration variables in the `[shell]` section can be used to
-configure other aspects of the interactive shell.  You can change both the
-prompt and the banner.
+When using IPython, the ``[shell]history_file`` is not used.
 
 
 .. Clean up
    >>> sys.path = old_path
 
-.. _`IPython`: http://ipython.org/
+.. _IPython: http://ipython.org/
+.. _REPL: https://en.wikipedia.org/wiki/REPL
+.. _`GNU readline`: https://docs.python.org/3/library/readline.html
