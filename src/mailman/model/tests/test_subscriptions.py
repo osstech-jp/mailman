@@ -419,3 +419,46 @@ class TestSubscriptionService(unittest.TestCase):
             self.assertEqual(len(list(members)), 1)
             self.assertEqual(len(members), 1)
             self.assertEqual(members[0].user, user)
+
+    def test_find_members_user_and_secondary_address(self):
+        # A user has two subscriptions: the user itself and one of its
+        # secondary addresses.
+        user = self._user_manager.create_user(
+            'anne@example.com', 'Anne User')
+        set_preferred(user)
+        # Create a secondary address.
+        address_2 = self._user_manager.create_address(
+            'anne2@example.com', 'Anne User 2')
+        address_2.user = user
+        # Subscribe the user and the secondary address.
+        self._mlist.subscribe(user)
+        self._mlist.subscribe(address_2)
+        # Search for the user-based subscription.
+        members = self._service.find_members('anne@example.com')
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0]._user, user)
+        self.assertIsNone(members[0].address_id)
+        # Search for the address-based subscription.
+        members = self._service.find_members('anne2@example.com')
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0]._address, address_2)
+        self.assertIsNone(members[0].user_id)
+        # Search for the user.
+        members = self._service.find_members(user.user_id)
+        self.assertEqual(len(members), 2)
+
+    def test_find_members_user_and_primary_address(self):
+        # A user has two subscriptions: the user itself and its primary
+        # address.
+        user = self._user_manager.create_user(
+            'anne@example.com', 'Anne User')
+        set_preferred(user)
+        # Subscribe the user and the primary address too.
+        self._mlist.subscribe(user)
+        self._mlist.subscribe(user.preferred_address)
+        # Search for the user's address.
+        members = self._service.find_members('anne@example.com')
+        self.assertEqual(len(members), 2)
+        # Search for the user.
+        members = self._service.find_members(user.user_id)
+        self.assertEqual(len(members), 2)
