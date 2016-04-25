@@ -71,8 +71,9 @@ class TestSubscriptionService(unittest.TestCase):
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].user, user)
 
-    def test_find_member_user_secondary_address(self):
-        # Find user-based memberships using a secondary address.
+    def test_wont_find_member_user_secondary_address(self):
+        # Finding user-based memberships using a secondary address is not
+        # supported; the subscription is not returned.
         user = self._user_manager.create_user(
             'anne@example.com', 'Anne User')
         set_preferred(user)
@@ -84,8 +85,7 @@ class TestSubscriptionService(unittest.TestCase):
         self._mlist.subscribe(user)
         # Search for the secondary address.
         members = self._service.find_members('anne2@example.com')
-        self.assertEqual(len(members), 1)
-        self.assertEqual(members[0].user, user)
+        self.assertEqual(len(members), 0)
 
     def test_wont_find_member_secondary_address(self):
         # A user is subscribed with one of their address, and a search is
@@ -396,3 +396,26 @@ class TestSubscriptionService(unittest.TestCase):
         self.assertEqual(
             [address.email for address in bee_owners.addresses],
             ['anne_1@example.com'])
+
+    def test_find_members_issue_227(self):
+        # https://gitlab.com/mailman/mailman/issues/227
+        user = self._user_manager.create_user(
+            'anne@example.com', 'Anne User')
+        address = set_preferred(user)
+        # Create a secondary address.
+        address_2 = self._user_manager.create_address(
+            'anne2@example.com', 'Anne User 2')
+        address_2.user = user
+        # Subscribe the user.
+        self._mlist.subscribe(user)
+        call_args_list = [
+            dict(list_id=self._mlist.list_id), # Search by list
+            dict(subscriber=user.user_id), # Search by user
+            dict(subscriber='anne@example.com'), # Search by address
+            dict(subscriber='anne*'), # Search by fuzzy address
+            ]
+        for call_args in call_args_list:
+            members = self._service.find_members(**call_args)
+            self.assertEqual(len(list(members)), 1)
+            self.assertEqual(len(members), 1)
+            self.assertEqual(members[0].user, user)

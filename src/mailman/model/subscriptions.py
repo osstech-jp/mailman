@@ -88,7 +88,8 @@ class SubscriptionService:
         # joined on the member's user.  Add the resulting email address to the
         # selected values to be able to sort on it later on.
         q_address = store.query(Member, Address.email).join(Member._address)
-        q_user = store.query(Member, Address.email).join(Member._user)
+        q_user = store.query(Member, Address.email).join(
+            User, User.id == Member.user_id).join(User._preferred_address)
         if subscriber is not None:
             if isinstance(subscriber, str):
                 # subscriber is an email address.
@@ -97,19 +98,20 @@ class SubscriptionService:
                     subscriber = subscriber.replace('*', '%')
                     q_address = q_address.filter(
                         Address.email.like(subscriber))
-                    q_user = q_user.join(User.addresses).filter(
-                        Address.email.like(subscriber))
+                    q_user = q_user.filter(Address.email.like(subscriber))
                 else:
                     q_address = q_address.filter(
                         Address.email == subscriber)
-                    q_user = q_user.join(User.addresses).filter(
-                        Address.email == subscriber)
+                    q_user = q_user.filter(Address.email == subscriber)
             else:
                 # subscriber is a user id.
                 q_address = q_address.join(Address.user).filter(
                     User._user_id == subscriber)
-                q_user = q_user.join(User._preferred_address).filter(
-                    User._user_id == subscriber)
+                q_user = q_user.filter(User._user_id == subscriber)
+        else:
+            # We're not searching for a subscriber, only select preferred
+            # addresses (see issue 227).
+            q_user = q_user.filter(Address.id == User._preferred_address_id)
         # Add additional filters to both queries.
         if list_id is not None:
             q_address = q_address.filter(Member.list_id == list_id)
