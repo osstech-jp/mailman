@@ -100,8 +100,7 @@ class SubscriptionService:
                         Address.email.like(subscriber))
                     q_user = q_user.filter(Address.email.like(subscriber))
                 else:
-                    q_address = q_address.filter(
-                        Address.email == subscriber)
+                    q_address = q_address.filter(Address.email == subscriber)
                     q_user = q_user.filter(Address.email == subscriber)
             else:
                 # subscriber is a user id.
@@ -109,8 +108,8 @@ class SubscriptionService:
                     User._user_id == subscriber)
                 q_user = q_user.filter(User._user_id == subscriber)
         else:
-            # We're not searching for a subscriber, only select preferred
-            # addresses (see issue 227).
+            # We're not searching for a subscriber so only select preferred
+            # addresses (see GL issue 227).
             q_user = q_user.filter(Address.id == User._preferred_address_id)
         # Add additional filters to both queries.
         if list_id is not None:

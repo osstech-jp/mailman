@@ -398,67 +398,85 @@ class TestSubscriptionService(unittest.TestCase):
             ['anne_1@example.com'])
 
     def test_find_members_issue_227(self):
+        # A user is subscribed to a list with their preferred address.  They
+        # have a different secondary linked address which is not subscribed.
+        # ISubscriptionService.find_members() should find the first, but not
+        # the second 'subscriber'.
+        #
         # https://gitlab.com/mailman/mailman/issues/227
-        user = self._user_manager.create_user(
-            'anne@example.com', 'Anne User')
-        address = set_preferred(user)
+        anne = self._user_manager.create_user('anne@example.com')
+        set_preferred(anne)
         # Create a secondary address.
-        address_2 = self._user_manager.create_address(
-            'anne2@example.com', 'Anne User 2')
-        address_2.user = user
-        # Subscribe the user.
-        self._mlist.subscribe(user)
-        call_args_list = [
-            dict(list_id=self._mlist.list_id), # Search by list
-            dict(subscriber=user.user_id), # Search by user
-            dict(subscriber='anne@example.com'), # Search by address
-            dict(subscriber='anne*'), # Search by fuzzy address
+        address = self._user_manager.create_address('aperson@example.com')
+        address.user = anne
+        # Subscribe Anne's user record.
+        self._mlist.subscribe(anne)
+        # Each of these searches should return only a single member, the one
+        # that has Anne's user record as its subscriber.
+        call_arguments = [
+            # Search by mailing list id.
+            dict(list_id=self._mlist.list_id),
+            # Search by user id.
+            dict(subscriber=anne.user_id),
+            # Search by Anne's preferred address.
+            dict(subscriber='anne@example.com'),
+            # Fuzzy search by address.
+            dict(subscriber='anne*'),
             ]
-        for call_args in call_args_list:
-            members = self._service.find_members(**call_args)
-            self.assertEqual(len(list(members)), 1)
+        for arguments in call_arguments:
+            members = self._service.find_members(**arguments)
+            # We check the lengths twice to ensure that the two "views" of the
+            # results match expectations.  len() implicitly calls the query's
+            # .count() method which according to the SQLAlchemy documentation
+            # does *not* de-duplicate the rows.  In the second case, we turn
+            # the result set into a concrete list, which works by iterating
+            # over the result.  In both cases, we expect only a single match.
             self.assertEqual(len(members), 1)
-            self.assertEqual(members[0].user, user)
+            self.assertEqual(len(list(members)), 1)
+            self.assertEqual(members[0].user, anne)
 
     def test_find_members_user_and_secondary_address(self):
         # A user has two subscriptions: the user itself and one of its
         # secondary addresses.
-        user = self._user_manager.create_user(
-            'anne@example.com', 'Anne User')
-        set_preferred(user)
+        anne = self._user_manager.create_user('anne@example.com')
+        set_preferred(anne)
         # Create a secondary address.
-        address_2 = self._user_manager.create_address(
-            'anne2@example.com', 'Anne User 2')
-        address_2.user = user
+        address = self._user_manager.create_address('aperson@example.com')
+        address.user = anne
         # Subscribe the user and the secondary address.
-        self._mlist.subscribe(user)
-        self._mlist.subscribe(address_2)
+        self._mlist.subscribe(anne)
+        self._mlist.subscribe(address)
         # Search for the user-based subscription.
         members = self._service.find_members('anne@example.com')
         self.assertEqual(len(members), 1)
-        self.assertEqual(members[0]._user, user)
+        self.assertEqual(members[0]._user, anne)
+        # The address-id is None because the user is the subscriber.
         self.assertIsNone(members[0].address_id)
         # Search for the address-based subscription.
-        members = self._service.find_members('anne2@example.com')
+        members = self._service.find_members('aperson@example.com')
         self.assertEqual(len(members), 1)
-        self.assertEqual(members[0]._address, address_2)
+        self.assertEqual(members[0]._address, address)
+        # The user-id is None because the address is the subscriber.
         self.assertIsNone(members[0].user_id)
-        # Search for the user.
-        members = self._service.find_members(user.user_id)
+        # Search by user-id.  In this case because the address is linked to
+        # the user, we should get two results.
+        members = self._service.find_members(anne.user_id)
         self.assertEqual(len(members), 2)
 
     def test_find_members_user_and_primary_address(self):
-        # A user has two subscriptions: the user itself and its primary
-        # address.
-        user = self._user_manager.create_user(
-            'anne@example.com', 'Anne User')
-        set_preferred(user)
-        # Subscribe the user and the primary address too.
-        self._mlist.subscribe(user)
-        self._mlist.subscribe(user.preferred_address)
+        # A user has two subscriptions: 1) where the user itself is the
+        # subscriber, 2) the address which happens to be the user's preferred
+        # address is the subscriber.  Remember that in the model, this
+        # represents two separate subscriptions because the user can always
+        # change their preferred address.
+        anne = self._user_manager.create_user('anne@example.com')
+        set_preferred(anne)
+        # Subscribe the user and their preferred address.
+        self._mlist.subscribe(anne)
+        self._mlist.subscribe(anne.preferred_address)
         # Search for the user's address.
         members = self._service.find_members('anne@example.com')
         self.assertEqual(len(members), 2)
         # Search for the user.
-        members = self._service.find_members(user.user_id)
+        members = self._service.find_members(anne.user_id)
         self.assertEqual(len(members), 2)

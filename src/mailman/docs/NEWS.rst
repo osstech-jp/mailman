@@ -76,6 +76,9 @@ Bugs
  * Fix "None" as display name in welcome message.  Given by Aditya Divekar.
    (Closes #194)
  * Fix ``mailman shell`` processing of ``$PYTHONSTARTUP``.  (Closes #224)
+ * Fix query bug for ``SubscriptionService.find_members()`` leading to the
+   incorrect number of members being returned.  Given by Aurélien Bompard.
+   (Closes #227)
 
 Configuration
 -------------
