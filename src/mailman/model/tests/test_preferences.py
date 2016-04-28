@@ -17,23 +17,19 @@
 
 """Test preferences."""
 
-__all__ = [
-    'TestPreferences',
-    ]
-
-
 import unittest
 
 from mailman.app.lifecycle import create_list
-from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.usermanager import IUserManager
-from mailman.model.preferences import Preferences
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
+__all__ = [
+    'TestPreferences',
+    ]
 
 
 class TestPreferences(unittest.TestCase):

@@ -31,8 +31,8 @@ from mailman.model.preferences import Preferences
 from mailman.model.roster import Memberships
 from mailman.utilities.datetime import factory as date_factory
 from mailman.utilities.uid import UIDFactory
-from sqlalchemy import not_
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Unicode
+from sqlalchemy import (
+    Boolean, Column, DateTime, ForeignKey, Integer, Unicode)
 from sqlalchemy.orm import backref, relationship
 from zope.event import notify
 from zope.interface import implementer
@@ -181,7 +181,7 @@ class User(Model):
         """See `IUser`."""
         assert user is not None
         if user.id == self.id:
-            return # Protect against absorbing oneself.
+            return  # Protect against absorbing oneself.
         # Relink addresses.
         for address in list(user.addresses):
             # convert to list because we'll mutate the result
@@ -189,7 +189,7 @@ class User(Model):
         # Merge memberships.
         other_members = store.query(Member).filter(
             Member.user_id == user.id)
-        subscribed_lists = [ m.list_id for m in self.memberships.members ]
+        subscribed_lists = [m.list_id for m in self.memberships.members]
         for member in other_members:
             # Only import memberships of lists I'm not subscribed to yet,
             # delete the rest.

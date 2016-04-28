@@ -73,5 +73,5 @@ class Preferences(Model):
                         if not c.primary_key]
         for cname in column_names:
             if (getattr(self, cname) is None and
-                getattr(preferences, cname) is not None):
+                    getattr(preferences, cname) is not None):
                 setattr(self, cname, getattr(preferences, cname))

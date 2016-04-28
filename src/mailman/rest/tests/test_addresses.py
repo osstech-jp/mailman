@@ -218,7 +218,7 @@ class TestAddresses(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         with transaction():
             anne = user_manager.create_user('anne@example.com')
-            bill = user_manager.create_user('bill@example.com')
+            user_manager.create_user('bill@example.com')
         response, content = call_api(
             'http://localhost:9001/3.0/users/anne@example.com/addresses', {
                  'email': 'bill@example.com',

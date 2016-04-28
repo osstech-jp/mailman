@@ -134,9 +134,11 @@ class TestUser(unittest.TestCase):
             bill_addr_2 = self._manager.create_address('bill2@example.com')
             bill.link(bill_addr_2)
         self._anne.absorb(bill)
-        self.assertIn('bill@example.com',
+        self.assertIn(
+            'bill@example.com',
             list(a.email for a in self._anne.addresses))
-        self.assertIn('bill2@example.com',
+        self.assertIn(
+            'bill2@example.com',
             list(a.email for a in self._anne.addresses))
         # The preferred address shouldn't change.
         self.assertEqual(self._anne.preferred_address, anne_addr)
@@ -178,7 +180,11 @@ class TestUser(unittest.TestCase):
             memberships[member.list_id] = member
         self.assertEqual(
             set(memberships.keys()),
-            set(['test.example.com', 'test2.example.com', 'test3.example.com']))
+            set([
+                'test.example.com',
+                'test2.example.com',
+                'test3.example.com',
+                ]))
         # The subscription to test@example.com already existed, it must not be
         # overwritten.
         self.assertEqual(
