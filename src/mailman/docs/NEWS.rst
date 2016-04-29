@@ -187,6 +187,9 @@ REST
    With thanks to Anirudh Dahiya.  (Closes #199)
  * Expose the system pipelines and chains via ``<api>/system/pipelines`` and
    ``<api>/system/chains`` respectively.  Given by Simon Hanna.  (Closes #66)
+ * Support mass unsubscription of members via ``DELETE`` on the
+   ``<api>/lists/<list-id>/roster/member`` resource.  Given by Harshit
+   Bansal.  (Closes #171)
  * Port to Falcon 1.0 (Closes #20)
 
 Other

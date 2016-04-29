@@ -213,38 +213,111 @@ class TestLists(unittest.TestCase):
                      '/owner/nobody@example.com')
         self.assertEqual(cm.exception.code, 404)
 
-    def test_list_mass_unsubscribe(self):
+    def test_list_mass_unsubscribe_all_succeed(self):
         with transaction():
-            aperson = self._usermanager.create_address('aperson@test.com')
-            bperson = self._usermanager.create_address('bperson@test.com')
-            cperson = self._usermanager.create_address('cperson@test.com')
-            mlist = create_list('testlist@example.com')
-            mlist.subscribe(aperson)
-            mlist.subscribe(bperson)
-            mlist.subscribe(cperson)
+            aperson = self._usermanager.create_address('aperson@example.com')
+            bperson = self._usermanager.create_address('bperson@example.com')
+            cperson = self._usermanager.create_address('cperson@example.com')
+            self._mlist.subscribe(aperson)
+            self._mlist.subscribe(bperson)
+            self._mlist.subscribe(cperson)
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/test.example.com'
+            '/roster/member', {
+                'emails': ['aperson@example.com',
+                           'bperson@example.com',
+                           ]},
+            'DELETE')
+        self.assertEqual(response.status, 200)
+        # Remove variable data.
+        resource.pop('http_etag')
+        self.assertEqual(resource, {'aperson@example.com': True,
+                                    'bperson@example.com': True,
+                                    })
+
+    def test_list_mass_unsubscribe_all_fail(self):
+        with transaction():
+            aperson = self._usermanager.create_address('aperson@example.com')
+            bperson = self._usermanager.create_address('bperson@example.com')
+            cperson = self._usermanager.create_address('cperson@example.com')
+            self._mlist.subscribe(aperson)
+            self._mlist.subscribe(bperson)
+            self._mlist.subscribe(cperson)
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/test.example.com'
+            '/roster/member', {
+                'emails': ['yperson@example.com',
+                           'zperson@example.com',
+                           ]},
+            'DELETE')
+        self.assertEqual(response.status, 200)
+        # Remove variable data.
+        resource.pop('http_etag')
+        self.assertEqual(resource, {'yperson@example.com': False,
+                                    'zperson@example.com': False,
+                                    })
+
+    def test_list_mass_unsubscribe_mixed_success(self):
+        with transaction():
+            aperson = self._usermanager.create_address('aperson@example.com')
+            bperson = self._usermanager.create_address('bperson@example.com')
+            cperson = self._usermanager.create_address('cperson@example.com')
+            self._mlist.subscribe(aperson)
+            self._mlist.subscribe(bperson)
+            self._mlist.subscribe(cperson)
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/test.example.com'
+            '/roster/member', {
+                'emails': ['aperson@example.com',
+                           'zperson@example.com',
+                           ]},
+            'DELETE')
+        self.assertEqual(response.status, 200)
+        # Remove variable data.
+        resource.pop('http_etag')
+        self.assertEqual(resource, {'aperson@example.com': True,
+                                    'zperson@example.com': False,
+                                    })
+
+    def test_list_mass_unsubscribe_with_duplicates(self):
+        with transaction():
+            aperson = self._usermanager.create_address('aperson@example.com')
+            bperson = self._usermanager.create_address('bperson@example.com')
+            cperson = self._usermanager.create_address('cperson@example.com')
+            self._mlist.subscribe(aperson)
+            self._mlist.subscribe(bperson)
+            self._mlist.subscribe(cperson)
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/test.example.com'
+            '/roster/member', {
+                'emails': ['aperson@example.com',
+                           'aperson@example.com',
+                           'bperson@example.com',
+                           'zperson@example.com',
+                           ]},
+            'DELETE')
+        self.assertEqual(response.status, 200)
+        # Remove variable data.
+        resource.pop('http_etag')
+        self.assertEqual(resource, {'aperson@example.com': True,
+                                    'bperson@example.com': True,
+                                    'zperson@example.com': False,
+                                    })
+
+    def test_list_mass_unsubscribe_bogus_list(self):
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/bogus.example.com'
-                     '/roster/member', None, 'DELETE')
+                     '/roster/member',
+                     None, 'DELETE')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_list_mass_unsubscribe_with_no_data(self):
         with self.assertRaises(HTTPError) as cm:
-            call_api('http://localhost:9001/3.0/lists/testlist.example.com'
-                     '/roster/member', None, 'DELETE')
+            call_api('http://localhost:9001/3.0/lists/test.example.com'
+                     '/roster/member',
+                     None, 'DELETE')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Invalid Input.')
-        resource, response = call_api(
-            'http://127.0.0.1:9001/3.0/lists/testlist.example.com'
-            '/roster/member', {'emails': ['aperson@test.com']}, 'DELETE')
-        self.assertEqual(response.status, 204)
-        resource, response = call_api(
-            'http://127.0.0.1:9001/3.0/lists/testlist.example.com'
-            '/roster/member', {'emails': ['bperson@test.com',
-                                          'cperson@test.com',
-                                          'bperson@test.com',
-                                          'bogus@test.com']}, 'DELETE')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(resource['bperson@test.com'],
-                         'Member already deleted.')
-        self.assertEqual(resource['bogus@test.com'], 'No such member.')
+        self.assertEqual(cm.exception.reason, b'Missing parameters: emails')
 
 
 class TestListArchivers(unittest.TestCase):

@@ -251,23 +251,19 @@ class MembersOfList(MemberCollection):
     def on_delete(self, request, response):
         """Delete the members of the named mailing list."""
         status = {}
-        success = []
-        fail = []
         try:
             validator = Validator(emails=list_of_strings_validator)
             arguments = validator(request)
-            emails = arguments.pop('emails')
-        except ValueError:
-            return bad_request(response, b'Invalid Input.')
+        except ValueError as error:
+            bad_request(response, str(error))
+            return
+        emails = arguments.pop('emails')
         success, fail = getUtility(ISubscriptionService).unsubscribe_members(
             self._mlist.list_id, emails)
-        if len(fail) == 0:
-            return no_content(response)
-        for email in fail:
-            if email in success:
-                status[email] = 'Member already deleted.'
-            else:
-                status[email] = 'No such member.'
+        # There should be no email in both sets.
+        assert success.isdisjoint(fail), (success, fail)
+        status.update({email: True for email in success})
+        status.update({email: False for email in fail})
         okay(response, etag(status))
 
 

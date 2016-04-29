@@ -161,7 +161,8 @@ class SubscriptionService:
         q_member = store.query(Member).filter(
             Member.list_id == list_id,
             Member.role == MemberRole.member)
-        for email in emails:
+        # De-duplicate.
+        for email in set(emails):
             unsubscribed = False
             # Join with a queries matching the email address and preferred
             # address of any subscribed user.

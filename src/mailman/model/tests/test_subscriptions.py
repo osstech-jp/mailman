@@ -397,6 +397,38 @@ class TestSubscriptionService(unittest.TestCase):
             [address.email for address in bee_owners.addresses],
             ['anne_1@example.com'])
 
+    def test_unsubscribe_members_with_duplicates(self):
+        ant = create_list('ant@example.com')
+        ant.admin_immed_notify = False
+        anne = self._user_manager.create_user('anne@example.com')
+        set_preferred(anne)
+        ant.subscribe(anne, MemberRole.member)
+        # Now we try to unsubscribe Anne twice in the same call.  That's okay
+        # because duplicates are ignored.
+        success, fail = self._service.unsubscribe_members(
+            ant.list_id, [
+                'anne@example.com',
+                'anne@example.com',
+                ])
+        self.assertEqual(success, set(['anne@example.com']))
+        self.assertEqual(fail, set())
+
+    def test_unsubscribe_members_with_duplicate_failures(self):
+        ant = create_list('ant@example.com')
+        ant.admin_immed_notify = False
+        anne = self._user_manager.create_user('anne@example.com')
+        set_preferred(anne)
+        ant.subscribe(anne, MemberRole.member)
+        # Now we try to unsubscribe a nonmember twice in the same call.
+        # That's okay because duplicates are ignored.
+        success, fail = self._service.unsubscribe_members(
+            ant.list_id, [
+                'bart@example.com',
+                'bart@example.com',
+                ])
+        self.assertEqual(success, set())
+        self.assertEqual(fail, set(['bart@example.com']))
+
     def test_find_members_issue_227(self):
         # A user is subscribed to a list with their preferred address.  They
         # have a different secondary linked address which is not subscribed.
