@@ -84,8 +84,8 @@ class ListRequests:
     def of_type(self, store, request_type):
         return QuerySequence(
             store.query(_Request).filter_by(
-                mailing_list=self.mailing_list, request_type=request_type))
-                #).order_by(_Request.id))
+                mailing_list=self.mailing_list, request_type=request_type
+                ).order_by(_Request.id))
 
     @dbconnection
     def hold_request(self, store, request_type, key, data=None):
