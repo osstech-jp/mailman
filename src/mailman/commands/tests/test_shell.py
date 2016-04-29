@@ -27,6 +27,12 @@ from mailman.testing.helpers import configuration
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 
+try:
+    import readline                                 # noqa
+    has_readline = True
+except ImportError:
+    has_readline = False
+
 
 class FakeArgs:
     interactive = None
@@ -64,6 +70,7 @@ class TestShell(unittest.TestCase):
         positional, keywords = mock.call_args
         self.assertEqual(keywords['banner'], 'my banner\n')
 
+    @unittest.skipUnless(has_readline, 'readline module is not available')
     @configuration('shell', history_file='$var_dir/history.py')
     def test_history_file(self):
         args = FakeArgs()
