@@ -19,11 +19,25 @@
 
 import unittest
 
+from contextlib import contextmanager
+from itertools import count
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
+from mailman.config import config
 from mailman.interfaces.requests import IListRequests, RequestType
+from mailman.model.requests import _Request
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
+from sqlalchemy.event import listen, remove
+
+
+@contextmanager
+def before_flush(id_hacker):
+    listen(config.db.store, 'before_flush', id_hacker)
+    try:
+        yield
+    finally:
+        remove(config.db.store, 'before_flush', id_hacker)
 
 
 class TestRequests(unittest.TestCase):
@@ -75,3 +89,33 @@ Something else.
         request_id = hold_message(self._mlist, self._msg)
         bee = create_list('bee@example.com')
         self.assertIsNone(IListRequests(bee).get_request(request_id))
+
+    def test_request_order(self):
+        # Requests must be sorted in creation order.
+        #
+        # This test only "works" for PostgreSQL, in the sense that if you
+        # remove the fix in ../requests.py, it will still pass in SQLite.
+        # Apparently SQLite auto-sorts results by ID but PostgreSQL autosorts
+        # by insertion time.  It's still worth keeping the test to prevent
+        # regressions.
+        #
+        # We modify the auto-incremented ids by listening to SQLAlchemy's
+        # flush event, and hacking all the _Request object id's to the next
+        # value in a descending counter.
+        request_ids = []
+        counter = count(200, -1)
+        def id_hacker(session, flush_context, instances):   # noqa
+            for instance in session.new:
+                if isinstance(instance, _Request):
+                    instance.id = next(counter)
+        with before_flush(id_hacker):
+            for index in range(10):
+                msg = mfs(self._msg.as_string())
+                msg.replace_header('Message-ID', '<alpha{}>'.format(index))
+                request_ids.append(hold_message(self._mlist, msg))
+            config.db.store.flush()
+        # Make sure that our ID are not already sorted.
+        self.assertNotEqual(request_ids, sorted(request_ids))
+        # Get requests and check their order.
+        requests = self._requests_db.of_type(RequestType.held_message)
+        self.assertEqual([r.id for r in requests], sorted(request_ids))
