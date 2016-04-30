@@ -216,6 +216,10 @@ use them. They can be imported from the modules available in
 ``mailman.testing``.  For example, to use ``dump_list`` you first need to
 import it from the ``mailman.testing.documentation`` module.
 
+.. Of course, *this* doctest doesn't have these preloaded...
+   >>> from zope.component import getUtility
+   >>> from mailman.interfaces.listmanager import IListManager
+
 The shell automatically initializes the Mailman system, loads all the
 available interfaces, and configures the `Zope Component Architecture`_ (ZCA)
 which is used to access all the software components in Mailman.  So for

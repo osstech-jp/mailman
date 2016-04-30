@@ -1063,6 +1063,7 @@ Mass Unsubscriptions
 A batch of users can be unsubscribed from the mailing list via the REST API
 just by supplying their email addresses.
 ::
+
     >>> cat = create_list('cat@example.com')
     >>> subscribe(cat, 'Isla')
     <Member: Isla Person <iperson@example.com> on
