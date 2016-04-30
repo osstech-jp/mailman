@@ -13,13 +13,14 @@ Mailman.  `PEP 8`_ is the basis for this style guide so its recommendations
 should be followed except for the differences outlined here.  This document
 assumes the use of Python 3.
 
+Much of the style guide is enforced by the command ``tox -e qa``.
+
 * When creating new modules, start with the `GNU Mailman Python template`_ as
   an example.
 
-* Names which should be imported by ``from-import`` should be added to
-  ``__all__`` but use the ``@public`` decorator from the top-level ``mailman``
-  package to do this for all classes and functions.  Constants and other
-  simple name bindings must be added to ``__all__`` explicitly.
+* Public module-global names should be exported in the ``__all__`` but use the
+  ``@public`` decorator from the top-level ``mailman`` package to do this for
+  all classes and functions.
 
 * Imports are always put at the top of the file, just after any module
   comments and docstrings, and before module globals and constants.
@@ -57,7 +58,7 @@ assumes the use of Python 3.
   or obvious comments in just to avoid vertical whitespace though.
 
 * Unless internal quote characters would mess things up, the general rule is
-  that single quotes should be used for short strings, double quotes for
+  that single quotes should be used for short strings and double quotes for
   triple-quoted multi-line strings and docstrings.  E.g.::
 
     foo = 'a foo thing'

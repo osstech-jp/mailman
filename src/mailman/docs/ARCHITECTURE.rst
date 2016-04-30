@@ -1,28 +1,27 @@
-==================
-Developing Mailman
-==================
+======================
+Mailman 3 architecture
+======================
 
-The following documentation is generated from the internal developer
-documentation.  This documentation is also used by the test suite.  Another
-good source of architectural information is available in the chapter written
-by Barry Warsaw for the `Architecture of Open Source Applications`_.
+This is a brief overview of the internal architecture of the Mailman 3 core
+delivery engine.  You should start here if you want to understand how Mailman
+works at the 1000 foot level.  Another good source of architectural
+information is available in the chapter written by Barry Warsaw for the
+`Architecture of Open Source Applications`_.
 
-For now, this will have to suffice as an overview of the Mailman system.
 
+User model
+==========
 
-Object model
-============
-
-Every major component of the system is defined in an interface.  Look through
+Every major component of the system is defined by an interface.  Look through
 ``src/mailman/interfaces`` for an understanding of the system components.
 Mailman objects which are stored in the database, are defined by *model*
 classes.  Objects such as *mailing lists*, *users*, *members*, and *addresses*
 are primary objects within the system.
 
-Obviously, the *mailing list* is the central object which holds all the
-configuration settings for a particular mailing list.  A mailing list is
-associated with a *domain*, and all mailing lists are managed by the *mailing
-list manager*.
+The *mailing list* is the central object which holds all the configuration
+settings for a particular mailing list.  A mailing list is associated with a
+*domain*, and all mailing lists are managed (i.e. created, destroyed, looked
+up) via the *mailing list manager*.
 
 *Users* represent people, and have a *user id* and a *display name*.  Users
 are linked to *addresses* which represent a single email address.  One user
@@ -32,12 +31,16 @@ only to *verified* addresses.
 
 Users and addresses are managed by the *user manager*.
 
-A *member* is created when a user subscribes to a mailing list, either via
-their *preferred address* or explicitly via one of their linked and verified
-addresses.  Members link an address to a mailing list, and represent regular
-members, digest members, list owners, and list moderators.  Members can even
-represent *non-members* (i.e. people not yet subscribed to the mailing list)
-for various moderation purposes.
+A *member* is created by linking a *subscriber* to a mailing list.
+Subscribers can be:
+
+* A user, which become members through their *preferred address*.
+* An address, which can be linked or unlinked to a user, but must be verified.
+
+Members also have a *role*, representing regular members, digest members, list
+owners, and list moderators.  Members can even have the *non-member* role
+(i.e. people not yet subscribed to the mailing list) for various moderation
+purposes.
 
 
 Process model
@@ -52,8 +55,8 @@ sending to the archivers), the *digest* queue (for composing digests), etc.
 
 A message in a queue is represented by a single file, a ``.pck`` file.  This
 file contains two objects, serialized as `Python pickles`_.  The first object
-is the message being processed, already parsed into a more efficient internal
-representation.  The second object is a metadata dictionary that records
+is the message being processed, already parsed into a `more efficient internal
+representation`_.  The second object is a metadata dictionary that records
 additional information about the message as it is being processed.
 
 ``.pck`` files only exist for messages moving between different system queues.
@@ -83,23 +86,23 @@ Rules and chains
 
 When a message is first received for posting to a mailing list, Mailman
 processes the message to determine whether the message is appropriate for the
-mailing list.  If so, it *approves* the message and it gets posted.  Mailman
+mailing list.  If so, it *accepts* the message and it gets posted.  Mailman
 can also *discard* the message so that no further processing occurs.  Mailman
-can also *reject* the message, bouncing it back to the original sender, usual
-with some indication of why the message was rejected.  Mailman can also *hold*
-the message for moderator approval.
+can also *reject* the message, bouncing it back to the original sender,
+usually with some indication of why the message was rejected.  Mailman can
+also *hold* the message for moderator approval.
 
 *Moderation* is the phase of processing that determines which of the above
 four dispositions will occur for the newly posted message.  Moderation does
 not generally change the message, but it may record information in the
 metadata dictionary.  Moderation is performed by the *in* queue runner.
 
-Each step in the moderation phase is performed by applying a *rule* to the
-message and asking whether the rule *hits* or *misses*.  Each rule is *linked*
-to an action which is taken if the rule hits (i.e. matches).  If the rule
-misses (i.e. doesn't match), then the next rule is tried.  All of the
-rule/action links are strung together sequentially into a *chain*, and every
-mailing list has a *start chain* where rule processing begins.
+Each step in the moderation phase applies a *rule* to the message and asks
+whether the rule *hits* or *misses*.  Each rule is linked to an *action* which
+is taken if the rule hits (i.e. matches).  If the rule misses (i.e. doesn't
+match), then the next rule is tried.  All of the rule/action links are strung
+together sequentially into a *chain*, and every mailing list has a *start
+chain* where rule processing begins.
 
 Actually, every mailing list has *two* start chains, one for regular postings
 to the mailing list, and another for posting to the owners of the mailing
@@ -110,8 +113,9 @@ incoming runner finds the destination mailing list, determines whether the
 message is for the entire list membership, or the list owners, and retrieves
 the appropriate start chain.  The message is then passed to the chain, where
 each link in the chain first checks to see if its rule matches, and if so, it
-executes the linked action.  This action is usually one of the typical
-*accept*, *reject*, *discard*, and *hold*, but other actions are possible.
+executes the linked action.  This action is usually one of *accept*, *reject*,
+*discard*, and *hold*, but other actions are possible, such as executing a
+function or jumping to another chain.
 
 As you might imagine, you can write new rules, compose them into new chains,
 and configure a mailing list to use your custom chain when processing the
@@ -155,5 +159,6 @@ servers.  The database layer is an critical piece, and Mailman has an
 extensive set of command line commands, and email commands.
 
 
-.. _`Python pickles`: http://docs.python.org/2/library/pickle.html
 .. _`Architecture of Open Source Applications`: http://www.aosabook.org/en/mailman.html
+.. _`Python pickles`: http://docs.python.org/2/library/pickle.html
+.. _`more efficient internal representation`: https://docs.python.org/3/library/email.html

@@ -15,6 +15,10 @@ qa:
   script:
   - tox -e qa
 
+docs:
+  script:
+  - tox -e docs
+
 sqlite:
   script:
   - tox -e py34,py35

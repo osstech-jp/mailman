@@ -34,14 +34,14 @@ Table of Contents
     :glob:
 
     src/mailman/docs/INTRODUCTION
-    src/mailman/docs/START
+    src/mailman/docs/CONTRIBUTE
+    src/mailman/docs/ARCHITECTURE
     src/mailman/docs/RELEASENOTES
     src/mailman/docs/DATABASE
     src/mailman/docs/MTA
     src/mailman/docs/8-miles-high
     src/mailman/docs/WebUIin5
     src/mailman/docs/ArchiveUIin5
-    src/mailman/docs/DEVELOP
 
 
 Mailman modules
