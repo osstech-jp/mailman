@@ -184,8 +184,12 @@ class ConfigLayer(MockAndMonkeyLayer):
         # Destroy the test database after the tests are done so that there is
         # no data in case the tests are rerun with a database layer like mysql
         # or postgresql which are not deleted in teardown.
-        config.pop('test config')
         shutil.rmtree(cls.var_dir)
+        config.pop('test config')
+        # Now config.VAR_DIR will point to the current directory's 'var'
+        # directory, which will have been created in config.pop()'s post
+        # processing.  Clean that up too.
+        shutil.rmtree(config.VAR_DIR, ignore_errors=True)
         cls.var_dir = None
 
     @classmethod

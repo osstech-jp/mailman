@@ -18,6 +18,7 @@
 """Test the system-wide global configuration."""
 
 import os
+import shutil
 import unittest
 
 from contextlib import ExitStack
@@ -51,6 +52,9 @@ class TestConfiguration(unittest.TestCase):
                 self.assertEqual(events, ['first', 'second', 'first'])
 
     def test_config_template_dir_is_source(self):
+        # This test will leave a 'var' directory in the top-level source
+        # directory.  Be sure to clean it up.
+        self.addCleanup(shutil.rmtree, 'var')
         config = Configuration()
         with NamedTemporaryFile('w', encoding='utf-8') as fp:
             print("""\
