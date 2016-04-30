@@ -27,7 +27,7 @@ from mailman.database.transaction import dbconnection
 from mailman.interfaces.messages import IMessageStore
 from mailman.model.message import Message
 from mailman.utilities.email import add_message_hash
-from mailman.utilities.filesystem import makedirs
+from mailman.utilities.filesystem import makedirs, safe_remove
 from zope.interface import implementer
 
 
@@ -123,8 +123,5 @@ class MessageStore:
             path = os.path.join(config.MESSAGES_DIR, row.path)
             # It's possible that a race condition caused the file system path
             # to already be deleted.
-            try:
-                os.remove(path)
-            except FileNotFoundError:
-                pass
+            safe_remove(path)
             store.delete(row)

@@ -18,8 +18,8 @@
 """Filesystem utilities."""
 
 import os
-import errno
 
+from contextlib import suppress
 from mailman import public
 
 
@@ -54,18 +54,18 @@ def makedirs(path, mode=0o2775):
     :param mode: The numeric permission mode to use.
     :type mode: int
     """
-    try:
+    with suppress(FileExistsError):
         with umask(0):
             os.makedirs(path, mode)
-    except OSError as error:
-        # Ignore the exceptions if the directory already exists.
-        if error.errno != errno.EEXIST:
-            raise
     # Some systems such as FreeBSD ignore mkdir's mode, so walk the just
     # created directories and try to set the mode, ignoring any OSErrors that
     # occur here.
     for dirpath, dirnames, filenames in os.walk(path):
-        try:
+        with suppress(OSError):
             os.chmod(dirpath, mode)
-        except OSError:
-            pass
+
+
+@public
+def safe_remove(path):
+    with suppress(FileNotFoundError):
+        os.remove(path)

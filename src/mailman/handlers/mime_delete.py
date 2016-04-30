@@ -30,7 +30,7 @@ import logging
 import tempfile
 import subprocess
 
-from contextlib import ExitStack
+from contextlib import ExitStack, suppress
 from email.iterators import typed_subpart_iterator
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
@@ -220,11 +220,9 @@ def collapse_multipart_alternatives(msg):
     newpayload = []
     for subpart in msg.get_payload():
         if subpart.get_content_type() == 'multipart/alternative':
-            try:
+            with suppress(IndexError):
                 firstalt = subpart.get_payload(0)
                 newpayload.append(firstalt)
-            except IndexError:
-                pass
         else:
             newpayload.append(subpart)
     msg.set_payload(newpayload)

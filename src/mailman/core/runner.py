@@ -22,6 +22,7 @@ import signal
 import logging
 import traceback
 
+from contextlib import suppress
 from io import StringIO
 from lazr.config import as_boolean, as_timedelta
 from mailman import public
@@ -112,7 +113,7 @@ class Runner:
     def run(self):
         """See `IRunner`."""
         # Start the main loop for this runner.
-        try:
+        with suppress(KeyboardInterrupt):
             while True:
                 # Once through the loop that processes all the files in the
                 # queue directory.
@@ -126,10 +127,7 @@ class Runner:
                 # pass it the file count so it can decide whether to do more
                 # work now or not.
                 self._snooze(filecnt)
-        except KeyboardInterrupt:
-            pass
-        finally:
-            self._clean_up()
+        self._clean_up()
 
     def _one_iteration(self):
         """See `IRunner`."""

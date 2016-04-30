@@ -26,6 +26,7 @@ prepared for delivery.  Rejections, discards, and holds are processed
 immediately.
 """
 
+from contextlib import suppress
 from mailman import public
 from mailman.core.chains import process
 from mailman.core.runner import Runner
@@ -48,10 +49,8 @@ class IncomingRunner(Runner):
         user_manager = getUtility(IUserManager)
         with transaction():
             for sender in msg.senders:
-                try:
+                with suppress(ExistingAddressError):
                     user_manager.create_address(sender)
-                except ExistingAddressError:
-                    pass
         # Process the message through the mailing list's start chain.
         start_chain = (mlist.owner_chain
                        if msgdata.get('to_owner', False)

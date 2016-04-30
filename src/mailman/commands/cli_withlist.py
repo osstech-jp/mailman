@@ -20,7 +20,7 @@
 import re
 import sys
 
-from contextlib import ExitStack
+from contextlib import ExitStack, suppress
 from functools import partial
 from lazr.config import as_boolean
 from mailman import public
@@ -222,10 +222,8 @@ class Withlist:
                         }
                     history_file = Template(
                         history_file_template).safe_substitute(substitutions)
-                    try:
+                    with suppress(FileNotFoundError):
                         readline.read_history_file(history_file)
-                    except FileNotFoundError:
-                        pass
                     resources.callback(
                         readline.write_history_file,
                         history_file)

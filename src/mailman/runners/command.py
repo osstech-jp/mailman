@@ -25,6 +25,7 @@
 import re
 import logging
 
+from contextlib import suppress
 from email.errors import HeaderParseError
 from email.header import decode_header, make_header
 from email.iterators import typed_subpart_iterator
@@ -224,11 +225,9 @@ class CommandRunner(Runner):
         # utf-8.
         reply_body = str(results)
         for charset in (results.charset, 'us-ascii', 'latin-1'):
-            try:
+            with suppress(UnicodeError):
                 reply_body.encode(charset)
                 break
-            except UnicodeError:
-                pass
         else:
             charset = 'utf-8'
         reply.set_payload(reply_body, charset=charset)

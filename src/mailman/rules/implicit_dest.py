@@ -19,6 +19,7 @@
 
 import re
 
+from contextlib import suppress
 from email.utils import getaddresses
 from mailman import public
 from mailman.core.i18n import _
@@ -83,10 +84,8 @@ class ImplicitDestination:
                 except re.error:
                     # The pattern is a malformed regular expression.  Try
                     # matching again with the pattern escaped.
-                    try:
+                    with suppress(re.error):
                         if re.match(escaped, recipient, re.IGNORECASE):
                             return False
-                    except re.error:
-                        pass
         # Nothing matched.
         return True

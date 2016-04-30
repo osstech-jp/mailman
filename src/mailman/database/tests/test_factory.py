@@ -20,6 +20,7 @@
 import unittest
 import alembic.command
 
+from contextlib import suppress
 from mailman.config import config
 from mailman.database.alembic import alembic_cfg
 from mailman.database.factory import LAST_STORM_SCHEMA_VERSION, SchemaManager
@@ -87,12 +88,10 @@ class TestSchemaManager(unittest.TestCase):
             version = Model.metadata.tables['version']
             version.drop(config.db.engine, checkfirst=True)
             Model.metadata.remove(version)
-        try:
+        # If it's nonexistent, PostgreSQL raises a ProgrammingError, while
+        # SQLite raises an OperationalError.
+        with suppress(ProgrammingError, OperationalError):
             Index('ix_user_user_id').drop(bind=config.db.engine)
-        except (ProgrammingError, OperationalError):
-            # Nonexistent.  PostgreSQL raises a ProgrammingError, while SQLite
-            # raises an OperationalError.
-            pass
         config.db.commit()
 
     def test_current_database(self):

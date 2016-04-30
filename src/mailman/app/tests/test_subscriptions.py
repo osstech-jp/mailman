@@ -19,6 +19,7 @@
 
 import unittest
 
+from contextlib import suppress
 from mailman.app.lifecycle import create_list
 from mailman.app.subscriptions import SubscriptionWorkflow
 from mailman.interfaces.bans import IBanManager
@@ -57,10 +58,8 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         # some data associated with it.
         anne = self._user_manager.create_address(self._anne)
         workflow = SubscriptionWorkflow(self._mlist, anne)
-        try:
+        with suppress(StopIteration):
             workflow.run_thru('send_confirmation')
-        except StopIteration:
-            pass
         self.assertIsNotNone(workflow.token)
         pendable = getUtility(IPendings).confirm(workflow.token, expunge=False)
         self.assertEqual(pendable['list_id'], 'test.example.com')

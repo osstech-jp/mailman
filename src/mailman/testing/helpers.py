@@ -31,7 +31,7 @@ import datetime
 import threading
 
 from base64 import b64encode
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from email import message_from_string
 from httplib2 import Http
 from lazr.config import as_timedelta
@@ -183,14 +183,11 @@ class TestableMaster(Master):
         starting_kids = set(self._kids)
         while starting_kids:
             for pid in self._kids:
-                try:
+                # Ignore the exception which gets raised when the child has
+                # not yet started.
+                with suppress(ProcessLookupError):
                     os.kill(pid, 0)
                     starting_kids.remove(pid)
-                except OSError as error:
-                    if error.errno == errno.ESRCH:
-                        # The child has not yet started.
-                        pass
-                    raise
         # Keeping a copy of all the started child processes for use by the
         # testing environment, even after all have exited.
         self._started_kids = set(self._kids)

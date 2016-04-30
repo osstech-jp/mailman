@@ -21,6 +21,7 @@ import os
 import sys
 import code
 
+from contextlib import suppress
 from mailman import public
 
 
@@ -51,10 +52,8 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
         namespace.update(overrides)
     interp = code.InteractiveConsole(namespace)
     # Try to import the readline module, but don't worry if it's unavailable.
-    try:
+    with suppress(ImportError):
         import readline                             # noqa
-    except ImportError:                             # pragma: no cover
-        pass
     # Mimic the real interactive interpreter's loading of any $PYTHONSTARTUP
     # file.  Note that if the startup file is not prepared to be exec'd more
     # than once, this could cause a problem.

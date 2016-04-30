@@ -27,6 +27,7 @@ import uuid
 import random
 import hashlib
 
+from contextlib import suppress
 from flufl.lock import Lock
 from mailman import public
 from mailman.config import config
@@ -125,11 +126,8 @@ class UIDFactory(_PredictableIDGenerator):
         """
         while True:
             uid = uuid.uuid4()
-            try:
+            with suppress(ValueError):
                 UID.record(uid)
-            except ValueError:
-                pass
-            else:
                 return uid
 
     def _next_predictable_id(self):

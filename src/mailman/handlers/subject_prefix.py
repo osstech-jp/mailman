@@ -19,7 +19,8 @@
 
 import re
 
-from email.header import Header, make_header, decode_header
+from contextlib import suppress
+from email.header import Header, decode_header, make_header
 from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -163,10 +164,8 @@ class SubjectPrefix:
             # subject.  Also, force new style.
             prefix_pattern = p.sub(r'\s*\d+\s*', prefix_pattern)
         # Substitute %d in prefix with post_id
-        try:
+        with suppress(TypeError):
             prefix = prefix % mlist.post_id
-        except TypeError:
-            pass
         for handler in (ascii_header,
                         all_same_charset,
                         mixed_charsets,

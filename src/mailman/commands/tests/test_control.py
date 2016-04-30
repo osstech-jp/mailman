@@ -56,22 +56,12 @@ def find_master():
     until = timedelta(seconds=10) + datetime.now()
     while datetime.now() < until:
         time.sleep(0.1)
-        try:
+        with suppress(FileNotFoundError, ValueError, ProcessLookupError):
             with open(config.PID_FILE) as fp:
                 pid = int(fp.read().strip())
                 os.kill(pid, 0)
-        except IOError as error:
-            if error.errno != errno.ENOENT:
-                raise
-        except ValueError:
-            pass
-        except OSError as error:
-            if error.errno != errno.ESRCH:
-                raise
-        else:
-            return pid
-    else:
-        return None
+                return pid
+    return None
 
 
 class FakeArgs:

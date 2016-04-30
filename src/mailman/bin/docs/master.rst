@@ -41,13 +41,8 @@ runner processes.
 None of the children are running now.
 
     >>> import errno
+    >>> from contextlib import suppress
     >>> for pid in master.runner_pids:
-    ...     try:
+    ...     with suppress(ProcessLookupError):
     ...         os.kill(pid, 0)
     ...         print('Process did not exit:', pid)
-    ...     except OSError as error:
-    ...         if error.errno == errno.ESRCH:
-    ...             # The child process exited.
-    ...             pass
-    ...         else:
-    ...             raise
