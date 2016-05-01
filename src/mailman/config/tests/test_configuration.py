@@ -18,7 +18,6 @@
 """Test the system-wide global configuration."""
 
 import os
-import shutil
 import unittest
 
 from contextlib import ExitStack
@@ -29,7 +28,7 @@ from mailman.interfaces.configuration import (
 from mailman.testing.helpers import configuration, event_subscribers
 from mailman.testing.layers import ConfigLayer
 from pkg_resources import resource_filename
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 from unittest import mock
 
 
@@ -54,13 +53,18 @@ class TestConfiguration(unittest.TestCase):
     def test_config_template_dir_is_source(self):
         # This test will leave a 'var' directory in the top-level source
         # directory.  Be sure to clean it up.
-        self.addCleanup(shutil.rmtree, 'var')
         config = Configuration()
-        with NamedTemporaryFile('w', encoding='utf-8') as fp:
+        with ExitStack() as resources:
+            fp = resources.enter_context(
+                NamedTemporaryFile('w', encoding='utf-8'))
+            var_dir = resources.enter_context(TemporaryDirectory())
+            # Don't let the post-processing after the config.load() to put a
+            # 'var' directory in the source tree's top level directory.
             print("""\
 [paths.here]
 template_dir: :source:
-""", file=fp)
+var_dir: {}
+""".format(var_dir), file=fp)
             fp.flush()
             config.load(fp.name)
         import mailman.templates
