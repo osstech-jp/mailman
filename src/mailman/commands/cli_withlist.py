@@ -217,8 +217,8 @@ class Withlist:
                 if len(history_file_template) > 0:
                     # Expand substitutions.
                     substitutions = {
-                        key.lower(): getattr(config, key)
-                        for key in dir(config) if key.endswith('_DIR')
+                        key.lower(): value
+                        for key, value in config.paths.items()
                         }
                     history_file = Template(
                         history_file_template).safe_substitute(substitutions)
