@@ -20,6 +20,7 @@
 import re
 import logging
 
+from itertools import count
 from mailman import public
 from mailman.chains.base import Chain, Link
 from mailman.config import config
@@ -30,9 +31,18 @@ from zope.interface import implementer
 
 
 log = logging.getLogger('mailman.error')
+_RULE_COUNTER = count(1)
 
 
-def make_link(header, pattern, chain=None, name=None):
+def _make_rule_name(suffix):
+    # suffix may be None, since it comes from the 'name' parameter given in
+    # the HeaderMatchRule constructor.
+    if suffix is None:
+        suffix = '{0:02}'.format(next(_RULE_COUNTER))
+    return 'header-match-{}'.format(suffix)
+
+
+def make_link(header, pattern, chain=None, suffix=None):
     """Create a Link object.
 
     The link action is to defer by default, since at the end of all the
@@ -47,45 +57,30 @@ def make_link(header, pattern, chain=None, name=None):
     :param chain: When given, this is the name of the chain to jump to if the
         pattern matches the header.
     :type chain: string
-    :param name: An optional name for the rule.
-    :type name: string
+    :param suffix: An optional name suffix for the rule.
+    :type suffix: string
     :return: The link representing this rule check.
     :rtype: `ILink`
     """
-    rule_name = get_rule_name(name)
+    rule_name = _make_rule_name(suffix)
     if rule_name in config.rules:
         rule = config.rules[rule_name]
     else:
-        rule = HeaderMatchRule(header, pattern, name)
+        rule = HeaderMatchRule(header, pattern, suffix)
     if chain is None:
         return Link(rule)
     return Link(rule, LinkAction.jump, chain)
-
-
-def get_rule_name(suffix):
-    name = ['header-match']
-    if suffix:
-        name.append(suffix)
-    else:
-        name.append('{0:02}'.format(
-            HeaderMatchRule._count
-            ))
-    return '-'.join(name)
 
 
 @implementer(IRule)
 class HeaderMatchRule:
     """Header matching rule used by header-match chain."""
 
-    # Sequential rule counter.
-    _count = 1
-
-    def __init__(self, header, pattern, name=None):
+    def __init__(self, header, pattern, suffix=None):
         self.header = header
         self.pattern = pattern
-        self.name = get_rule_name(name)
-        HeaderMatchRule._count += 1
-        self.description = '{0}: {1}'.format(header, pattern)
+        self.name = _make_rule_name(suffix)
+        self.description = '{}: {}'.format(header, pattern)
         # XXX I think we should do better here, somehow recording that a
         # particular header matched a particular pattern, but that gets ugly
         # with RFC 2822 headers.  It also doesn't match well with the rule
@@ -152,8 +147,8 @@ class HeaderMatchChain(Chain):
                 log.error('Configuration error: [antispam]header_checks '
                           'contains bogus line: {}'.format(line))
                 continue
-            rule_name = 'config-{0}'.format(index)
-            yield make_link(parts[0], parts[1].lstrip(), name=rule_name)
+            rule_name = 'config-{}'.format(index)
+            yield make_link(parts[0], parts[1].lstrip(), suffix=rule_name)
         # Then return all the explicitly added links.
         yield from self._extended_links
         # If any of the above rules matched, they will have deferred their
@@ -167,5 +162,5 @@ class HeaderMatchChain(Chain):
             chain = (config.antispam.jump_chain
                      if entry.chain is None
                      else entry.chain)
-            rule_name = '{0}-{1}'.format(mlist.list_id, index)
+            rule_name = '{}-{}'.format(mlist.list_id, index)
             yield make_link(entry.header, entry.pattern, chain, rule_name)

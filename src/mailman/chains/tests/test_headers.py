@@ -128,13 +128,10 @@ class TestHeaderChain(unittest.TestCase):
         #
         # Save the existing rules so they can be restored later.
         saved_rules = config.rules.copy()
-        next_rule_name = 'header-match-{0:02}'.format(HeaderMatchRule._count)
-        config.rules[next_rule_name] = object()
-        try:
-            self.assertRaises(AssertionError,
-                              HeaderMatchRule, 'x-spam-score', '.*')
-        finally:
-            config.rules = saved_rules
+        self.addCleanup(setattr, config, 'rules', saved_rules)
+        HeaderMatchRule('x-spam-score', '*', suffix='100')
+        self.assertRaises(AssertionError,
+                          HeaderMatchRule, 'x-spam-score', '.*', suffix='100')
 
     def test_list_rule(self):
         # Test that the header-match chain has the header checks from the
@@ -265,19 +262,19 @@ A message body.
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('Header2', 'b+')
         header_matches.append('Header3', 'c+')
-        def get_links():  # flake8: noqa
+        def get_links():                          # noqa
             return [
                 link for link in chain.get_links(self._mlist, Message(), {})
                 if link.rule.name != 'any'
                 ]
-        links = get_links()
-        self.assertEqual(len(links), 3)
+        links_1 = get_links()
+        self.assertEqual(len(links_1), 3)
         links_2 = get_links()
+        # The link rules both have the same name...
         self.assertEqual(
-            [l.rule.name for l in links],
+            [l.rule.name for l in links_1],
             [l.rule.name for l in links_2],
             )
-        self.assertEqual(
-            [id(l.rule) for l in links],
-            [id(l.rule) for l in links_2],
-            )
+        # ...and are actually the identical objects.
+        for link1, link2 in zip(links_1, links_2):
+            self.assertIs(link1.rule, link2.rule)

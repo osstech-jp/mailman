@@ -79,6 +79,8 @@ Bugs
  * Fix query bug for ``SubscriptionService.find_members()`` leading to the
    incorrect number of members being returned.  Given by Aurélien Bompard.
    (Closes #227)
+ * Fix header match rule suffix inflation.  Given by Aurélien Bompard.
+   (Closes #226)
 
 Configuration
 -------------
