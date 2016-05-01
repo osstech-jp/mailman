@@ -185,11 +185,15 @@ class ConfigLayer(MockAndMonkeyLayer):
         # no data in case the tests are rerun with a database layer like mysql
         # or postgresql which are not deleted in teardown.
         shutil.rmtree(cls.var_dir)
+        # Prevent the bit of post-processing on the .pop() that creates
+        # directories.  We're basically shutting down everything and we don't
+        # need the directories created.  Plus, doing so leaves a var directory
+        # turd in the source tree's top-level directory.  We do it this way
+        # rather than shutil.rmtree'ing the resulting var directory because
+        # it's possible the user created a valid such directory for
+        # operational or test purposes.
+        config.create_paths = False
         config.pop('test config')
-        # Now config.VAR_DIR will point to the current directory's 'var'
-        # directory, which will have been created in config.pop()'s post
-        # processing.  Clean that up too.
-        shutil.rmtree(config.VAR_DIR, ignore_errors=True)
         cls.var_dir = None
 
     @classmethod

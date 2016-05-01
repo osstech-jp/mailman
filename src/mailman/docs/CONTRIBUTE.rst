@@ -174,8 +174,7 @@ defines these basic overrides in ``src/mailman/config/mailman.cfg``.  Your own
 configuration file will override those.
 
 By default, all runtime files are put under a ``var`` directory in the current
-working directory.  **Be careful though because running the test suite will
-blow this directory away.**
+working directory.
 
 Mailman searches for its configuration file using the following search path.
 The first existing file found wins.
