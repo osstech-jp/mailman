@@ -144,6 +144,10 @@ Message handling
    signals falling back to the appropriate list default action,
    e.g. `default_member_action` and `default_nonmember_action`.  Given by
    Aurélien Bompard.  (Closes #189)
+ * Ensure that postings from alternative emails aren't held for moderator
+   approval.  For example, if a user is subscribed with one email but posts
+   with a second email that they control, the message should be processed as
+   a posting from a member.  Given by Aditya Divekar.  (Closes #222)
 
 REST
 ----
