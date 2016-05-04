@@ -210,15 +210,19 @@ A message body.
         self.assertTrue(result)
         self.assertEqual(msgdata.get('moderation_action'), 'hold')
 
-    def test_linked_address_nonmembermoderation(self):
+    def test_linked_address_nonmembermoderation_misses(self):
+        # Anne subscribes to a mailing list as a user with her preferred
+        # address.  She also has a secondary linked address, and she uses this
+        # to post to the mailing list.  The NonmemberModeration rule misses
+        # because Anne is not a nonmember.
         user_manager = getUtility(IUserManager)
         anne = user_manager.create_user('anne@example.com')
         set_preferred(anne)
         self._mlist.subscribe(anne, MemberRole.member)
-        anne.link(user_manager.create_address('anne2@example.com'))
+        anne.link(user_manager.create_address('anne.person@example.com'))
         rule = moderation.NonmemberModeration()
         msg = mfs("""\
-From: anne2@example.com
+From: anne.person@example.com
 To: test@example.com
 Subject: A test message
 Message-ID: <ant>
@@ -226,22 +230,23 @@ MIME-Version: 1.0
 
 A message body.
 """)
-        # The NonmemberModeration rule should evaluate
-        # to False since the linked user is subscribed to the list
-        msgdata = {}
-        result = rule.check(self._mlist, msg, msgdata)
+        result = rule.check(self._mlist, msg, {})
         self.assertFalse(result)
 
-    def test_linked_address_membermoderation(self):
+    def test_linked_address_membermoderation_hits(self):
+        # Anne subscribes to a mailing list as a user with her preferred
+        # address.  She also has a secondary linked address, and she uses this
+        # to post to the mailing list.  The MemberModeration rule hits because
+        # Anne is a member.
         self._mlist.default_member_action = Action.accept
         user_manager = getUtility(IUserManager)
         anne = user_manager.create_user('anne@example.com')
         set_preferred(anne)
         self._mlist.subscribe(anne, MemberRole.member)
-        anne.link(user_manager.create_address('anne2@example.com'))
+        anne.link(user_manager.create_address('anne.person@example.com'))
         rule = moderation.MemberModeration()
         msg = mfs("""\
-From: anne2@example.com
+From: anne.person@example.com
 To: test@example.com
 Subject: A test message
 Message-ID: <ant>
@@ -249,22 +254,23 @@ MIME-Version: 1.0
 
 A message body.
 """)
-        # The MemberModeration rule should evaluate
-        # to True since the linked user is subscribed to the list
-        msgdata = {}
-        result = rule.check(self._mlist, msg, msgdata)
+        result = rule.check(self._mlist, msg, {})
         self.assertTrue(result)
 
     def test_banned_address_linked_to_user(self):
+        # Anne is subscribed to a mailing list as a user with her preferred
+        # address.  She also has a secondary address which is banned and which
+        # she uses to post to the mailing list.  Both the MemberModeration and
+        # NonmemberModeration rules miss because the posting address is
+        # banned.
         user_manager = getUtility(IUserManager)
         anne = user_manager.create_user('anne@example.com')
         set_preferred(anne)
         self._mlist.subscribe(anne, MemberRole.member)
-        anne.link(user_manager.create_address('anne2@example.com'))
-        IBanManager(self._mlist).ban('anne2@example.com')
-        rule = moderation.MemberModeration()
+        anne.link(user_manager.create_address('anne.person@example.com'))
+        IBanManager(self._mlist).ban('anne.person@example.com')
         msg = mfs("""\
-From: anne2@example.com
+From: anne.person@example.com
 To: test@example.com
 Subject: A test message
 Message-ID: <ant>
@@ -272,22 +278,25 @@ MIME-Version: 1.0
 
 A message body.
 """)
-        msgdata = {}
-        result = rule.check(self._mlist, msg, msgdata)
+        rule = moderation.MemberModeration()
+        result = rule.check(self._mlist, msg, {})
         self.assertFalse(result)
         rule = moderation.NonmemberModeration()
-        result = rule.check(self._mlist, msg, msgdata)
+        result = rule.check(self._mlist, msg, {})
         self.assertFalse(result)
 
     def test_banned_sender_among_multiple_senders(self):
+        # Two addresses are created, one of which is banned.  Even though the
+        # The Nonmember moderation rule misses if any of the banned addresses
+        # appear in the 'senders' headers of the message.
         user_manager = getUtility(IUserManager)
-        user_manager.create_address('ted@example.com')
-        user_manager.create_address('cris@example.com')
-        IBanManager(self._mlist).ban('cris@example.com')
+        user_manager.create_address('anne@example.com')
+        user_manager.create_address('bart@example.com')
+        IBanManager(self._mlist).ban('bart@example.com')
         rule = moderation.NonmemberModeration()
         msg = mfs("""\
-From: ted@example.com
-Sender: cris@example.com
+From: anne@example.com
+Sender: bart@example.com
 To: test@example.com
 Subject: A test message
 Message-ID: <ant>
@@ -295,6 +304,5 @@ MIME-Version: 1.0
 
 A message body.
 """)
-        msgdata = {}
-        result = rule.check(self._mlist, msg, msgdata)
+        result = rule.check(self._mlist, msg, {})
         self.assertFalse(result)

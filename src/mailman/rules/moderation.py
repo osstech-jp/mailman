@@ -41,21 +41,33 @@ class MemberModeration:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
+        # The MemberModeration rule misses unconditionally if any of the
+        # senders are banned.
+        ban_manager = IBanManager(mlist)
         user_manager = getUtility(IUserManager)
-        # The MemberModeration rule is unconditionally false if any of
-        # the senders are banned.
         for sender in msg.senders:
-            if IBanManager(mlist).is_banned(sender):
+            if ban_manager.is_banned(sender):
                 return False
+        # For each sender address, try to find a member associated with the
+        # email address.  Start by checking the sender email directly.  If the
+        # sender email is not a member, try to find the user linked to the
+        # email, and then check to see if *that* user, or any of the addresses
+        # linked to that user is a member.  This rule hits of we find a member
+        # and their moderation action is not to defer.
         for sender in msg.senders:
-            # Check for subscribed members linked to the address.
+            # Is the sender email itself a member?
             member = mlist.members.get_member(sender)
             if member is None:
+                # Is the sender email linked to a user?
                 user = user_manager.get_user(sender)
                 if user is not None:
+                    # Are any of the emails linked to this user a member?
                     for address in user.addresses:
-                        if mlist.members.get_member(address.email) is not None:
-                            member = mlist.members.get_member(address.email)
+                        member = mlist.members.get_member(address.email)
+                        if member is not None:
+                            # We found a member, so we don't need to check any
+                            # of the other linked addresses.
+                            break
             if member is None:
                 return False
             action = (mlist.default_member_action
@@ -65,8 +77,8 @@ class MemberModeration:
                 # The regular moderation rules apply.
                 return False
             elif action is not None:
-                # We must stringify the moderation action so that
-                # it can be stored in the pending request table.
+                # We must stringify the moderation action so that it can be
+                # stored in the pending request table.
                 msgdata['moderation_action'] = action.name
                 msgdata['moderation_sender'] = sender
                 msgdata.setdefault('moderation_reasons', []).append(
@@ -94,30 +106,37 @@ class NonmemberModeration:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
+        ban_manager = IBanManager(mlist)
         user_manager = getUtility(IUserManager)
-        # Initial check. If any of the senders are banned, we bail.
+        # The NonmemberModeration rule misses unconditionally if any of the
+        # senders are banned.
         for sender in msg.senders:
-            if IBanManager(mlist).is_banned(sender):
+            if ban_manager.is_banned(sender):
                 return False
-        # First ensure that all senders are already either members or
-        # nonmembers.  If they are not subscribed in some role to the mailing
-        # list, make them nonmembers.
-        # Maintain a record of which senders have linked subscribed users.
+        # Every sender must somehow be a member or nonmember.  The sender
+        # email can have one of those roles directly, or a user that the email
+        # is linked to can have one of those roles indirectly, or any address
+        # linked to one of those users can have one of those roles.
+        #
+        # If the sender is not somehow a member or nonmember, make them a
+        # nonmember.  We maintain a record of which senders are members, and
+        # then the ones that aren't are made nonmembers.
         found_linked_membership = set()
         for sender in msg.senders:
             member = mlist.members.get_member(sender)
-            if member is not None:
-                found_linked_membership.add(sender)
-            else:
+            if member is None:
                 user = user_manager.get_user(sender)
                 if user is not None:
                     for address in user.addresses:
                         if mlist.members.get_member(address.email) is not None:
                             found_linked_membership.add(sender)
-            if (mlist.nonmembers.get_member(sender) is None and
-                    sender not in found_linked_membership):
-                # The address is neither a member nor nonmember
-                # and has no linked subscribed user.
+            else:
+                found_linked_membership.add(sender)
+            # Now we know whether the sender is somehow linked to a member or
+            # not.  If not, and the email also isn't already a nonmember, make
+            # them a nonmember.
+            if (mlist.nonmembers.get_member(sender) is None
+                    and sender not in found_linked_membership):   # noqa
                 address = user_manager.get_address(sender)
                 assert address is not None, (
                     'Posting address is not registered: {}'.format(sender))
