@@ -222,21 +222,23 @@ class IMailingList(Interface):
         This includes the IUsers who are both owners and moderators of the
         mailing list.""")
 
+    nonmembers = Attribute(
+        """A roster of all the nonmembers of the mailing list.""")
+
     members = Attribute(
-        """An iterator over all the members of the mailing list, regardless of
+        """A roster of all the members of the mailing list, regardless of
         whether they are to receive regular messages or digests, or whether
         they have their delivery disabled or not.""")
 
     regular_members = Attribute(
-        """An iterator over all the IMembers who are to receive regular
-        postings (i.e. non-digests) from the mailing list, regardless of
-        whether they have their delivery disabled or not.""")
+        """An roster of all the IMembers who are to receive regular postings
+        (i.e. non-digests) from the mailing list, regardless of whether they
+        have their delivery disabled or not.""")
 
     digest_members = Attribute(
-        """An iterator over all the IMembers who are to receive digests of
-        postings to this mailing list, regardless of whether they have their
-        deliver disabled or not, or of the type of digest they are to
-        receive.""")
+        """A roster of all the IMembers who are to receive digests of postings
+        to this mailing list, regardless of whether they have their deliver
+        disabled or not, or of the type of digest they are to receive.""")
 
     subscription_policy = Attribute(
         """The policy for subscribing new members to the list.""")
