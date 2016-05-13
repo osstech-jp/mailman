@@ -44,8 +44,6 @@ class Preferences(Model):
     receive_own_postings = Column(Boolean)
     delivery_mode = Column(Enum(DeliveryMode))
     delivery_status = Column(Enum(DeliveryStatus))
-    # When adding new columns, also add them to
-    # mailman.model.tests.test_preferences.TestPreferences.test_absorb_all_attributes()
 
     def __repr__(self):
         return '<Preferences object at {:#x}>'.format(id(self))
@@ -69,9 +67,13 @@ class Preferences(Model):
     @dbconnection
     def absorb(self, store, preferences):
         """See `IPreferences`."""
-        column_names = [c.name for c in self.__table__.columns
-                        if not c.primary_key]
-        for cname in column_names:
-            if (getattr(self, cname) is None and
-                    getattr(preferences, cname) is not None):
-                setattr(self, cname, getattr(preferences, cname))
+        if not isinstance(preferences, Preferences):
+            raise TypeError('Not a preference: {!r}'.format(preferences))
+        column_names = [
+            column.name for column in self.__table__.columns
+            if not column.primary_key
+            ]
+        for column_name in column_names:
+            if (getattr(self, column_name) is None and
+                    getattr(preferences, column_name) is not None):
+                setattr(self, column_name, getattr(preferences, column_name))

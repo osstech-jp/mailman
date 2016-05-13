@@ -1,4 +1,4 @@
-# Copyright (C) 2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,68 +19,76 @@
 
 import unittest
 
-from mailman.app.lifecycle import create_list
-from mailman.database.transaction import transaction
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
-from mailman.interfaces.usermanager import IUserManager
+from mailman.interfaces.preferences import IPreferences
+from mailman.model.preferences import Preferences
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
+from zope.interface import Attribute
+from zope.interface.interface import Method
 
-__all__ = [
-    'TestPreferences',
-    ]
 
-
 class TestPreferences(unittest.TestCase):
     """Test preferences."""
 
     layer = ConfigLayer
 
-    def setUp(self):
-        self._manager = getUtility(IUserManager)
-        with transaction():
-            # This has to happen in a transaction so that both the user and
-            # the preferences objects get valid ids.
-            self._mlist = create_list('test@example.com')
-            self._anne = self._manager.create_user(
-                'anne@example.com', 'Anne Person')
-            self._bill = self._manager.create_user(
-                'bill@example.com', 'Bill Person')
-
     def test_absorb_all_attributes(self):
-        attributes = {
+        # Test that all attributes in the IPreferences interface are properly
+        # absorbed, and that none are missed.
+        attributes = []
+        for name in IPreferences.names():
+            attribute = IPreferences.getDescriptionFor(name)
+            if (not isinstance(attribute, Method)
+                    and isinstance(attribute, Attribute)):   # noqa
+                attributes.append(name)
+        values = {
             'acknowledge_posts': True,
             'hide_address': True,
-            'preferred_language':
-                getUtility(ILanguageManager)['fr'],
+            'preferred_language': getUtility(ILanguageManager)['fr'],
             'receive_list_copy': True,
             'receive_own_postings': True,
             'delivery_mode': DeliveryMode.mime_digests,
             'delivery_status': DeliveryStatus.by_user,
             }
-        bill_prefs = self._bill.preferences
-        for name, value in attributes.items():
-            setattr(bill_prefs, name, value)
-        self._anne.preferences.absorb(self._bill.preferences)
-        for name, value in attributes.items():
-            self.assertEqual(getattr(self._anne.preferences, name), value)
+        # If this fails, the IPreferences interface has been mutated.  Be sure
+        # to update this test!
+        self.assertEqual(sorted(attributes), sorted(values))
+        preferences_1 = Preferences()
+        preferences_2 = Preferences()
+        for name, value in values.items():
+            setattr(preferences_1, name, value)
+        preferences_2.absorb(preferences_1)
+        for name, value in values.items():
+            self.assertEqual(getattr(preferences_2, name), value)
 
     def test_absorb_overwrite(self):
-        # Only overwrite the pref if it is unset in the absorber
-        anne_prefs = self._anne.preferences
-        bill_prefs = self._bill.preferences
-        self.assertIsNone(self._anne.preferences.acknowledge_posts)
-        self.assertIsNone(self._anne.preferences.hide_address)
-        self.assertIsNone(self._anne.preferences.receive_list_copy)
-        anne_prefs.acknowledge_posts = False
-        bill_prefs.acknowledge_posts = True
-        anne_prefs.hide_address = True
-        bill_prefs.receive_list_copy = True
-        self._anne.preferences.absorb(self._bill.preferences)
-        # set for both anne and bill, don't overwrite
-        self.assertFalse(self._anne.preferences.acknowledge_posts)
-        # set only for anne
-        self.assertTrue(self._anne.preferences.hide_address)
-        # set only for bill, overwrite anne's default value
-        self.assertTrue(self._anne.preferences.receive_list_copy)
+        # Only overwrite the preference if it is unset in the absorber.
+        preferences_1 = Preferences()
+        preferences_2 = Preferences()
+        preferences_1.acknowledge_posts = False
+        preferences_2.acknowledge_posts = True
+        preferences_1.hide_address = True
+        preferences_2.receive_list_copy = True
+        # Ensure that our preconditions are met.
+        self.assertIsNotNone(preferences_1.acknowledge_posts)
+        self.assertIsNotNone(preferences_2.acknowledge_posts)
+        self.assertIsNotNone(preferences_1.hide_address)
+        self.assertIsNone(preferences_2.hide_address)
+        self.assertIsNone(preferences_1.receive_list_copy)
+        self.assertIsNotNone(preferences_2.receive_list_copy)
+        # Do the absorb.
+        preferences_1.absorb(preferences_2)
+        # This attribute is set in both preferences, so it wasn't absorbed.
+        self.assertFalse(preferences_1.acknowledge_posts)
+        # This attribute is only set in the first preferences so it also
+        # wasn't absorbed.
+        self.assertTrue(preferences_1.hide_address)
+        # This attribute is only set in the second preferences, so it was
+        # absorbed.
+        self.assertTrue(preferences_1.receive_list_copy)
+
+    def test_type_error(self):
+        preferences = Preferences()
+        self.assertRaises(TypeError, preferences.absorb, None)

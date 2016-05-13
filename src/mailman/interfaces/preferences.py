@@ -69,8 +69,15 @@ class IPreferences(Interface):
 
         XXX I'm not sure this is the right place to put this.""")
 
-    def absorb(preferences):
-        """Merge these preferences, and then delete them.
+    hide_address = Attribute(
+        """Hide the associated address from the membership roster.""")
 
-        Only this instance's unset preferences (None/NULL) will be imported.
+    def absorb(preferences):
+        """Merge our preferences with the given preferences.
+
+        Only those preferences which are unset in us but set in the given
+        preferences are absorbed.
+
+        :param preferences: The preferences to merge into ourself.
+        :type preferences: IPreferences
         """
