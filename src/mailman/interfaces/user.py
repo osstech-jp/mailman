@@ -111,7 +111,22 @@ class IUser(Interface):
         """This user's preferences.""")
 
     def absorb(user):
-        """Merge this user's attributes and memberships, and then delete it.
+        """Merge the given user to ourself.
 
-        In case of conflict, the current user's properties are preserved.
+        All IAddresses linked to `user` are relinked to ourself.  A
+        memberships associated with `user` are changed to be memberships
+        with ourself.  See `IPreferences.absorb()`.
+
+        The user's `display_name`, `password`, and `is_server_owner` settings
+        are absorbed into ours, but only if ours is unset and the given user's
+        values are set.
+
+        After being absorbed, the given user and its preferences are
+        deleted.
+
+        It is not an error if `user` is ourself, but it is a no-op.
+
+        :param user: The user to merge into ourself.
+        :type user: IUser
+        :raises TypeError: if `user` is not a user.
         """

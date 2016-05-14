@@ -80,4 +80,5 @@ class IPreferences(Interface):
 
         :param preferences: The preferences to merge into ourself.
         :type preferences: IPreferences
+        :raises TypeError: if `preferences` isn't a preference.
         """

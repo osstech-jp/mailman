@@ -179,31 +179,35 @@ class User(Model):
     @dbconnection
     def absorb(self, store, user):
         """See `IUser`."""
-        assert user is not None
+        if not isinstance(user, User):
+            raise TypeError('Not a user {!r}'.format(user))
         if user.id == self.id:
-            return  # Protect against absorbing oneself.
+            # It's a no-op to absorb ourself.
+            return
         # Relink addresses.
         for address in list(user.addresses):
-            # convert to list because we'll mutate the result
+            # Convert these to a list because we'll mutate the result.
             address.user = self
         # Merge memberships.
         other_members = store.query(Member).filter(
             Member.user_id == user.id)
-        subscribed_lists = [m.list_id for m in self.memberships.members]
+        my_subscriptions = set(
+            (member.list_id, member.role)
+            for member in self.memberships.members)
         for member in other_members:
-            # Only import memberships of lists I'm not subscribed to yet,
-            # delete the rest.
-            if member.list_id not in subscribed_lists:
+            # Only import memberships for list/roles I'm not already a member
+            # with.  This prevents duplicate memberships.
+            if (member.list_id, member.role) not in my_subscriptions:
                 member.user_id = self.id
             else:
                 store.delete(member)
-        # Merge the user preferences
+        # Merge the user preferences.
         self.preferences.absorb(user.preferences)
         store.delete(user.preferences)
         # Merge display_name, password and is_server_owner attributes.
-        for prop in ('display_name', 'password', 'is_server_owner'):
-            if getattr(user, prop) and not getattr(self, prop):
-                setattr(self, prop, getattr(user, prop))
+        for name in ('display_name', 'password', 'is_server_owner'):
+            if getattr(user, name) and not getattr(self, name):
+                setattr(self, name, getattr(user, name))
         # Delete the other user.
         store.delete(user)
 
