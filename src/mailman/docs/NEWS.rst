@@ -188,7 +188,7 @@ REST
    arguments.  Given by Aurélien Bompard.
  * Header match rules for individual mailing lists are now exposed in the REST
    API.  Given by Aurélien Bompard.  (Closes: #192)
- * Expose `goodbye_message_uri` in the REST API.  Given by Harshit Bansal.
+ * Expose ``goodbye_message_uri`` in the REST API.  Given by Harshit Bansal.
  * New subscription requests are rejected if there is already one pending.
    With thanks to Anirudh Dahiya.  (Closes #199)
  * Expose the system pipelines and chains via ``<api>/system/pipelines`` and
@@ -196,6 +196,11 @@ REST
  * Support mass unsubscription of members via ``DELETE`` on the
    ``<api>/lists/<list-id>/roster/member`` resource.  Given by Harshit
    Bansal.  (Closes #171)
+ * It is now possible to merge users when creating them via REST.  When you
+   POST to ``<api>/users/<address>/addresses`` and the address given in the
+   ``email`` parameter already exists, instead of getting a 400 error, if you
+   set ``absorb_existing=True`` in the POST data, the existing user will be
+   merged into the newly created on.  Given by Aurélien Bompard.
  * Port to Falcon 1.0 (Closes #20)
 
 Other
