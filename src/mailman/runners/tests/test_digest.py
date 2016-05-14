@@ -138,19 +138,21 @@ Here is message $i
 multipart/mixed
     text/plain
     text/plain
-    message/rfc822
-        text/plain
-    message/rfc822
-        text/plain
-    message/rfc822
-        text/plain
-    message/rfc822
-        text/plain
+    multipart/digest
+        message/rfc822
+            text/plain
+        message/rfc822
+            text/plain
+        message/rfc822
+            text/plain
+        message/rfc822
+            text/plain
     text/plain
 """)
 
     def test_issue141(self):
         # Currently DigestMode.summary_digests are equivalent to mime_digests.
+        # This also tests issue 234.
         self._mlist.send_welcome_message = False
         bart = subscribe(self._mlist, 'Bart')
         bart.preferences.delivery_mode = DeliveryMode.summary_digests
@@ -168,13 +170,15 @@ multipart/mixed
 multipart/mixed
     text/plain
     text/plain
-    message/rfc822
-        text/plain
+    multipart/digest
+        message/rfc822
+            text/plain
     text/plain
 """)
 
     def test_issue141_one_last_digest(self):
         # Currently DigestMode.summary_digests are equivalent to mime_digests.
+        # Also tests issue 234.
         self._mlist.send_welcome_message = False
         bart = subscribe(self._mlist, 'Bart')
         self._mlist.send_one_last_digest_to(
@@ -193,8 +197,9 @@ multipart/mixed
 multipart/mixed
     text/plain
     text/plain
-    message/rfc822
-        text/plain
+    multipart/digest
+        message/rfc822
+            text/plain
     text/plain
 """)
 
@@ -261,10 +266,13 @@ Content-Transfer-Encoding: 7bit
                          "Today's Topics (1 messages)")
         toc = mime.get_payload(1).get_payload(decode=True).decode('utf-8')
         self.assertMultiLineEqual(toc.splitlines()[0], 'Thèmes du jour :')
-        # The third subpart contains the posted message in Japanese.
+        # The third subpart is a multipart/digest part and its first subpart
+        #  contains the posted message in Japanese.
         self.assertEqual(mime.get_payload(2).get_content_type(),
+                         'multipart/digest')
+        self.assertEqual(mime.get_payload(2).get_payload(0).get_content_type(),
                          'message/rfc822')
-        post = mime.get_payload(2).get_payload(0)
+        post = mime.get_payload(2).get_payload(0).get_payload(0)
         self.assertEqual(post['subject'], '=?iso-2022-jp?b?GyRCMGxIVhsoQg==?=')
         # Compare the bytes so that this module doesn't contain string
         # literals in multiple incompatible character sets.

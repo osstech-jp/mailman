@@ -149,7 +149,6 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     <BLANKLINE>
     When replying, please edit your Subject line so it is more specific
     than "Re: Contents of Test digest..."
-    <BLANKLINE>
     --===============...==
     Content-Type: text/plain; charset="us-ascii"
     MIME-Version: 1.0
@@ -162,6 +161,10 @@ The MIME digest has lots of good stuff, all contained in the multipart.
        2. Test message 2 (aperson@example.com)
        3. Test message 3 (aperson@example.com)
        4. Test message 4 (aperson@example.com)
+    <BLANKLINE>
+    --===============...==
+    Content-Type: multipart/digest; boundary="===============...=="
+    MIME-Version: 1.0
     <BLANKLINE>
     --===============...==
     Content-Type: message/rfc822
@@ -207,6 +210,8 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     <BLANKLINE>
     Here is message 4
     <BLANKLINE>
+    --===============...==--
+    <BLANKLINE>
     --===============...==
     Content-Type: text/plain; charset="us-ascii"
     MIME-Version: 1.0
@@ -219,6 +224,7 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     http://lists.example.com/listinfo/test@example.com
     <BLANKLINE>
     --===============...==--
+    <BLANKLINE>
 
 The RFC 1153 contains the digest in a single plain text message.
 

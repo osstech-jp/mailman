@@ -55,6 +55,7 @@ class Digester:
                                self._charset,
                                header_name='Subject')
         self._message = self._make_message()
+        self._digest_part = self._make_digest_part()
         self._message['From'] = mlist.request_address
         self._message['Subject'] = self._subject
         self._message['To'] = mlist.posting_address
@@ -161,6 +162,9 @@ class MIMEDigester(Digester):
     def _make_message(self):
         return MultipartDigestMessage('mixed')
 
+    def _make_digest_part(self):
+        return MultipartDigestMessage('digest')
+
     def add_toc(self, count):
         """Add the table of contents."""
         toc_text = self._toc.getvalue()
@@ -177,10 +181,11 @@ class MIMEDigester(Digester):
         """Add the message to the digest."""
         # Make a copy of the message object, since the RFC 1153 processing
         # scrubs out attachments.
-        self._message.attach(MIMEMessage(deepcopy(msg)))
+        self._digest_part.attach(MIMEMessage(deepcopy(msg)))
 
     def finish(self):
         """Finish up the digest, producing the email-ready copy."""
+        self._message.attach(self._digest_part)
         if self._mlist.digest_footer_uri is not None:
             try:
                 footer_text = decorate(
@@ -223,6 +228,10 @@ class RFC1153Digester(Digester):
 
     def _make_message(self):
         return Message()
+
+    def _make_digest_part(self):
+        """Not actually used here but referenced in super().__init__()."""
+        return self._message
 
     def add_toc(self, count):
         """Add the table of contents."""
