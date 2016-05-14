@@ -169,8 +169,7 @@ class TestAddresses(unittest.TestCase):
                      'email': 'anne@example.com',
                      })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         b'Address belongs to other user.')
+        self.assertEqual(cm.exception.reason, b'Address belongs to other user')
 
     def test_add_unlinked_address_to_user(self):
         user_manager = getUtility(IUserManager)
@@ -214,22 +213,22 @@ class TestAddresses(unittest.TestCase):
 
     def test_existing_address_absorb(self):
         # Trying to add an existing address causes a merge if the
-        # 'force_existing' flag is present.
+        # 'absorb_existing' flag is present.
         user_manager = getUtility(IUserManager)
         with transaction():
             anne = user_manager.create_user('anne@example.com')
-            user_manager.create_user('bill@example.com')
+            user_manager.create_user('bart@example.com')
         response, content = call_api(
             'http://localhost:9001/3.0/users/anne@example.com/addresses', {
-                 'email': 'bill@example.com',
-                 'force_existing': '1',
+                 'email': 'bart@example.com',
+                 'absorb_existing': True,
                  })
-        self.assertIn('bill@example.com',
-                      [addr.email for addr in anne.addresses])
+        self.assertIn('bart@example.com',
+                      [address.email for address in anne.addresses])
         self.assertEqual(content['status'], '201')
         self.assertEqual(
             content['location'],
-            'http://localhost:9001/3.0/addresses/bill@example.com')
+            'http://localhost:9001/3.0/addresses/bart@example.com')
 
     def test_invalid_address_bad_request(self):
         # Trying to add an invalid address string returns 400.

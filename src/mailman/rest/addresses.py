@@ -192,23 +192,23 @@ class UserAddresses(_AddressBase):
         user_manager = getUtility(IUserManager)
         validator = Validator(email=str,
                               display_name=str,
-                              force_existing=bool,
-                              _optional=('display_name', 'force_existing'))
+                              absorb_existing=bool,
+                              _optional=('display_name', 'absorb_existing'))
         try:
             data = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
             return
-        force_existing = data.pop('force_existing', False)
+        absorb_existing = data.pop('absorb_existing', False)
         try:
             address = user_manager.create_address(**data)
         except InvalidEmailAddressError:
             bad_request(response, b'Invalid email address')
             return
         except ExistingAddressError:
-            # Check if the address is not linked to any user, link it to the
-            # current user and return it.  Since we're linking to an existing
-            # address, ignore any given display_name attribute.
+            # If the address is not linked to any user, link it to the current
+            # user and return it.  Since we're linking to an existing address,
+            # ignore any given display_name attribute.
             address = user_manager.get_address(data['email'])
             if address.user is None:
                 address.user = self._user
@@ -216,15 +216,13 @@ class UserAddresses(_AddressBase):
                     'addresses/{}'.format(address.email))
                 created(response, location)
                 return
+            elif not absorb_existing:
+                bad_request(response, 'Address belongs to other user')
+                return
             else:
-                if not force_existing:
-                    bad_request(response, 'Address belongs to other user.')
-                    return
-                else:
-                    # The address exists and is linked but we can merge the
-                    # users.
-                    address = user_manager.get_address(data['email'])
-                    self._user.absorb(address.user)
+                # The address exists and is linked but we can merge the users.
+                address = user_manager.get_address(data['email'])
+                self._user.absorb(address.user)
         else:
             # Link the address to the current user and return it.
             address.user = self._user
