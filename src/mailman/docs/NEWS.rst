@@ -81,6 +81,8 @@ Bugs
    (Closes #227)
  * Fix header match rule suffix inflation.  Given by Aurélien Bompard.
    (Closes #226)
+ * MIME digests now put the individual message/rfc822 messages inside a
+   multipart/digest subpart.  (Closes #234)
 
 Configuration
 -------------
