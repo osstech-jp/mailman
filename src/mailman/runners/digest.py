@@ -230,7 +230,7 @@ class RFC1153Digester(Digester):
         return Message()
 
     def _make_digest_part(self):
-        """Not actually used here but referenced in super().__init__()."""
+        # Not actually used here but referenced in super().__init__().
         return self._message
 
     def add_toc(self, count):

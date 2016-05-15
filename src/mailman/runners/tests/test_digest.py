@@ -152,7 +152,7 @@ multipart/mixed
 
     def test_issue141(self):
         # Currently DigestMode.summary_digests are equivalent to mime_digests.
-        # This also tests issue 234.
+        # This also tests GL issue 234.
         self._mlist.send_welcome_message = False
         bart = subscribe(self._mlist, 'Bart')
         bart.preferences.delivery_mode = DeliveryMode.summary_digests
@@ -267,7 +267,7 @@ Content-Transfer-Encoding: 7bit
         toc = mime.get_payload(1).get_payload(decode=True).decode('utf-8')
         self.assertMultiLineEqual(toc.splitlines()[0], 'Thèmes du jour :')
         # The third subpart is a multipart/digest part and its first subpart
-        #  contains the posted message in Japanese.
+        # contains the posted message in Japanese.
         self.assertEqual(mime.get_payload(2).get_content_type(),
                          'multipart/digest')
         self.assertEqual(mime.get_payload(2).get_payload(0).get_content_type(),
