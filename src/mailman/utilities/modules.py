@@ -91,7 +91,7 @@ def find_components(package, interface):
     """
     for filename in resource_listdir(package, ''):
         basename, extension = os.path.splitext(filename)
-        if extension != '.py':
+        if extension != '.py' or basename.startswith('.'):
             continue
         module_name = '{}.{}'.format(package, basename)
         __import__(module_name, fromlist='*')
