@@ -107,7 +107,16 @@ class _ListBase(CollectionMixin):
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        return list(getUtility(IListManager))
+        return self._filter_lists(
+            request, list(getUtility(IListManager)))
+
+    def _filter_lists(self, request, lists):
+        """Filter a collection using query parameters."""
+        only_advertised = request.get_param_as_bool('only_advertised')
+        if only_advertised:
+            return [l for l in lists if l.advertised]
+        else:
+            return lists
 
 
 @public
@@ -299,7 +308,8 @@ class ListsForDomain(_ListBase):
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        return list(self._domain.mailing_lists)
+        return self._filter_lists(
+            request, list(self._domain.mailing_lists))
 
 
 @public

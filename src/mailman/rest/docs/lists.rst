@@ -49,6 +49,33 @@ You can also query for lists from a particular domain.
     start: 0
     total_size: 1
 
+Advertised lists can be filtered using the ``only_advertised`` query parameter.
+::
+
+    >>> mlist = create_list('bird@example.com')
+    >>> mlist.advertised = False
+    >>> transaction.commit()
+
+    >>> dump_json('http://localhost:9001/3.0/lists?only_advertised=true')
+    entry 0:
+        ...
+        list_id: ant.example.com
+        ...
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
+The same applies to lists from a particular domain.
+
+    >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists?only_advertised=true')
+    entry 0:
+        ...
+        list_id: ant.example.com
+        ...
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
 
 Paginating over list records
 ----------------------------
@@ -58,9 +85,6 @@ them in pages by adding the GET parameters ``count`` and ``page`` to the
 request URI.  Page 1 is the first page and ``count`` defines the size of the
 page.
 ::
-
-    >>> mlist = create_list('bird@example.com')
-    >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists'
     ...           '?count=1&page=1')
