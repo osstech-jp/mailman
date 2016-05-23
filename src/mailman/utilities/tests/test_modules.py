@@ -21,10 +21,29 @@ import os
 import sys
 import unittest
 
-from contextlib import ExitStack
+from contextlib import ExitStack, contextmanager
 from mailman.interfaces.styles import IStyle
 from mailman.utilities.modules import find_components
+from pathlib import Path
 from tempfile import TemporaryDirectory
+
+
+@contextmanager
+def hack_syspath(index, path):
+    old_path = sys.path[:]
+    try:
+        sys.path.insert(index, path)
+        yield
+    finally:
+        sys.path = old_path
+
+
+def clean_mypackage():
+    # Make a copy since we'll mutate it as we go.
+    for module in sys.modules.copy():
+        package, dot, rest = module.partition('.')
+        if package == 'mypackage':
+            del sys.modules[module]
 
 
 class TestModuleImports(unittest.TestCase):
@@ -36,40 +55,45 @@ class TestModuleImports(unittest.TestCase):
         with ExitStack() as resources:
             # Creating a temporary directory and adding it to sys.path.
             temp_package = resources.enter_context(TemporaryDirectory())
-            sys.path.insert(1, temp_package)
+            resources.enter_context(hack_syspath(0, temp_package))
+            resources.callback(clean_mypackage)
             # Create a module inside the above package along with a good, bad
-            # and __iniit__ file so that we can import form it.
+            # and __init__.py file so that we can import from it.
             module_path = os.path.join(temp_package, 'mypackage')
             os.mkdir(module_path)
             init_file = os.path.join(module_path, '__init__.py')
             good_file = os.path.join(module_path, 'goodfile.py')
             bad_file = os.path.join(module_path, '.#badfile.py')
-            fd_init = os.open(init_file, os.O_CREAT)
-            fd_good = os.open(good_file, os.O_CREAT)
-            fd_bad = os.open(bad_file, os.O_CREAT)
-            # Check if the file was created.
-            self.assertNotEqual(fd_init, 0)
-            self.assertNotEqual(fd_good, 0)
-            self.assertNotEqual(fd_bad, 0)
-            # Add a dummy implementer of the interface inside goodfile.
-            with open(good_file, 'w') as fd:
-                fd.write("""\
+            Path(init_file).touch()
+            with open(good_file, 'w', encoding='utf-8') as fp:
+                print("""\
 from mailman import public
 from mailman.interfaces.styles import IStyle
 from zope.interface import implementer
 
 @public
 @implementer(IStyle)
-class DummyStyleClass():
-    name = 'dummy-style-class'
+class GoodStyle:
+    name = 'good-style'
     def apply(self):
         pass
-                """)
-            # Try importing all modules from this path i.e. iterate over the
-            # iterator returned by find_components.
-            pkgs = list(find_components('mypackage', IStyle))
-            self.assertEqual(len(pkgs), 1)
-            self.assertEqual(pkgs[0].name, 'dummy-style-class')
-        # Finally remove the temporary package from path and sys.modules
-        sys.path.remove(temp_package)
-        del sys.modules['mypackage']
+""", file=fp)
+            with open(bad_file, 'w', encoding='utf-8') as fp:
+                print("""\
+from mailman import public
+from mailman.interfaces.styles import IStyle
+from zope.interface import implementer
+
+@public
+@implementer(IStyle)
+class BadStyle:
+    name = 'bad-style'
+    def apply(self):
+        pass
+""", file=fp)
+            # Find all the IStyle components in the dummy package.  This
+            # should find GoodStyle but not BadStyle.
+            names = [component.name
+                     for component
+                     in find_components('mypackage', IStyle)]
+            self.assertEqual(names, ['good-style'])
