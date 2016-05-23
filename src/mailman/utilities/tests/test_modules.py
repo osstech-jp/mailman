@@ -18,29 +18,58 @@
 """Tests for mailman.utilities.modules."""
 
 import os
+import sys
 import unittest
 
+from contextlib import ExitStack
 from mailman.interfaces.styles import IStyle
 from mailman.utilities.modules import find_components
-from pkg_resources import resource_filename
+from tempfile import TemporaryDirectory
 
 
 class TestModuleImports(unittest.TestCase):
-
     def test_find_modules_with_dotfiles(self):
         # Emacs creates lock files when a single file is opened by more than
         # one user. These files look like .#<filename>.py because of which
         # find_components tries to import them but fails. All such files should
         # be ignored by default.
-        bad_file = resource_filename('mailman.styles', '.#bad_file.py')
-        # create the bad file by opening it.
-        fd = os.open(bad_file, os.O_CREAT)
-        # Check if the file was created.
-        self.assertNotEqual(fd, 0)
-        os.close(fd)
-        # try importing all modules from this path i.e. iterate over the
-        # iterator returned by find_components.
-        list(find_components('mailman.styles', IStyle))
-        # remove the bad file.
-        errno = os.remove(bad_file)
-        self.assertNotEqual(errno, 0)
+        with ExitStack() as resources:
+            # Creating a temporary directory and adding it to sys.path.
+            temp_package = resources.enter_context(TemporaryDirectory())
+            sys.path.insert(1, temp_package)
+            # Create a module inside the above package along with a good, bad
+            # and __iniit__ file so that we can import form it.
+            module_path = os.path.join(temp_package, 'mypackage')
+            os.mkdir(module_path)
+            init_file = os.path.join(module_path, '__init__.py')
+            good_file = os.path.join(module_path, 'goodfile.py')
+            bad_file = os.path.join(module_path, '.#badfile.py')
+            fd_init = os.open(init_file, os.O_CREAT)
+            fd_good = os.open(good_file, os.O_CREAT)
+            fd_bad = os.open(bad_file, os.O_CREAT)
+            # Check if the file was created.
+            self.assertNotEqual(fd_init, 0)
+            self.assertNotEqual(fd_good, 0)
+            self.assertNotEqual(fd_bad, 0)
+            # Add a dummy implementer of the interface inside goodfile.
+            with open(good_file, 'w') as fd:
+                fd.write("""\
+from mailman import public
+from mailman.interfaces.styles import IStyle
+from zope.interface import implementer
+
+@public
+@implementer(IStyle)
+class DummyStyleClass():
+    name = 'dummy-style-class'
+    def apply(self):
+        pass
+                """)
+            # Try importing all modules from this path i.e. iterate over the
+            # iterator returned by find_components.
+            pkgs = list(find_components('mypackage', IStyle))
+            self.assertEqual(len(pkgs), 1)
+            self.assertEqual(pkgs[0].name, 'dummy-style-class')
+        # Finally remove the temporary package from path and sys.modules
+        sys.path.remove(temp_package)
+        del sys.modules['mypackage']
