@@ -17,22 +17,16 @@
 
 """Test the `no_subject` header rule."""
 
-__all__ = [
-    'TestNoSubject',
-    ]
 
-
-import os
 import unittest
-from email.header import Header
 
+from email.header import Header
 from mailman.app.lifecycle import create_list
 from mailman.email.message import Message
 from mailman.rules import no_subject
 from mailman.testing.layers import ConfigLayer
 
 
-
 class TestNoSubject(unittest.TestCase):
     """Test the no_subject rule."""
 

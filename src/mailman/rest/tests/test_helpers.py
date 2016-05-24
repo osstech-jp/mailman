@@ -20,9 +20,9 @@
 import json
 import unittest
 
-from email.message import Message
-from email.header import Header
 from datetime import timedelta
+from email.header import Header
+from email.message import Message
 from mailman.rest import helpers
 from mailman.testing.layers import ConfigLayer, RESTLayer
 
@@ -79,7 +79,6 @@ class TestHelpers(unittest.TestCase):
         self.assertRaises(TypeError, helpers.etag, resource)
 
 
-
 class TestJSONEncoder(unittest.TestCase):
     """Test the JSON ExtendedEncoder."""
 
@@ -93,15 +92,15 @@ class TestJSONEncoder(unittest.TestCase):
             result = json.dumps(msg, cls=helpers.ExtendedEncoder)
         except TypeError as e:
             self.fail(e)
-        self.assertEqual(result,
-            json.dumps('From: test@example.com\n\nTest content.'))
+        self.assertEqual(
+            result, json.dumps('From: test@example.com\n\nTest content.'))
 
     def test_encode_header(self):
         value = 'Contains non-ascii \u00e9 \u00e7 \u00e0'
-        header = Header(value, charset='utf-8')
         try:
-            result = json.dumps(Header(value, charset='utf-8'),
-                                cls=helpers.ExtendedEncoder)
+            result = json.dumps(
+                Header(value, charset='utf-8'),
+                cls=helpers.ExtendedEncoder)
         except TypeError as e:
             self.fail(e)
         self.assertEqual(result, json.dumps(value))
