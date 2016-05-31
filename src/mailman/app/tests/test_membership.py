@@ -221,6 +221,26 @@ class TestAddMember(unittest.TestCase):
                               system_preferences.preferred_language))
         self.assertEqual(cm.exception.email, email.lower())
 
+    def test_delete_nonmember_on_adding_member(self):
+        add_member(
+            self._mlist,
+            RequestRecord('aperson@example.com', 'Anne Person',
+                          DeliveryMode.regular,
+                          system_preferences.preferred_language),
+            MemberRole.nonmember)
+        add_member(
+            self._mlist,
+            RequestRecord('aperson@example.com', 'Anne Person',
+                          DeliveryMode.regular,
+                          system_preferences.preferred_language),
+            MemberRole.member)
+        member_1 = self._mlist.nonmembers.get_member('aperson@example.com')
+        member_2 = self._mlist.members.get_member('aperson@example.com')
+        self.assertIsNone(member_1)
+        self.assertIsNotNone(member_2)
+        self.assertEqual(member_2.role, MemberRole.member)
+        self.assertEqual(member_2.list_id, self._mlist.list_id)
+
 
 class TestDeleteMember(unittest.TestCase):
     layer = ConfigLayer
