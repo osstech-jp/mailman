@@ -29,6 +29,7 @@ from mailman.interfaces.member import (
 from mailman.interfaces.subscriptions import RequestRecord
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
@@ -221,25 +222,41 @@ class TestAddMember(unittest.TestCase):
                               system_preferences.preferred_language))
         self.assertEqual(cm.exception.email, email.lower())
 
-    def test_delete_nonmember_on_adding_member(self):
-        add_member(
+    def test_delete_nonmembers_on_adding_member(self):
+        # GL: #237 - When a new address is subscribed, any existing nonmember
+        # subscriptions for this address; or any addresses also controlled by
+        # this user, are deleted.
+        anne_nonmember = add_member(
             self._mlist,
             RequestRecord('aperson@example.com', 'Anne Person',
                           DeliveryMode.regular,
                           system_preferences.preferred_language),
             MemberRole.nonmember)
-        add_member(
+        # Add a few other validated addresses to this user, and subscribe them
+        # as nonmembers.
+        for email in ('anne.person@example.com', 'a.person@example.com'):
+            address = anne_nonmember.user.register(email)
+            address.verified_on = now()
+            self._mlist.subscribe(address, MemberRole.nonmember)
+        # There are now three nonmembers.
+        self.assertEqual(
+            {address.email for address in self._mlist.nonmembers.addresses},
+            {'aperson@example.com',
+             'anne.person@example.com',
+             'a.person@example.com',
+             })
+        # Let's now add one of Anne's addresses as a member.  This deletes all
+        # of Anne's nonmember memberships.
+        anne_member = add_member(
             self._mlist,
-            RequestRecord('aperson@example.com', 'Anne Person',
+            RequestRecord('a.person@example.com', 'Anne Person',
                           DeliveryMode.regular,
                           system_preferences.preferred_language),
             MemberRole.member)
-        member_1 = self._mlist.nonmembers.get_member('aperson@example.com')
-        member_2 = self._mlist.members.get_member('aperson@example.com')
-        self.assertIsNone(member_1)
-        self.assertIsNotNone(member_2)
-        self.assertEqual(member_2.role, MemberRole.member)
-        self.assertEqual(member_2.list_id, self._mlist.list_id)
+        self.assertEqual(self._mlist.nonmembers.member_count, 0)
+        members = list(self._mlist.members.members)
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0], anne_member)
 
 
 class TestDeleteMember(unittest.TestCase):

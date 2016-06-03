@@ -83,6 +83,8 @@ Bugs
    (Closes #226)
  * MIME digests now put the individual message/rfc822 messages inside a
    multipart/digest subpart.  (Closes #234)
+ * Nonmember subscriptions are removed when one of the addresses controlled by
+   a user is subscribed as a member.  Given by Aditya Divekar.  (Closes #237)
 
 Configuration
 -------------
