@@ -23,7 +23,7 @@ from mailman.core.api import API30, API31
 from mailman.interfaces.action import Action
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.validator import (
-    list_of_strings_validator, subscriber_validator, enum_validator)
+    enum_validator, list_of_strings_validator, subscriber_validator)
 from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
 
