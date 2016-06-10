@@ -200,6 +200,8 @@ class RootedAPI(API):
         # Let Falcon parse the form data into the request object's
         # .params attribute.
         self.req_options.auto_parse_form_urlencoded = True
+        # Don't ignore empty query parameters.
+        self.req_options.keep_blank_qs_values = True
 
     # Override the base class implementation to wrap a transactional
     # handler around the call, so that the current transaction is

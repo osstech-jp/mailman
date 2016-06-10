@@ -20,9 +20,10 @@
 import unittest
 
 from mailman.core.api import API30, API31
+from mailman.interfaces.action import Action
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.validator import (
-    list_of_strings_validator, subscriber_validator)
+    list_of_strings_validator, subscriber_validator, enum_validator)
 from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
 
@@ -80,3 +81,13 @@ class TestValidators(unittest.TestCase):
     def test_subscriber_validator_email_address_API31(self):
         self.assertEqual(subscriber_validator(API31)('anne@example.com'),
                          'anne@example.com')
+
+    def test_enum_validator_valid(self):
+        self.assertEqual(enum_validator(Action)('hold'), Action.hold)
+
+    def test_enum_validator_invalid(self):
+        self.assertRaises(ValueError,
+                          enum_validator(Action), 'not-a-thing')
+
+    def test_enum_validator_none(self):
+        self.assertEqual(enum_validator(Action, allow_none=True)(''), None)

@@ -167,7 +167,7 @@ class AMember(_MemberBase):
             values = Validator(
                 address=str,
                 delivery_mode=enum_validator(DeliveryMode),
-                moderation_action=enum_validator(Action),
+                moderation_action=enum_validator(Action, allow_none=True),
                 _optional=('address', 'delivery_mode', 'moderation_action'),
                 )(request)
         except ValueError as error:

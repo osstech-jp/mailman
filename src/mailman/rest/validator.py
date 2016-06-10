@@ -52,12 +52,15 @@ class ReadOnlyPATCHRequestError(RESTError):
 class enum_validator:
     """Convert an enum value name into an enum value."""
 
-    def __init__(self, enum_class):
+    def __init__(self, enum_class, allow_none=False):
         self._enum_class = enum_class
+        self._allow_none = allow_none
 
     def __call__(self, enum_value):
         # This will raise a KeyError if the enum value is unknown.  The
         # Validator API requires turning this into a ValueError.
+        if self._allow_none and not enum_value:
+            return None
         try:
             return self._enum_class[enum_value]
         except KeyError as exception:

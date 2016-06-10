@@ -962,6 +962,28 @@ the attribute to the member's resource.
     moderation_action: hold
     ...
 
+It can be reset to the list default by patching an empty value.
+::
+
+    >>> dump_json('http://localhost:9001/3.0/members/10', {
+    ...           'moderation_action': '',
+    ...           }, method='PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    >>> dump_json('http://localhost:9001/3.0/members/10')
+    address: http://localhost:9001/3.0/addresses/hperson@example.com
+    delivery_mode: regular
+    email: hperson@example.com
+    http_etag: "..."
+    list_id: ant.example.com
+    member_id: 10
+    role: member
+    self_link: http://localhost:9001/3.0/members/10
+    user: http://localhost:9001/3.0/users/7
+
 
 Handling the list of banned addresses
 =====================================
