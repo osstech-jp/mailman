@@ -76,8 +76,7 @@ Start the development server
 Postorius is a Django app which can be used with any Django project.  We have
 a project already developed which you can set up like this::
 
-  $(py2) git clone git@github.com:mailman/postorius_standalone.git
-  $(py2) cd postorius_standalone
+  $(py2) cd example_project
   $(py2) python manage.py migrate
   $(py2) python manage.py runserver
 
