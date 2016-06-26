@@ -55,7 +55,7 @@ Install in development mode to be able to change the code without working
 directly on the PYTHONPATH.
 ::
 
-  $(py2) cd mailman.client
+  $(py2) cd mailmanclient
   $(py2) python setup.py develop
   $(py2) cd ..
 
@@ -78,7 +78,7 @@ a project already developed which you can set up like this::
 
   $(py2) git clone git@github.com:mailman/postorius_standalone.git
   $(py2) cd postorius_standalone
-  $(py2) python manage.py syncdb
+  $(py2) python manage.py migrate
   $(py2) python manage.py runserver
 
 The last command will start the dev server on http://localhost:8000.
