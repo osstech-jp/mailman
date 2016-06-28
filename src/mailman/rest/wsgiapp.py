@@ -83,11 +83,6 @@ class Middleware:
     performed.
     """
     def process_resource(self, request, response, resource, params):
-        # Set this attribute on the resource right before it is dispatched to.
-        # This can be used by the resource to provide different responses
-        # based on the API version, and for path_to() to provide an API
-        # version-specific path.
-        resource.api = params.pop('api')
         # Check the authorization credentials.
         authorized = False
         if request.auth is not None and request.auth.startswith('Basic '):
@@ -122,6 +117,8 @@ class ObjectRouter:
         resource = self._root
         context = {}
         while True:
+            # Plumb the API through to all child resources.
+            api = getattr(resource, 'api', None)
             # See if any of the resource's child links match the next segment.
             for name in dir(resource):
                 if name.startswith('__') and name.endswith('__'):
@@ -172,6 +169,10 @@ class ObjectRouter:
                     resource, segments = result
                 else:
                     resource = result
+                # See if the context set an API and set it on the next
+                # resource in the chain, falling back to the parent resource's
+                # API if there is one.
+                resource.api = context.pop('api', api)
                 # The method could have truncated the remaining segments,
                 # meaning, it's consumed all the path segments, or this is the
                 # last path segment.  In that case the resource we're left at

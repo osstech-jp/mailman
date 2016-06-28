@@ -220,7 +220,7 @@ class TopLevel:
             resource = FindMembers()
         else:
             try:
-                member_id = context['api'].to_uuid(segment)
+                member_id = self.api.to_uuid(segment)
             except ValueError:
                 member_id = None
             resource = AMember(member_id)
@@ -233,7 +233,7 @@ class TopLevel:
             return AllUsers()
         else:
             user_identifier = segments.pop(0)
-            return AUser(context['api'], user_identifier), segments
+            return AUser(user_identifier), segments
 
     @child()
     def owners(self, context, segments):

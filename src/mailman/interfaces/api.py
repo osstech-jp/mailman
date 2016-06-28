@@ -25,7 +25,11 @@ from zope.interface import Attribute, Interface
 class IAPI(Interface):
     """The REST web service context."""
 
-    version = Attribute("""The REST API version.""")
+    version = Attribute(
+        """The REST API version as a string.""")
+
+    version_info = Attribute(
+        """The REST API version as a tuple of integers.""")
 
     def path_to(resource):
         """Return the full REST URL to the given resource.

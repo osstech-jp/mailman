@@ -29,6 +29,7 @@ from zope.interface import implementer
 @implementer(IAPI)
 class API30:
     version = '3.0'
+    version_info = (3, 0)
 
     @classmethod
     def path_to(cls, resource):
@@ -58,6 +59,7 @@ class API30:
 @implementer(IAPI)
 class API31:
     version = '3.1'
+    version_info = (3, 1)
 
     @classmethod
     def path_to(cls, resource):

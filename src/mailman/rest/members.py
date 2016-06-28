@@ -123,7 +123,7 @@ class AMember(_MemberBase):
             return NotFound(), []
         if self._member is None:
             return NotFound(), []
-        member_id = context['api'].from_uuid(self._member_id)
+        member_id = self.api.from_uuid(self._member_id)
         child = Preferences(
             self._member.preferences, 'members/{}'.format(member_id))
         return child, []
@@ -135,7 +135,7 @@ class AMember(_MemberBase):
             return NotFound(), []
         if self._member is None:
             return NotFound(), []
-        member_id = context['api'].from_uuid(self._member_id)
+        member_id = self.api.from_uuid(self._member_id)
         child = ReadOnlyPreferences(
             self._member, 'members/{}/all'.format(member_id))
         return child, []

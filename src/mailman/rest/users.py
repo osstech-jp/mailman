@@ -17,6 +17,7 @@
 
 """REST for users."""
 
+from functools import lru_cache
 from lazr.config import as_boolean
 from mailman import public
 from mailman.config import config
@@ -168,11 +169,9 @@ class AllUsers(_UserBase):
 class AUser(_UserBase):
     """A user."""
 
-    def __init__(self, api, user_identifier):
+    def __init__(self, user_identifier):
         """Get a user by various type of identifiers.
 
-        :param api: The REST API object.
-        :type api: IAPI
         :param user_identifier: The identifier used to retrieve the user.  The
             identifier may either be an email address controlled by the user
             or the UUID of the user.  The type of identifier is auto-detected
@@ -181,19 +180,26 @@ class AUser(_UserBase):
             API 3.0 are integers, while in 3.1 are hex.
         :type user_identifier: string
         """
-        self.api = api
+        self._user_identifier = user_identifier
+        # Defer calculation of the user until the API object is set, since
+        # that will determine how to interpret the user identifier.  For ease
+        # of code migration, use an _user caching property (see below).
+
+    @property
+    @lru_cache(1)
+    def _user(self):
         user_manager = getUtility(IUserManager)
-        if '@' in user_identifier:
-            self._user = user_manager.get_user(user_identifier)
+        if '@' in self._user_identifier:
+            return user_manager.get_user(self._user_identifier)
         else:
             # The identifier is the string representation of a UUID, either an
             # int in API 3.0 or a hex in API 3.1.
             try:
-                user_id = api.to_uuid(user_identifier)
+                user_id = self.api.to_uuid(self._user_identifier)
             except ValueError:
-                self._user = None
+                return None
             else:
-                self._user = user_manager.get_user_by_id(user_id)
+                return user_manager.get_user_by_id(user_id)
 
     def on_get(self, request, response):
         """Return a single user end-point."""
