@@ -62,7 +62,7 @@ class Acknowledge:
         # Now get the acknowledgement template.
         display_name = mlist.display_name
         text = make('postack.txt',
-                    mailing_list=mlist,
+                    mlist=mlist,
                     language=language.code,
                     wrap=False,
                     subject=oneline(original_subject, in_unicode=True),
