@@ -2,6 +2,18 @@
 Mailman - The GNU Mailing List Management System
 ================================================
 
+.. image:: https://gitlab.com/mailman/mailman/badges/master/build.svg
+    :target: https://gitlab.com/mailman/mailman/commits/master
+
+.. image:: https://readthedocs.org/projects/mailman/badge
+    :target: https://mailman.readthedocs.io
+
+.. image:: http://img.shields.io/pypi/v/mailman.svg
+    :target: https://pypi.python.org/pypi/mailman
+
+.. image:: http://img.shields.io/pypi/dm/mailman.svg
+    :target: https://pypi.python.org/pypi/mailman
+
 Copyright (C) 1998-2016 by the Free Software Foundation, Inc.
 
 This is GNU Mailman, a mailing list management system distributed under the
