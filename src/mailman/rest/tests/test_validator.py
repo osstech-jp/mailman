@@ -89,5 +89,5 @@ class TestValidators(unittest.TestCase):
         self.assertRaises(ValueError,
                           enum_validator(Action), 'not-a-thing')
 
-    def test_enum_validator_none(self):
-        self.assertEqual(enum_validator(Action, allow_none=True)(''), None)
+    def test_enum_validator_blank(self):
+        self.assertEqual(enum_validator(Action, allow_blank=True)(''), None)
