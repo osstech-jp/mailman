@@ -206,6 +206,9 @@ REST
    set ``absorb_existing=True`` in the POST data, the existing user will be
    merged into the newly created on.  Given by Aurélien Bompard.
  * Port to Falcon 1.0 (Closes #20)
+ * A member's ``moderation_action`` can be reset, allowing fallback to the
+   list's ``default_member_action`` by setting the attribute to the empty
+   string in the REST API.  Given by Aurélien Bompard.
 
 Other
 -----
