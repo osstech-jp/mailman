@@ -21,6 +21,7 @@ import json
 import falcon
 import hashlib
 
+from contextlib import suppress
 from datetime import datetime, timedelta
 from enum import Enum
 from lazr.config import as_boolean
@@ -46,7 +47,18 @@ class ExtendedEncoder(json.JSONEncoder):
             # It's up to the decoding validator to associate this name with
             # the right Enum class.
             return obj.name
+        elif isinstance(obj, bytes):
+            return bytes_to_str(obj)
         return super().default(obj)
+
+
+def bytes_to_str(value):
+    # Convert a string to unicode when the encoding is not declared.
+    if not isinstance(value, bytes):
+        return value
+    for encoding in ('ascii', 'utf-8', 'raw_unicode_escape'):
+        with suppress(UnicodeDecodeError):
+            return value.decode(encoding)
 
 
 @public

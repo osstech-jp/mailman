@@ -209,6 +209,8 @@ REST
  * A member's ``moderation_action`` can be reset, allowing fallback to the
    list's ``default_member_action`` by setting the attribute to the empty
    string in the REST API.  Given by Aurélien Bompard.
+ * A list's ``moderator_password`` can be set via the REST API.  Given by
+   Andrew Breksa.  (Closes #207)
 
 Other
 -----

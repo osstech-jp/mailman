@@ -53,6 +53,7 @@ All readable attributes for a list are available on a sub-resource.
     leave_address: ant-leave@example.com
     list_name: ant
     mail_host: example.com
+    moderator_password: None
     next_digest_number: 1
     no_reply_address: noreply@example.com
     owner_address: ant-owner@example.com
@@ -119,6 +120,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             welcome_message_uri='mailman:///welcome.txt',
     ...             default_member_action='hold',
     ...             default_nonmember_action='discard',
+    ...             moderator_password='password',
     ...             ),
     ...           'PUT')
     content-length: 0
@@ -164,6 +166,8 @@ These values are changed permanently.
     goodbye_message_uri: mailman:///goodbye.txt
     ...
     include_rfc2369_headers: False
+    ...
+    moderator_password: {plaintext}password
     ...
     posting_pipeline: virgin
     reply_goes_to_list: point_to_list

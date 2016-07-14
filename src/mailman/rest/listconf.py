@@ -68,6 +68,12 @@ def pipeline_validator(pipeline_name):
     raise ValueError('Unknown pipeline: {}'.format(pipeline_name))
 
 
+def password_bytes_validator(value):
+    if value is None or isinstance(value, bytes):
+        return value
+    return config.password_context.encrypt(value).encode('utf-8')
+
+
 # This is the list of IMailingList attributes that are exposed through the
 # REST API.  The values of the keys are the GetterSetter instance holding the
 # decoder used to convert the web request string to an internally valid value.
@@ -120,6 +126,7 @@ ATTRIBUTES = dict(
     last_post_at=GetterSetter(None),
     leave_address=GetterSetter(None),
     list_name=GetterSetter(None),
+    moderator_password=GetterSetter(password_bytes_validator),
     next_digest_number=GetterSetter(None),
     no_reply_address=GetterSetter(None),
     owner_address=GetterSetter(None),

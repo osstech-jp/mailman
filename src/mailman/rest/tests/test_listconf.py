@@ -28,7 +28,6 @@ from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 
-
 # The representation of the listconf resource as a dictionary.  This is used
 # when PUTting to the list's configuration resource.
 RESOURCE = dict(
@@ -65,6 +64,7 @@ RESOURCE = dict(
     first_strip_reply_to=True,
     goodbye_message_uri='mailman:///goodbye.txt',
     include_rfc2369_headers=False,
+    moderator_password='password',
     posting_pipeline='virgin',
     reply_goes_to_list='point_to_list',
     reply_to_address='bee@example.com',
