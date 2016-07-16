@@ -133,10 +133,6 @@ The receipt will include the original message's subject in the response body,
         Something witty and insightful
     <BLANKLINE>
     was successfully received by the Test mailing list.
-    <BLANKLINE>
-    List info page: http://lists.example.com/listinfo/test@example.com
-    Your preferences: http://example.com/aperson@example.com
-    <BLANKLINE>
 
 If there is no subject, then the receipt will use a generic message.
 
@@ -169,7 +165,3 @@ If there is no subject, then the receipt will use a generic message.
         (no subject)
     <BLANKLINE>
     was successfully received by the Test mailing list.
-    <BLANKLINE>
-    List info page: http://lists.example.com/listinfo/test@example.com
-    Your preferences: http://example.com/aperson@example.com
-    <BLANKLINE>

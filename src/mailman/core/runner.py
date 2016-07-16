@@ -66,7 +66,7 @@ class Runner:
         # Check whether the runner is queue runner or not; non-queue runner
         # should not have queue_directory or switchboard instance.
         if self.is_queue_runner:
-            self.queue_directory = expand(section.path, substitutions)
+            self.queue_directory = expand(section.path, None, substitutions)
             self.switchboard = Switchboard(
                 name, self.queue_directory, slice, numslices, True)
         else:

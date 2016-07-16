@@ -69,16 +69,6 @@ class IDomain(Interface):
 
     mail_host = Attribute('The host name for email for this domain.')
 
-    url_host = Attribute(
-        'The host name for the web interface for this domain.')
-
-    base_url = Attribute("""\
-    The base url for the Mailman server at this domain, which includes the
-    scheme and host name.""")
-
-    scheme = Attribute(
-        """The protocol scheme used to contact this list's server.""")
-
     description = Attribute(
         'The human readable description of the domain name.')
 
@@ -91,31 +81,18 @@ class IDomain(Interface):
         The mailing lists are returned in order sorted by list-id.
         """)
 
-    def confirm_url(token=''):
-        """The url used for various forms of confirmation.
-
-        :param token: The confirmation token to use in the url.
-        :type token: string
-        :return: The confirmation url.
-        :rtype: string
-        """
-
 
 @public
 class IDomainManager(Interface):
     """The manager of domains."""
 
-    def add(mail_host, description=None, base_url=None, owners=None):
+    def add(mail_host, description=None, owners=None):
         """Add a new domain.
 
         :param mail_host: The email host name for the domain.
         :type mail_host: string
         :param description: The description of the domain.
         :type description: string
-        :param base_url: The base url, including the scheme for the web
-            interface of the domain.  If not given, it defaults to
-            http://`mail_host`/
-        :type base_url: string
         :param owners: Sequence of owners of the domain, defaults to None,
             meaning the domain does not have owners.
         :type owners: sequence of `IUser` or string emails.

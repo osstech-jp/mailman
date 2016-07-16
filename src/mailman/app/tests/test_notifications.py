@@ -18,19 +18,20 @@
 """Test notifications."""
 
 import os
-import shutil
-import tempfile
 import unittest
 
+from contextlib import ExitStack
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     get_queue_messages, set_preferred, subscribe)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
+from tempfile import TemporaryDirectory
 from zope.component import getUtility
 
 
@@ -41,36 +42,37 @@ class TestNotifications(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
+        resources = ExitStack()
+        self.addCleanup(resources.close)
+        self.var_dir = resources.enter_context(TemporaryDirectory())
         self._mlist = create_list('test@example.com')
-        self._mlist.welcome_message_uri = 'mailman:///welcome.txt'
         self._mlist.display_name = 'Test List'
-        self.var_dir = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, self.var_dir)
+        getUtility(ITemplateManager).set(
+            'user:ack:welcome', self._mlist.list_id, 'mailman:///welcome.txt')
         config.push('template config', """\
         [paths.testing]
         template_dir: {}/templates
         """.format(self.var_dir))
-        self.addCleanup(config.pop, 'template config')
+        resources.callback(config.pop, 'template config')
         # Populate the template directories with a few fake templates.
         path = os.path.join(self.var_dir, 'templates', 'site', 'en')
         os.makedirs(path)
-        with open(os.path.join(path, 'welcome.txt'), 'w') as fp:
+        full_path = os.path.join(path, 'list:user:notice:welcome.txt')
+        with open(full_path, 'w', encoding='utf-8') as fp:
             print("""\
 Welcome to the $list_name mailing list.
 
     Posting address: $fqdn_listname
     Help and other requests: $list_requests
     Your name: $user_name
-    Your address: $user_address
-    Your options: $user_options_uri""", file=fp)
+    Your address: $user_address""", file=fp)
         # Write a list-specific welcome message.
         path = os.path.join(self.var_dir, 'templates', 'lists',
                             'test@example.com', 'xx')
         os.makedirs(path)
-        with open(os.path.join(path, 'welcome.txt'), 'w') as fp:
+        full_path = os.path.join(path, 'list:user:notice:welcome.txt')
+        with open(full_path, 'w', encoding='utf-8') as fp:
             print('You just joined the $list_name mailing list!', file=fp)
-        # Let assertMultiLineEqual work without bounds.
-        self.maxDiff = None
 
     def test_welcome_message(self):
         subscribe(self._mlist, 'Anne', email='anne@example.com')
@@ -86,13 +88,13 @@ Welcome to the Test List mailing list.
     Help and other requests: test-request@example.com
     Your name: Anne Person
     Your address: anne@example.com
-    Your options: http://example.com/anne@example.com
 """)
 
     def test_more_specific_welcome_message_nonenglish(self):
-        # mlist.welcome_message_uri can contain placeholders for the fqdn list
+        # The welcome message url can contain placeholders for the fqdn list
         # name and language.
-        self._mlist.welcome_message_uri = (
+        getUtility(ITemplateManager).set(
+            'user:ack:welcome', self._mlist.list_id,
             'mailman:///$listname/$language/welcome.txt')
         # Add the xx language and subscribe Anne using it.
         manager = getUtility(ILanguageManager)

@@ -33,12 +33,13 @@ from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.rest.bans import BannedEmails
 from mailman.rest.header_matches import HeaderMatches
 from mailman.rest.helpers import (
-    CollectionMixin, GetterSetter, NotFound, accepted, bad_request, child,
-    created, etag, no_content, not_found, okay)
+    BadRequest, CollectionMixin, GetterSetter, NotFound, accepted,
+    bad_request, child, created, etag, no_content, not_found, okay)
 from mailman.rest.listconf import ListConfiguration
 from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
+from mailman.rest.uris import AListURI, AllListURIs
 from mailman.rest.validator import Validator, list_of_strings_validator
 from zope.component import getUtility
 
@@ -203,6 +204,23 @@ class AList(_ListBase):
         if self._mlist is None:
             return NotFound(), []
         return HeaderMatches(self._mlist)
+
+    @child()
+    def uris(self, context, segments):
+        """Return the template URIs of the mailing list.
+
+        These are only available after API 3.0.
+        """
+        if self._mlist is None or self.api.version_info < (3, 1):
+            return NotFound(), []
+        if len(segments) == 0:
+            return AllListURIs(self._mlist)
+        if len(segments) > 1:
+            return BadRequest(), []
+        template = segments[0]
+        if template not in AllListURIs.URIs:
+            return NotFound(), []
+        return AListURI(self._mlist, template), []
 
 
 @public

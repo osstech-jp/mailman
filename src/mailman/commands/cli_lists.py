@@ -30,7 +30,8 @@ from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
-from mailman.utilities.i18n import make
+from mailman.interfaces.template import ITemplateLoader
+from mailman.utilities.string import expand, wrap
 from zope.component import getUtility
 from zope.interface import implementer
 
@@ -221,14 +222,13 @@ class Create:
         if not args.quiet:
             print(_('Created mailing list: $mlist.fqdn_listname'))
         if args.notify:
-            d = dict(
-                listname        = mlist.fqdn_listname,          # noqa
-                admin_url       = mlist.script_url('admin'),    # noqa
-                listinfo_url    = mlist.script_url('listinfo'), # noqa
-                requestaddr     = mlist.request_address,        # noqa
-                siteowner       = mlist.no_reply_address,       # noqa
-                )
-            text = make('newlist.txt', mailing_list=mlist, **d)
+            template = getUtility(ITemplateLoader).get(
+                'domain:admin:notice:new-list', mlist)
+            text = wrap(expand(template, mlist, dict(
+                # For backward compatibility.
+                requestaddr=mlist.request_address,
+                siteowner=mlist.no_reply_address,
+                )))
             # Set the I18N language to the list's preferred language so the
             # header will match the template language.  Stashing and restoring
             # the old translation context is just (healthy? :) paranoia.

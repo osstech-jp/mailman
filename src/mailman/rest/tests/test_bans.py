@@ -81,3 +81,8 @@ class TestBans(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(cm.exception.reason,
                          b'Email is not banned: banned@example.com')
+
+    def test_ban_missing_mailing_list(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/bee.example.com/bans')
+        self.assertEqual(cm.exception.code, 404)

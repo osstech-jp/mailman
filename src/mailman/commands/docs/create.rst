@@ -44,7 +44,7 @@ Now both the domain and the mailing list exist in the database.
 
     >>> from mailman.interfaces.domain import IDomainManager
     >>> getUtility(IDomainManager).get('example.xx')
-    <Domain example.xx, base_url: http://example.xx>
+    <Domain example.xx>
 
 You can prevent the creation of the domain in existing domains by using the
 ``-D`` or ``--no-domain`` flag.  Although the ``--no-domain`` flag is not
@@ -169,17 +169,9 @@ The notification message is in the virgin queue.
     The mailing list 'test6@example.com' has just been created for you.
     The following is some basic information about your mailing list.
     <BLANKLINE>
-    You can configure your mailing list at the following web page:
-    <BLANKLINE>
-        http://lists.example.com/admin/test6@example.com
-    <BLANKLINE>
-    The web page for users of your mailing list is:
-    <BLANKLINE>
-        http://lists.example.com/listinfo/test6@example.com
-    <BLANKLINE>
-    There is also an email-based interface for users (not administrators)
-    of your list; you can get info about using it by sending a message
-    with just the word 'help' as subject or in the body, to:
+    There is an email-based interface for users (not administrators) of
+    your list; you can get info about using it by sending a message with
+    just the word 'help' as subject or in the body, to:
     <BLANKLINE>
         test6-request@example.com
     <BLANKLINE>

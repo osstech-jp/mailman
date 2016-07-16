@@ -26,19 +26,16 @@ initially none.
 Once a domain is added, it is accessible through the API.
 ::
 
-    >>> domain_manager.add(
-    ...     'example.com', 'An example domain', 'http://lists.example.com')
-    <Domain example.com, An example domain, base_url: http://lists.example.com>
+    >>> domain_manager.add('example.com', 'An example domain')
+    <Domain example.com, An example domain>
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/domains')
     entry 0:
-        base_url: http://lists.example.com
         description: An example domain
         http_etag: "..."
         mail_host: example.com
         self_link: http://localhost:9001/3.0/domains/example.com
-        url_host: lists.example.com
     http_etag: "..."
     start: 0
     total_size: 1
@@ -46,39 +43,30 @@ Once a domain is added, it is accessible through the API.
 At the top level, all domains are returned as separate entries.
 ::
 
-    >>> domain_manager.add(
-    ...     'example.org',
-    ...     base_url='http://mail.example.org')
-    <Domain example.org, base_url: http://mail.example.org>
+    >>> domain_manager.add('example.org',)
+    <Domain example.org>
     >>> domain_manager.add(
     ...     'lists.example.net',
-    ...     'Porkmasters',
-    ...     'http://example.net')
-    <Domain lists.example.net, Porkmasters, base_url: http://example.net>
+    ...     'Porkmasters')
+    <Domain lists.example.net, Porkmasters>
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/domains')
     entry 0:
-        base_url: http://lists.example.com
         description: An example domain
         http_etag: "..."
         mail_host: example.com
         self_link: http://localhost:9001/3.0/domains/example.com
-        url_host: lists.example.com
     entry 1:
-        base_url: http://mail.example.org
         description: None
         http_etag: "..."
         mail_host: example.org
         self_link: http://localhost:9001/3.0/domains/example.org
-        url_host: mail.example.org
     entry 2:
-        base_url: http://example.net
         description: Porkmasters
         http_etag: "..."
         mail_host: lists.example.net
         self_link: http://localhost:9001/3.0/domains/lists.example.net
-        url_host: example.net
     http_etag: "..."
     start: 0
     total_size: 3
@@ -91,12 +79,10 @@ The information for a single domain is available by following one of the
 ``self_links`` from the above collection.
 
     >>> dump_json('http://localhost:9001/3.0/domains/lists.example.net')
-    base_url: http://example.net
     description: Porkmasters
     http_etag: "..."
     mail_host: lists.example.net
     self_link: http://localhost:9001/3.0/domains/lists.example.net
-    url_host: example.net
 
 You can also list all the mailing lists for a given domain.  At first, the
 example.com domain does not contain any mailing lists.
@@ -154,30 +140,26 @@ New domains can be created by posting to the ``domains`` url.
 Now the web service knows about our new domain.
 
     >>> dump_json('http://localhost:9001/3.0/domains/lists.example.com')
-    base_url: http://lists.example.com
     description: None
     http_etag: "..."
     mail_host: lists.example.com
     self_link: http://localhost:9001/3.0/domains/lists.example.com
-    url_host: lists.example.com
 
 And the new domain is in our database.
 ::
 
     >>> domain_manager['lists.example.com']
-    <Domain lists.example.com, base_url: http://lists.example.com>
+    <Domain lists.example.com>
 
     # Unlock the database.
     >>> transaction.abort()
 
-You can also create a new domain with a description, a base url, and a contact
-address.
+You can also create a new domain with a description and a contact address.
 ::
 
     >>> dump_json('http://localhost:9001/3.0/domains', {
     ...           'mail_host': 'my.example.com',
     ...           'description': 'My new domain',
-    ...           'base_url': 'http://allmy.example.com'
     ...           })
     content-length: 0
     content-type: application/json; charset=UTF-8
@@ -186,15 +168,13 @@ address.
     ...
 
     >>> dump_json('http://localhost:9001/3.0/domains/my.example.com')
-    base_url: http://allmy.example.com
     description: My new domain
     http_etag: "..."
     mail_host: my.example.com
     self_link: http://localhost:9001/3.0/domains/my.example.com
-    url_host: allmy.example.com
 
     >>> domain_manager['my.example.com']
-    <Domain my.example.com, My new domain, base_url: http://allmy.example.com>
+    <Domain my.example.com, My new domain>
 
     # Unlock the database.
     >>> transaction.abort()

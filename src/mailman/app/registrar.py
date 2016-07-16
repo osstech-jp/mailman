@@ -21,13 +21,13 @@ import logging
 
 from mailman import public
 from mailman.app.subscriptions import SubscriptionWorkflow
-from mailman.core.i18n import _
 from mailman.database.transaction import flush
 from mailman.email.message import UserNotification
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.registrar import ConfirmationNeededEvent, IRegistrar
-from mailman.interfaces.templates import ITemplateLoader
+from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.workflow import IWorkflowStateManager
+from mailman.utilities.string import expand
 from zope.component import getUtility
 from zope.interface import implementer
 
@@ -84,18 +84,22 @@ def handle_ConfirmationNeededEvent(event):
     # encode the token, they can reply to the robot and keep the token in
     # the Subject header, or they can click on the URL in the body of the
     # message and confirm through the web.
-    subject = 'confirm ' + event.token
+    subject = 'confirm {}'.format(event.token)
     confirm_address = event.mlist.confirm_address(event.token)
-    # For i18n interpolation.
-    confirm_url = event.mlist.domain.confirm_url(event.token)   # noqa
     email_address = event.email
-    domain_name = event.mlist.domain.mail_host      # noqa
-    contact_address = event.mlist.owner_address     # noqa
     # Send a verification email to the address.
     template = getUtility(ITemplateLoader).get(
-        'mailman:///{}/{}/confirm.txt'.format(
-            event.mlist.fqdn_listname,
-            event.mlist.preferred_language.code))
-    text = _(template)
+        'list:user:action:confirm', event.mlist)
+    text = expand(template, event.mlist, dict(
+        token=event.token,
+        subject=subject,
+        confirm_email=confirm_address,
+        user_email=email_address,
+        # For backward compatibility.
+        confirm_address=confirm_address,
+        email_address=email_address,
+        domain_name=event.mlist.domain.mail_host,
+        contact_address=event.mlist.owner_address,
+        ))
     msg = UserNotification(email_address, confirm_address, subject, text)
     msg.send(event.mlist, add_precedence=False)

@@ -26,31 +26,12 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.member import DeliveryMode
-from mailman.interfaces.templates import ITemplateLoader
-from mailman.utilities.i18n import make
+from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.string import expand, wrap
-from urllib.error import URLError
 from zope.component import getUtility
 
 
 log = logging.getLogger('mailman.error')
-
-
-def _get_message(uri_template, mlist, language):
-    if not uri_template:
-        return ''
-    try:
-        uri = expand(uri_template, dict(
-            listname=mlist.fqdn_listname,
-            language=language.code,
-            ))
-        message = getUtility(ITemplateLoader).get(uri)
-    except URLError:
-        log.exception('Message URI not found ({0}): {1}'.format(
-            mlist.fqdn_listname, uri_template))
-        return ''
-    else:
-        return wrap(message)
 
 
 @public
@@ -67,29 +48,18 @@ def send_welcome_message(mlist, member, language, text=''):
     :param language: The language of the response.
     :type language: ILanguage
     """
-    welcome_message = _get_message(mlist.welcome_message_uri, mlist, language)
-    options_url = member.options_url
-    # Try to find a non-empty display name.  We first look at the directly
-    # subscribed record, which will either be the address or the user.  That's
-    # handled automatically by going through member.subscriber.  If that
-    # doesn't give us something useful, try whatever user is linked to the
-    # subscriber.
-    if member.subscriber.display_name:
-        display_name = member.subscriber.display_name
-    # If an unlinked address is subscribed tehre will be no .user.
-    elif member.user is not None and member.user.display_name:
-        display_name = member.user.display_name
-    else:
-        display_name = ''
+    welcome_message = wrap(getUtility(ITemplateLoader).get(
+        'list:user:notice:welcome', mlist, language=language.code))
+    display_name = member.display_name
     # Get the text from the template.
-    text = expand(welcome_message, dict(
+    text = expand(welcome_message, mlist, dict(
+        user_name=display_name,
+        user_email=member.address.email,
+        # For backward compatibility.
+        user_address=member.address.email,
         fqdn_listname=mlist.fqdn_listname,
         list_name=mlist.display_name,
-        listinfo_uri=mlist.script_url('listinfo'),
         list_requests=mlist.request_address,
-        user_name=display_name,
-        user_address=member.address.email,
-        user_options_uri=options_url,
         ))
     digmode = (''                                   # noqa
                if member.delivery_mode is DeliveryMode.regular
@@ -117,8 +87,8 @@ def send_goodbye_message(mlist, address, language):
     :param language: the language of the response
     :type language: string
     """
-    goodbye_message = _get_message(mlist.goodbye_message_uri,
-                                   mlist, language)
+    goodbye_message = wrap(getUtility(ITemplateLoader).get(
+        'list:user:notice:goodbye', mlist, language=language.code))
     msg = UserNotification(
         address, mlist.bounces_address,
         _('You have been unsubscribed from the $mlist.display_name '
@@ -140,10 +110,10 @@ def send_admin_subscription_notice(mlist, address, display_name):
     """
     with _.using(mlist.preferred_language.code):
         subject = _('$mlist.display_name subscription notification')
-    text = make('adminsubscribeack.txt',
-                mailing_list=mlist,
-                listname=mlist.display_name,
-                member=formataddr((display_name, address)),
-                )
+    text = expand(
+        getUtility(ITemplateLoader).get('list:admin:notice:subscribe', mlist),
+        mlist, dict(
+            member=formataddr((display_name, address)),
+            ))
     msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
     msg.send(mlist)

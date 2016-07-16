@@ -28,7 +28,6 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import MailingList
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
-from urllib.parse import urljoin, urlparse
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
@@ -44,7 +43,6 @@ class Domain(Model):
     id = Column(Integer, primary_key=True)
 
     mail_host = Column(Unicode)
-    base_url = Column(Unicode)
     description = Column(Unicode)
     owners = relationship('User',
                           secondary='domain_owner',
@@ -52,7 +50,6 @@ class Domain(Model):
 
     def __init__(self, mail_host,
                  description=None,
-                 base_url=None,
                  owners=None):
         """Create and register a domain.
 
@@ -60,30 +57,13 @@ class Domain(Model):
         :type mail_host: string
         :param description: An optional description of the domain.
         :type description: string
-        :param base_url: The optional base url for the domain, including
-            scheme.  If not given, it will be constructed from the
-            `mail_host` using the http protocol.
-        :type base_url: string
         :param owners: Optional owners of this domain.
         :type owners: sequence of `IUser` or string emails.
         """
         self.mail_host = mail_host
-        self.base_url = (base_url
-                         if base_url is not None
-                         else 'http://' + mail_host)
         self.description = description
         if owners is not None:
             self.add_owners(owners)
-
-    @property
-    def url_host(self):
-        """See `IDomain`."""
-        return urlparse(self.base_url).netloc
-
-    @property
-    def scheme(self):
-        """See `IDomain`."""
-        return urlparse(self.base_url).scheme
 
     @property
     @dbconnection
@@ -93,18 +73,12 @@ class Domain(Model):
             MailingList.mail_host == self.mail_host
             ).order_by(MailingList._list_id)
 
-    def confirm_url(self, token=''):
-        """See `IDomain`."""
-        return urljoin(self.base_url, 'confirm/' + token)
-
     def __repr__(self):
         """repr(a_domain)"""
         if self.description is None:
-            return ('<Domain {0.mail_host}, base_url: {0.base_url}>').format(
-                self)
+            return ('<Domain {0.mail_host}>').format(self)
         else:
-            return ('<Domain {0.mail_host}, {0.description}, '
-                    'base_url: {0.base_url}>').format(self)
+            return ('<Domain {0.mail_host}, {0.description}>').format(self)
 
     def add_owner(self, owner):
         """See `IDomain`."""
@@ -140,7 +114,6 @@ class DomainManager:
     def add(self, store,
             mail_host,
             description=None,
-            base_url=None,
             owners=None):
         """See `IDomainManager`."""
         # Be sure the mail_host is not already registered.  This is probably
@@ -149,7 +122,7 @@ class DomainManager:
             raise BadDomainSpecificationError(
                 'Duplicate email host: {}'.format(mail_host))
         notify(DomainCreatingEvent(mail_host))
-        domain = Domain(mail_host, description, base_url, owners)
+        domain = Domain(mail_host, description, owners)
         store.add(domain)
         notify(DomainCreatedEvent(domain))
         return domain

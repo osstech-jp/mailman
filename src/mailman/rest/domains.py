@@ -24,6 +24,7 @@ from mailman.rest.helpers import (
     BadRequest, CollectionMixin, NotFound, bad_request, child, created, etag,
     no_content, not_found, okay)
 from mailman.rest.lists import ListsForDomain
+from mailman.rest.uris import ADomainURI, AllDomainURIs
 from mailman.rest.users import OwnersForDomain
 from mailman.rest.validator import Validator, list_of_strings_validator
 from zope.component import getUtility
@@ -35,11 +36,9 @@ class _DomainBase(CollectionMixin):
     def _resource_as_dict(self, domain):
         """See `CollectionMixin`."""
         return dict(
-            base_url=domain.base_url,
             description=domain.description,
             mail_host=domain.mail_host,
             self_link=self.api.path_to('domains/{}'.format(domain.mail_host)),
-            url_host=domain.url_host,
             )
 
     def _get_collection(self, request):
@@ -94,6 +93,24 @@ class ADomain(_DomainBase):
         else:
             return NotFound(), []
 
+    @child()
+    def uris(self, context, segments):
+        """Return the template URIs of the domain.
+
+        These are only available after API 3.0.
+        """
+        domain = getUtility(IDomainManager).get(self._domain)
+        if domain is None or self.api.version_info < (3, 1):
+            return NotFound(), []
+        if len(segments) == 0:
+            return AllDomainURIs(domain)
+        if len(segments) > 1:
+            return BadRequest(), []
+        template = segments[0]
+        if template not in AllDomainURIs.URIs:
+            return NotFound(), []
+        return ADomainURI(domain, template), []
+
 
 @public
 class AllDomains(_DomainBase):
@@ -105,10 +122,8 @@ class AllDomains(_DomainBase):
         try:
             validator = Validator(mail_host=str,
                                   description=str,
-                                  base_url=str,
                                   owner=list_of_strings_validator,
-                                  _optional=(
-                                      'description', 'base_url', 'owner'))
+                                  _optional=('description', 'owner'))
             values = validator(request)
             # For consistency, owners are passed in as multiple `owner` keys,
             # but .add() requires an `owners` keyword.  Match impedence.

@@ -26,7 +26,7 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.i18n import TemplateNotFoundError, find, make, search
+from mailman.utilities.i18n import TemplateNotFoundError, find, search
 from pkg_resources import resource_filename
 from zope.component import getUtility
 
@@ -219,65 +219,3 @@ class TestFind(unittest.TestCase):
         with self.assertRaises(TemplateNotFoundError) as cm:
             find('missing.txt', self.mlist)
         self.assertEqual(cm.exception.template_file, 'missing.txt')
-
-
-class TestMake(unittest.TestCase):
-    """Test template interpolation."""
-
-    layer = ConfigLayer
-
-    def setUp(self):
-        self.var_dir = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, self.var_dir)
-        config.push('template config', """\
-        [paths.testing]
-        var_dir: {}
-        """.format(self.var_dir))
-        self.addCleanup(config.pop, 'template config')
-        # The following MUST happen AFTER the push() above since pushing a new
-        # config also clears out the language manager.
-        getUtility(ILanguageManager).add('xx', 'utf-8', 'Xlandia')
-        self.mlist = create_list('test@example.com')
-        self.mlist.preferred_language = 'xx'
-        # Populate the template directories with a few fake templates.
-        path = os.path.join(self.var_dir, 'templates', 'site', 'xx')
-        os.makedirs(path)
-        with open(os.path.join(path, 'nosub.txt'), 'w') as fp:
-            print("""\
-This is a global template.
-It has no substitutions.
-It will be wrapped.
-""", file=fp)
-        with open(os.path.join(path, 'subs.txt'), 'w') as fp:
-            print("""\
-This is a $kind template.
-It has $howmany substitutions.
-It will be wrapped.
-""", file=fp)
-        with open(os.path.join(path, 'nowrap.txt'), 'w') as fp:
-            print("""\
-This is a $kind template.
-It has $howmany substitutions.
-It will not be wrapped.
-""", file=fp)
-
-    def test_no_substitutions(self):
-        self.assertEqual(make('nosub.txt', self.mlist), """\
-This is a global template.  It has no substitutions.  It will be
-wrapped.""")
-
-    def test_substitutions(self):
-        self.assertEqual(make('subs.txt', self.mlist,
-                              kind='very nice',
-                              howmany='a few'), """\
-This is a very nice template.  It has a few substitutions.  It will be
-wrapped.""")
-
-    def test_substitutions_no_wrap(self):
-        self.assertEqual(make('nowrap.txt', self.mlist, wrap=False,
-                              kind='very nice',
-                              howmany='a few'), """\
-This is a very nice template.
-It has a few substitutions.
-It will not be wrapped.
-""")

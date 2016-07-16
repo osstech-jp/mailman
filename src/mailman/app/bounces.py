@@ -32,9 +32,9 @@ from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.subscriptions import ISubscriptionService
+from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.email import split_email
-from mailman.utilities.i18n import make
-from mailman.utilities.string import oneline
+from mailman.utilities.string import expand, oneline, wrap
 from string import Template
 from zope.component import getUtility
 from zope.interface import implementer
@@ -184,12 +184,19 @@ def send_probe(member, msg):
     """
     mlist = getUtility(IListManager).get_by_list_id(
         member.mailing_list.list_id)
-    text = make('probe.txt', mlist, member.preferred_language.code,
-                listname=mlist.fqdn_listname,
-                address=member.address.email,
-                optionsurl=member.options_url,
-                owneraddr=mlist.owner_address,
-                )
+    template = getUtility(ITemplateLoader).get(
+        'list:user:notice:probe', mlist,
+        language=member.preferred_language.code,
+        # For backward compatibility.
+        code=member.preferred_language.code,
+        )
+    text = wrap(expand(template, mlist, dict(
+        sender_email=member.subscriber.email,
+        # For backward compatibility.
+        address=member.address.email,
+        email=member.address.email,
+        owneraddr=mlist.owner_address,
+        )))
     message_id = msg['message-id']
     if isinstance(message_id, bytes):
         message_id = message_id.decode('ascii')
@@ -240,11 +247,11 @@ def maybe_forward(mlist, msg):
     # The notification is either going to go to the list's administrators
     # (owners and moderators), or to the site administrators.  Most of the
     # notification is exactly the same in either case.
-    adminurl = mlist.script_url('admin') + '/bounce'
     subject = _('Uncaught bounce notification')
-    text = MIMEText(
-        make('unrecognized.txt', mlist, adminurl=adminurl),
-        _charset=mlist.preferred_language.charset)
+    template = getUtility(ITemplateLoader).get(
+        'list:admin:notice:unrecognized', mlist)
+    text = expand(template, mlist)
+    text_part = MIMEText(text, _charset=mlist.preferred_language.charset)
     attachment = MIMEMessage(msg)
     if (mlist.forward_unrecognized_bounces_to
             is UnrecognizedBounceDisposition.administrators):
@@ -258,6 +265,6 @@ def maybe_forward(mlist, msg):
     # Create the notification and send it.
     notice = OwnerNotification(mlist, subject, **keywords)
     notice.set_type('multipart/mixed')
-    notice.attach(text)
+    notice.attach(text_part)
     notice.attach(attachment)
     notice.send(mlist)

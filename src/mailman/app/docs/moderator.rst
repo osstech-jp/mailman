@@ -355,9 +355,9 @@ Jeff is a member of the mailing list, and chooses to unsubscribe.
     Your authorization is required for a mailing list unsubscription
     request approval:
     <BLANKLINE>
-        By:   jeff@example.org
-        From: ant@example.com
-    ...
+        For:  jeff@example.org
+        List: ant@example.com
+    <BLANKLINE>
 
 
 Membership changes

@@ -25,7 +25,8 @@ from inspect import isfunction, ismethod
 from mailman import public
 from mailman.app.lifecycle import create_list
 from mailman.config import config
-from mailman.testing.helpers import call_api, specialized_message_from_string
+from mailman.testing.helpers import (
+    call_api, get_queue_messages, specialized_message_from_string, subscribe)
 from mailman.testing.layers import SMTPLayer
 
 
@@ -92,7 +93,7 @@ def call_http(url, data=None, method=None, username=None, password=None):
     content, response = call_api(url, data, method, username, password)
     if content is None:
         for header in sorted(response):
-            print('{0}: {1}'.format(header, response[header]))
+            print('{}: {}'.format(header, response[header]))
         return None
     return content
 
@@ -145,9 +146,11 @@ def setup(testobj):
     testobj.globs['dump_json'] = dump_json
     testobj.globs['dump_msgdata'] = dump_msgdata
     testobj.globs['dump_list'] = dump_list
+    testobj.globs['get_queue_messages'] = get_queue_messages
     testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['smtpd'] = SMTPLayer.smtpd
     testobj.globs['stop'] = stop
+    testobj.globs['subscribe'] = subscribe
     testobj.globs['transaction'] = config.db
     # Add this so that cleanups can be automatically added by the doctest.
     testobj.globs['cleanups'] = []

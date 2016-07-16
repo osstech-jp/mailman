@@ -73,10 +73,8 @@ have a reduced set of `List-` headers.  Specifically, there is no `List-Post`,
     ---start---
     list-help: <mailto:test-request@example.com?subject=help>
     list-id: <test.example.com>
-    list-subscribe: <http://lists.example.com/listinfo/test@example.com>,
-        <mailto:test-join@example.com>
-    list-unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
-        <mailto:test-leave@example.com>
+    list-subscribe: <mailto:test-join@example.com>
+    list-unsubscribe: <mailto:test-leave@example.com>
     ---end---
 
 
@@ -98,10 +96,8 @@ header which contains the `mailto:` URL used to send messages to the list.
     list-help: <mailto:test-request@example.com?subject=help>
     list-id: <test.example.com>
     list-post: <mailto:test@example.com>
-    list-subscribe: <http://lists.example.com/listinfo/test@example.com>,
-        <mailto:test-join@example.com>
-    list-unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
-        <mailto:test-leave@example.com>
+    list-subscribe: <mailto:test-join@example.com>
+    list-unsubscribe: <mailto:test-leave@example.com>
     ---end---
 
 Some mailing lists are announce, or one-way lists, not discussion lists.
@@ -120,10 +116,8 @@ to RFC 2369.
     list-help: <mailto:test-request@example.com?subject=help>
     list-id: <test.example.com>
     list-post: NO
-    list-subscribe: <http://lists.example.com/listinfo/test@example.com>,
-        <mailto:test-join@example.com>
-    list-unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
-        <mailto:test-leave@example.com>
+    list-subscribe: <mailto:test-join@example.com>
+    list-unsubscribe: <mailto:test-leave@example.com>
     ---end---
 
 
@@ -145,10 +139,8 @@ header.
     list-help: <mailto:test-request@example.com?subject=help>
     list-id: My test mailing list <test.example.com>
     list-post: <mailto:test@example.com>
-    list-subscribe: <http://lists.example.com/listinfo/test@example.com>,
-        <mailto:test-join@example.com>
-    list-unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
-        <mailto:test-leave@example.com>
+    list-subscribe: <mailto:test-join@example.com>
+    list-unsubscribe: <mailto:test-leave@example.com>
     ---end---
 
 Any existing ``List-Id`` headers are removed from the original message.

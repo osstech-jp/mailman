@@ -57,8 +57,6 @@ def process(mlist, msg, msgdata):
     # "X-List-Administrivia: yes" header.  For all others (i.e. those coming
     # from list posts), we add a bunch of other RFC 2369 headers.
     requestaddr = mlist.request_address
-    subfieldfmt = '<{}>, <mailto:{}>'
-    listinfo = mlist.script_url('listinfo')
     headers = []
     # XXX reduced_list_headers used to suppress List-Help, List-Subject, and
     # List-Unsubscribe from UserNotification.  That doesn't seem to make sense
@@ -66,9 +64,8 @@ def process(mlist, msg, msgdata):
     # suppressed).
     headers.extend((
         ('List-Help', '<mailto:{}?subject=help>'.format(requestaddr)),
-        ('List-Unsubscribe',
-         subfieldfmt.format(listinfo, mlist.leave_address)),
-        ('List-Subscribe', subfieldfmt.format(listinfo, mlist.join_address)),
+        ('List-Unsubscribe', '<mailto:{}>'.format(mlist.leave_address)),
+        ('List-Subscribe', '<mailto:{}>'.format(mlist.join_address)),
         ))
     if not msgdata.get('reduced_list_headers'):
         # List-Post: is controlled by a separate attribute, which is somewhat

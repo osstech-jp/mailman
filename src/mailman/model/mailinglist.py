@@ -56,7 +56,6 @@ from sqlalchemy.event import listen
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
-from urllib.parse import urljoin
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
@@ -133,8 +132,6 @@ class MailingList(Model):
     default_nonmember_action = Column(Enum(Action))
     description = Column(Unicode)
     digests_enabled = Column(Boolean)
-    digest_footer_uri = Column(Unicode)
-    digest_header_uri = Column(Unicode)
     digest_is_default = Column(Boolean)
     digest_send_periodic = Column(Boolean)
     digest_size_threshold = Column(Float)
@@ -143,12 +140,9 @@ class MailingList(Model):
     emergency = Column(Boolean)
     encode_ascii_prefixes = Column(Boolean)
     first_strip_reply_to = Column(Boolean)
-    footer_uri = Column(Unicode)
     forward_auto_discards = Column(Boolean)
     gateway_to_mail = Column(Boolean)
     gateway_to_news = Column(Boolean)
-    goodbye_message_uri = Column(Unicode)
-    header_uri = Column(Unicode)
     hold_these_nonmembers = Column(PickleType)
     info = Column(Unicode)
     linked_newsgroup = Column(Unicode)
@@ -184,7 +178,6 @@ class MailingList(Model):
     topics = Column(PickleType)
     topics_bodylines_limit = Column(Integer)
     topics_enabled = Column(Boolean)
-    welcome_message_uri = Column(Unicode)
     # ORM relationships.
     header_matches = relationship(
         'HeaderMatch', backref='mailing_list',
@@ -245,22 +238,6 @@ class MailingList(Model):
         return getUtility(IDomainManager)[self.mail_host]
 
     @property
-    def scheme(self):
-        """See `IMailingList`."""
-        return self.domain.scheme
-
-    @property
-    def web_host(self):
-        """See `IMailingList`."""
-        return self.domain.url_host
-
-    def script_url(self, target, context=None):
-        """See `IMailingList`."""
-        # XXX Handle the case for when context is not None; those would be
-        # relative URLs.
-        return urljoin(self.domain.base_url, target + '/' + self.fqdn_listname)
-
-    @property
     def data_path(self):
         """See `IMailingList`."""
         return os.path.join(config.LIST_DATA_DIR, self.list_id)
@@ -314,7 +291,7 @@ class MailingList(Model):
 
     def confirm_address(self, cookie):
         """See `IMailingList`."""
-        local_part = expand(config.mta.verp_confirm_format, dict(
+        local_part = expand(config.mta.verp_confirm_format, self, dict(
             address='{}-confirm'.format(self.list_name),
             cookie=cookie))
         return '{}@{}'.format(local_part, self.mail_host)

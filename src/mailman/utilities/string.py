@@ -22,6 +22,7 @@ import logging
 from email.errors import HeaderParseError
 from email.header import decode_header, make_header
 from mailman import public
+from mailman.config import config
 from string import Template, whitespace
 from textwrap import TextWrapper, dedent
 
@@ -33,18 +34,40 @@ log = logging.getLogger('mailman.error')
 
 
 @public
-def expand(template, substitutions, template_class=Template):
+def expand(template, mlist=None, extras=None, template_class=Template):
     """Expand string template with substitutions.
 
     :param template: A PEP 292 $-string template.
     :type template: string
-    :param substitutions: The substitutions dictionary.
-    :type substitutions: dict
+    :param mlist: Optional mailing list.  If given, the standard set of
+        list-specific substitution variables are used automatically.
+    :type mlist: `IMailingList`
+    :param extras: An additional substitutions dictionary.  These are used to
+        augment any standard, list-specific substitutions.
+    :type extras: dict
     :param template_class: The template class to use.
     :type template_class: class
     :return: The substituted string.
     :rtype: string
     """
+    substitutions = dict(
+        site_email=config.mailman.site_owner,
+        )
+    if mlist is not None:
+        substitutions.update(dict(
+            listname=mlist.fqdn_listname,
+            list_id=mlist.list_id,
+            display_name=mlist.display_name,
+            short_listname=mlist.list_name,
+            domain=mlist.mail_host,
+            description=mlist.description,
+            info=mlist.info,
+            request_email=mlist.request_address,
+            owner_email=mlist.owner_address,
+            language=mlist.preferred_language.code,
+            ))
+    if extras is not None:
+        substitutions.update(extras)
     return template_class(template).safe_substitute(substitutions)
 
 
@@ -119,10 +142,12 @@ def wrap(text, column=70, honor_leading_ws=True):
     wrapped_paragraphs = []
     # The dedented wrapper.
     wrapper = TextWrapper(width=column,
+                          break_on_hyphens=False,
                           fix_sentence_endings=True)
     # The indented wrapper.  For this one, we'll clobber initial_indent and
     # subsequent_indent as needed per indented chunk of text.
     iwrapper = TextWrapper(width=column,
+                           break_on_hyphens=False,
                            fix_sentence_endings=True,
                            )
     add_paragraph_break = False

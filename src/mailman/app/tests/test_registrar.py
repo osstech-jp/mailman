@@ -247,7 +247,8 @@ class TestRegistrar(unittest.TestCase):
         self.assertEqual(message['To'], 'ant-owner@example.com')
         self.assertEqual(message['Subject'], 'Ant subscription notification')
         self.assertEqual(message.get_payload(), """\
-anne@example.com has been successfully subscribed to Ant.""")
+anne@example.com has been successfully subscribed to Ant.
+""")
 
     def test_no_admin_notify_mchanges(self):
         # Even when a user gets subscribed via the subscription policy

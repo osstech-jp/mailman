@@ -177,6 +177,7 @@ class TestSendProbe(unittest.TestCase):
     """Test sending of the probe message."""
 
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
@@ -240,13 +241,24 @@ Message-ID: <first>
         self.assertEqual(notice.get_content_type(), 'text/plain')
         # The interesting bits are the parts that have been interpolated into
         # the message.  For now the best we can do is know that the
-        # interpolation values appear in the message.  When Python 2.7 is our
-        # minimum requirement, we can use assertRegexpMatches().
-        body = notice.get_payload()
-        self.assertIn('test@example.com', body)
-        self.assertIn('anne@example.com', body)
-        self.assertIn('http://example.com/anne@example.com', body)
-        self.assertIn('test-owner@example.com', body)
+        # interpolation values appear in the message.
+        self.assertMultiLineEqual(notice.get_payload(), """\
+This is a probe message.  You can ignore this message.
+
+The test@example.com mailing list has received a number of bounces
+from you, indicating that there may be a problem delivering messages
+to anne@example.com.  A sample is attached below.  Please examine this
+message to make sure there are no problems with your email address.
+You may want to check with your mail administrator for more help.
+
+You don't need to do anything to remain an enabled member of the
+mailing list.
+
+If you have any questions or problems, you can contact the mailing
+list owner at
+
+    test-owner@example.com
+""")
 
     def test_headers(self):
         # Check the headers of the outer message.
@@ -285,7 +297,8 @@ Message-ID: <first>
         self._var_dir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self._var_dir)
         xx_template_path = os.path.join(
-            self._var_dir, 'templates', 'site', 'xx', 'probe.txt')
+            self._var_dir, 'templates', 'site', 'xx',
+            'list:user:notice:probe.txt')
         os.makedirs(os.path.dirname(xx_template_path))
         config.push('xx template dir', """\
         [paths.testing]
@@ -300,7 +313,6 @@ Message-ID: <first>
 blah blah blah
 $listname
 $address
-$optionsurl
 $owneraddr
 """, file=fp)
 
@@ -322,7 +334,9 @@ $owneraddr
         notice = message.get_payload(0).get_payload()
         self.assertMultiLineEqual(notice, """\
 blah blah blah test@example.com anne@example.com
-http://example.com/anne@example.com test-owner@example.com""")
+test-owner@example.com
+
+""")
 
 
 class TestProbe(unittest.TestCase):
@@ -364,6 +378,7 @@ class TestMaybeForward(unittest.TestCase):
     """Test forwarding of unrecognized bounces."""
 
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         config.push('test config', """
@@ -425,9 +440,12 @@ Message-ID: <first>
         payload = msg.get_payload(0)
         self.assertEqual(payload.get_content_type(), 'text/plain')
         body = payload.get_payload()
-        self.assertEqual(
-            body.splitlines()[-1],
-            'http://lists.example.com/admin/test@example.com/bounce')
+        self.assertMultiLineEqual(body, """\
+The attached message was received as a bounce, but either the bounce format
+was not recognized, or no member addresses could be extracted from it.  This
+mailing list has been configured to send all unrecognized bounce messages to
+the list administrator(s).
+""")
         # The second attachment should be a message/rfc822 containing the
         # original bounce message.
         payload = msg.get_payload(1)
@@ -470,9 +488,12 @@ Message-ID: <first>
         payload = msg.get_payload(0)
         self.assertEqual(payload.get_content_type(), 'text/plain')
         body = payload.get_payload()
-        self.assertEqual(
-            body.splitlines()[-1],
-            'http://lists.example.com/admin/test@example.com/bounce')
+        self.assertMultiLineEqual(body, """\
+The attached message was received as a bounce, but either the bounce format
+was not recognized, or no member addresses could be extracted from it.  This
+mailing list has been configured to send all unrecognized bounce messages to
+the list administrator(s).
+""")
         # The second attachment should be a message/rfc822 containing the
         # original bounce message.
         payload = msg.get_payload(1)

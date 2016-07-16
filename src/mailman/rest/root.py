@@ -34,6 +34,7 @@ from mailman.rest.members import AMember, AllMembers, FindMembers
 from mailman.rest.preferences import ReadOnlyPreferences
 from mailman.rest.queues import AQueue, AQueueFile, AllQueues
 from mailman.rest.templates import TemplateFinder
+from mailman.rest.uris import ASiteURI, AllSiteURIs
 from mailman.rest.users import AUser, AllUsers, ServerOwners
 from zope.component import getUtility
 
@@ -249,6 +250,9 @@ class TopLevel:
 
         Use content negotiation to context language and suffix (content-type).
         """
+        # This resource is removed in API 3.1; use the /uris resource instead.
+        if self.api.version_info > (3, 0):
+            return NotFound(), []
         if len(segments) == 3:
             fqdn_listname, template, language = segments
         elif len(segments) == 2:
@@ -263,6 +267,19 @@ class TopLevel:
         content_type = None
         return TemplateFinder(
             fqdn_listname, template, language, content_type)
+
+    @child()
+    def uris(self, content, segments):
+        if self.api.version_info < (3, 1):
+            return NotFound(), []
+        if len(segments) == 0:
+            return AllSiteURIs()
+        if len(segments) > 1:
+            return BadRequest(), []
+        template = segments[0]
+        if template not in AllSiteURIs.URIs:
+            return NotFound(), []
+        return ASiteURI(template), []
 
     @child()
     def queues(self, context, segments):

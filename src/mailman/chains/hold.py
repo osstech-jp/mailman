@@ -33,9 +33,9 @@ from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.chain import HoldEvent
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.pending import IPendable, IPendings
+from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
-from mailman.utilities.i18n import make
-from mailman.utilities.string import oneline, wrap
+from mailman.utilities.string import expand, oneline, wrap
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
@@ -100,13 +100,17 @@ def autorespond_to_sender(mlist, sender, language=None):
         log.info('hold autoresponse limit hit: %s', sender)
         response_set.response_sent(address, Response.hold)
         # Send this notification message instead.
-        text = make('nomoretoday.txt',
-                    language=language.code,
-                    sender=sender,
-                    listname=mlist.fqdn_listname,
-                    count=todays_count,
-                    owneremail=mlist.owner_address,
-                    )
+        template = getUtility(ITemplateLoader).get(
+            'list:user:notice:no-more-today', mlist,
+            language=language.code)
+        text = wrap(expand(template, mlist, dict(
+            language=language.code,
+            count=todays_count,
+            sender_email=sender,
+            # For backward compatibility.
+            sender=sender,
+            owneremail=mlist.owner_address,
+            )))
         with _.using(language.code):
             msg = UserNotification(
                 sender, mlist.owner_address,
@@ -163,10 +167,11 @@ class HoldChain(TerminalChainBase):
             bytes_subject = oneline_subject.encode(charset, 'replace')
             original_subject = bytes_subject.decode(charset)
         substitutions = dict(
-            listname    = mlist.fqdn_listname,         # noqa
-            subject     = original_subject,            # noqa
-            sender      = msg.sender,                  # noqa
-            reasons     = _compose_reasons(msgdata),   # noqa
+            subject=original_subject,
+            sender_email=msg.sender,
+            reasons=_compose_reasons(msgdata),
+            # For backward compatibility.
+            sender=msg.sender,
             )
         # At this point the message is held, but now we have to craft at least
         # two responses.  The first will go to the original author of the
@@ -191,10 +196,12 @@ class HoldChain(TerminalChainBase):
             subject = _(
               'Your message to $mlist.fqdn_listname awaits moderator approval')
             send_language_code = msgdata.get('lang', language.code)
-            text = make('postheld.txt',
-                        mailing_list=mlist,
-                        language=send_language_code,
-                        **substitutions)
+            template = getUtility(ITemplateLoader).get(
+                'list:user:notice:hold', mlist,
+                language=send_language_code)
+            text = wrap(expand(template, mlist, dict(
+                language=send_language_code,
+                **substitutions)))
             adminaddr = mlist.bounces_address
             nmsg = UserNotification(
                 msg.sender, adminaddr, subject, text,
@@ -221,10 +228,9 @@ class HoldChain(TerminalChainBase):
                                         mlist.owner_address,
                                         subject, lang=language)
                 nmsg.set_type('multipart/mixed')
-                text = MIMEText(make('postauth.txt',
-                                     mailing_list=mlist,
-                                     wrap=False,
-                                     **substitutions),
+                template = getUtility(ITemplateLoader).get(
+                    'list:admin:action:post', mlist)
+                text = MIMEText(expand(template, mlist, substitutions),
                                 _charset=charset)
                 dmsg = MIMEText(wrap(_("""\
 If you reply to this message, keeping the Subject: header intact, Mailman will

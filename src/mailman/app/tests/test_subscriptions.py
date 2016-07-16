@@ -450,7 +450,8 @@ Your authorization is required for a mailing list subscription request
 approval:
 
     For:  anne@example.com
-    List: test@example.com""")
+    List: test@example.com
+""")
 
     def test_get_moderator_approval_no_notifications(self):
         # When the subscription is held for moderator approval, and the list

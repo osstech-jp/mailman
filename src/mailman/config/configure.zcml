@@ -58,6 +58,11 @@
     />
 
   <utility
+    provides="mailman.interfaces.cache.ICacheManager"
+    factory="mailman.model.cache.CacheManager"
+    />
+
+  <utility
     provides="mailman.interfaces.database.IDatabaseFactory"
     factory="mailman.database.factory.DatabaseFactory"
     name="production"
@@ -120,8 +125,13 @@
     />
 
   <utility
-   provides="mailman.interfaces.templates.ITemplateLoader"
-   factory="mailman.app.templates.TemplateLoader"
+   provides="mailman.interfaces.template.ITemplateLoader"
+   factory="mailman.model.template.TemplateLoader"
+   />
+
+  <utility
+   provides="mailman.interfaces.template.ITemplateManager"
+   factory="mailman.model.template.TemplateManager"
    />
 
   <utility

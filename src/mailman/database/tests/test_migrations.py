@@ -30,7 +30,9 @@ from mailman.database.model import Model
 from mailman.database.transaction import transaction
 from mailman.database.types import Enum
 from mailman.interfaces.action import Action
+from mailman.interfaces.cache import ICacheManager
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
@@ -296,3 +298,157 @@ class TestMigrations(unittest.TestCase):
             (cris.id, Action.defer),
             (dana.id, Action.hold),
             ])
+
+    def test_fa0d96e28631_upgrade_uris(self):
+        with transaction():
+            # Start at the previous revision.
+            alembic.command.downgrade(alembic_cfg, '7b254d88f122')
+            # Create a mailing list through the standard API.
+            create_list('ant@example.com')
+        mlist_table = sa.sql.table(
+            'mailinglist',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('list_id', sa.Unicode),
+            sa.sql.column('digest_footer_uri', sa.Unicode),
+            sa.sql.column('digest_header_uri', sa.Unicode),
+            sa.sql.column('footer_uri', sa.Unicode),
+            sa.sql.column('header_uri', sa.Unicode),
+            sa.sql.column('goodbye_message_uri', sa.Unicode),
+            sa.sql.column('welcome_message_uri', sa.Unicode),
+            )
+        with transaction():
+            config.db.store.execute(mlist_table.update().where(
+                mlist_table.c.list_id == 'ant.example.com').values(
+                    digest_footer_uri='mailman:///digest_footer.txt',
+                    digest_header_uri='mailman:///digest_header.txt',
+                    footer_uri='mailman:///footer.txt',
+                    header_uri='mailman:///header.txt',
+                    goodbye_message_uri='mailman:///goodbye.txt',
+                    welcome_message_uri='mailman:///welcome.txt',
+                    ))
+        # Now upgrade and check to see if the values got into the template
+        # table correctly.
+        alembic.command.upgrade(alembic_cfg, 'fa0d96e28631')
+        seen_names = []
+        template_table = sa.sql.table(
+            'template',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('name', sa.Unicode),
+            sa.sql.column('context', sa.Unicode),
+            sa.sql.column('uri', sa.Unicode),
+            sa.sql.column('username', sa.Unicode),
+            sa.sql.column('password', sa.DateTime),
+            )
+        for (table_id, name, context, uri,
+             username, password) in config.db.store.execute(
+                 template_table.select()):
+            # This information isn't available in the old database
+            # version, so there's no way these can be set.
+            seen_names.append(name)
+            self.assertIsNone(username)
+            self.assertIsNone(password)
+            self.assertEqual(context, 'ant.example.com')
+            self.assertEqual(uri, 'mailman:///{}.txt'.format({
+                'list:digest:footer': 'digest_footer',
+                'list:digest:header': 'digest_header',
+                'list:regular:footer': 'footer',
+                'list:regular:header': 'header',
+                'user:ack:goodbye': 'goodbye',
+                'user:ack:welcome': 'welcome',
+                }.get(name, name)))
+        self.assertEqual(sorted(seen_names), [
+            'list:digest:footer',
+            'list:digest:header',
+            'list:regular:footer',
+            'list:regular:header',
+            'user:ack:goodbye',
+            'user:ack:welcome',
+            ])
+
+    def test_fa0d96e28631_upgrade_no_uris(self):
+        # None of the URL parameters are defined.
+        with transaction():
+            # Start at the previous revision.
+            alembic.command.downgrade(alembic_cfg, '7b254d88f122')
+            # Create a mailing list through the standard API.
+            create_list('ant@example.com')
+        # Now upgrade and check to see if the values got into the template
+        # table correctly.
+        alembic.command.upgrade(alembic_cfg, 'fa0d96e28631')
+        template_table = sa.sql.table(
+            'template',
+            sa.sql.column('id', sa.Integer),
+            )
+        entries = list(config.db.store.execute(template_table.select()))
+        self.assertEqual(len(entries), 0)
+
+    def test_fa0d96e28631_downgrade_uris(self):
+        # Create some cache directory entries.
+        self.assertTrue(os.path.exists(config.CACHE_DIR))
+        getUtility(ICacheManager).add('abc', 'def')
+        self.assertNotEqual(len(os.listdir(config.CACHE_DIR)), 0)
+        # Set up the templates using the current API.
+        with transaction():
+            create_list('ant@example.com')
+            manager = getUtility(ITemplateManager)
+            manager.set('list:digest:footer',
+                        'ant.example.com',
+                        'mailman:///digest_footer.txt')
+            manager.set('list:digest:header',
+                        'ant.example.com',
+                        'mailman:///digest_header.txt')
+            manager.set('list:regular:footer',
+                        'ant.example.com',
+                        'mailman:///footer.txt')
+            manager.set('list:regular:header',
+                        'ant.example.com',
+                        'mailman:///header.txt')
+            manager.set('user:ack:welcome',
+                        'ant.example.com',
+                        'mailman:///welcome.txt')
+            manager.set('user:ack:goodbye',
+                        'ant.example.com',
+                        'mailman:///goodbye.txt')
+        mlist_table = sa.sql.table(
+            'mailinglist',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('list_id', sa.Unicode),
+            sa.sql.column('digest_footer_uri', sa.Unicode),
+            sa.sql.column('digest_header_uri', sa.Unicode),
+            sa.sql.column('footer_uri', sa.Unicode),
+            sa.sql.column('header_uri', sa.Unicode),
+            sa.sql.column('goodbye_message_uri', sa.Unicode),
+            sa.sql.column('welcome_message_uri', sa.Unicode),
+            )
+        alembic.command.downgrade(alembic_cfg, '7b254d88f122')
+        for (table_id, list_id, digest_footer_uri, digest_header_uri,
+             footer_uri, header_uri,
+             goodbye_message_uri,
+             welcome_message_uri) in config.db.store.execute(
+                 mlist_table.select()):
+            self.assertEqual(list_id, 'ant.example.com')
+            self.assertEqual(digest_footer_uri, 'mailman:///digest_footer.txt')
+            self.assertEqual(digest_header_uri, 'mailman:///digest_header.txt')
+            self.assertEqual(footer_uri, 'mailman:///footer.txt')
+            self.assertEqual(header_uri, 'mailman:///header.txt')
+            self.assertEqual(welcome_message_uri, 'mailman:///welcome.txt')
+            self.assertEqual(goodbye_message_uri, 'mailman:///goodbye.txt')
+        # The cache directories are gone too.
+        self.assertEqual(len(os.listdir(config.CACHE_DIR)), 0,
+                         os.listdir(config.CACHE_DIR))
+
+    def test_fa0d96e28631_downgrade_missing_list(self):
+        with transaction():
+            manager = getUtility(ITemplateManager)
+            manager.set('list:regular:footer',
+                        'missing.example.com',
+                        'mailman:///missing-footer.txt')
+        alembic.command.downgrade(alembic_cfg, '7b254d88f122')
+        mlist_table = sa.sql.table(
+            'mailinglist',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('footer_uri', sa.Unicode),
+            )
+        self.assertEqual(
+            len(list(config.db.store.execute(mlist_table.select()))),
+            0)

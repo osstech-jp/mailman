@@ -82,7 +82,7 @@ class HeaderMatch(_HeaderMatchBase):
         else:
             no_content(response)
 
-    def patch_put(self, request, response, is_optional):
+    def _patch_put(self, request, response, is_optional):
         """Update the header match."""
         try:
             header_match = self.header_matches[self._position]
@@ -118,11 +118,11 @@ class HeaderMatch(_HeaderMatchBase):
 
     def on_put(self, request, response):
         """Full update of the header match."""
-        self.patch_put(request, response, is_optional=False)
+        self._patch_put(request, response, is_optional=False)
 
     def on_patch(self, request, response):
         """Partial update of the header match."""
-        self.patch_put(request, response, is_optional=True)
+        self._patch_put(request, response, is_optional=True)
 
 
 @public

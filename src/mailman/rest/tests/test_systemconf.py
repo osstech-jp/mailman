@@ -37,6 +37,7 @@ class TestSystemConfiguration(unittest.TestCase):
         self.assertIn('http_etag', json)
         del json['http_etag']
         self.assertEqual(json, dict(
+            cache_life='7d',
             default_language='en',
             email_commands_max_lines='10',
             filtered_messages_are_preservable='no',

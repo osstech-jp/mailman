@@ -64,7 +64,7 @@ class VERPMixin:
                          recipient)
                 return sender
             return '{0}@{1}'.format(
-                expand(config.mta.verp_format, dict(
+                expand(config.mta.verp_format, mlist, dict(
                     bounces=sender_mailbox,
                     local=recipient_mailbox,
                     domain=DOT.join(recipient_domain))),

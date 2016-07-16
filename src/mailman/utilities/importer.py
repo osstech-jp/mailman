@@ -20,13 +20,12 @@
 import os
 import re
 import sys
-import codecs
 import logging
 import datetime
 
 from mailman import public
 from mailman.config import config
-from mailman.handlers.decorate import decorate, decorate_template
+from mailman.handlers.decorate import decorate_template
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.archiver import ArchivePolicy
@@ -41,11 +40,11 @@ from mailman.interfaces.mailinglist import (
     SubscriptionPolicy)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
+from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.i18n import search
 from sqlalchemy import Boolean
-from urllib.error import URLError
 from zope.component import getUtility
 
 log = logging.getLogger('mailman.error')
@@ -376,43 +375,27 @@ def import_config_pck(mlist, config_dict):
     # special `mailman:` scheme indicating a file system path.  What we do
     # here is look to see if the list's decoration is different than the
     # default, and if so, we'll write the new decoration template to a
-    # `mailman:` scheme path.
+    # `mailman:` scheme path, then add the template to the template manager.
     convert_to_uri = {
-        'welcome_msg': 'welcome_message_uri',
-        'goodbye_msg': 'goodbye_message_uri',
-        'msg_header': 'header_uri',
-        'msg_footer': 'footer_uri',
-        'digest_header': 'digest_header_uri',
-        'digest_footer': 'digest_footer_uri',
+        'welcome_msg': 'list:user:notice:welcome',
+        'goodbye_msg': 'list:user:notice:goodbye',
+        'msg_header': 'list:member:regular:header',
+        'msg_footer': 'list:member:regular:footer',
+        'digest_header': 'list:member:digest:header',
+        'digest_footer': 'list:member:digest:footer',
         }
     # The best we can do is convert only the most common ones.  These are
     # order dependent; the longer substitution with the common prefix must
     # show up earlier.
     convert_placeholders = [
-        ('%(real_name)s@%(host_name)s', '$fqdn_listname'),
+        ('%(real_name)s@%(host_name)s', '$listname'),
         ('%(real_name)s', '$display_name'),
-        ('%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s',
-         '$listinfo_uri'),
+        # The generic footers no longer have URLs in them.
+        ('%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s\n', ''),
         ]
     # Collect defaults.
+    manager = getUtility(ITemplateManager)
     defaults = {}
-    for oldvar, newvar in convert_to_uri.items():
-        default_value = getattr(mlist, newvar, None)
-        if not default_value:
-            continue
-        # Check if the value changed from the default.
-        try:
-            default_text = decorate(mlist, default_value)
-        except (URLError, KeyError):
-            # Use case: importing the old a@ex.com into b@ex.com.  We can't
-            # check if it changed from the default so don't import, we may do
-            # more harm than good and it's easy to change if needed.
-            # TESTME
-            print('Unable to convert mailing list attribute:', oldvar,
-                  'with old value "{}"'.format(default_value),
-                  file=sys.stderr)
-            continue
-        defaults[newvar] = (default_value, default_text)
     for oldvar, newvar in convert_to_uri.items():
         if oldvar not in config_dict:
             continue
@@ -442,17 +425,18 @@ def import_config_pck(mlist, config_dict):
                 expanded_text.strip() == default_text.strip()):
             # Keep the default.
             continue
-        # Write the custom value to the right file.
+        # Write the custom value to the right file and add it to the template
+        # manager for real.
         base_uri = 'mailman:///$listname/$language/'
         if default_value:
             filename = default_value.rpartition('/')[2]
         else:
-            filename = '{}.txt'.format(newvar[:-4])
+            filename = '{}.txt'.format(newvar.replace(':', '_'))
         if not default_value or not default_value.startswith(base_uri):
-            setattr(mlist, newvar, base_uri + filename)
+            manager.set(newvar, mlist.list_id, base_uri + filename)
         filepath = list(search(filename, mlist))[0]
         makedirs(os.path.dirname(filepath))
-        with codecs.open(filepath, 'w', encoding='utf-8') as fp:
+        with open(filepath, 'w', encoding='utf-8') as fp:
             fp.write(text)
     # Import rosters.
     regulars_set = set(config_dict.get('members', {}))

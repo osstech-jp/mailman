@@ -24,10 +24,12 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers import decorate
 from mailman.interfaces.archiver import IArchiver
+from mailman.interfaces.template import ITemplateManager
 from mailman.testing.helpers import (
     LogFileMark, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from tempfile import TemporaryDirectory
+from zope.component import getUtility
 from zope.interface import implementer
 
 
@@ -86,7 +88,8 @@ This is a test message.
         footer_path = os.path.join(site_dir, 'myfooter.txt')
         with open(footer_path, 'w', encoding='utf-8') as fp:
             print('${testarchiver_url}', file=fp)
-        self._mlist.footer_uri = 'mailman:///myfooter.txt'
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
         self._mlist.preferred_language = 'en'
         decorate.process(self._mlist, self._msg, {})
         self.assertIn('http://example.com/link_to_message',
@@ -100,7 +103,9 @@ This is a test message.
         footer_path = os.path.join(list_dir, 'myfooter.txt')
         with open(footer_path, 'w', encoding='utf-8') as fp:
             print('${testarchiver_url}', file=fp)
-        self._mlist.footer_uri = 'mailman:///${list_id}/myfooter.txt'
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', self._mlist.list_id,
+            'mailman:///${list_id}/myfooter.txt')
         self._mlist.preferred_language = 'en'
         decorate.process(self._mlist, self._msg, {})
         self.assertIn('http://example.com/link_to_message',
@@ -114,7 +119,8 @@ This is a test message.
         footer_path = os.path.join(list_dir, 'myfooter.txt')
         with open(footer_path, 'w', encoding='utf-8') as fp:
             print('${testarchiver_url}', file=fp)
-        self._mlist.footer_uri = (
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', self._mlist.list_id,
             'mailman:///${list_id}/${language}/myfooter.txt')
         self._mlist.preferred_language = 'it'
         decorate.process(self._mlist, self._msg, {})
@@ -155,7 +161,9 @@ This is a test message.
         footer_path = os.path.join(site_dir, 'myfooter.txt')
         with open(footer_path, 'w', encoding='utf-8') as fp:
             print('${broken_url}', file=fp)
-        self._mlist.footer_uri = 'mailman:///myfooter.txt'
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', self._mlist.list_id,
+            'mailman:///myfooter.txt')
         self._mlist.preferred_language = 'en'
         mark = LogFileMark('mailman.archiver')
         decorate.process(self._mlist, self._msg, {})

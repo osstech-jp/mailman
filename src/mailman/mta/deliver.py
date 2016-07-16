@@ -102,11 +102,11 @@ def deliver(mlist, msg, msgdata):
         )
     template = config.logging.smtp.every
     if template.lower() != 'no':
-        log.info('%s', expand(template, substitutions))
+        log.info('%s', expand(template, mlist, substitutions))
     if refused:
         template = config.logging.smtp.refused
         if template.lower() != 'no':
-            log.info('%s', expand(template, substitutions))
+            log.info('%s', expand(template, mlist, substitutions))
     else:
         # Log the successful post, but if it was not destined to the mailing
         # list (e.g. to the owner or admin), print the actual recipients
@@ -117,7 +117,7 @@ def deliver(mlist, msg, msgdata):
             substitutions['recips'] = COMMA.join(recips)
         template = config.logging.smtp.success
         if template.lower() != 'no':
-            log.info('%s', expand(template, substitutions))
+            log.info('%s', expand(template, mlist, substitutions))
     # Process any failed deliveries.
     temporary_failures = []
     permanent_failures = []
@@ -145,7 +145,7 @@ def deliver(mlist, msg, msgdata):
                 smtpcode    = code,                 # noqa
                 smtpmsg     = smtp_message,         # noqa
                 )
-            log.info('%s', expand(template, substitutions))
+            log.info('%s', expand(template, mlist, substitutions))
     # Return the results
     if temporary_failures or permanent_failures:
         raise SomeRecipientsFailed(temporary_failures, permanent_failures)

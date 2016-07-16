@@ -30,7 +30,7 @@ We start by writing the site-global header and footer template.
     >>> os.makedirs(site_dir)
     >>> config.push('templates', """
     ... [paths.testing]
-    ... template_dir: {0}
+    ... template_dir: {}
     ... """.format(template_dir))
 
     >>> myheader_path = os.path.join(site_dir, 'myheader.txt')
@@ -44,16 +44,19 @@ We start by writing the site-global header and footer template.
     ...     print("""\
     ... User name: $user_name
     ... Language: $user_language
-    ... Options: $user_optionsurl
     ... """, file=fp)
 
 Then create a mailing list which will use this header and footer.  Because
 these are site-global templates, we can use a shorted URL.
 
     >>> mlist = create_list('test@example.com')
-    >>> mlist.header_uri = 'mailman:///myheader.txt'
-    >>> mlist.footer_uri = 'mailman:///myfooter.txt'
-
+    >>> from mailman.interfaces.template import ITemplateManager
+    >>> from zope.component import getUtility
+    >>> manager = getUtility(ITemplateManager)
+    >>> manager.set('list:member:regular:header', mlist.list_id,
+    ...             'mailman:///myheader.txt')
+    >>> manager.set('list:member:regular:footer', mlist.list_id,
+    ...             'mailman:///myfooter.txt')
     >>> transaction.commit()
 
     >>> msg = message_from_string("""\
@@ -65,11 +68,11 @@ these are site-global templates, we can use a shorted URL.
     ... This is a test.
     ... """)
 
-    >>> recipients = set([
+    >>> recipients = {
     ...     'aperson@example.com',
     ...     'bperson@example.com',
     ...     'cperson@example.com',
-    ...     ])
+    ...     }
 
     >>> msgdata = dict(
     ...     recipients=recipients,
@@ -80,7 +83,6 @@ More information is included when the recipient is a member of the mailing
 list.
 ::
 
-    >>> from zope.component import getUtility
     >>> from mailman.interfaces.member import MemberRole
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> user_manager = getUtility(IUserManager)
@@ -126,7 +128,6 @@ The decorations happen when the message is delivered.
     This is a test.
     User name: Anne Person
     Language: English (USA)
-    Options: http://example.com/aperson@example.com
     ----------
     From: aperson@example.org
     To: test@example.com
@@ -144,7 +145,6 @@ The decorations happen when the message is delivered.
     This is a test.
     User name: Bart Person
     Language: English (USA)
-    Options: http://example.com/bperson@example.com
     ----------
     From: aperson@example.org
     To: test@example.com
@@ -162,7 +162,6 @@ The decorations happen when the message is delivered.
     This is a test.
     User name: Cris Person
     Language: English (USA)
-    Options: http://example.com/cperson@example.com
     ----------
 
 

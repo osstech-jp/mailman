@@ -263,5 +263,5 @@ def handle_ConfigurationUpdatedEvent(event):
         if conf.path:
             substitutions = config.paths
             substitutions['name'] = name
-            path = expand(conf.path, substitutions)
+            path = expand(conf.path, None, substitutions)
             config.switchboards[name] = Switchboard(name, path)

@@ -25,8 +25,8 @@ from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.languages import ILanguageManager
-from mailman.utilities.i18n import make
-from mailman.utilities.string import oneline
+from mailman.interfaces.template import ITemplateLoader
+from mailman.utilities.string import expand, oneline
 from zope.component import getUtility
 from zope.interface import implementer
 
@@ -60,17 +60,15 @@ class Acknowledge:
                     if 'lang' in msgdata
                     else member.preferred_language)
         # Now get the acknowledgement template.
-        display_name = mlist.display_name
-        text = make('postack.txt',
-                    mlist=mlist,
-                    language=language.code,
-                    wrap=False,
-                    subject=oneline(original_subject, in_unicode=True),
-                    list_name=mlist.list_name,
-                    display_name=display_name,
-                    listinfo_url=mlist.script_url('listinfo'),
-                    optionsurl=member.options_url,
-                    )
+        display_name = mlist.display_name           # noqa
+        template = getUtility(ITemplateLoader).get(
+            'list:user:notice:post', mlist,
+            language=language.code)
+        text = expand(template, mlist, dict(
+            subject=oneline(original_subject, in_unicode=True),
+            # For backward compatibility.
+            list_name=mlist.list_name,
+            ))
         # Craft the outgoing message, with all headers and attributes
         # necessary for general delivery.  Then enqueue it to the outgoing
         # queue.

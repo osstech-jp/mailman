@@ -82,9 +82,6 @@ class BasicOperation:
         mlist.mime_is_default_digest = False
         mlist.digest_size_threshold = 30          # KB
         mlist.digest_send_periodic = True
-        mlist.digest_header_uri = None
-        mlist.digest_footer_uri = (
-            'mailman:///$listname/$language/footer-generic.txt')
         mlist.digest_volume_frequency = DigestFrequency.monthly
         mlist.next_digest_number = 1
         # NNTP gateway
@@ -127,9 +124,6 @@ class BasicOperation:
         # is that they will get all messages, and they will not have an entry
         # in this dictionary.
         mlist.topics_userinterest = {}
-        # Other
-        mlist.header_uri = None
-        mlist.footer_uri = 'mailman:///$listname/$language/footer-generic.txt'
         # scrub regular delivery
         mlist.scrub_nondigest = False
 
@@ -204,8 +198,6 @@ class Announcement:
         mlist.send_welcome_message = True
         mlist.send_goodbye_message = True
         mlist.anonymous_list = False
-        mlist.welcome_message_uri = 'mailman:///welcome.txt'
-        mlist.goodbye_message_uri = ''
 
 
 @public
@@ -219,8 +211,6 @@ class Discussion:
         mlist.send_welcome_message = True
         mlist.send_goodbye_message = True
         mlist.anonymous_list = False
-        mlist.welcome_message_uri = 'mailman:///welcome.txt'
-        mlist.goodbye_message_uri = ''
 
 
 @public

@@ -31,8 +31,9 @@ from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.member import NotAMemberError
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests, RequestType
+from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.datetime import now
-from mailman.utilities.i18n import make
+from mailman.utilities.string import expand, wrap
 from zope.component import getUtility
 
 
@@ -190,12 +191,14 @@ def hold_unsubscription(mlist, email):
     if mlist.admin_immed_notify:
         subject = _(
             'New unsubscription request from $mlist.display_name by $email')
-        text = make('unsubauth.txt',
-                    mailing_list=mlist,
-                    email=email,
-                    listname=mlist.fqdn_listname,
-                    admindb_url=mlist.script_url('admindb'),
-                    )
+        template = getUtility(ITemplateLoader).get(
+            'list:admin:action:unsubscribe', mlist)
+        text = wrap(expand(template, mlist, dict(
+            # For backward compatibility.
+            mailing_list=mlist,
+            member=email,
+            email=email,
+            )))
         # This message should appear to come from the <list>-owner so as
         # to avoid any useless bounce processing.
         msg = UserNotification(
@@ -230,7 +233,7 @@ def handle_unsubscription(mlist, id, action, comment=None):
             pass
         slog.info('%s: deleted %s', mlist.fqdn_listname, email)
     else:
-        raise AssertionError('Unexpected action: {0}'.format(action))
+        raise AssertionError('Unexpected action: {}'.format(action))
     # Delete the request from the database.
     requestdb.delete_request(id)
 
@@ -246,14 +249,15 @@ def send_rejection(mlist, request, recip, comment, origmsg=None, lang=None):
         lang = (mlist.preferred_language
                 if member is None
                 else member.preferred_language)
-    text = make('refuse.txt',
-                mailing_list=mlist,
-                language=lang.code,
-                listname=mlist.fqdn_listname,
-                request=request,
-                reason=comment,
-                adminaddr=mlist.owner_address,
-                )
+    template = getUtility(ITemplateLoader).get(
+        'list:user:notice:refuse', mlist)
+    text = wrap(expand(template, mlist, dict(
+        language=lang.code,
+        reason=comment,
+        # For backward compatibility.
+        request=request,
+        adminaddr=mlist.owner_address,
+        )))
     with _.using(lang.code):
         # add in original message, but not wrap/filled
         if origmsg:

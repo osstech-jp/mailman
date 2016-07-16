@@ -33,10 +33,10 @@ from mailman.core.runner import Runner
 from mailman.email.message import Message, MultipartDigestMessage
 from mailman.handlers.decorate import decorate
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
-from mailman.utilities.i18n import make
+from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.mailbox import Mailbox
-from mailman.utilities.string import oneline, wrap
-from urllib.error import URLError
+from mailman.utilities.string import expand, oneline, wrap
+from zope.component import getUtility
 
 
 log = logging.getLogger('mailman.error')
@@ -67,23 +67,16 @@ class Digester:
         # digest header are separate MIME subobjects.  In either case, it's
         # the first thing in the digest, and we can calculate it now, so go
         # ahead and add it now.
-        self._masthead = make('masthead.txt',
-                              mailing_list=mlist,
-                              display_name=mlist.display_name,
-                              got_list_email=mlist.posting_address,
-                              got_listinfo_url=mlist.script_url('listinfo'),
-                              got_request_email=mlist.request_address,
-                              got_owner_email=mlist.owner_address,
-                              )
+        template = getUtility(ITemplateLoader).get(
+            'list:member:digest:masthead', mlist)
+        self._masthead = wrap(expand(template, mlist, dict(
+            # For backward compatibility.
+            got_list_email=mlist.posting_address,
+            got_request_email=mlist.request_address,
+            got_owner_email=mlist.owner_address,
+            )))
         # Set things up for the table of contents.
-        if mlist.digest_header_uri is not None:
-            try:
-                self._header = decorate(mlist, mlist.digest_header_uri)
-            except URLError:
-                log.exception(
-                    'Digest header decorator URI not found ({}): {}'.format(
-                        mlist.fqdn_listname, mlist.digest_header_uri))
-                self._header = ''
+        self._header = decorate('list:member:digest:header', mlist)
         self._toc = StringIO()
         print(_("Today's Topics:\n"), file=self._toc)
 
@@ -151,7 +144,7 @@ class MIMEDigester(Digester):
         masthead['Content-Description'] = self._subject
         self._message.attach(masthead)
         # Add the optional digest header.
-        if mlist.digest_header_uri is not None:
+        if len(self._header) > 0:
             header = MIMEText(self._header.encode(self._charset),
                               _charset=self._charset)
             header['Content-Description'] = _('Digest Header')
@@ -186,16 +179,8 @@ class MIMEDigester(Digester):
     def finish(self):
         """Finish up the digest, producing the email-ready copy."""
         self._message.attach(self._digest_part)
-        if self._mlist.digest_footer_uri is not None:
-            try:
-                footer_text = decorate(
-                    self._mlist, self._mlist.digest_footer_uri)
-            except URLError:
-                log.exception(
-                    'Digest footer decorator URI not found ({0}): {1}'.format(
-                        self._mlist.fqdn_listname,
-                        self._mlist.digest_footer_uri))
-                footer_text = ''
+        footer_text = decorate('list:member:digest:footer', self._mlist)
+        if len(footer_text) > 0:
             footer = MIMEText(footer_text.encode(self._charset),
                               _charset=self._charset)
             footer['Content-Description'] = _('Digest Footer')
@@ -220,7 +205,7 @@ class RFC1153Digester(Digester):
         print(self._masthead, file=self._text)
         print(file=self._text)
         # Add the optional digest header.
-        if mlist.digest_header_uri is not None:
+        if len(self._header) > 0:
             print(self._header, file=self._text)
             print(file=self._text)
         # Calculate the set of headers we're to keep in the RFC1153 digest.
@@ -273,16 +258,8 @@ class RFC1153Digester(Digester):
 
     def finish(self):
         """Finish up the digest, producing the email-ready copy."""
-        if self._mlist.digest_footer_uri is not None:
-            try:
-                footer_text = decorate(
-                    self._mlist, self._mlist.digest_footer_uri)
-            except URLError:
-                log.exception(
-                    'Digest footer decorator URI not found ({}): {}'.format(
-                        self._mlist.fqdn_listname,
-                        self._mlist.digest_footer_uri))
-                footer_text = ''
+        footer_text = decorate('list:member:digest:footer', self._mlist)
+        if len(footer_text) > 0:
             # MAS: There is no real place for the digest_footer in an RFC 1153
             # compliant digest, so add it as an additional message with
             # Subject: Digest Footer

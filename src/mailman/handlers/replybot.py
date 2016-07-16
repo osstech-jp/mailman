@@ -100,12 +100,11 @@ class Replybot:
         d = dict(
             list_name=mlist.list_name,
             display_name=display_name,
-            listurl=mlist.script_url('listinfo'),
             requestemail=mlist.request_address,
             owneremail=mlist.owner_address,
             )
         # Interpolation and Wrap the response text.
-        text = wrap(expand(response_text, d))
+        text = wrap(expand(response_text, mlist, d))
         outmsg = UserNotification(msg.sender, mlist.bounces_address,
                                   subject, text, mlist.preferred_language)
         outmsg['X-Mailer'] = _('The Mailman Replybot')

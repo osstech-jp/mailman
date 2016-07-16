@@ -25,10 +25,12 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
+from mailman.interfaces.template import ITemplateManager
 from mailman.mta.deliver import Deliver
 from mailman.testing.helpers import (
     specialized_message_from_string as mfs, subscribe)
 from mailman.testing.layers import ConfigLayer
+from zope.component import getUtility
 
 
 # Global test capture.
@@ -50,6 +52,7 @@ class TestIndividualDelivery(unittest.TestCase):
     """Test personalized delivery details."""
 
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
@@ -70,22 +73,21 @@ Subject: test
         path = os.path.join(self._template_dir,
                             'site', 'en', 'member-footer.txt')
         os.makedirs(os.path.dirname(path))
-        with open(path, 'w') as fp:
+        with open(path, 'w', encoding='utf-8') as fp:
             print("""\
 address  : $user_address
 delivered: $user_delivered_to
 language : $user_language
 name     : $user_name
-options  : $user_optionsurl
 """, file=fp)
         config.push('templates', """
         [paths.testing]
-        template_dir: {0}
+        template_dir: {}
         """.format(self._template_dir))
         self.addCleanup(config.pop, 'templates')
-        self._mlist.footer_uri = 'mailman:///member-footer.txt'
-        # Let assertMultiLineEqual work without bounds.
-        self.maxDiff = None
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', self._mlist.list_id,
+            'mailman:///member-footer.txt')
 
     def tearDown(self):
         # Free global references.
@@ -123,6 +125,5 @@ address  : anne@example.org
 delivered: anne@example.org
 language : English (USA)
 name     : Anne Person
-options  : http://example.com/anne@example.org
 
 """)

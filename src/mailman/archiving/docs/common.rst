@@ -38,8 +38,8 @@ interoperate.
         http://go.mail-archive.dev/test%40example.com
         http://go.mail-archive.dev/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
     mhonarc
-        http://lists.example.com/.../test@example.com
-        http://lists.example.com/.../RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
+        http://example.com/.../test@example.com
+        http://example.com/.../RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
     prototype
         None
         None

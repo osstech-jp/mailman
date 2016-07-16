@@ -64,6 +64,7 @@ definition.
     File system paths:
         ARCHIVE_DIR     = /var/lib/mailman/archives
         BIN_DIR         = /sbin
+        CACHE_DIR       = /var/lib/mailman/cache
         CFG_FILE        = .../test.cfg
         DATA_DIR        = /var/lib/mailman/data
         ETC_DIR         = /etc

@@ -24,9 +24,7 @@ from itertools import product
 from mailman import public
 from mailman.config import config
 from mailman.core.constants import system_preferences
-from mailman.core.i18n import _
 from mailman.interfaces.errors import MailmanError
-from mailman.utilities.string import expand, wrap as wrap_text
 from pkg_resources import resource_filename
 
 
@@ -159,46 +157,3 @@ def find(template_file, mlist=None, language=None, _trace=False):
                 print(' FOUND:', path, file=sys.stderr)
             return path, fp
     raise TemplateNotFoundError(template_file)
-
-
-@public
-def make(template_file, mlist=None, language=None, wrap=True,
-         _trace=False, **kw):
-    """Locate and 'make' a template file.
-
-    The template file is located as with `find()`, and the resulting text is
-    optionally wrapped and interpolated with the keyword argument dictionary.
-
-    :param template_file: The name of the template file to search for.
-    :type template_file: string
-    :param mlist: Optional mailing list used as the context for
-        searching for the template file.  The list's preferred language will
-        influence the search, as will the list's data directory.
-    :type mlist: `IMailingList`
-    :param language: Optional language code, which influences the search.
-    :type language: string
-    :param wrap: When True, wrap the text.
-    :type wrap: bool
-    :param _trace: Passed through to ``find()``, this enables printing of
-        debugging information during template search.
-    :type _trace: bool
-    :param **kw: Keyword arguments for template interpolation.
-    :return: The interpolated text.
-    :rtype: string
-    :raises TemplateNotFoundError: when the template could not be found.
-    """
-    path, fp = find(template_file, mlist, language, _trace)
-    try:
-        # XXX Removing the trailing newline is a hack carried over from
-        # Mailman 2.  The (stripped) template text is then passed through the
-        # translation catalog.  This ensures that the translated text is
-        # unicode, and also allows for volunteers to translate the templates
-        # into the language catalogs.
-        template = _(fp.read()[:-1])
-    finally:
-        fp.close()
-    assert isinstance(template, str), 'Translated template is not a string'
-    text = expand(template, kw)
-    if wrap:
-        return wrap_text(text)
-    return text

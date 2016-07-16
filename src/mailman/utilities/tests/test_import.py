@@ -31,22 +31,23 @@ from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
+from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, SubscriptionPolicy)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.nntp import NewsgroupModeration
-from mailman.interfaces.templates import ITemplateLoader
+from mailman.interfaces.template import ITemplateLoader, ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import LogFileMark
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.importer import (
     Import21Error, check_language_code, import_config_pck)
-from mailman.utilities.string import expand
 from pickle import load
 from pkg_resources import resource_filename
 from unittest import mock
+from urllib.error import URLError
 from zope.component import getUtility
 
 
@@ -638,16 +639,17 @@ class TestConvertToURI(unittest.TestCase):
     #       -> %(listinfo_uri)s
 
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('blank@example.com')
         self._conf_mapping = dict(
-            welcome_msg='welcome_message_uri',
-            goodbye_msg='goodbye_message_uri',
-            msg_header='header_uri',
-            msg_footer='footer_uri',
-            digest_header='digest_header_uri',
-            digest_footer='digest_footer_uri',
+            welcome_msg='list:user:notice:welcome',
+            goodbye_msg='list:user:notice:goodbye',
+            msg_header='list:member:regular:header',
+            msg_footer='list:member:regular:footer',
+            digest_header='list:member:digest:header',
+            digest_footer='list:member:digest:footer',
             )
         self._pckdict = dict()
 
@@ -655,8 +657,7 @@ class TestConvertToURI(unittest.TestCase):
         for oldvar, newvar in self._conf_mapping.items():
             self._pckdict[str(oldvar)] = b'TEST VALUE'
             import_config_pck(self._mlist, self._pckdict)
-            newattr = getattr(self._mlist, newvar)
-            text = decorate(self._mlist, newattr)
+            text = decorate(newvar, self._mlist)
             self.assertEqual(
                 text, 'TEST VALUE',
                 'Old variable %s was not properly imported to %s'
@@ -664,21 +665,13 @@ class TestConvertToURI(unittest.TestCase):
 
     def test_substitutions(self):
         test_text = ('UNIT TESTING %(real_name)s mailing list\n'
-                     '%(real_name)s@%(host_name)s\n'
-                     '%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s')
+                     '%(real_name)s@%(host_name)s')
         expected_text = ('UNIT TESTING $display_name mailing list\n'
-                         '$fqdn_listname\n'
-                         '$listinfo_uri')
+                         '$listname')
         for oldvar, newvar in self._conf_mapping.items():
             self._pckdict[str(oldvar)] = str(test_text)
             import_config_pck(self._mlist, self._pckdict)
-            newattr = getattr(self._mlist, newvar)
-            template_uri = expand(newattr, dict(
-                listname=self._mlist.fqdn_listname,
-                language=self._mlist.preferred_language.code,
-                ))
-            loader = getUtility(ITemplateLoader)
-            text = loader.get(template_uri)
+            text = getUtility(ITemplateLoader).get(newvar, self._mlist)
             self.assertEqual(
                 text, expected_text,
                 'Old variables were not converted for %s' % newvar)
@@ -689,35 +682,53 @@ class TestConvertToURI(unittest.TestCase):
             '_______________________________________________\n'
             '%(real_name)s mailing list\n'
             '%(real_name)s@%(host_name)s\n'
-            '%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s'
+            '%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s\n'
             )
+        loader = getUtility(ITemplateLoader)
         for oldvar in ('msg_footer', 'digest_footer'):
             newvar = self._conf_mapping[oldvar]
             self._pckdict[str(oldvar)] = str(default_msg_footer)
-            old_value = getattr(self._mlist, newvar)
+            try:
+                old_value = loader.get(newvar, self._mlist)
+            except URLError:
+                old_value = None
             import_config_pck(self._mlist, self._pckdict)
-            new_value = getattr(self._mlist, newvar)
+            try:
+                new_value = loader.get(newvar, self._mlist)
+            except URLError:
+                new_value = None
             self.assertEqual(
                 old_value, new_value,
-                'Default value was not preserved for %s' % newvar)
+                '{} changed unexpectedly: {} != {}'.format(
+                    newvar, old_value, new_value))
 
     def test_keep_default_if_fqdn_changed(self):
         # Use case: importing the old a@ex.com into b@ex.com.  We can't check
         # if it changed from the default so don't import.  We may do more harm
         # than good and it's easy to change if needed.
         test_value = b'TEST-VALUE'
+        # We need an IDomain for this mail_host.
+        getUtility(IDomainManager).add('test.example.com')
+        manager = getUtility(ITemplateManager)
         for oldvar, newvar in self._conf_mapping.items():
             self._mlist.mail_host = 'example.com'
             self._pckdict['mail_host'] = b'test.example.com'
             self._pckdict[str(oldvar)] = test_value
-            old_value = getattr(self._mlist, newvar)
+            try:
+                old_value = manager.get(newvar, 'blank.example.com')
+            except URLError:
+                old_value = None
             # Suppress warning messages in the test output.
             with mock.patch('sys.stderr'):
                 import_config_pck(self._mlist, self._pckdict)
-            new_value = getattr(self._mlist, newvar)
+            try:
+                new_value = manager.get(newvar, 'test.example.com')
+            except URLError:
+                new_value = None
             self.assertEqual(
                 old_value, new_value,
-                'Default value was not preserved for %s' % newvar)
+                '{} changed unexpectedly: {} != {}'.format(
+                    newvar, old_value, new_value))
 
     def test_unicode(self):
         # non-ascii templates
@@ -725,10 +736,11 @@ class TestConvertToURI(unittest.TestCase):
             self._pckdict[str(oldvar)] = b'Ol\xe1!'
         import_config_pck(self._mlist, self._pckdict)
         for oldvar, newvar in self._conf_mapping.items():
-            newattr = getattr(self._mlist, newvar)
-            text = decorate(self._mlist, newattr)
+            text = decorate(newvar, self._mlist)
             expected = u'Ol\ufffd!'
-            self.assertEqual(text, expected)
+            self.assertEqual(
+                text, expected,
+                '{} -> {} did not get converted'.format(oldvar, newvar))
 
     def test_unicode_in_default(self):
         # What if the default template is already in UTF-8?   For example, if
@@ -736,13 +748,13 @@ class TestConvertToURI(unittest.TestCase):
         footer = b'\xe4\xb8\xad $listinfo_uri'
         footer_path = os.path.join(
             config.VAR_DIR, 'templates', 'lists',
-            'blank@example.com', 'en', 'footer-generic.txt')
+            'blank@example.com', 'en', 'footer.txt')
         makedirs(os.path.dirname(footer_path))
         with open(footer_path, 'wb') as fp:
             fp.write(footer)
         self._pckdict['msg_footer'] = b'NEW-VALUE'
         import_config_pck(self._mlist, self._pckdict)
-        text = decorate(self._mlist, self._mlist.footer_uri)
+        text = decorate('list:member:regular:footer', self._mlist)
         self.assertEqual(text, 'NEW-VALUE')
 
 

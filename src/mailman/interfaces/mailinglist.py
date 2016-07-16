@@ -111,6 +111,19 @@ class IMailingList(Interface):
         mailing lists, or in headers, and so forth.  It should be as succinct
         as you can get it, while still identifying what the list is.""")
 
+    info = Attribute("""\
+        A longer description of this mailing list.  This can be any arbitrary
+        text, up to a database-specific maximum length.
+        """)
+
+    preferred_language = Attribute("""\
+        The default language for communications on this mailing list.
+
+        When the list sends out notifications, it will be in this language,
+        unless the recipient is a known user and that user has a preferred
+        language.
+        """)
+
     subject_prefix = Attribute("""\
         The text to insert at the front of the Subject field.
 
@@ -349,29 +362,6 @@ class IMailingList(Interface):
         digest recipients are cleared.
         """)
 
-    # Web access.
-
-    scheme = Attribute(
-        """The protocol scheme used to contact this list's server.
-
-        The web server on this protocol provides the web interface for this
-        mailing list.  The protocol scheme should be 'http' or 'https'.""")
-
-    web_host = Attribute(
-        """This list's web server's domain.
-
-        The read-only domain name of the host to contact for interacting with
-        the web interface of the mailing list.""")
-
-    def script_url(target, context=None):
-        """Return the url to the given script target.
-
-        If 'context' is not given, or is None, then an absolute url is
-        returned.  If context is given, it must be an IMailingListRequest
-        object, and the returned url will be relative to that object's
-        'location' attribute.
-        """
-
     # Autoresponses.
 
     autoresponse_grace_period = Attribute(
@@ -593,182 +583,8 @@ class IMailingList(Interface):
     send_welcome_message = Attribute(
         """Flag indicating whether a welcome message should be sent.""")
 
-    welcome_message_uri = Attribute(
-        """URI for the list's welcome message.
-
-        This can be any URI supported by `urllib2` with the addition of
-        `mailman:` URIs, which reference internal default resources.  This is
-        a template which can include the following placeholders:
-
-        $listname - the FQDN list name for this mailing list.
-        $language - the language code, usually the list's preferred language.
-
-        The resource will be downloaded and cached whenever the welcome
-        message is sent.  The resource at this URI can contain the following
-        placeholders, which are also filled in through values on the mailing
-        list:
-
-        $fqdn_listname    - the FQDN list name for this mailing list.
-        $list_name        - the human readable name for the mailing list.
-        $listinfo_uri     - the URI to the list's information page.
-        $list_requests    - the address to the list's `-request` address.
-        $user_name        - the name of the subscribing user.
-        $user_address     - the email address of the subscribing user.
-        $user_options_uri - the URI to this member's options page.
-        """)
-
     send_goodbye_message = Attribute(
         """Flag indicating whether a goodbye message should be sent.""")
-
-    goodbye_message_uri = Attribute(
-        """URI for the list's goodbye message.
-
-        This can be any URI supported by `urllib2` with the addition of
-        `mailman:` URIs, which reference internal default resources.  This is
-        a template which can include the following placeholders:
-
-        $listname - the FQDN list name for this mailing list.
-        $language - the language code, usually the list's preferred language.
-
-        The resource will be downloaded and cached whenever the goodbye
-        message is sent.  The resource at this URI can contain the following
-        placeholders, which are also filled in through values on the mailing
-        list:
-
-        $fqdn_listname    - the FQDN list name for this mailing list.
-        $list_name        - the human readable name for the mailing list.
-        $listinfo_uri     - the URI to the list's information page.
-        $list_requests    - the address to the list's `-request` address.
-        $user_name        - the name of the subscribing user.
-        $user_address     - the email address of the subscribing user.
-        $user_options_uri - the URI to this member's options page.
-        """)
-
-    # Decorators.
-
-    header_uri = Attribute(
-        """URI for the header decorator on regular delivery messages.
-
-        This can be any URI supported by `urllib2` with the addition of
-        `mailman:` URIs, which reference internal default resources.  This is
-        a template which can include the following placeholders:
-
-        $listname - the FQDN list name for this mailing list.
-        $language - the language code, usually the list's preferred language.
-
-        The resource will be downloaded and cached whenever the decorator is
-        needed.  The resource at this URI can contain the following
-        placeholders, which are also filled in through values on the mailing
-        list:
-
-        $fqdn_listname    - the FQDN list name for this mailing list.
-        $list_name        - the human readable name for the mailing list.
-        $host_name        - the mailing list's host name
-        $listinfo_uri     - the URI to the list's information page.
-        $list_requests    - the address to the list's `-request` address.
-        $description      - the mailing list's description
-        $info             - additional mailing list's information
-
-        Personalized messages will also have these placeholders available:
-
-        $user_name        - the name of the subscribing user.
-        $user_address     - the email address of the subscribing user.
-        $user_options_uri - the URI to this member's options page.
-        """
-        )
-
-    footer_uri = Attribute(
-        """URI for the footer decorator on regular delivery messages.
-
-        This can be any URI supported by `urllib2` with the addition of
-        `mailman:` URIs, which reference internal default resources.  This is
-        a template which can include the following placeholders:
-
-        $listname - the FQDN list name for this mailing list.
-        $language - the language code, usually the list's preferred language.
-
-        The resource will be downloaded and cached whenever the decorator is
-        needed.  The resource at this URI can contain the following
-        placeholders, which are also filled in through values on the mailing
-        list:
-
-        $fqdn_listname    - the FQDN list name for this mailing list.
-        $list_name        - the human readable name for the mailing list.
-        $host_name        - the mailing list's host name
-        $listinfo_uri     - the URI to the list's information page.
-        $list_requests    - the address to the list's `-request` address.
-        $description      - the mailing list's description
-        $info             - additional mailing list's information
-
-        Personalized messages will also have these placeholders available:
-
-        $user_name        - the name of the subscribing user.
-        $user_address     - the email address of the subscribing user.
-        $user_options_uri - the URI to this member's options page.
-        """
-        )
-
-    digest_header_uri = Attribute(
-        """URI for the header decorator on digest messages.
-
-        This can be any URI supported by `urllib2` with the addition of
-        `mailman:` URIs, which reference internal default resources.  This is
-        a template which can include the following placeholders:
-
-        $listname - the FQDN list name for this mailing list.
-        $language - the language code, usually the list's preferred language.
-
-        The resource will be downloaded and cached whenever the decorator is
-        needed.  The resource at this URI can contain the following
-        placeholders, which are also filled in through values on the mailing
-        list:
-
-        $fqdn_listname    - the FQDN list name for this mailing list.
-        $list_name        - the human readable name for the mailing list.
-        $host_name        - the mailing list's host name
-        $listinfo_uri     - the URI to the list's information page.
-        $list_requests    - the address to the list's `-request` address.
-        $description      - the mailing list's description
-        $info             - additional mailing list's information
-
-        Personalized messages will also have these placeholders available:
-
-        $user_name        - the name of the subscribing user.
-        $user_address     - the email address of the subscribing user.
-        $user_options_uri - the URI to this member's options page.
-        """
-        )
-
-    digest_footer_uri = Attribute(
-        """URI for the footer decorator on digest messages.
-
-        This can be any URI supported by `urllib2` with the addition of
-        `mailman:` URIs, which reference internal default resources.  This is
-        a template which can include the following placeholders:
-
-        $listname - the FQDN list name for this mailing list.
-        $language - the language code, usually the list's preferred language.
-
-        The resource will be downloaded and cached whenever the decorator is
-        needed.  The resource at this URI can contain the following
-        placeholders, which are also filled in through values on the mailing
-        list:
-
-        $fqdn_listname    - the FQDN list name for this mailing list.
-        $list_name        - the human readable name for the mailing list.
-        $host_name        - the mailing list's host name
-        $listinfo_uri     - the URI to the list's information page.
-        $list_requests    - the address to the list's `-request` address.
-        $description      - the mailing list's description
-        $info             - additional mailing list's information
-
-        Personalized messages will also have these placeholders available:
-
-        $user_name        - the name of the subscribing user.
-        $user_address     - the email address of the subscribing user.
-        $user_options_uri - the URI to this member's options page.
-        """
-        )
 
 
 @public

@@ -131,6 +131,21 @@ class Member(Model):
     def subscriber(self):
         return (self._user if self._address is None else self._address)
 
+    @property
+    def display_name(self):
+        # Try to find a non-empty display name.  We first look at the directly
+        # subscribed record, which will either be the address or the user.
+        # That's handled automatically by going through member.subscriber.  If
+        # that doesn't give us something useful, try whatever user is linked
+        # to the subscriber.
+        if self.subscriber.display_name:
+            return self.subscriber.display_name
+        # If an unlinked address is subscribed tehre will be no .user.
+        elif self.user is not None and self.user.display_name:
+            return self.user.display_name
+        else:
+            return ''
+
     def _lookup(self, preference, default=None):
         pref = getattr(self.preferences, preference)
         if pref is not None:
@@ -179,12 +194,6 @@ class Member(Model):
     def delivery_status(self):
         """See `IMember`."""
         return self._lookup('delivery_status')
-
-    @property
-    def options_url(self):
-        """See `IMember`."""
-        # XXX Um, this is definitely wrong
-        return 'http://example.com/' + self.address.email
 
     @dbconnection
     def unsubscribe(self, store):

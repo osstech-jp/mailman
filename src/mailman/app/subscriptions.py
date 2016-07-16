@@ -36,11 +36,12 @@ from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.registrar import ConfirmationNeededEvent
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, SubscriptionPendingError, TokenOwner)
+from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.utilities.datetime import now
-from mailman.utilities.i18n import make
+from mailman.utilities.string import expand, wrap
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
@@ -257,11 +258,11 @@ class SubscriptionWorkflow(Workflow):
                 'from $self.address.email')
             username = formataddr(
                 (self.subscriber.display_name, self.address.email))
-            text = make('subauth.txt',
-                        mailing_list=self.mlist,
-                        username=username,
-                        listname=self.mlist.fqdn_listname,
-                        )
+            template = getUtility(ITemplateLoader).get(
+                'list:admin:action:subscribe', self.mlist)
+            text = wrap(expand(template, self.mlist, dict(
+                member=username,
+                )))
             # This message should appear to come from the <list>-owner so as
             # to avoid any useless bounce processing.
             msg = UserNotification(

@@ -17,6 +17,7 @@
 
 """Test the digest runner."""
 
+import os
 import unittest
 
 from email.iterators import _structure as structure
@@ -26,6 +27,7 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.template import ITemplateManager
 from mailman.runners.digest import DigestRunner
 from mailman.testing.helpers import (
     LogFileMark, digest_mbox, get_queue_messages, make_digest_messages,
@@ -34,6 +36,8 @@ from mailman.testing.helpers import (
     subscribe)
 from mailman.testing.layers import ConfigLayer
 from string import Template
+from tempfile import TemporaryDirectory
+from zope.component import getUtility
 
 
 class TestDigest(unittest.TestCase):
@@ -220,6 +224,29 @@ class TestI18nDigest(unittest.TestCase):
         self._mlist.digest_size_threshold = 0
         self._process = config.handlers['to-digest'].process
         self._runner = make_testable_runner(DigestRunner)
+        # Add a French version of the digest masthead.
+        tempdir = TemporaryDirectory()
+        self.addCleanup(tempdir.cleanup)
+        french_path = os.path.join(tempdir.name, 'fr', 'masthead.txt')
+        os.makedirs(os.path.dirname(french_path))
+        with open(french_path, 'w', encoding='utf-8') as fp:
+            print("""\
+Envoyez vos messages pour la liste $display_name à
+\t$got_list_email
+
+Pour vous (dés)abonner par courriel, envoyez un message avec « help » dans
+le corps ou dans le sujet à
+\t$got_request_email
+
+Vous pouvez contacter l'administrateur de la liste à l'adresse
+\t$got_owner_email
+
+Si vous répondez, n'oubliez pas de changer l'objet du message afin
+qu'il soit plus spécifique que « Re: Contenu du groupe de $display_name...
+""", file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:digest:masthead', self._mlist.list_id,
+            'file:///{}/$language/masthead.txt'.format(tempdir.name))
 
     def test_multilingual_digest(self):
         # When messages come in with a content-type character set different

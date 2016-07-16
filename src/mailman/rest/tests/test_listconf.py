@@ -24,9 +24,11 @@ from mailman.database.transaction import transaction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, SubscriptionPolicy)
+from mailman.interfaces.template import ITemplateManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
+from zope.component import getUtility
 
 # The representation of the listconf resource as a dictionary.  This is used
 # when PUTting to the list's configuration resource.
@@ -373,7 +375,9 @@ class TestConfiguration(unittest.TestCase):
 
     def test_get_goodbye_message_uri(self):
         with transaction():
-            self._mlist.goodbye_message_uri = 'mailman:///goodbye.txt'
+            getUtility(ITemplateManager).set(
+                'user:ack:goodbye', self._mlist.list_id,
+                'mailman:///goodbye.txt')
         resource, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/config'
             '/goodbye_message_uri')
@@ -387,7 +391,9 @@ class TestConfiguration(unittest.TestCase):
             'PATCH')
         self.assertEqual(response.status, 204)
         self.assertEqual(
-            self._mlist.goodbye_message_uri, 'mailman:///salutation.txt')
+            getUtility(ITemplateManager).raw(
+                'user:ack:goodbye', self._mlist.list_id).uri,
+            'mailman:///salutation.txt')
 
     def test_patch_goodbye_message_uri(self):
         resource, response = call_api(
@@ -397,11 +403,17 @@ class TestConfiguration(unittest.TestCase):
             'PATCH')
         self.assertEqual(response.status, 204)
         self.assertEqual(
-            self._mlist.goodbye_message_uri, 'mailman:///salutation.txt')
+            getUtility(ITemplateManager).raw(
+                'user:ack:goodbye', self._mlist.list_id).uri,
+            'mailman:///salutation.txt')
 
     def test_put_goodbye_message_uri(self):
+        manager = getUtility(ITemplateManager)
         with transaction():
-            self._mlist.goodbye_message_uri = 'mailman:///somefile.txt'
+            manager.set(
+                'user:ack:goodbye',
+                self._mlist.list_id,
+                'mailman:///somefile.txt')
         resource, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/config'
             '/goodbye_message_uri',
@@ -409,7 +421,8 @@ class TestConfiguration(unittest.TestCase):
             'PUT')
         self.assertEqual(response.status, 204)
         self.assertEqual(
-            self._mlist.goodbye_message_uri, 'mailman:///salutation.txt')
+            manager.raw('user:ack:goodbye', self._mlist.list_id).uri,
+            'mailman:///salutation.txt')
 
     def test_advertised(self):
         # GL issue #220 claimed advertised was read-only.

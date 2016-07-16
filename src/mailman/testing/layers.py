@@ -158,7 +158,7 @@ class ConfigLayer(MockAndMonkeyLayer):
                 [logging.$name]
                 propagate: yes
                 level: debug
-                """), dict(name=sub_name, path=path))
+                """), None, dict(name=sub_name, path=path))
         # The root logger will already have a handler, but it's not the right
         # handler.  Remove that and set our own.
         if cls.stderr:
@@ -200,9 +200,7 @@ class ConfigLayer(MockAndMonkeyLayer):
     def testSetUp(cls):
         # Add an example domain.
         with transaction():
-            getUtility(IDomainManager).add(
-                'example.com', 'An example domain.',
-                'http://lists.example.com')
+            getUtility(IDomainManager).add('example.com', 'An example domain.')
 
     @classmethod
     def testTearDown(cls):

@@ -49,14 +49,12 @@ etc.
     Precedence: list
     Subject: [Test] My first post
     List-Id: <test.example.com>
-    Archived-At: <http://lists.example.com/.../4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB>
-    List-Archive: <http://lists.example.com/archives/test@example.com>
+    Archived-At: <http://example.com/.../4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB>
+    List-Archive: <http://example.com/archives/test@example.com>
     List-Help: <mailto:test-request@example.com?subject=help>
     List-Post: <mailto:test@example.com>
-    List-Subscribe: <http://lists.example.com/listinfo/test@example.com>,
-     <mailto:test-join@example.com>
-    List-Unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
-     <mailto:test-leave@example.com>
+    List-Subscribe: <mailto:test-join@example.com>
+    List-Unsubscribe: <mailto:test-leave@example.com>
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -65,7 +63,6 @@ etc.
     _______________________________________________
     Test mailing list
     test@example.com
-    http://lists.example.com/listinfo/test@example.com
     <BLANKLINE>
 
 The message metadata has information about recipients and other stuff.
@@ -139,7 +136,6 @@ delivered to end recipients.
     _______________________________________________
     Test mailing list
     test@example.com
-    http://lists.example.com/listinfo/test@example.com
 
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg       : False

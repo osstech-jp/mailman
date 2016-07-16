@@ -156,8 +156,8 @@ class Configuration:
                 else category.template_dir),
             )
         # Directories.
-        for name in ('archive', 'bin', 'data', 'etc', 'ext', 'list_data',
-                     'lock', 'log', 'messages', 'queue'):
+        for name in ('archive', 'bin', 'cache', 'data', 'etc', 'ext',
+                     'list_data', 'lock', 'log', 'messages', 'queue'):
             key = '{}_dir'.format(name)
             substitutions[key] = getattr(category, key)
         # Files.

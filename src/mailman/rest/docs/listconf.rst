@@ -36,6 +36,8 @@ All readable attributes for a list are available on a sub-resource.
     default_member_action: defer
     default_nonmember_action: hold
     description:
+    digest_footer_uri:
+    digest_header_uri:
     digest_last_sent_at: None
     digest_send_periodic: True
     digest_size_threshold: 30.0
@@ -44,8 +46,10 @@ All readable attributes for a list are available on a sub-resource.
     display_name: Ant
     filter_content: False
     first_strip_reply_to: False
+    footer_uri:
     fqdn_listname: ant@example.com
     goodbye_message_uri:
+    header_uri:
     http_etag: "..."
     include_rfc2369_headers: True
     join_address: ant-join@example.com
@@ -63,13 +67,11 @@ All readable attributes for a list are available on a sub-resource.
     reply_goes_to_list: no_munging
     reply_to_address:
     request_address: ant-request@example.com
-    scheme: http
     send_welcome_message: True
     subject_prefix: [Ant]
     subscription_policy: confirm
     volume: 1
-    web_host: lists.example.com
-    welcome_message_uri: mailman:///welcome.txt
+    welcome_message_uri:
 
 
 Changing the full configuration
@@ -109,7 +111,6 @@ When using ``PUT``, all writable attributes must be included.
     ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             first_strip_reply_to=True,
-    ...             goodbye_message_uri='mailman:///goodbye.txt',
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
     ...             reply_goes_to_list='point_to_list',
@@ -117,7 +118,6 @@ When using ``PUT``, all writable attributes must be included.
     ...             send_welcome_message=False,
     ...             subject_prefix='[ant]',
     ...             subscription_policy='moderate',
-    ...             welcome_message_uri='mailman:///welcome.txt',
     ...             default_member_action='hold',
     ...             default_nonmember_action='discard',
     ...             moderator_password='password',
@@ -162,8 +162,8 @@ These values are changed permanently.
     display_name: Fnords
     filter_content: True
     first_strip_reply_to: True
+    footer_uri:
     fqdn_listname: ant@example.com
-    goodbye_message_uri: mailman:///goodbye.txt
     ...
     include_rfc2369_headers: False
     ...
@@ -177,7 +177,6 @@ These values are changed permanently.
     subject_prefix: [ant]
     subscription_policy: moderate
     ...
-    welcome_message_uri: mailman:///welcome.txt
 
 
 Changing a partial configuration

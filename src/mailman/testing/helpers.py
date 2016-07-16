@@ -21,7 +21,6 @@ import os
 import json
 import time
 import uuid
-import errno
 import shutil
 import signal
 import socket
@@ -228,11 +227,8 @@ def get_lmtp_client(quiet=False):
             if not quiet:
                 print(response)
             return lmtp
-        except IOError as error:
-            if error.errno == errno.ECONNREFUSED:
-                time.sleep(0.1)
-            else:
-                raise
+        except ConnectionRefusedError:
+            time.sleep(0.1)
     else:
         raise RuntimeError('Connection refused')
 
@@ -256,18 +252,16 @@ def get_nntp_server(cleanups):
 
 
 @public
-def wait_for_webservice():
+def wait_for_webservice(hostname=None, port=None):
     """Wait for the REST server to start serving requests."""
+    hostname = config.webservice.hostname if hostname is None else hostname
+    port = int(config.webservice.port) if port is None else port
     until = datetime.datetime.now() + as_timedelta(config.devmode.wait)
     while datetime.datetime.now() < until:
         try:
-            socket.socket().connect((config.webservice.hostname,
-                                    int(config.webservice.port)))
-        except IOError as error:
-            if error.errno == errno.ECONNREFUSED:
-                time.sleep(0.1)
-            else:
-                raise
+            socket.socket().connect((hostname, port))
+        except ConnectionRefusedError:
+            time.sleep(0.1)
         else:
             break
     else:
@@ -475,6 +469,9 @@ def reset_the_world():
         for filename in filenames:
             os.remove(os.path.join(dirpath, filename))
         shutil.rmtree(dirpath)
+    # Remove all the cache subdirectories, recursively.
+    for dirname in os.listdir(config.CACHE_DIR):
+        shutil.rmtree(os.path.join(config.CACHE_DIR, dirname))
     # Reset the global style manager.
     getUtility(IStyleManager).populate()
     # Remove all dynamic header-match rules.

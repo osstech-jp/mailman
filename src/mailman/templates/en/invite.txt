@@ -3,10 +3,6 @@ mailing list at $hostname by the $listname mailing list owner.
 You may accept the invitation by simply replying to this message,
 keeping the Subject: header intact.
 
-You can also visit this web page:
-
-    $confirmurl
-
 Or you should include the following line -- and only the following
 line -- in a message to $requestaddr:
 

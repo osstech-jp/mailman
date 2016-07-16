@@ -28,11 +28,11 @@ from sqlalchemy import create_engine
 
 
 try:
-    url = expand(config.database.url, config.paths)
+    url = expand(config.database.url, None, config.paths)
 except AttributeError:
     # Initialize config object for external alembic calls
     initialize_1()
-    url = expand(config.database.url, config.paths)
+    url = expand(config.database.url, None, config.paths)
 
 
 @public

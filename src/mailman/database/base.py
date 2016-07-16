@@ -85,7 +85,7 @@ class SABaseDatabase:
     def initialize(self, debug=None):
         """See `IDatabase`."""
         # Calculate the engine url.
-        url = expand(config.database.url, config.paths)
+        url = expand(config.database.url, None, config.paths)
         self._prepare(url)
         log.debug('Database url: %s', url)
         # XXX By design of SQLite, database file creation does not honor

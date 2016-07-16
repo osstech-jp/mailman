@@ -12,6 +12,7 @@ get a list of all defined sections.
 You can also get all the values for a particular section.
 
     >>> dump_json('http://localhost:9001/3.0/system/configuration/mailman')
+    cache_life: 7d
     default_language: en
     email_commands_max_lines: 10
     filtered_messages_are_preservable: no

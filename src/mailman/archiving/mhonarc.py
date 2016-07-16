@@ -50,11 +50,11 @@ class MHonArc:
     def list_url(self, mlist):
         """See `IArchiver`."""
         # XXX What about private MHonArc archives?
-        return expand(self.base_url,
-                      dict(listname=mlist.fqdn_listname,
-                           hostname=mlist.domain.url_host,
-                           fqdn_listname=mlist.fqdn_listname,
-                           ))
+        return expand(self.base_url, mlist, dict(
+            # For backward compatibility.
+            hostname=mlist.domain.mail_host,
+            fqdn_listname=mlist.fqdn_listname,
+            ))
 
     def permalink(self, mlist, msg):
         """See `IArchiver`."""
@@ -77,7 +77,7 @@ class MHonArc:
         """See `IArchiver`."""
         substitutions = config.__dict__.copy()
         substitutions['listname'] = mlist.fqdn_listname
-        command = expand(self.command, substitutions)
+        command = expand(self.command, mlist, substitutions)
         proc = Popen(
             command,
             stdin=PIPE, stdout=PIPE, stderr=PIPE,

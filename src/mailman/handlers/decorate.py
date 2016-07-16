@@ -21,14 +21,14 @@ import re
 import logging
 
 from email.mime.text import MIMEText
+from email.utils import formataddr
 from mailman import public
 from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.mailinglist import IListArchiverSet
-from mailman.interfaces.templates import ITemplateLoader
+from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.string import expand
-from urllib.error import URLError
 from zope.component import getUtility
 from zope.interface import implementer
 
@@ -47,13 +47,14 @@ def process(mlist, msg, msgdata):
     if member is not None:
         # Calculate the extra personalization dictionary.
         recipient = msgdata.get('recipient', member.address.original_email)
-        d['user_address'] = recipient
+        d['member'] = formataddr(
+            (member.subscriber.display_name, member.subscriber.email))
+        d['user_email'] = recipient
         d['user_delivered_to'] = member.address.original_email
         d['user_language'] = member.preferred_language.description
-        d['user_name'] = (member.user.display_name
-                          if member.user.display_name
-                          else member.address.original_email)
-        d['user_optionsurl'] = member.options_url
+        d['user_name'] = member.display_name
+        # For backward compatibility.
+        d['user_address'] = recipient
     # Calculate the archiver permalink substitution variables.  This provides
     # the $<archive-name>_url placeholder for every enabled archiver.
     for archiver in IListArchiverSet(mlist).archivers:
@@ -71,20 +72,10 @@ def process(mlist, msg, msgdata):
                 d[placeholder] = archive_url
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
-    try:
-        header = decorate(mlist, mlist.header_uri, d)
-    except URLError:
-        header = None
-        log.exception('Header decorator URI not found ({0}): {1}'.format(
-            mlist.fqdn_listname, mlist.header_uri))
-    try:
-        footer = decorate(mlist, mlist.footer_uri, d)
-    except URLError:
-        footer = None
-        log.exception('Footer decorator URI not found ({0}): {1}'.format(
-            mlist.fqdn_listname, mlist.footer_uri))
+    header = decorate('list:member:regular:header', mlist, d)
+    footer = decorate('list:member:regular:footer', mlist, d)
     # Escape hatch if both the footer and header are empty or None.
-    if not header and not footer:
+    if len(header) == 0 and len(footer) == 0:
         return
     # Be MIME smart here.  We only attach the header and footer by
     # concatenation when the message is a non-multipart of type text/plain.
@@ -120,9 +111,9 @@ def process(mlist, msg, msgdata):
             oldpayload = msg.get_payload(decode=True).decode(mcset)
             del msg['content-transfer-encoding']
             frontsep = endsep = ''
-            if header and not header.endswith('\n'):
+            if len(header) > 0 and not header.endswith('\n'):
                 frontsep = '\n'
-            if footer and not oldpayload.endswith('\n'):
+            if len(footer) > 0 and not oldpayload.endswith('\n'):
                 endsep = '\n'
             payload = header + frontsep + oldpayload + endsep + footer
             # When setting the payload for the message, try various charset
@@ -152,11 +143,11 @@ def process(mlist, msg, msgdata):
         payload = msg.get_payload()
         if not isinstance(payload, list):
             payload = [payload]
-        if footer:
+        if len(footer) > 0:
             mimeftr = MIMEText(footer.encode(lcset), 'plain', lcset)
             mimeftr['Content-Disposition'] = 'inline'
             payload.append(mimeftr)
-        if header:
+        if len(header) > 0:
             mimehdr = MIMEText(header.encode(lcset), 'plain', lcset)
             mimehdr['Content-Disposition'] = 'inline'
             payload.insert(0, mimehdr)
@@ -194,11 +185,11 @@ def process(mlist, msg, msgdata):
     # subparts: the header (if any), the wrapped message, and the footer (if
     # any).
     payload = [inner]
-    if header:
+    if len(header) > 0:
         mimehdr = MIMEText(header.encode(lcset), 'plain', lcset)
         mimehdr['Content-Disposition'] = 'inline'
         payload.insert(0, mimehdr)
-    if footer:
+    if len(footer) > 0:
         mimeftr = MIMEText(footer.encode(lcset), 'plain', lcset)
         mimeftr['Content-Disposition'] = 'inline'
         payload.append(mimeftr)
@@ -210,18 +201,12 @@ def process(mlist, msg, msgdata):
 
 
 @public
-def decorate(mlist, uri, extradict=None):
-    """Expand the decoration template from its URI."""
-    if uri is None:
-        return ''
+def decorate(name, mlist, extradict=None):
+    """Expand the named decoration template uri."""
+    if extradict is None:
+        extradict = {}
     # Get the decorator template.
-    loader = getUtility(ITemplateLoader)
-    template_uri = expand(uri, dict(
-        language=mlist.preferred_language.code,
-        list_id=mlist.list_id,
-        listname=mlist.fqdn_listname,
-        ))
-    template = loader.get(template_uri)
+    template = getUtility(ITemplateLoader).get(name, mlist, **extradict)
     return decorate_template(mlist, template, extradict)
 
 
@@ -242,11 +227,9 @@ def decorate_template(mlist, template, extradict=None):
                     'info',
                     )
         }
-    # This must eventually go away.
-    substitutions['listinfo_uri'] = mlist.script_url('listinfo')
     if extradict is not None:
         substitutions.update(extradict)
-    text = expand(template, substitutions)
+    text = expand(template, mlist, substitutions)
     # Turn any \r\n line endings into just \n
     return re.sub(r' *\r?\n', r'\n', text)
 

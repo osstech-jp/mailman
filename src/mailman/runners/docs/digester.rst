@@ -139,9 +139,8 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     Send Test mailing list submissions to
         test@example.com
     <BLANKLINE>
-    To subscribe or unsubscribe via the World Wide Web, visit
-        http://lists.example.com/listinfo/test@example.com
-    or, via email, send a message with subject or body 'help' to
+    To subscribe or unsubscribe via email, send a message with subject or
+    body 'help' to
         test-request@example.com
     <BLANKLINE>
     You can reach the person managing the list at
@@ -221,7 +220,6 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     _______________________________________________
     Test mailing list
     test@example.com
-    http://lists.example.com/listinfo/test@example.com
     <BLANKLINE>
     --===============...==--
     <BLANKLINE>
@@ -242,9 +240,8 @@ The RFC 1153 contains the digest in a single plain text message.
     Send Test mailing list submissions to
         test@example.com
     <BLANKLINE>
-    To subscribe or unsubscribe via the World Wide Web, visit
-        http://lists.example.com/listinfo/test@example.com
-    or, via email, send a message with subject or body 'help' to
+    To subscribe or unsubscribe via email, send a message with subject or
+    body 'help' to
         test-request@example.com
     <BLANKLINE>
     You can reach the person managing the list at
@@ -300,7 +297,6 @@ The RFC 1153 contains the digest in a single plain text message.
     _______________________________________________
     Test mailing list
     test@example.com
-    http://lists.example.com/listinfo/test@example.com
     <BLANKLINE>
     <BLANKLINE>
     ------------------------------

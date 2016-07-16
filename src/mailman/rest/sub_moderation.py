@@ -19,6 +19,7 @@
 
 from mailman import public
 from mailman.app.moderator import send_rejection
+from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError
 from mailman.interfaces.pending import IPendings
@@ -27,7 +28,6 @@ from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, conflict, etag, no_content,
     not_found, okay)
 from mailman.rest.validator import Validator, enum_validator
-from mailman.utilities.i18n import _
 from zope.component import getUtility
 
 

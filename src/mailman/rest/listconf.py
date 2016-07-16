@@ -25,12 +25,14 @@ from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, ReplyToMunging, SubscriptionPolicy)
+    IAcceptableAliasSet, IMailingList, ReplyToMunging, SubscriptionPolicy)
+from mailman.interfaces.template import ITemplateManager
 from mailman.rest.helpers import (
     GetterSetter, bad_request, etag, no_content, not_found, okay)
 from mailman.rest.validator import (
     PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
     Validator, enum_validator, list_of_strings_validator)
+from zope.component import getUtility
 
 
 class AcceptableAliases(GetterSetter):
@@ -56,6 +58,31 @@ class AcceptableAliases(GetterSetter):
         alias_set.clear()
         for alias in value:
             alias_set.add(alias)
+
+
+TEMPLATE_ATTRIBUTES = dict(
+    digest_footer_uri='list:digest:footer',
+    digest_header_uri='list:digest:header',
+    footer_uri='list:regular:footer',
+    goodbye_message_uri='user:ack:goodbye',
+    header_uri='list:regular:header',
+    welcome_message_uri='user:ack:welcome',
+    )
+
+
+class URIAttributeMapper(GetterSetter):
+    """Map old IMailingList uri attributes to the new template manager."""
+
+    def get(self, obj, attribute):
+        assert IMailingList.providedBy(obj), obj
+        template_name = TEMPLATE_ATTRIBUTES[attribute]
+        template = getUtility(ITemplateManager).raw(template_name, obj.list_id)
+        return '' if template is None else template.uri
+
+    def put(self, obj, attribute, value):
+        assert IMailingList.providedBy(obj), obj
+        template_name = TEMPLATE_ATTRIBUTES[attribute]
+        getUtility(ITemplateManager).set(template_name, obj.list_id, value)
 
 
 # Additional validators for converting from web request strings to internal
@@ -117,7 +144,6 @@ ATTRIBUTES = dict(
     digests_enabled=GetterSetter(as_boolean),
     filter_content=GetterSetter(as_boolean),
     first_strip_reply_to=GetterSetter(as_boolean),
-    goodbye_message_uri=GetterSetter(str),
     fqdn_listname=GetterSetter(None),
     mail_host=GetterSetter(None),
     allow_list_posts=GetterSetter(as_boolean),
@@ -137,13 +163,10 @@ ATTRIBUTES = dict(
     reply_goes_to_list=GetterSetter(enum_validator(ReplyToMunging)),
     reply_to_address=GetterSetter(str),
     request_address=GetterSetter(None),
-    scheme=GetterSetter(None),
     send_welcome_message=GetterSetter(as_boolean),
     subject_prefix=GetterSetter(str),
     subscription_policy=GetterSetter(enum_validator(SubscriptionPolicy)),
     volume=GetterSetter(None),
-    web_host=GetterSetter(None),
-    welcome_message_uri=GetterSetter(str),
     )
 
 
@@ -151,6 +174,20 @@ VALIDATORS = ATTRIBUTES.copy()
 for attribute, gettersetter in list(VALIDATORS.items()):
     if gettersetter.decoder is None:
         del VALIDATORS[attribute]
+
+
+def api_attributes(api):
+    # The list of readable attributes is different depending on the API being
+    # requested.  Specifically, in API 3.0 the templates are exposed as list
+    # attributes, although we map them to templates.  In API 3.1 and beyond,
+    # only the template manager API can be used for these.
+    attributes = ATTRIBUTES.copy()
+    if api.version_info == (3, 0):
+        attributes.update({
+            attribute: URIAttributeMapper(str)
+            for attribute in TEMPLATE_ATTRIBUTES
+            })
+    return attributes
 
 
 @public
@@ -164,31 +201,44 @@ class ListConfiguration:
     def on_get(self, request, response):
         """Get a mailing list configuration."""
         resource = {}
+        attributes = api_attributes(self.api)
         if self._attribute is None:
-            # This is a requst for all the mailing list's configuration
+            # This is a request for all the mailing list's configuration
             # variables.  Return all readable attributes.
-            for attribute in ATTRIBUTES:
-                value = ATTRIBUTES[attribute].get(self._mlist, attribute)
+            for attribute, getter in attributes.items():
+                value = getter.get(self._mlist, attribute)
                 resource[attribute] = value
-        elif self._attribute not in ATTRIBUTES:
+        elif self._attribute in attributes:
+            # This is a request for a specific attribute.
+            value = attributes[self._attribute].get(
+                self._mlist, self._attribute)
+            resource[self._attribute] = value
+        else:
             # This is a request for a specific, nonexistent attribute.
             not_found(
                 response, 'Unknown attribute: {}'.format(self._attribute))
             return
-        else:
-            # This is a request for a specific attribute.
-            attribute = self._attribute
-            value = ATTRIBUTES[attribute].get(self._mlist, attribute)
-            resource[attribute] = value
         okay(response, etag(resource))
 
     def on_put(self, request, response):
         """Set a mailing list configuration."""
         attribute = self._attribute
+        # The list of required attributes differs between API version.  For
+        # backward compatibility, in API 3.0 all of the *_uri attributes are
+        # optional.  In API 3.1 none of these are allowed since they are
+        # handled by the template manager API.
+        validators = VALIDATORS.copy()
+        attributes = api_attributes(self.api)
+        if self.api.version_info == (3, 0):
+            validators.update({
+                attribute: URIAttributeMapper(str)
+                for attribute in TEMPLATE_ATTRIBUTES
+                })
+            validators['_optional'] = TEMPLATE_ATTRIBUTES.keys()
         if attribute is None:
             # This is a request to update all the list's writable
             # configuration variables.  All must be provided in the request.
-            validator = Validator(**VALIDATORS)
+            validator = Validator(**validators)
             try:
                 validator.update(self._mlist, request)
             except ValueError as error:
@@ -200,18 +250,18 @@ class ListConfiguration:
                 # contain sufficient details, so just return it as the reason.
                 bad_request(response, str(error))
                 return
-        elif attribute not in ATTRIBUTES:
+        elif attribute not in attributes:
             # Here we're PUTting to a specific resource, but that attribute is
             # bogus so the URL is considered pointing to a missing resource.
             not_found(response, 'Unknown attribute: {}'.format(attribute))
             return
-        elif ATTRIBUTES[attribute].decoder is None:
+        elif attributes[attribute].decoder is None:
             bad_request(
                 response, 'Read-only attribute: {}'.format(attribute))
             return
         else:
             # We're PUTting to a specific configuration sub-resource.
-            validator = Validator(**{attribute: VALIDATORS[attribute]})
+            validator = Validator(**{attribute: validators[attribute]})
             try:
                 validator.update(self._mlist, request)
             except ValueError as error:
@@ -221,11 +271,12 @@ class ListConfiguration:
 
     def on_patch(self, request, response):
         """Patch the configuration (i.e. partial update)."""
+        attributes = api_attributes(self.api)
         if self._attribute is None:
             # We're PATCHing one or more of the attributes on the list's
             # configuration resource, so all the writable attributes are valid
             # candidates for updating.
-            converters = ATTRIBUTES
+            converters = attributes
         else:
             # We're PATCHing a specific list configuration attribute
             # sub-resource.  Because the request data must be a dictionary, we
@@ -237,7 +288,7 @@ class ListConfiguration:
                 bad_request(response, 'Expected 1 attribute, got {}'.format(
                     len(keys)))
                 return
-            converter = ATTRIBUTES.get(self._attribute)
+            converter = attributes.get(self._attribute)
             if converter is None:
                 # This is the case where the URL points to a nonexisting list
                 # configuration attribute sub-resource.

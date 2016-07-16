@@ -174,6 +174,16 @@ class IMember(Interface):
         address, it will be an ``IUser``.
         """)
 
+    display_name = Attribute(
+        """The best match of the member's display name.
+
+        This will be `subscriber.display_name` if available, which means it
+        will either be the display name of the address or user that's
+        subscribed.  If unavailable, and the address is the subscriber, then
+        the linked user's display name is given, if available.  When all else
+        fails, the empty string is returned.
+        """)
+
     preferences = Attribute(
         """This member's preferences.""")
 
@@ -258,11 +268,3 @@ class IMember(Interface):
         4. System default
 
         XXX I'm not sure this is the right place to put this.""")
-
-    options_url = Attribute(
-        """Return the url for the given member's option page.
-
-        XXX This needs a serious re-think in the face of the unified user
-        database, since a member's options aren't tied to any specific mailing
-        list.  So in what part of the web-space does the user's options live?
-        """)

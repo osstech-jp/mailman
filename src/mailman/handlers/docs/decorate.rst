@@ -6,7 +6,7 @@ Message decoration is the process of adding headers and footers to the
 original message.  A handler module takes care of this based on the settings
 of the mailing list and the type of message being processed.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('ant@example.com')
     >>> msg_text = """\
     ... From: aperson@example.org
     ...
@@ -41,7 +41,7 @@ Simple decorations
 
 Message decorations are specified by URI and can be specialized by the mailing
 list and language.  Internal Mailman decorations can be referenced by using
-the ``mailman://`` URL scheme.  Here we create a simple English header and
+the ``mailman:///`` URL scheme.  Here we create a simple English header and
 footer for all mailing lists in our site.
 ::
 
@@ -51,7 +51,7 @@ footer for all mailing lists in our site.
     >>> os.makedirs(site_dir)
     >>> config.push('templates', """
     ... [paths.testing]
-    ... template_dir: {0}
+    ... template_dir: {}
     ... """.format(template_dir))
 
     >>> myheader_path = os.path.join(site_dir, 'myheader.txt')
@@ -61,11 +61,17 @@ footer for all mailing lists in our site.
     >>> with open(myfooter_path, 'w') as fp:
     ...     print('footer', file=fp)
 
-Setting these attributes on the mailing list causes it to use these
-templates.  Since these are site-global templates, we can use a shorter path.
+Adding these template URIs to the template manager sets the mailing list up to
+use these templates.  Since these are site-global templates, we can use a
+shorter path.
 
-    >>> mlist.header_uri = 'mailman:///myheader.txt'
-    >>> mlist.footer_uri = 'mailman:///myfooter.txt'
+    >>> from mailman.interfaces.template import ITemplateManager
+    >>> from zope.component import getUtility
+    >>> manager = getUtility(ITemplateManager)
+    >>> manager.set('list:member:regular:header',
+    ...             mlist.list_id, 'mailman:///myheader.txt')
+    >>> manager.set('list:member:regular:footer',
+    ...             mlist.list_id, 'mailman:///myfooter.txt')
 
 Text messages that have no declared content type are, by default encoded in
 ASCII.  When the mailing list's preferred language is ``en`` (i.e. English),
@@ -94,14 +100,14 @@ short descriptive name for the mailing list).
     ...     print('$display_name footer', file=fp)
 
     >>> msg = message_from_string(msg_text)
-    >>> mlist.display_name = 'XTest'
+    >>> mlist.display_name = 'Ant'
     >>> process(mlist, msg, {})
     >>> print(msg.as_string())
     From: aperson@example.org
     ...
-    XTest header
+    Ant header
     Here is a message.
-    XTest footer
+    Ant footer
 
 You can't just pick any interpolation variable though; if you do, the variable
 will remain in the header or footer unchanged.

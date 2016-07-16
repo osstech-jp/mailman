@@ -29,9 +29,10 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MembershipIsBannedError,
     NotAMemberError, SubscriptionEvent)
+from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
-from mailman.utilities.i18n import make
+from mailman.utilities.string import expand
 from zope.component import getUtility
 
 
@@ -132,11 +133,11 @@ def delete_member(mlist, email, admin_notif=None, userack=None):
         user = getUtility(IUserManager).get_user(email)
         display_name = user.display_name
         subject = _('$mlist.display_name unsubscription notification')
-        text = make('adminunsubscribeack.txt',
-                    mailing_list=mlist,
-                    listname=mlist.display_name,
-                    member=formataddr((display_name, email)),
-                    )
+        text = expand(getUtility(ITemplateLoader).get(
+            'list:admin:notice:unsubscribe', mlist),
+            mlist, dict(
+                member=formataddr((display_name, email)),
+                ))
         msg = OwnerNotification(mlist, subject, text,
                                 roster=mlist.administrators)
         msg.send(mlist)

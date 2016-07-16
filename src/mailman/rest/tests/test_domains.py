@@ -23,6 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.template import ITemplateManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
@@ -41,7 +42,6 @@ class TestDomains(unittest.TestCase):
         data = dict(
             mail_host='example.org',
             description='Example domain',
-            base_url='http://example.org',
             owner=['someone@example.com', 'secondowner@example.com'],
             )
         content, response = call_api(
@@ -162,4 +162,224 @@ class TestDomainOwners(unittest.TestCase):
             call_api('http://localhost:9001/3.0/domains/example.com/owners', {
                 'owner': 'dave@example.com',
                 }, method='DELETE')
+        self.assertEqual(cm.exception.code, 400)
+
+
+class TestDomainTemplates(unittest.TestCase):
+    """Test /domains/<mail-host>/uris"""
+
+    layer = RESTLayer
+
+    def test_no_templates_for_api_30(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/domains/example.com/uris')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_no_templates_for_missing_list(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/domains/example.org/uris')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_path_too_long(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/domains/example.com/uris'
+                     '/foo/bar')
+        self.assertEqual(cm.exception.code, 400)
+
+    def test_get_unknown_uri(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/domains/example.com/uris'
+                     '/not:a:template')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_get_all_uris(self):
+        manager = getUtility(ITemplateManager)
+        with transaction():
+            manager.set(
+                'list:user:notice:welcome', 'example.com',
+                'http://example.com/welcome')
+            manager.set(
+                'list:user:notice:goodbye', 'example.com',
+                'http://example.com/goodbye',
+                'a user', 'the password',
+                )
+        resource, response = call_api(
+            'http://localhost:9001/3.1/domains/example.com/uris')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(resource['start'], 0)
+        self.assertEqual(resource['total_size'], 2)
+        self.assertEqual(
+            resource['self_link'],
+            'http://localhost:9001/3.1/domains/example.com/uris')
+        self.assertEqual(resource['entries'], [
+            {'http_etag': '"e877ff896db0f2e280660ac16b9401f7925a53b9"',
+             'name': 'list:user:notice:goodbye',
+             'password': 'the password',
+             'self_link': ('http://localhost:9001/3.1/domains/example.com'
+                           '/uris/list:user:notice:goodbye'),
+             'uri': 'http://example.com/goodbye',
+             'username': 'a user',
+             },
+            {'http_etag': '"8dac25601c3419e98e2c05df1d962a2252b67ce6"',
+             'name': 'list:user:notice:welcome',
+             'self_link': ('http://localhost:9001/3.1/domains/example.com'
+                           '/uris/list:user:notice:welcome'),
+             'uri': 'http://example.com/welcome',
+             }])
+
+    def test_patch_uris(self):
+        resource, response = call_api(
+            'http://localhost:9001/3.1/domains/example.com/uris', {
+                'list:user:notice:welcome': 'http://example.org/welcome',
+                'list:user:notice:goodbye': 'http://example.org/goodbye',
+                }, method='PATCH')
+        self.assertEqual(response.status, 204)
+        manager = getUtility(ITemplateManager)
+        template = manager.raw('list:user:notice:welcome', 'example.com')
+        self.assertEqual(template.uri, 'http://example.org/welcome')
+        self.assertIsNone(template.username)
+        self.assertEqual(template.password, '')
+        template = manager.raw('list:user:notice:goodbye', 'example.com')
+        self.assertEqual(template.uri, 'http://example.org/goodbye')
+        self.assertIsNone(template.username)
+        self.assertEqual(template.password, '')
+
+    def test_patch_uris_with_credentials(self):
+        resource, response = call_api(
+            'http://localhost:9001/3.1/domains/example.com/uris', {
+                'list:user:notice:welcome': 'http://example.org/welcome',
+                'list:user:notice:goodbye': 'http://example.org/goodbye',
+                'password': 'some password',
+                'username': 'anne.person',
+                }, method='PATCH')
+        self.assertEqual(response.status, 204)
+        manager = getUtility(ITemplateManager)
+        template = manager.raw('list:user:notice:welcome', 'example.com')
+        self.assertEqual(template.uri, 'http://example.org/welcome')
+        self.assertEqual(template.username, 'anne.person')
+        self.assertEqual(template.password, 'some password')
+        template = manager.raw('list:user:notice:goodbye', 'example.com')
+        self.assertEqual(template.uri, 'http://example.org/goodbye')
+        self.assertEqual(template.username, 'anne.person')
+        self.assertEqual(template.password, 'some password')
+
+    def test_patch_uris_with_partial_credentials(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/domains/example.com/uris', {
+                    'list:user:notice:welcome': 'http://example.org/welcome',
+                    'list:user:notice:goodbye': 'http://example.org/goodbye',
+                    'username': 'anne.person',
+                    }, method='PATCH')
+        self.assertEqual(cm.exception.code, 400)
+
+    def test_put_all_uris(self):
+        resource, response = call_api(
+            'http://localhost:9001/3.1/domains/example.com/uris', {
+                'domain:admin:notice:new-list': '',
+                'list:admin:action:post': '',
+                'list:admin:action:subscribe': '',
+                'list:admin:action:unsubscribe': '',
+                'list:admin:notice:subscribe': '',
+                'list:admin:notice:unrecognized': '',
+                'list:admin:notice:unsubscribe': '',
+                'list:member:digest:footer': '',
+                'list:member:digest:header': '',
+                'list:member:digest:masthead': '',
+                'list:member:regular:footer': 'http://example.org/footer',
+                'list:member:regular:header': 'http://example.org/header',
+                'list:user:action:confirm': '',
+                'list:user:action:unsubscribe': '',
+                'list:user:notice:goodbye': 'http://example.org/goodbye',
+                'list:user:notice:hold': '',
+                'list:user:notice:no-more-today': '',
+                'list:user:notice:post': '',
+                'list:user:notice:probe': '',
+                'list:user:notice:refuse': '',
+                'list:user:notice:welcome': 'http://example.org/welcome',
+                'password': 'some password',
+                'username': 'anne.person',
+                }, method='PUT')
+        self.assertEqual(response.status, 204)
+        manager = getUtility(ITemplateManager)
+        template = manager.raw('list:member:digest:footer', 'example.com')
+        self.assertIsNone(template)
+        template = manager.raw('list:member:digest:header', 'example.com')
+        self.assertIsNone(template)
+        template = manager.raw('list:member:regular:footer', 'example.com')
+        self.assertEqual(template.uri, 'http://example.org/footer')
+        self.assertEqual(template.username, 'anne.person')
+        self.assertEqual(template.password, 'some password')
+        template = manager.raw('list:member:regular:header', 'example.com')
+        self.assertEqual(template.uri, 'http://example.org/header')
+        self.assertEqual(template.username, 'anne.person')
+        self.assertEqual(template.password, 'some password')
+        template = manager.raw('list:user:notice:goodbye', 'example.com')
+        self.assertEqual(template.uri, 'http://example.org/goodbye')
+        self.assertEqual(template.username, 'anne.person')
+        self.assertEqual(template.password, 'some password')
+        template = manager.raw('list:user:notice:goodbye', 'example.com')
+        self.assertEqual(template.uri, 'http://example.org/goodbye')
+        self.assertEqual(template.username, 'anne.person')
+        self.assertEqual(template.password, 'some password')
+
+    def test_delete_all_uris(self):
+        manager = getUtility(ITemplateManager)
+        with transaction():
+            manager.set(
+                'list:user:notice:welcome', 'example.com',
+                'http://example.com/welcome')
+            manager.set(
+                'list:user:notice:goodbye', 'example.com',
+                'http://example.com/goodbye',
+                'a user', 'the password',
+                )
+        resource, response = call_api(
+            'http://localhost:9001/3.1/domains/example.com/uris',
+            method='DELETE')
+        self.assertEqual(response.status, 204)
+        self.assertIsNone(
+            manager.raw('list:user:notice:welcome', 'example.com'))
+        self.assertIsNone(
+            manager.raw('list:user:notice:goodbye', 'example.com'))
+
+    def test_get_a_url(self):
+        with transaction():
+            getUtility(ITemplateManager).set(
+                'list:user:notice:welcome', 'example.com',
+                'http://example.com/welcome')
+        resource, response = call_api(
+            'http://localhost:9001/3.1/domains/example.com/uris'
+            '/list:user:notice:welcome')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(resource, {
+            'http_etag': '"8884a0b3d675b4cb9899a7825daac9db88b70bed"',
+            'self_link': ('http://localhost:9001/3.1/domains/example.com'
+                          '/uris/list:user:notice:welcome'),
+            'uri': 'http://example.com/welcome',
+            })
+
+    def test_get_a_bad_url(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/domains/example.com/uris'
+                '/list:user:notice:notemplate')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_get_unset_url(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/domains/example.com/uris'
+                '/list:user:notice:welcome')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_patch_url_with_too_many_parameters(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/domains/example.com/uris', {
+                    'list:user:notice:welcome': 'http://example.org/welcome',
+                    'list:user:notice:goodbye': 'http://example.org/goodbye',
+                    'secret': 'some password',
+                    'person': 'anne.person',
+                    }, method='PATCH')
         self.assertEqual(cm.exception.code, 400)

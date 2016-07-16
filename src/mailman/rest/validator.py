@@ -161,7 +161,8 @@ class Validator:
         :param obj: The object to update.
         :type obj: object
         :param request: The HTTP request.
-        :raises ValueError: if conversion failed for some attribute.
+        :raises ValueError: if conversion failed for some attribute, including
+            if the API version mismatches.
         """
         for key, value in self.__call__(request).items():
             self._converters[key].put(obj, key, value)
