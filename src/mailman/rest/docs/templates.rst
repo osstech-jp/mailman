@@ -71,7 +71,7 @@ use this welcome message instead of the default one.
 
 The name of the template corresponding to the welcome message is
 `list:user:notice:welcome` and the location of your new welcome message text
-is at `http://localhost:8080/welcome_1.txt`.
+is at `http://localhost:8180/welcome_1.txt`.
 
 Now when a new member subscribes to the mailing list, they'll see the new
 welcome message.
