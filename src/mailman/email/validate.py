@@ -27,8 +27,11 @@ from zope.interface import implementer
 
 
 # What other characters should be disallowed?
-_badchars = re.compile(r'[][()<>|;^,\000-\037\177-\377]')
-
+_badchars = re.compile(r'[][()<>|:;^,\\"\000-\037\177-\377]')
+# Strictly speaking, some of the above are allowed in quoted local parts, but
+# this can open the door to certain web exploits so we don't allow them.
+_valid_domain = re.compile('[-a-z0-9]', re.IGNORECASE)
+# These are the only characters allowed in domain parts.
 
 @public
 @implementer(IEmailValidator)
@@ -39,7 +42,7 @@ class Validator:
         """See `IEmailValidator`."""
         if not email or ' ' in email:
             return False
-        if _badchars.search(email) or email[0] == '-':
+        if _badchars.search(email):
             return False
         user, domain_parts = split_email(email)
         # Local, unqualified addresses are not allowed.
@@ -47,6 +50,9 @@ class Validator:
             return False
         if len(domain_parts) < 2:
             return False
+        for p in domain_parts:
+            if len(p) == 0 or p[0] == '-' or len(_valid_domain.sub('', p)) > 0:
+                return False
         return True
 
     def validate(self, email):
