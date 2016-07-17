@@ -33,6 +33,7 @@ _badchars = re.compile(r'[][()<>|:;^,\\"\000-\037\177-\377]')
 _valid_domain = re.compile('[-a-z0-9]', re.IGNORECASE)
 # These are the only characters allowed in domain parts.
 
+
 @public
 @implementer(IEmailValidator)
 class Validator:
