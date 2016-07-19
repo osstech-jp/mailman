@@ -72,7 +72,7 @@ class TestAddress(unittest.TestCase):
         self.assertRaises(InvalidEmailAddressError,
                           Address, 'us\u0117r@example.com', '')
 
-    def test_non_ascii_email_domain_raises_exception(self):
+    def test_high_unicode_email_domain_raises_exception(self):
         self.assertRaises(InvalidEmailAddressError,
                           Address, 'user@\u0117xample.com', '')
 
