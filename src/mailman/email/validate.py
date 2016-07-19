@@ -26,10 +26,11 @@ from mailman.utilities.email import split_email
 from zope.interface import implementer
 
 
-# What other characters should be disallowed?
-_badchars = re.compile(r'[][()<>|:;^,\\"\000-\037\177-\377]')
-# Strictly speaking, some of the above are allowed in quoted local parts, but
-# this can open the door to certain web exploits so we don't allow them.
+# What other characters should be allowed?
+_valid_local = re.compile("[-0-9a-z!#$%&'*+./=?@_`{}~]", re.IGNORECASE)
+# Strictly speaking, both ^ and | are allowed and others are allowed in quoted
+# local parts, but this can open the door to certain web exploits so we don't
+# allow them.
 _valid_domain = re.compile('[-a-z0-9]', re.IGNORECASE)
 # These are the only characters allowed in domain parts.
 
@@ -41,11 +42,11 @@ class Validator:
 
     def is_valid(self, email):
         """See `IEmailValidator`."""
-        if not email or ' ' in email:
-            return False
-        if _badchars.search(email):
+        if not email:
             return False
         user, domain_parts = split_email(email)
+        if not user or len(_valid_local.sub('', user)) > 0:
+            return False
         # Local, unqualified addresses are not allowed.
         if not domain_parts:
             return False

@@ -40,6 +40,42 @@ class TestAddress(unittest.TestCase):
         self.assertRaises(InvalidEmailAddressError,
                           Address, 'not_a_valid_email_string', '')
 
+    def test_no_local_email_string_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, '@example.com', '')
+
+    def test_space_in_email_string_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'us er@example.com', '')
+
+    def test_non_ascii_email_local_part_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'us\xe9r@example.com', '')
+
+    def test_non_ascii_email_domain_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'user@\xe9xample.com', '')
+
+    def test_leading_hyphen_email_domain_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'user@example.-com', '')
+
+    def test_empty_part_email_domain_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'user@example..com', '')
+
+    def test_bad_ascii_email_domain_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'user@x_example.com', '')
+
+    def test_high_unicode_email_local_part_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'us\u0117r@example.com', '')
+
+    def test_non_ascii_email_domain_raises_exception(self):
+        self.assertRaises(InvalidEmailAddressError,
+                          Address, 'user@\u0117xample.com', '')
+
     def test_local_part_differs_only_by_case(self):
         with self.assertRaises(ExistingAddressError) as cm:
             self._usermgr.create_address('fperson@example.com')
