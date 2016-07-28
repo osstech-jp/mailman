@@ -23,6 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.app.moderator import (
     handle_message, handle_unsubscription, hold_message, hold_unsubscription)
 from mailman.interfaces.action import Action
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests
 from mailman.interfaces.subscriptions import ISubscriptionManager
@@ -31,7 +32,7 @@ from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
+    get_queue_messages, make_testable_runner, set_preferred,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import SMTPLayer
 from mailman.utilities.datetime import now
@@ -164,9 +165,16 @@ class TestUnsubscription(unittest.TestCase):
             anne, pre_verified=True, pre_confirmed=True, pre_approved=True)
         self.assertIsNone(token)
         self.assertEqual(member.address.email, 'anne@example.org')
+        mod = self._user_manager.create_user('bart@example.com', 'Bart User')
+        address = set_preferred(mod)
+        self._mlist.subscribe(address, MemberRole.moderator)
         # Now hold and handle an unsubscription request.
         token = hold_unsubscription(self._mlist, 'anne@example.org')
         handle_unsubscription(self._mlist, token, Action.defer)
+        items = get_queue_messages('virgin', expected_count=2)
+        moderator_message = items[1]
+        self.assertEqual(
+            moderator_message.msgdata['recipients'], {'bart@example.com'})
 
     def test_bogus_token(self):
         # Try to handle an unsubscription with a bogus token.

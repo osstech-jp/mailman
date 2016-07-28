@@ -31,6 +31,7 @@ from email.header import Header
 from email.mime.multipart import MIMEMultipart
 from mailman import public
 from mailman.config import config
+from mailman.interfaces.member import DeliveryStatus
 
 
 COMMASPACE = ', '
@@ -131,7 +132,7 @@ class UserNotification(Message):
             self['To'] = recipients
             self.recipients = set([recipients])
 
-    def send(self, mlist, add_precedence=True, **_kws):
+    def send(self, mlist, add_precedence=True, tomoderators=False, **_kws):
         """Sends the message by enqueuing it to the 'virgin' queue.
 
         This is used for all internally crafted messages.
@@ -158,6 +159,12 @@ class UserNotification(Message):
         # don't override an existing Precedence: header.
         if 'precedence' not in self and add_precedence:
             self['Precedence'] = 'bulk'
+        if tomoderators:
+            self.recipients = set(
+                member.address.email
+                for member in mlist.moderators.members
+                if member.delivery_status == DeliveryStatus.enabled)
+            self['To'] = COMMASPACE.join(self.recipients)
         self._enqueue(mlist, **_kws)
 
     def _enqueue(self, mlist, **_kws):

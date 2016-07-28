@@ -246,7 +246,7 @@ also appear in the first line of the body of the reply.""")),
                 nmsg.attach(text)
                 nmsg.attach(MIMEMessage(msg))
                 nmsg.attach(MIMEMessage(dmsg))
-                nmsg.send(mlist, **dict(tomoderators=True))
+                nmsg.send(mlist, tomoderators=True)
         # Log the held message.  Log messages are not translated, so recast
         # the reasons in the English.
         with _.using('en'):
