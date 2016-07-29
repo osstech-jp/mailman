@@ -92,7 +92,7 @@ used.
             return ContinueProcessing.yes
         joins.add(email)
         results.joins = joins
-        person = formataddr((display_name, email))   # noqa
+        person = formataddr((display_name, email))                # noqa: F841
         # Is this person already a member of the list?  Search for all
         # matching memberships.
         members = getUtility(ISubscriptionService).find_members(
@@ -187,7 +187,7 @@ You may be asked to confirm your request.""")
                 file=results)
             return ContinueProcessing.no
         member.unsubscribe()
-        person = formataddr((user.display_name, email))   # noqa
+        person = formataddr((user.display_name, email))           # noqa: F841
         print(_('$person left $mlist.fqdn_listname'), file=results)
         return ContinueProcessing.yes
 

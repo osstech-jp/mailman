@@ -37,7 +37,7 @@ class ModelMeta:
             try:
                 # Delete all the tables in reverse foreign key dependency
                 # order.  http://tinyurl.com/on8dy6f
-                for table in reversed(Model.metadata.sorted_tables):   # noqa
+                for table in reversed(Model.metadata.sorted_tables):
                     connection.execute(table.delete())
             except:
                 transaction.rollback()
@@ -46,4 +46,5 @@ class ModelMeta:
                 transaction.commit()
 
 
-public(Model=declarative_base(cls=ModelMeta))
+Model = declarative_base(cls=ModelMeta)
+public(Model=Model)

@@ -50,7 +50,7 @@ class RESTRunner(Runner):
         # server.
         self._server = make_server()
         self._event = threading.Event()
-        def stopper(event, server):                 # noqa
+        def stopper(event, server):                              # noqa: E301
             event.wait()
             server.shutdown()
         self._thread = threading.Thread(

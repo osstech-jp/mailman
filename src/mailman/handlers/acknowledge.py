@@ -60,7 +60,7 @@ class Acknowledge:
                     if 'lang' in msgdata
                     else member.preferred_language)
         # Now get the acknowledgement template.
-        display_name = mlist.display_name           # noqa
+        display_name = mlist.display_name                        # noqa: F841
         template = getUtility(ITemplateLoader).get(
             'list:user:notice:post', mlist,
             language=language.code)

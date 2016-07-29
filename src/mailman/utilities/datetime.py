@@ -52,7 +52,8 @@ class UTC(datetime.tzinfo):
         return ZERO
 
 
-public(utc=UTC())
+utc = UTC()
+public(utc=utc)
 _missing = object()
 
 
@@ -67,7 +68,7 @@ class DateFactory:
         # We can't automatically fast-forward because some tests require us to
         # stay on the same day for a while, e.g. autorespond.txt.
         if tz is _missing:
-            tz = utc                                # noqa
+            tz = utc
         # Storm cannot yet handle datetimes with tz suffixes.  Assume we're
         # using UTC datetimes everywhere, so set the tzinfo to None.  This
         # does *not* change the actual time values.  LP: #280708
@@ -86,7 +87,7 @@ class DateFactory:
     @classmethod
     def reset(cls):
         cls.predictable_now = datetime.datetime(2005, 8, 1, 7, 49, 23,
-                                                tzinfo=utc)   # noqa
+                                                tzinfo=utc)
         cls.predictable_today = cls.predictable_now.date()
 
     @classmethod
@@ -95,8 +96,10 @@ class DateFactory:
         cls.predictable_today = cls.predictable_now.date()
 
 
-public(factory=DateFactory())
-factory.reset()                                             # noqa
-public(today=factory.today)                                 # noqa
-public(now=factory.now)                                     # noqa
-layers.MockAndMonkeyLayer.register_reset(factory.reset)     # noqa
+factory = DateFactory()
+public(factory=factory)
+factory.reset()
+
+public(today=factory.today)
+public(now=factory.now)
+layers.MockAndMonkeyLayer.register_reset(factory.reset)

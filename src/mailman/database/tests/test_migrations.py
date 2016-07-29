@@ -130,7 +130,7 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('value', sa.Unicode),
             sa.sql.column('pended_id', sa.Integer),
             )
-        def get_from_db():                                 # noqa
+        def get_from_db():                                 # noqa: E301
             results = {}
             for i in range(1, 6):
                 query = sa.sql.select(
@@ -227,7 +227,7 @@ class TestMigrations(unittest.TestCase):
         self.assertTrue(os.path.exists(bee.data_path))
 
     def test_7b254d88f122_moderation_action(self):
-        mailinglist_table = sa.sql.table(           # noqa
+        sa.sql.table(
             'mailinglist',
             sa.sql.column('id', sa.Integer),
             sa.sql.column('list_id', sa.Unicode),

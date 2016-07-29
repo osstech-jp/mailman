@@ -77,7 +77,7 @@ class TestInteract(unittest.TestCase):
         self.assertEqual(stderr[0], 'Welcome')
 
     def test_interact_no_upframe(self):
-        upframed = False                            # noqa
+        upframed = False                                         # noqa: F841
         fp = self._enter(NamedTemporaryFile('w', encoding='utf-8'))
         self._enter(hackenv('PYTHONSTARTUP', fp.name))
         print('print(upframed)', file=fp)

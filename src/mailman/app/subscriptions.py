@@ -224,7 +224,7 @@ class SubscriptionWorkflow(Workflow):
             next_step = (
                 'moderation_checks'
                 if self.mlist.subscription_policy is
-                    SubscriptionPolicy.confirm_then_moderate   # noqa
+                    SubscriptionPolicy.confirm_then_moderate   # noqa: E131
                 else 'do_subscription')
             self.push(next_step)
             return

@@ -28,7 +28,7 @@ from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 
 try:
-    import readline                                 # noqa
+    import readline                                 # noqa: F401
     has_readline = True
 except ImportError:
     has_readline = False

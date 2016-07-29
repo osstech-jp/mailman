@@ -207,7 +207,7 @@ class Withlist:
         # Set the tab completion.
         with ExitStack() as resources:
             try:                                    # pragma: no cover
-                import readline, rlcompleter        # noqa
+                import readline, rlcompleter        # noqa: F401, E401
             except ImportError:                     # pragma: no cover
                 print(_('readline not available'), file=sys.stderr)
                 pass

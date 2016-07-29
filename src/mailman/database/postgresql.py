@@ -41,8 +41,8 @@ class PostgreSQLDatabase(SABaseDatabase):
         for table in tables:
             for column in table.primary_key:
                 if (column.autoincrement
-                        and isinstance(column.type, Integer)   # noqa
-                        and not column.foreign_keys):          # noqa
+                        and isinstance(column.type, Integer)      # noqa: W503
+                        and not column.foreign_keys):             # noqa: W503
                     store.execute("""\
                         SELECT setval('"{0}_{1}_seq"', coalesce(max("{1}"), 1),
                                       max("{1}") IS NOT null)

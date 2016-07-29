@@ -193,7 +193,7 @@ The master lock could not be acquired because it appears as though another
 master is already running.""")
         elif status is WatcherState.stale_lock:
             # Hostname matches but the process does not exist.
-            program = sys.argv[0]                   # noqa
+            program = sys.argv[0]                   # noqa: F841
             message = _("""\
 The master lock could not be acquired.  It appears as though there is a stale
 master lock.  Try re-running $program with the --force flag.""")
@@ -299,33 +299,33 @@ class Loop:
         # Set up our signal handlers.  Also set up a SIGALRM handler to
         # refresh the lock once per day.  The lock lifetime is 1 day + 6 hours
         # so this should be plenty.
-        def sigalrm_handler(signum, frame):         # noqa
+        def sigalrm_handler(signum, frame):                      # noqa: E301
             self._lock.refresh()
             signal.alarm(SECONDS_IN_A_DAY)
         signal.signal(signal.SIGALRM, sigalrm_handler)
         signal.alarm(SECONDS_IN_A_DAY)
         # SIGHUP tells the runners to close and reopen their log files.
-        def sighup_handler(signum, frame):          # noqa
+        def sighup_handler(signum, frame):                        # noqa: E301
             reopen()
             for pid in self._kids:
                 os.kill(pid, signal.SIGHUP)
             log.info('Master watcher caught SIGHUP.  Re-opening log files.')
         signal.signal(signal.SIGHUP, sighup_handler)
         # SIGUSR1 is used by 'mailman restart'.
-        def sigusr1_handler(signum, frame):         # noqa
+        def sigusr1_handler(signum, frame):                       # noqa: E301
             for pid in self._kids:
                 os.kill(pid, signal.SIGUSR1)
             log.info('Master watcher caught SIGUSR1.  Exiting.')
         signal.signal(signal.SIGUSR1, sigusr1_handler)
         # SIGTERM is what init will kill this process with when changing run
         # levels.  It's also the signal 'mailman stop' uses.
-        def sigterm_handler(signum, frame):         # noqa
+        def sigterm_handler(signum, frame):                       # noqa: E301
             for pid in self._kids:
                 os.kill(pid, signal.SIGTERM)
             log.info('Master watcher caught SIGTERM.  Exiting.')
         signal.signal(signal.SIGTERM, sigterm_handler)
         # SIGINT is what control-C gives.
-        def sigint_handler(signum, frame):          # noqa
+        def sigint_handler(signum, frame):                        # noqa: E301
             for pid in self._kids:
                 os.kill(pid, signal.SIGINT)
             log.info('Master watcher caught SIGINT.  Restarting.')

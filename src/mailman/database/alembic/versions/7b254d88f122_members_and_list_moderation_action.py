@@ -85,7 +85,7 @@ def upgrade():
 def downgrade():
     connection = op.get_bind()
     for member in connection.execute(members_query.where(
-            member_table.c.moderation_action == None)).fetchall():   # noqa
+           member_table.c.moderation_action == None)).fetchall():  # noqa: E711
         default_action = _get_default_action(connection, member)
         # Use the mailing list's default action
         connection.execute(member_table.update().where(

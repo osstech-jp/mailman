@@ -37,7 +37,7 @@ class SQLiteDatabase(SABaseDatabase):
         path = os.path.normpath(parts.path)
         fd = os.open(
             path,
-            os.O_WRONLY |  os.O_NONBLOCK | os.O_CREAT,   # noqa
+            os.O_WRONLY | os.O_NONBLOCK | os.O_CREAT,
             0o666)
         # Ignore errors
         if fd > 0:

@@ -54,7 +54,7 @@ class TestUID(unittest.TestCase):
 
     def test_uid_record_try_again(self):
         called = False
-        def record_second(ignore):                  # noqa
+        def record_second(ignore):                         # noqa: E301
             nonlocal called
             if not called:
                 called = True

@@ -244,7 +244,7 @@ def get_nntp_server(cleanups):
     cleanups.append(patcher.stop)
     nntpd = server_class()
     # A class for more convenient access to the posted message.
-    class NNTPProxy:                                # noqa
+    class NNTPProxy:                                              # noqa: E301
         def get_message(self):
             args = nntpd.post.call_args
             return specialized_message_from_string(args[0][0].read())

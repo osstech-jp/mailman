@@ -66,7 +66,7 @@ class Help:
                 print(wrap(command.description), file=results)
             return ContinueProcessing.yes
         else:
-            printable_arguments = SPACE.join(arguments)   # noqa
+            printable_arguments = SPACE.join(arguments)           # noqa: F841
             print(_('$self.name: too many arguments: $printable_arguments'),
                   file=results)
             return ContinueProcessing.no

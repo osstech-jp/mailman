@@ -61,7 +61,7 @@ def send_welcome_message(mlist, member, language, text=''):
         list_name=mlist.display_name,
         list_requests=mlist.request_address,
         ))
-    digmode = (''                                   # noqa
+    digmode = (''                                   # noqa: F841
                if member.delivery_mode is DeliveryMode.regular
                else _(' (Digest mode)'))
     msg = UserNotification(

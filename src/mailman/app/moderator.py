@@ -243,7 +243,7 @@ def send_rejection(mlist, request, recip, comment, origmsg=None, lang=None):
     # As this message is going to the requester, try to set the language to
     # his/her language choice, if they are a member.  Otherwise use the list's
     # preferred language.
-    display_name = mlist.display_name               # noqa
+    display_name = mlist.display_name               # noqa: F841
     if lang is None:
         member = mlist.members.get_member(recip)
         lang = (mlist.preferred_language

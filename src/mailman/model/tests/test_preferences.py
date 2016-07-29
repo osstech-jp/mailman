@@ -41,7 +41,7 @@ class TestPreferences(unittest.TestCase):
         for name in IPreferences.names():
             attribute = IPreferences.getDescriptionFor(name)
             if (not isinstance(attribute, Method)
-                    and isinstance(attribute, Attribute)):   # noqa
+                    and isinstance(attribute, Attribute)):   # noqa: W503
                 attributes.append(name)
         values = {
             'acknowledge_posts': True,

@@ -104,7 +104,7 @@ Something else.
         # value in a descending counter.
         request_ids = []
         counter = count(200, -1)
-        def id_hacker(session, flush_context, instances):   # noqa
+        def id_hacker(session, flush_context, instances):         # noqa: E301
             for instance in session.new:
                 if isinstance(instance, _Request):
                     instance.id = next(counter)
