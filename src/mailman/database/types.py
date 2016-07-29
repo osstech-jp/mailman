@@ -22,7 +22,8 @@ import uuid
 from mailman import public
 from sqlalchemy import Integer
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.types import CHAR, TypeDecorator
+from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.types import CHAR, TypeDecorator, Unicode
 
 
 @public
@@ -80,3 +81,46 @@ class UUID(TypeDecorator):
             return value
         else:
             return uuid.UUID(value)
+
+
+@public
+class SAUnicode(TypeDecorator):
+    """Unicode datatype to support fixed length VARCHAR in MySQL.
+
+    This type compiles to VARCHAR(255) in case of MySQL, and in case of
+    other dailects defaults to the Unicode type.  This was created so
+    that we don't have to alter the output of the default Unicode data
+    type and it can still be used if needed in the codebase.
+    """
+    impl = Unicode
+
+
+@compiles(SAUnicode)
+def default_sa_unicode(element, compiler, **kw):
+    return compiler.visit_Unicode(element, **kw)
+
+
+@compiles(SAUnicode, 'mysql')
+def compile_sa_unicode(element, compiler, **kw):
+    # We hardcode the collate here to make string comparison case sensitive.
+    return 'VARCHAR(255) COLLATE utf8_bin'
+
+
+@public
+class SAUnicodeLarge(TypeDecorator):
+    """Similar to SAUnicode type, but compiles to VARCHAR(510).
+
+    This is double size of SAUnicode defined above.
+    """
+    impl = Unicode
+
+
+@compiles(SAUnicodeLarge, 'mysql')
+def compile_sa_unicode_large(element, compiler, **kw):
+    # We hardcode the collate here to make string comparison case sensitive.
+    return 'VARCHAR(510) COLLATE utf8_bin'
+
+
+@compiles(SAUnicode)
+def defalt_sa_unicode_large(element, compiler, **kw):
+    return compiler.visit_unicode(element, **kw)

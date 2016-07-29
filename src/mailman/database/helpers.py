@@ -28,6 +28,11 @@ def is_sqlite(bind):
 
 
 @public
+def is_mysql(bind):
+    return bind.dialect.name == 'mysql'
+
+
+@public
 def exists_in_db(bind, tablename, columnname=None):
     md = sa.MetaData()
     md.reflect(bind=bind)

@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2016 by the Free Software Foundation, Inc.
+# Copyright (C) 2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -15,22 +15,20 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Model for languages."""
+"""MySQL database support"""
 
 from mailman import public
+from mailman.database.base import SABaseDatabase
 from mailman.database.model import Model
-from mailman.database.types import SAUnicode
-from mailman.interfaces.languages import ILanguage
-from sqlalchemy import Column, Integer
-from zope.interface import implementer
 
 
 @public
-@implementer(ILanguage)
-class Language(Model):
-    """See `ILanguage`."""
+class MySQLDatabase(SABaseDatabase):
+    """Database class for MySQL."""
 
-    __tablename__ = 'language'
-
-    id = Column(Integer, primary_key=True)
-    code = Column(SAUnicode)
+    def _post_reset(self, store):
+        """Reset AUTO_INCREMENT counters for all the tables."""
+        super()._post_reset(store)
+        tables = reversed(Model.metadata.sorted_tables)
+        for table in tables:
+            store.execute('ALTER TABLE {} AUTO_INCREMENT = 1;'.format(table))

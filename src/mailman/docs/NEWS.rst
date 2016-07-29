@@ -111,6 +111,11 @@ Command line
    ``[shell]history_file`` variable in mailman.cfg.  Also, many useful names
    are pre-populated in the namespace of the shell.  (Closes: #228)
 
+Database
+--------
+
+ * MySQL is now an officially supported database.  Given by Abhilash Raj.
+
 Interfaces
 ----------
  * Implement reasons for why a message is being held for moderator approval.
