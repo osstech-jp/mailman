@@ -33,7 +33,7 @@ from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import MembershipIsBannedError
 from mailman.interfaces.pending import IPendable, IPendings
-from mailman.interfaces.registrar import ConfirmationNeededEvent
+from mailman.interfaces.workflowmanager import ConfirmationNeededEvent
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, SubscriptionPendingError, TokenOwner)
 from mailman.interfaces.template import ITemplateLoader

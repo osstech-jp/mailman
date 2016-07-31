@@ -22,16 +22,16 @@ from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import DeliveryMode, MemberRole
-from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.workflowmanager import IWorkflowManager
 from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.usermanager import IUserManager
-from zope.component import getUtility
+from zope.component import getUtility, getAdapter
 from zope.interface import implementer
 
 
 def match_subscriber(email, display_name):
     # Return something matching the email which should be used as the
-    # subscriber by the IRegistrar interface.
+    # subscriber by the IWorkflowManager interface.
     manager = getUtility(IUserManager)
     # Is there a user with a preferred address matching the email?
     user = manager.get_user(email)
@@ -101,7 +101,8 @@ used.
             print(_('$person is already a member'), file=results)
             return ContinueProcessing.yes
         subscriber = match_subscriber(email, display_name)
-        IRegistrar(mlist).register(subscriber)
+        getAdapter(mlist,
+                   IWorkflowManager, name='subscribe').register(subscriber)
         print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
 
@@ -186,9 +187,12 @@ You may be asked to confirm your request.""")
                 '$self.name: $email is not a member of $mlist.fqdn_listname'),
                 file=results)
             return ContinueProcessing.no
-        member.unsubscribe()
-        person = formataddr((user.display_name, email))           # noqa: F841
-        print(_('$person left $mlist.fqdn_listname'), file=results)
+        getAdapter(mlist,
+                   IWorkflowManager, name='unsubscribe').register(user_address)
+        # member.unsubscribe()
+        person = formataddr((user.display_name, email))   # noqa
+        print(_('Confirmation email sent to $person to leave'
+                ' $mlist.fqdn_listname'), file=results)
         return ContinueProcessing.yes
 
 

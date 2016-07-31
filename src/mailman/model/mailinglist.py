@@ -178,6 +178,7 @@ class MailingList(Model):
     topics = Column(PickleType)
     topics_bodylines_limit = Column(Integer)
     topics_enabled = Column(Boolean)
+    unsubscription_policy = Column(Enum(SubscriptionPolicy))
     # ORM relationships.
     header_matches = relationship(
         'HeaderMatch', backref='mailing_list',
@@ -441,16 +442,14 @@ class MailingList(Model):
             raise ValueError('Undefined MemberRole: {}'.format(role))
 
     @dbconnection
-    def subscribe(self, store, subscriber, role=MemberRole.member):
-        """See `IMailingList`."""
+    def is_subscribed(self, store, subscriber, role=MemberRole.member):
+        """Check if a user/address is subscribed to this list."""
+        member = None
         if IAddress.providedBy(subscriber):
             member = store.query(Member).filter(
                 Member.role == role,
                 Member.list_id == self._list_id,
                 Member._address == subscriber).first()
-            if member:
-                raise AlreadySubscribedError(
-                    self.fqdn_listname, subscriber.email, role)
         elif IUser.providedBy(subscriber):
             if subscriber.preferred_address is None:
                 raise MissingPreferredAddressError(subscriber)
@@ -458,13 +457,23 @@ class MailingList(Model):
                 Member.role == role,
                 Member.list_id == self._list_id,
                 Member._user == subscriber).first()
-            if member:
-                raise AlreadySubscribedError(
-                    self.fqdn_listname,
-                    subscriber.preferred_address.email,
-                    role)
+
+        if member:
+            return True
         else:
-            raise ValueError('subscriber must be an address or user')
+            return False
+
+    @dbconnection
+    def subscribe(self, store, subscriber, role=MemberRole.member):
+        """See `IMailingList`."""
+        if IAddress.providedBy(subscriber):
+            email = subscriber.email
+        elif IUser.providedBy(subscriber):
+            email = subscriber.preferred_address.email
+
+        if self.is_subscribed(subscriber, role):
+            raise AlreadySubscribedError(self.fqdn_listname, email, role)
+
         member = Member(role=role,
                         list_id=self._list_id,
                         subscriber=subscriber)

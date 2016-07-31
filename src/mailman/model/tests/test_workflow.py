@@ -124,7 +124,7 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(self._manager.count, 1)
 
     def test_discard(self):
-        # Discard some workflow state.  This is use by IRegistrar.discard().
+        # Discard some workflow state.  This is use by IWorkflowManager.discard().
         self._manager.save('ant', 'token', 'one')
         self._manager.save('bee', 'token', 'two')
         self._manager.save('ant', 'nekot', 'three')

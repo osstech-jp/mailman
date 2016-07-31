@@ -15,17 +15,19 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Implementation of the IRegistrar interface."""
+"""Implementation of the IWorkflowManager interface."""
 
 import logging
 
 from mailman import public
 from mailman.app.subscriptions import SubscriptionWorkflow
+from mailman.app.unsubscriptions import UnSubscriptionWorkflow
 from mailman.database.transaction import flush
 from mailman.email.message import UserNotification
 from mailman.interfaces.pending import IPendable, IPendings
-from mailman.interfaces.registrar import ConfirmationNeededEvent, IRegistrar
-from mailman.interfaces.template import ITemplateLoader
+from mailman.interfaces.workflowmanager import (
+    ConfirmationNeededEvent, IWorkflowManager)
+from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.utilities.string import expand
 from zope.component import getUtility
@@ -40,17 +42,56 @@ class PendableRegistration(dict):
     PEND_TYPE = 'registration'
 
 
-@public
-@implementer(IRegistrar)
-class Registrar:
-    """Handle registrations and confirmations for subscriptions."""
+class BaseWorkflowManager:
+    """Base class to handle registration and un-registration workflow. """
+
+    # Workflow type is the type of the workflow and could be either 'register'
+    # or 'unregister' depending on if it is for subscription workflow or
+    # unsubscription workflow.
+
+    WORKFLOW_TYPE = None
 
     def __init__(self, mlist):
         self._mlist = mlist
 
+    def confirm(self, token):
+        workflow = self.workflowClass(self._mlist)
+        workflow.token = token
+        workflow.restore()
+        # In order to just run the whole workflow, all we need to do
+        # is iterate over the workflow object. On calling the __next__
+        # over the workflow iterator it automatically executes the steps
+        # that needs to be done.
+        list(workflow)
+        return workflow.token, workflow.token_owner, workflow.member
+
+    @property
+    def workflowClass(self):
+        if self.WORKFLOW_TYPE == 'subscribe':
+            return SubscriptionWorkflow
+        elif self.WORKFLOW_TYPE == 'unsubscribe':
+            return UnSubscriptionWorkflow
+        else:
+            raise ValueError('Invalid workflow type {}'.format(
+                self.WORKFLOW_TYPE))
+
+    def discard(self, token):
+        with flush():
+            getUtility(IPendings).confirm(token)
+            getUtility(IWorkflowStateManager).discard(
+                self.workflowClass.__name__, token)
+
+
+@public
+@implementer(IWorkflowManager)
+class SubscriptionWorkflowManager(BaseWorkflowManager):
+    """Handle registrations and confirmations for subscriptions."""
+
+    WORKFLOW_TYPE = 'subscribe'
+
     def register(self, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False):
-        """See `IRegistrar`."""
+        """See `IWorkflowManager`."""
         workflow = SubscriptionWorkflow(
             self._mlist, subscriber,
             pre_verified=pre_verified,
@@ -59,20 +100,21 @@ class Registrar:
         list(workflow)
         return workflow.token, workflow.token_owner, workflow.member
 
-    def confirm(self, token):
-        """See `IRegistrar`."""
-        workflow = SubscriptionWorkflow(self._mlist)
-        workflow.token = token
-        workflow.restore()
-        list(workflow)
-        return workflow.token, workflow.token_owner, workflow.member
 
-    def discard(self, token):
-        """See `IRegistrar`."""
-        with flush():
-            getUtility(IPendings).confirm(token)
-            getUtility(IWorkflowStateManager).discard(
-                SubscriptionWorkflow.__name__, token)
+@public
+@implementer(IWorkflowManager)
+class UnsubscriptionWorkflowManager(BaseWorkflowManager):
+    """Handle un-subscriptions and confirmations for un-subscriptions."""
+
+    WORKFLOW_TYPE = 'unsubscribe'
+
+    def unregister(self, subscriber=None, *,
+                   pre_confirmed=False, pre_approved=False):
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, subscriber,
+            pre_confirmed=pre_confirmed,
+            pre_approved=pre_approved)
+        list(workflow)
 
 
 @public

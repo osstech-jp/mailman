@@ -41,12 +41,13 @@ class ConfirmationNeededEvent:
 
 
 @public
-class IRegistrar(Interface):
-    """Interface for subscribing addresses and users.
+class IWorkflowManager(Interface):
+    """Interface for handling subscription and un-subscription of addresses and
+    users.
 
-    This is a higher level interface to user registration, email address
-    confirmation, etc. than the IUserManager.  The latter does no validation,
-    syntax checking, or confirmation, while this interface does.
+    This is a higher level interface to user registration and un-registration,
+    email address confirmation, etc. than the IUserManager.  The latter does no
+    validation, syntax checking, or confirmation, while this interface does.
 
     To use this, adapt an ``IMailingList`` to this interface.
     """

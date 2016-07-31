@@ -23,12 +23,13 @@ from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError
 from mailman.interfaces.pending import IPendings
-from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.workflowmanager import IWorkflowManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, conflict, etag, no_content,
     not_found, okay)
 from mailman.rest.validator import Validator, enum_validator
-from zope.component import getUtility
+from mailman.utilities.i18n import _
+from zope.component import getUtility, getAdapter
 
 
 class _ModerationBase:
@@ -54,7 +55,8 @@ class IndividualRequest(_ModerationBase):
     def __init__(self, mlist, token):
         super().__init__()
         self._mlist = mlist
-        self._registrar = IRegistrar(self._mlist)
+        self._registrar = getAdapter(
+            self._mlist, IWorkflowManager, name='subscribe')
         self._token = token
 
     def on_get(self, request, response):

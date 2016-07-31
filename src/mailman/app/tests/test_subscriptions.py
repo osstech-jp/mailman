@@ -287,7 +287,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         # The moderator must approve the subscription.
         self._mlist.subscription_policy = SubscriptionPolicy.moderate
         anne = self._user_manager.create_address(self._anne)
-        workflow = SubscriptionWorkflow(self._mlist, anne, pre_verified=True)
+        workflow = SubscriptionWorkflow(self._mlist, anne)
         workflow.run_thru('moderation_checks')
         with patch.object(workflow, '_step_get_moderator_approval') as step:
             next(workflow)
@@ -299,7 +299,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         # confirmations or approvals.
         self._mlist.subscription_policy = SubscriptionPolicy.open
         anne = self._user_manager.create_address(self._anne)
-        workflow = SubscriptionWorkflow(self._mlist, anne, pre_verified=True)
+        workflow = SubscriptionWorkflow(self._mlist, anne)
         # Consume the entire state machine.
         list(workflow)
         # Anne is now a member of the mailing list.
