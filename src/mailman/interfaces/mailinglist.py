@@ -46,6 +46,7 @@ class ReplyToMunging(Enum):
 
 @public
 class SubscriptionPolicy(Enum):
+    """All subscription/unsubscription policies for a mailing list."""
     # Neither confirmation, nor moderator approval is required.
     open = 0
     # The user must confirm the subscription.
@@ -55,6 +56,7 @@ class SubscriptionPolicy(Enum):
     # The user must first confirm their subscription, and then if that is
     # successful, the moderator must also approve it.
     confirm_then_moderate = 3
+
 
 
 @public

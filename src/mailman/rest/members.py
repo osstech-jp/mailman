@@ -25,7 +25,7 @@ from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
     MembershipIsBannedError, MissingPreferredAddressError)
-from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.workflowmanager import IWorkflowManager
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, RequestRecord, SubscriptionPendingError, TokenOwner)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
@@ -37,7 +37,7 @@ from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
 from uuid import UUID
-from zope.component import getUtility
+from zope.component import getUtility, getAdapter
 
 
 class _MemberBase(CollectionMixin):
@@ -253,7 +253,7 @@ class AllMembers(_MemberBase):
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
             # verification, confirmation, or approval.
-            registrar = IRegistrar(mlist)
+            registrar = getAdapter(mlist, IWorkflowManager, name='subscribe')
             try:
                 token, token_owner, member = registrar.register(
                     subscriber,

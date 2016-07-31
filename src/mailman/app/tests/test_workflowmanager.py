@@ -18,18 +18,19 @@
 """Test email address registration."""
 
 import unittest
+import pdb
 
 from mailman.app.lifecycle import create_list
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pending import IPendings
-from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.workflowmanager import IWorkflowManager
 from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import get_queue_messages
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
-from zope.component import getUtility
+from zope.component import getUtility, getAdapter
 
 
 class TestRegistrar(unittest.TestCase):
@@ -39,7 +40,8 @@ class TestRegistrar(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('ant@example.com')
-        self._registrar = IRegistrar(self._mlist)
+        self._registrar = getAdapter(
+                          self._mlist, IWorkflowManager, name='subscribe')
         self._pendings = getUtility(IPendings)
         self._anne = getUtility(IUserManager).create_address(
             'anne@example.com')

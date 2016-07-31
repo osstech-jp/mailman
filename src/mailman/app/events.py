@@ -19,7 +19,7 @@
 
 from mailman import public
 from mailman.app import (
-    domain, membership, moderator, registrar, subscriptions)
+    domain, membership, moderator, workflowmanager, subscriptions)
 from mailman.core import i18n, switchboard
 from mailman.languages import manager as language_manager
 from mailman.styles import manager as style_manager
@@ -37,7 +37,7 @@ def initialize():
         membership.handle_SubscriptionEvent,
         moderator.handle_ListDeletingEvent,
         passwords.handle_ConfigurationUpdatedEvent,
-        registrar.handle_ConfirmationNeededEvent,
+        workflowmanager.handle_ConfirmationNeededEvent,
         style_manager.handle_ConfigurationUpdatedEvent,
         subscriptions.handle_ListDeletingEvent,
         switchboard.handle_ConfigurationUpdatedEvent,
