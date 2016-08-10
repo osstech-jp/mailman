@@ -101,6 +101,14 @@ def password_bytes_validator(value):
     return config.password_context.encrypt(value).encode('utf-8')
 
 
+def no_newlines_validator(value):
+    value = str(value)
+    if '\n' in value:
+        raise ValueError(
+            'This value must be on a single line: {}'.format(value))
+    return value
+
+
 # This is the list of IMailingList attributes that are exposed through the
 # REST API.  The values of the keys are the GetterSetter instance holding the
 # decoder used to convert the web request string to an internally valid value.
@@ -136,7 +144,7 @@ ATTRIBUTES = dict(
     created_at=GetterSetter(None),
     default_member_action=GetterSetter(enum_validator(Action)),
     default_nonmember_action=GetterSetter(enum_validator(Action)),
-    description=GetterSetter(str),
+    description=GetterSetter(no_newlines_validator),
     digest_last_sent_at=GetterSetter(None),
     digest_send_periodic=GetterSetter(as_boolean),
     digest_size_threshold=GetterSetter(float),

@@ -437,3 +437,15 @@ class TestConfiguration(unittest.TestCase):
             dict(advertised=True),
             'PATCH')
         self.assertTrue(self._mlist.advertised)
+
+    def test_patch_bad_description_value(self):
+        # GL issue #273
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/lists/ant.example.com/config'
+                '/description',
+                dict(description='This\ncontains\nnewlines.'),
+                'PATCH')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         b'Cannot convert parameters: description')

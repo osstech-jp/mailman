@@ -18,6 +18,7 @@
 """Cook a message's headers."""
 
 import re
+import logging
 
 from email.header import Header
 from email.utils import formataddr, getaddresses, parseaddr
@@ -28,6 +29,7 @@ from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.version import VERSION
 from zope.interface import implementer
 
+log = logging.getLogger('mailman.error')
 
 COMMASPACE = ', '
 MAXLINELEN = 78
@@ -42,6 +44,8 @@ def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
     there is and the charset is us-ascii then we use iso-8859-1 instead.  If
     the string is ascii only we use 'us-ascii' if another charset is
     specified.
+
+    If the header contains a newline, truncate it (see GL#273).
     """
     charset = mlist.preferred_language.charset
     if NONASCII.search(s):
@@ -51,6 +55,10 @@ def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
     else:
         # there is no non-ascii so ...
         charset = 'us-ascii'
+    if '\n' in s:
+        s = '{} [...]'.format(s.split('\n')[0])
+        log.warning('Header {} contains a newline, truncating it.'.format(
+                    header_name, s))
     return Header(s, charset, maxlinelen, header_name, continuation_ws)
 
 

@@ -23,7 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.handlers import cook_headers
 from mailman.interfaces.member import DeliveryMode
 from mailman.testing.helpers import (
-    get_queue_messages, make_digest_messages, subscribe)
+    get_queue_messages, LogFileMark, make_digest_messages, subscribe)
 from mailman.testing.layers import ConfigLayer
 
 
@@ -50,3 +50,14 @@ class TestCookHeaders(unittest.TestCase):
             except AttributeError as error:
                 # LP: #1130696 would raise an AttributeError on .sender
                 self.fail(error)
+
+    def test_uheader_multiline(self):
+        # Multiline headers should be truncated (GL#273).
+        mark = LogFileMark('mailman.error')
+        header = cook_headers.uheader(
+            self._mlist, 'A multiline\ndescription', 'X-Header')
+        self.assertEqual(
+            header.encode(), 'A multiline [...]')
+        log_messages = mark.read()
+        self.assertIn(
+            'Header X-Header contains a newline, truncating it', log_messages)
