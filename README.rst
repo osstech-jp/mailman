@@ -46,14 +46,15 @@ Table of Contents
     :glob:
 
     src/mailman/docs/INTRODUCTION
-    src/mailman/docs/CONTRIBUTE
-    src/mailman/docs/ARCHITECTURE
     src/mailman/docs/RELEASENOTES
     src/mailman/docs/DATABASE
     src/mailman/docs/MTA
-    src/mailman/docs/8-miles-high
     src/mailman/docs/WebUIin5
     src/mailman/docs/ArchiveUIin5
+    src/mailman/docs/CONTRIBUTE
+    src/mailman/docs/STYLEGUIDE
+    src/mailman/docs/ARCHITECTURE
+    src/mailman/docs/8-miles-high
 
 
 Mailman modules
@@ -62,24 +63,24 @@ Mailman modules
 These documents are generated from the doctest suite.
 
 .. toctree::
-    :glob:
+    :maxdepth: 1
 
-    src/mailman/model/docs/*
-    src/mailman/runners/docs/*
-    src/mailman/chains/docs/*
-    src/mailman/rules/docs/*
-    src/mailman/handlers/docs/*
-    src/mailman/rest/docs/*
-    src/mailman/core/docs/*
-    src/mailman/app/docs/*
-    src/mailman/styles/docs/*
-    src/mailman/archiving/docs/*
-    src/mailman/mta/docs/*
-    src/mailman/bin/docs/*
-    src/mailman/commands/docs/*
+    src/mailman/model/docs/model
+    src/mailman/runners/docs/runners
+    src/mailman/chains/docs/chains
+    src/mailman/rules/docs/rules
+    src/mailman/handlers/docs/handlers
+    src/mailman/rest/docs/rest
+    src/mailman/core/docs/core
+    src/mailman/app/docs/app
+    src/mailman/styles/docs/styles
+    src/mailman/archiving/docs/common
+    src/mailman/mta/docs/mta
+    src/mailman/bin/docs/master
+    src/mailman/commands/docs/commands
     src/mailman/docs/NEWS
-    src/mailman/docs/STYLEGUIDE
     src/mailman/docs/ACKNOWLEDGMENTS
+    contrib/README
 
 
 Indices and tables

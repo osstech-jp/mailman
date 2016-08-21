@@ -68,3 +68,8 @@ list administrator.
     True
     >>> rule.check(mlist, msg, dict(moderator_approved=True))
     False
+
+.. toctree::
+   :glob:
+
+   ./*
