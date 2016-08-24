@@ -26,6 +26,7 @@ from enum import Enum
 from mailman import public
 from mailman.app.workflow import Workflow
 from mailman.core.i18n import _
+from mailman.database.transaction import flush
 from mailman.email.message import UserNotification
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.bans import IBanManager
@@ -35,7 +36,8 @@ from mailman.interfaces.member import MembershipIsBannedError
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.workflowmanager import ConfirmationNeededEvent
 from mailman.interfaces.subscriptions import (
-    ISubscriptionService, SubscriptionPendingError, TokenOwner)
+    ISubscriptionManager, ISubscriptionService, SubscriptionPendingError,
+    TokenOwner)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
@@ -56,8 +58,13 @@ class WhichSubscriber(Enum):
 
 
 @implementer(IPendable)
-class Pendable(dict):
+class PendableSubscription(dict):
     PEND_TYPE = 'subscription'
+
+
+@implementer(IPendable)
+class PendableRegistration(dict):
+    PEND_TYPE = 'registration'
 
 
 @public
@@ -150,7 +157,7 @@ class SubscriptionWorkflow(Workflow):
         if token_owner is TokenOwner.no_one:
             self.token = None
             return
-        pendable = Pendable(
+        pendable = PendableSubscription(
             list_id=self.mlist.list_id,
             email=self.address.email,
             display_name=self.address.display_name,
@@ -326,6 +333,294 @@ class SubscriptionWorkflow(Workflow):
                          )
                      else 'do_subscription')
         self.push(next_step)
+
+
+class UnSubscriptionWorkflow(Workflow):
+    """Workflow of a un-subscription request."""
+
+    INITIAL_STATE = 'subscription_checks'
+    SAVE_ATTRIBUTES = (
+        'pre_approved',
+        'pre_confirmed',
+        'address_key',
+        'user_key',
+        'subscriber_key',
+        'token_owner_key',
+        )
+
+    def __init__(self, mlist, subscriber=None, *,
+                 pre_approved=False, pre_confirmed=False):
+        super().__init__()
+        self.mlist = mlist
+        self.address = None
+        self.user = None
+        self.which = None
+        self._set_token(TokenOwner.no_one)
+        # `subscriber` should be an implementer of IAddress.
+        if IAddress.providedBy(subscriber):
+            self.address = subscriber
+            self.user = self.address.user
+            self.which = WhichSubscriber.address
+            self.member = self.mlist.regular_members.get_member(
+                self.address.email)
+        elif IUser.providedBy(subscriber):
+            self.address = subscriber.preferred_address
+            self.user = subscriber
+            self.which = WhichSubscriber.address
+            self.member = self.mlist.regular_members.get_member(
+                self.address.email)
+        self.subscriber = subscriber
+        self.pre_confirmed = pre_confirmed
+        self.pre_approved = pre_approved
+
+    @property
+    def user_key(self):
+        # For save.
+        return self.user.user_id.hex
+
+    @user_key.setter
+    def user_key(self, hex_key):
+        # For restore.
+        uid = uuid.UUID(hex_key)
+        self.user = getUtility(IUserManager).get_user_by_id(uid)
+        assert self.user is not None
+
+    @property
+    def address_key(self):
+        # For save.
+        return self.address.email
+
+    @address_key.setter
+    def address_key(self, email):
+        # For restore.
+        self.address = getUtility(IUserManager).get_address(email)
+        assert self.address is not None
+
+    @property
+    def subscriber_key(self):
+        return self.which.value
+
+    @subscriber_key.setter
+    def subscriber_key(self, key):
+        self.which = WhichSubscriber(key)
+
+    @property
+    def token_owner_key(self):
+        return self.token_owner.value
+
+    @token_owner_key.setter
+    def token_owner_key(self, value):
+        self.token_owner = TokenOwner(value)
+
+    def _set_token(self, token_owner):
+        assert isinstance(token_owner, TokenOwner)
+        pendings = getUtility(IPendings)
+        # Clear out the previous pending token if there is one.
+        if self.token is not None:
+            pendings.confirm(self.token)
+        # Create a new token to prevent replay attacks.  It seems like this
+        # would produce the same token, but it won't because the pending adds a
+        # bit of randomization.
+        self.token_owner = token_owner
+        if token_owner is TokenOwner.no_one:
+            self.token = None
+            return
+        pendable = PendableRegistration(
+            list_id=self.mlist.list_id,
+            email=self.address.email,
+            display_name=self.address.display_name,
+            when=now().replace(microsecond=0).isoformat(),
+            token_owner=token_owner.name,
+            )
+        self.token = pendings.add(pendable, timedelta(days=3650))
+
+    def _step_subscription_checks(self):
+        assert self.mlist.is_subscribed(self.subscriber)
+        self.push('confirmation_checks')
+
+    def _step_confirmation_checks(self):
+        # If list's unsubscription policy is open, the user can unsubscribe
+        # right now.
+        if self.mlist.unsubscription_policy is SubscriptionPolicy.open:
+            self.push('do_unsubscription')
+            return
+        # If we don't need the user's confirmation, then skip to the moderation
+        # checks
+        if self.mlist.unsubscription_policy is SubscriptionPolicy.moderate:
+            self.push('moderation_checks')
+            return
+
+        if self.pre_confirmed:
+            next_step = ('moderation_checks'
+                         if self.mlist.subscription_policy is
+                             SubscriptionPolicy.confirm_then_moderate   # noqa
+                         else 'do_subscription')
+            self.push(next_step)
+            return
+        # The user must confirm their un-subsbcription.
+        self.push('send_confirmation')
+
+    def _step_send_confirmation(self):
+        self._set_token(TokenOwner.subscriber)
+        self.push('do_confirm_verify')
+        self.save()
+        notify(ConfirmationNeededEvent(
+            self.mlist, self.token, self.address.email))
+        raise StopIteration
+
+    def _step_moderation_checks(self):
+        # Does the moderator need to approve the unsubscription request.
+        assert self.mlist.unsubscription_policy in (
+            SubscriptionPolicy.moderate,
+            SubscriptionPolicy.confirm_then_moderate,
+        ), self.mlist.unsubscription_policy
+        if self.pre_approved:
+            self.push('do_unsubscription')
+        else:
+            self.push('get_moderator_approval')
+
+    def _step_get_moderator_approval(self):
+        self._set_token(TokenOwner.moderator)
+        self.push('unsubscribe_from_restored')
+        self.save()
+        log.info('{}: held unsubscription request from {}'.format(
+            self.mlist.fqdn_listname, self.address.email))
+        if self.mlist.admin_immed_notify:
+            subject = _(
+                'New unsubscription request to $self.mlist.display_name '
+                'from $self.address.email')
+            username = formataddr(
+                (self.subscriber.display_name, self.address.email))
+            text = make('unsubauth.txt',
+                        mailing_list=self.mlist,
+                        username=username,
+                        listname=self.mlist.fqdn_listname,
+                        )
+            # This message should appear to come from the <list>-owner so as
+            # to avoid any useless bounce processing.
+            msg = UserNotification(
+                self.mlist.owner_address, self.mlist.owner_address,
+                subject, text, self.mlist.preferred_language)
+            msg.send(self.mlist, tomoderators=True)
+        # The workflow must stop running here
+        raise StopIteration
+
+    def _step_do_confirm_verify(self):
+        if self.which is WhichSubscriber.address:
+            self.subscriber = self.address
+        else:
+            assert self.which is WhichSubscriber.user
+            self.subscriber = self.user
+            # Reset the token so it can't be used in a replay attack.
+        self._set_token(TokenOwner.no_one)
+        next_step = ('moderation_checks'
+                     if self.mlist.unsubscription_policy in (
+                          SubscriptionPolicy.moderate,
+                          SubscriptionPolicy.confirm_then_moderate,
+                          )
+                     else 'do_unsubscription')
+        self.push('do_unsubscription')
+
+    def _step_do_unsubscription(self):
+        delete_member(self.mlist, self.address.email)
+        self.member = None
+        # This workflow is done so throw away any associated state.
+        getUtility(IWorkflowStateManager).restore(self.name, self.token)    
+
+    def _step_unsubscribe_from_restored(self):
+        # Prevent replay attacks.
+        self._set_token(TokenOwner.no_one)
+        if self.which is WhichSubscriber.address:
+            self.subscriber = self.address
+        else:
+            assert self.which is WhichSubsriber.user
+            self.subscriber = self.user
+        self.push('do_unsubscription')
+
+
+class BaseSubscriptionManager:
+    """Base class to handle registration and un-registration workflows."""
+
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    def confirm(self, token):
+        workflow = self.__class__(self._mlist)
+        workflow.token = token
+        workflow.restore()
+        # In order to just run the whole workflow, all we need to do
+        # is iterate over the workflow object. On calling the __next__
+        # over the workflow iterator it automatically executes the steps
+        # that needs to be done.
+        list(workflow)
+        return workflow.token, workflow.token_owner, workflow.member
+
+    def discard(self, token):
+        with flush():
+            getUtility(IPendings).confirm(token)
+            getUtility(IWorkflowStateManager).discard(
+                self.WORKFLOW_TYPE.name, token)
+
+
+@public
+@implementer(ISubscriptionManager)
+class SubscriptionWorkflowManager(BaseSubscriptionManager):
+    """Handle registrations and confirmations for subscriptions."""
+
+    def register(self, subscriber=None, *,
+                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+        """See `IWorkflowManager`."""
+        workflow = SubscriptionWorkflow(
+            self._mlist, subscriber,
+            pre_verified=pre_verified,
+            pre_confirmed=pre_confirmed,
+            pre_approved=pre_approved)
+        list(workflow)
+        return workflow.token, workflow.token_owner, workflow.member
+
+
+@public
+@implementer(ISubscriptionManager)
+class UnsubscriptionWorkflowManager(BaseSubscriptionManager):
+    """Handle un-subscriptions and confirmations for un-subscriptions."""
+
+    def unregister(self, subscriber=None, *,
+                   pre_confirmed=False, pre_approved=False):
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, subscriber,
+            pre_confirmed=pre_confirmed,
+            pre_approved=pre_approved)
+        list(workflow)
+
+
+@public
+def handle_ConfirmationNeededEvent(event):
+    if not isinstance(event, ConfirmationNeededEvent):
+        return
+    # There are three ways for a user to confirm their subscription.  They
+    # can reply to the original message and let the VERP'd return address
+    # encode the token, they can reply to the robot and keep the token in
+    # the Subject header, or they can click on the URL in the body of the
+    # message and confirm through the web.
+    subject = 'confirm {}'.format(event.token)
+    confirm_address = event.mlist.confirm_address(event.token)
+    email_address = event.email
+    # Send a verification email to the address.
+    template = getUtility(ITemplateLoader).get(
+        'list:user:action:confirm', event.mlist)
+    text = expand(template, event.mlist, dict(
+        token=event.token,
+        subject=subject,
+        confirm_email=confirm_address,
+        user_email=email_address,
+        # For backward compatibility.
+        confirm_address=confirm_address,
+        email_address=email_address,
+        domain_name=event.mlist.domain.mail_host,
+        contact_address=event.mlist.owner_address,
+        ))
+    msg = UserNotification(email_address, confirm_address, subject, text)
+    msg.send(event.mlist, add_precedence=False)
 
 
 @public
