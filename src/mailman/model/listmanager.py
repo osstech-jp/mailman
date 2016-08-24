@@ -29,6 +29,7 @@ from mailman.model.mailinglist import (
     IAcceptableAliasSet, ListArchiver, MailingList)
 from mailman.model.mime import ContentFilter
 from mailman.utilities.datetime import now
+from mailman.utilities.queries import QuerySequence
 from zope.event import notify
 from zope.interface import implementer
 
@@ -121,3 +122,9 @@ class ListManager:
         for mail_host, list_name in result_set.values(MailingList.mail_host,
                                                       MailingList.list_name):
             yield list_name, mail_host
+
+    @dbconnection
+    def find(self, store, **kw):
+        query = store.query(MailingList).filter_by(**kw).order_by(
+            MailingList._list_id)
+        return QuerySequence(query)
