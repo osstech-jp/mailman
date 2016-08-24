@@ -86,6 +86,8 @@ Bugs
  * Nonmember subscriptions are removed when one of the addresses controlled by
    a user is subscribed as a member.  Given by Aditya Divekar.  (Closes #237)
  * Email address validation is now more compliant with RFC 5321.  (Closes #266)
+ * A mailing list's ``description`` must not contain newlines.  Given by
+   Aurélien Bompard.  (Closes: #273)
 
 Configuration
 -------------

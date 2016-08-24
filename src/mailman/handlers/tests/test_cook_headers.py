@@ -21,9 +21,11 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.handlers import cook_headers
+from mailman.interfaces.mailinglist import ReplyToMunging
 from mailman.interfaces.member import DeliveryMode
 from mailman.testing.helpers import (
-    get_queue_messages, LogFileMark, make_digest_messages, subscribe)
+    LogFileMark, get_queue_messages, make_digest_messages,
+    specialized_message_from_string as mfs, subscribe)
 from mailman.testing.layers import ConfigLayer
 
 
@@ -33,7 +35,7 @@ class TestCookHeaders(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        self._mlist = create_list('test@example.com')
+        self._mlist = create_list('ant@example.com')
         self._mlist.send_welcome_message = False
 
     def test_process_digest(self):
@@ -56,8 +58,31 @@ class TestCookHeaders(unittest.TestCase):
         mark = LogFileMark('mailman.error')
         header = cook_headers.uheader(
             self._mlist, 'A multiline\ndescription', 'X-Header')
-        self.assertEqual(
-            header.encode(), 'A multiline [...]')
+        self.assertEqual(header.encode(), 'A multiline [...]')
         log_messages = mark.read()
         self.assertIn(
             'Header X-Header contains a newline, truncating it', log_messages)
+
+    def test_truncate_description(self):
+        # Existing multiline descriptions get truncated with ellipses.
+        self._mlist.description = 'A multiline\ndescription\nalready\nexists'
+        self._mlist.reply_goes_to_list = ReplyToMunging.point_to_list
+        msg = mfs("""\
+From: anne@example.com
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+
+More things to say.
+""")
+        cook_headers.process(self._mlist, msg, {})
+        self.assertMultiLineEqual(msg.as_string(), """\
+From: anne@example.com
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Precedence: list
+Reply-To: "A multiline [...]" <ant@example.com>
+
+More things to say.
+""")

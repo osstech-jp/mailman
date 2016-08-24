@@ -439,7 +439,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertTrue(self._mlist.advertised)
 
     def test_patch_bad_description_value(self):
-        # GL issue #273
+        # Do not accept multiline descriptions.  GL#273
         with self.assertRaises(HTTPError) as cm:
             call_api(
                 'http://localhost:9001/3.0/lists/ant.example.com/config'

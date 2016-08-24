@@ -104,8 +104,7 @@ def password_bytes_validator(value):
 def no_newlines_validator(value):
     value = str(value)
     if '\n' in value:
-        raise ValueError(
-            'This value must be on a single line: {}'.format(value))
+        raise ValueError('This value must be a single line: {}'.format(value))
     return value
 
 

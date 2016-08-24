@@ -29,6 +29,7 @@ from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.version import VERSION
 from zope.interface import implementer
 
+
 log = logging.getLogger('mailman.error')
 
 COMMASPACE = ', '
@@ -58,7 +59,7 @@ def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
     if '\n' in s:
         s = '{} [...]'.format(s.split('\n')[0])
         log.warning('Header {} contains a newline, truncating it.'.format(
-                    header_name, s))
+            header_name, s))
     return Header(s, charset, maxlinelen, header_name, continuation_ws)
 
 
