@@ -61,8 +61,8 @@ etc.
     <BLANKLINE>
     First post!
     _______________________________________________
-    Test mailing list
-    test@example.com
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
     <BLANKLINE>
 
 The message metadata has information about recipients and other stuff.
@@ -134,8 +134,8 @@ delivered to end recipients.
     First post!
     <BLANKLINE>
     _______________________________________________
-    Test mailing list
-    test@example.com
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
 
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg       : False

@@ -218,8 +218,8 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     Content-Description: Digest Footer
     <BLANKLINE>
     _______________________________________________
-    Test mailing list
-    test@example.com
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
     <BLANKLINE>
     --===============...==--
     <BLANKLINE>
@@ -295,8 +295,8 @@ The RFC 1153 contains the digest in a single plain text message.
     Subject: Digest Footer
     <BLANKLINE>
     _______________________________________________
-    Test mailing list
-    test@example.com
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
     <BLANKLINE>
     <BLANKLINE>
     ------------------------------

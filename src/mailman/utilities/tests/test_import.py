@@ -666,8 +666,10 @@ class TestConvertToURI(unittest.TestCase):
     def test_substitutions(self):
         test_text = ('UNIT TESTING %(real_name)s mailing list\n'
                      '%(real_name)s@%(host_name)s')
-        expected_text = ('UNIT TESTING $display_name mailing list\n'
-                         '$listname')
+        expected_text = ('UNIT TESTING $display_name mailing list '
+                         '-- $listname\n'
+                         'To unsubscribe send an email to '
+                         '${short_listname}-leave@${domain}')
         for oldvar, newvar in self._conf_mapping.items():
             self._pckdict[str(oldvar)] = str(test_text)
             import_config_pck(self._mlist, self._pckdict)
