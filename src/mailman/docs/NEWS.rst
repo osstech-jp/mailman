@@ -160,6 +160,8 @@ Message handling
    approval.  For example, if a user is subscribed with one email but posts
    with a second email that they control, the message should be processed as
    a posting from a member.  Given by Aditya Divekar.  (Closes #222)
+ * The default message footer has been improved to include a way to
+   unsubscribe via the ``-leave`` address.  Given by Francesco Ariis.
 
 REST
 ----
