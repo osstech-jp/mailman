@@ -52,6 +52,7 @@ All readable attributes for a list are available on a sub-resource.
     header_uri:
     http_etag: "..."
     include_rfc2369_headers: True
+    info:
     join_address: ant-join@example.com
     last_post_at: None
     leave_address: ant-leave@example.com
@@ -103,6 +104,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
+    ...             info='This is the mailing list information',
     ...             allow_list_posts=False,
     ...             digest_send_periodic=False,
     ...             digest_size_threshold=10.5,

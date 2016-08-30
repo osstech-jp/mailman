@@ -66,6 +66,7 @@ RESOURCE = dict(
     first_strip_reply_to=True,
     goodbye_message_uri='mailman:///goodbye.txt',
     include_rfc2369_headers=False,
+    info='This is the mailing list info',
     moderator_password='password',
     posting_pipeline='virgin',
     reply_goes_to_list='point_to_list',
@@ -449,3 +450,18 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          b'Cannot convert parameters: description')
+
+    def test_patch_info(self):
+        with transaction():
+            resource, response = call_api(
+                'http://localhost:9001/3.0/lists/ant.example.com/config',
+                dict(info='testvalue'),
+                'PATCH')
+            self.assertEqual(self._mlist.info, 'testvalue')
+        # Now empty it
+        with transaction():
+            resource, response = call_api(
+                'http://localhost:9001/3.0/lists/ant.example.com/config',
+                dict(info=''),
+                'PATCH')
+            self.assertEqual(self._mlist.info, '')

@@ -155,6 +155,7 @@ ATTRIBUTES = dict(
     mail_host=GetterSetter(None),
     allow_list_posts=GetterSetter(as_boolean),
     include_rfc2369_headers=GetterSetter(as_boolean),
+    info=GetterSetter(str),
     join_address=GetterSetter(None),
     last_post_at=GetterSetter(None),
     leave_address=GetterSetter(None),
