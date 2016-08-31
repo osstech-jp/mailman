@@ -455,9 +455,9 @@ class TestConfiguration(unittest.TestCase):
         with transaction():
             resource, response = call_api(
                 'http://localhost:9001/3.0/lists/ant.example.com/config',
-                dict(info='testvalue'),
+                dict(info='multiline\ntest\nvalue'),
                 'PATCH')
-            self.assertEqual(self._mlist.info, 'testvalue')
+            self.assertEqual(self._mlist.info, 'multiline\ntest\nvalue')
         # Now empty it
         with transaction():
             resource, response = call_api(

@@ -88,6 +88,8 @@ Bugs
  * Email address validation is now more compliant with RFC 5321.  (Closes #266)
  * A mailing list's ``description`` must not contain newlines.  Given by
    Aurélien Bompard.  (Closes: #273)
+ * Allow MailingList.info to be set using the REST API.  Given by Aurélien
+   Bompard.
 
 Configuration
 -------------
