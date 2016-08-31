@@ -35,7 +35,7 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer, RESTLayer
 from mailman.utilities.datetime import now
 from urllib.error import HTTPError
-from zope.component import getUtility, getAdapter
+from zope.component import getAdapter, getUtility
 
 
 class TestMembership(unittest.TestCase):

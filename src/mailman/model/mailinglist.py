@@ -457,11 +457,7 @@ class MailingList(Model):
                 Member.role == role,
                 Member.list_id == self._list_id,
                 Member._user == subscriber).first()
-
-        if member:
-            return True
-        else:
-            return False
+        return member is not None
 
     @dbconnection
     def subscribe(self, store, subscriber, role=MemberRole.member):
@@ -470,10 +466,8 @@ class MailingList(Model):
             email = subscriber.email
         elif IUser.providedBy(subscriber):
             email = subscriber.preferred_address.email
-
         if self.is_subscribed(subscriber, role):
             raise AlreadySubscribedError(self.fqdn_listname, email, role)
-
         member = Member(role=role,
                         list_id=self._list_id,
                         subscriber=subscriber)

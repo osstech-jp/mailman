@@ -24,6 +24,7 @@ from datetime import timedelta
 from email.utils import formataddr
 from enum import Enum
 from mailman import public
+from mailman.app.membership import delete_member
 from mailman.app.workflow import Workflow
 from mailman.core.i18n import _
 from mailman.database.transaction import flush
@@ -32,7 +33,7 @@ from mailman.interfaces.address import IAddress
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import MembershipIsBannedError
+from mailman.interfaces.member import MembershipIsBannedError, NotAMemberError
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.workflowmanager import ConfirmationNeededEvent
 from mailman.interfaces.subscriptions import (
@@ -335,6 +336,7 @@ class SubscriptionWorkflow(Workflow):
         self.push(next_step)
 
 
+@public
 class UnSubscriptionWorkflow(Workflow):
     """Workflow of a un-subscription request."""
 
@@ -445,17 +447,14 @@ class UnSubscriptionWorkflow(Workflow):
             self.push('do_unsubscription')
             return
         # If we don't need the user's confirmation, then skip to the moderation
-        # checks
+        # checks.
         if self.mlist.unsubscription_policy is SubscriptionPolicy.moderate:
             self.push('moderation_checks')
             return
-
+        # If the request is pre-confirmed, then the user can unsubscribe right
+        # now.
         if self.pre_confirmed:
-            next_step = ('moderation_checks'
-                         if self.mlist.subscription_policy is
-                             SubscriptionPolicy.confirm_then_moderate   # noqa
-                         else 'do_subscription')
-            self.push(next_step)
+            self.push('do_unsubscription')
             return
         # The user must confirm their un-subsbcription.
         self.push('send_confirmation')
@@ -469,11 +468,11 @@ class UnSubscriptionWorkflow(Workflow):
         raise StopIteration
 
     def _step_moderation_checks(self):
-        # Does the moderator need to approve the unsubscription request.
+        # Does the moderator need to approve the unsubscription request?
         assert self.mlist.unsubscription_policy in (
             SubscriptionPolicy.moderate,
             SubscriptionPolicy.confirm_then_moderate,
-        ), self.mlist.unsubscription_policy
+            ), self.mlist.unsubscription_policy
         if self.pre_approved:
             self.push('do_unsubscription')
         else:
@@ -491,11 +490,11 @@ class UnSubscriptionWorkflow(Workflow):
                 'from $self.address.email')
             username = formataddr(
                 (self.subscriber.display_name, self.address.email))
-            text = make('unsubauth.txt',
-                        mailing_list=self.mlist,
-                        username=username,
-                        listname=self.mlist.fqdn_listname,
-                        )
+            template = getUtility(ITemplateLoader).get(
+                'list:admin:action:unsubscribe', self.mlist)
+            text = wrap(expand(template, self.mlist, dict(
+                member=username,
+                )))
             # This message should appear to come from the <list>-owner so as
             # to avoid any useless bounce processing.
             msg = UserNotification(
@@ -506,26 +505,34 @@ class UnSubscriptionWorkflow(Workflow):
         raise StopIteration
 
     def _step_do_confirm_verify(self):
+        # Restore a little extra state that can't be stored in the database
+        # (because the order of setattr() on restore is indeterminate), then
+        # continue with the confirmation/verification step.
         if self.which is WhichSubscriber.address:
             self.subscriber = self.address
         else:
             assert self.which is WhichSubscriber.user
             self.subscriber = self.user
-            # Reset the token so it can't be used in a replay attack.
+        # Reset the token so it can't be used in a replay attack.
         self._set_token(TokenOwner.no_one)
+        # The user has confirmed their unsubscription request
         next_step = ('moderation_checks'
                      if self.mlist.unsubscription_policy in (
                           SubscriptionPolicy.moderate,
                           SubscriptionPolicy.confirm_then_moderate,
                           )
                      else 'do_unsubscription')
-        self.push('do_unsubscription')
+        self.push(next_step)
 
     def _step_do_unsubscription(self):
-        delete_member(self.mlist, self.address.email)
+        try:
+            delete_member(self.mlist, self.address.email)
+        except NotAMemberError:
+            # The member has already been unsubscribed.
+            pass
         self.member = None
         # This workflow is done so throw away any associated state.
-        getUtility(IWorkflowStateManager).restore(self.name, self.token)    
+        getUtility(IWorkflowStateManager).restore(self.name, self.token)
 
     def _step_unsubscribe_from_restored(self):
         # Prevent replay attacks.
@@ -533,7 +540,7 @@ class UnSubscriptionWorkflow(Workflow):
         if self.which is WhichSubscriber.address:
             self.subscriber = self.address
         else:
-            assert self.which is WhichSubsriber.user
+            assert self.which is WhichSubscriber.user
             self.subscriber = self.user
         self.push('do_unsubscription')
 
@@ -569,7 +576,7 @@ class SubscriptionWorkflowManager(BaseSubscriptionManager):
 
     def register(self, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False):
-        """See `IWorkflowManager`."""
+        """See `ISubscriptionManager`."""
         workflow = SubscriptionWorkflow(
             self._mlist, subscriber,
             pre_verified=pre_verified,

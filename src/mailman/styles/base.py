@@ -67,7 +67,7 @@ class BasicOperation:
         mlist.default_member_action = Action.defer
         mlist.default_nonmember_action = Action.hold
         mlist.subscription_policy = SubscriptionPolicy.confirm
-        mlist.unsubscription_policy = SubscriptionPolicy.confirm
+        mlist.unsubscription_policy = SubscriptionPolicy.open
         # Notify the administrator of pending requests and membership changes.
         mlist.admin_immed_notify = True
         mlist.admin_notify_mchanges = False

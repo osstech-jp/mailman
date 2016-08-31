@@ -58,7 +58,6 @@ class SubscriptionPolicy(Enum):
     confirm_then_moderate = 3
 
 
-
 @public
 class IMailingList(Interface):
     """A mailing list."""

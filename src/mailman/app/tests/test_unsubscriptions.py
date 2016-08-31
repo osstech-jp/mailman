@@ -23,14 +23,11 @@ import unittest
 from contextlib import suppress
 from mailman.app.lifecycle import create_list
 from mailman.app.unsubscriptions import UnSubscriptionWorkflow
-from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import MembershipIsBannedError
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import (
-    LogFileMark, get_queue_messages, set_preferred)
+from mailman.testing.helpers import LogFileMark, get_queue_messages
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from unittest.mock import patch
@@ -38,7 +35,6 @@ from zope.component import getUtility
 
 
 class TestUnSubscriptionWorkflow(unittest.TestCase):
-
     layer = ConfigLayer
     maxDiff = None
 
@@ -62,8 +58,9 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         self.assertIsNone(workflow.member)
 
     def test_pended_data(self):
-        # Test there is a Pendable object associated with a held un-subscription
-        # request and it has some valid data associated with it.
+        # Test there is a Pendable object associated with a held
+        # un-subscription request and it has some valid data associated with
+        # it.
         workflow = UnSubscriptionWorkflow(self._mlist, self.anne)
         with suppress(StopIteration):
             workflow.run_thru('send_confirmation')
@@ -115,8 +112,8 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         # un-subscription is pre-confirmed. Since moderation is not reuqired,
         # the user will be immediately un-subscribed.
         self._mlist.unsubscription_policy = SubscriptionPolicy.confirm
-        workflow = UnSubscriptionWorkflow(self._mlist, self.anne,
-                                        pre_confirmed=True)
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, self.anne, pre_confirmed=True)
         workflow.run_thru('confirmation_checks')
         with patch.object(workflow, '_step_do_unsubscription') as step:
             next(workflow)
@@ -128,8 +125,8 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         # check will be performed.
         self._mlist.unsubscription_policy = (
             SubscriptionPolicy.confirm_then_moderate)
-        workflow = UnSubscriptionWorkflow(self._mlist, self.anne,
-                                        pre_confirmed=True)
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, self.anne, pre_confirmed=True)
         workflow.run_thru('confirmation_checks')
         with patch.object(workflow, '_step_do_unsubscription') as step:
             next(workflow)
@@ -173,9 +170,9 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         self.assertIsNone(member)
 
     def test_do_unsubscription_pre_approved(self):
-        # A moderation-requiring subscription policy plus a pre-approved address
-        # means the user gets un-subscribed from the mailing list without any
-        # further confirmation or approvals.
+        # A moderation-requiring subscription policy plus a pre-approved
+        # address means the user gets un-subscribed from the mailing list
+        # without any further confirmation or approvals.
         self._mlist.unsubscription_policy = SubscriptionPolicy.moderate
         workflow = UnSubscriptionWorkflow(self._mlist, self.anne,
                                           pre_approved=True)
@@ -199,7 +196,7 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         list(workflow)
         member = self._mlist.regular_members.get_member(self._anne)
         self.assertIsNone(member)
-                # No further token is needed.
+        # No further token is needed.
         self.assertIsNone(workflow.token)
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
 
@@ -233,8 +230,8 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         # point the workflow is saved.  Once the moderator approves, the
         # workflow resumes and the user is un-subscribed.
         self._mlist.unsubscription_policy = SubscriptionPolicy.moderate
-        workflow = UnSubscriptionWorkflow(self._mlist, self.anne,
-                                        pre_confirmed=True)
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, self.anne, pre_confirmed=True)
         # Run the entire workflow.
         list(workflow)
         # The user is currently subscribed to the mailing list.
@@ -264,22 +261,22 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         # logged.
         mark = LogFileMark('mailman.subscribe')
         self._mlist.unsubscription_policy = SubscriptionPolicy.moderate
-        workflow = UnSubscriptionWorkflow(self._mlist, self.anne,
-                                        pre_confirmed=True)
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, self.anne, pre_confirmed=True)
         # Run the entire workflow.
         list(workflow)
         self.assertIn(
-            'test@example.com: held unsubscription request from anne@example.com',
-            mark.readline()
-        )
+         'test@example.com: held unsubscription request from anne@example.com',
+         mark.readline()
+         )
 
     def test_get_moderator_approval_notifies_moderators(self):
         # When the un-subscription is held for moderator approval, and the list
         # is so configured, a notification is sent to the list moderators.
         self._mlist.admin_immed_notify = True
         self._mlist.unsubscription_policy = SubscriptionPolicy.moderate
-        workflow = UnSubscriptionWorkflow(self._mlist, self.anne,
-                                        pre_confirmed=True)
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, self.anne, pre_confirmed=True)
         # Consume the entire state machine.
         list(workflow)
         items = get_queue_messages('virgin', expected_count=1)
@@ -302,8 +299,8 @@ request approval:
         # moderators.
         self._mlist.admin_immed_notify = False
         self._mlist.unsubscription_policy = SubscriptionPolicy.moderate
-        workflow = UnSubscriptionWorkflow(self._mlist, self.anne,
-                                        pre_confirmed=True)
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, self.anne, pre_confirmed=True)
         # Consume the entire state machine.
         list(workflow)
         get_queue_messages('virgin', expected_count=0)

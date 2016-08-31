@@ -17,7 +17,6 @@
 
 """Test MailingLists and related model objects.."""
 
-import pdb
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -105,6 +104,7 @@ class TestMailingList(unittest.TestCase):
         self.assertEqual(False, self._mlist.is_subscribed(address))
         self._mlist.subscribe(address)
         self.assertEqual(True, self._mlist.is_subscribed(address))
+
 
 class TestListArchiver(unittest.TestCase):
     layer = ConfigLayer

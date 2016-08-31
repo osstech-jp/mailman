@@ -17,9 +17,9 @@
 
 """Test mailing list un-subscriptions."""
 
-import pdb
 import unittest
 
+from email.iterators import body_line_iterator
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
@@ -30,8 +30,8 @@ from mailman.testing.helpers import (
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from mailman.testing.helpers import set_preferred
-from mailman.utilities.datetime import now
-from zope.component import getUtility, getAdapter
+from zope.component import getUtility
+
 
 class TestLeave(unittest.TestCase):
     """Test mailing list un-subscriptions"""
@@ -49,7 +49,7 @@ class TestLeave(unittest.TestCase):
             anne = getUtility(IUserManager).create_user('anne@example.org')
             set_preferred(anne)
         self._mlist.subscribe(list(anne.addresses)[0])
-        msg =  mfs("""\
+        msg = mfs("""\
 From: anne@example.org
 To: test-leave@example.com
 
@@ -60,9 +60,6 @@ leave
         self._runner.run()
         items = get_queue_messages('virgin', sort_on='subject',
                                    expected_count=1)
-        print(items[0].msg)
-        print(anne.addresses)
-        pdb.set_trace()
         self.assertTrue(str(items[0].msg['subject']).startswith('confirm'))
         confirmation_lines = []
         in_results = False

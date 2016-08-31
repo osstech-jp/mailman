@@ -37,7 +37,7 @@ from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
 from uuid import UUID
-from zope.component import getUtility, getAdapter
+from zope.component import getAdapter, getUtility
 
 
 class _MemberBase(CollectionMixin):

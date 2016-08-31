@@ -24,7 +24,7 @@ from mailman.app.moderator import (
     handle_message, handle_unsubscription, hold_message, hold_unsubscription)
 from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
-from mailman.interfaces.workflowmanager import IWorkflowManager
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.requests import IListRequests
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.incoming import IncomingRunner
@@ -154,7 +154,7 @@ class TestUnsubscription(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('test@example.com')
         self._registrar = getAdapter(
-                          self._mlist, IWorkflowManager, name='subscribe')
+            self._mlist, ISubscriptionManager, name='subscribe')
 
     def test_unsubscribe_defer(self):
         # When unsubscriptions must be approved by the moderator, but the
