@@ -48,16 +48,16 @@
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
-    provides="mailman.interfaces.workflowmanager.IWorkflowManager"
+    provides="mailman.interfaces.subscriptions.ISubscriptionManager"
     factory="mailman.app.workflowmanager.SubscriptionWorkflowManager"
-	name='subscribe'
-	/>
+    name='subscribe'
+    />
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
-    provides="mailman.interfaces.workflowmanager.IWorkflowManager"
+    provides="mailman.interfaces.subscriptions.ISubscriptionManager"
     factory="mailman.app.workflowmanager.UnsubscriptionWorkflowManager"
-	name='unsubscribe'
+    name='unsubscribe'
     />
 
   <utility

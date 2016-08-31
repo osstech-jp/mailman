@@ -32,7 +32,7 @@ from mailman.testing.helpers import (
     specialized_message_from_string as mfs)
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
-from zope.component import getUtility, getAdapter
+from zope.component import getAdapter, getUtility
 
 
 class TestPostModeration(unittest.TestCase):

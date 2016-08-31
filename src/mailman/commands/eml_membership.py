@@ -25,7 +25,7 @@ from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.workflowmanager import IWorkflowManager
 from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.usermanager import IUserManager
-from zope.component import getUtility, getAdapter
+from zope.component import getAdapter, getUtility
 from zope.interface import implementer
 
 
@@ -101,8 +101,8 @@ used.
             print(_('$person is already a member'), file=results)
             return ContinueProcessing.yes
         subscriber = match_subscriber(email, display_name)
-        getAdapter(mlist,
-                   IWorkflowManager, name='subscribe').register(subscriber)
+        getAdapter(
+            mlist, IWorkflowManager, name='subscribe').register(subscriber)
         print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
 
@@ -187,8 +187,8 @@ You may be asked to confirm your request.""")
                 '$self.name: $email is not a member of $mlist.fqdn_listname'),
                 file=results)
             return ContinueProcessing.no
-        getAdapter(mlist,
-                   IWorkflowManager, name='unsubscribe').register(user_address)
+        getAdapter(
+            mlist, IWorkflowManager, name='unsubscribe').register(user_address)
         # member.unsubscribe()
         person = formataddr((user.display_name, email))   # noqa
         print(_('Confirmation email sent to $person to leave'
