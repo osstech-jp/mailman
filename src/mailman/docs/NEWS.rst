@@ -99,6 +99,8 @@ Bugs
    Bompard.  (Closes: #259)
  * Messages sent to the list's moderators now include the actual recipient
    addresses.  Given by Tom Briles.  (Closes: #68)
+ * Transmit the moderation reason and expose it in the REST API as the
+   ``reason`` attribute.  Given by Aurélien Bompard.
 
 Configuration
 -------------
