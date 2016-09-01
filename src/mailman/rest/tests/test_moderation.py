@@ -24,7 +24,7 @@ from mailman.app.moderator import hold_message
 from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.workflowmanager import IWorkflowManager
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
@@ -151,7 +151,7 @@ class TestSubscriptionModeration(unittest.TestCase):
         with transaction():
             self._mlist = create_list('ant@example.com')
             self._registrar = getAdapter(
-                self._mlist, IWorkflowManager, name='subscribe')
+                self._mlist, ISubscriptionManager, name='subscribe')
             manager = getUtility(IUserManager)
             self._anne = manager.create_address(
                 'anne@example.com', 'Anne Person')

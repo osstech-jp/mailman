@@ -25,8 +25,8 @@ from mailman.app.unsubscriptions import UnSubscriptionWorkflow
 from mailman.database.transaction import flush
 from mailman.email.message import UserNotification
 from mailman.interfaces.pending import IPendable, IPendings
-from mailman.interfaces.workflowmanager import (
-    ConfirmationNeededEvent, IWorkflowManager)
+from mailman.interfaces.subscriptions import (
+    ConfirmationNeededEvent, ISubscriptionManager)
 from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.utilities.string import expand
@@ -83,7 +83,7 @@ class BaseWorkflowManager:
 
 
 @public
-@implementer(IWorkflowManager)
+@implementer(ISubscriptionManager)
 class SubscriptionWorkflowManager(BaseWorkflowManager):
     """Handle registrations and confirmations for subscriptions."""
 
@@ -91,7 +91,7 @@ class SubscriptionWorkflowManager(BaseWorkflowManager):
 
     def register(self, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False):
-        """See `IWorkflowManager`."""
+        """See `ISubscriptionManager`."""
         workflow = SubscriptionWorkflow(
             self._mlist, subscriber,
             pre_verified=pre_verified,
@@ -102,7 +102,7 @@ class SubscriptionWorkflowManager(BaseWorkflowManager):
 
 
 @public
-@implementer(IWorkflowManager)
+@implementer(ISubscriptionManager)
 class UnsubscriptionWorkflowManager(BaseWorkflowManager):
     """Handle un-subscriptions and confirmations for un-subscriptions."""
 

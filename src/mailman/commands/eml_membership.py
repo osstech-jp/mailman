@@ -22,8 +22,8 @@ from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import DeliveryMode, MemberRole
-from mailman.interfaces.workflowmanager import IWorkflowManager
-from mailman.interfaces.subscriptions import ISubscriptionService
+from mailman.interfaces.subscriptions import (
+    ISubscriptionManager, ISubscriptionService)
 from mailman.interfaces.usermanager import IUserManager
 from zope.component import getAdapter, getUtility
 from zope.interface import implementer
@@ -31,7 +31,7 @@ from zope.interface import implementer
 
 def match_subscriber(email, display_name):
     # Return something matching the email which should be used as the
-    # subscriber by the IWorkflowManager interface.
+    # subscriber by the ISubscriptionManager interface.
     manager = getUtility(IUserManager)
     # Is there a user with a preferred address matching the email?
     user = manager.get_user(email)
@@ -102,7 +102,7 @@ used.
             return ContinueProcessing.yes
         subscriber = match_subscriber(email, display_name)
         getAdapter(
-            mlist, IWorkflowManager, name='subscribe').register(subscriber)
+            mlist, ISubscriptionManager, name='subscribe').register(subscriber)
         print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
 
@@ -187,8 +187,8 @@ You may be asked to confirm your request.""")
                 '$self.name: $email is not a member of $mlist.fqdn_listname'),
                 file=results)
             return ContinueProcessing.no
-        getAdapter(
-            mlist, IWorkflowManager, name='unsubscribe').register(user_address)
+        getAdapter(mlist, ISubscriptionManager, name='unsubscribe').register(
+            user_address)
         # member.unsubscribe()
         person = formataddr((user.display_name, email))   # noqa
         print(_('Confirmation email sent to $person to leave'

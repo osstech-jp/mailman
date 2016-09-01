@@ -23,7 +23,7 @@ from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError
 from mailman.interfaces.pending import IPendings
-from mailman.interfaces.workflowmanager import IWorkflowManager
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, conflict, etag, no_content,
     not_found, okay)
@@ -55,7 +55,7 @@ class IndividualRequest(_ModerationBase):
         super().__init__()
         self._mlist = mlist
         self._registrar = getAdapter(
-            self._mlist, IWorkflowManager, name='subscribe')
+            self._mlist, ISubscriptionManager, name='subscribe')
         self._token = token
 
     def on_get(self, request, response):

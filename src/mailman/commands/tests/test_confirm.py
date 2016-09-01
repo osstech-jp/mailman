@@ -25,7 +25,7 @@ from mailman.config import config
 from mailman.email.message import Message
 from mailman.interfaces.command import ContinueProcessing
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.workflowmanager import IWorkflowManager
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner, Results
 from mailman.testing.helpers import get_queue_messages, make_testable_runner
@@ -43,7 +43,7 @@ class TestConfirm(unittest.TestCase):
         anne = getUtility(IUserManager).create_address(
             'anne@example.com', 'Anne Person')
         self._token, token_owner, member = getAdapter(
-            self._mlist, IWorkflowManager, name='subscribe').register(anne)
+            self._mlist, ISubscriptionManager, name='subscribe').register(anne)
         self._command = Confirm()
         # Clear the virgin queue.
         get_queue_messages('virgin')
@@ -89,7 +89,7 @@ class TestEmailResponses(unittest.TestCase):
         # Clear any previously queued confirmation messages.
         get_queue_messages('virgin')
         self._token, token_owner, member = getAdapter(
-            self._mlist, IWorkflowManager, name='subscribe').register(bart)
+            self._mlist, ISubscriptionManager, name='subscribe').register(bart)
         # There should now be one email message in the virgin queue, i.e. the
         # confirmation message sent to Bart.
         items = get_queue_messages('virgin', expected_count=1)

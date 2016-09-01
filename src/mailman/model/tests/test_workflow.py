@@ -125,7 +125,7 @@ class TestWorkflow(unittest.TestCase):
 
     def test_discard(self):
         # Discard some workflow state.  This is use by
-        # IWorkflowManager.discard().
+        # ISubscriptionManager.discard().
         self._manager.save('ant', 'token', 'one')
         self._manager.save('bee', 'token', 'two')
         self._manager.save('ant', 'nekot', 'three')

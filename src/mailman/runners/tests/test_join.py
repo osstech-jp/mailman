@@ -23,8 +23,8 @@ from email.iterators import body_line_iterator
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.member import DeliveryMode
-from mailman.interfaces.workflowmanager import IWorkflowManager
-from mailman.interfaces.subscriptions import ISubscriptionService, TokenOwner
+from mailman.interfaces.subscriptions import (
+    ISubscriptionManager, ISubscriptionService, TokenOwner)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
@@ -146,7 +146,7 @@ class TestJoinWithDigests(unittest.TestCase):
         self.assertEqual(subject_words[0], 'confirm')
         token = subject_words[1]
         token, token_owner, rmember = getAdapter(
-            self._mlist, IWorkflowManager, name='subscribe').confirm(token)
+            self._mlist, ISubscriptionManager, name='subscribe').confirm(token)
         self.assertIsNone(token)
         self.assertEqual(token_owner, TokenOwner.no_one)
         # Now, make sure that Anne is a member of the list and is receiving

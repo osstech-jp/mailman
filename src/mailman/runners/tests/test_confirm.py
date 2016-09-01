@@ -24,7 +24,7 @@ from email.iterators import body_line_iterator
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
-from mailman.interfaces.workflowmanager import IWorkflowManager
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
@@ -48,7 +48,7 @@ class TestConfirm(unittest.TestCase):
             self._mlist.send_welcome_message = False
             anne = getUtility(IUserManager).create_address('anne@example.org')
             registrar = getAdapter(
-                self._mlist, IWorkflowManager, name='subscribe')
+                self._mlist, ISubscriptionManager, name='subscribe')
             self._token, token_owner, member = registrar.register(anne)
 
     def test_confirm_with_re_prefix(self):
