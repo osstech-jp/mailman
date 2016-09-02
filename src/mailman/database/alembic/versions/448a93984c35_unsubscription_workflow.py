@@ -1,7 +1,7 @@
 """unsubscription_workflow
 
 Revision ID: 448a93984c35
-Revises: 7b254d88f122
+Revises: fa0d96e28631
 Create Date: 2016-06-02 14:34:24.154723
 """
 
@@ -14,14 +14,14 @@ from mailman.interfaces.mailinglist import SubscriptionPolicy
 
 # revision identifiers, used by Alembic.
 revision = '448a93984c35'
-down_revision = '7b254d88f122'
+down_revision = 'fa0d96e28631'
 
 
 def upgrade():
     if not exists_in_db(op.get_bind(), 'mailinglist', 'unsubscription_policy'):
         with op.batch_alter_table('mailinglist') as batch_op:
             # SQLite may not have removed it when downgrading.
-            batch_op.add_column('mailinglist', sa.Column(
+            batch_op.add_column(sa.Column(
                 'unsubscription_policy', Enum(SubscriptionPolicy),
                 nullable=True))
         # Now migrate the data.  Don't import the table definition from the
@@ -40,4 +40,4 @@ def upgrade():
 
 def downgrade():
     with op.batch_alter_table('mailinglist') as batch_op:
-        batch_op.drop_column('mailinglist', 'unsubscription_policy')
+        batch_op.drop_column('unsubscription_policy')
