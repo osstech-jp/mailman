@@ -22,7 +22,7 @@ import unittest
 
 from contextlib import suppress
 from mailman.app.lifecycle import create_list
-from mailman.app.unsubscriptions import UnSubscriptionWorkflow
+from mailman.app.subscriptions import UnSubscriptionWorkflow
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner

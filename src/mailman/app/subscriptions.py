@@ -35,10 +35,9 @@ from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import MembershipIsBannedError, NotAMemberError
 from mailman.interfaces.pending import IPendable, IPendings
-from mailman.interfaces.workflowmanager import ConfirmationNeededEvent
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, ISubscriptionService, SubscriptionPendingError,
-    TokenOwner)
+    ConfirmationNeededEvent, ISubscriptionManager, ISubscriptionService,
+    SubscriptionPendingError, TokenOwner)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
