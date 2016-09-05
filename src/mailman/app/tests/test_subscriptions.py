@@ -675,3 +675,40 @@ approval:
         self.assertIsNone(workflow.token)
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
         self.assertEqual(workflow.member.address, anne)
+
+    def test_restore_user_absorbed(self):
+        # The subscribing user is absorbed (and thus deleted) before the
+        # moderator approves the subscription.
+        self._mlist.subscription_policy = SubscriptionPolicy.moderate
+        anne = self._user_manager.create_user(self._anne)
+        bill = self._user_manager.create_user('bill@example.com')
+        # anne subscribes.
+        workflow = SubscriptionWorkflow(self._mlist, anne, pre_verified=True)
+        list(workflow)
+        # bill absorbs anne.
+        bill.absorb(anne)
+        # anne's subscription request is approved.
+        approved_workflow = SubscriptionWorkflow(self._mlist)
+        approved_workflow.token = workflow.token
+        approved_workflow.restore()
+        self.assertEqual(approved_workflow.user, bill)
+
+    def test_restore_address_absorbed(self):
+        # The subscribing user is absorbed (and thus deleted) before the
+        # moderator approves the subscription.
+        self._mlist.subscription_policy = SubscriptionPolicy.moderate
+        anne = self._user_manager.create_user(self._anne)
+        anne_address = anne.addresses[0]
+        bill = self._user_manager.create_user('bill@example.com')
+        # anne subscribes.
+        workflow = SubscriptionWorkflow(
+            self._mlist, anne_address, pre_verified=True)
+        list(workflow)
+        # bill absorbs anne.
+        bill.absorb(anne)
+        self.assertIn(anne_address, bill.addresses)
+        # anne's subscription request is approved.
+        approved_workflow = SubscriptionWorkflow(self._mlist)
+        approved_workflow.token = workflow.token
+        approved_workflow.restore()
+        self.assertEqual(approved_workflow.user, bill)

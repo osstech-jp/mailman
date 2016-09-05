@@ -102,7 +102,8 @@ class _SubscriptionWorkflowCommon(Workflow):
         # For restore.
         uid = uuid.UUID(hex_key)
         self.user = getUtility(IUserManager).get_user_by_id(uid)
-        assert self.user is not None
+        if self.user is None:
+            self.user = self.address.user
 
     @property
     def address_key(self):
