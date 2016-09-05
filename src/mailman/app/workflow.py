@@ -143,5 +143,9 @@ class Workflow:
         self._next.clear()
         if state.step:
             self._next.append(state.step)
-        for attr, value in json.loads(state.data).items():
-            setattr(self, attr, value)
+        data = json.loads(state.data)
+        for attr in self.SAVE_ATTRIBUTES:
+            try:
+                setattr(self, attr, data[attr])
+            except KeyError:
+                pass
