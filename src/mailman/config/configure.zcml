@@ -49,14 +49,14 @@
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
     provides="mailman.interfaces.subscriptions.ISubscriptionManager"
-    factory="mailman.app.subscriptions.SubscriptionWorkflowManager"
+    factory="mailman.app.subscriptions.SubscriptionManager"
     name='subscribe'
     />
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
     provides="mailman.interfaces.subscriptions.ISubscriptionManager"
-    factory="mailman.app.subscriptions.UnsubscriptionWorkflowManager"
+    factory="mailman.app.subscriptions.UnsubscriptionManager"
     name='unsubscribe'
     />
 

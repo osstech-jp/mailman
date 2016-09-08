@@ -140,14 +140,16 @@ address, and the other is the results of his email command.
     >>> len(messages)
     2
 
-    >>> from mailman.interfaces.registrar import IRegistrar
-    >>> registrar = IRegistrar(mlist)
+    >>> from mailman.interfaces.subscriptions import ISubscriptionManager
+    >>> from zope.component import getAdapter
+
+    >>> manager = getAdapter(mlist, ISubscriptionManager, 'subscribe')
     >>> for item in messages:
     ...     subject = item.msg['subject']
     ...     print('Subject:', subject)
     ...     if 'confirm' in str(subject):
     ...         token = str(subject).split()[1].strip()
-    ...         new_token, token_owner, member = registrar.confirm(token)
+    ...         new_token, token_owner, member = manager.confirm(token)
     ...         assert new_token is None, 'Confirmation failed'
     Subject: The results of your email commands
     Subject: confirm ...

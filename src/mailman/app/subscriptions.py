@@ -356,6 +356,7 @@ class UnSubscriptionWorkflow(Workflow):
         self.address = None
         self.user = None
         self.which = None
+        self.member = None
         self._set_token(TokenOwner.no_one)
         # `subscriber` should be an implementer of IAddress.
         if IAddress.providedBy(subscriber):
@@ -581,7 +582,7 @@ class BaseSubscriptionManager:
 
 @public
 @implementer(ISubscriptionManager)
-class SubscriptionWorkflowManager(BaseSubscriptionManager):
+class SubscriptionManager(BaseSubscriptionManager):
     """Handle registrations and confirmations for subscriptions."""
 
     def _get_workflow(self):
@@ -601,7 +602,7 @@ class SubscriptionWorkflowManager(BaseSubscriptionManager):
 
 @public
 @implementer(ISubscriptionManager)
-class UnsubscriptionWorkflowManager(BaseSubscriptionManager):
+class UnsubscriptionManager(BaseSubscriptionManager):
     """Handle un-subscriptions and confirmations for un-subscriptions."""
 
     def _get_workflow(self):

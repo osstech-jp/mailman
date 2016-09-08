@@ -321,8 +321,8 @@ request approval:
             message['From'], 'test-confirm+{}@example.com'.format(token))
 
     def test_do_confirmation_unsubscribes_user(self):
-        # Un-subscriptions to the mailing list must be confirmed.  Once that's
-        # done, the user's address is unsubscribed
+        # Unsubscriptions to the mailing list must be confirmed.  Once that's
+        # done, the user's address is unsubscribed.
         self._mlist.unsubscription_policy = SubscriptionPolicy.confirm
         workflow = UnSubscriptionWorkflow(self._mlist, self.anne)
         list(workflow)
