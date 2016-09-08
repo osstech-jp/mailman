@@ -441,32 +441,45 @@ class MailingList(Model):
         else:
             raise ValueError('Undefined MemberRole: {}'.format(role))
 
-    @dbconnection
-    def is_subscribed(self, store, subscriber, role=MemberRole.member):
-        """Check if a user/address is subscribed to this list."""
+    def _get_subscriber(self, store, subscriber, role):
+        """Get some information about a user/address.
+
+        Returns a 2-tuple of (member, email) for the given subscriber.  If the
+        subscriber is is not an ``IAddress`` or ``IUser``, then a 2-tuple of
+        (None, None) is returned.  If the subscriber is not already
+        subscribed, then (None, email) is returned.  If the subscriber is an
+        ``IUser`` and does not have a preferred address, (member, None) is
+        returned.
+        """
         member = None
+        email = None
         if IAddress.providedBy(subscriber):
             member = store.query(Member).filter(
                 Member.role == role,
                 Member.list_id == self._list_id,
                 Member._address == subscriber).first()
+            email = subscriber.email
         elif IUser.providedBy(subscriber):
             if subscriber.preferred_address is None:
                 raise MissingPreferredAddressError(subscriber)
+            email = subscriber.preferred_address.email
             member = store.query(Member).filter(
                 Member.role == role,
                 Member.list_id == self._list_id,
                 Member._user == subscriber).first()
+        return member, email
+
+    @dbconnection
+    def is_subscribed(self, store, subscriber, role=MemberRole.member):
+        """See `IMailingList`."""
+        member, email = self._get_subscriber(store, subscriber, role)
         return member is not None
 
     @dbconnection
     def subscribe(self, store, subscriber, role=MemberRole.member):
         """See `IMailingList`."""
-        if IAddress.providedBy(subscriber):
-            email = subscriber.email
-        elif IUser.providedBy(subscriber):
-            email = subscriber.preferred_address.email
-        if self.is_subscribed(subscriber, role):
+        member, email = self._get_subscriber(store, subscriber, role)
+        if member is not None:
             raise AlreadySubscribedError(self.fqdn_listname, email, role)
         member = Member(role=role,
                         list_id=self._list_id,

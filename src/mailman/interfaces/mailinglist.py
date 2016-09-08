@@ -271,6 +271,18 @@ class IMailingList(Interface):
         :rtype: Roster
         """
 
+    def is_subscribed(subscriber, role=MemberRole.member):
+        """Is the given address or user subscribed to the mailing list?
+
+        :param subscriber: The address or user to check.
+        :type subscriber: `IUser` or `IAddress`
+        :param role: The role being checked (e.g. a member, owner, or
+            moderator of a mailing list).
+        :type role: `MemberRole`
+        :return: A flag indicating whether the subscriber is already
+            subscribed to the mailing list or not.
+        """
+
     def subscribe(subscriber, role=MemberRole.member):
         """Subscribe the given address or user to the mailing list.
 
@@ -279,7 +291,7 @@ class IMailingList(Interface):
             has one, otherwise no address for the user appears in the rosters.
         :type subscriber: `IUser` or `IAddress`
         :param role: The role being subscribed to (e.g. a member, owner, or
-            moderator of a mailing list.
+            moderator of a mailing list).
         :type role: `MemberRole`
         :return: The member object representing the subscription.
         :rtype: `IMember`

@@ -550,8 +550,19 @@ class BaseSubscriptionManager:
     def __init__(self, mlist):
         self._mlist = mlist
 
+    def _get_workflow(self):
+        raise NotImplementedError
+
+    def register(self, subscriber=None, *,
+                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+        raise NotImplementedError
+
+    def unregister(self, subscriber=None, *,
+                   pre_confirmed=False, pre_approved=False):
+        raise NotImplementedError
+
     def confirm(self, token):
-        workflow = self.__class__(self._mlist)
+        workflow = self._get_workflow()
         workflow.token = token
         workflow.restore()
         # In order to just run the whole workflow, all we need to do
@@ -573,6 +584,9 @@ class BaseSubscriptionManager:
 class SubscriptionWorkflowManager(BaseSubscriptionManager):
     """Handle registrations and confirmations for subscriptions."""
 
+    def _get_workflow(self):
+        return SubscriptionWorkflow(self._mlist)
+
     def register(self, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False):
         """See `ISubscriptionManager`."""
@@ -589,6 +603,9 @@ class SubscriptionWorkflowManager(BaseSubscriptionManager):
 @implementer(ISubscriptionManager)
 class UnsubscriptionWorkflowManager(BaseSubscriptionManager):
     """Handle un-subscriptions and confirmations for un-subscriptions."""
+
+    def _get_workflow(self):
+        return UnSubscriptionWorkflow(self._mlist)
 
     def unregister(self, subscriber=None, *,
                    pre_confirmed=False, pre_approved=False):
