@@ -41,7 +41,7 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('test@example.com')
         self._mlist.admin_immed_notify = False
-        self._mlist.subscription_policy = SubscriptionPolicy.open
+        self._mlist.unsubscription_policy = SubscriptionPolicy.open
         self._mlist.send_welcome_message = False
         self._anne = 'anne@example.com'
         self._user_manager = getUtility(IUserManager)
@@ -59,8 +59,9 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
 
     def test_pended_data(self):
         # Test there is a Pendable object associated with a held
-        # un-subscription request and it has some valid data associated with
+        # unsubscription request and it has some valid data associated with
         # it.
+        self._mlist.unsubscription_policy = SubscriptionPolicy.confirm
         workflow = UnSubscriptionWorkflow(self._mlist, self.anne)
         with suppress(StopIteration):
             workflow.run_thru('send_confirmation')
@@ -291,7 +292,8 @@ Your authorization is required for a mailing list unsubscription
 request approval:
 
     For:  anne@example.com
-    List: test@example.com""")
+    List: test@example.com
+""")
 
     def test_get_moderator_approval_no_notifications(self):
         # When the un-subscription request is held for moderator approval, and
@@ -329,7 +331,7 @@ request approval:
         # Anne is a member.
         member = self._mlist.regular_members.get_member(self._anne)
         self.assertIsNotNone(member)
-        self.assertIsNone(workflow.member)
+        self.assertEqual(member, workflow.member)
         # The token is owned by the subscriber.
         self.assertIsNotNone(workflow.token)
         self.assertEqual(workflow.token_owner, TokenOwner.subscriber)
@@ -380,16 +382,16 @@ request approval:
         self.assertRaises(LookupError, final_workflow.restore)
         # Running this workflow will fail.
         self.assertRaises(AssertionError, list, final_workflow)
-        # Anne is still not un-subscribed.
+        # Anne is still not unsubscribed.
         member = self._mlist.regular_members.get_member(self._anne)
         self.assertIsNotNone(member)
-        self.assertIsNotNone(final_workflow.member)
-        # However, if we use the new token, her subscription request will be
+        self.assertIsNone(final_workflow.member)
+        # However, if we use the new token, her unsubscription request will be
         # approved by the moderator.
         final_workflow.token = moderator_workflow.token
         final_workflow.restore()
         list(final_workflow)
-        # And now Anne is un-subscribed.
+        # And now Anne is unsubscribed.
         member = self._mlist.regular_members.get_member(self._anne)
         self.assertIsNone(member)
         # No further token is needed.

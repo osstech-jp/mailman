@@ -63,8 +63,8 @@ class PendableSubscription(dict):
 
 
 @implementer(IPendable)
-class PendableRegistration(dict):
-    PEND_TYPE = 'registration'
+class PendableUnsubscription(dict):
+    PEND_TYPE = 'unsubscription'
 
 
 @public
@@ -337,7 +337,7 @@ class SubscriptionWorkflow(Workflow):
 
 @public
 class UnSubscriptionWorkflow(Workflow):
-    """Workflow of a un-subscription request."""
+    """Workflow of a unsubscription request."""
 
     INITIAL_STATE = 'subscription_checks'
     SAVE_ATTRIBUTES = (
@@ -427,7 +427,7 @@ class UnSubscriptionWorkflow(Workflow):
         if token_owner is TokenOwner.no_one:
             self.token = None
             return
-        pendable = PendableRegistration(
+        pendable = PendableUnsubscription(
             list_id=self.mlist.list_id,
             email=self.address.email,
             display_name=self.address.display_name,
