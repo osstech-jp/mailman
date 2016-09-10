@@ -615,6 +615,7 @@ class UnsubscriptionManager(BaseSubscriptionManager):
             pre_confirmed=pre_confirmed,
             pre_approved=pre_approved)
         list(workflow)
+        return workflow.token, workflow.token_owner, workflow.member
 
 
 @public
