@@ -187,12 +187,14 @@ You may be asked to confirm your request.""")
                 '$self.name: $email is not a member of $mlist.fqdn_listname'),
                 file=results)
             return ContinueProcessing.no
-        getAdapter(mlist, ISubscriptionManager, name='unsubscribe').register(
-            user_address)
-        # member.unsubscribe()
+        manager = getAdapter(mlist, ISubscriptionManager, name='unsubscribe')
+        token, token_owner, member = manager.unregister(user_address)
         person = formataddr((user.display_name, email))   # noqa
-        print(_('Confirmation email sent to $person to leave'
-                ' $mlist.fqdn_listname'), file=results)
+        if member is None:
+            print(_('$person left $mlist.fqdn_listname'), file=results)
+        else:
+            print(_('Confirmation email sent to $person to leave'
+                    ' $mlist.fqdn_listname'), file=results)
         return ContinueProcessing.yes
 
 

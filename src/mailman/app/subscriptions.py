@@ -577,7 +577,7 @@ class BaseSubscriptionManager:
         with flush():
             getUtility(IPendings).confirm(token)
             getUtility(IWorkflowStateManager).discard(
-                self.WORKFLOW_TYPE.name, token)
+                self._get_workflow().name, token)
 
 
 @public

@@ -217,9 +217,12 @@ list.  ``unsubscribe`` is an alias for ``leave``.
     You may be asked to confirm your request.
 
 Anne is a member of the ``baker@example.com`` mailing list, when she decides
-to leave it.  She sends a message to the ``-leave`` address for the list and
-is sent a confirmation message for her request.
+to leave it.  Because the mailing list allows for *open* unsubscriptions
+(i.e. no confirmation is needed), when she sends a message to the ``-leave``
+address for the list, she is immediately removed.
 
+    >>> from mailman.interfaces.mailinglist import SubscriptionPolicy
+    >>> mlist_2.unsubscription_policy = SubscriptionPolicy.open
     >>> results = Results()
     >>> print(leave.process(mlist_2, msg, {}, (), results))
     ContinueProcessing.yes

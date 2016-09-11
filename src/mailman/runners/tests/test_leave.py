@@ -24,6 +24,7 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.usermanager import IUserManager
+from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
     get_queue_messages, make_testable_runner,
@@ -41,6 +42,7 @@ class TestLeave(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('test@example.com')
         self._mlist.send_welcome_message = False
+        self._mlist.unsubscription_policy = SubscriptionPolicy.open
         self._commandq = config.switchboards['command']
         self._runner = make_testable_runner(CommandRunner, 'command')
 

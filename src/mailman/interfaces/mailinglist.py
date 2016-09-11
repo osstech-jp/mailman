@@ -257,6 +257,9 @@ class IMailingList(Interface):
     subscription_policy = Attribute(
         """The policy for subscribing new members to the list.""")
 
+    unsubscription_policy = Attribute(
+        """The policy for unsubscribing members from the list.""")
+
     subscribers = Attribute(
         """An iterator over all IMembers subscribed to this list, with any
         role.
