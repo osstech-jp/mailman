@@ -36,8 +36,9 @@ from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import MembershipIsBannedError, NotAMemberError
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.subscriptions import (
-    ConfirmationNeededEvent, ISubscriptionManager, ISubscriptionService,
-    SubscriptionPendingError, TokenOwner)
+    ISubscriptionManager, ISubscriptionService,
+    RegistrationConfirmationNeededEvent, SubscriptionPendingError, TokenOwner,
+    UnsubscriptionConfirmationNeededEvent)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
@@ -303,7 +304,7 @@ class SubscriptionWorkflow(Workflow):
         self.push('do_confirm_verify')
         self.save()
         # Triggering this event causes the confirmation message to be sent.
-        notify(ConfirmationNeededEvent(
+        notify(RegistrationConfirmationNeededEvent(
             self.mlist, self.token, self.address.email))
         # Now we wait for the confirmation.
         raise StopIteration
@@ -463,7 +464,7 @@ class UnSubscriptionWorkflow(Workflow):
         self._set_token(TokenOwner.subscriber)
         self.push('do_confirm_verify')
         self.save()
-        notify(ConfirmationNeededEvent(
+        notify(UnsubscriptionConfirmationNeededEvent(
             self.mlist, self.token, self.address.email))
         raise StopIteration
 
@@ -618,21 +619,12 @@ class UnsubscriptionManager(BaseSubscriptionManager):
         return workflow.token, workflow.token_owner, workflow.member
 
 
-@public
-def handle_ConfirmationNeededEvent(event):
-    if not isinstance(event, ConfirmationNeededEvent):
-        return
-    # There are three ways for a user to confirm their subscription.  They
-    # can reply to the original message and let the VERP'd return address
-    # encode the token, they can reply to the robot and keep the token in
-    # the Subject header, or they can click on the URL in the body of the
-    # message and confirm through the web.
+def _handle_confirmation_needed_events(event, template_name):
     subject = 'confirm {}'.format(event.token)
     confirm_address = event.mlist.confirm_address(event.token)
     email_address = event.email
     # Send a verification email to the address.
-    template = getUtility(ITemplateLoader).get(
-        'list:user:action:confirm', event.mlist)
+    template = getUtility(ITemplateLoader).get(template_name, event.mlist)
     text = expand(template, event.mlist, dict(
         token=event.token,
         subject=subject,
@@ -646,6 +638,20 @@ def handle_ConfirmationNeededEvent(event):
         ))
     msg = UserNotification(email_address, confirm_address, subject, text)
     msg.send(event.mlist, add_precedence=False)
+
+
+@public
+def handle_RegistrationConfirmationNeededEvent(event):
+    if not isinstance(event, RegistrationConfirmationNeededEvent):
+        return
+    _handle_confirmation_needed_events(event, 'list:user:action:subscribe')
+
+
+@public
+def handle_UnsubscriptionConfirmationNeededEvent(event):
+    if not isinstance(event, UnsubscriptionConfirmationNeededEvent):
+        return
+    _handle_confirmation_needed_events(event, 'list:user:action:unsubscribe')
 
 
 @public

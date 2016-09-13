@@ -78,12 +78,25 @@ class TokenOwner(Enum):
 
 
 @public
-class ConfirmationNeededEvent:
+class RegistrationConfirmationNeededEvent:
     """Triggered when an address needs confirmation.
 
     Addresses must be verified before they can receive messages or post
     to mailing list.  The confirmation message is sent to the user when
     this event is triggered.
+    """
+    def __init__(self, mlist, token, email):
+        self.mlist = mlist
+        self.token = token
+        self.email = email
+
+
+@public
+class UnsubscriptionConfirmationNeededEvent:
+    """Triggered when an unsubscription request needs confirmation.
+
+    The confirmation message is sent to the user when this event is
+    triggered.
     """
     def __init__(self, mlist, token, email):
         self.mlist = mlist

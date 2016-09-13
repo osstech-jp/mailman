@@ -182,11 +182,20 @@ You may be asked to confirm your request.""")
             if member is not None:
                 break
         else:
-            # None of the user's addresses are subscribed to this mailing list.
-            print(_(
-                '$self.name: $email is not a member of $mlist.fqdn_listname'),
-                file=results)
+            # There are two possible situations.  Either none of the user's
+            # addresses are subscribed to this mailing list, or this command
+            # email *already* unsubscribed the user from the mailing list.
+            # E.g. if a message was sent to the -leave address and it
+            # contained the 'leave' command.  Don't send a bogus response in
+            # this case, just ignore subsequent leaves of the same address.
+            print(_('$self.name: $email is not a member of '
+                    '$mlist.fqdn_listname'), file=results)
             return ContinueProcessing.no
+        already_left = msgdata.setdefault('leaves', set())
+        if email in already_left:
+            return ContinueProcessing.yes
+        # Ignore any subsequent 'leave' commands.
+        already_left.add(email)
         manager = getAdapter(mlist, ISubscriptionManager, name='unsubscribe')
         token, token_owner, member = manager.unregister(user_address)
         person = formataddr((user.display_name, email))   # noqa

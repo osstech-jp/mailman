@@ -479,8 +479,19 @@ below.  Here are all the supported template names:
       (e.g. "French", "English", "Italian")
     * ``user_name`` - the recipient's display name if available
 
-* ``list:user:action:confirm``
+* ``list:user:action:subscribe``
     The message sent to subscribers when a subscription confirmation is
+    required.
+
+    * ``token`` - the unique confirmation token
+    * ``subject`` - the ``Subject`` heading for the confirmation email, which
+      includes the confirmation token
+    * ``confirm_email`` - the email address to send the confirmation response
+      to; this corresponds to the ``Reply-To`` header
+    * ``user_email`` - the email address being confirmed
+
+* ``list:user:action:unsubscribe``
+    The message sent to subscribers when an unsubscription confirmation is
     required.
 
     * ``token`` - the unique confirmation token

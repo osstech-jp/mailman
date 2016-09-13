@@ -171,7 +171,7 @@ ALL_TEMPLATES = {
         'list:admin:notice:unrecognized',
         'list:admin:notice:unsubscribe',
         'list:member:digest:masthead',
-        'list:user:action:confirm',
+        'list:user:action:subscribe',
         'list:user:action:unsubscribe',
         'list:user:notice:hold',
         'list:user:notice:no-more-today',
