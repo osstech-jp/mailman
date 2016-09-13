@@ -113,11 +113,11 @@ Mailman has sent her the confirmation message.
     <BLANKLINE>
         anne@example.com
     <BLANKLINE>
-    Before you can start using GNU Mailman at this site, you must first
-    confirm that this is your email address.  You can do this by replying to
-    this message, keeping the Subject header intact.
+    Before you can start using GNU Mailman at this site, you must first confirm
+    that this is your email address.  You can do this by replying to this me...
+    keeping the Subject header intact.
     <BLANKLINE>
-    If you do not wish to register this email address simply disregard this
+    If you do not wish to register this email address, simply disregard this
     message.  If you think you are being maliciously subscribed to the list, or
     have any other questions, you may contact
     <BLANKLINE>
