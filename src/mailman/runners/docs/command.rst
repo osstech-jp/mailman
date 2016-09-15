@@ -167,26 +167,28 @@ Similarly, to leave a mailing list, the user need only email the ``-leave`` or
     ...
     ... """)
 
+    >>> from mailman.interfaces.mailinglist import SubscriptionPolicy
+    >>> mlist.unsubscribe_policy = SubscriptionPolicy.open
     >>> filebase = inject_message(
     ...     mlist, msg, switchboard='command', subaddress='leave')
     >>> command.run()
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
-    1
+    2
 
     >>> print(messages[0].msg.as_string())
+    MIME-Version: 1.0
+    ...
+    Subject: You have been unsubscribed from the Test mailing list
+    From: test-bounces@example.com
+    To: dperson@example.com
+    ...
+
+    >>> print(messages[1].msg.as_string())
     Subject: The results of your email commands
     From: test-bounces@example.com
     To: dperson@example.com
     ...
-    <BLANKLINE>
-    The results of your email command are provided below.
-    <BLANKLINE>
-    - Original message details:
-    From: dperson@example.com
-    Subject: n/a
-    Date: ...
-    Message-ID: ...
     <BLANKLINE>
     - Results:
     Dirk Person <dperson@example.com> left test@example.com
