@@ -17,6 +17,7 @@
 
 """Digest runner."""
 
+import os
 import re
 import logging
 
@@ -322,6 +323,8 @@ class DigestRunner(Runner):
             # Finish up the digests.
             mime = mime_digest.finish()
             rfc1153 = rfc1153_digest.finish()
+        # Remove the digest mbox (GL#259)
+        os.remove(msgdata['digest_path'])
         # Calculate the recipients lists
         mime_recipients = set()
         rfc1153_recipients = set()
