@@ -174,6 +174,7 @@ You may be asked to confirm your request.""")
             print(_('Invalid or unverified email address: $email'),
                   file=results)
             return ContinueProcessing.no
+        already_left = msgdata.setdefault('leaves', set())
         for user_address in user.addresses:
             # Only recognize verified addresses.
             if user_address.verified_on is None:
@@ -188,10 +189,10 @@ You may be asked to confirm your request.""")
             # E.g. if a message was sent to the -leave address and it
             # contained the 'leave' command.  Don't send a bogus response in
             # this case, just ignore subsequent leaves of the same address.
-            print(_('$self.name: $email is not a member of '
-                    '$mlist.fqdn_listname'), file=results)
-            return ContinueProcessing.no
-        already_left = msgdata.setdefault('leaves', set())
+            if email not in already_left:
+                print(_('$self.name: $email is not a member of '
+                        '$mlist.fqdn_listname'), file=results)
+                return ContinueProcessing.no
         if email in already_left:
             return ContinueProcessing.yes
         # Ignore any subsequent 'leave' commands.
