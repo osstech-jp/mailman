@@ -25,7 +25,6 @@ def upgrade():
         # SQLite may not have removed it when downgrading.
         op.add_column('mailinglist', sa.Column(
             'subscription_policy', Enum(SubscriptionPolicy), nullable=True))
-
     # Now migrate the data.  Don't import the table definition from the
     # models, it may break this migration when the model is updated in the
     # future (see the Alembic doc).

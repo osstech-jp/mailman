@@ -19,11 +19,9 @@ down_revision = 'fa0d96e28631'
 
 def upgrade():
     if not exists_in_db(op.get_bind(), 'mailinglist', 'unsubscription_policy'):
-        with op.batch_alter_table('mailinglist') as batch_op:
-            # SQLite may not have removed it when downgrading.
-            batch_op.add_column(sa.Column(
-                'unsubscription_policy', Enum(SubscriptionPolicy),
-                nullable=True))
+        # SQLite may not have removed it when downgrading.
+        op.add_column('mailinglist', sa.Column(
+            'unsubscription_policy', Enum(SubscriptionPolicy), nullable=True))
         # Now migrate the data.  Don't import the table definition from the
         # models, it may break this migration when the model is updated in the
         # future (see the Alembic doc).
