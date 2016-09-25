@@ -93,6 +93,13 @@ class IBanManager(Interface):
         :rtype: bool
         """
 
+    def find():
+        """Return the sequence of baned emails
+
+        :return: The list of all banned addresses.
+        :rtype: list of `IBan`
+        """
+
     def __iter__():
         """Iterate over all banned addresses.
 
