@@ -21,6 +21,7 @@ names to rule objects.
     administrivia True
     any True
     approved True
+    banned-address True
     emergency True
     implicit-dest True
     loop True

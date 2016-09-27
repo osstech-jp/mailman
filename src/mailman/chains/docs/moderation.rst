@@ -90,6 +90,7 @@ built-in chain.  No rules hit and so the message is accepted.
         approved
         emergency
         loop
+        banned-address
         member-moderation
         nonmember-moderation
         administrivia
@@ -126,6 +127,7 @@ moderator approval.
         approved
         emergency
         loop
+        banned-address
 
 Anne's moderation action can also be set to `discard`...
 ::
@@ -151,6 +153,7 @@ Anne's moderation action can also be set to `discard`...
         approved
         emergency
         loop
+        banned-address
 
 ... or `reject`.
 
@@ -175,6 +178,7 @@ Anne's moderation action can also be set to `discard`...
         approved
         emergency
         loop
+        banned-address
 
 
 Nonmembers
@@ -214,6 +218,7 @@ moderator approval.
         approved
         emergency
         loop
+        banned-address
         member-moderation
 
     >>> nonmember = mlist.nonmembers.get_member('bart@example.com')

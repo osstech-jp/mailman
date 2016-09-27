@@ -41,6 +41,8 @@ class BuiltInChain:
         ('approved', LinkAction.jump, 'accept'),
         ('emergency', LinkAction.jump, 'hold'),
         ('loop', LinkAction.jump, 'discard'),
+        # Discard emails from banned addresses.
+        ('banned-address', LinkAction.jump, 'discard'),
         # Determine whether the member or nonmember has an action shortcut.
         ('member-moderation', LinkAction.jump, 'moderation'),
         # Take a detour through the header matching chain.
