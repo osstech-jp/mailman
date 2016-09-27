@@ -110,8 +110,9 @@ class BanManager:
                     return True
         return False
 
+    @property
     @dbconnection
-    def find(self, store):
+    def bans(self, store):
         """See `IBanManager`."""
         query = store.query(Ban).filter_by(list_id=self._list_id)
         return QuerySequence(query)
@@ -119,4 +120,4 @@ class BanManager:
     @dbconnection
     def __iter__(self, store):
         """See `IBanManager`."""
-        yield from store.query(Ban).filter_by(list_id=self._list_id)
+        yield from self.bans

@@ -46,6 +46,9 @@ class IBanManager(Interface):
         to an `IBanManager`.  To manage global bans, adapt ``None``.
         """
 
+    bans = Attribute(
+        """A `QuerySequence` over all the banned emails""")
+
     def ban(email):
         """Ban an email address from subscribing to a mailing list.
 
@@ -93,16 +96,7 @@ class IBanManager(Interface):
         :rtype: bool
         """
 
-    def find():
-        """Return the sequence of baned emails
-
-        :return: The list of all banned addresses.
-        :rtype: list of `IBan`
-        """
-
     def __iter__():
-        """Iterate over all banned addresses.
+        """An iterator over all the banned email addresses.
 
-        :return: The list of all banned addresses.
-        :rtype: list of `IBan`
-        """
+        :return: iterator over `IBan`"""

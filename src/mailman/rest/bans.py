@@ -86,7 +86,7 @@ class BannedEmails(_BannedBase, CollectionMixin):
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        return self.ban_manager.find()
+        return self.ban_manager.bans
 
     def on_get(self, request, response):
         """/bans"""
