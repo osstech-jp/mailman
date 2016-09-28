@@ -23,6 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.queries import QuerySequence
 from zope.component import getUtility
 
 
@@ -46,3 +47,8 @@ class TestMailingListBans(unittest.TestCase):
         getUtility(IListManager).delete(self._mlist)
         self.assertEqual([ban.email for ban in global_ban_manager],
                          ['bart@example.com'])
+
+    def test_bans_property(self):
+        # Bans is a property of `IBanManager` which returns QuerySequence.
+        self.assertIsInstance(self._manager.__class__.bans, property)
+        self.assertIsInstance(self._manager.bans, QuerySequence)
