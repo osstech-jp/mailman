@@ -48,7 +48,10 @@ class TestMailingListBans(unittest.TestCase):
         self.assertEqual([ban.email for ban in global_ban_manager],
                          ['bart@example.com'])
 
-    def test_bans_property(self):
-        # Bans is a property of `IBanManager` which returns QuerySequence.
-        self.assertIsInstance(self._manager.__class__.bans, property)
+    def test_bans_querysequence(self):
+        # Bans returns a `QuerySequence`.
+        self._manager.ban('bee@example.com')
+        self.assertEqual(len(self._manager.bans), 1)
+        ban = self._manager.bans[0]
+        self.assertEqual(ban.email, 'bee@example.com')
         self.assertIsInstance(self._manager.bans, QuerySequence)
