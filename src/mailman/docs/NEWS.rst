@@ -90,6 +90,7 @@ Bugs
    Aurélien Bompard.  (Closes: #273)
  * Allow MailingList.info to be set using the REST API.  Given by Aurélien
    Bompard.
+ * Extend header filters to also check sub-part headers.  (Closes #280)
 
 Configuration
 -------------

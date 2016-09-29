@@ -169,6 +169,46 @@ class TestHeaderChain(unittest.TestCase):
              ('baz', 'z+', LinkAction.jump, 'accept'),
             ])                                      # noqa: E124
 
+    def test_header_in_subpart(self):
+        # Test that headers in sub-parts are also matched.
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A message
+Message-ID: <ant>
+Foo: foo
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="================12345=="
+
+--================12345==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+A message body.
+
+--================12345==
+Content-Type: application/junk
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+This is junk
+
+--================12345==--
+""")
+        msgdata = {}
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('Content-Type', 'application', 'hold')
+        # This event subscriber records the event that occurs when the message
+        # is processed by the owner chain.
+        events = []
+        with event_subscribers(events.append):
+            process(self._mlist, msg, msgdata, start_chain='header-match')
+        self.assertEqual(len(events), 1)
+        event = events[0]
+        self.assertIsInstance(event, HoldEvent)
+        self.assertEqual(event.chain, config.chains['hold'])
+
     @configuration('antispam', header_checks="""
     Foo: foo
     """, jump_chain='hold')

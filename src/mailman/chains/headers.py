@@ -96,7 +96,10 @@ class HeaderMatchRule:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        for value in msg.get_all(self.header, []):
+        headers = []
+        for p in msg.walk():
+            headers.extend(p.get_all(self.header, []))
+        for value in headers:
             if re.search(self.pattern, value, re.IGNORECASE):
                 return True
         return False
