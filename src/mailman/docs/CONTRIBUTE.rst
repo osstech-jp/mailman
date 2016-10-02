@@ -51,6 +51,7 @@ to sign a `copyright assignment`_ to the Free Software Foundation, the owner
 of the GNU Mailman copyright.  If you'd like to jump start your copyright
 assignment, please contact the GNU Mailman `steering committee`_.
 
+
 Get the sources
 ===============
 
