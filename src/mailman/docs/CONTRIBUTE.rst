@@ -51,6 +51,19 @@ to sign a `copyright assignment`_ to the Free Software Foundation, the owner
 of the GNU Mailman copyright.  If you'd like to jump start your copyright
 assignment, please contact the GNU Mailman `steering committee`_.
 
+Get the sources
+===============
+
+Source code for `Mailman 3 is hosted on Gitlab`_.
+
+Anonymous::
+
+    $ git clone https://gitlab.com/mailman/mailman.git
+
+Contributiors::
+
+    $ git clone git@gitlab.com:mailman/mailman.git
+
 
 Testing Mailman 3
 =================
@@ -287,4 +300,5 @@ HyperKitty is also a Django application.
 .. _`bug reports`: https://gitlab.com/mailman/mailman/issues
 .. _`copyright assignment`: https://www.fsf.org/licensing/assigning.html/?searchterm=copyright%20assignment
 .. _`steering committee`: mailto:mailman-cabal@python.org
+.. _`Mailman 3 is hosted on Gitlab`: https://gitlab.com/mailman/mailman
 .. _`Zope Component Architecture`: https://pypi.python.org/pypi/zope.component
