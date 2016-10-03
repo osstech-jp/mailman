@@ -49,13 +49,13 @@ def _start_ipython1(overrides, banner, *, debug=False):
         if debug:
             print_exc()
         return None
-    return InteractiveShellEmbed(banner1=banner, user_ns=overrides)
+    return InteractiveShellEmbed.instance(banner1=banner, user_ns=overrides)
 
 
 def _start_ipython4(overrides, banner, *, debug=False):
     try:
         from IPython.terminal.embed import InteractiveShellEmbed
-        shell = InteractiveShellEmbed()
+        shell = InteractiveShellEmbed.instance()
     except ImportError:
         if debug:
             print_exc()
