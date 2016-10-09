@@ -52,6 +52,19 @@ of the GNU Mailman copyright.  If you'd like to jump start your copyright
 assignment, please contact the GNU Mailman `steering committee`_.
 
 
+Get the sources
+===============
+
+The Mailman 3 source code is version controlled using Git. You can get a
+local copy by running this command::
+
+    $ git clone https://gitlab.com/mailman/mailman.git
+
+or if you have a GitLab account and prefer ssh::
+
+    $ git clone git@gitlab.com:mailman/mailman.git
+
+
 Testing Mailman 3
 =================
 
