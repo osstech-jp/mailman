@@ -55,13 +55,12 @@ assignment, please contact the GNU Mailman `steering committee`_.
 Get the sources
 ===============
 
-Source code for `Mailman 3 is hosted on Gitlab`_.
-
-Anonymous::
+The Mailman 3 source code is version controlled using Git. You can get a
+local copy by running this command::
 
     $ git clone https://gitlab.com/mailman/mailman.git
 
-Contributiors::
+or if you have a GitLab account and prefer ssh::
 
     $ git clone git@gitlab.com:mailman/mailman.git
 
@@ -301,5 +300,4 @@ HyperKitty is also a Django application.
 .. _`bug reports`: https://gitlab.com/mailman/mailman/issues
 .. _`copyright assignment`: https://www.fsf.org/licensing/assigning.html/?searchterm=copyright%20assignment
 .. _`steering committee`: mailto:mailman-cabal@python.org
-.. _`Mailman 3 is hosted on Gitlab`: https://gitlab.com/mailman/mailman
 .. _`Zope Component Architecture`: https://pypi.python.org/pypi/zope.component
