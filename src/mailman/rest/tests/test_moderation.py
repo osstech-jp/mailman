@@ -17,8 +17,10 @@
 
 """REST moderation tests."""
 
+import os
 import unittest
 
+from email import message_from_binary_file
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
 from mailman.database.transaction import transaction
@@ -205,6 +207,23 @@ class TestSubscriptionModeration(unittest.TestCase):
         self.assertEqual(tokens, {token_1, token_2})
         emails = set(json['email'] for json in content['entries'])
         self.assertEqual(emails, {'anne@example.com', 'bart@example.com'})
+
+    def test_view_malformed_held_message(self):
+        # Opening a bad (i.e. bad structure) email and holding it.
+        pwd = os.path.dirname(os.path.realpath(__file__))
+        email_path = os.path.join(pwd, 'data/bad_email')
+        msg = message_from_binary_file(open(email_path, 'rb'))
+        msg.sender = 'bogussender@example.com'
+        with transaction():
+            hold_message(self._mlist, msg)
+        # Now trying to access held messages from REST API should not give
+        # 500 server error if one of the messages can't be parsed properly.
+        content, response = call_api(
+            'http://localhost:9001/3.0/lists/ant@example.com/held')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(len(content['entries']), 1)
+        self.assertEqual(content['entries'][0]['msg'],
+                         'this message is defective')
 
     def test_individual_request(self):
         # We can view an individual request.

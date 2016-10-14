@@ -71,7 +71,13 @@ class _HeldMessageBase(_ModerationBase):
         # resource.  XXX See LP: #967954
         key = resource.pop('key')
         msg = getUtility(IMessageStore).get_message_by_id(key)
-        resource['msg'] = msg.as_string()
+        try:
+            resource['msg'] = msg.as_string()
+        except KeyError:
+            # If the message can't be parsed, return a generic message instead
+            # of raising an error.
+            # See http://bugs.python.org/issue27321 and #256
+            resource['msg'] = 'this message is defective'
         # Some of the _mod_* keys we want to rename and place into the JSON
         # resource.  Others we can drop.  Since we're mutating the dictionary,
         # we need to make a copy of the keys.  When you port this to Python 3,
