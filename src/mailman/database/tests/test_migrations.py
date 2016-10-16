@@ -323,11 +323,6 @@ class TestMigrations(unittest.TestCase):
             ])
 
     def test_fa0d96e28631_upgrade_uris(self):
-        with transaction():
-            # Start at the previous revision.
-            alembic.command.downgrade(alembic_cfg, '7b254d88f122')
-            # Create a mailing list through the standard API.
-            create_list('ant@example.com')
         mlist_table = sa.sql.table(
             'mailinglist',
             sa.sql.column('id', sa.Integer),
@@ -340,15 +335,18 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('welcome_message_uri', sa.Unicode),
             )
         with transaction():
-            config.db.store.execute(mlist_table.update().where(
-                mlist_table.c.list_id == 'ant.example.com').values(
-                    digest_footer_uri='mailman:///digest_footer.txt',
-                    digest_header_uri='mailman:///digest_header.txt',
-                    footer_uri='mailman:///footer.txt',
-                    header_uri='mailman:///header.txt',
-                    goodbye_message_uri='mailman:///goodbye.txt',
-                    welcome_message_uri='mailman:///welcome.txt',
-                    ))
+            # Start at the previous revision.
+            alembic.command.downgrade(alembic_cfg, '7b254d88f122')
+            # Create a mailing list with some URIs.
+            config.db.store.execute(mlist_table.insert().values(
+                list_id='ant.example.com',
+                digest_footer_uri='mailman:///digest_footer.txt',
+                digest_header_uri='mailman:///digest_header.txt',
+                footer_uri='mailman:///footer.txt',
+                header_uri='mailman:///header.txt',
+                goodbye_message_uri='mailman:///goodbye.txt',
+                welcome_message_uri='mailman:///welcome.txt',
+                ))
         # Now upgrade and check to see if the values got into the template
         # table correctly.
         alembic.command.upgrade(alembic_cfg, 'fa0d96e28631')
@@ -389,14 +387,25 @@ class TestMigrations(unittest.TestCase):
             ])
 
     def test_fa0d96e28631_upgrade_no_uris(self):
+        mlist_table = sa.sql.table(
+            'mailinglist',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('list_id', sa.Unicode),
+            sa.sql.column('digest_footer_uri', sa.Unicode),
+            sa.sql.column('digest_header_uri', sa.Unicode),
+            sa.sql.column('footer_uri', sa.Unicode),
+            sa.sql.column('header_uri', sa.Unicode),
+            sa.sql.column('goodbye_message_uri', sa.Unicode),
+            sa.sql.column('welcome_message_uri', sa.Unicode),
+            )
         # None of the URL parameters are defined.
         with transaction():
             # Start at the previous revision.
             alembic.command.downgrade(alembic_cfg, '7b254d88f122')
-            # Create a mailing list through the standard API.
-            create_list('ant@example.com')
-        # Now upgrade and check to see if the values got into the template
-        # table correctly.
+            # Create a mailing list without any URLs.
+            config.db.store.execute(mlist_table.insert().values(
+                list_id='ant.example.com'))
+        # Now upgrade.  There are no templates.
         alembic.command.upgrade(alembic_cfg, 'fa0d96e28631')
         template_table = sa.sql.table(
             'template',
