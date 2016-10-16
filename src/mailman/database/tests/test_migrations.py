@@ -208,8 +208,8 @@ class TestMigrations(unittest.TestCase):
     def test_70af5a4e5790_data_paths(self):
         # Create a couple of mailing lists through the standard API.
         with transaction():
-            ant = create_list('ant@example.com')
-            bee = create_list('bee@example.com')
+            create_list('ant@example.com')
+            create_list('bee@example.com')
         # Downgrade and verify that the old data paths exist.
         alembic.command.downgrade(alembic_cfg, '47294d3a604')
         self.assertTrue(os.path.exists(
@@ -222,9 +222,11 @@ class TestMigrations(unittest.TestCase):
         self.assertFalse(os.path.exists(
             os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
         self.assertFalse(os.path.exists(
-            os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
-        self.assertTrue(os.path.exists(ant.data_path))
-        self.assertTrue(os.path.exists(bee.data_path))
+            os.path.join(config.LIST_DATA_DIR, 'bee@example.com')))
+        self.assertTrue(os.path.exists(
+            os.path.join(config.LIST_DATA_DIR, 'ant.example.com')))
+        self.assertTrue(os.path.exists(
+            os.path.join(config.LIST_DATA_DIR, 'bee.example.com')))
 
     def test_7b254d88f122_moderation_action(self):
         sa.sql.table(
