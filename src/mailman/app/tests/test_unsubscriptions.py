@@ -19,7 +19,6 @@
 
 import unittest
 
-
 from contextlib import suppress
 from mailman.app.lifecycle import create_list
 from mailman.app.subscriptions import UnSubscriptionWorkflow

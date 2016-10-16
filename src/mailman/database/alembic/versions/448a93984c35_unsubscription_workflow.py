@@ -6,6 +6,7 @@ Create Date: 2016-06-02 14:34:24.154723
 """
 
 import sqlalchemy as sa
+
 from alembic import op
 from mailman.database.helpers import exists_in_db
 from mailman.database.types import Enum

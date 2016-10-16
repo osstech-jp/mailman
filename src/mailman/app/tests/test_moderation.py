@@ -24,8 +24,8 @@ from mailman.app.moderator import (
     handle_message, handle_unsubscription, hold_message, hold_unsubscription)
 from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
-from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.requests import IListRequests
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
@@ -35,7 +35,7 @@ from mailman.testing.helpers import (
     specialized_message_from_string as mfs)
 from mailman.testing.layers import SMTPLayer
 from mailman.utilities.datetime import now
-from zope.component import getUtility, getAdapter
+from zope.component import getAdapter, getUtility
 
 
 class TestModeration(unittest.TestCase):

@@ -28,7 +28,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import get_queue_messages
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
-from zope.component import getUtility, getAdapter
+from zope.component import getAdapter, getUtility
 
 
 class TestRegistrar(unittest.TestCase):

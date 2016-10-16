@@ -24,8 +24,8 @@ from mailman.app.moderator import hold_message
 from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.requests import IListRequests, RequestType
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     call_api, get_queue_messages, set_preferred,

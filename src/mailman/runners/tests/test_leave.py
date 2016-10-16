@@ -23,14 +23,13 @@ from email.iterators import body_line_iterator
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
-from mailman.interfaces.usermanager import IUserManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
+from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
+    get_queue_messages, make_testable_runner, set_preferred,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
-from mailman.testing.helpers import set_preferred
 from zope.component import getUtility
 
 
