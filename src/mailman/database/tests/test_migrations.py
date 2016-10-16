@@ -229,6 +229,11 @@ class TestMigrations(unittest.TestCase):
             os.path.join(config.LIST_DATA_DIR, 'bee.example.com')))
 
     def test_7b254d88f122_moderation_action(self):
+        # Create a mailing list through the standard API.
+        with transaction():
+            ant = create_list('ant@example.com')
+            default_member_action = ant.default_member_action
+            default_nonmember_action = ant.default_nonmember_action
         sa.sql.table(
             'mailinglist',
             sa.sql.column('id', sa.Integer),
@@ -248,8 +253,6 @@ class TestMigrations(unittest.TestCase):
         with transaction():
             # Start at the previous revision.
             alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
-            # Create a mailing list through the standard API.
-            ant = create_list('ant@example.com')
             # Create some members.
             anne = user_manager.create_address('anne@example.com')
             bart = user_manager.create_address('bart@example.com')
@@ -260,22 +263,40 @@ class TestMigrations(unittest.TestCase):
             # Assign some moderation actions to the members created above.
             config.db.store.execute(member_table.insert().values([
                 {'address_id': anne.id, 'role': MemberRole.owner,
-                 'list_id': ant.list_id, 'moderation_action': Action.accept},
+                 'list_id': 'ant.example.com',
+                 'moderation_action': Action.accept},
                 {'address_id': bart.id, 'role': MemberRole.moderator,
-                 'list_id': ant.list_id, 'moderation_action': Action.accept},
+                 'list_id': 'ant.example.com',
+                 'moderation_action': Action.accept},
                 {'address_id': cris.id, 'role': MemberRole.member,
-                 'list_id': ant.list_id, 'moderation_action': Action.defer},
+                 'list_id': 'ant.example.com',
+                 'moderation_action': Action.defer},
                 {'address_id': dana.id, 'role': MemberRole.nonmember,
-                 'list_id': ant.list_id, 'moderation_action': Action.hold},
+                 'list_id': 'ant.example.com',
+                 'moderation_action': Action.hold},
                 ]))
         # Cris and Dana have actions which match the list default action for
         # members and nonmembers respectively.
-        self.assertEqual(
-            ant.members.get_member('cris@example.com').moderation_action,
-            ant.default_member_action)
-        self.assertEqual(
-            ant.nonmembers.get_member('dana@example.com').moderation_action,
-            ant.default_nonmember_action)
+        query = sa.sql.select([member_table.c.moderation_action]).where(
+            sa.and_(
+                member_table.c.role == MemberRole.member,
+                member_table.c.list_id == 'ant.example.com',
+                # cris@example.com
+                member_table.c.address_id == 3,
+                )
+            )
+        action = config.db.store.execute(query).fetchone()[0]
+        self.assertEqual(action, default_member_action)
+        query = sa.sql.select([member_table.c.moderation_action]).where(
+            sa.and_(
+                member_table.c.role == MemberRole.nonmember,
+                member_table.c.list_id == 'ant.example.com',
+                # dana@example.com
+                member_table.c.address_id == 4,
+                )
+            )
+        action = config.db.store.execute(query).fetchone()[0]
+        self.assertEqual(action, default_nonmember_action)
         # Upgrade and check the moderation_actions.   Cris's and Dana's
         # actions have been set to None to fall back to the list defaults.
         alembic.command.upgrade(alembic_cfg, '7b254d88f122')
