@@ -35,7 +35,7 @@ from mailman.testing.helpers import (
     specialized_message_from_string as mfs)
 from mailman.testing.layers import SMTPLayer
 from mailman.utilities.datetime import now
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 
 
 class TestModeration(unittest.TestCase):
@@ -153,8 +153,7 @@ class TestUnsubscription(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
-        self._registrar = getAdapter(
-            self._mlist, ISubscriptionManager, name='subscribe')
+        self._registrar = ISubscriptionManager(self._mlist)
 
     def test_unsubscribe_defer(self):
         # When unsubscriptions must be approved by the moderator, but the

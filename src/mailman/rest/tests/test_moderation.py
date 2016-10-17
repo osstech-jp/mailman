@@ -32,7 +32,7 @@ from mailman.testing.helpers import (
     specialized_message_from_string as mfs)
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 
 
 class TestPostModeration(unittest.TestCase):
@@ -150,8 +150,7 @@ class TestSubscriptionModeration(unittest.TestCase):
     def setUp(self):
         with transaction():
             self._mlist = create_list('ant@example.com')
-            self._registrar = getAdapter(
-                self._mlist, ISubscriptionManager, name='subscribe')
+            self._registrar = ISubscriptionManager(self._mlist)
             manager = getUtility(IUserManager)
             self._anne = manager.create_address(
                 'anne@example.com', 'Anne Person')

@@ -359,8 +359,6 @@ class TestSubscriptionWorkflow(unittest.TestCase):
                                         pre_verified=True,
                                         pre_confirmed=True,
                                         pre_approved=True)
-        # Cache the token.
-        token = workflow.token
         # Consume the entire state machine.
         list(workflow)
         # Anne is now a member of the mailing list.
@@ -370,13 +368,6 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         # The workflow is done, so it has no token.
         self.assertIsNone(workflow.token)
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
-        # The pendable associated with the token has been evicted.
-        self.assertIsNone(getUtility(IPendings).confirm(token, expunge=False))
-        # There is no saved workflow associated with the token.  This shows up
-        # as an exception when we try to restore the workflow.
-        new_workflow = SubscriptionWorkflow(self._mlist)
-        new_workflow.token = token
-        self.assertRaises(LookupError, new_workflow.restore)
 
     def test_moderator_approves(self):
         # The workflow runs until moderator approval is required, at which

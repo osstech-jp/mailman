@@ -13,9 +13,8 @@ To begin, adapt a mailing list to an ``ISubscriptionManager``.  This is a
 named interface because the same interface manages both subscriptions and
 unsubscriptions.
 
-    >>> from zope.component import getAdapter
     >>> mlist = create_list('ant@example.com')
-    >>> manager = getAdapter(mlist, ISubscriptionManager, 'subscribe')
+    >>> manager = ISubscriptionManager(mlist)
 
 Either addresses or users with a preferred address can be registered.
 
@@ -114,7 +113,7 @@ that their email address is already verified, that step is not required.  To
 begin with unsubscribing, you need to adapt the mailing list to the same
 interface, but with a different name.
 
-    >>> manager = getAdapter(mlist, ISubscriptionManager, 'unsubscribe')
+    >>> manager = ISubscriptionManager(mlist)
 
 If the mailing list's unsubscription policy is open, unregistering the
 subscription takes effect immediately.

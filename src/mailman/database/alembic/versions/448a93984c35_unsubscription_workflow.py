@@ -9,7 +9,7 @@ import sqlalchemy as sa
 
 from alembic import op
 from mailman.database.helpers import exists_in_db
-from mailman.database.types import Enum
+from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 
 
@@ -35,8 +35,11 @@ def upgrade():
         op.execute(mlist.update().values(
             {'unsubscription_policy':
              op.inline_literal(SubscriptionPolicy.open)}))
+    with op.batch_alter_table('workflowstate') as batch_op:
+        batch_op.drop_column('name')
 
 
 def downgrade():
     with op.batch_alter_table('mailinglist') as batch_op:
         batch_op.drop_column('unsubscription_policy')
+    op.add_column('workflowstate', sa.Column('name', SAUnicode))

@@ -33,7 +33,6 @@ class WorkflowState(Model):
 
     __tablename__ = 'workflowstate'
 
-    name = Column(SAUnicode, primary_key=True)
     token = Column(SAUnicode, primary_key=True)
     step = Column(SAUnicode)
     data = Column(SAUnicode)
@@ -45,23 +44,23 @@ class WorkflowStateManager:
     """See `IWorkflowStateManager`."""
 
     @dbconnection
-    def save(self, store, name, token, step=None, data=None):
+    def save(self, store, token, step=None, data=None):
         """See `IWorkflowStateManager`."""
-        state = WorkflowState(name=name, token=token, step=step, data=data)
+        state = WorkflowState(token=token, step=step, data=data)
         store.add(state)
 
     @dbconnection
-    def restore(self, store, name, token):
+    def restore(self, store, token):
         """See `IWorkflowStateManager`."""
-        state = store.query(WorkflowState).get((name, token))
+        state = store.query(WorkflowState).get(token)
         if state is not None:
             store.delete(state)
         return state
 
     @dbconnection
-    def discard(self, store, name, token):
+    def discard(self, store, token):
         """See `IWorkflowStateManager`."""
-        state = store.query(WorkflowState).get((name, token))
+        state = store.query(WorkflowState).get(token)
         if state is not None:
             store.delete(state)
 

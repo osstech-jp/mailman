@@ -297,7 +297,9 @@ class SubscriptionWorkflow(Workflow):
         # We can immediately subscribe the user to the mailing list.
         self.member = self.mlist.subscribe(self.subscriber)
         # This workflow is done so throw away any associated state.
-        getUtility(IWorkflowStateManager).restore(self.name, self.token)
+        if self.token is not None:
+            getUtility(IWorkflowStateManager).discard(self.token)
+            self._set_token(TokenOwner.no_one)
 
     def _step_send_confirmation(self):
         self._set_token(TokenOwner.subscriber)
@@ -533,7 +535,9 @@ class UnSubscriptionWorkflow(Workflow):
             pass
         self.member = None
         # This workflow is done so throw away any associated state.
-        getUtility(IWorkflowStateManager).restore(self.name, self.token)
+        if self.token is not None:
+            getUtility(IWorkflowStateManager).discard(self.token)
+            self._set_token(TokenOwner.no_one)
 
     def _step_unsubscribe_from_restored(self):
         # Prevent replay attacks.
@@ -546,48 +550,11 @@ class UnSubscriptionWorkflow(Workflow):
         self.push('do_unsubscription')
 
 
-class BaseSubscriptionManager:
-    """Base class to handle registration and un-registration workflows."""
-
-    def __init__(self, mlist):
-        self._mlist = mlist
-
-    def _get_workflow(self):
-        raise NotImplementedError
-
-    def register(self, subscriber=None, *,
-                 pre_verified=False, pre_confirmed=False, pre_approved=False):
-        raise NotImplementedError
-
-    def unregister(self, subscriber=None, *,
-                   pre_confirmed=False, pre_approved=False):
-        raise NotImplementedError
-
-    def confirm(self, token):
-        workflow = self._get_workflow()
-        workflow.token = token
-        workflow.restore()
-        # In order to just run the whole workflow, all we need to do
-        # is iterate over the workflow object. On calling the __next__
-        # over the workflow iterator it automatically executes the steps
-        # that needs to be done.
-        list(workflow)
-        return workflow.token, workflow.token_owner, workflow.member
-
-    def discard(self, token):
-        with flush():
-            getUtility(IPendings).confirm(token)
-            getUtility(IWorkflowStateManager).discard(
-                self._get_workflow().name, token)
-
-
 @public
 @implementer(ISubscriptionManager)
-class SubscriptionManager(BaseSubscriptionManager):
-    """Handle registrations and confirmations for subscriptions."""
-
-    def _get_workflow(self):
-        return SubscriptionWorkflow(self._mlist)
+class SubscriptionManager:
+    def __init__(self, mlist):
+        self._mlist = mlist
 
     def register(self, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False):
@@ -600,15 +567,6 @@ class SubscriptionManager(BaseSubscriptionManager):
         list(workflow)
         return workflow.token, workflow.token_owner, workflow.member
 
-
-@public
-@implementer(ISubscriptionManager)
-class UnsubscriptionManager(BaseSubscriptionManager):
-    """Handle un-subscriptions and confirmations for un-subscriptions."""
-
-    def _get_workflow(self):
-        return UnSubscriptionWorkflow(self._mlist)
-
     def unregister(self, subscriber=None, *,
                    pre_confirmed=False, pre_approved=False):
         workflow = UnSubscriptionWorkflow(
@@ -617,6 +575,32 @@ class UnsubscriptionManager(BaseSubscriptionManager):
             pre_approved=pre_approved)
         list(workflow)
         return workflow.token, workflow.token_owner, workflow.member
+
+    def confirm(self, token):
+        if token is None:
+            raise LookupError
+        pendable = getUtility(IPendings).confirm(token, expunge=False)
+        if pendable is None:
+            raise LookupError
+        workflow_type = pendable.get('type')
+        assert workflow_type in (PendableSubscription.PEND_TYPE,
+                                 PendableUnsubscription.PEND_TYPE)
+        workflow = (SubscriptionWorkflow
+                    if workflow_type == PendableSubscription.PEND_TYPE
+                    else UnSubscriptionWorkflow)(self._mlist)
+        workflow.token = token
+        workflow.restore()
+        # In order to just run the whole workflow, all we need to do
+        # is iterate over the workflow object. On calling the __next__
+        # over the workflow iterator it automatically executes the steps
+        # that needs to be done.
+        list(workflow)
+        return workflow.token, workflow.token_owner, workflow.member
+
+    def discard(self, token):
+        with flush():
+            getUtility(IPendings).confirm(token)
+            getUtility(IWorkflowStateManager).discard(token)
 
 
 def _handle_confirmation_needed_events(event, template_name):

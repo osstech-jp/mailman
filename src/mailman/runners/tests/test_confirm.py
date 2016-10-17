@@ -31,7 +31,7 @@ from mailman.testing.helpers import (
     get_queue_messages, make_testable_runner,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 
 
 class TestConfirm(unittest.TestCase):
@@ -47,8 +47,7 @@ class TestConfirm(unittest.TestCase):
             self._mlist = create_list('test@example.com')
             self._mlist.send_welcome_message = False
             anne = getUtility(IUserManager).create_address('anne@example.org')
-            registrar = getAdapter(
-                self._mlist, ISubscriptionManager, name='subscribe')
+            registrar = ISubscriptionManager(self._mlist)
             self._token, token_owner, member = registrar.register(anne)
 
     def test_confirm_with_re_prefix(self):

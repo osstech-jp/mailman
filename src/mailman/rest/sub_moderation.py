@@ -28,7 +28,7 @@ from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, conflict, etag, no_content,
     not_found, okay)
 from mailman.rest.validator import Validator, enum_validator
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 
 
 class _ModerationBase:
@@ -54,8 +54,7 @@ class IndividualRequest(_ModerationBase):
     def __init__(self, mlist, token):
         super().__init__()
         self._mlist = mlist
-        self._registrar = getAdapter(
-            self._mlist, ISubscriptionManager, name='subscribe')
+        self._registrar = ISubscriptionManager(self._mlist)
         self._token = token
 
     def on_get(self, request, response):

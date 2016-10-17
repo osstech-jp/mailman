@@ -141,9 +141,8 @@ address, and the other is the results of his email command.
     2
 
     >>> from mailman.interfaces.subscriptions import ISubscriptionManager
-    >>> from zope.component import getAdapter
 
-    >>> manager = getAdapter(mlist, ISubscriptionManager, 'subscribe')
+    >>> manager = ISubscriptionManager(mlist)
     >>> for item in messages:
     ...     subject = item.msg['subject']
     ...     print('Subject:', subject)

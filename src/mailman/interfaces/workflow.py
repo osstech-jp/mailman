@@ -25,8 +25,6 @@ from zope.interface import Attribute, Interface
 class IWorkflowState(Interface):
     """The state of a workflow."""
 
-    name = Attribute('The name of the workflow.')
-
     token = Attribute('A unique key identifying the workflow instance.')
 
     step = Attribute("This workflow's next step.")
@@ -38,11 +36,9 @@ class IWorkflowState(Interface):
 class IWorkflowStateManager(Interface):
     """The workflow states manager."""
 
-    def save(name, token, step, data=None):
+    def save(token, step, data=None):
         """Save the state of a workflow.
 
-        :param name: The name of the workflow.
-        :type name: str
         :param token: A unique token identifying this workflow instance.
         :type token: str
         :param step: The next step for this workflow.
@@ -51,11 +47,9 @@ class IWorkflowStateManager(Interface):
         :type data: str
         """
 
-    def restore(name, token):
+    def restore(token):
         """Get the saved state for a workflow or None if nothing was saved.
 
-        :param name: The name of the workflow.
-        :type name: str
         :param token: A unique token identifying this workflow instance.
         :type token: str
         :return: The saved state associated with this name/token pair, or None
@@ -63,11 +57,9 @@ class IWorkflowStateManager(Interface):
         :rtype: ``IWorkflowState``
         """
 
-    def discard(name, token):
+    def discard(token):
         """Throw away the saved state for a workflow.
 
-        :param name: The name of the workflow.
-        :type name: str
         :param token: A unique token identifying this workflow instance.
         :type token: str
         """

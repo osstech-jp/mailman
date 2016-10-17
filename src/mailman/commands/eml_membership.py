@@ -25,7 +25,7 @@ from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.subscriptions import (
     ISubscriptionManager, ISubscriptionService)
 from mailman.interfaces.usermanager import IUserManager
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 from zope.interface import implementer
 
 
@@ -101,8 +101,7 @@ used.
             print(_('$person is already a member'), file=results)
             return ContinueProcessing.yes
         subscriber = match_subscriber(email, display_name)
-        getAdapter(
-            mlist, ISubscriptionManager, name='subscribe').register(subscriber)
+        ISubscriptionManager(mlist).register(subscriber)
         print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
 
@@ -197,7 +196,7 @@ You may be asked to confirm your request.""")
             return ContinueProcessing.yes
         # Ignore any subsequent 'leave' commands.
         already_left.add(email)
-        manager = getAdapter(mlist, ISubscriptionManager, name='unsubscribe')
+        manager = ISubscriptionManager(mlist)
         token, token_owner, member = manager.unregister(user_address)
         person = formataddr((user.display_name, email))   # noqa
         if member is None:

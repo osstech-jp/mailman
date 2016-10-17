@@ -30,7 +30,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner, Results
 from mailman.testing.helpers import get_queue_messages, make_testable_runner
 from mailman.testing.layers import ConfigLayer
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 
 
 class TestConfirm(unittest.TestCase):
@@ -42,8 +42,8 @@ class TestConfirm(unittest.TestCase):
         self._mlist = create_list('test@example.com')
         anne = getUtility(IUserManager).create_address(
             'anne@example.com', 'Anne Person')
-        self._token, token_owner, member = getAdapter(
-            self._mlist, ISubscriptionManager, name='subscribe').register(anne)
+        self._token, token_owner, member = ISubscriptionManager(
+            self._mlist).register(anne)
         self._command = Confirm()
         # Clear the virgin queue.
         get_queue_messages('virgin')
@@ -88,8 +88,8 @@ class TestEmailResponses(unittest.TestCase):
             'bart@example.com', 'Bart Person')
         # Clear any previously queued confirmation messages.
         get_queue_messages('virgin')
-        self._token, token_owner, member = getAdapter(
-            self._mlist, ISubscriptionManager, name='subscribe').register(bart)
+        self._token, token_owner, member = ISubscriptionManager(
+            self._mlist).register(bart)
         # There should now be one email message in the virgin queue, i.e. the
         # confirmation message sent to Bart.
         items = get_queue_messages('virgin', expected_count=1)

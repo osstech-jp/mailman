@@ -37,7 +37,7 @@ from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
 from uuid import UUID
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 
 
 class _MemberBase(CollectionMixin):
@@ -253,8 +253,7 @@ class AllMembers(_MemberBase):
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
             # verification, confirmation, or approval.
-            registrar = getAdapter(
-                mlist, ISubscriptionManager, name='subscribe')
+            registrar = ISubscriptionManager(mlist)
             try:
                 token, token_owner, member = registrar.register(
                     subscriber,

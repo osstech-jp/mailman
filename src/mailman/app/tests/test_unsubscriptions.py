@@ -184,7 +184,7 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         self.assertIsNone(workflow.token)
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
 
-    def test_do_unsubscription_pre_approved_pre_onfirmed(self):
+    def test_do_unsubscription_pre_approved_pre_confirmed(self):
         # A moderation-requiring un-subscription policy plus a pre-appvoed
         # address means the user gets un-subscribed to the mailing list without
         # any further confirmations or approvals.
@@ -201,14 +201,12 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
 
     def test_do_unsubscription_cleanups(self):
-        # Once the user is un-subscribed, the token and its associated pending
+        # Once the user is unsubscribed, the token and its associated pending
         # database record will be removed from the database.
         self._mlist.unsubscription_policy = SubscriptionPolicy.open
         workflow = UnSubscriptionWorkflow(self._mlist, self.anne,
                                           pre_approved=True,
                                           pre_confirmed=True)
-        # Cache the token.
-        token = workflow.token
         # Run the workflow.
         list(workflow)
         # Anne is now un-subscribed from the list.
@@ -217,13 +215,6 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         # Workflow is done, so it has no token.
         self.assertIsNone(workflow.token)
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
-        # The pendable associated with the token as been evicted.
-        self.assertIsNone(getUtility(IPendings).confirm(token, expunge=False))
-        # There is no workflow associated with the token. This shows up as an
-        # exception when trying to restore the workflow.
-        new_workflow = UnSubscriptionWorkflow(self._mlist)
-        new_workflow.token = token
-        self.assertRaises(LookupError, new_workflow.restore)
 
     def test_moderator_approves(self):
         # The workflow runs until moderator approval is required, at which

@@ -31,7 +31,7 @@ from mailman.testing.helpers import (
     get_queue_messages, make_testable_runner,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 
 
 class TestJoin(unittest.TestCase):
@@ -145,8 +145,8 @@ class TestJoinWithDigests(unittest.TestCase):
         subject_words = str(items[1].msg['subject']).split()
         self.assertEqual(subject_words[0], 'confirm')
         token = subject_words[1]
-        token, token_owner, rmember = getAdapter(
-            self._mlist, ISubscriptionManager, name='subscribe').confirm(token)
+        token, token_owner, rmember = ISubscriptionManager(
+            self._mlist).confirm(token)
         self.assertIsNone(token)
         self.assertEqual(token_owner, TokenOwner.no_one)
         # Now, make sure that Anne is a member of the list and is receiving

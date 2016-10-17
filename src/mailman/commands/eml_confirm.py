@@ -21,7 +21,6 @@ from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
-from zope.component import getAdapter
 from zope.interface import implementer
 
 
@@ -50,8 +49,8 @@ class Confirm:
         tokens.add(token)
         results.confirms = tokens
         try:
-            new_token, token_owner, member = getAdapter(
-                mlist, ISubscriptionManager, name='subscribe').confirm(token)
+            new_token, token_owner, member = ISubscriptionManager(
+                mlist).confirm(token)
             if new_token is None:
                 assert token_owner is TokenOwner.no_one, token_owner
                 assert member is not None, member

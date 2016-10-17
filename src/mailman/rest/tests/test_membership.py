@@ -34,7 +34,7 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer, RESTLayer
 from mailman.utilities.datetime import now
 from urllib.error import HTTPError
-from zope.component import getAdapter, getUtility
+from zope.component import getUtility
 
 
 class TestMembership(unittest.TestCase):
@@ -214,8 +214,7 @@ class TestMembership(unittest.TestCase):
     def test_duplicate_pending_subscription(self):
         # Issue #199 - a member's subscription is already pending and they try
         # to subscribe again.
-        registrar = getAdapter(
-            self._mlist, ISubscriptionManager, name='subscribe')
+        registrar = ISubscriptionManager(self._mlist)
         with transaction():
             self._mlist.subscription_policy = SubscriptionPolicy.moderate
             anne = self._usermanager.create_address('anne@example.com')
@@ -238,8 +237,7 @@ class TestMembership(unittest.TestCase):
         # Issue #199 - a member's subscription is already pending and they try
         # to subscribe again.  Unlike above, this pend is waiting for the user
         # to confirm their subscription.
-        registrar = getAdapter(
-            self._mlist, ISubscriptionManager, name='subscribe')
+        registrar = ISubscriptionManager(self._mlist)
         with transaction():
             self._mlist.subscription_policy = (
                 SubscriptionPolicy.confirm_then_moderate)
