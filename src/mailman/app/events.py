@@ -38,7 +38,7 @@ def initialize():
         passwords.handle_ConfigurationUpdatedEvent,
         style_manager.handle_ConfigurationUpdatedEvent,
         subscriptions.handle_ListDeletingEvent,
-        subscriptions.handle_RegistrationConfirmationNeededEvent,
+        subscriptions.handle_SubscriptionConfirmationNeededEvent,
         subscriptions.handle_UnsubscriptionConfirmationNeededEvent,
         switchboard.handle_ConfigurationUpdatedEvent,
         ])

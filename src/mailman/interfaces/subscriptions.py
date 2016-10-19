@@ -78,8 +78,8 @@ class TokenOwner(Enum):
 
 
 @public
-class RegistrationConfirmationNeededEvent:
-    """Triggered when an address needs confirmation.
+class SubscriptionConfirmationNeededEvent:
+    """Triggered when a subscription needs confirmation.
 
     Addresses must be verified before they can receive messages or post
     to mailing list.  The confirmation message is sent to the user when

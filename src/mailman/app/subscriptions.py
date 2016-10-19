@@ -37,7 +37,7 @@ from mailman.interfaces.member import MembershipIsBannedError, NotAMemberError
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.subscriptions import (
     ISubscriptionManager, ISubscriptionService,
-    RegistrationConfirmationNeededEvent, SubscriptionPendingError, TokenOwner,
+    SubscriptionConfirmationNeededEvent, SubscriptionPendingError, TokenOwner,
     UnsubscriptionConfirmationNeededEvent)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
@@ -68,23 +68,12 @@ class PendableUnsubscription(dict):
     PEND_TYPE = 'unsubscription'
 
 
-@public
-class SubscriptionWorkflow(Workflow):
-    """Workflow of a subscription request."""
+class _SubscriptionWorkflowCommon(Workflow):
+    """Common support between subscription and unsubscription."""
 
-    INITIAL_STATE = 'sanity_checks'
-    SAVE_ATTRIBUTES = (
-        'pre_approved',
-        'pre_confirmed',
-        'pre_verified',
-        'address_key',
-        'subscriber_key',
-        'user_key',
-        'token_owner_key',
-        )
+    PENDABLE_CLASS = None
 
-    def __init__(self, mlist, subscriber=None, *,
-                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+    def __init__(self, mlist, subscriber):
         super().__init__()
         self.mlist = mlist
         self.address = None
@@ -102,9 +91,6 @@ class SubscriptionWorkflow(Workflow):
             self.user = subscriber
             self.which = WhichSubscriber.user
         self.subscriber = subscriber
-        self.pre_verified = pre_verified
-        self.pre_confirmed = pre_confirmed
-        self.pre_approved = pre_approved
 
     @property
     def user_key(self):
@@ -158,7 +144,7 @@ class SubscriptionWorkflow(Workflow):
         if token_owner is TokenOwner.no_one:
             self.token = None
             return
-        pendable = PendableSubscription(
+        pendable = self.PENDABLE_CLASS(
             list_id=self.mlist.list_id,
             email=self.address.email,
             display_name=self.address.display_name,
@@ -166,6 +152,30 @@ class SubscriptionWorkflow(Workflow):
             token_owner=token_owner.name,
             )
         self.token = pendings.add(pendable, timedelta(days=3650))
+
+
+@public
+class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
+    """Workflow of a subscription request."""
+
+    PENDABLE_CLASS = PendableSubscription
+    INITIAL_STATE = 'sanity_checks'
+    SAVE_ATTRIBUTES = (
+        'pre_approved',
+        'pre_confirmed',
+        'pre_verified',
+        'address_key',
+        'subscriber_key',
+        'user_key',
+        'token_owner_key',
+        )
+
+    def __init__(self, mlist, subscriber=None, *,
+                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+        super().__init__(mlist, subscriber)
+        self.pre_verified = pre_verified
+        self.pre_confirmed = pre_confirmed
+        self.pre_approved = pre_approved
 
     def _step_sanity_checks(self):
         # Ensure that we have both an address and a user, even if the address
@@ -306,7 +316,7 @@ class SubscriptionWorkflow(Workflow):
         self.push('do_confirm_verify')
         self.save()
         # Triggering this event causes the confirmation message to be sent.
-        notify(RegistrationConfirmationNeededEvent(
+        notify(SubscriptionConfirmationNeededEvent(
             self.mlist, self.token, self.address.email))
         # Now we wait for the confirmation.
         raise StopIteration
@@ -339,9 +349,10 @@ class SubscriptionWorkflow(Workflow):
 
 
 @public
-class UnSubscriptionWorkflow(Workflow):
+class UnSubscriptionWorkflow(_SubscriptionWorkflowCommon):
     """Workflow of a unsubscription request."""
 
+    PENDABLE_CLASS = PendableUnsubscription
     INITIAL_STATE = 'subscription_checks'
     SAVE_ATTRIBUTES = (
         'pre_approved',
@@ -354,90 +365,12 @@ class UnSubscriptionWorkflow(Workflow):
 
     def __init__(self, mlist, subscriber=None, *,
                  pre_approved=False, pre_confirmed=False):
-        super().__init__()
-        self.mlist = mlist
-        self.address = None
-        self.user = None
-        self.which = None
-        self.member = None
-        self._set_token(TokenOwner.no_one)
-        # `subscriber` should be an implementer of IAddress.
-        if IAddress.providedBy(subscriber):
-            self.address = subscriber
-            self.user = self.address.user
-            self.which = WhichSubscriber.address
+        super().__init__(mlist, subscriber)
+        if IAddress.providedBy(subscriber) or IUser.providedBy(subscriber):
             self.member = self.mlist.regular_members.get_member(
                 self.address.email)
-        elif IUser.providedBy(subscriber):
-            self.address = subscriber.preferred_address
-            self.user = subscriber
-            self.which = WhichSubscriber.address
-            self.member = self.mlist.regular_members.get_member(
-                self.address.email)
-        self.subscriber = subscriber
         self.pre_confirmed = pre_confirmed
         self.pre_approved = pre_approved
-
-    @property
-    def user_key(self):
-        # For save.
-        return self.user.user_id.hex
-
-    @user_key.setter
-    def user_key(self, hex_key):
-        # For restore.
-        uid = uuid.UUID(hex_key)
-        self.user = getUtility(IUserManager).get_user_by_id(uid)
-        assert self.user is not None
-
-    @property
-    def address_key(self):
-        # For save.
-        return self.address.email
-
-    @address_key.setter
-    def address_key(self, email):
-        # For restore.
-        self.address = getUtility(IUserManager).get_address(email)
-        assert self.address is not None
-
-    @property
-    def subscriber_key(self):
-        return self.which.value
-
-    @subscriber_key.setter
-    def subscriber_key(self, key):
-        self.which = WhichSubscriber(key)
-
-    @property
-    def token_owner_key(self):
-        return self.token_owner.value
-
-    @token_owner_key.setter
-    def token_owner_key(self, value):
-        self.token_owner = TokenOwner(value)
-
-    def _set_token(self, token_owner):
-        assert isinstance(token_owner, TokenOwner)
-        pendings = getUtility(IPendings)
-        # Clear out the previous pending token if there is one.
-        if self.token is not None:
-            pendings.confirm(self.token)
-        # Create a new token to prevent replay attacks.  It seems like this
-        # would produce the same token, but it won't because the pending adds a
-        # bit of randomization.
-        self.token_owner = token_owner
-        if token_owner is TokenOwner.no_one:
-            self.token = None
-            return
-        pendable = PendableUnsubscription(
-            list_id=self.mlist.list_id,
-            email=self.address.email,
-            display_name=self.address.display_name,
-            when=now().replace(microsecond=0).isoformat(),
-            token_owner=token_owner.name,
-            )
-        self.token = pendings.add(pendable, timedelta(days=3650))
 
     def _step_subscription_checks(self):
         assert self.mlist.is_subscribed(self.subscriber)
@@ -625,8 +558,8 @@ def _handle_confirmation_needed_events(event, template_name):
 
 
 @public
-def handle_RegistrationConfirmationNeededEvent(event):
-    if not isinstance(event, RegistrationConfirmationNeededEvent):
+def handle_SubscriptionConfirmationNeededEvent(event):
+    if not isinstance(event, SubscriptionConfirmationNeededEvent):
         return
     _handle_confirmation_needed_events(event, 'list:user:action:subscribe')
 
