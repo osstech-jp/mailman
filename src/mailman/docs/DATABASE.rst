@@ -71,12 +71,6 @@ database in MySQL via::
 
     mysql> CREATE DATABASE mailman;
 
-In some cases, our test suite requires the default collation of the database
-to be set to `utf8_unicode_ci`.  You can change it via the MySQL command line
-like this::
-
-    mysql> ALTER DATABASE mailman DEFAULT COLLATE utf8_unicode_ci;
-
 You would also need the Python driver `pymysql` for MySQL.::
 
     $ pip install pymysql
