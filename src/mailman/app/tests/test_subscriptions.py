@@ -45,6 +45,13 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self._mlist.admin_immed_notify = False
         self._anne = 'anne@example.com'
         self._user_manager = getUtility(IUserManager)
+        self._expected_pendings_count = 0
+
+    def tearDown(self):
+        # There usually should be no pending after all is said and done, but
+        # some tests don't complete the workflow.
+        self.assertEqual(getUtility(IPendings).count,
+                         self._expected_pendings_count)
 
     def test_start_state(self):
         # The workflow starts with no tokens or member.
@@ -67,6 +74,8 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(pendable['display_name'], '')
         self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
         self.assertEqual(pendable['token_owner'], 'subscriber')
+        # The token is still in the database.
+        self._expected_pendings_count = 1
 
     def test_user_or_address_required(self):
         # The `subscriber` attribute must be a user or address.
@@ -417,6 +426,9 @@ class TestSubscriptionWorkflow(unittest.TestCase):
            'test@example.com: held subscription request from anne@example.com',
            mark.readline()
            )
+        # The state machine stopped at the moderator approval so there will be
+        # one token still in the database.
+        self._expected_pendings_count = 1
 
     def test_get_moderator_approval_notifies_moderators(self):
         # When the subscription is held for moderator approval, and the list
@@ -443,6 +455,9 @@ approval:
     For:  anne@example.com
     List: test@example.com
 """)
+        # The state machine stopped at the moderator approval so there will be
+        # one token still in the database.
+        self._expected_pendings_count = 1
 
     def test_get_moderator_approval_no_notifications(self):
         # When the subscription is held for moderator approval, and the list
@@ -456,6 +471,9 @@ approval:
         # Consume the entire state machine.
         list(workflow)
         get_queue_messages('virgin', expected_count=0)
+        # The state machine stopped at the moderator approval so there will be
+        # one token still in the database.
+        self._expected_pendings_count = 1
 
     def test_send_confirmation(self):
         # A confirmation message gets sent when the address is not verified.
@@ -472,6 +490,9 @@ approval:
             message['From'], 'test-confirm+{}@example.com'.format(token))
         # The confirmation message is not `Precedence: bulk`.
         self.assertIsNone(message['precedence'])
+        # The state machine stopped at the moderator approval so there will be
+        # one token still in the database.
+        self._expected_pendings_count = 1
 
     def test_send_confirmation_pre_confirmed(self):
         # A confirmation message gets sent when the address is not verified
@@ -488,6 +509,9 @@ approval:
             message['Subject'], 'confirm {}'.format(workflow.token))
         self.assertEqual(
             message['From'], 'test-confirm+{}@example.com'.format(token))
+        # The state machine stopped at the moderator approval so there will be
+        # one token still in the database.
+        self._expected_pendings_count = 1
 
     def test_send_confirmation_pre_verified(self):
         # A confirmation message gets sent even when the address is verified
@@ -505,6 +529,9 @@ approval:
             message['Subject'], 'confirm {}'.format(workflow.token))
         self.assertEqual(
             message['From'], 'test-confirm+{}@example.com'.format(token))
+        # The state machine stopped at the moderator approval so there will be
+        # one token still in the database.
+        self._expected_pendings_count = 1
 
     def test_do_confirm_verify_address(self):
         # The address is not yet verified, nor are we pre-verifying.  A

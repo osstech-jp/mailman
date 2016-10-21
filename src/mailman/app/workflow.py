@@ -110,7 +110,7 @@ class Workflow:
                 # Stop executing, but not before we push the last state back
                 # onto the deque.  Otherwise, resuming the state machine would
                 # skip this step.
-                self._next.appendleft(step)
+                self._next.appendleft(name)
                 break
             results.append(step())
         return results

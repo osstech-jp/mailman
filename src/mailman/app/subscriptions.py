@@ -306,10 +306,8 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
     def _step_do_subscription(self):
         # We can immediately subscribe the user to the mailing list.
         self.member = self.mlist.subscribe(self.subscriber)
-        # This workflow is done so throw away any associated state.
-        if self.token is not None:
-            getUtility(IWorkflowStateManager).discard(self.token)
-            self._set_token(TokenOwner.no_one)
+        assert self.token is None and self.token_owner is TokenOwner.no_one, (
+            'Unexpected active token at end of subscription workflow')
 
     def _step_send_confirmation(self):
         self._set_token(TokenOwner.subscriber)
@@ -451,6 +449,12 @@ class UnSubscriptionWorkflow(_SubscriptionWorkflowCommon):
             self.subscriber = self.user
         # Reset the token so it can't be used in a replay attack.
         self._set_token(TokenOwner.no_one)
+        # Restore the member object.
+        self.member = self.mlist.regular_members.get_member(self.address.email)
+        # It's possible the member was already unsubscribed while we were
+        # waiting for the confirmation.
+        if self.member is None:
+            return
         # The user has confirmed their unsubscription request
         next_step = ('moderation_checks'
                      if self.mlist.unsubscription_policy in (
@@ -467,10 +471,8 @@ class UnSubscriptionWorkflow(_SubscriptionWorkflowCommon):
             # The member has already been unsubscribed.
             pass
         self.member = None
-        # This workflow is done so throw away any associated state.
-        if self.token is not None:
-            getUtility(IWorkflowStateManager).discard(self.token)
-            self._set_token(TokenOwner.no_one)
+        assert self.token is None and self.token_owner is TokenOwner.no_one, (
+            'Unexpected active token at end of subscription workflow')
 
     def _step_unsubscribe_from_restored(self):
         # Prevent replay attacks.
