@@ -71,6 +71,39 @@ class ADomain(_DomainBase):
         else:
             no_content(response)
 
+    def patch_put(self, request, response, is_optional):
+        domain = getUtility(IDomainManager).get(self._domain)
+        if domain is None:
+            not_found(response)
+        kws = {'mail_host': str,
+               'description': str,
+               'owner': list_of_strings_validator,
+               'mailing_lists': list_of_strings_validator}
+        if is_optional:
+            # For a PATCH, all attributes are optional.
+            kws['_optional'] = kws.keys()
+        try:
+            validator = Validator(**kws)
+            values = validator(request)
+        except ValueError as error:
+            bad_request(response, str(error))
+        if ('email_host' in values and
+                values['email_host'] != domain.email_host):
+            reason = "PATCH/PUT can't change email_host"
+            bad_request(response, reason.encode('utf-8'))
+        else:
+            for k, v in values.items():
+                setattr(domain, k, v)
+            no_content(response)
+
+    def on_put(self, request, response):
+        """Update all the domain except mail_host"""
+        self.patch_put(request, response, is_optional=False)
+
+    def on_patch(self, request, response):
+        """Patch some domain attributes."""
+        self.patch_put(request, response, is_optional=True)
+
     @child()
     def lists(self, context, segments):
         """/domains/<domain>/lists"""
