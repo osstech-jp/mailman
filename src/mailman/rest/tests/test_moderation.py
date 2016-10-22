@@ -33,6 +33,7 @@ from mailman.testing.helpers import (
     call_api, get_queue_messages, set_preferred,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import RESTLayer
+from pkg_resources import resource_filename
 from urllib.error import HTTPError
 from zope.component import getUtility
 
@@ -210,10 +211,11 @@ class TestSubscriptionModeration(unittest.TestCase):
 
     def test_view_malformed_held_message(self):
         # Opening a bad (i.e. bad structure) email and holding it.
-        pwd = os.path.dirname(os.path.realpath(__file__))
-        email_path = os.path.join(pwd, 'data/bad_email')
-        msg = message_from_binary_file(open(email_path, 'rb'))
-        msg.sender = 'bogussender@example.com'
+        email_path = resource_filename('mailman.rest.tests.data',
+                                      'bad_email.eml')
+        with open(email_path, 'rb') as f:
+            msg = message_from_binary_file(f)
+        msg.sender = 'aperson@example.com'
         with transaction():
             hold_message(self._mlist, msg)
         # Now trying to access held messages from REST API should not give
