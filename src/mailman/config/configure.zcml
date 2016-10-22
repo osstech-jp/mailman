@@ -48,8 +48,8 @@
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
-    provides="mailman.interfaces.registrar.IRegistrar"
-    factory="mailman.app.registrar.Registrar"
+    provides="mailman.interfaces.subscriptions.ISubscriptionManager"
+    factory="mailman.app.subscriptions.SubscriptionManager"
     />
 
   <utility

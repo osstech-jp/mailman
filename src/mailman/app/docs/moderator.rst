@@ -221,8 +221,8 @@ Fred is a member of the mailing list...
     >>> mlist.send_welcome_message = False
     >>> fred = getUtility(IUserManager).create_address(
     ...     'fred@example.com', 'Fred Person')
-    >>> from mailman.interfaces.registrar import IRegistrar
-    >>> registrar = IRegistrar(mlist)
+    >>> from mailman.interfaces.subscriptions import ISubscriptionManager
+    >>> registrar = ISubscriptionManager(mlist)
     >>> token, token_owner, member = registrar.register(
     ...     fred, pre_verified=True, pre_confirmed=True, pre_approved=True)
     >>> member

@@ -25,9 +25,9 @@ from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
     MembershipIsBannedError, MissingPreferredAddressError)
-from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.subscriptions import (
-    ISubscriptionService, RequestRecord, SubscriptionPendingError, TokenOwner)
+    ISubscriptionManager, ISubscriptionService, RequestRecord,
+    SubscriptionPendingError, TokenOwner)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
@@ -253,7 +253,7 @@ class AllMembers(_MemberBase):
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
             # verification, confirmation, or approval.
-            registrar = IRegistrar(mlist)
+            registrar = ISubscriptionManager(mlist)
             try:
                 token, token_owner, member = registrar.register(
                     subscriber,

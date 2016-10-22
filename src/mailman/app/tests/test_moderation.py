@@ -24,8 +24,8 @@ from mailman.app.moderator import (
     handle_message, handle_unsubscription, hold_message, hold_unsubscription)
 from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
-from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.requests import IListRequests
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
@@ -153,17 +153,21 @@ class TestUnsubscription(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
-        self._registrar = IRegistrar(self._mlist)
+        self._manager = ISubscriptionManager(self._mlist)
 
     def test_unsubscribe_defer(self):
         # When unsubscriptions must be approved by the moderator, but the
         # moderator defers this decision.
         anne = getUtility(IUserManager).create_address(
             'anne@example.org', 'Anne Person')
-        token, token_owner, member = self._registrar.register(
+        token, token_owner, member = self._manager.register(
             anne, pre_verified=True, pre_confirmed=True, pre_approved=True)
         self.assertIsNone(token)
         self.assertEqual(member.address.email, 'anne@example.org')
         # Now hold and handle an unsubscription request.
         token = hold_unsubscription(self._mlist, 'anne@example.org')
         handle_unsubscription(self._mlist, token, Action.defer)
+
+    def test_bogus_token(self):
+        # Try to handle an unsubscription with a bogus token.
+        self.assertRaises(LookupError, self._manager.confirm, None)

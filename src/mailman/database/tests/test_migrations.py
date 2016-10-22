@@ -208,8 +208,8 @@ class TestMigrations(unittest.TestCase):
     def test_70af5a4e5790_data_paths(self):
         # Create a couple of mailing lists through the standard API.
         with transaction():
-            ant = create_list('ant@example.com')
-            bee = create_list('bee@example.com')
+            create_list('ant@example.com')
+            create_list('bee@example.com')
         # Downgrade and verify that the old data paths exist.
         alembic.command.downgrade(alembic_cfg, '47294d3a604')
         self.assertTrue(os.path.exists(
@@ -222,11 +222,18 @@ class TestMigrations(unittest.TestCase):
         self.assertFalse(os.path.exists(
             os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
         self.assertFalse(os.path.exists(
-            os.path.join(config.LIST_DATA_DIR, 'ant@example.com')))
-        self.assertTrue(os.path.exists(ant.data_path))
-        self.assertTrue(os.path.exists(bee.data_path))
+            os.path.join(config.LIST_DATA_DIR, 'bee@example.com')))
+        self.assertTrue(os.path.exists(
+            os.path.join(config.LIST_DATA_DIR, 'ant.example.com')))
+        self.assertTrue(os.path.exists(
+            os.path.join(config.LIST_DATA_DIR, 'bee.example.com')))
 
     def test_7b254d88f122_moderation_action(self):
+        # Create a mailing list through the standard API.
+        with transaction():
+            ant = create_list('ant@example.com')
+            default_member_action = ant.default_member_action
+            default_nonmember_action = ant.default_nonmember_action
         sa.sql.table(
             'mailinglist',
             sa.sql.column('id', sa.Integer),
@@ -246,8 +253,6 @@ class TestMigrations(unittest.TestCase):
         with transaction():
             # Start at the previous revision.
             alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
-            # Create a mailing list through the standard API.
-            ant = create_list('ant@example.com')
             # Create some members.
             anne = user_manager.create_address('anne@example.com')
             bart = user_manager.create_address('bart@example.com')
@@ -258,22 +263,40 @@ class TestMigrations(unittest.TestCase):
             # Assign some moderation actions to the members created above.
             config.db.store.execute(member_table.insert().values([
                 {'address_id': anne.id, 'role': MemberRole.owner,
-                 'list_id': ant.list_id, 'moderation_action': Action.accept},
+                 'list_id': 'ant.example.com',
+                 'moderation_action': Action.accept},
                 {'address_id': bart.id, 'role': MemberRole.moderator,
-                 'list_id': ant.list_id, 'moderation_action': Action.accept},
+                 'list_id': 'ant.example.com',
+                 'moderation_action': Action.accept},
                 {'address_id': cris.id, 'role': MemberRole.member,
-                 'list_id': ant.list_id, 'moderation_action': Action.defer},
+                 'list_id': 'ant.example.com',
+                 'moderation_action': Action.defer},
                 {'address_id': dana.id, 'role': MemberRole.nonmember,
-                 'list_id': ant.list_id, 'moderation_action': Action.hold},
+                 'list_id': 'ant.example.com',
+                 'moderation_action': Action.hold},
                 ]))
         # Cris and Dana have actions which match the list default action for
         # members and nonmembers respectively.
-        self.assertEqual(
-            ant.members.get_member('cris@example.com').moderation_action,
-            ant.default_member_action)
-        self.assertEqual(
-            ant.nonmembers.get_member('dana@example.com').moderation_action,
-            ant.default_nonmember_action)
+        query = sa.sql.select([member_table.c.moderation_action]).where(
+            sa.and_(
+                member_table.c.role == MemberRole.member,
+                member_table.c.list_id == 'ant.example.com',
+                # cris@example.com
+                member_table.c.address_id == 3,
+                )
+            )
+        action = config.db.store.execute(query).fetchone()[0]
+        self.assertEqual(action, default_member_action)
+        query = sa.sql.select([member_table.c.moderation_action]).where(
+            sa.and_(
+                member_table.c.role == MemberRole.nonmember,
+                member_table.c.list_id == 'ant.example.com',
+                # dana@example.com
+                member_table.c.address_id == 4,
+                )
+            )
+        action = config.db.store.execute(query).fetchone()[0]
+        self.assertEqual(action, default_nonmember_action)
         # Upgrade and check the moderation_actions.   Cris's and Dana's
         # actions have been set to None to fall back to the list defaults.
         alembic.command.upgrade(alembic_cfg, '7b254d88f122')
@@ -300,11 +323,6 @@ class TestMigrations(unittest.TestCase):
             ])
 
     def test_fa0d96e28631_upgrade_uris(self):
-        with transaction():
-            # Start at the previous revision.
-            alembic.command.downgrade(alembic_cfg, '7b254d88f122')
-            # Create a mailing list through the standard API.
-            create_list('ant@example.com')
         mlist_table = sa.sql.table(
             'mailinglist',
             sa.sql.column('id', sa.Integer),
@@ -317,15 +335,18 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('welcome_message_uri', sa.Unicode),
             )
         with transaction():
-            config.db.store.execute(mlist_table.update().where(
-                mlist_table.c.list_id == 'ant.example.com').values(
-                    digest_footer_uri='mailman:///digest_footer.txt',
-                    digest_header_uri='mailman:///digest_header.txt',
-                    footer_uri='mailman:///footer.txt',
-                    header_uri='mailman:///header.txt',
-                    goodbye_message_uri='mailman:///goodbye.txt',
-                    welcome_message_uri='mailman:///welcome.txt',
-                    ))
+            # Start at the previous revision.
+            alembic.command.downgrade(alembic_cfg, '7b254d88f122')
+            # Create a mailing list with some URIs.
+            config.db.store.execute(mlist_table.insert().values(
+                list_id='ant.example.com',
+                digest_footer_uri='mailman:///digest_footer.txt',
+                digest_header_uri='mailman:///digest_header.txt',
+                footer_uri='mailman:///footer.txt',
+                header_uri='mailman:///header.txt',
+                goodbye_message_uri='mailman:///goodbye.txt',
+                welcome_message_uri='mailman:///welcome.txt',
+                ))
         # Now upgrade and check to see if the values got into the template
         # table correctly.
         alembic.command.upgrade(alembic_cfg, 'fa0d96e28631')
@@ -366,14 +387,25 @@ class TestMigrations(unittest.TestCase):
             ])
 
     def test_fa0d96e28631_upgrade_no_uris(self):
+        mlist_table = sa.sql.table(
+            'mailinglist',
+            sa.sql.column('id', sa.Integer),
+            sa.sql.column('list_id', sa.Unicode),
+            sa.sql.column('digest_footer_uri', sa.Unicode),
+            sa.sql.column('digest_header_uri', sa.Unicode),
+            sa.sql.column('footer_uri', sa.Unicode),
+            sa.sql.column('header_uri', sa.Unicode),
+            sa.sql.column('goodbye_message_uri', sa.Unicode),
+            sa.sql.column('welcome_message_uri', sa.Unicode),
+            )
         # None of the URL parameters are defined.
         with transaction():
             # Start at the previous revision.
             alembic.command.downgrade(alembic_cfg, '7b254d88f122')
-            # Create a mailing list through the standard API.
-            create_list('ant@example.com')
-        # Now upgrade and check to see if the values got into the template
-        # table correctly.
+            # Create a mailing list without any URLs.
+            config.db.store.execute(mlist_table.insert().values(
+                list_id='ant.example.com'))
+        # Now upgrade.  There are no templates.
         alembic.command.upgrade(alembic_cfg, 'fa0d96e28631')
         template_table = sa.sql.table(
             'template',

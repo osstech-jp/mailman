@@ -117,7 +117,6 @@ Command line
 
 Database
 --------
-
  * MySQL is now an officially supported database.  Given by Abhilash Raj.
 
 Interfaces
@@ -243,6 +242,7 @@ Other
  * The ``mailman members`` command can now be used to display members based on
    subscription roles.  Also, the positional "list" argument can now accept
    list names or list-ids.
+ * Unsubscriptions can now be confirmed and/or moderated.  (Closes #213)
 
 
 3.0.0 -- "Show Don't Tell"

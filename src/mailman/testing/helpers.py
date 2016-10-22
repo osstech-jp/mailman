@@ -18,6 +18,7 @@
 """Various test helpers."""
 
 import os
+import sys
 import json
 import time
 import uuid
@@ -118,8 +119,11 @@ def get_queue_messages(queue_name, sort_on=None, expected_count=None):
         messages.append(_Bag(msg=msg, msgdata=msgdata))
         queue.finish(filebase)
     if expected_count is not None:
-        assert len(messages) == expected_count, 'Wanted {}, got {}'.format(
-            expected_count, len(messages))
+        if len(messages) != expected_count:
+            for item in messages:
+                print(item.msg, file=sys.stderr)
+            raise AssertionError('Wanted {}, got {}'.format(
+                expected_count, len(messages)))
     if sort_on is not None:
         messages.sort(key=lambda item: str(item.msg[sort_on]))
     return messages

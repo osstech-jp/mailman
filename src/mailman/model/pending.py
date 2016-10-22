@@ -130,8 +130,8 @@ class Pendings:
         # Iterate on PendedKeyValue entries that are associated with the
         # pending object's ID.  Watch out for type conversions.
         for keyvalue in pending.key_values:
-            # The `type` key is special and served.  It is not JSONified.  See
-            # the IPendable interface for details.
+            # The `type` key is special and reserved.  It is not JSONified.
+            # See the IPendable interface for details.
             if keyvalue.key == 'type':
                 value = keyvalue.value
             else:

@@ -1,7 +1,7 @@
 """File cache and template manager.
 
 Revision ID: fa0d96e28631
-Revises: bfda02ab3a9b
+Revises: 7b254d88f122
 Create Date: 2016-02-21 16:21:48.277654
 """
 

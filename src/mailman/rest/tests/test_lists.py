@@ -674,7 +674,7 @@ class TestListTemplates(unittest.TestCase):
                 'list:member:digest:masthead': '',
                 'list:member:regular:footer': 'http://example.org/footer',
                 'list:member:regular:header': 'http://example.org/header',
-                'list:user:action:confirm': '',
+                'list:user:action:subscribe': '',
                 'list:user:action:unsubscribe': '',
                 'list:user:notice:goodbye': 'http://example.org/goodbye',
                 'list:user:notice:hold': '',

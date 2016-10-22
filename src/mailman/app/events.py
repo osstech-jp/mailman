@@ -18,8 +18,7 @@
 """Global events."""
 
 from mailman import public
-from mailman.app import (
-    domain, membership, moderator, registrar, subscriptions)
+from mailman.app import domain, membership, moderator, subscriptions
 from mailman.core import i18n, switchboard
 from mailman.languages import manager as language_manager
 from mailman.styles import manager as style_manager
@@ -37,8 +36,9 @@ def initialize():
         membership.handle_SubscriptionEvent,
         moderator.handle_ListDeletingEvent,
         passwords.handle_ConfigurationUpdatedEvent,
-        registrar.handle_ConfirmationNeededEvent,
         style_manager.handle_ConfigurationUpdatedEvent,
         subscriptions.handle_ListDeletingEvent,
+        subscriptions.handle_SubscriptionConfirmationNeededEvent,
+        subscriptions.handle_UnsubscriptionConfirmationNeededEvent,
         switchboard.handle_ConfigurationUpdatedEvent,
         ])

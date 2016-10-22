@@ -22,8 +22,8 @@ from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import DeliveryMode, MemberRole
-from mailman.interfaces.registrar import IRegistrar
-from mailman.interfaces.subscriptions import ISubscriptionService
+from mailman.interfaces.subscriptions import (
+    ISubscriptionManager, ISubscriptionService)
 from mailman.interfaces.usermanager import IUserManager
 from zope.component import getUtility
 from zope.interface import implementer
@@ -31,7 +31,7 @@ from zope.interface import implementer
 
 def match_subscriber(email, display_name):
     # Return something matching the email which should be used as the
-    # subscriber by the IRegistrar interface.
+    # subscriber by the ISubscriptionManager interface.
     manager = getUtility(IUserManager)
     # Is there a user with a preferred address matching the email?
     user = manager.get_user(email)
@@ -101,7 +101,7 @@ used.
             print(_('$person is already a member'), file=results)
             return ContinueProcessing.yes
         subscriber = match_subscriber(email, display_name)
-        IRegistrar(mlist).register(subscriber)
+        ISubscriptionManager(mlist).register(subscriber)
         print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
 
@@ -173,6 +173,7 @@ You may be asked to confirm your request.""")
             print(_('Invalid or unverified email address: $email'),
                   file=results)
             return ContinueProcessing.no
+        already_left = msgdata.setdefault('leaves', set())
         for user_address in user.addresses:
             # Only recognize verified addresses.
             if user_address.verified_on is None:
@@ -181,14 +182,28 @@ You may be asked to confirm your request.""")
             if member is not None:
                 break
         else:
-            # None of the user's addresses are subscribed to this mailing list.
-            print(_(
-                '$self.name: $email is not a member of $mlist.fqdn_listname'),
-                file=results)
-            return ContinueProcessing.no
-        member.unsubscribe()
-        person = formataddr((user.display_name, email))           # noqa: F841
-        print(_('$person left $mlist.fqdn_listname'), file=results)
+            # There are two possible situations.  Either none of the user's
+            # addresses are subscribed to this mailing list, or this command
+            # email *already* unsubscribed the user from the mailing list.
+            # E.g. if a message was sent to the -leave address and it
+            # contained the 'leave' command.  Don't send a bogus response in
+            # this case, just ignore subsequent leaves of the same address.
+            if email not in already_left:
+                print(_('$self.name: $email is not a member of '
+                        '$mlist.fqdn_listname'), file=results)
+                return ContinueProcessing.no
+        if email in already_left:
+            return ContinueProcessing.yes
+        # Ignore any subsequent 'leave' commands.
+        already_left.add(email)
+        manager = ISubscriptionManager(mlist)
+        token, token_owner, member = manager.unregister(user_address)
+        person = formataddr((user.display_name, email))   # noqa
+        if member is None:
+            print(_('$person left $mlist.fqdn_listname'), file=results)
+        else:
+            print(_('Confirmation email sent to $person to leave'
+                    ' $mlist.fqdn_listname'), file=results)
         return ContinueProcessing.yes
 
 

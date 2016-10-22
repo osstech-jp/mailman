@@ -110,7 +110,7 @@ class Workflow:
                 # Stop executing, but not before we push the last state back
                 # onto the deque.  Otherwise, resuming the state machine would
                 # skip this step.
-                self._next.appendleft(step)
+                self._next.appendleft(name)
                 break
             results.append(step())
         return results
@@ -132,15 +132,11 @@ class Workflow:
             raise AssertionError(
                 "Can't save a workflow state with more than one step "
                 "in the queue")
-        state_manager.save(
-            self.__class__.__name__,
-            self.token,
-            step,
-            json.dumps(data))
+        state_manager.save(self.token, step, json.dumps(data))
 
     def restore(self):
         state_manager = getUtility(IWorkflowStateManager)
-        state = state_manager.restore(self.__class__.__name__, self.token)
+        state = state_manager.restore(self.token)
         if state is None:
             # The token doesn't exist in the database.
             raise LookupError(self.token)

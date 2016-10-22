@@ -113,11 +113,11 @@ Mailman has sent her the confirmation message.
     <BLANKLINE>
         anne@example.com
     <BLANKLINE>
-    Before you can start using GNU Mailman at this site, you must first
-    confirm that this is your email address.  You can do this by replying to
-    this message, keeping the Subject header intact.
+    Before you can start using GNU Mailman at this site, you must first confirm
+    that this is your email address.  You can do this by replying to this me...
+    keeping the Subject header intact.
     <BLANKLINE>
-    If you do not wish to register this email address simply disregard this
+    If you do not wish to register this email address, simply disregard this
     message.  If you think you are being maliciously subscribed to the list, or
     have any other questions, you may contact
     <BLANKLINE>
@@ -217,9 +217,12 @@ list.  ``unsubscribe`` is an alias for ``leave``.
     You may be asked to confirm your request.
 
 Anne is a member of the ``baker@example.com`` mailing list, when she decides
-to leave it.  She sends a message to the ``-leave`` address for the list and
-is sent a confirmation message for her request.
+to leave it.  Because the mailing list allows for *open* unsubscriptions
+(i.e. no confirmation is needed), when she sends a message to the ``-leave``
+address for the list, she is immediately removed.
 
+    >>> from mailman.interfaces.mailinglist import SubscriptionPolicy
+    >>> mlist_2.unsubscription_policy = SubscriptionPolicy.open
     >>> results = Results()
     >>> print(leave.process(mlist_2, msg, {}, (), results))
     ContinueProcessing.yes

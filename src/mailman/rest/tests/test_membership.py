@@ -25,8 +25,7 @@ from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, MemberRole
-from mailman.interfaces.registrar import IRegistrar
-from mailman.interfaces.subscriptions import TokenOwner
+from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.incoming import IncomingRunner
 from mailman.testing.helpers import (
@@ -215,7 +214,7 @@ class TestMembership(unittest.TestCase):
     def test_duplicate_pending_subscription(self):
         # Issue #199 - a member's subscription is already pending and they try
         # to subscribe again.
-        registrar = IRegistrar(self._mlist)
+        registrar = ISubscriptionManager(self._mlist)
         with transaction():
             self._mlist.subscription_policy = SubscriptionPolicy.moderate
             anne = self._usermanager.create_address('anne@example.com')
@@ -238,7 +237,7 @@ class TestMembership(unittest.TestCase):
         # Issue #199 - a member's subscription is already pending and they try
         # to subscribe again.  Unlike above, this pend is waiting for the user
         # to confirm their subscription.
-        registrar = IRegistrar(self._mlist)
+        registrar = ISubscriptionManager(self._mlist)
         with transaction():
             self._mlist.subscription_policy = (
                 SubscriptionPolicy.confirm_then_moderate)

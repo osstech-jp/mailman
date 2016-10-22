@@ -24,18 +24,21 @@ from datetime import timedelta
 from email.utils import formataddr
 from enum import Enum
 from mailman import public
+from mailman.app.membership import delete_member
 from mailman.app.workflow import Workflow
 from mailman.core.i18n import _
+from mailman.database.transaction import flush
 from mailman.email.message import UserNotification
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import MembershipIsBannedError
+from mailman.interfaces.member import MembershipIsBannedError, NotAMemberError
 from mailman.interfaces.pending import IPendable, IPendings
-from mailman.interfaces.registrar import ConfirmationNeededEvent
 from mailman.interfaces.subscriptions import (
-    ISubscriptionService, SubscriptionPendingError, TokenOwner)
+    ISubscriptionManager, ISubscriptionService,
+    SubscriptionConfirmationNeededEvent, SubscriptionPendingError, TokenOwner,
+    UnsubscriptionConfirmationNeededEvent)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
@@ -56,27 +59,21 @@ class WhichSubscriber(Enum):
 
 
 @implementer(IPendable)
-class Pendable(dict):
+class PendableSubscription(dict):
     PEND_TYPE = 'subscription'
 
 
-@public
-class SubscriptionWorkflow(Workflow):
-    """Workflow of a subscription request."""
+@implementer(IPendable)
+class PendableUnsubscription(dict):
+    PEND_TYPE = 'unsubscription'
 
-    INITIAL_STATE = 'sanity_checks'
-    SAVE_ATTRIBUTES = (
-        'pre_approved',
-        'pre_confirmed',
-        'pre_verified',
-        'address_key',
-        'subscriber_key',
-        'user_key',
-        'token_owner_key',
-        )
 
-    def __init__(self, mlist, subscriber=None, *,
-                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+class _SubscriptionWorkflowCommon(Workflow):
+    """Common support between subscription and unsubscription."""
+
+    PENDABLE_CLASS = None
+
+    def __init__(self, mlist, subscriber):
         super().__init__()
         self.mlist = mlist
         self.address = None
@@ -94,9 +91,6 @@ class SubscriptionWorkflow(Workflow):
             self.user = subscriber
             self.which = WhichSubscriber.user
         self.subscriber = subscriber
-        self.pre_verified = pre_verified
-        self.pre_confirmed = pre_confirmed
-        self.pre_approved = pre_approved
 
     @property
     def user_key(self):
@@ -150,7 +144,7 @@ class SubscriptionWorkflow(Workflow):
         if token_owner is TokenOwner.no_one:
             self.token = None
             return
-        pendable = Pendable(
+        pendable = self.PENDABLE_CLASS(
             list_id=self.mlist.list_id,
             email=self.address.email,
             display_name=self.address.display_name,
@@ -158,6 +152,30 @@ class SubscriptionWorkflow(Workflow):
             token_owner=token_owner.name,
             )
         self.token = pendings.add(pendable, timedelta(days=3650))
+
+
+@public
+class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
+    """Workflow of a subscription request."""
+
+    PENDABLE_CLASS = PendableSubscription
+    INITIAL_STATE = 'sanity_checks'
+    SAVE_ATTRIBUTES = (
+        'pre_approved',
+        'pre_confirmed',
+        'pre_verified',
+        'address_key',
+        'subscriber_key',
+        'user_key',
+        'token_owner_key',
+        )
+
+    def __init__(self, mlist, subscriber=None, *,
+                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+        super().__init__(mlist, subscriber)
+        self.pre_verified = pre_verified
+        self.pre_confirmed = pre_confirmed
+        self.pre_approved = pre_approved
 
     def _step_sanity_checks(self):
         # Ensure that we have both an address and a user, even if the address
@@ -288,15 +306,15 @@ class SubscriptionWorkflow(Workflow):
     def _step_do_subscription(self):
         # We can immediately subscribe the user to the mailing list.
         self.member = self.mlist.subscribe(self.subscriber)
-        # This workflow is done so throw away any associated state.
-        getUtility(IWorkflowStateManager).restore(self.name, self.token)
+        assert self.token is None and self.token_owner is TokenOwner.no_one, (
+            'Unexpected active token at end of subscription workflow')
 
     def _step_send_confirmation(self):
         self._set_token(TokenOwner.subscriber)
         self.push('do_confirm_verify')
         self.save()
         # Triggering this event causes the confirmation message to be sent.
-        notify(ConfirmationNeededEvent(
+        notify(SubscriptionConfirmationNeededEvent(
             self.mlist, self.token, self.address.email))
         # Now we wait for the confirmation.
         raise StopIteration
@@ -326,6 +344,233 @@ class SubscriptionWorkflow(Workflow):
                          )
                      else 'do_subscription')
         self.push(next_step)
+
+
+@public
+class UnSubscriptionWorkflow(_SubscriptionWorkflowCommon):
+    """Workflow of a unsubscription request."""
+
+    PENDABLE_CLASS = PendableUnsubscription
+    INITIAL_STATE = 'subscription_checks'
+    SAVE_ATTRIBUTES = (
+        'pre_approved',
+        'pre_confirmed',
+        'address_key',
+        'user_key',
+        'subscriber_key',
+        'token_owner_key',
+        )
+
+    def __init__(self, mlist, subscriber=None, *,
+                 pre_approved=False, pre_confirmed=False):
+        super().__init__(mlist, subscriber)
+        if IAddress.providedBy(subscriber) or IUser.providedBy(subscriber):
+            self.member = self.mlist.regular_members.get_member(
+                self.address.email)
+        self.pre_confirmed = pre_confirmed
+        self.pre_approved = pre_approved
+
+    def _step_subscription_checks(self):
+        assert self.mlist.is_subscribed(self.subscriber)
+        self.push('confirmation_checks')
+
+    def _step_confirmation_checks(self):
+        # If list's unsubscription policy is open, the user can unsubscribe
+        # right now.
+        if self.mlist.unsubscription_policy is SubscriptionPolicy.open:
+            self.push('do_unsubscription')
+            return
+        # If we don't need the user's confirmation, then skip to the moderation
+        # checks.
+        if self.mlist.unsubscription_policy is SubscriptionPolicy.moderate:
+            self.push('moderation_checks')
+            return
+        # If the request is pre-confirmed, then the user can unsubscribe right
+        # now.
+        if self.pre_confirmed:
+            self.push('do_unsubscription')
+            return
+        # The user must confirm their un-subsbcription.
+        self.push('send_confirmation')
+
+    def _step_send_confirmation(self):
+        self._set_token(TokenOwner.subscriber)
+        self.push('do_confirm_verify')
+        self.save()
+        notify(UnsubscriptionConfirmationNeededEvent(
+            self.mlist, self.token, self.address.email))
+        raise StopIteration
+
+    def _step_moderation_checks(self):
+        # Does the moderator need to approve the unsubscription request?
+        assert self.mlist.unsubscription_policy in (
+            SubscriptionPolicy.moderate,
+            SubscriptionPolicy.confirm_then_moderate,
+            ), self.mlist.unsubscription_policy
+        if self.pre_approved:
+            self.push('do_unsubscription')
+        else:
+            self.push('get_moderator_approval')
+
+    def _step_get_moderator_approval(self):
+        self._set_token(TokenOwner.moderator)
+        self.push('unsubscribe_from_restored')
+        self.save()
+        log.info('{}: held unsubscription request from {}'.format(
+            self.mlist.fqdn_listname, self.address.email))
+        if self.mlist.admin_immed_notify:
+            subject = _(
+                'New unsubscription request to $self.mlist.display_name '
+                'from $self.address.email')
+            username = formataddr(
+                (self.subscriber.display_name, self.address.email))
+            template = getUtility(ITemplateLoader).get(
+                'list:admin:action:unsubscribe', self.mlist)
+            text = wrap(expand(template, self.mlist, dict(
+                member=username,
+                )))
+            # This message should appear to come from the <list>-owner so as
+            # to avoid any useless bounce processing.
+            msg = UserNotification(
+                self.mlist.owner_address, self.mlist.owner_address,
+                subject, text, self.mlist.preferred_language)
+            msg.send(self.mlist, tomoderators=True)
+        # The workflow must stop running here
+        raise StopIteration
+
+    def _step_do_confirm_verify(self):
+        # Restore a little extra state that can't be stored in the database
+        # (because the order of setattr() on restore is indeterminate), then
+        # continue with the confirmation/verification step.
+        if self.which is WhichSubscriber.address:
+            self.subscriber = self.address
+        else:
+            assert self.which is WhichSubscriber.user
+            self.subscriber = self.user
+        # Reset the token so it can't be used in a replay attack.
+        self._set_token(TokenOwner.no_one)
+        # Restore the member object.
+        self.member = self.mlist.regular_members.get_member(self.address.email)
+        # It's possible the member was already unsubscribed while we were
+        # waiting for the confirmation.
+        if self.member is None:
+            return
+        # The user has confirmed their unsubscription request
+        next_step = ('moderation_checks'
+                     if self.mlist.unsubscription_policy in (
+                          SubscriptionPolicy.moderate,
+                          SubscriptionPolicy.confirm_then_moderate,
+                          )
+                     else 'do_unsubscription')
+        self.push(next_step)
+
+    def _step_do_unsubscription(self):
+        try:
+            delete_member(self.mlist, self.address.email)
+        except NotAMemberError:
+            # The member has already been unsubscribed.
+            pass
+        self.member = None
+        assert self.token is None and self.token_owner is TokenOwner.no_one, (
+            'Unexpected active token at end of subscription workflow')
+
+    def _step_unsubscribe_from_restored(self):
+        # Prevent replay attacks.
+        self._set_token(TokenOwner.no_one)
+        if self.which is WhichSubscriber.address:
+            self.subscriber = self.address
+        else:
+            assert self.which is WhichSubscriber.user
+            self.subscriber = self.user
+        self.push('do_unsubscription')
+
+
+@public
+@implementer(ISubscriptionManager)
+class SubscriptionManager:
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    def register(self, subscriber=None, *,
+                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+        """See `ISubscriptionManager`."""
+        workflow = SubscriptionWorkflow(
+            self._mlist, subscriber,
+            pre_verified=pre_verified,
+            pre_confirmed=pre_confirmed,
+            pre_approved=pre_approved)
+        list(workflow)
+        return workflow.token, workflow.token_owner, workflow.member
+
+    def unregister(self, subscriber=None, *,
+                   pre_confirmed=False, pre_approved=False):
+        workflow = UnSubscriptionWorkflow(
+            self._mlist, subscriber,
+            pre_confirmed=pre_confirmed,
+            pre_approved=pre_approved)
+        list(workflow)
+        return workflow.token, workflow.token_owner, workflow.member
+
+    def confirm(self, token):
+        if token is None:
+            raise LookupError
+        pendable = getUtility(IPendings).confirm(token, expunge=False)
+        if pendable is None:
+            raise LookupError
+        workflow_type = pendable.get('type')
+        assert workflow_type in (PendableSubscription.PEND_TYPE,
+                                 PendableUnsubscription.PEND_TYPE)
+        workflow = (SubscriptionWorkflow
+                    if workflow_type == PendableSubscription.PEND_TYPE
+                    else UnSubscriptionWorkflow)(self._mlist)
+        workflow.token = token
+        workflow.restore()
+        # In order to just run the whole workflow, all we need to do
+        # is iterate over the workflow object. On calling the __next__
+        # over the workflow iterator it automatically executes the steps
+        # that needs to be done.
+        list(workflow)
+        return workflow.token, workflow.token_owner, workflow.member
+
+    def discard(self, token):
+        with flush():
+            getUtility(IPendings).confirm(token)
+            getUtility(IWorkflowStateManager).discard(token)
+
+
+def _handle_confirmation_needed_events(event, template_name):
+    subject = 'confirm {}'.format(event.token)
+    confirm_address = event.mlist.confirm_address(event.token)
+    email_address = event.email
+    # Send a verification email to the address.
+    template = getUtility(ITemplateLoader).get(template_name, event.mlist)
+    text = expand(template, event.mlist, dict(
+        token=event.token,
+        subject=subject,
+        confirm_email=confirm_address,
+        user_email=email_address,
+        # For backward compatibility.
+        confirm_address=confirm_address,
+        email_address=email_address,
+        domain_name=event.mlist.domain.mail_host,
+        contact_address=event.mlist.owner_address,
+        ))
+    msg = UserNotification(email_address, confirm_address, subject, text)
+    msg.send(event.mlist, add_precedence=False)
+
+
+@public
+def handle_SubscriptionConfirmationNeededEvent(event):
+    if not isinstance(event, SubscriptionConfirmationNeededEvent):
+        return
+    _handle_confirmation_needed_events(event, 'list:user:action:subscribe')
+
+
+@public
+def handle_UnsubscriptionConfirmationNeededEvent(event):
+    if not isinstance(event, UnsubscriptionConfirmationNeededEvent):
+        return
+    _handle_confirmation_needed_events(event, 'list:user:action:unsubscribe')
 
 
 @public
