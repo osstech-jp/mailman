@@ -96,6 +96,7 @@ class HeaderMatchRule:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
+        # Collect all the headers in all subparts.
         headers = []
         for p in msg.walk():
             headers.extend(p.get_all(self.header, []))

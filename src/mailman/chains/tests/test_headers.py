@@ -198,7 +198,7 @@ This is junk
 """)
         msgdata = {}
         header_matches = IHeaderMatchList(self._mlist)
-        header_matches.append('Content-Type', 'application', 'hold')
+        header_matches.append('Content-Type', 'application/junk', 'hold')
         # This event subscriber records the event that occurs when the message
         # is processed by the owner chain.
         events = []
