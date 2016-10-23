@@ -48,6 +48,56 @@ class TestDomains(unittest.TestCase):
             'http://localhost:9001/3.0/domains', data, method="POST")
         self.assertEqual(response.status, 201)
 
+    def test_patch_domain_description(self):
+        # Patch the example.com description.
+        data = {'description': 'Patched example domain'}
+        content, response = call_api(
+            'http://localhost:9001/3.0/domains/example.com',
+            data,
+            method='PATCH')
+        self.assertEqual(response.status, 204)
+        # Check the result.
+        domain = getUtility(IDomainManager).get('example.com')
+        self.assertEqual(domain.description, 'Patched example domain')
+
+    def test_patch_domain_owner(self):
+        # Patch the example.com owner.
+        data = {'owner': 'anne@example.com'}
+        content, response = call_api(
+            'http://localhost:9001/3.0/domains/example.com',
+            data,
+            method='PATCH')
+        self.assertEqual(response.status, 204)
+        # Check the result.
+        domain = getUtility(IDomainManager).get('example.com')
+        self.assertEqual(
+            [list(owner.addresses)[0].email for owner in domain.owners],
+            ['anne@example.com'])
+
+    def test_patch_domain_two_owners(self):
+        # Patch the example.com owner.
+        data = {'owner': ['anne@example.com', 'other@example.net']}
+        content, response = call_api(
+            'http://localhost:9001/3.0/domains/example.com',
+            data,
+            method='PATCH')
+        self.assertEqual(response.status, 204)
+        # Check the result.
+        domain = getUtility(IDomainManager).get('example.com')
+        self.assertEqual(
+            [list(owner.addresses)[0].email for owner in domain.owners],
+            ['anne@example.com', 'other@example.net'])
+
+    def test_patch_domain_readonly(self):
+        # Attempt to patch mail_host.
+        data = {'mail_host': 'example.net'}
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/domains/example.com',
+                data,
+                method='PATCH')
+        self.assertEqual(cm.exception.code, 400)
+
     def test_domain_create_with_single_owner(self):
         # Creating domain with single owner should not raise InvalidEmailError.
         content, response = call_api(

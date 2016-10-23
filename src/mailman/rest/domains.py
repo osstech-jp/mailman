@@ -21,11 +21,11 @@ from mailman import public
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.rest.helpers import (
-    BadRequest, CollectionMixin, NotFound, bad_request, child, created, etag,
-    no_content, not_found, okay)
+    BadRequest, CollectionMixin, GetterSetter, NotFound, bad_request, child,
+    created, etag, no_content, not_found, okay)
 from mailman.rest.lists import ListsForDomain
 from mailman.rest.uris import ADomainURI, AllDomainURIs
-from mailman.rest.users import OwnersForDomain
+from mailman.rest.users import ListOfDomainOwners, OwnersForDomain
 from mailman.rest.validator import Validator, list_of_strings_validator
 from zope.component import getUtility
 
@@ -75,25 +75,18 @@ class ADomain(_DomainBase):
         domain = getUtility(IDomainManager).get(self._domain)
         if domain is None:
             not_found(response)
-        kws = {'mail_host': str,
-               'description': str,
-               'owner': list_of_strings_validator,
-               'mailing_lists': list_of_strings_validator}
+        kws = dict(
+            description=GetterSetter(str),
+            owner=ListOfDomainOwners(list_of_strings_validator),
+            )
         if is_optional:
             # For a PATCH, all attributes are optional.
             kws['_optional'] = kws.keys()
         try:
-            validator = Validator(**kws)
-            values = validator(request)
+            Validator(**kws).update(domain, request)
         except ValueError as error:
             bad_request(response, str(error))
-        if ('email_host' in values and
-                values['email_host'] != domain.email_host):
-            reason = "PATCH/PUT can't change email_host"
-            bad_request(response, reason.encode('utf-8'))
         else:
-            for k, v in values.items():
-                setattr(domain, k, v)
             no_content(response)
 
     def on_put(self, request, response):

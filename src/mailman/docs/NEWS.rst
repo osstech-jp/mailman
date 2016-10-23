@@ -90,6 +90,8 @@ Bugs
    Aurélien Bompard.  (Closes: #273)
  * Allow MailingList.info to be set using the REST API.  Given by Aurélien
    Bompard.
+ * Allow REST API to PATCH some domain attributes.  Enables Postorius domain
+   edit to work.  (Closes: #290)
 
 Configuration
 -------------
