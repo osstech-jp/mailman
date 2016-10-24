@@ -91,7 +91,7 @@ Bugs
  * Allow MailingList.info to be set using the REST API.  Given by Aurélien
    Bompard.
  * Extend header filters to also check sub-part headers.  (Closes #280)
- * Allow REST API to PATCH some domain attributes.  Enables Postorius domain
+ * Allow REST API to PUT and PATCH domain attributes.  Allows Postorius domain
    edit to work.  (Closes: #290)
 
 Configuration
