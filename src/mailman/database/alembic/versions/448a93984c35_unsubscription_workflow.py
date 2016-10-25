@@ -30,11 +30,10 @@ def upgrade():
             'mailinglist',
             sa.sql.column('unsubscription_policy', Enum(SubscriptionPolicy))
             )
-        # There were no enforced subscription policy before, so all lists are
-        # considered open.
+        # There was no previous unsubscription policy.
         op.execute(mlist.update().values(
             {'unsubscription_policy':
-             op.inline_literal(SubscriptionPolicy.open)}))
+             op.inline_literal(SubscriptionPolicy.confirm)}))
     with op.batch_alter_table('workflowstate') as batch_op:
         batch_op.drop_column('name')
 
