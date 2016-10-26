@@ -114,7 +114,8 @@ class BanManager:
     @dbconnection
     def bans(self, store):
         """See `IBanManager`."""
-        query = store.query(Ban).filter_by(list_id=self._list_id)
+        query = store.query(Ban).filter_by(
+            list_id=self._list_id).order_by(Ban.email)
         return QuerySequence(query)
 
     @dbconnection
