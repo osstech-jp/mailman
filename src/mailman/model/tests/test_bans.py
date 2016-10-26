@@ -23,7 +23,6 @@ from mailman.app.lifecycle import create_list
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.queries import QuerySequence
 from zope.component import getUtility
 
 
@@ -48,10 +47,16 @@ class TestMailingListBans(unittest.TestCase):
         self.assertEqual([ban.email for ban in global_ban_manager],
                          ['bart@example.com'])
 
-    def test_bans_querysequence(self):
-        # Bans returns a `QuerySequence`.
+    def test_bans_sequence(self):
+        # Bans returns a pageable sequence.
         self._manager.ban('bee@example.com')
-        self.assertEqual(len(self._manager.bans), 1)
-        ban = self._manager.bans[0]
-        self.assertEqual(ban.email, 'bee@example.com')
-        self.assertIsInstance(self._manager.bans, QuerySequence)
+        self._manager.ban('ant@example.com')
+        # The results can be len()'d.
+        self.assertEqual(len(self._manager.bans), 2)
+        # The results can be iterated.
+        self.assertEqual(['ant@example.com', 'bee@example.com'],
+                         sorted(ban.email for ban in self._manager.bans))
+        # The results can be indexed.
+        self.assertEqual(
+            sorted([self._manager.bans[0].email, self._manager.bans[1].email]),
+            ['ant@example.com', 'bee@example.com'])

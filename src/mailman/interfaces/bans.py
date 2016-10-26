@@ -47,7 +47,7 @@ class IBanManager(Interface):
         """
 
     bans = Attribute(
-        """A `QuerySequence` over all the banned emails""")
+        """A `QuerySequence` over all the banned emails.""")
 
     def ban(email):
         """Ban an email address from subscribing to a mailing list.

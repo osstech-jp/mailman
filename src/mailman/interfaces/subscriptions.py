@@ -148,8 +148,8 @@ class ISubscriptionService(Interface):
         :type list_id: string
         :param role: The member role.
         :type role: `MemberRole`
-        :return: The list of all memberships, which may be empty.
-        :rtype: list of `IMember`
+        :return: A sequence of all memberships, which may be empty.
+        :rtype: A `QuerySequence` of `IMember`
         """
 
     def find_member(subscriber=None, list_id=None, role=None):
