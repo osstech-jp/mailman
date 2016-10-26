@@ -52,7 +52,7 @@ You can also query for lists from a particular domain.
 Advertised lists can be filtered using the ``advertised`` query parameter.
 ::
 
-    >>> mlist = create_list('bird@example.com')
+    >>> mlist = create_list('elk@example.com')
     >>> mlist.advertised = False
     >>> transaction.commit()
 
@@ -67,7 +67,8 @@ Advertised lists can be filtered using the ``advertised`` query parameter.
 
 The same applies to lists from a particular domain.
 
-    >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists?advertised=true')
+    >>> dump_json('http://localhost:9001/3.0/domains/example.com'
+    ...           '/lists?advertised=true')
     entry 0:
         ...
         list_id: ant.example.com
@@ -105,14 +106,14 @@ page.
     >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists'
     ...           '?count=1&page=2')
     entry 0:
-        display_name: Bird
-        fqdn_listname: bird@example.com
+        display_name: Elk
+        fqdn_listname: elk@example.com
         http_etag: "..."
-        list_id: bird.example.com
-        list_name: bird
+        list_id: elk.example.com
+        list_name: elk
         mail_host: example.com
         member_count: 0
-        self_link: http://localhost:9001/3.0/lists/bird.example.com
+        self_link: http://localhost:9001/3.0/lists/elk.example.com
         volume: 1
     http_etag: "..."
     start: 1

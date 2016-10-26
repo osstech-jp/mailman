@@ -24,6 +24,7 @@ from mailman.app.moderator import hold_message
 from mailman.config import config
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
+from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError, ListCreatedEvent, ListCreatingEvent,
     ListDeletedEvent, ListDeletingEvent)
@@ -103,7 +104,7 @@ class TestListManager(unittest.TestCase):
         list_manager.delete(mlist)
         self.assertIsNone(list_manager.get('ant@example.com'))
 
-    def test_find_list(self):
+    def test_find_advertised_lists(self):
         ant = create_list('ant@example.com')
         bee = create_list('bee@example.com')
         self.assertTrue(bee.advertised)
@@ -111,6 +112,21 @@ class TestListManager(unittest.TestCase):
         result = getUtility(IListManager).find(advertised=True)
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0], bee)
+
+    def test_find_by_mail_host_and_advertised(self):
+        ant = create_list('ant@example.com')
+        bee = create_list('bee@example.com')
+        getUtility(IDomainManager).add('example.org')
+        cat = create_list('cat@example.org')
+        dog = create_list('dog@example.org')
+        self.assertTrue(bee.advertised)
+        ant.advertised = False
+        self.assertTrue(cat.advertised)
+        dog.advertised = False
+        result = getUtility(IListManager).find(
+            mail_host='example.org', advertised=True)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0], cat)
 
 
 class TestListLifecycleEvents(unittest.TestCase):
