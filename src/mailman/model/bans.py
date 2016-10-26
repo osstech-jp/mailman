@@ -24,6 +24,7 @@ from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode
 from mailman.interfaces.bans import IBan, IBanManager
+from mailman.utilities.queries import QuerySequence
 from sqlalchemy import Column, Integer
 from zope.interface import implementer
 
@@ -109,7 +110,14 @@ class BanManager:
                     return True
         return False
 
+    @property
+    @dbconnection
+    def bans(self, store):
+        """See `IBanManager`."""
+        query = store.query(Ban).filter_by(list_id=self._list_id)
+        return QuerySequence(query)
+
     @dbconnection
     def __iter__(self, store):
         """See `IBanManager`."""
-        yield from store.query(Ban).filter_by(list_id=self._list_id)
+        yield from self.bans

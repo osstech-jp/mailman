@@ -227,6 +227,7 @@ REST
    string in the REST API.  Given by Aurélien Bompard.
  * A list's ``moderator_password`` can be set via the REST API.  Given by
    Andrew Breksa.  (Closes #207)
+ * Banned addresses can now be paginated.  Given by Amit.  (Closes #284)
 
 Other
 -----
