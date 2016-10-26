@@ -124,7 +124,11 @@ class ListManager:
             yield list_name, mail_host
 
     @dbconnection
-    def find(self, store, **kw):
-        query = store.query(MailingList).filter_by(**kw).order_by(
-            MailingList._list_id)
+    def find(self, store, *, advertised=None, mail_host=None):
+        query = store.query(MailingList)
+        if advertised is not None:
+            query = query.filter_by(advertised=advertised)
+        if mail_host is not None:
+            query = query.filter_by(mail_host=mail_host)
+        query = query.order_by(MailingList._list_id)
         return QuerySequence(query)

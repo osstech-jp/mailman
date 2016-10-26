@@ -105,11 +105,12 @@ class TestListManager(unittest.TestCase):
 
     def test_find_list(self):
         ant = create_list('ant@example.com')
-        create_list('bee@example.com')
-        ant.anonymous_list = True
-        result = getUtility(IListManager).find(anonymous_list=True)
+        bee = create_list('bee@example.com')
+        self.assertTrue(bee.advertised)
+        ant.advertised = False
+        result = getUtility(IListManager).find(advertised=True)
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0], ant)
+        self.assertEqual(result[0], bee)
 
 
 class TestListLifecycleEvents(unittest.TestCase):

@@ -143,10 +143,11 @@ class IListManager(Interface):
         """An iterator over the 2-tuple of (list_name, mail_host) for all
         mailing lists managed by this list manager.""")
 
-    def find(**filters):
+    def find(*, advertised=None, mail_host=None):
         """Search for mailing lists matching some criteria.
 
-        The filters are mailing list properties that will be filtered upon.
+        The keyword arguments are mailing list properties that will be
+        filtered upon.
 
         :return: The list of filtered mailing lists.
         :rtype: list of `IMailingList`

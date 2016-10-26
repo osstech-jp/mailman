@@ -49,14 +49,14 @@ You can also query for lists from a particular domain.
     start: 0
     total_size: 1
 
-Advertised lists can be filtered using the ``only_advertised`` query parameter.
+Advertised lists can be filtered using the ``advertised`` query parameter.
 ::
 
     >>> mlist = create_list('bird@example.com')
     >>> mlist.advertised = False
     >>> transaction.commit()
 
-    >>> dump_json('http://localhost:9001/3.0/lists?only_advertised=true')
+    >>> dump_json('http://localhost:9001/3.0/lists?advertised=true')
     entry 0:
         ...
         list_id: ant.example.com
@@ -67,7 +67,7 @@ Advertised lists can be filtered using the ``only_advertised`` query parameter.
 
 The same applies to lists from a particular domain.
 
-    >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists?only_advertised=true')
+    >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists?advertised=true')
     entry 0:
         ...
         list_id: ant.example.com
