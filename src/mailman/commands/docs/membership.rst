@@ -223,6 +223,7 @@ address for the list, she is immediately removed.
 
     >>> from mailman.interfaces.mailinglist import SubscriptionPolicy
     >>> mlist_2.unsubscription_policy = SubscriptionPolicy.open
+    >>> mlist.unsubscription_policy = SubscriptionPolicy.open
     >>> results = Results()
     >>> print(leave.process(mlist_2, msg, {}, (), results))
     ContinueProcessing.yes

@@ -167,7 +167,7 @@ Similarly, to leave a mailing list, the user need only email the ``-leave`` or
     ... """)
 
     >>> from mailman.interfaces.mailinglist import SubscriptionPolicy
-    >>> mlist.unsubscribe_policy = SubscriptionPolicy.open
+    >>> mlist.unsubscription_policy = SubscriptionPolicy.open
     >>> filebase = inject_message(
     ...     mlist, msg, switchboard='command', subaddress='leave')
     >>> command.run()
