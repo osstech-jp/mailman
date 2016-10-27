@@ -96,7 +96,6 @@ content-type: %(content_type)s\n
         super().send_error(code, message, explain)
 
 
-
 class Middleware:
     """Falcon middleware object for Mailman's REST API.
 
