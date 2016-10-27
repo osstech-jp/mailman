@@ -227,7 +227,8 @@ REST
    string in the REST API.  Given by Aurélien Bompard.
  * A list's ``moderator_password`` can be set via the REST API.  Given by
    Andrew Breksa.  (Closes #207)
- * Banned addresses can now be paginated.  Given by Amit.  (Closes #284)
+ * The ban manager now returns a pageable, sorted sequence.  Given by Amit and
+   Aurélien Bompard.  (Closes #284)
  * Query parameters now allow you to filter mailing lists by the
    ``advertised`` boolean parameter.  Given by Aurélien Bompard.
 

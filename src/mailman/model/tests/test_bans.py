@@ -49,14 +49,17 @@ class TestMailingListBans(unittest.TestCase):
 
     def test_bans_sequence(self):
         # Bans returns a pageable sorted sequence.
-        self._manager.ban('ant@example.com')
         self._manager.ban('bee@example.com')
+        self._manager.ban('ant@example.com')
+        self._manager.ban('cat@example.com')
         # The results can be len()'d.
-        self.assertEqual(len(self._manager.bans), 2)
+        count = len(self._manager.bans)
+        self.assertEqual(count, 3)
         # The results can be iterated.
-        self.assertEqual(['ant@example.com', 'bee@example.com'],
-                         [ban.email for ban in self._manager.bans])
+        self.assertEqual(
+            ['ant@example.com', 'bee@example.com', 'cat@example.com'],
+            [ban.email for ban in self._manager.bans])
         # The results can be indexed.
         self.assertEqual(
-            [self._manager.bans[0].email, self._manager.bans[1].email],
-            ['ant@example.com', 'bee@example.com'])
+            [self._manager.bans[i].email for i in range(count)],
+            ['ant@example.com', 'bee@example.com', 'cat@example.com'])
