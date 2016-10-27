@@ -93,6 +93,8 @@ Bugs
  * Extend header filters to also check sub-part headers.  (Closes #280)
  * Allow REST API to PUT and PATCH domain attributes.  Allows Postorius domain
    edit to work.  (Closes: #290)
+ * Prevent posting from banned addresses.  Given by Aurélien Bompard.
+   (Closes: #283)
 
 Configuration
 -------------
