@@ -18,6 +18,7 @@
 """Basic WSGI Application object for REST server."""
 
 import re
+import time
 import logging
 
 from base64 import b64decode
@@ -63,7 +64,8 @@ class StderrLogger:
 
 
 class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
-    """Handler class which just logs output to the right place."""
+    """Handler class which logs output to the right place and prepend headers
+    to the error response."""
 
     def log_message(self, format, *args):
         """See `BaseHTTPRequestHandler`."""
@@ -73,6 +75,26 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
         # Return a fake stderr object that will actually write its output to
         # the log file.
         return StderrLogger()
+
+    def send_error(self, code, message=None, explain=None):
+        """See `BaseHTTPRequestHandler`."""
+        err_code = "{0} {1}".format(code.value, code.name.replace('_', ' '))
+        header_dict = dict(
+            status="{0} {1}".format(self.request_version, err_code),
+            rsp_date=time.strftime("%a, %d %b %Y %H:%M:%S %Z", time.gmtime()),
+            server="{0} {1}".format(self.server_version, self.sys_version),
+            content_type=self.error_content_type)
+        # Prepare headers and prepend it to the error response body
+        error_headers = ("""\
+%(status)s
+Date: %(rsp_date)s
+Server: %(server)s
+content-type: %(content_type)s\n
+""" % header_dict)
+        self.error_message_format = error_headers + self.error_message_format
+        # Let parent method handle rest of the logic
+        super().send_error(code, message, explain)
+
 
 
 class Middleware:
