@@ -78,7 +78,11 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
 
     def send_error(self, code, message=None, explain=None):
         """See `BaseHTTPRequestHandler`."""
-        err_code = "{0} {1}".format(code.value, code.name.replace('_', ' '))
+        try:
+            shortmsg, longmsg = self.responses[code]
+        except KeyError:
+            shortmsg, longmsg = '???', '???'
+        err_code = "{0} {1}".format(int(code), shortmsg)
         header_dict = dict(
             status="{0} {1}".format(self.request_version, err_code),
             rsp_date=time.strftime("%a, %d %b %Y %H:%M:%S %Z", time.gmtime()),
