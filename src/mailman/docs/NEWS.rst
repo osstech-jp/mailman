@@ -175,6 +175,7 @@ REST
    3.0 except that UUIDs are represented as hex strings instead of 128-bit
    integers, since the latter are not compatible with all versions of
    JavaScript.  (Closes #121)
+ * REST clients must minimally support HTTP/1.1. (Closes #288)
  * The new template system is introduced for API 3.1.  See
    ``src/mailman/rest/docs/templates.rst`` for details.  (Closes #249)
  * When creating a user via REST using an address that already exists, but

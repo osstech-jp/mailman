@@ -48,8 +48,8 @@ class TestBasicREST(unittest.TestCase):
                          'A description with , to check stuff')
 
     def test_send_error(self):
-        # Test `AdminWebServiceWSGIRequestHandler` `send_error`.
-        # Return 400 for invalid url.
+        # GL#288 working around Python bug #28548.  The improperly encoded
+        # space in the URL breaks error reporting due to default HTTP/0.9.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/test @example.com')
         self.assertEqual(cm.exception.code, 400)
