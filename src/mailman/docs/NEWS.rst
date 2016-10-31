@@ -95,6 +95,8 @@ Bugs
    edit to work.  (Closes: #290)
  * Prevent posting from banned addresses.  Given by Aurélien Bompard.
    (Closes: #283)
+ * Remove the digest mbox files after the digests are sent.  Given by Aurélien
+   Bompard.  (Closes: #259)
 
 Configuration
 -------------

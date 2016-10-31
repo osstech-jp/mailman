@@ -76,7 +76,7 @@ class TestDigest(unittest.TestCase):
         make_digest_messages(self._mlist)
         self._check_virgin_queue()
         # The digest mbox and all intermediary mboxes must have been removed
-        # (GL#259).
+        # (GL #259).
         self.assertEqual(os.listdir(self._mlist.data_path), [])
 
     def test_non_ascii_message(self):

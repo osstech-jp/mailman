@@ -370,5 +370,5 @@ class DigestRunner(Runner):
                           recipients=rfc1153_recipients,
                           listid=mlist.list_id,
                           isdigest=True)
-        # Remove the digest mbox (GL#259)
+        # Remove the digest mbox. (GL #259)
         os.remove(msgdata['digest_path'])
