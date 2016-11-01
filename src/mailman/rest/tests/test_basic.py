@@ -26,6 +26,7 @@ from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
+from urllib.error import HTTPError
 
 
 class TestBasicREST(unittest.TestCase):
@@ -45,3 +46,10 @@ class TestBasicREST(unittest.TestCase):
         # This fails with Falcon 0.2; passes with Falcon 0.3.
         self.assertEqual(self._mlist.description,
                          'A description with , to check stuff')
+
+    def test_send_error(self):
+        # GL#288 working around Python bug #28548.  The improperly encoded
+        # space in the URL breaks error reporting due to default HTTP/0.9.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/test @example.com')
+        self.assertEqual(cm.exception.code, 400)

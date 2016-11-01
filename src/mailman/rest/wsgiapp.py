@@ -65,6 +65,8 @@ class StderrLogger:
 class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
     """Handler class which just logs output to the right place."""
 
+    default_request_version = 'HTTP/1.1'
+
     def log_message(self, format, *args):
         """See `BaseHTTPRequestHandler`."""
         log.info('%s - - %s', self.address_string(), format % args)
