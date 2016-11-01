@@ -136,7 +136,8 @@ There is now a reject message in the virgin queue.
     You are not allowed to post to this mailing list From: a domain which
     publishes a DMARC policy of reject or quarantine, and your message has
     been automatically rejected.  If you think that your messages are
-    being rejected in error, contact the mailing list owner at $listowner.
+    being rejected in error, contact the mailing list owner at
+    _xtest-owner@example.com.
     <BLANKLINE>
     The original message as received by Mailman is attached.
     <BLANKLINE>

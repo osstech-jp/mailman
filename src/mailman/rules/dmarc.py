@@ -261,7 +261,7 @@ class DMARCModeration:
                             'policy of reject or quarantine, and your message'
                             ' has been automatically rejected.  If you think '
                             'that your messages are being rejected in error, '
-                            'contact the mailing list owner at $listowner.'))
+                            'contact the mailing list owner at ${listowner}.'))
                 msgdata['moderation_reasons'] = [wrap(reason)]
                 # Add the hit for the reject notice.
                 msgdata.setdefault('rule_hits', []).append('dmarc-moderation')
