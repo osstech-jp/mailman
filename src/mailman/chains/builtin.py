@@ -38,6 +38,8 @@ class BuiltInChain:
     description = _('The built-in moderation chain.')
 
     _link_descriptions = (
+        # First check DMARC and maybe reject or discard.
+        ('dmarc-moderation', LinkAction.defer, None),
         ('approved', LinkAction.jump, 'accept'),
         ('emergency', LinkAction.jump, 'hold'),
         ('loop', LinkAction.jump, 'discard'),

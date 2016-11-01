@@ -14,6 +14,9 @@ You can also get all the values for a particular section.
     >>> dump_json('http://localhost:9001/3.0/system/configuration/mailman')
     cache_life: 7d
     default_language: en
+    dmarc_org_domain_data: https://publicsuffix.org/list/public_suffix_list.dat
+    dmarc_resolver_lifetime: 5s
+    dmarc_resolver_timeout: 3s
     email_commands_max_lines: 10
     filtered_messages_are_preservable: no
     html_to_plain_text_command: /usr/bin/lynx -dump $filename

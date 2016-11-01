@@ -33,9 +33,9 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAlias, IAcceptableAliasSet, IHeaderMatch, IHeaderMatchList,
-    IListArchiver, IListArchiverSet, IMailingList, Personalization,
-    ReplyToMunging, SubscriptionPolicy)
+    DMARCModerationAction, FromIsList, IAcceptableAlias, IAcceptableAliasSet,
+    IHeaderMatch, IHeaderMatchList, IListArchiver, IListArchiverSet,
+    IMailingList, Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError,
     SubscriptionEvent)
@@ -127,6 +127,13 @@ class MailingList(Model):
     forward_unrecognized_bounces_to = Column(
         Enum(UnrecognizedBounceDisposition))
     process_bounces = Column(Boolean)
+    # DMARC
+    dmarc_moderation_action = Column(Enum(DMARCModerationAction))
+    dmarc_quarantine_moderation_action = Column(Boolean)
+    dmarc_none_moderation_action = Column(Boolean)
+    dmarc_moderation_notice = Column(SAUnicode)
+    dmarc_wrapped_message_text = Column(SAUnicode)
+    from_is_list = Column(Enum(FromIsList))
     # Miscellaneous
     default_member_action = Column(Enum(Action))
     default_nonmember_action = Column(Enum(Action))
