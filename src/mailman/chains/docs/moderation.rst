@@ -87,6 +87,7 @@ built-in chain.  No rules hit and so the message is accepted.
     Subject: aardvark
     Hits:
     Misses:
+        dmarc-moderation
         approved
         emergency
         loop
@@ -124,6 +125,7 @@ moderator approval.
     Hits:
         member-moderation
     Misses:
+        dmarc-moderation
         approved
         emergency
         loop
@@ -150,6 +152,7 @@ Anne's moderation action can also be set to `discard`...
     Hits:
         member-moderation
     Misses:
+        dmarc-moderation
         approved
         emergency
         loop
@@ -175,6 +178,7 @@ Anne's moderation action can also be set to `discard`...
     Hits:
         member-moderation
     Misses:
+        dmarc-moderation
         approved
         emergency
         loop
@@ -215,6 +219,7 @@ moderator approval.
     Hits:
         nonmember-moderation
     Misses:
+        dmarc-moderation
         approved
         emergency
         loop
