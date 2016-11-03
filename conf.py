@@ -182,7 +182,7 @@ htmlhelp_basename = 'GNUMailmandoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'GNUMailman.tex', u'GNU Mailman Documentation',
+  ('README', 'GNUMailman.tex', u'GNU Mailman Documentation',
    u'Barry Warsaw', 'manual'),
 ]
 
@@ -215,7 +215,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'gnumailman', u'GNU Mailman Documentation',
+    ('README', 'gnumailman', u'GNU Mailman Documentation',
      [u'Barry Warsaw'], 1)
 ]
 
