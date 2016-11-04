@@ -33,7 +33,10 @@ The settings and their effects are:
  * from_is_list: The action to be applied to all messages for which
    dmarc_moderation_action is none or not applicable.
  * reply_goes_to_list: If this is set to other than no_munging of Reply-To,
-   the original From: goes in Cc: rather than Reply-To:.
+   the original From: goes in Cc: rather than Reply-To:.  This is intended to
+   make MUA functions of reply and reply-all have the same effect with
+   messages to which mitigations have been applied as they do with other
+   messages.
 
 The possible actions for both dmarc_moderation_action and from_is_list are:
 
@@ -43,14 +46,14 @@ The possible actions for both dmarc_moderation_action and from_is_list are:
  * wrap_message: Wrap the message in an outer message with headers as in
    munge_from.
 
-In addition, there are two more possible actions for dmarc_moderation_action
-only:
+In addition, there are two more possible actions (actually processed by the
+dmarc-moderation rule) for dmarc_moderation_action only:
 
  * reject: Bounce the message back to the sender with a default reason or one
    supplied in dmarc_moderation_notice.
  * discard: Silently discard the message.
 
-Here's what happens when we munge the From:
+Here's what happens when we munge the From.
 
     >>> from mailman.interfaces.mailinglist import (DMARCModerationAction,
     ... ReplyToMunging)

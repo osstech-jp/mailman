@@ -78,20 +78,27 @@ Subdomains which don't have a policy will check the organizational domain.
 The list's action can also be set to immediately discard or reject the
 message.
 
+    >>> from mailman.interfaces.chain import ChainEvent
+    >>> from mailman.testing.helpers import event_subscribers
+    >>> def handler(event):
+    ...     if isinstance(event, ChainEvent):
+    ...         print(event.__class__.__name__,
+    ...               event.chain.name, event.msg['message-id'])
     >>> mlist.dmarc_moderation_action = DMARCModerationAction.discard
     >>> msg = message_from_string("""\
     ... From: aperson@yahoo.com
     ... To: _xtest@example.com
     ... Subject: A posted message
+    ... Message-ID: <xxx_message_id@yahoo.com>
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with event_subscribers(handler):
+    ...     rule.check(mlist, msg, msgdata)
+    DiscardEvent discard <xxx_message_id@yahoo.com>
     False
     >>> msgdata['dmarc']
     True
-
-The above needs to test that the message was discarded.
 
 We can reject the message with a default reason.
 
@@ -100,10 +107,13 @@ We can reject the message with a default reason.
     ... From: aperson@yahoo.com
     ... To: _xtest@example.com
     ... Subject: A posted message
+    ... Message-ID: <xxx_message_id@yahoo.com>
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with event_subscribers(handler):
+    ...     rule.check(mlist, msg, msgdata)
+    RejectEvent reject <xxx_message_id@yahoo.com>
     False
     >>> msgdata['dmarc']
     True
@@ -148,6 +158,7 @@ There is now a reject message in the virgin queue.
     From: aperson@yahoo.com
     To: _xtest@example.com
     Subject: A posted message
+    Message-ID: <xxx_message_id@yahoo.com>
     X-Mailman-Rule-Hits: dmarc-moderation
     <BLANKLINE>
     <BLANKLINE>
@@ -161,10 +172,13 @@ And, we can reject with a custom message.
     ... From: aperson@yahoo.com
     ... To: _xtest@example.com
     ... Subject: A posted message
+    ... Message-ID: <xxx_message_id@yahoo.com>
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with event_subscribers(handler):
+    ...     rule.check(mlist, msg, msgdata)
+    RejectEvent reject <xxx_message_id@yahoo.com>
     False
     >>> msgdata['dmarc']
     True
@@ -204,6 +218,7 @@ Check the the virgin queue.
     From: aperson@yahoo.com
     To: _xtest@example.com
     Subject: A posted message
+    Message-ID: <xxx_message_id@yahoo.com>
     X-Mailman-Rule-Hits: dmarc-moderation
     <BLANKLINE>
     <BLANKLINE>

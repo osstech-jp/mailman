@@ -48,6 +48,7 @@ KEEPERS = ('archived-at',
            'list-',
            'precedence',
            'references',
+           'subject',
            'to',
            'x-mailman-',
            )
