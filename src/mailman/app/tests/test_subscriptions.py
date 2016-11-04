@@ -682,6 +682,7 @@ approval:
         self._mlist.subscription_policy = SubscriptionPolicy.moderate
         anne = self._user_manager.create_user(self._anne)
         bill = self._user_manager.create_user('bill@example.com')
+        set_preferred(bill)
         # anne subscribes.
         workflow = SubscriptionWorkflow(self._mlist, anne, pre_verified=True)
         list(workflow)
@@ -692,6 +693,8 @@ approval:
         approved_workflow.token = workflow.token
         approved_workflow.restore()
         self.assertEqual(approved_workflow.user, bill)
+        # Run the workflow through.
+        list(approved_workflow)
 
     def test_restore_address_absorbed(self):
         # The subscribing user is absorbed (and thus deleted) before the
@@ -712,3 +715,5 @@ approval:
         approved_workflow.token = workflow.token
         approved_workflow.restore()
         self.assertEqual(approved_workflow.user, bill)
+        # Run the workflow through.
+        list(approved_workflow)
