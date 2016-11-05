@@ -251,7 +251,7 @@ class DMARCModeration:
             msgdata['dmarc'] = True
             if mlist.dmarc_moderation_action == DMARCModerationAction.discard:
                 msgdata['moderation_action'] = 'discard'
-                msgdata['moderation_reasons'] = _('DMARC moderation')
+                msgdata['moderation_reasons'] = [_('DMARC moderation')]
             elif mlist.dmarc_moderation_action == DMARCModerationAction.reject:
                 listowner = mlist.owner_address       # noqa F841
                 reason = (mlist.dmarc_moderation_notice or
