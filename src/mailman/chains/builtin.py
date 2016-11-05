@@ -38,8 +38,10 @@ class BuiltInChain:
     description = _('The built-in moderation chain.')
 
     _link_descriptions = (
-        # First check DMARC and maybe reject or discard.
-        ('dmarc-moderation', LinkAction.defer, None),
+        # First check DMARC.  For a reject or discard, the rule hits and we
+        # jump to the moderation chain to do the action.  Otherwise, the rule
+        # misses buts sets msgdata['dmarc'] for the handler.
+        ('dmarc-moderation', LinkAction.jump, 'moderation'),
         ('approved', LinkAction.jump, 'accept'),
         ('emergency', LinkAction.jump, 'hold'),
         ('loop', LinkAction.jump, 'discard'),

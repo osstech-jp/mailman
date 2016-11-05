@@ -78,12 +78,6 @@ Subdomains which don't have a policy will check the organizational domain.
 The list's action can also be set to immediately discard or reject the
 message.
 
-    >>> from mailman.interfaces.chain import ChainEvent
-    >>> from mailman.testing.helpers import event_subscribers
-    >>> def handler(event):
-    ...     if isinstance(event, ChainEvent):
-    ...         print(event.__class__.__name__,
-    ...               event.chain.name, event.msg['message-id'])
     >>> mlist.dmarc_moderation_action = DMARCModerationAction.discard
     >>> msg = message_from_string("""\
     ... From: aperson@yahoo.com
@@ -93,12 +87,12 @@ message.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with event_subscribers(handler):
-    ...     rule.check(mlist, msg, msgdata)
-    DiscardEvent discard <xxx_message_id@yahoo.com>
-    False
+    >>> rule.check(mlist, msg, msgdata)
+    True
     >>> msgdata['dmarc']
     True
+    >>> msgdata['moderation_action']
+    'discard'
 
 We can reject the message with a default reason.
 
@@ -111,59 +105,14 @@ We can reject the message with a default reason.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with event_subscribers(handler):
-    ...     rule.check(mlist, msg, msgdata)
-    RejectEvent reject <xxx_message_id@yahoo.com>
-    False
+    >>> rule.check(mlist, msg, msgdata)
+    True
     >>> msgdata['dmarc']
     True
-
-There is now a reject message in the virgin queue.
-
-    >>> from mailman.testing.helpers import get_queue_messages
-    >>> messages = get_queue_messages('virgin')
-    >>> len(messages)
-    1
-    >>> print(messages[0].msg.as_string())
-    Subject: A posted message
-    From: _xtest-owner@example.com
-    To: aperson@yahoo.com
-    MIME-Version: 1.0
-    Content-Type: multipart/mixed; boundary="..."
-    Message-ID: <...>
-    Date: ...
-    Precedence: bulk
-    <BLANKLINE>
-    --...
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: 7bit
-    <BLANKLINE>
-    <BLANKLINE>
-    Your message to the _xtest mailing-list was rejected for the following
-    reasons:
-    <BLANKLINE>
-    You are not allowed to post to this mailing list From: a domain which
-    publishes a DMARC policy of reject or quarantine, and your message has
-    been automatically rejected.  If you think that your messages are
-    being rejected in error, contact the mailing list owner at
-    _xtest-owner@example.com.
-    <BLANKLINE>
-    The original message as received by Mailman is attached.
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@yahoo.com
-    To: _xtest@example.com
-    Subject: A posted message
-    Message-ID: <xxx_message_id@yahoo.com>
-    X-Mailman-Rule-Hits: dmarc-moderation
-    <BLANKLINE>
-    <BLANKLINE>
-    --...--
-    <BLANKLINE>
+    >>> msgdata['moderation_action']
+    'reject'
+    >>> msgdata['moderation_reasons']
+    ['You are not allowed to post to this mailing list From: a domain ...
 
 And, we can reject with a custom message.
 
@@ -176,51 +125,11 @@ And, we can reject with a custom message.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with event_subscribers(handler):
-    ...     rule.check(mlist, msg, msgdata)
-    RejectEvent reject <xxx_message_id@yahoo.com>
-    False
+    >>> rule.check(mlist, msg, msgdata)
+    True
     >>> msgdata['dmarc']
     True
-
-Check the the virgin queue.
-
-    >>> messages = get_queue_messages('virgin')
-    >>> len(messages)
-    1
-    >>> print(messages[0].msg.as_string())
-    Subject: A posted message
-    From: _xtest-owner@example.com
-    To: aperson@yahoo.com
-    MIME-Version: 1.0
-    Content-Type: multipart/mixed; boundary="..."
-    Message-ID: <...>
-    Date: ...
-    Precedence: bulk
-    <BLANKLINE>
-    --...
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: 7bit
-    <BLANKLINE>
-    <BLANKLINE>
-    Your message to the _xtest mailing-list was rejected for the following
-    reasons:
-    <BLANKLINE>
-    A silly reason
-    <BLANKLINE>
-    The original message as received by Mailman is attached.
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@yahoo.com
-    To: _xtest@example.com
-    Subject: A posted message
-    Message-ID: <xxx_message_id@yahoo.com>
-    X-Mailman-Rule-Hits: dmarc-moderation
-    <BLANKLINE>
-    <BLANKLINE>
-    --...--
-    <BLANKLINE>
+    >>> msgdata['moderation_action']
+    'reject'
+    >>> msgdata['moderation_reasons']
+    ['A silly reason']

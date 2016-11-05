@@ -25,8 +25,6 @@ from dns.exception import DNSException
 from email.utils import parseaddr
 from lazr.config import as_timedelta
 from mailman import public
-from mailman.chains.discard import DiscardChain
-from mailman.chains.reject import RejectChain
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.mailinglist import DMARCModerationAction
@@ -246,14 +244,15 @@ class DMARCModeration:
             return False
         dn, addr = parseaddr(msg.get('from'))
         if _IsDMARCProhibited(mlist, addr):
-            # This is something of a kludge, but we can't have this rule be
-            # a chain in the normal way, because a hit will cause the message
-            # to be held.  We just flag the hit for the handler, but jump
-            # to the reject or discard chain if appropriate.
+            # If dmarc_moderation_action is discard or reject, this rule fires
+            # and jumps to the 'moderation' chain to do the actual discard.
+            # Otherwise, the rule misses but sets a flag for the dmarc handler
+            # to do the appropriate action.
             msgdata['dmarc'] = True
             if mlist.dmarc_moderation_action == DMARCModerationAction.discard:
-                DiscardChain()._process(mlist, msg, msgdata)
-            if mlist.dmarc_moderation_action == DMARCModerationAction.reject:
+                msgdata['moderation_action'] = 'discard'
+                msgdata['moderation_reasons'] = _('DMARC moderation')
+            elif mlist.dmarc_moderation_action == DMARCModerationAction.reject:
                 listowner = mlist.owner_address       # noqa F841
                 reason = (mlist.dmarc_moderation_notice or
                           _('You are not allowed to post to this mailing '
@@ -263,7 +262,9 @@ class DMARCModeration:
                             'that your messages are being rejected in error, '
                             'contact the mailing list owner at ${listowner}.'))
                 msgdata['moderation_reasons'] = [wrap(reason)]
-                # Add the hit for the reject notice.
-                msgdata.setdefault('rule_hits', []).append('dmarc-moderation')
-                RejectChain()._process(mlist, msg, msgdata)
+                msgdata['moderation_action'] = 'reject'
+            else:
+                return False
+            msgdata['moderation_sender'] = addr
+            return True
         return False
