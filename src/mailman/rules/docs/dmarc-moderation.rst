@@ -2,17 +2,22 @@
 DMARC moderation
 ================
 
-This rule is different from others in that it never matches bucause a match
-would cause the message to be held.  The rule looks at the list's
-dmarc_moderation_policy and if it is other than 'none', it checks the domain
-of the From: address for a DMARC policy and depending on settings may reject
-or discard the message or just flag in for the dmarc handler to apply DMARC
-mitigations to the message.
+This rule only matches in order to jump to the moderation chain to reject
+or discard the message.  The rule looks at the list's dmarc_moderation_policy
+and if it is other than 'none', it checks the domain of the From: address for
+a DMARC policy and depending on settings may reject or discard the message or
+just flag it for the dmarc handler to apply DMARC mitigations to the message.
 
     >>> mlist = create_list('_xtest@example.com')
     >>> rule = config.rules['dmarc-moderation']
     >>> print(rule.name)
     dmarc-moderation
+
+First we set up a mock patcher to return predictable responses to DNS lookups.
+This returns p=reject for the example.biz domain and not for any others.
+
+    >>> from mailman.rules.tests.test_dmarc import get_dns_resolver
+    >>> patcher = get_dns_resolver()
 
 A message From: a domain without a DMARC policy does not set any flags.
 
@@ -25,7 +30,8 @@ A message From: a domain without a DMARC policy does not set any flags.
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with patcher as Resolver:
+    ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata == {}
     True
@@ -35,13 +41,14 @@ action is none.
 
     >>> mlist.dmarc_moderation_action = DMARCModerationAction.none
     >>> msg = message_from_string("""\
-    ... From: aperson@yahoo.com
+    ... From: aperson@example.biz
     ... To: _xtest@example.com
     ... Subject: A posted message
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with patcher as Resolver:
+    ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata == {}
     True
@@ -50,13 +57,14 @@ But with a different list setting, the message is flagged.
 
     >>> mlist.dmarc_moderation_action = DMARCModerationAction.munge_from
     >>> msg = message_from_string("""\
-    ... From: aperson@yahoo.com
+    ... From: aperson@example.biz
     ... To: _xtest@example.com
     ... Subject: A posted message
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with patcher as Resolver:
+    ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata['dmarc']
     True
@@ -64,13 +72,14 @@ But with a different list setting, the message is flagged.
 Subdomains which don't have a policy will check the organizational domain.
 
     >>> msg = message_from_string("""\
-    ... From: aperson@sub.domain.yahoo.com
+    ... From: aperson@sub.domain.example.biz
     ... To: _xtest@example.com
     ... Subject: A posted message
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with patcher as Resolver:
+    ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata['dmarc']
     True
@@ -80,14 +89,15 @@ message.
 
     >>> mlist.dmarc_moderation_action = DMARCModerationAction.discard
     >>> msg = message_from_string("""\
-    ... From: aperson@yahoo.com
+    ... From: aperson@example.biz
     ... To: _xtest@example.com
     ... Subject: A posted message
-    ... Message-ID: <xxx_message_id@yahoo.com>
+    ... Message-ID: <xxx_message_id@example.biz>
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with patcher as Resolver:
+    ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']
     True
@@ -98,14 +108,15 @@ We can reject the message with a default reason.
 
     >>> mlist.dmarc_moderation_action = DMARCModerationAction.reject
     >>> msg = message_from_string("""\
-    ... From: aperson@yahoo.com
+    ... From: aperson@example.biz
     ... To: _xtest@example.com
     ... Subject: A posted message
-    ... Message-ID: <xxx_message_id@yahoo.com>
+    ... Message-ID: <xxx_message_id@example.biz>
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with patcher as Resolver:
+    ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']
     True
@@ -118,14 +129,15 @@ And, we can reject with a custom message.
 
     >>> mlist.dmarc_moderation_notice = 'A silly reason'
     >>> msg = message_from_string("""\
-    ... From: aperson@yahoo.com
+    ... From: aperson@example.biz
     ... To: _xtest@example.com
     ... Subject: A posted message
-    ... Message-ID: <xxx_message_id@yahoo.com>
+    ... Message-ID: <xxx_message_id@example.biz>
     ...
     ... """)
     >>> msgdata = {}
-    >>> rule.check(mlist, msg, msgdata)
+    >>> with patcher as Resolver:
+    ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']
     True
