@@ -24,7 +24,7 @@ from mailman.app.lifecycle import create_list
 from mailman.app.subscriptions import SubscriptionWorkflow
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import MembershipIsBannedError, MemberRole
+from mailman.interfaces.member import MemberRole, MembershipIsBannedError
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
