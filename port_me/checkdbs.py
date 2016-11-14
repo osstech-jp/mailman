@@ -199,7 +199,7 @@ def main():
                                        mlist.GetBouncesEmail(),
                                        subject, text,
                                        mlist.preferred_language)
-                msg.send(mlist, tomoderators=True)
+                msg.send(mlist, to_moderators=True)
         finally:
             mlist.Unlock()
 

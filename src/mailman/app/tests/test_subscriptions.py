@@ -436,17 +436,22 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self._mlist.admin_immed_notify = True
         self._mlist.subscription_policy = SubscriptionPolicy.moderate
         anne = self._user_manager.create_address(self._anne)
-        mod = self._user_manager.create_user('bart@example.com', 'Bart User')
-        address = set_preferred(mod)
+        bart = self._user_manager.create_user('bart@example.com', 'Bart User')
+        address = set_preferred(bart)
         self._mlist.subscribe(address, MemberRole.moderator)
         workflow = SubscriptionWorkflow(self._mlist, anne,
                                         pre_verified=True,
                                         pre_confirmed=True)
         # Consume the entire state machine.
         list(workflow)
+        # Find the moderator message.
         items = get_queue_messages('virgin', expected_count=1)
-        messagedata = items[0].msgdata
-        self.assertEqual(messagedata['recipients'], {'bart@example.com'})
+        for item in items:
+            if item.msg['to'] == 'test-owner@example.com':
+                break
+        else:
+            raise AssertionError('No moderator email found')
+        self.assertEqual(item.msgdata['recipients'], {'bart@example.com'})
         message = items[0].msg
         self.assertEqual(message['From'], 'test-owner@example.com')
         self.assertEqual(message['To'], 'test-owner@example.com')

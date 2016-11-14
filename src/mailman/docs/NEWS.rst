@@ -97,6 +97,8 @@ Bugs
    (Closes: #283)
  * Remove the digest mbox files after the digests are sent.  Given by Aurélien
    Bompard.  (Closes: #259)
+ * Messages sent to the list's moderators now include the actual recipient
+   addresses.  Given by Tom Briles.  (Closes: #68)
 
 Configuration
 -------------

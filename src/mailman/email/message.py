@@ -166,7 +166,7 @@ class UserNotification(Message):
             self.recipients = set(
                 member.address.email
                 for member in mlist.moderators.members
-                if member.delivery_status == DeliveryStatus.enabled)
+                if member.delivery_status is DeliveryStatus.enabled)
             self['To'] = COMMASPACE.join(self.recipients)
         self._enqueue(mlist, **_kws)
 

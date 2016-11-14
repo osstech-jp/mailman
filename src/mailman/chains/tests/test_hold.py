@@ -135,8 +135,8 @@ A message body.
         # Issue #144 - UnicodeEncodeError in the hold chain.
         self._mlist.admin_immed_notify = True
         self._mlist.respond_to_post_requests = False
-        mod = self._user_manager.create_user('bart@example.com', 'Bart User')
-        address = set_preferred(mod)
+        bart = self._user_manager.create_user('bart@example.com', 'Bart User')
+        address = set_preferred(bart)
         self._mlist.subscribe(address, MemberRole.moderator)
         path = resource_filename('mailman.chains.tests', 'issue144.eml')
         with open(path, 'rb') as fp:
