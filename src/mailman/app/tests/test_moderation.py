@@ -23,6 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.app.moderator import (
     handle_message, handle_unsubscription, hold_message, hold_unsubscription)
 from mailman.interfaces.action import Action
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests
 from mailman.interfaces.subscriptions import ISubscriptionManager
@@ -31,7 +32,7 @@ from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
+    get_queue_messages, make_testable_runner, set_preferred,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import SMTPLayer
 from mailman.utilities.datetime import now
@@ -158,15 +159,29 @@ class TestUnsubscription(unittest.TestCase):
     def test_unsubscribe_defer(self):
         # When unsubscriptions must be approved by the moderator, but the
         # moderator defers this decision.
-        anne = getUtility(IUserManager).create_address(
-            'anne@example.org', 'Anne Person')
+        user_manager = getUtility(IUserManager)
+        anne = user_manager.create_address('anne@example.org', 'Anne Person')
         token, token_owner, member = self._manager.register(
             anne, pre_verified=True, pre_confirmed=True, pre_approved=True)
         self.assertIsNone(token)
         self.assertEqual(member.address.email, 'anne@example.org')
+        bart = user_manager.create_user('bart@example.com', 'Bart User')
+        address = set_preferred(bart)
+        self._mlist.subscribe(address, MemberRole.moderator)
         # Now hold and handle an unsubscription request.
         token = hold_unsubscription(self._mlist, 'anne@example.org')
         handle_unsubscription(self._mlist, token, Action.defer)
+        items = get_queue_messages('virgin', expected_count=2)
+        # Find the moderator message.
+        for item in items:
+            if item.msg['to'] == 'test-owner@example.com':
+                break
+        else:
+            raise AssertionError('No moderator email found')
+        self.assertEqual(item.msgdata['recipients'], {'bart@example.com'})
+        self.assertEqual(
+            item.msg['subject'],
+            'New unsubscription request from Test by anne@example.org')
 
     def test_bogus_token(self):
         # Try to handle an unsubscription with a bogus token.

@@ -24,10 +24,11 @@ from mailman.app.lifecycle import create_list
 from mailman.chains.hold import autorespond_to_sender
 from mailman.core.chains import process as process_chain
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages,
+    LogFileMark, configuration, get_queue_messages, set_preferred,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from pkg_resources import resource_filename
@@ -94,6 +95,7 @@ class TestHoldChain(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
+        self._user_manager = getUtility(IUserManager)
 
     def test_hold_chain(self):
         msg = mfs("""\
@@ -133,6 +135,9 @@ A message body.
         # Issue #144 - UnicodeEncodeError in the hold chain.
         self._mlist.admin_immed_notify = True
         self._mlist.respond_to_post_requests = False
+        bart = self._user_manager.create_user('bart@example.com', 'Bart User')
+        address = set_preferred(bart)
+        self._mlist.subscribe(address, MemberRole.moderator)
         path = resource_filename('mailman.chains.tests', 'issue144.eml')
         with open(path, 'rb') as fp:
             msg = mfb(fp.read())
@@ -142,8 +147,8 @@ A message body.
         # delivery to the moderators.
         items = get_queue_messages('virgin', expected_count=1)
         msgdata = items[0].msgdata
-        self.assertTrue(msgdata['tomoderators'])
-        self.assertEqual(msgdata['recipients'], {'test-owner@example.com'})
+        # Should get sent to moderators.
+        self.assertEqual(msgdata['recipients'], {'bart@example.com'})
         # Ensure that the subject looks correct in the postauth.txt.
         msg = items[0].msg
         value = None
