@@ -153,7 +153,7 @@ class TestWorkflow(unittest.TestCase):
         # Save the state of an old version of the workflow that would not have
         # the cat attribute.
         state_manager.save(
-            'MyWorkflow', self._workflow.token, 'first',
+            self._workflow.token, 'first',
             json.dumps({'ant': 1, 'bee': 2}))
         # Restore in the current version that needs the cat attribute.
         new_workflow = MyWorkflow()
