@@ -107,7 +107,7 @@ def process(mlist, msg, msgdata):
         # A convenience function, requires nested scopes.  pair is (name, addr)
         new = []
         d = {}
-        def add(pair):                              # noqa: E301
+        def add(pair):                              # noqa: E306
             lcaddr = pair[1].lower()
             if lcaddr in d:
                 return

@@ -130,7 +130,7 @@ class TestMigrations(unittest.TestCase):
             sa.sql.column('value', SAUnicode),
             sa.sql.column('pended_id', sa.Integer),
             )
-        def get_from_db():                                 # noqa: E301
+        def get_from_db():                                 # noqa: E306
             results = {}
             for i in range(1, 6):
                 query = sa.sql.select(

@@ -302,7 +302,7 @@ A message body.
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('Header2', 'b+')
         header_matches.append('Header3', 'c+')
-        def get_links():                          # noqa: E301
+        def get_links():                          # noqa: E306
             return [
                 link for link in chain.get_links(self._mlist, Message(), {})
                 if link.rule.name != 'any'

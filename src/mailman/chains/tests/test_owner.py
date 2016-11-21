@@ -50,7 +50,7 @@ Message-ID: <ant>
         # This event subscriber records the event that occurs when the message
         # is processed by the owner chain.
         events = []
-        def catch_event(event):                                  # noqa: E301
+        def catch_event(event):                                  # noqa: E306
             if isinstance(event, AcceptOwnerEvent):
                 events.append(event)
         with event_subscribers(catch_event):

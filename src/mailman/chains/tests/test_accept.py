@@ -60,7 +60,7 @@ Subject: Ignore
         config.chains['mine'] = MyChain()
         self.addCleanup(config.chains.pop, 'mine')
         hits = None
-        def handler(event):                                # noqa: E301
+        def handler(event):                                # noqa: E306
             nonlocal hits
             if isinstance(event, AcceptEvent):
                 hits = event.msg['x-mailman-rule-hits']
