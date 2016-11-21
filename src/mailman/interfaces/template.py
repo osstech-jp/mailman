@@ -157,6 +157,7 @@ class ITemplateManager(Interface):
         :type context: str
         """
 
+
 # Mapping of template names to their in-source file names.  A None value means
 # that there is no file in the tree for that template.
 

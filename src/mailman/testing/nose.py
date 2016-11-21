@@ -42,7 +42,7 @@ class NosePlugin(Plugin):
         super().__init__()
         self.patterns = []
         self.stderr = False
-        def set_stderr(ignore):                                  # noqa: E301
+        def set_stderr(ignore):                                  # noqa: E306
             self.stderr = True
         self.addArgument(self.patterns, 'P', 'pattern',
                          'Add a test matching pattern')

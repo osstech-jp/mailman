@@ -299,33 +299,33 @@ class Loop:
         # Set up our signal handlers.  Also set up a SIGALRM handler to
         # refresh the lock once per day.  The lock lifetime is 1 day + 6 hours
         # so this should be plenty.
-        def sigalrm_handler(signum, frame):                      # noqa: E301
+        def sigalrm_handler(signum, frame):                      # noqa: E306
             self._lock.refresh()
             signal.alarm(SECONDS_IN_A_DAY)
         signal.signal(signal.SIGALRM, sigalrm_handler)
         signal.alarm(SECONDS_IN_A_DAY)
         # SIGHUP tells the runners to close and reopen their log files.
-        def sighup_handler(signum, frame):                        # noqa: E301
+        def sighup_handler(signum, frame):                        # noqa: E306
             reopen()
             for pid in self._kids:
                 os.kill(pid, signal.SIGHUP)
             log.info('Master watcher caught SIGHUP.  Re-opening log files.')
         signal.signal(signal.SIGHUP, sighup_handler)
         # SIGUSR1 is used by 'mailman restart'.
-        def sigusr1_handler(signum, frame):                       # noqa: E301
+        def sigusr1_handler(signum, frame):                       # noqa: E306
             for pid in self._kids:
                 os.kill(pid, signal.SIGUSR1)
             log.info('Master watcher caught SIGUSR1.  Exiting.')
         signal.signal(signal.SIGUSR1, sigusr1_handler)
         # SIGTERM is what init will kill this process with when changing run
         # levels.  It's also the signal 'mailman stop' uses.
-        def sigterm_handler(signum, frame):                       # noqa: E301
+        def sigterm_handler(signum, frame):                       # noqa: E306
             for pid in self._kids:
                 os.kill(pid, signal.SIGTERM)
             log.info('Master watcher caught SIGTERM.  Exiting.')
         signal.signal(signal.SIGTERM, sigterm_handler)
         # SIGINT is what control-C gives.
-        def sigint_handler(signum, frame):                        # noqa: E301
+        def sigint_handler(signum, frame):                        # noqa: E306
             for pid in self._kids:
                 os.kill(pid, signal.SIGINT)
             log.info('Master watcher caught SIGINT.  Restarting.')
