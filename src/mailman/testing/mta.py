@@ -183,7 +183,7 @@ class ConnectionCountingServer(QueueServer):
         log.info('[ConnectionCountingServer] accepted: %s', address)
         StatisticsChannel(self, connection, address)
 
-    def process_message(self, peer, mailfrom, rcpttos, data):
+    def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
         # Provide a guaranteed order to recpttos.
         QueueServer.process_message(
             self, peer, mailfrom, sorted(rcpttos), data)
