@@ -158,7 +158,7 @@ class SubjectPrefix:
         prefix_pattern = re.escape(prefix)
         # Unescape '%'.
         prefix_pattern = '%'.join(prefix_pattern.split(r'\%'))
-        p = re.compile('%\d*d')
+        p = re.compile(r'%\d*d')
         if p.search(prefix, 1):
             # The prefix has number, so we should search prefix w/number in
             # subject.  Also, force new style.
