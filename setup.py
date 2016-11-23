@@ -104,6 +104,7 @@ case second `m'.  Any other spelling is incorrect.""",
         'flake8.extension': ['B4 = mailman.testing.flake8:ImportOrder'],
         },
     install_requires = [
+        'aiosmtpd',
         'alembic',
         'falcon>=1.0.0rc1',
         'flufl.bounce',

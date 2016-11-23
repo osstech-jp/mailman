@@ -34,11 +34,13 @@ so that the peer mail server can provide better diagnostics.
     http://www.faqs.org/rfcs/rfc2033.html
 """
 
-import sys
 import email
 import logging
-import asyncore
+import aiosmtpd
+import aiosmtpd.smtp
 
+from aiosmtpd.controller import Controller
+from aiosmtpd.lmtp import LMTP
 from email.utils import parseaddr
 from mailman import public
 from mailman.config import config
@@ -49,14 +51,6 @@ from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.datetime import now
 from mailman.utilities.email import add_message_hash
 from zope.component import getUtility
-
-# Python 3.4's smtpd module can't handle non-UTF-8 byte input.  Unfortunately
-# we do get such emails in the wild.  Python 3.5's version of the module does
-# handle it correctly.  We vendor a version to use in the Python 3.4 case.
-if sys.version_info < (3, 5):
-    from mailman.compat import smtpd
-else:
-    import smtpd
 
 
 elog = logging.getLogger('mailman.error')
@@ -99,7 +93,7 @@ ERR_550 = '550 Requested action not taken: mailbox unavailable'
 ERR_550_MID = '550 No Message-ID header provided'
 
 # XXX Blech
-smtpd.__version__ = 'GNU Mailman LMTP runner 1.1'
+aiosmtpd.smtp.__version__ = 'GNU Mailman LMTP runner 2.0'
 
 
 def split_recipient(address):
@@ -129,48 +123,7 @@ def split_recipient(address):
     return listname, subaddress, domain
 
 
-class Channel(smtpd.SMTPChannel):
-    """An LMTP channel."""
-
-    def __init__(self, server, conn, addr):
-        super().__init__(server, conn, addr, decode_data=False)
-        # Stash this here since the subclass uses private attributes. :(
-        self._server = server
-
-    def smtp_LHLO(self, arg):
-        """The LMTP greeting, used instead of HELO/EHLO."""
-        super().smtp_HELO(arg)
-
-    def smtp_HELO(self, arg):
-        """HELO is not a valid LMTP command."""
-        self.push(ERR_502)
-
-    # def push(self, arg):
-    #     import pdb; pdb.set_trace()
-    #     return super().push(arg)
-
-
-@public
-class LMTPRunner(Runner, smtpd.SMTPServer):
-    # Only __init__ is called on startup. Asyncore is responsible for later
-    # connections from the MTA.  slice and numslices are ignored and are
-    # necessary only to satisfy the API.
-
-    is_queue_runner = False
-
-    def __init__(self, name, slice=None):
-        localaddr = config.mta.lmtp_host, int(config.mta.lmtp_port)
-        # Do not call Runner's constructor because there's no QDIR to create
-        qlog.debug('LMTP server listening on %s:%s',
-                   localaddr[0], localaddr[1])
-        smtpd.SMTPServer.__init__(self, localaddr, remoteaddr=None)
-        super().__init__(name, slice)
-
-    def handle_accept(self):
-        conn, addr = self.accept()
-        Channel(self, conn, addr)
-        slog.debug('LMTP accept from %s', addr)
-
+class LMTPHandler:
     @transactional
     def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
         try:
@@ -261,12 +214,47 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         # response to the LMTP client.
         return CRLF.join(status)
 
+
+import socket
+import asyncio
+
+
+class LMTPController(Controller):
+    def factory(self):
+        return LMTP(self.handler)
+
+    def _run(self, ready_event):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+        sock.bind((self.hostname, self.port))
+        asyncio.set_event_loop(self.loop)
+        server = self.loop.run_until_complete(
+            self.loop.create_server(self.factory, sock=sock))
+        self.loop.call_soon(ready_event.set)
+        self.loop.run_forever()
+        server.close()
+        self.loop.run_until_complete(server.wait_closed())
+        self.loop.close()
+
+
+@public
+class LMTPRunner(Runner):
+    # Only __init__ is called on startup. Asyncore is responsible for later
+    # connections from the MTA.  slice and numslices are ignored and are
+    # necessary only to satisfy the API.
+
+    is_queue_runner = False
+
+    def __init__(self, name, slice=None):
+        super().__init__(name, slice)
+        hostname = config.mta.lmtp_host
+        port = int(config.mta.lmtp_port)
+        self.lmtp = LMTPController(LMTPHandler(), hostname=hostname, port=port)
+        qlog.debug('LMTP server listening on %s:%s', hostname, port)
+
     def run(self):
         """See `IRunner`."""
-        asyncore.loop(use_poll=True)
-
-    def stop(self):
-        """See `IRunner`."""
-        asyncore.socket_map.clear()
-        asyncore.close_all()
-        self.close()
+        self.lmtp.start()
+        while not self._stop:
+            self._snooze(0)
+        self.lmtp.stop()
