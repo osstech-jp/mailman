@@ -19,6 +19,7 @@
 
 import logging
 
+from aiosmtpd.controller import Controller
 from lazr.smtptest.controller import QueueController
 from lazr.smtptest.server import Channel, QueueServer
 from mailman import public
