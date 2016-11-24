@@ -63,9 +63,11 @@ class BaseDelivery:
         # Do the actual sending.
         sender = self._get_sender(mlist, msg, msgdata)
         message_id = msg['message-id']
+        # Since the recipients can be a set or a list, sort the recipients by
+        # email address for predictability and testability.
         try:
             refused = self._connection.sendmail(
-                sender, recipients, msg.as_string())
+                sender, sorted(recipients), msg.as_string())
         except smtplib.SMTPRecipientsRefused as error:
             log.error('%s recipients refused: %s', message_id, error)
             refused = error.recipients
