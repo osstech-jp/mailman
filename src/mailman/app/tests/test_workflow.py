@@ -50,6 +50,26 @@ class MyWorkflow(Workflow):
         return 'three'
 
 
+class DependentWorkflow(MyWorkflow):
+    SAVE_ATTRIBUTES = ('ant', 'bee', 'cat', 'elf')
+
+    def __init__(self):
+        super().__init__()
+        self._elf = 5
+
+    @property
+    def elf(self):
+        return self._elf
+
+    @elf.setter
+    def elf(self, value):
+        # This attribute depends on other attributes.
+        assert self.ant is not None
+        assert self.bee is not None
+        assert self.cat is not None
+        self._elf = value
+
+
 class TestWorkflow(unittest.TestCase):
     layer = ConfigLayer
 
@@ -117,30 +137,10 @@ class TestWorkflow(unittest.TestCase):
     def test_save_and_restore_dependant_attributes(self):
         # Attributes must be restored in the order they are declared in
         # SAVE_ATTRIBUTES.
-
-        class DependantWorkflow(MyWorkflow):
-            SAVE_ATTRIBUTES = ('ant', 'bee', 'cat', 'elf')
-
-            def __init__(self):
-                super().__init__()
-                self._elf = 5
-
-            @property
-            def elf(self):
-                return self._elf
-
-            @elf.setter
-            def elf(self, value):
-                # This attribute depends on other attributes.
-                assert self.ant is not None
-                assert self.bee is not None
-                assert self.cat is not None
-                self._elf = value
-
-        workflow = iter(DependantWorkflow())
+        workflow = iter(DependentWorkflow())
         workflow.elf = 6
         workflow.save()
-        new_workflow = DependantWorkflow()
+        new_workflow = DependentWorkflow()
         # The elf attribute must be restored last, set triggering values for
         # attributes it depends on.
         new_workflow.ant = new_workflow.bee = new_workflow.cat = None
@@ -160,7 +160,7 @@ class TestWorkflow(unittest.TestCase):
         try:
             new_workflow.restore()
         except KeyError:
-            self.fail("Restore does not handle obsolete attributes")
+            self.fail('Restore does not handle obsolete attributes')
         # Restoring must not raise an exception, the default value is kept.
         self.assertEqual(new_workflow.cat, 3)
 
