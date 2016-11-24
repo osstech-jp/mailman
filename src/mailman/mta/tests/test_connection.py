@@ -22,7 +22,7 @@ import unittest
 from mailman.config import config
 from mailman.mta.connection import Connection
 from mailman.testing.layers import SMTPLayer
-from smtplib import SMTPAuthenticationError
+from smtplib import SMTP, SMTPAuthenticationError
 
 
 class TestConnection(unittest.TestCase):
@@ -57,3 +57,48 @@ Subject: aardvarks
 """)
         self.assertEqual(self.layer.smtpd.get_authentication_credentials(),
                          'AHRlc3R1c2VyAHRlc3RwYXNz')
+
+
+class TestConnectionCount(unittest.TestCase):
+    layer = SMTPLayer
+
+    def setUp(self):
+        self.connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0)
+        self.msg_text = """\
+From: anne@example.com
+To: bart@example.com
+Subject: aardvarks
+
+"""
+
+    def test_count_0(self):
+        # So far, no connections.
+        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 0)
+
+    def test_count_1(self):
+        self.connection.sendmail(
+            'anne@example.com', ['bart@example.com'], self.msg_text)
+        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 1)
+
+    def test_count_2(self):
+        self.connection.sendmail(
+            'anne@example.com', ['bart@example.com'], self.msg_text)
+        self.connection.quit()
+        self.connection.sendmail(
+            'cate@example.com', ['dave@example.com'], self.msg_text)
+        self.connection.quit()
+        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 2)
+
+    def test_count_reset(self):
+        self.connection.sendmail(
+            'anne@example.com', ['bart@example.com'], self.msg_text)
+        self.connection.quit()
+        self.connection.sendmail(
+            'cate@example.com', ['dave@example.com'], self.msg_text)
+        self.connection.quit()
+        # Issue the fake SMTP command to reset the count.
+        client = SMTP()
+        client.connect(config.mta.smtp_host, int(config.mta.smtp_port))
+        client.docmd('RSET')
+        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 0)

@@ -147,6 +147,10 @@ def initialize(propagate=None):
             log = logging.getLogger('sqlalchemy')
             _init_logger(propagate, sub_name, log, logger_config)
             log = logging.getLogger('alembic')
+        elif sub_name == 'smtp':
+            log = logging.getLogger('mail.log')
+            _init_logger(propagate, sub_name, log, logger_config)
+            log = logging.getLogger('mailman.smtp')
         else:
             logger_name = 'mailman.' + sub_name
             log = logging.getLogger(logger_name)
