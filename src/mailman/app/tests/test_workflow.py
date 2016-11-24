@@ -17,10 +17,13 @@
 
 """App-level workflow tests."""
 
+import json
 import unittest
 
 from mailman.app.workflow import Workflow
+from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.testing.layers import ConfigLayer
+from zope.component import getUtility
 
 
 class MyWorkflow(Workflow):
@@ -110,6 +113,56 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(new_workflow.bee, 8)
         self.assertEqual(new_workflow.cat, 7)
         self.assertEqual(new_workflow.dog, 4)
+
+    def test_save_and_restore_dependant_attributes(self):
+        # Attributes must be restored in the order they are declared in
+        # SAVE_ATTRIBUTES.
+
+        class DependantWorkflow(MyWorkflow):
+            SAVE_ATTRIBUTES = ('ant', 'bee', 'cat', 'elf')
+
+            def __init__(self):
+                super().__init__()
+                self._elf = 5
+
+            @property
+            def elf(self):
+                return self._elf
+
+            @elf.setter
+            def elf(self, value):
+                # This attribute depends on other attributes.
+                assert self.ant is not None
+                assert self.bee is not None
+                assert self.cat is not None
+                self._elf = value
+
+        workflow = iter(DependantWorkflow())
+        workflow.elf = 6
+        workflow.save()
+        new_workflow = DependantWorkflow()
+        # The elf attribute must be restored last, set triggering values for
+        # attributes it depends on.
+        new_workflow.ant = new_workflow.bee = new_workflow.cat = None
+        new_workflow.restore()
+        self.assertEqual(new_workflow.elf, 6)
+
+    def test_save_and_restore_obsolete_attributes(self):
+        # Obsolete saved attributes are ignored.
+        state_manager = getUtility(IWorkflowStateManager)
+        # Save the state of an old version of the workflow that would not have
+        # the cat attribute.
+        state_manager.save(
+            self._workflow.token, 'first',
+            json.dumps({'ant': 1, 'bee': 2}))
+        # Restore in the current version that needs the cat attribute.
+        new_workflow = MyWorkflow()
+        try:
+            new_workflow.restore()
+        except KeyError:
+            self.fail("Restore does not handle obsolete attributes")
+        # Restoring must not raise an exception, the default value is kept.
+        self.assertEqual(new_workflow.cat, 3)
 
     def test_run_thru(self):
         # Run all steps through the given one.
