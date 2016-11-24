@@ -180,18 +180,6 @@ class ConnectionCountingSMTP(SMTP):
             # the exception we expect smtplib.SMTP to raise.
             yield from self.push('%d Error: SMTPResponseException' % code)
 
-    def found_terminator(self):
-        # Are we're waiting for the AUTH challenge response?
-        if self._waiting_for_auth_response:
-            line = self._emptystring.join(self.received_lines)
-            self._auth_response = line
-            self._waiting_for_auth_response = False
-            self.received_lines = []
-            # Now check to see if they authenticated correctly.
-            self._check_auth(line)
-        else:
-            super().found_terminator()
-
 
 import socket
 import asyncio
