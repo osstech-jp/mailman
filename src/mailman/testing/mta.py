@@ -18,7 +18,6 @@
 """Fake MTA for testing purposes."""
 
 import asyncio
-import logging
 import smtplib
 
 from aiosmtpd.controller import Controller
@@ -28,9 +27,6 @@ from mailman import public
 from mailman.interfaces.mta import IMailTransportAgentLifecycle
 from queue import Empty, Queue
 from zope.interface import implementer
-
-
-log = logging.getLogger('lazr.smtptest')
 
 
 @public
