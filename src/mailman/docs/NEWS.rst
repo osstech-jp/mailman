@@ -145,10 +145,13 @@ Interfaces
  * ``ISubscriptionService`` now supports mass unsubscribes.  Given by Harshit
    Bansal.
 
-Internal API
-------------
+Internal
+--------
  * A handful of unused legacy exceptions have been removed.  The redundant
    `MailmanException` has been removed; use `MailmanError` everywhere.
+ * Drop the use of the `lazr.smtptest` library, which is based on the
+   asynchat/asyncore-based smtpd.py stdlib module.  Instead, use the
+   asyncio-based aiosmtpd package.
 
 Message handling
 ----------------

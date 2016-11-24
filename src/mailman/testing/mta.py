@@ -17,6 +17,7 @@
 
 """Fake MTA for testing purposes."""
 
+import socket
 import asyncio
 import smtplib
 
@@ -95,28 +96,12 @@ class ConnectionCountingSMTP(SMTP):
             yield from self.push('571 Bad authentication')
 
     @asyncio.coroutine
-    def smtp_EHLO(self, arg):
-        if not arg:
-            yield from self.push('501 Syntax: EHLO hostname')
-            return
-        # See issue #21783 for a discussion of this behavior.
-        if self.seen_greeting:
-            yield from self.push('503 Duplicate HELO/EHLO')
-            return
-        self._set_rset_state()
-        self.seen_greeting = arg
-        self.extended_smtp = True
-        yield from self.push('250-%s' % self.hostname)
-        if self.data_size_limit:
-            yield from self.push('250-SIZE %s' % self.data_size_limit)
-            self.command_size_limits['MAIL'] += 26
-        if not self._decode_data:
-            yield from self.push('250-8BITMIME')
-        if self.enable_SMTPUTF8:
-            yield from self.push('250-SMTPUTF8')
-            self.command_size_limits['MAIL'] += 10
-        yield from self.push('250-HELP')
-        yield from self.push('250 AUTH PLAIN')
+    def ehlo_hook(self):
+        yield from self.push('250-AUTH PLAIN')
+
+    @asyncio.coroutine
+    def rset_hook(self):
+        self.event_handler.connection_count = 0
 
     @asyncio.coroutine
     def smtp_STAT(self, arg):
@@ -125,11 +110,6 @@ class ConnectionCountingSMTP(SMTP):
         self.event_handler.connection_count -= 1
         self._oob_queue.put(self.event_handler.connection_count)
         yield from self.push('250 Ok')
-
-    @asyncio.coroutine
-    def smtp_RSET(self, arg):
-        yield from super().smtp_RSET(arg)
-        self.event_handler.connection_count = 0
 
     def _next_error(self, command):
         """Return the next error for the SMTP command, if there is one.
@@ -181,10 +161,6 @@ class ConnectionCountingSMTP(SMTP):
             yield from self.push('%d Error: SMTPResponseException' % code)
 
 
-import socket
-import asyncio
-
-
 class ConnectionCountingController(Controller):
     """Count the number of SMTP connections opened."""
 
@@ -199,18 +175,10 @@ class ConnectionCountingController(Controller):
         return ConnectionCountingSMTP(
             self.handler, self._oob_queue, self.err_queue)
 
-    def _run(self, ready_event):
+    def make_socket(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
-        sock.bind((self.hostname, self.port))
-        asyncio.set_event_loop(self.loop)
-        server = self.loop.run_until_complete(
-            self.loop.create_server(self.factory, sock=sock))
-        self.loop.call_soon(ready_event.set)
-        self.loop.run_forever()
-        server.close()
-        self.loop.run_until_complete(server.wait_closed())
-        self.loop.close()
+        return sock
 
     def start(self):
         super().start()

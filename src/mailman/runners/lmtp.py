@@ -35,6 +35,7 @@ so that the peer mail server can provide better diagnostics.
 """
 
 import email
+import socket
 import logging
 import aiosmtpd
 import aiosmtpd.smtp
@@ -215,26 +216,14 @@ class LMTPHandler:
         return CRLF.join(status)
 
 
-import socket
-import asyncio
-
-
 class LMTPController(Controller):
     def factory(self):
         return LMTP(self.handler)
 
-    def _run(self, ready_event):
+    def make_socket(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
-        sock.bind((self.hostname, self.port))
-        asyncio.set_event_loop(self.loop)
-        server = self.loop.run_until_complete(
-            self.loop.create_server(self.factory, sock=sock))
-        self.loop.call_soon(ready_event.set)
-        self.loop.run_forever()
-        server.close()
-        self.loop.run_until_complete(server.wait_closed())
-        self.loop.close()
+        return sock
 
 
 @public
