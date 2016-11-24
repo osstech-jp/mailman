@@ -52,6 +52,7 @@ class ConnectionCountingHandler(MessageHandler):
     def __init__(self, msg_queue):
         super().__init__()
         self._msg_queue = msg_queue
+        self.connection_count = 0
 
     def handle_message(self, message):
         self._msg_queue.put(message)
@@ -62,10 +63,17 @@ class ConnectionCountingSMTP(SMTP):
         super().__init__(handler, *args, **kws)
         self._auth_response = None
         self._waiting_for_auth_response = False
-        self._connection_count = 0
         self._oob_queue = oob_queue
         self._err_queue = err_queue
         self._last_error = None
+
+    def connection_made(self, transport):
+        super().connection_made(transport)
+        # We can't keep the connection count on self here because the
+        # controller (via the factory() method) will create a new instance of
+        # this class for every connection.  The handler instance is always the
+        # same though, so it's fine to stash this value away there.
+        self.event_handler.connection_count += 1
 
     @asyncio.coroutine
     def smtp_AUTH(self, arg):
@@ -92,19 +100,40 @@ class ConnectionCountingSMTP(SMTP):
 
     @asyncio.coroutine
     def smtp_EHLO(self, arg):
-        yield from super().smtp_EHLO(arg)
-        # If the upcall succeeded, this flag will be set.  In that case, also
-        # push an AUTH PLAIN response, which the superclass doesn't do.
-        ## if self.extended_smtp:
-        ##     yield from self.push('250 AUTH PLAIN')
+        if not arg:
+            yield from self.push('501 Syntax: EHLO hostname')
+            return
+        # See issue #21783 for a discussion of this behavior.
+        if self.seen_greeting:
+            yield from self.push('503 Duplicate HELO/EHLO')
+            return
+        self._set_rset_state()
+        self.seen_greeting = arg
+        self.extended_smtp = True
+        yield from self.push('250-%s' % self.hostname)
+        if self.data_size_limit:
+            yield from self.push('250-SIZE %s' % self.data_size_limit)
+            self.command_size_limits['MAIL'] += 26
+        if not self._decode_data:
+            yield from self.push('250-8BITMIME')
+        if self.enable_SMTPUTF8:
+            yield from self.push('250-SMTPUTF8')
+            self.command_size_limits['MAIL'] += 10
+        yield from self.push('250-HELP')
+        yield from self.push('250 AUTH PLAIN')
 
     @asyncio.coroutine
     def smtp_STAT(self, arg):
         """Cause the server to send statistics to its controller."""
         # Do not count the connection caused by the STAT connect.
-        self._connection_count -= 1
-        self._oob_queue.put(self._connection_count)
+        self.event_handler.connection_count -= 1
+        self._oob_queue.put(self.event_handler.connection_count)
         yield from self.push('250 Ok')
+
+    @asyncio.coroutine
+    def smtp_RSET(self, arg):
+        yield from super().smtp_RSET(arg)
+        self.event_handler.connection_count = 0
 
     def _next_error(self, command):
         """Return the next error for the SMTP command, if there is one.
