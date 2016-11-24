@@ -113,7 +113,7 @@ Can you help me?
         # All three messages will have two X-MailFrom headers.  One is added
         # by the LMTP server accepting Zuzu's original message, and will
         # contain her posting address, i.e. zuzu@example.com.  The second one
-        # is added by the lazr.smtptest server that accepts Mailman's VERP'd
+        # is added by the aiosmtpd server that accepts Mailman's VERP'd
         # message to the individual recipient.  By verifying both, we prove
         # that Zuzu sent the original message, and that Mailman is VERP'ing
         # the copy to all the owners.
