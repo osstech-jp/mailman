@@ -22,6 +22,7 @@ import sys
 import code
 
 from contextlib import suppress
+from inspect import signature
 from mailman import public
 
 
@@ -67,4 +68,10 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
 Python %s on %s
 Type "help", "copyright", "credits" or "license" for more information.''' % (
             sys.version, sys.platform)
-    interp.interact(banner)
+    # Python 3.6 added an exitmsg keyword but we don't currently support
+    # configuring it.  For consistency between Python 3.6 and earlier
+    # versions, suppress the exit message if possible.
+    kws = dict(banner=banner)
+    if 'exitmsg' in signature(interp.interact).parameters:
+        kws['exitmsg'] = ''
+    interp.interact(**kws)
