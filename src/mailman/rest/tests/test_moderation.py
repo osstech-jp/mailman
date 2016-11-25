@@ -211,10 +211,10 @@ class TestSubscriptionModeration(unittest.TestCase):
 
     def test_view_malformed_held_message(self):
         # Opening a bad (i.e. bad structure) email and holding it.
-        email_path = resource_filename('mailman.rest.tests.data',
-                                      'bad_email.eml')
-        with open(email_path, 'rb') as f:
-            msg = message_from_binary_file(f)
+        email_path = resource_filename(
+            'mailman.rest.tests.data', 'bad_email.eml')
+        with open(email_path, 'rb') as fp:
+            msg = message_from_binary_file(fp)
         msg.sender = 'aperson@example.com'
         with transaction():
             hold_message(self._mlist, msg)
@@ -225,7 +225,7 @@ class TestSubscriptionModeration(unittest.TestCase):
         self.assertEqual(response.status, 200)
         self.assertEqual(len(content['entries']), 1)
         self.assertEqual(content['entries'][0]['msg'],
-                         'this message is defective')
+                         'This message is defective')
 
     def test_individual_request(self):
         # We can view an individual request.

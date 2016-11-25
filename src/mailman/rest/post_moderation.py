@@ -76,8 +76,9 @@ class _HeldMessageBase(_ModerationBase):
         except KeyError:
             # If the message can't be parsed, return a generic message instead
             # of raising an error.
-            # See http://bugs.python.org/issue27321 and #256
-            resource['msg'] = 'this message is defective'
+            #
+            # See http://bugs.python.org/issue27321 and GL#256
+            resource['msg'] = 'This message is defective'
         # Some of the _mod_* keys we want to rename and place into the JSON
         # resource.  Others we can drop.  Since we're mutating the dictionary,
         # we need to make a copy of the keys.  When you port this to Python 3,
