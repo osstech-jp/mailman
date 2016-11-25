@@ -139,6 +139,24 @@ A message body.
         self.assertEqual(
             data.get('_mod_reason'), 'TEST-REASON-1; TEST-REASON-2')
 
+    def test_hold_chain_no_reasons_given(self):
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        process_chain(self._mlist, msg, {}, start_chain='hold')
+        # No reason was given, so a default is used.
+        requests = IListRequests(self._mlist)
+        self.assertEqual(requests.count_of(RequestType.held_message), 1)
+        request = requests.of_type(RequestType.held_message)[0]
+        key, data = requests.get_request(request.id)
+        self.assertEqual(data.get('_mod_reason'), 'n/a')
+
     def test_hold_chain_charset(self):
         # Issue #144 - UnicodeEncodeError in the hold chain.
         self._mlist.admin_immed_notify = True
