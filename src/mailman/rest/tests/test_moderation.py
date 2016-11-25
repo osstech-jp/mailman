@@ -17,7 +17,6 @@
 
 """REST moderation tests."""
 
-import os
 import unittest
 
 from email import message_from_binary_file
