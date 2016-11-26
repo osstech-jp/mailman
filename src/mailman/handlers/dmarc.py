@@ -21,7 +21,7 @@ import re
 import copy
 import logging
 
-from email.header import Header
+from email.header import Header, decode_header
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formataddr, getaddresses, make_msgid
@@ -54,32 +54,6 @@ KEEPERS = ('archived-at',
            )
 
 
-@public
-def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
-    """Get the charset to encode the string in.
-
-    Then search if there is any non-ascii character is in the string.  If
-    there is and the charset is us-ascii then we use iso-8859-1 instead.  If
-    the string is ascii only we use 'us-ascii' if another charset is
-    specified.
-
-    If the header contains a newline, truncate it (see GL#273).
-    """
-    charset = mlist.preferred_language.charset
-    if NONASCII.search(s):
-        # use list charset but ...
-        if charset == 'us-ascii':
-            charset = 'iso-8859-1'
-    else:
-        # there is no non-ascii so ...
-        charset = 'us-ascii'
-    if '\n' in s:
-        s = '{} [...]'.format(s.split('\n')[0])
-        log.warning('Header {} contains a newline, truncating it.'.format(
-            header_name, s))
-    return Header(s, charset, maxlinelen, header_name, continuation_ws)
-
-
 def munged_headers(mlist, msg, msgdata):
     # Be as robust as possible here.
     faddrs = getaddresses(msg.get_all('from', []))
@@ -101,11 +75,33 @@ def munged_headers(mlist, msg, msgdata):
             realname = email
     # Remove domain from realname if it looks like an email address
     realname = re.sub(r'@([^ .]+\.)+[^ .]+$', '---', realname)
-    # RFC 2047 encode realname if necessary.
-    realname = str(uheader(mlist, realname))
-    lrn = mlist.display_name                         # noqa F841
-    retn = [('From', formataddr((_('$realname via $lrn'),
-                                mlist.posting_address)))]
+    # Make a display name and RFC 2047 encode it if necessary.  This is
+    # difficult and kludgy. If the realname came from From: it should be
+    # ascii or RFC 2047 encoded. If it came from the list, it should be
+    # a string.  If it's from the email address, it should be an ascii string.
+    # In any case, ensure it's an unencoded string.
+    srn = ''
+    for frag, cs in decode_header(realname):
+        if not cs:
+            # Character set should be ascii, but use iso-8859-1 anyway.
+            cs = 'iso-8859-1'
+        if not isinstance(frag, str):
+            srn += str(frag, cs, errors='replace')
+        else:
+            srn += frag
+    # The list's real_name is a string.
+    slrn = mlist.display_name
+    # get translated 'via' with dummy replacements
+    realname = '$realname'
+    lrn = '$lrn'                 # noqa  F841
+    # Ensure the i18n context is the list's preferred_language.
+    with _.using(mlist.preferred_language.code):
+        via = _('$realname via $lrn')
+    # Replace the dummy replacements.
+    via = re.sub('\$lrn', slrn, re.sub('\$realname', srn, via))
+    # And get an RFC 2047 encoded header string.
+    dn = str(Header(via, mlist.preferred_language.charset))
+    retn = [('From', formataddr((dn, mlist.posting_address)))]
     # We've made the munged From:.  Now put the original in Reply-To: or Cc:
     if mlist.reply_goes_to_list == ReplyToMunging.no_munging:
         # Add original from to Reply-To:
