@@ -39,6 +39,10 @@ class TestSystemConfiguration(unittest.TestCase):
         self.assertEqual(json, dict(
             cache_life='7d',
             default_language='en',
+            dmarc_org_domain_data=                # noqa E251
+            'https://publicsuffix.org/list/public_suffix_list.dat',
+            dmarc_resolver_lifetime='5s',
+            dmarc_resolver_timeout='3s',
             email_commands_max_lines='10',
             filtered_messages_are_preservable='no',
             html_to_plain_text_command='/usr/bin/lynx -dump $filename',

@@ -115,6 +115,7 @@ class PostingPipeline(BasePipeline):
         'after-delivery',
         'acknowledge',
         'decorate',
+        'dmarc',
         'to-outgoing',
         )
 

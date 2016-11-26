@@ -22,6 +22,7 @@ names to rule objects.
     any True
     approved True
     banned-address True
+    dmarc-moderation True
     emergency True
     implicit-dest True
     loop True

@@ -44,10 +44,16 @@ All readable attributes for a list are available on a sub-resource.
     digest_volume_frequency: monthly
     digests_enabled: True
     display_name: Ant
+    dmarc_moderation_action: none
+    dmarc_moderation_notice:
+    dmarc_none_moderation_action: False
+    dmarc_quarantine_moderation_action: True
+    dmarc_wrapped_message_text:
     filter_content: False
     first_strip_reply_to: False
     footer_uri:
     fqdn_listname: ant@example.com
+    from_is_list: none
     goodbye_message_uri:
     header_uri:
     http_etag: "..."
@@ -110,9 +116,15 @@ When using ``PUT``, all writable attributes must be included.
     ...             digest_size_threshold=10.5,
     ...             digest_volume_frequency='yearly',
     ...             digests_enabled=False,
+    ...             dmarc_moderation_action='munge_from',
+    ...             dmarc_moderation_notice='Some moderation notice',
+    ...             dmarc_none_moderation_action=True,
+    ...             dmarc_quarantine_moderation_action=False,
+    ...             dmarc_wrapped_message_text='some message text',
     ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             first_strip_reply_to=True,
+    ...             from_is_list='none',
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
     ...             reply_goes_to_list='point_to_list',
@@ -162,6 +174,11 @@ These values are changed permanently.
     digest_volume_frequency: yearly
     digests_enabled: False
     display_name: Fnords
+    dmarc_moderation_action: munge_from
+    dmarc_moderation_notice: Some moderation notice
+    dmarc_none_moderation_action: True
+    dmarc_quarantine_moderation_action: False
+    dmarc_wrapped_message_text: some message text
     filter_content: True
     first_strip_reply_to: True
     footer_uri:
