@@ -245,6 +245,8 @@ REST
    Aurélien Bompard.  (Closes #284)
  * Query parameters now allow you to filter mailing lists by the
    ``advertised`` boolean parameter.  Given by Aurélien Bompard.
+ * Only the system-enabled archivers are returned in the REST API.  Given by
+   Aurélien Bompard.
 
 Other
 -----
