@@ -81,26 +81,19 @@ class TestHelpers(unittest.TestCase):
 
 class TestJSONEncoder(unittest.TestCase):
     """Test the JSON ExtendedEncoder."""
-
     layer = RESTLayer
 
     def test_encode_message(self):
         msg = Message()
         msg['From'] = 'test@example.com'
         msg.set_payload('Test content.')
-        try:
-            result = json.dumps(msg, cls=helpers.ExtendedEncoder)
-        except TypeError as e:
-            self.fail(e)
+        result = json.dumps(msg, cls=helpers.ExtendedEncoder)
         self.assertEqual(
             result, json.dumps('From: test@example.com\n\nTest content.'))
 
     def test_encode_header(self):
         value = 'Contains non-ascii \u00e9 \u00e7 \u00e0'
-        try:
-            result = json.dumps(
-                Header(value, charset='utf-8'),
-                cls=helpers.ExtendedEncoder)
-        except TypeError as e:
-            self.fail(e)
+        result = json.dumps(
+            Header(value, charset='utf-8'),
+            cls=helpers.ExtendedEncoder)
         self.assertEqual(result, json.dumps(value))

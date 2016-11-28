@@ -53,7 +53,6 @@ class TestMessage(unittest.TestCase):
 
 
 class TestMessageSubclass(unittest.TestCase):
-
     layer = ConfigLayer
 
     def test_i18n_filenames(self):
@@ -88,4 +87,4 @@ Test content
         msg = Message()
         msg['From'] = Header('test@example.com')
         # Make sure the senders property does not fail
-        self.assertEqual(msg.senders, ["test@example.com"])
+        self.assertEqual(msg.senders, ['test@example.com'])

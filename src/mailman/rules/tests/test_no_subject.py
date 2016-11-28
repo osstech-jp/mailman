@@ -1,4 +1,4 @@
-# Copyright (C) 2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -16,7 +16,6 @@
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
 """Test the `no_subject` header rule."""
-
 
 import unittest
 
@@ -37,15 +36,13 @@ class TestNoSubject(unittest.TestCase):
         self._rule = no_subject.NoSubject()
 
     def test_header_instance_empty(self):
-        # Check the case where the subject is a Header instance
         msg = Message()
-        msg["Subject"] = Header("")
+        msg['Subject'] = Header('')
         result = self._rule.check(self._mlist, msg, {})
         self.assertTrue(result)
 
     def test_header_instance_not_empty(self):
-        # Check the case where the subject is a Header instance
         msg = Message()
-        msg["Subject"] = Header("Test subject")
+        msg['Subject'] = Header('Test subject')
         result = self._rule.check(self._mlist, msg, {})
         self.assertFalse(result)

@@ -1,4 +1,4 @@
-# Copyright (C) 2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,7 +28,7 @@ from mailman.testing.layers import ConfigLayer
 
 
 class TestSuspicious(unittest.TestCase):
-    """Test the suspicous rule."""
+    """Test the suspicious rule."""
 
     layer = ConfigLayer
 
@@ -37,9 +37,8 @@ class TestSuspicious(unittest.TestCase):
         self._rule = suspicious.SuspiciousHeader()
 
     def test_header_instance(self):
-        # Check the case where the subject is a Header instance
         msg = Message()
-        msg["From"] = Header("user@example.com")
+        msg['From'] = Header('user@example.com')
         self._mlist.bounce_matching_headers = 'from: spam@example.com'
         result = self._rule.check(self._mlist, msg, {})
         self.assertFalse(result)
