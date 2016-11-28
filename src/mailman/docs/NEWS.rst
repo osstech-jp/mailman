@@ -151,6 +151,7 @@ Interfaces
 
 Internal
 --------
+ * Add official support for Python 3.6. (Closes #295)
  * A handful of unused legacy exceptions have been removed.  The redundant
    `MailmanException` has been removed; use `MailmanError` everywhere.
  * Drop the use of the `lazr.smtptest` library, which is based on the
