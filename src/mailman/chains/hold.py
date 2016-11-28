@@ -142,8 +142,9 @@ class HoldChain(TerminalChainBase):
         rule_misses = msgdata.get('rule_misses')
         if rule_misses:
             msg['X-Mailman-Rule-Misses'] = SEMISPACE.join(rule_misses)
+        reasons = msgdata.get('moderation_reasons', ['n/a'])
         # Hold the message by adding it to the list's request database.
-        request_id = hold_message(mlist, msg, msgdata, None)
+        request_id = hold_message(mlist, msg, msgdata, SEMISPACE.join(reasons))
         # Calculate a confirmation token to send to the author of the
         # message.
         pendable = HeldMessagePendable(id=request_id)

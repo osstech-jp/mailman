@@ -337,6 +337,7 @@ class TestBasicImport(unittest.TestCase):
             ('^Subject: dev-\r\n^Subject: staging-', 3, False),
             ('from: .*info@aolanchem.com\r\nfrom: .*@jw-express.com',
              2, False),
+            ('^Subject:.*\\Wwas:\\W', 3, False),
             ('^Received: from smtp-.*\\.fedoraproject\\.org\r\n'
              '^Received: from mx.*\\.redhat.com\r\n'
              '^Resent-date:\r\n'
@@ -373,6 +374,7 @@ class TestBasicImport(unittest.TestCase):
                 ('subject', 'staging-', 'discard'),
                 ('from', '.*info@aolanchem.com', 'reject'),
                 ('from', '.*@jw-express.com', 'reject'),
+                ('subject', '\\Wwas:\\W', 'discard'),
                 ('received', 'from smtp-.*\\.fedoraproject\\.org', 'hold'),
                 ('received', 'from mx.*\\.redhat.com', 'hold'),
                 ('resent-date', '.*', 'hold'),

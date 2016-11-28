@@ -26,6 +26,7 @@ from mailman.core.chains import process as process_chain
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
+from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     LogFileMark, configuration, get_queue_messages, set_preferred,
@@ -130,6 +131,31 @@ A message body.
         logged = logfile.read()
         self.assertIn('TEST-REASON-1', logged)
         self.assertIn('TEST-REASON-2', logged)
+        # Check the reason passed to hold_message().
+        requests = IListRequests(self._mlist)
+        self.assertEqual(requests.count_of(RequestType.held_message), 1)
+        request = requests.of_type(RequestType.held_message)[0]
+        key, data = requests.get_request(request.id)
+        self.assertEqual(
+            data.get('_mod_reason'), 'TEST-REASON-1; TEST-REASON-2')
+
+    def test_hold_chain_no_reasons_given(self):
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        process_chain(self._mlist, msg, {}, start_chain='hold')
+        # No reason was given, so a default is used.
+        requests = IListRequests(self._mlist)
+        self.assertEqual(requests.count_of(RequestType.held_message), 1)
+        request = requests.of_type(RequestType.held_message)[0]
+        key, data = requests.get_request(request.id)
+        self.assertEqual(data.get('_mod_reason'), 'n/a')
 
     def test_hold_chain_charset(self):
         # Issue #144 - UnicodeEncodeError in the hold chain.

@@ -99,6 +99,10 @@ Bugs
    Bompard.  (Closes: #259)
  * Messages sent to the list's moderators now include the actual recipient
    addresses.  Given by Tom Briles.  (Closes: #68)
+ * Transmit the moderation reason and expose it in the REST API as the
+   ``reason`` attribute.  Given by Aurélien Bompard.
+ * Don't return a 500 error from the REST API when trying to handle a held
+   message with defective content.  Given by Abhilash Raj.  (Closes: #256)
 
 Configuration
 -------------
@@ -241,6 +245,8 @@ REST
    Aurélien Bompard.  (Closes #284)
  * Query parameters now allow you to filter mailing lists by the
    ``advertised`` boolean parameter.  Given by Aurélien Bompard.
+ * Only the system-enabled archivers are returned in the REST API.  Given by
+   Aurélien Bompard.
 
 Other
 -----

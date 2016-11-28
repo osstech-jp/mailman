@@ -336,7 +336,7 @@ def import_config_pck(mlist, config_dict):
         for line_pattern in line_patterns.splitlines():
             if len(line_pattern.strip()) == 0:
                 continue
-            for sep in (': ', ':.', ':'):
+            for sep in (': ', ':.*', ':.', ':'):
                 header, sep, pattern = line_pattern.partition(sep)
                 if sep:
                     # We found it.
