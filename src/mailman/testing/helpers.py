@@ -35,7 +35,6 @@ from contextlib import contextmanager, suppress
 from email import message_from_string
 from httplib2 import Http
 from lazr.config import as_timedelta
-from mailman import public
 from mailman.bin.master import Loop as Master
 from mailman.config import config
 from mailman.database.transaction import transaction
@@ -46,6 +45,7 @@ from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.digest import DigestRunner
 from mailman.utilities.mailbox import Mailbox
+from public import public
 from unittest import mock
 from urllib.error import HTTPError
 from urllib.parse import urlencode

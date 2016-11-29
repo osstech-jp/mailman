@@ -20,9 +20,9 @@
 import threading
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from mailman import public
 from mailman.testing.helpers import wait_for_webservice
 from mailman.testing.layers import RESTLayer
+from public import public
 
 
 # New in Python 3.5.

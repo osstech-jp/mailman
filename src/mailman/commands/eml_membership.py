@@ -18,13 +18,13 @@
 """The email commands 'join' and 'subscribe'."""
 
 from email.utils import formataddr, parseaddr
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.subscriptions import (
     ISubscriptionManager, ISubscriptionService)
 from mailman.interfaces.usermanager import IUserManager
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

@@ -17,9 +17,9 @@
 
 """Check if any previous rules have matched."""
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
+from public import public
 from zope.interface import implementer
 
 

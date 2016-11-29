@@ -17,7 +17,7 @@
 
 """REST web service API context."""
 
-from mailman import public
+from public import public
 from zope.interface import Attribute, Interface
 
 

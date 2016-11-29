@@ -22,11 +22,11 @@ import re
 import doctest
 import importlib
 
-from mailman import public
 from mailman.testing.documentation import setup, teardown
 from mailman.testing.layers import ConfigLayer, MockAndMonkeyLayer, SMTPLayer
 from nose2.events import Plugin
 from pkg_resources import resource_filename
+from public import public
 
 
 DOT = '.'

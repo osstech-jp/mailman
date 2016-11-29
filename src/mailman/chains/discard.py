@@ -19,10 +19,10 @@
 
 import logging
 
-from mailman import public
 from mailman.chains.base import TerminalChainBase
 from mailman.core.i18n import _
 from mailman.interfaces.chain import DiscardEvent
+from public import public
 from zope.event import notify
 
 

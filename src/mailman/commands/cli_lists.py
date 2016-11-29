@@ -17,7 +17,6 @@
 
 """The 'lists' subcommand."""
 
-from mailman import public
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.core.constants import system_preferences
 from mailman.core.i18n import _
@@ -32,6 +31,7 @@ from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.string import expand, wrap
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

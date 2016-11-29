@@ -20,13 +20,13 @@
 This only happens if the sender has set their AcknowledgePosts attribute.
 """
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.string import expand, oneline
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

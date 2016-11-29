@@ -18,8 +18,8 @@
 """Alembic configuration initization."""
 
 from alembic.config import Config
-from mailman import public
 from mailman.utilities.modules import expand_path
+from public import public
 
 
 public(alembic_cfg=Config(expand_path('python:mailman.config.alembic')))

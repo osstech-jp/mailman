@@ -23,13 +23,13 @@ on the `recipients' attribute of the message.  This attribute is used by the
 SendmailDeliver and BulkDeliver modules.
 """
 
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.member import DeliveryStatus
 from mailman.interfaces.pipeline import RejectMessage
 from mailman.utilities.string import wrap
+from public import public
 from zope.interface import implementer
 
 

@@ -21,12 +21,12 @@ import sys
 import pickle
 
 from contextlib import ExitStack, contextmanager
-from mailman import public
 from mailman.core.i18n import _
 from mailman.database.transaction import transactional
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.importer import Import21Error, import_config_pck
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

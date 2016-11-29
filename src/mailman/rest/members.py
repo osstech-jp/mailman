@@ -17,7 +17,6 @@
 
 """REST for members."""
 
-from mailman import public
 from mailman.app.membership import add_member, delete_member
 from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
@@ -36,6 +35,7 @@ from mailman.rest.helpers import (
 from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
+from public import public
 from uuid import UUID
 from zope.component import getUtility
 

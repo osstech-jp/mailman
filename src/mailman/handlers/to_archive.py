@@ -17,11 +17,11 @@
 
 """Add the message to the archives."""
 
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.handler import IHandler
+from public import public
 from zope.interface import implementer
 
 

@@ -43,7 +43,6 @@ import aiosmtpd.smtp
 from aiosmtpd.controller import Controller
 from aiosmtpd.lmtp import LMTP
 from email.utils import parseaddr
-from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.database.transaction import transactional
@@ -51,6 +50,7 @@ from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.datetime import now
 from mailman.utilities.email import add_message_hash
+from public import public
 from zope.component import getUtility
 
 

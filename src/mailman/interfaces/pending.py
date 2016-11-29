@@ -22,7 +22,7 @@ maps these events to a unique hash that can be used as a token for end user
 confirmation.
 """
 
-from mailman import public
+from public import public
 from zope.interface import Attribute, Interface
 
 

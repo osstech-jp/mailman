@@ -21,7 +21,6 @@ import sys
 
 from contextlib import ExitStack
 from email.utils import formataddr, parseaddr
-from mailman import public
 from mailman.app.membership import add_member
 from mailman.core.i18n import _
 from mailman.database.transaction import transactional
@@ -31,6 +30,7 @@ from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, DeliveryStatus, MemberRole)
 from mailman.interfaces.subscriptions import RequestRecord
 from operator import attrgetter
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

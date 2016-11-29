@@ -17,7 +17,7 @@
 
 """Interface for a web request accessing a mailing list."""
 
-from mailman import public
+from public import public
 from zope.interface import Attribute, Interface
 
 

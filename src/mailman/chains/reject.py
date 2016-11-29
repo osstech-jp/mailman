@@ -19,12 +19,12 @@
 
 import logging
 
-from mailman import public
 from mailman.app.bounces import bounce_message
 from mailman.chains.base import TerminalChainBase
 from mailman.core.i18n import _
 from mailman.interfaces.chain import RejectEvent
 from mailman.interfaces.pipeline import RejectMessage
+from public import public
 from zope.event import notify
 
 

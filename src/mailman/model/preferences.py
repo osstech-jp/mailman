@@ -17,13 +17,13 @@
 
 """Model for preferences."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.preferences import IPreferences
+from public import public
 from sqlalchemy import Boolean, Column, Integer
 from zope.component import getUtility
 from zope.interface import implementer

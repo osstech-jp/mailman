@@ -27,7 +27,6 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formatdate, getaddresses, make_msgid
 from io import StringIO
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.runner import Runner
@@ -37,6 +36,7 @@ from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.mailbox import Mailbox
 from mailman.utilities.string import expand, oneline, wrap
+from public import public
 from zope.component import getUtility
 
 

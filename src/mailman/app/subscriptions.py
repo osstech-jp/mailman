@@ -23,7 +23,6 @@ import logging
 from datetime import timedelta
 from email.utils import formataddr
 from enum import Enum
-from mailman import public
 from mailman.app.membership import delete_member
 from mailman.app.workflow import Workflow
 from mailman.core.i18n import _
@@ -45,6 +44,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.utilities.datetime import now
 from mailman.utilities.string import expand, wrap
+from public import public
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer

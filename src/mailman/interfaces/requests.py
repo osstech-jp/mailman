@@ -22,7 +22,7 @@ moderators, such as subscription requests and held messages.
 """
 
 from enum import Enum
-from mailman import public
+from public import public
 from zope.interface import Attribute, Interface
 
 

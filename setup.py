@@ -106,6 +106,7 @@ case second `m'.  Any other spelling is incorrect.""",
     install_requires = [
         'aiosmtpd',
         'alembic',
+        'atpublic',
         'falcon>=1.0.0rc1',
         'flufl.bounce',
         'flufl.i18n',

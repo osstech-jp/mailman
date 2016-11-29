@@ -17,11 +17,11 @@
 
 """Various constants and enumerations."""
 
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.preferences import IPreferences
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

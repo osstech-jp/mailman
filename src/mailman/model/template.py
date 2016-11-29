@@ -19,7 +19,6 @@
 
 import logging
 
-from mailman import public
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -32,6 +31,7 @@ from mailman.interfaces.template import (
 from mailman.utilities import protocols
 from mailman.utilities.i18n import find
 from mailman.utilities.string import expand
+from public import public
 from requests import HTTPError
 from sqlalchemy import Column, Integer
 from urllib.error import URLError

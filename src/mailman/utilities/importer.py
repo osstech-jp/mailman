@@ -23,7 +23,6 @@ import sys
 import logging
 import datetime
 
-from mailman import public
 from mailman.config import config
 from mailman.handlers.decorate import decorate_template
 from mailman.interfaces.action import Action, FilterAction
@@ -44,6 +43,7 @@ from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.i18n import search
+from public import public
 from sqlalchemy import Boolean
 from zope.component import getUtility
 

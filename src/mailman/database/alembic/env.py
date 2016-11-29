@@ -19,11 +19,11 @@
 
 from alembic import context
 from contextlib import closing
-from mailman import public
 from mailman.config import config
 from mailman.core.initialize import initialize_1
 from mailman.database.model import Model
 from mailman.utilities.string import expand
+from public import public
 from sqlalchemy import create_engine
 
 

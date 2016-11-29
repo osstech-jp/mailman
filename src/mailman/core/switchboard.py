@@ -31,13 +31,13 @@ import pickle
 import hashlib
 import logging
 
-from mailman import public
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from mailman.interfaces.switchboard import ISwitchboard
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
+from public import public
 from zope.interface import implementer
 
 

@@ -18,8 +18,8 @@
 """Transactional support."""
 
 from contextlib import contextmanager
-from mailman import public
 from mailman.config import config
+from public import public
 
 
 @public

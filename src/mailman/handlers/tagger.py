@@ -21,9 +21,9 @@ import re
 import email.iterators
 import email.parser
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
+from public import public
 from zope.interface import implementer
 
 

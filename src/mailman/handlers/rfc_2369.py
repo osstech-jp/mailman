@@ -20,12 +20,12 @@
 import logging
 
 from email.utils import formataddr
-from mailman import public
 from mailman.core.i18n import _
 from mailman.handlers.cook_headers import uheader
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.mailinglist import IListArchiverSet
+from public import public
 from zope.interface import implementer
 
 

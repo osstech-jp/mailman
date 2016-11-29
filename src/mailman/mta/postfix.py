@@ -21,7 +21,6 @@ import os
 import logging
 
 from flufl.lock import Lock
-from mailman import public
 from mailman.config import config
 from mailman.config.config import external_configuration
 from mailman.interfaces.listmanager import IListManager
@@ -29,6 +28,7 @@ from mailman.interfaces.mta import (
     IMailTransportAgentAliases, IMailTransportAgentLifecycle)
 from mailman.utilities.datetime import now
 from operator import attrgetter
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

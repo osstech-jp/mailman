@@ -27,9 +27,9 @@ from email.header import Header
 from email.message import Message
 from enum import Enum
 from lazr.config import as_boolean
-from mailman import public
 from mailman.config import config
 from pprint import pformat
+from public import public
 
 
 class ExtendedEncoder(json.JSONEncoder):

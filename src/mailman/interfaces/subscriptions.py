@@ -19,9 +19,9 @@
 
 from collections import namedtuple
 from enum import Enum
-from mailman import public
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.member import DeliveryMode, MembershipError
+from public import public
 from zope.interface import Interface
 
 

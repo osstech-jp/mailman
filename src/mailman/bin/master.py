@@ -28,11 +28,11 @@ from datetime import timedelta
 from enum import Enum
 from flufl.lock import Lock, NotLockedError, TimeOutError
 from lazr.config import as_boolean
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.logging import reopen
 from mailman.utilities.options import Options
+from public import public
 
 
 DOT = '.'

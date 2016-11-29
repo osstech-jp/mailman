@@ -21,13 +21,13 @@ import os
 import errno
 import pickle
 
-from mailman import public
 from mailman.config import config
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.messages import IMessageStore
 from mailman.model.message import Message
 from mailman.utilities.email import add_message_hash
 from mailman.utilities.filesystem import makedirs, safe_remove
+from public import public
 from zope.interface import implementer
 
 

@@ -17,13 +17,13 @@
 
 """REST API for a mailing list's header matches."""
 
-from mailman import public
 from mailman.interfaces.action import Action
 from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, created, etag, no_content, not_found,
     okay)
 from mailman.rest.validator import Validator, enum_validator
+from public import public
 
 
 def lowercase(value):

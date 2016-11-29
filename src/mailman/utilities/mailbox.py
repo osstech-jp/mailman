@@ -23,8 +23,9 @@
 # get its size.  MMDF is slightly more sane than mbox; it's primary advantage
 # for us is that it does no 'From' mangling.
 # mangling.
+
 from mailbox import MMDF
-from mailman import public
+from public import public
 
 
 @public
