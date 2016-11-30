@@ -93,9 +93,6 @@ ERR_502 = '502 Error: command HELO not implemented'
 ERR_550 = '550 Requested action not taken: mailbox unavailable'
 ERR_550_MID = '550 No Message-ID header provided'
 
-# XXX Blech
-aiosmtpd.smtp.__version__ = 'GNU Mailman LMTP runner 2.0'
-
 
 def split_recipient(address):
     """Split an address into listname, subaddress and domain parts.
@@ -218,7 +215,9 @@ class LMTPHandler:
 
 class LMTPController(Controller):
     def factory(self):
-        return LMTP(self.handler)
+        server = LMTP(self.handler)
+        server.__ident__ = 'GNU Mailman LMTP runner 2.0'
+        return server
 
     def make_socket(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

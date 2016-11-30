@@ -568,3 +568,11 @@ def hackenv(envar, new_value):
                 del os.environ[envar]
         else:
             os.environ[envar] = old_value
+
+
+def nose2_start_test_run_callback(plugin):
+    from mailman.testing.layers import ConfigLayer, MockAndMonkeyLayer
+    MockAndMonkeyLayer.testing_mode = True
+    if (plugin.stderr or
+            len(os.environ.get('MM_VERBOSE_TESTLOG', '').strip()) > 0):
+        ConfigLayer.stderr = True
