@@ -19,10 +19,10 @@
 
 from email.header import Header
 from email.utils import formataddr
-from mailman import public
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.usermanager import IUserManager
 from mailman.mta.verp import VERPDelivery
+from public import public
 from zope.component import getUtility
 
 

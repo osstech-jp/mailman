@@ -17,10 +17,10 @@
 
 """Perform some bookkeeping after a successful post."""
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.utilities.datetime import now
+from public import public
 from zope.interface import implementer
 
 

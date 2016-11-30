@@ -24,7 +24,6 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import parseaddr
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
@@ -35,6 +34,7 @@ from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.email import split_email
 from mailman.utilities.string import expand, oneline, wrap
+from public import public
 from string import Template
 from zope.component import getUtility
 from zope.interface import implementer

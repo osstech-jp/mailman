@@ -23,12 +23,12 @@ import logging
 from datetime import datetime
 from email.utils import mktime_tz, parsedate_tz
 from lazr.config import as_timedelta
-from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.archiver import ClobberDate
 from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.utilities.datetime import RFC822_DATE_FMT, now
+from public import public
 
 
 log = logging.getLogger('mailman.archiver')

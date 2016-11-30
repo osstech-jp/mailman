@@ -17,11 +17,11 @@
 
 """Model for workflow states."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode
 from mailman.interfaces.workflow import IWorkflowState, IWorkflowStateManager
+from public import public
 from sqlalchemy import Column
 from zope.interface import implementer
 

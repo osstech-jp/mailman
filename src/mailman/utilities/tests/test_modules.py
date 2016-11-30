@@ -67,7 +67,7 @@ class TestModuleImports(unittest.TestCase):
             Path(init_file).touch()
             with open(good_file, 'w', encoding='utf-8') as fp:
                 print("""\
-from mailman import public
+from public import public
 from mailman.interfaces.styles import IStyle
 from zope.interface import implementer
 
@@ -80,7 +80,7 @@ class GoodStyle:
 """, file=fp)
             with open(bad_file, 'w', encoding='utf-8') as fp:
                 print("""\
-from mailman import public
+from public import public
 from mailman.interfaces.styles import IStyle
 from zope.interface import implementer
 

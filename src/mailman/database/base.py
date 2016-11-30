@@ -19,10 +19,10 @@
 
 import logging
 
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.database import IDatabase
 from mailman.utilities.string import expand
+from public import public
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from zope.interface import implementer

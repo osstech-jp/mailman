@@ -18,7 +18,6 @@
 """REST for mailing lists."""
 
 from lazr.config import as_boolean
-from mailman import public
 from mailman.app.digests import (
     bump_digest_number_and_volume, maybe_send_digest_now)
 from mailman.app.lifecycle import create_list, remove_list
@@ -41,6 +40,7 @@ from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
 from mailman.rest.uris import AListURI, AllListURIs
 from mailman.rest.validator import Validator, list_of_strings_validator
+from public import public
 from zope.component import getUtility
 
 

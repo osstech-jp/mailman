@@ -18,9 +18,9 @@
 """REST web service API contexts."""
 
 from lazr.config import as_boolean
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.api import IAPI
+from public import public
 from uuid import UUID
 from zope.interface import implementer
 

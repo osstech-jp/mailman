@@ -19,9 +19,9 @@
 
 import time
 
-from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
+from public import public
 
 
 @public

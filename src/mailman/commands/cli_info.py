@@ -20,12 +20,12 @@
 import sys
 
 from lazr.config import as_boolean
-from mailman import public
 from mailman.config import config
 from mailman.core.api import API30, API31
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.version import MAILMAN_VERSION_FULL
+from public import public
 from zope.interface import implementer
 
 

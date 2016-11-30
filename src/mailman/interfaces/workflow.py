@@ -17,7 +17,7 @@
 
 """Interfaces describing the state of a workflow."""
 
-from mailman import public
+from public import public
 from zope.interface import Attribute, Interface
 
 

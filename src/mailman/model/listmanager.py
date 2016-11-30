@@ -17,7 +17,6 @@
 
 """A mailing list manager."""
 
-from mailman import public
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import (
@@ -30,6 +29,7 @@ from mailman.model.mailinglist import (
 from mailman.model.mime import ContentFilter
 from mailman.utilities.datetime import now
 from mailman.utilities.queries import QuerySequence
+from public import public
 from zope.event import notify
 from zope.interface import implementer
 

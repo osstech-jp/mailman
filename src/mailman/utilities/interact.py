@@ -23,7 +23,7 @@ import code
 
 from contextlib import suppress
 from inspect import signature
-from mailman import public
+from public import public
 
 
 DEFAULT_BANNER = object()

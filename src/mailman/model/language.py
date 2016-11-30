@@ -17,10 +17,10 @@
 
 """Model for languages."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.types import SAUnicode
 from mailman.interfaces.languages import ILanguage
+from public import public
 from sqlalchemy import Column, Integer
 from zope.interface import implementer
 

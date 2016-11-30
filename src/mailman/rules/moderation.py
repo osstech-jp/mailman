@@ -19,13 +19,13 @@
 
 import re
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.rules import IRule
 from mailman.interfaces.usermanager import IUserManager
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

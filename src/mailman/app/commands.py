@@ -17,10 +17,10 @@
 
 """Initialize the email commands."""
 
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.command import IEmailCommand
 from mailman.utilities.modules import find_components
+from public import public
 from zope.interface.verify import verifyObject
 
 

@@ -37,13 +37,10 @@ so that the peer mail server can provide better diagnostics.
 import email
 import socket
 import logging
-import aiosmtpd
-import aiosmtpd.smtp
 
 from aiosmtpd.controller import Controller
 from aiosmtpd.lmtp import LMTP
 from email.utils import parseaddr
-from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.database.transaction import transactional
@@ -51,6 +48,7 @@ from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.datetime import now
 from mailman.utilities.email import add_message_hash
+from public import public
 from zope.component import getUtility
 
 
@@ -92,9 +90,6 @@ ERR_501 = '501 Message has defects'
 ERR_502 = '502 Error: command HELO not implemented'
 ERR_550 = '550 Requested action not taken: mailbox unavailable'
 ERR_550_MID = '550 No Message-ID header provided'
-
-# XXX Blech
-aiosmtpd.smtp.__version__ = 'GNU Mailman LMTP runner 2.0'
 
 
 def split_recipient(address):
@@ -218,7 +213,9 @@ class LMTPHandler:
 
 class LMTPController(Controller):
     def factory(self):
-        return LMTP(self.handler)
+        server = LMTP(self.handler)
+        server.__ident__ = 'GNU Mailman LMTP runner 2.0'
+        return server
 
     def make_socket(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

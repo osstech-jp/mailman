@@ -17,10 +17,10 @@
 
 """A wrapper around passlib."""
 
-from mailman import public
 from mailman.config.config import load_external
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from passlib.context import CryptContext
+from public import public
 
 
 class PasswordContext:

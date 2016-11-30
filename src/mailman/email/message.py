@@ -29,9 +29,9 @@ import email.utils
 
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.member import DeliveryStatus
+from public import public
 
 
 COMMASPACE = ', '

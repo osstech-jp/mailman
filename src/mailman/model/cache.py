@@ -22,13 +22,13 @@ import hashlib
 
 from contextlib import ExitStack
 from lazr.config import as_timedelta
-from mailman import public
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode
 from mailman.interfaces.cache import ICacheManager
 from mailman.utilities.datetime import now
+from public import public
 from sqlalchemy import Boolean, Column, DateTime, Integer
 from zope.interface import implementer
 

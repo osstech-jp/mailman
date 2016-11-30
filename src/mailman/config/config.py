@@ -24,13 +24,14 @@ import mailman.templates
 from configparser import ConfigParser
 from flufl.lock import Lock
 from lazr.config import ConfigSchema, as_boolean
-from mailman import public, version
+from mailman import version
 from mailman.interfaces.configuration import (
     ConfigurationUpdatedEvent, IConfiguration, MissingConfigurationFileError)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.modules import call_name, expand_path
 from pkg_resources import resource_filename, resource_string as resource_bytes
+from public import public
 from string import Template
 from zope.component import getUtility
 from zope.event import notify

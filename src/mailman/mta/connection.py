@@ -22,8 +22,8 @@ import smtplib
 
 from contextlib import suppress
 from lazr.config import as_boolean
-from mailman import public
 from mailman.config import config
+from public import public
 
 
 log = logging.getLogger('mailman.smtp')

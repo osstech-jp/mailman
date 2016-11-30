@@ -21,9 +21,9 @@ import signal
 import logging
 import threading
 
-from mailman import public
 from mailman.core.runner import Runner
 from mailman.rest.wsgiapp import make_server
+from public import public
 
 
 log = logging.getLogger('mailman.http')

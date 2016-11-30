@@ -19,8 +19,9 @@
 
 import sys
 
-from mailman import public, version
+from mailman import version
 from mailman.interfaces.system import ISystem
+from public import public
 from zope.interface import implementer
 
 

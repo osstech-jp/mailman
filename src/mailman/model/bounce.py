@@ -17,13 +17,13 @@
 
 """Bounce support."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.bounce import (
     BounceContext, IBounceEvent, IBounceProcessor)
 from mailman.utilities.datetime import now
+from public import public
 from sqlalchemy import Boolean, Column, DateTime, Integer
 from zope.interface import implementer
 

@@ -17,9 +17,9 @@
 
 """Application level domain support."""
 
-from mailman import public
 from mailman.interfaces.domain import DomainDeletingEvent
 from mailman.interfaces.listmanager import IListManager
+from public import public
 from zope.component import getUtility
 
 

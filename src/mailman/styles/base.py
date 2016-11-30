@@ -24,7 +24,6 @@ methods in your compositional derived class.
 
 
 from datetime import timedelta
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.archiver import ArchivePolicy
@@ -34,6 +33,7 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
     Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.nntp import NewsgroupModeration
+from public import public
 
 
 @public

@@ -20,8 +20,8 @@
 Exim one example of an MTA that Just Works.
 """
 
-from mailman import public
 from mailman.interfaces.mta import IMailTransportAgentLifecycle
+from public import public
 from zope.interface import implementer
 
 

@@ -22,7 +22,7 @@ components.  More specific exceptions will be located in the relevant
 interfaces.
 """
 
-from mailman import public
+from public import public
 
 
 @public

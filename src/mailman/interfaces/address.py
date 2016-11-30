@@ -17,8 +17,8 @@
 
 """Interface for email address related information."""
 
-from mailman import public
 from mailman.interfaces.errors import MailmanError
+from public import public
 from zope.interface import Attribute, Interface
 
 

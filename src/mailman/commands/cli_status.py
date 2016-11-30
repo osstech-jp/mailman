@@ -19,10 +19,10 @@
 
 import socket
 
-from mailman import public
 from mailman.bin.master import WatcherState, master_state
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from public import public
 from zope.interface import implementer
 
 

@@ -17,10 +17,10 @@
 
 """REST web form validation."""
 
-from mailman import public
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
+from public import public
 from zope.component import getUtility
 
 

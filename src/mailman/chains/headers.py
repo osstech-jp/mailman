@@ -21,12 +21,12 @@ import re
 import logging
 
 from itertools import count
-from mailman import public
 from mailman.chains.base import Chain, Link
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.chain import LinkAction
 from mailman.interfaces.rules import IRule
+from public import public
 from zope.interface import implementer
 
 

@@ -17,11 +17,11 @@
 
 """The email command 'help'."""
 
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.utilities.string import wrap
+from public import public
 from zope.interface import implementer
 
 

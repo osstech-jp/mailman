@@ -17,11 +17,11 @@
 
 """One last digest."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.digests import IOneLastDigest
 from mailman.interfaces.member import DeliveryMode
+from public import public
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from zope.interface import implementer

@@ -23,10 +23,10 @@ import logging
 from base64 import b64decode
 from falcon import API, HTTPUnauthorized
 from falcon.routing import create_http_method_map
-from mailman import public
 from mailman.config import config
 from mailman.database.transaction import transactional
 from mailman.rest.root import Root
+from public import public
 from wsgiref.simple_server import (
     WSGIRequestHandler, WSGIServer, make_server as wsgi_server)
 
