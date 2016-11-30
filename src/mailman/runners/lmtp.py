@@ -37,8 +37,6 @@ so that the peer mail server can provide better diagnostics.
 import email
 import socket
 import logging
-import aiosmtpd
-import aiosmtpd.smtp
 
 from aiosmtpd.controller import Controller
 from aiosmtpd.lmtp import LMTP
