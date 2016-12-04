@@ -204,7 +204,7 @@ def hold_unsubscription(mlist, email):
         msg = UserNotification(
             mlist.owner_address, mlist.owner_address,
             subject, text, mlist.preferred_language)
-        msg.send(mlist, to_moderators=True)
+        msg.send(mlist)
     return request_id
 
 
