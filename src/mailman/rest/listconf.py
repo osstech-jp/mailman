@@ -18,7 +18,6 @@
 """Mailing list configuration via REST API."""
 
 from lazr.config import as_boolean, as_timedelta
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.action import Action
 from mailman.interfaces.archiver import ArchivePolicy
@@ -32,6 +31,7 @@ from mailman.rest.helpers import (
 from mailman.rest.validator import (
     PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
     Validator, enum_validator, list_of_strings_validator)
+from public import public
 from zope.component import getUtility
 
 

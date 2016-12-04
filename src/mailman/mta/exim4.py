@@ -17,8 +17,8 @@
 
 """Creation/deletion hooks for the Exim4 MTA."""
 
-from mailman import public
 from mailman.interfaces.mta import IMailTransportAgentLifecycle
+from public import public
 from zope.interface import implementer
 
 

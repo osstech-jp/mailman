@@ -17,9 +17,9 @@
 
 """The no-Subject header rule."""
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
+from public import public
 from zope.interface import implementer
 
 
@@ -34,5 +34,7 @@ class NoSubject:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        subject = msg.get('subject', '').strip()
+        # Convert the header value to a str because it may be an
+        # email.header.Header instance.
+        subject = str(msg.get('subject', '')).strip()
         return subject == ''

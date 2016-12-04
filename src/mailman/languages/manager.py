@@ -17,10 +17,10 @@
 
 """Language manager."""
 
-from mailman import public
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from mailman.interfaces.languages import ILanguageManager
 from mailman.languages.language import Language
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

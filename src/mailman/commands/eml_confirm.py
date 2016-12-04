@@ -17,10 +17,10 @@
 
 """The 'confirm' email command."""
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
+from public import public
 from zope.interface import implementer
 
 

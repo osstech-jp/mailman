@@ -18,7 +18,7 @@
 """Interface for archiving schemes."""
 
 from enum import Enum
-from mailman import public
+from public import public
 from zope.interface import Attribute, Interface
 
 

@@ -151,6 +151,7 @@ Interfaces
 
 Internal
 --------
+ * Add official support for Python 3.6. (Closes #295)
  * A handful of unused legacy exceptions have been removed.  The redundant
    `MailmanException` has been removed; use `MailmanError` everywhere.
  * Drop the use of the `lazr.smtptest` library, which is based on the
@@ -245,6 +246,8 @@ REST
    Aurélien Bompard.  (Closes #284)
  * Query parameters now allow you to filter mailing lists by the
    ``advertised`` boolean parameter.  Given by Aurélien Bompard.
+ * Only the system-enabled archivers are returned in the REST API.  Given by
+   Aurélien Bompard.
 
 Other
 -----

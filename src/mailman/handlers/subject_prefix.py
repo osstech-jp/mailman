@@ -21,9 +21,9 @@ import re
 
 from contextlib import suppress
 from email.header import Header, decode_header, make_header
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
+from public import public
 from zope.interface import implementer
 
 
@@ -162,7 +162,7 @@ class SubjectPrefix:
         if p.search(prefix, 1):
             # The prefix has number, so we should search prefix w/number in
             # subject.  Also, force new style.
-            prefix_pattern = p.sub(r'\s*\d+\s*', prefix_pattern)
+            prefix_pattern = p.sub(r'\\s*\\d+\\s*', prefix_pattern)
         # Substitute %d in prefix with post_id
         with suppress(TypeError):
             prefix = prefix % mlist.post_id

@@ -64,6 +64,59 @@ def find_master():
     return None
 
 
+def kill_with_extreme_prejudice(pid=None):
+    # 2016-12-03 barry: We have intermittent hangs during both local and CI
+    # test suite runs where killing a runner or master process doesn't
+    # terminate the process.  In those cases, wait()ing on the child can
+    # suspend the test process indefinitely.  Locally, you have to C-c the
+    # test process, but that still doesn't kill it; the process continues to
+    # run in the background.  If you then search for the process's pid and
+    # SIGTERM it, it will usually exit, which is why I don't understand why
+    # the above SIGTERM doesn't kill it sometimes.  However, when run under
+    # CI, the test suite will just hang until the CI runner times it out.  It
+    # would be better to figure out the underlying cause, because we have
+    # definitely seen other situations where a runner process won't exit, but
+    # for testing purposes we're just trying to clean up some resources so
+    # after a brief attempt at SIGTERMing it, let's SIGKILL it and warn.
+    if pid is not None:
+        os.kill(pid, signal.SIGTERM)
+    until = timedelta(seconds=10) + datetime.now()
+    while datetime.now() < until:
+        try:
+            if pid is None:
+                os.wait3(os.WNOHANG)
+            else:
+                os.waitpid(pid, os.WNOHANG)
+        except ChildProcessError:
+            # This basically means we went one too many times around the
+            # loop.  The previous iteration successfully reaped the child.
+            # Because the return status of wait3() and waitpid() are different
+            # in those cases, it's easier just to catch the exception for
+            # either call and exit.
+            return
+        time.sleep(0.1)
+    else:
+        if pid is None:
+            # There's really not much more we can do because we have no pid to
+            # SIGKILL.  Just report the problem and continue.
+            print('WARNING: NO CHANGE IN CHILD PROCESS STATES',
+                  file=sys.stderr)
+            return
+        print('WARNING: SIGTERM DID NOT EXIT PROCESS; SIGKILLing',
+              file=sys.stderr)
+        if pid is not None:
+            os.kill(pid, signal.SIGKILL)
+        until = timedelta(seconds=10) + datetime.now()
+        while datetime.now() < until:
+            status = os.waitpid(pid, os.WNOHANG)
+            if status == (0, 0):
+                # The child was reaped.
+                return
+            time.sleep(0.1)
+        else:
+            print('WARNING: SIGKILL DID NOT EXIT PROCESS!', file=sys.stderr)
+
+
 class FakeArgs:
     force = None
     run_as_user = None
@@ -171,7 +224,7 @@ class TestBinDir(unittest.TestCase):
             args_config = Configuration()
             args_config.load(self.args.config)
             self.assertFalse(os.path.exists(args_config.PID_FILE))
-            os.wait()
+            kill_with_extreme_prejudice()
 
     def test_master_is_elsewhere_and_findable(self):
         with ExitStack() as resources:
@@ -188,5 +241,4 @@ class TestBinDir(unittest.TestCase):
             # killable.  We might have to wait until the process has started.
             master_pid = find_master()
             self.assertIsNotNone(master_pid, 'master did not start')
-            os.kill(master_pid, signal.SIGTERM)
-            os.waitpid(master_pid, 0)
+            kill_with_extreme_prejudice(master_pid)

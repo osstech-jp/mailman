@@ -19,7 +19,6 @@
 
 from functools import lru_cache
 from lazr.config import as_boolean
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
@@ -32,6 +31,7 @@ from mailman.rest.validator import (
     PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
     Validator, list_of_strings_validator)
 from passlib.utils import generate_password as generate
+from public import public
 from zope.component import getUtility
 
 

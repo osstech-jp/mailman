@@ -17,11 +17,11 @@
 
 """Generate Mailman alias files for your MTA."""
 
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.utilities.modules import call_name
+from public import public
 from zope.interface import implementer
 
 

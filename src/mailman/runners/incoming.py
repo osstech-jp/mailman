@@ -27,12 +27,12 @@ immediately.
 """
 
 from contextlib import suppress
-from mailman import public
 from mailman.core.chains import process
 from mailman.core.runner import Runner
 from mailman.database.transaction import transaction
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
+from public import public
 from zope.component import getUtility
 
 

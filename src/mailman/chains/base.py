@@ -17,11 +17,11 @@
 
 """Base class for terminal chains."""
 
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.chain import (
     IChain, IChainIterator, IChainLink, IMutableChain, LinkAction)
 from mailman.interfaces.rules import IRule
+from public import public
 from zope.interface import implementer
 
 

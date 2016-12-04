@@ -18,12 +18,12 @@
 """Preferences."""
 
 from lazr.config import as_boolean
-from mailman import public
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.rest.helpers import (
     GetterSetter, bad_request, etag, no_content, not_found, okay)
 from mailman.rest.validator import (
     Validator, enum_validator, language_validator)
+from public import public
 
 
 PREFERENCES = (

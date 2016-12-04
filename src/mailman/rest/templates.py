@@ -17,9 +17,9 @@
 
 """Template finder."""
 
-from mailman import public
 from mailman.rest.helpers import not_found
 from mailman.utilities.i18n import TemplateNotFoundError, find
+from public import public
 
 
 # Use mimetypes.guess_all_extensions()?

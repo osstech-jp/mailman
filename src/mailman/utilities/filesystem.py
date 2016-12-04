@@ -20,7 +20,7 @@
 import os
 
 from contextlib import suppress
-from mailman import public
+from public import public
 
 
 @public

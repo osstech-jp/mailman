@@ -19,7 +19,7 @@
 
 import uuid
 
-from mailman import public
+from public import public
 from sqlalchemy import Integer
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles

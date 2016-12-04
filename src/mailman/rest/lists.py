@@ -18,7 +18,6 @@
 """REST for mailing lists."""
 
 from lazr.config import as_boolean
-from mailman import public
 from mailman.app.digests import (
     bump_digest_number_and_volume, maybe_send_digest_now)
 from mailman.app.lifecycle import create_list, remove_list
@@ -41,6 +40,7 @@ from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
 from mailman.rest.uris import AListURI, AllListURIs
 from mailman.rest.validator import Validator, list_of_strings_validator
+from public import public
 from zope.component import getUtility
 
 
@@ -337,13 +337,15 @@ class ListArchivers:
         """Get all the archiver statuses."""
         archiver_set = IListArchiverSet(self._mlist)
         resource = {archiver.name: archiver.is_enabled
-                    for archiver in archiver_set.archivers}
+                    for archiver in archiver_set.archivers
+                    if archiver.system_archiver.is_enabled}
         okay(response, etag(resource))
 
     def patch_put(self, request, response, is_optional):
         archiver_set = IListArchiverSet(self._mlist)
         kws = {archiver.name: ArchiverGetterSetter(self._mlist)
-               for archiver in archiver_set.archivers}
+               for archiver in archiver_set.archivers
+               if archiver.system_archiver.is_enabled}
         if is_optional:
             # For a PATCH, all attributes are optional.
             kws['_optional'] = kws.keys()

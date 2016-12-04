@@ -17,10 +17,10 @@
 
 """The content filter."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.mime import FilterType, IContentFilter
+from public import public
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from zope.interface import implementer

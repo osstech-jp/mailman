@@ -18,7 +18,6 @@
 """Implementations of the pending requests interfaces."""
 
 from datetime import timedelta
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum, SAUnicode
@@ -26,6 +25,7 @@ from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.utilities.queries import QuerySequence
 from pickle import dumps, loads
+from public import public
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from zope.component import getUtility

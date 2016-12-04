@@ -17,7 +17,7 @@
 
 """Application level auto-reply code."""
 
-from mailman import public
+from public import public
 
 
 @public

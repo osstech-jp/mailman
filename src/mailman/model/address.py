@@ -18,12 +18,12 @@
 """Model for addresses."""
 
 from email.utils import formataddr
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.types import SAUnicode
 from mailman.interfaces.address import (
     AddressVerificationEvent, IAddress, IEmailValidator)
 from mailman.utilities.datetime import now
+from public import public
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import backref, relationship
 from zope.component import getUtility

@@ -17,7 +17,6 @@
 
 """The root of the REST API."""
 
-from mailman import public
 from mailman.config import config
 from mailman.core.api import API30, API31
 from mailman.core.constants import system_preferences
@@ -36,6 +35,7 @@ from mailman.rest.queues import AQueue, AQueueFile, AllQueues
 from mailman.rest.templates import TemplateFinder
 from mailman.rest.uris import ASiteURI, AllSiteURIs
 from mailman.rest.users import AUser, AllUsers, ServerOwners
+from public import public
 from zope.component import getUtility
 
 

@@ -36,7 +36,6 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from itertools import count
 from lazr.config import as_boolean
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
@@ -45,6 +44,7 @@ from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import DiscardMessage, RejectMessage
 from mailman.utilities.string import oneline
 from mailman.version import VERSION
+from public import public
 from string import Template
 from zope.interface import implementer
 

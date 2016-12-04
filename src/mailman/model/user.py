@@ -17,7 +17,6 @@
 
 """Model for users."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode, UUID
@@ -31,6 +30,7 @@ from mailman.model.preferences import Preferences
 from mailman.model.roster import Memberships
 from mailman.utilities.datetime import factory as date_factory
 from mailman.utilities.uid import UIDFactory
+from public import public
 from sqlalchemy import (
     Boolean, Column, DateTime, ForeignKey, Integer)
 from sqlalchemy.orm import backref, relationship

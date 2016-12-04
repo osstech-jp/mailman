@@ -17,9 +17,9 @@
 
 """The email commands 'end' and 'stop'."""
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
+from public import public
 from zope.interface import implementer
 
 

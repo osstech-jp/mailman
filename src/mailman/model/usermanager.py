@@ -17,7 +17,6 @@
 
 """A user manager."""
 
-from mailman import public
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
@@ -27,6 +26,7 @@ from mailman.model.digests import OneLastDigest
 from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.model.user import User
+from public import public
 from zope.interface import implementer
 
 

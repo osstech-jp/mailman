@@ -18,10 +18,10 @@
 """The administrivia rule."""
 
 from email.iterators import typed_subpart_iterator
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
+from public import public
 from zope.interface import implementer
 
 # The list of email commands we search for in the Subject header and payload.

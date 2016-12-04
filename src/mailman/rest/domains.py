@@ -17,7 +17,6 @@
 
 """REST for domains."""
 
-from mailman import public
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.rest.helpers import (
@@ -27,6 +26,7 @@ from mailman.rest.lists import ListsForDomain
 from mailman.rest.uris import ADomainURI, AllDomainURIs
 from mailman.rest.users import ListOfDomainOwners, OwnersForDomain
 from mailman.rest.validator import Validator, list_of_strings_validator
+from public import public
 from zope.component import getUtility
 
 

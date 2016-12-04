@@ -22,12 +22,12 @@ distributions.  doctest discovery currently requires file system traversal.
 """
 
 from inspect import isfunction, ismethod
-from mailman import public
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.testing.helpers import (
     call_api, get_queue_messages, specialized_message_from_string, subscribe)
 from mailman.testing.layers import SMTPLayer
+from public import public
 
 
 DOT = '.'

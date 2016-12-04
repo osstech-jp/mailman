@@ -65,6 +65,7 @@ def list_to_string(data):
 
 class TestBasicImport(unittest.TestCase):
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('blank@example.com')
@@ -322,12 +323,12 @@ class TestBasicImport(unittest.TestCase):
                          SubscriptionPolicy.confirm_then_moderate)
 
     def test_header_matches(self):
-        # This test contail real cases of header_filter_rules
+        # This test containes real cases of header_filter_rules.
         self._pckdict['header_filter_rules'] = [
             ('X\\-Spam\\-Status\\: Yes.*', 3, False),
             ('^X-Spam-Status: Yes\r\n\r\n', 2, False),
             ('^X-Spam-Level: \\*\\*\\*.*$', 3, False),
-            ('^X-Spam-Level:.\\*\\*\r\n^X-Spam:.\\Yes', 3, False),
+            ('^X-Spam-Level:.\\*\\*\r\n^X-Spam:.Yes', 3, False),
             ('Subject: \\[SPAM\\].*', 3, False),
             ('^Subject: .*loan.*', 3, False),
             ('Original-Received: from *linkedin.com*\r\n', 3, False),
@@ -336,6 +337,7 @@ class TestBasicImport(unittest.TestCase):
             ('^Subject: dev-\r\n^Subject: staging-', 3, False),
             ('from: .*info@aolanchem.com\r\nfrom: .*@jw-express.com',
              2, False),
+            ('^Subject:.*\\Wwas:\\W', 3, False),
             ('^Received: from smtp-.*\\.fedoraproject\\.org\r\n'
              '^Received: from mx.*\\.redhat.com\r\n'
              '^Resent-date:\r\n'
@@ -362,7 +364,7 @@ class TestBasicImport(unittest.TestCase):
                 ('x-spam-status', 'Yes', 'reject'),
                 ('x-spam-level', '\\*\\*\\*.*$', 'discard'),
                 ('x-spam-level', '\\*\\*', 'discard'),
-                ('x-spam', '\\Yes', 'discard'),
+                ('x-spam', 'Yes', 'discard'),
                 ('subject', '\\[SPAM\\].*', 'discard'),
                 ('subject', '.*loan.*', 'discard'),
                 ('original-received', 'from *linkedin.com*', 'discard'),
@@ -372,6 +374,7 @@ class TestBasicImport(unittest.TestCase):
                 ('subject', 'staging-', 'discard'),
                 ('from', '.*info@aolanchem.com', 'reject'),
                 ('from', '.*@jw-express.com', 'reject'),
+                ('subject', '\\Wwas:\\W', 'discard'),
                 ('received', 'from smtp-.*\\.fedoraproject\\.org', 'hold'),
                 ('received', 'from mx.*\\.redhat.com', 'hold'),
                 ('resent-date', '.*', 'hold'),

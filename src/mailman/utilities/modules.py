@@ -20,8 +20,8 @@
 import os
 import sys
 
-from mailman import public
 from pkg_resources import resource_filename, resource_listdir
+from public import public
 
 
 @public

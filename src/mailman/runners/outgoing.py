@@ -22,7 +22,6 @@ import logging
 
 from datetime import datetime
 from lazr.config import as_boolean, as_timedelta
-from mailman import public
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor
@@ -32,6 +31,7 @@ from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.utilities.datetime import now
 from mailman.utilities.modules import find_name
+from public import public
 from uuid import UUID
 from zope.component import getUtility
 

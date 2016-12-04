@@ -17,8 +17,8 @@
 
 """Bulk message delivery."""
 
-from mailman import public
 from mailman.mta.base import BaseDelivery
+from public import public
 
 
 # A mapping of top-level domains to bucket numbers.  The zeroth bucket is

@@ -17,7 +17,6 @@
 
 """REST for addresses."""
 
-from mailman import public
 from mailman.interfaces.address import (
     ExistingAddressError, InvalidEmailAddressError)
 from mailman.interfaces.usermanager import IUserManager
@@ -29,6 +28,7 @@ from mailman.rest.preferences import Preferences
 from mailman.rest.validator import Validator
 from mailman.utilities.datetime import now
 from operator import attrgetter
+from public import public
 from zope.component import getUtility
 
 
