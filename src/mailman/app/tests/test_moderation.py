@@ -178,7 +178,8 @@ class TestUnsubscription(unittest.TestCase):
                 break
         else:
             raise AssertionError('No moderator email found')
-        self.assertEqual(item.msgdata['recipients'], {'test-owner@example.com'})
+        self.assertEqual(
+            item.msgdata['recipients'], {'test-owner@example.com'})
         self.assertEqual(
             item.msg['subject'],
             'New unsubscription request from Test by anne@example.org')

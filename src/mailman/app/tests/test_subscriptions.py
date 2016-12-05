@@ -451,7 +451,8 @@ class TestSubscriptionWorkflow(unittest.TestCase):
                 break
         else:
             raise AssertionError('No moderator email found')
-        self.assertEqual(item.msgdata['recipients'], {'test-owner@example.com'})
+        self.assertEqual(
+            item.msgdata['recipients'], {'test-owner@example.com'})
         message = items[0].msg
         self.assertEqual(message['From'], 'test-owner@example.com')
         self.assertEqual(message['To'], 'test-owner@example.com')
