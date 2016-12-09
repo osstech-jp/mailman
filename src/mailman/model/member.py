@@ -17,7 +17,6 @@
 
 """Model for members."""
 
-from mailman import public
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -30,6 +29,7 @@ from mailman.interfaces.member import (
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.uid import UIDFactory
+from public import public
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from zope.component import getUtility

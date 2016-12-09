@@ -17,11 +17,11 @@
 
 """Calculate the list owner recipients (includes moderators)."""
 
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.member import DeliveryStatus
+from public import public
 from zope.interface import implementer
 
 

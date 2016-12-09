@@ -17,13 +17,13 @@
 
 """Autoresponder records."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
 from mailman.interfaces.autorespond import (
     IAutoResponseRecord, IAutoResponseSet, Response)
 from mailman.utilities.datetime import today
+from public import public
 from sqlalchemy import Column, Date, ForeignKey, Integer, desc
 from sqlalchemy.orm import relationship
 from zope.interface import implementer

@@ -19,7 +19,7 @@
 
 import sqlalchemy as sa
 
-from mailman import public
+from public import public
 
 
 @public

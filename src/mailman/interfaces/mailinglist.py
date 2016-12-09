@@ -18,8 +18,8 @@
 """Interface for a mailing list."""
 
 from enum import Enum
-from mailman import public
 from mailman.interfaces.member import MemberRole
+from public import public
 from zope.interface import Attribute, Interface
 
 

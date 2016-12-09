@@ -21,7 +21,6 @@ import shutil
 import logging
 
 from contextlib import suppress
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.domain import (
@@ -31,6 +30,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.modules import call_name
+from public import public
 from zope.component import getUtility
 
 

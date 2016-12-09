@@ -19,7 +19,6 @@
 
 import logging
 
-from mailman import public
 from mailman.app.bounces import bounce_message
 from mailman.config import config
 from mailman.core.i18n import _
@@ -27,6 +26,7 @@ from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import (
     DiscardMessage, IPipeline, RejectMessage)
 from mailman.utilities.modules import find_components
+from public import public
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
 

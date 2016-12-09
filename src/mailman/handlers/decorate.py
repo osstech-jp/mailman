@@ -22,13 +22,13 @@ import logging
 
 from email.mime.text import MIMEText
 from email.utils import formataddr
-from mailman import public
 from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.string import expand
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

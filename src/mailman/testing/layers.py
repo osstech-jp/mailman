@@ -32,7 +32,6 @@ import datetime
 import tempfile
 
 from lazr.config import as_boolean
-from mailman import public
 from mailman.config import config
 from mailman.core import initialize
 from mailman.core.initialize import INHIBIT_CONFIG_FILE
@@ -44,6 +43,7 @@ from mailman.testing.helpers import (
 from mailman.testing.mta import ConnectionCountingController
 from mailman.utilities.string import expand
 from pkg_resources import resource_string as resource_bytes
+from public import public
 from textwrap import dedent
 from zope.component import getUtility
 

@@ -30,13 +30,13 @@ from email.errors import HeaderParseError
 from email.header import decode_header, make_header
 from email.iterators import typed_subpart_iterator
 from io import StringIO
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.runner import Runner
 from mailman.email.message import UserNotification
 from mailman.interfaces.command import ContinueProcessing, IEmailResults
 from mailman.interfaces.languages import ILanguageManager
+from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 

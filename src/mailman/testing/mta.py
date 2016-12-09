@@ -24,8 +24,8 @@ import smtplib
 from aiosmtpd.controller import Controller
 from aiosmtpd.handlers import Message as MessageHandler
 from aiosmtpd.smtp import SMTP
-from mailman import public
 from mailman.interfaces.mta import IMailTransportAgentLifecycle
+from public import public
 from queue import Empty, Queue
 from zope.interface import implementer
 

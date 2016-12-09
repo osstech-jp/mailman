@@ -19,11 +19,11 @@
 
 import logging
 
-from mailman import public
 from mailman.config import config
 from mailman.config.config import external_configuration
 from mailman.interfaces.archiver import IArchiver
 from mailman.utilities.string import expand
+from public import public
 from subprocess import PIPE, Popen
 from urllib.parse import urljoin
 from zope.interface import implementer

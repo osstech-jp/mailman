@@ -17,8 +17,8 @@
 
 """Interfaces for list styles."""
 
-from mailman import public
 from mailman.interfaces.errors import MailmanError
+from public import public
 from zope.interface import Attribute, Interface
 
 

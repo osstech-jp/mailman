@@ -21,13 +21,13 @@ docs:
 
 sqlite:
   script:
-  - tox -e py34,py35
+  - tox -e py34,py35,py36
 
 pgsql:
   services:
   - postgres:latest
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py34-pg,py35-pg
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py34-pg,py35-pg,py36-pg
   tags:
   - postgres
 
@@ -35,6 +35,6 @@ mysql:
   services:
   - mysql:latest
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py34-mysql,py35-mysql
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py34-mysql,py35-mysql,py36-mysql
   tags:
   - mysql

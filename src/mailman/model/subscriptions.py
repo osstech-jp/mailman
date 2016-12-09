@@ -17,7 +17,6 @@
 
 """Subscription services."""
 
-from mailman import public
 from mailman.app.membership import delete_member
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
@@ -30,6 +29,7 @@ from mailman.model.member import Member
 from mailman.model.user import User
 from mailman.utilities.queries import QuerySequence
 from operator import attrgetter
+from public import public
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from zope.component import getUtility
 from zope.interface import implementer

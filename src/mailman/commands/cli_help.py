@@ -17,8 +17,8 @@
 
 """The 'help' subcommand."""
 
-from mailman import public
 from mailman.interfaces.command import ICLISubCommand
+from public import public
 from zope.interface import implementer
 
 

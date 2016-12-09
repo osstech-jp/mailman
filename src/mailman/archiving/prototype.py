@@ -24,9 +24,9 @@ from contextlib import suppress
 from datetime import timedelta
 from flufl.lock import Lock, TimeOutError
 from mailbox import Maildir
-from mailman import public
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
+from public import public
 from zope.interface import implementer
 
 

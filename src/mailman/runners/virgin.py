@@ -23,9 +23,9 @@ to go through some minimal processing before they can be sent out to the
 recipient.
 """
 
-from mailman import public
 from mailman.core.pipelines import process
 from mailman.core.runner import Runner
+from public import public
 
 
 @public

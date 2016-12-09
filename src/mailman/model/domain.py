@@ -17,7 +17,6 @@
 
 """Domains."""
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode
@@ -27,6 +26,7 @@ from mailman.interfaces.domain import (
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import MailingList
+from public import public
 from sqlalchemy import Column, Integer
 from sqlalchemy.orm import relationship
 from zope.component import getUtility

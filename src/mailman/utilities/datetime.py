@@ -24,8 +24,8 @@ instrumented for testing purposes.
 
 import datetime
 
-from mailman import public
 from mailman.testing import layers
+from public import public
 
 
 # Python always sets the locale to 'C' locale unless the user explicitly calls

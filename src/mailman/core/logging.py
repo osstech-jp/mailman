@@ -23,8 +23,8 @@ import codecs
 import logging
 
 from lazr.config import as_boolean, as_log_level
-from mailman import public
 from mailman.config import config
+from public import public
 
 
 _handlers = {}

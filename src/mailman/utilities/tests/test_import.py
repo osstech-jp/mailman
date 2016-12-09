@@ -65,6 +65,7 @@ def list_to_string(data):
 
 class TestBasicImport(unittest.TestCase):
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('blank@example.com')
@@ -322,12 +323,12 @@ class TestBasicImport(unittest.TestCase):
                          SubscriptionPolicy.confirm_then_moderate)
 
     def test_header_matches(self):
-        # This test contail real cases of header_filter_rules
+        # This test containes real cases of header_filter_rules.
         self._pckdict['header_filter_rules'] = [
             ('X\\-Spam\\-Status\\: Yes.*', 3, False),
             ('^X-Spam-Status: Yes\r\n\r\n', 2, False),
             ('^X-Spam-Level: \\*\\*\\*.*$', 3, False),
-            ('^X-Spam-Level:.\\*\\*\r\n^X-Spam:.\\Yes', 3, False),
+            ('^X-Spam-Level:.\\*\\*\r\n^X-Spam:.Yes', 3, False),
             ('Subject: \\[SPAM\\].*', 3, False),
             ('^Subject: .*loan.*', 3, False),
             ('Original-Received: from *linkedin.com*\r\n', 3, False),
@@ -363,7 +364,7 @@ class TestBasicImport(unittest.TestCase):
                 ('x-spam-status', 'Yes', 'reject'),
                 ('x-spam-level', '\\*\\*\\*.*$', 'discard'),
                 ('x-spam-level', '\\*\\*', 'discard'),
-                ('x-spam', '\\Yes', 'discard'),
+                ('x-spam', 'Yes', 'discard'),
                 ('subject', '\\[SPAM\\].*', 'discard'),
                 ('subject', '.*loan.*', 'discard'),
                 ('original-received', 'from *linkedin.com*', 'discard'),

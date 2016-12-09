@@ -21,11 +21,11 @@ import os
 import sys
 
 from itertools import product
-from mailman import public
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.interfaces.errors import MailmanError
 from pkg_resources import resource_filename
+from public import public
 
 
 @public

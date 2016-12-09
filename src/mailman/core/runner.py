@@ -25,7 +25,6 @@ import traceback
 from contextlib import suppress
 from io import StringIO
 from lazr.config import as_boolean, as_timedelta
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.logging import reopen
@@ -34,6 +33,7 @@ from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.runner import IRunner, RunnerCrashEvent
 from mailman.utilities.string import expand
+from public import public
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer

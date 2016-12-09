@@ -19,10 +19,10 @@
 
 from email import message_from_string
 from email.utils import formatdate, make_msgid
-from mailman import public
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.utilities.email import add_message_hash
+from public import public
 
 
 @public

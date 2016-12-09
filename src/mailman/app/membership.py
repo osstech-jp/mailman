@@ -18,7 +18,6 @@
 """Application support for membership management."""
 
 from email.utils import formataddr
-from mailman import public
 from mailman.app.notifications import (
     send_admin_subscription_notice, send_goodbye_message,
     send_welcome_message)
@@ -33,6 +32,7 @@ from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.string import expand
+from public import public
 from zope.component import getUtility
 
 

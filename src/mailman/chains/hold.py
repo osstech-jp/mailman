@@ -22,7 +22,6 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formatdate, make_msgid
-from mailman import public
 from mailman.app.moderator import hold_message
 from mailman.app.replybot import can_acknowledge
 from mailman.chains.base import TerminalChainBase
@@ -36,6 +35,7 @@ from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.string import expand, oneline, wrap
+from public import public
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer

@@ -24,12 +24,12 @@ import logging
 import argparse
 import traceback
 
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.initialize import initialize
 from mailman.utilities.modules import find_name
 from mailman.version import MAILMAN_VERSION_FULL
+from public import public
 
 
 log = None

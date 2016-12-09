@@ -19,12 +19,12 @@
 
 import re
 
-from mailman import public
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode
 from mailman.interfaces.bans import IBan, IBanManager
 from mailman.utilities.queries import QuerySequence
+from public import public
 from sqlalchemy import Column, Integer
 from zope.interface import implementer
 

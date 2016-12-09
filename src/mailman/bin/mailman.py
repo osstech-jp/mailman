@@ -21,13 +21,13 @@ import os
 import argparse
 
 from functools import cmp_to_key
-from mailman import public
 from mailman.core.i18n import _
 from mailman.core.initialize import initialize
 from mailman.database.transaction import transaction
 from mailman.interfaces.command import ICLISubCommand
 from mailman.utilities.modules import find_components
 from mailman.version import MAILMAN_VERSION_FULL
+from public import public
 from zope.interface.verify import verifyObject
 
 

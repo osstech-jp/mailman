@@ -17,7 +17,6 @@
 
 """REST API for held message moderation."""
 
-from mailman import public
 from mailman.app.moderator import handle_message
 from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
@@ -25,6 +24,7 @@ from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, etag, no_content, not_found, okay)
 from mailman.rest.validator import Validator, enum_validator
+from public import public
 from zope.component import getUtility
 
 

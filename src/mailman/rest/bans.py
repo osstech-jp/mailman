@@ -17,12 +17,12 @@
 
 """REST for banned emails."""
 
-from mailman import public
 from mailman.interfaces.bans import IBanManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, created, etag, no_content, not_found,
     okay)
 from mailman.rest.validator import Validator
+from public import public
 
 
 class _BannedBase:

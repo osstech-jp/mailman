@@ -20,9 +20,9 @@
 import re
 import logging
 
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
+from public import public
 from zope.interface import implementer
 
 
@@ -87,6 +87,8 @@ def has_matching_bounce_header(mlist, msg):
     """
     for header, cre, line in _parse_matching_header_opt(mlist):
         for value in msg.get_all(header, []):
-            if cre.search(value):
+            # Convert the header value to a str because it may be an
+            # email.header.Header instance.
+            if cre.search(str(value)):
                 return True
     return False
