@@ -57,7 +57,7 @@ Content-Transfer-Encoding: 7bit
 
 Some things to say.
 --=====abc==
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/html; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 <html><head></head><body>Some things to say.</body></html>
@@ -100,7 +100,7 @@ Content-Transfer-Encoding: 7bit
 
 Some things to say.
 --=====abc==
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/html; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 <html><head></head><body>Some things to say.</body></html>
@@ -135,7 +135,7 @@ Content-Transfer-Encoding: 7bit
 
 Some things to say.
 --=====abc==
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/html; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 <html><head></head><body>Some things to say.</body></html>
@@ -166,7 +166,7 @@ Content-Transfer-Encoding: 7bit
 
 Some things to say.
 --=====abc==
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/html; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 <html><head></head><body>Some things to say.</body></html>
@@ -267,7 +267,7 @@ Content-Transfer-Encoding: 7bit
 
 Some things to say.
 --=====abc==
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/html; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 <html><head></head><body>Some things to say.</body></html>
