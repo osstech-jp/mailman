@@ -25,12 +25,12 @@ from email.header import Header, decode_header
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formataddr, getaddresses, make_msgid
-from mailman import public
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.mailinglist import (
     DMARCModerationAction, FromIsList, ReplyToMunging)
 from mailman.utilities.string import wrap
+from public import public
 from zope.interface import implementer
 
 
@@ -90,16 +90,12 @@ def munged_headers(mlist, msg, msgdata):
         else:
             srn += frag
     # The list's real_name is a string.
-    slrn = mlist.display_name
-    # get translated 'via' with dummy replacements
-    realname = '$realname'
-    lrn = '$lrn'                 # noqa  F841
+    lrn = mlist.display_name      # noqa  F841
+    realname = srn
     # Ensure the i18n context is the list's preferred_language.
     with _.using(mlist.preferred_language.code):
         via = _('$realname via $lrn')
-    # Replace the dummy replacements.
-    via = re.sub('\$lrn', slrn, re.sub('\$realname', srn, via))
-    # And get an RFC 2047 encoded header string.
+    # Get an RFC 2047 encoded header string.
     dn = str(Header(via, mlist.preferred_language.charset))
     retn = [('From', formataddr((dn, mlist.posting_address)))]
     # We've made the munged From:.  Now put the original in Reply-To: or Cc:

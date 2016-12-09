@@ -24,12 +24,12 @@ import dns.resolver
 from dns.exception import DNSException
 from email.utils import parseaddr
 from lazr.config import as_timedelta
-from mailman import public
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.mailinglist import DMARCModerationAction
 from mailman.interfaces.rules import IRule
 from mailman.utilities.string import wrap
+from public import public
 from urllib import error, request
 from zope.interface import implementer
 

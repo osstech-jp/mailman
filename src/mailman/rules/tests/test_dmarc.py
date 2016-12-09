@@ -19,7 +19,7 @@
 
 from dns.rdatatype import TXT
 from dns.resolver import NXDOMAIN, NoAnswer
-from mailman import public
+from public import public
 from unittest import mock
 
 

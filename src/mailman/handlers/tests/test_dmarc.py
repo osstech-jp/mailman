@@ -39,7 +39,7 @@ class TestDMARCMitigations(unittest.TestCase):
         self._mlist.dmarc_wrapped_message_text = ''
         self._mlist.from_is_list = FromIsList.none
         self._mlist.reply_goes_to_list = ReplyToMunging.no_munging
-        # We can use the same message text for all tests.
+        # We can use the same message text for most tests.
         self._text = """\
 From: anne@example.com
 To: ant@example.com
@@ -242,3 +242,34 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 """ + self._text)
+
+    def test_rfc2047_encoded_from(self):
+        self._mlist.from_is_list = FromIsList.munge_from
+        msg = mfs(self._text)
+        del msg['from']
+        msg['From'] = '=?iso-8859-1?Q?A_Pers=F3n?= <anne@example.com>'
+        dmarc.process(self._mlist, msg, {})
+        self.assertMultiLineEqual(msg.as_string(), """\
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Message-ID: <some-id@example.com>
+Date: Fri, 1 Jan 2016 00:00:01 +0000
+Another-Header: To test removal in wrapper
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=====abc=="
+From: =?utf-8?q?A_Pers=C3=B3n_via_Ant?= <ant@example.com>
+Reply-To: =?iso-8859-1?Q?A_Pers=F3n?= <anne@example.com>
+
+--=====abc==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Some things to say.
+--=====abc==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+<html><head></head><body>Some things to say.</body></html>
+--=====abc==--
+""")
