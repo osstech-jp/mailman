@@ -2,11 +2,11 @@
 DMARC Mitigations
 =================
 
-In order to mitigate the effects of DMARC on mailing list traffic, list
+In order to mitigate the effects of DMARC_ on mailing list traffic, list
 administrators have the ability to apply transformations to messages delivered
 to list members.  These transformations are applied only to individual messages
-sent to list members and not to messages in digests, archives or gated to
-usenet.
+sent to list members and not to messages in digests, archives, or gated to
+USENET.
 
 The messages can be transformed by either munging the From: header and putting
 original From: in Cc: or Reply-To: or by wrapping the original message in an
@@ -16,23 +16,35 @@ Exactly what transformations are applied depends on a number of list settings.
 
 The settings and their effects are:
 
- * anonymous_list: If True, no mitigations are ever applied because the message
+``anonymous_list``
+   If True, no mitigations are ever applied because the message
    is already From: the list.
- * dmarc_moderation_action: The action to apply to messages From: a domain
-   publishing a DMARC policy of reject and possibly quarantine or none.
- * dmarc_quarantine_moderation_action: A flag to apply dmarc_moderation_action
-   to messages From: a domain publishing a DMARC policy of quarantine.
- * dmarc_none_moderation_action: A flag to apply dmarc_moderation_action to
+``dmarc_moderation_action``
+   The action to apply to messages From: a domain
+   publishing a DMARC policy of reject and possibly quarantine or none
+   depending on the next two settings.
+``dmarc_quarantine_moderation_action``
+   A flag to apply the above dmarc_moderation_action
+   to messages From: a domain publishing a DMARC policy of quarantine in
+   addition to domains publishing a DMARC policy of reject.
+``dmarc_none_moderation_action``
+   A flag to apply the above dmarc_moderation_action to
    messages From: a domain publishing a DMARC policy of none, but only when
    dmarc_quarantine_moderation_action is also true.
- * dmarc_moderation_notice: Text to include in any rejection notice to be sent
-   when dmarc_moderation_action of reject applies.
- * dmarc_wrapped_message_text: Text to be added as a separate text/plain MIME
+``dmarc_moderation_notice``
+   Text to include in any rejection notice to be sent
+   when dmarc_moderation_action of reject applies.  This overrides the bult-in
+   default text.
+``dmarc_wrapped_message_text``
+   Text to be added as a separate text/plain MIME
    part preceding the original message part in the wrapped message when
-   dmarc_moderation_action of wrap_message applies.
- * from_is_list: The action to be applied to all messages for which
+   dmarc_moderation_action of wrap_message applies.  If this is not provided
+   the separate text/plain MIME part is not added.
+``from_is_list``
+   The action to be applied to all messages for which
    dmarc_moderation_action is none or not applicable.
- * reply_goes_to_list: If this is set to other than no_munging of Reply-To,
+``reply_goes_to_list``
+   If this is set to other than no_munging of Reply-To,
    the original From: goes in Cc: rather than Reply-To:.  This is intended to
    make MUA functions of reply and reply-all have the same effect with
    messages to which mitigations have been applied as they do with other
@@ -40,18 +52,23 @@ The settings and their effects are:
 
 The possible actions for both dmarc_moderation_action and from_is_list are:
 
- * none: Make no transformation to the message.
- * munge_from: Change the From: header and put the original From: in Reply-To:
+``none``
+   Make no transformation to the message.
+``munge_from``
+   Change the From: header and put the original From: in Reply-To:
    or in some cases Cc:
- * wrap_message: Wrap the message in an outer message with headers as in
+``wrap_message``
+   Wrap the message in an outer message with headers as in
    munge_from.
 
 In addition, there are two more possible actions (actually processed by the
 dmarc-moderation rule) for dmarc_moderation_action only:
 
- * reject: Bounce the message back to the sender with a default reason or one
+``reject``
+   Bounce the message back to the sender with a default reason or one
    supplied in dmarc_moderation_notice.
- * discard: Silently discard the message.
+``discard``
+   Silently discard the message.
 
 Here's what happens when we munge the From.
 
@@ -143,3 +160,4 @@ And here's a wrapped message with an added text part.
     --...--
     <BLANKLINE>
 
+.. _DMARC: https://wikipedia.org/wiki/DMARC

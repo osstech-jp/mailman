@@ -239,7 +239,7 @@ class DMARCModeration:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        if mlist.dmarc_moderation_action == DMARCModerationAction.none:
+        if mlist.dmarc_moderation_action is DMARCModerationAction.none:
             # Don't bother to check if we're not going to do anything.
             return False
         dn, addr = parseaddr(msg.get('from'))
@@ -249,10 +249,10 @@ class DMARCModeration:
             # Otherwise, the rule misses but sets a flag for the dmarc handler
             # to do the appropriate action.
             msgdata['dmarc'] = True
-            if mlist.dmarc_moderation_action == DMARCModerationAction.discard:
+            if mlist.dmarc_moderation_action is DMARCModerationAction.discard:
                 msgdata['moderation_action'] = 'discard'
                 msgdata['moderation_reasons'] = [_('DMARC moderation')]
-            elif mlist.dmarc_moderation_action == DMARCModerationAction.reject:
+            elif mlist.dmarc_moderation_action is DMARCModerationAction.reject:
                 listowner = mlist.owner_address       # noqa F841
                 reason = (mlist.dmarc_moderation_notice or
                           _('You are not allowed to post to this mailing '

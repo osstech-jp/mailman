@@ -15,7 +15,14 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Do DMARC Munge From and Wrap Message actions."""
+"""Do DMARC Munge From and Wrap Message actions.
+
+This does the work of modifying the messages From: and Cc: or Reply-To: or
+wrapping the message in an outer message with From: and Cc: or Reply-To:
+as appropriate to avoid issues because of the original From: domain's DMARC
+policy.  It does this either to selected messages flagged by the DMARC
+moderation rule based on list settings and the original From: domain's DMARC
+policy or to all messages based on list settings."""
 
 import re
 import copy
@@ -42,19 +49,41 @@ NONASCII = re.compile('[^\s!-~]')
 # Headers from the original that we want to keep in the wrapper.  These are
 # actually regexps matched with re.match so they match anything that starts
 # with the given string unless they end with '$'.
-KEEPERS = ('archived-at',
-           'date',
-           'in-reply-to',
-           'list-',
-           'precedence',
-           'references',
-           'subject',
-           'to',
-           'x-mailman-',
-           )
+KEEPERS = (
+    'archived-at',
+    'date',
+    'in-reply-to',
+    'list-',
+    'precedence',
+    'references',
+    'subject',
+    'to',
+    'x-mailman-',
+    )
 
 
 def munged_headers(mlist, msg, msgdata):
+    # This returns a list of tuples (header, content) where header is the
+    # name of a header to be added to or replaced in the wrapper or message
+    # for DMARC mitigation.  It sets From: to the string
+    # 'original From: display name' via 'list name' <list posting address>
+    # and adds the original From: to Reply-To: or Cc: per the following.
+    # Our goals for this process are not completely compatible, so we do
+    # the best we can.  Our goals are:
+    # 1) as long as the list is not anonymous, the original From: address
+    #    should be obviously exposed, i.e. not just in a header that MUAs
+    #    don't display.
+    # 2) the original From: address should not be in a comment or display
+    #    name in the new From: because it is claimed that multiple domains
+    #    in any fields in From: are indicative of spamminess.  This means
+    #    it should be in Reply-To: or Cc:.
+    # 3) the behavior of an MUA doing a 'reply' or 'reply all' should be
+    #    consistent regardless of whether or not the From: is munged.
+    # Goal 3) implies sometimes the original From: should be in Reply-To:
+    # and sometimes in Cc:, and even so, this goal won't be achieved in
+    # all cases with all MUAs.  In cases of conflict, the above ordering of
+    # goals is priority order.
+    #
     # Be as robust as possible here.
     faddrs = getaddresses(msg.get_all('from', []))
     # Strip the nulls and bad emails.
@@ -67,13 +96,13 @@ def munged_headers(mlist, msg, msgdata):
         realname = ''
         email = msgdata['original_sender']
         o_from = (realname, email)
-    if not realname:
+    if len(realname) == 0:
         member = mlist.members.get_member(email)
         if member:
             realname = member.display_name or email
         else:
             realname = email
-    # Remove domain from realname if it looks like an email address
+    # Remove domain from realname if it looks like an email address.
     realname = re.sub(r'@([^ .]+\.)+[^ .]+$', '---', realname)
     # Make a display name and RFC 2047 encode it if necessary.  This is
     # difficult and kludgy. If the realname came from From: it should be
@@ -99,7 +128,7 @@ def munged_headers(mlist, msg, msgdata):
     dn = str(Header(via, mlist.preferred_language.charset))
     retn = [('From', formataddr((dn, mlist.posting_address)))]
     # We've made the munged From:.  Now put the original in Reply-To: or Cc:
-    if mlist.reply_goes_to_list == ReplyToMunging.no_munging:
+    if mlist.reply_goes_to_list is ReplyToMunging.no_munging:
         # Add original from to Reply-To:
         add_to = 'Reply-To'
     else:
@@ -108,7 +137,7 @@ def munged_headers(mlist, msg, msgdata):
     orig = getaddresses(msg.get_all(add_to, []))
     if o_from[1] not in [x[1] for x in orig]:
         orig.append(o_from)
-    retn.append((add_to, COMMASPACE.join([formataddr(x) for x in orig])))
+    retn.append((add_to, COMMASPACE.join(formataddr(x) for x in orig)))
     return retn
 
 
@@ -125,7 +154,7 @@ def wrap_message(mlist, msg, msgdata, dmarc_wrap=False):
     # make a copy of the msg, then delete almost everything and set/copy
     # what we want.
     omsg = copy.deepcopy(msg)
-    for key in msg.keys():
+    for key in msg:
         keep = False
         for keeper in KEEPERS:
             if re.match(keeper, key, re.I):
@@ -139,7 +168,7 @@ def wrap_message(mlist, msg, msgdata, dmarc_wrap=False):
         msg[k] = v
     # Are we including dmarc_wrapped_message_text?  I.e., do we have text and
     # are we wrapping because of dmarc_moderation_action?
-    if mlist.dmarc_wrapped_message_text and dmarc_wrap:
+    if len(mlist.dmarc_wrapped_message_text) > 0 and dmarc_wrap:
         part1 = MIMEText(wrap(mlist.dmarc_wrapped_message_text),
                          'plain',
                          mlist.preferred_language.charset)
@@ -158,31 +187,31 @@ def wrap_message(mlist, msg, msgdata, dmarc_wrap=False):
 def process(mlist, msg, msgdata):
     """Process DMARC actions."""
     if ((not msgdata.get('dmarc') or
-            mlist.dmarc_moderation_action == DMARCModerationAction.none) and
-            mlist.from_is_list == FromIsList.none):
+            mlist.dmarc_moderation_action is DMARCModerationAction.none) and
+            mlist.from_is_list is FromIsList.none):
         return
     if mlist.anonymous_list:
         # DMARC mitigation is not required for anonymous lists.
         return
-    if (mlist.dmarc_moderation_action != DMARCModerationAction.none and
+    if (mlist.dmarc_moderation_action is not DMARCModerationAction.none and
             msgdata.get('dmarc')):
-        if mlist.dmarc_moderation_action == DMARCModerationAction.munge_from:
+        if mlist.dmarc_moderation_action is DMARCModerationAction.munge_from:
             munge_from(mlist, msg, msgdata)
-        elif (mlist.dmarc_moderation_action ==
+        elif (mlist.dmarc_moderation_action is
                 DMARCModerationAction.wrap_message):
             wrap_message(mlist, msg, msgdata, dmarc_wrap=True)
         else:
-            assert False, (
-                'handlers/dmarc.py: dmarc_moderation_action = {0}'.format(
+            raise AssertionError(
+                'handlers/dmarc.py: dmarc_moderation_action = {}'.format(
                     mlist.dmarc_moderation_action))
     else:
-        if mlist.from_is_list == FromIsList.munge_from:
+        if mlist.from_is_list is FromIsList.munge_from:
             munge_from(mlist, msg, msgdata)
-        elif mlist.from_is_list == FromIsList.wrap_message:
+        elif mlist.from_is_list is FromIsList.wrap_message:
             wrap_message(mlist, msg, msgdata)
         else:
-            assert False, (
-                'handlers/dmarc.py: from_is_list = {0}'.format(
+            raise AssertionError(
+                'handlers/dmarc.py: from_is_list = {}'.format(
                     mlist.from_is_list))
 
 

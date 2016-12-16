@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 from alembic import op
 from mailman.database.helpers import exists_in_db
-from mailman.database.types import Enum, SAUnicode, SAUnicodeLarge
+from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.mailinglist import DMARCModerationAction, FromIsList
 
 
@@ -71,10 +71,6 @@ def upgrade():
         dmarc_wrapped_message_text=op.inline_literal(''),
         from_is_list=op.inline_literal(FromIsList.none),
         )))
-    # Adding another rule can make the rule Hits/Misses too long for MySQL
-    # SaUnicode.
-    with op.batch_alter_table('pendedkeyvalue') as batch_op:
-        batch_op.alter_column('value', type_=SAUnicodeLarge)
 
 
 def downgrade():
@@ -85,5 +81,3 @@ def downgrade():
         batch_op.drop_column('dmarc_moderation_notice')
         batch_op.drop_column('dmarc_wrapped_message_text')
         batch_op.drop_column('from_is_list')
-    with op.batch_alter_table('pendedkeyvalue') as batch_op:
-        batch_op.alter_column('value', type_=SAUnicode)
