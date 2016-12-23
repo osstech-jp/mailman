@@ -1,7 +1,7 @@
 """dmarc_attributes
 
 Revision ID: 3002bac0c25a
-Revises: 448a93984c35
+Revises: a46993b05703
 Create Date: 2016-10-30 22:05:17.881880
 
 """
@@ -16,7 +16,7 @@ from mailman.interfaces.mailinglist import DMARCModerationAction, FromIsList
 
 # revision identifiers, used by Alembic.
 revision = '3002bac0c25a'
-down_revision = '448a93984c35'
+down_revision = 'a46993b05703'
 
 
 def upgrade():
