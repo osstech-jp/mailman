@@ -23,7 +23,7 @@ from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import SAUnicode
+from mailman.database.types import SAUnicode, SAUnicodeLarge
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 from mailman.utilities.datetime import now
@@ -47,7 +47,7 @@ class PendedKeyValue(Model):
 
     id = Column(Integer, primary_key=True)
     key = Column(SAUnicode, index=True)
-    value = Column(SAUnicode, index=True)
+    value = Column(SAUnicodeLarge, index=True)
     pended_id = Column(Integer, ForeignKey('pended.id'), index=True)
 
     def __init__(self, key, value):
