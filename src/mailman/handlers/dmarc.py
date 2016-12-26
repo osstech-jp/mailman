@@ -34,8 +34,7 @@ from email.mime.text import MIMEText
 from email.utils import formataddr, getaddresses, make_msgid
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
-from mailman.interfaces.mailinglist import (
-    DMARCModerationAction, FromIsList, ReplyToMunging)
+from mailman.interfaces.mailinglist import DMARCMitigateAction, ReplyToMunging
 from mailman.utilities.string import wrap
 from public import public
 from zope.interface import implementer
@@ -148,7 +147,7 @@ def munge_from(mlist, msg, msgdata):
     return
 
 
-def wrap_message(mlist, msg, msgdata, dmarc_wrap=False):
+def wrap_message(mlist, msg, msgdata):
     # Create a wrapper message around the original.
     # There are various headers in msg that we don't want, so we basically
     # make a copy of the msg, then delete almost everything and set/copy
@@ -166,9 +165,8 @@ def wrap_message(mlist, msg, msgdata, dmarc_wrap=False):
     msg['Message-ID'] = make_msgid()
     for k, v in munged_headers(mlist, omsg, msgdata):
         msg[k] = v
-    # Are we including dmarc_wrapped_message_text?  I.e., do we have text and
-    # are we wrapping because of dmarc_moderation_action?
-    if len(mlist.dmarc_wrapped_message_text) > 0 and dmarc_wrap:
+    # Are we including dmarc_wrapped_message_text?
+    if len(mlist.dmarc_wrapped_message_text) > 0:
         part1 = MIMEText(wrap(mlist.dmarc_wrapped_message_text),
                          'plain',
                          mlist.preferred_language.charset)
@@ -185,34 +183,29 @@ def wrap_message(mlist, msg, msgdata, dmarc_wrap=False):
 
 
 def process(mlist, msg, msgdata):
-    """Process DMARC actions."""
-    if ((not msgdata.get('dmarc') or
-            mlist.dmarc_moderation_action is DMARCModerationAction.none) and
-            mlist.from_is_list is FromIsList.none):
+    # If we're mitigating on policy and we have no hit, return.
+    if not msgdata.get('dmarc') and not mlist.dmarc_mitigate_unconditionally:
+        return
+    # if we're not mitigating, return.
+    if mlist.dmarc_mitigate_action is DMARCMitigateAction.no_mitigation:
         return
     if mlist.anonymous_list:
         # DMARC mitigation is not required for anonymous lists.
         return
-    if (mlist.dmarc_moderation_action is not DMARCModerationAction.none and
-            msgdata.get('dmarc')):
-        if mlist.dmarc_moderation_action is DMARCModerationAction.munge_from:
+    if msgdata.get('dmarc') or mlist.dmarc_mitigate_unconditionally:
+        if mlist.dmarc_mitigate_action is DMARCMitigateAction.munge_from:
             munge_from(mlist, msg, msgdata)
-        elif (mlist.dmarc_moderation_action is
-                DMARCModerationAction.wrap_message):
-            wrap_message(mlist, msg, msgdata, dmarc_wrap=True)
-        else:
-            raise AssertionError(
-                'handlers/dmarc.py: dmarc_moderation_action = {}'.format(
-                    mlist.dmarc_moderation_action))
-    else:
-        if mlist.from_is_list is FromIsList.munge_from:
-            munge_from(mlist, msg, msgdata)
-        elif mlist.from_is_list is FromIsList.wrap_message:
+        elif mlist.dmarc_mitigate_action is DMARCMitigateAction.wrap_message:
             wrap_message(mlist, msg, msgdata)
         else:
-            raise AssertionError(
-                'handlers/dmarc.py: from_is_list = {}'.format(
-                    mlist.from_is_list))
+            # We can get here if DMARCMitigateAction is reject or discard
+            # but the From: domain has no reject or quarantine policy and
+            # mlist.dmarc_mitigate_unconditionally is True.  We just ignore
+            # this.
+            return
+    else:
+        raise AssertionError(
+            'handlers/dmarc.py: no hit and unconditional is False')
 
 
 @public

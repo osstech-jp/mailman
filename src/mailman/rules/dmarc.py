@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""DMARC moderation rule."""
+"""DMARC mitigation rule."""
 
 import re
 import logging
@@ -26,7 +26,7 @@ from email.utils import parseaddr
 from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.core.i18n import _
-from mailman.interfaces.mailinglist import DMARCModerationAction
+from mailman.interfaces.mailinglist import DMARCMitigateAction
 from mailman.interfaces.rules import IRule
 from mailman.utilities.string import wrap
 from public import public
@@ -110,7 +110,7 @@ def _get_org_dom(domain):
 
 def _IsDMARCProhibited(mlist, email):
     # This takes an email address, and returns True if DMARC policy is
-    # p=reject or possibly quarantine or none.
+    # p=reject or quarantine.
     email = email.lower()
     # Scan from the right in case quoted local part has an '@'.
     at_sign = email.rfind('@')
@@ -205,54 +205,40 @@ def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
                         found p=reject in %s = %s""",
                         mlist.list_name, email, dmarc_domain, name, entry)
                     return True
-
-                if (mlist.dmarc_quarantine_moderation_action and
-                        policy == 'quarantine'):
+                if policy == 'quarantine':
                     vlog.info(
                         """%s: DMARC lookup for %s (%s)
                         found p=quarantine in %s = %s""",
                         mlist.list_name, email, dmarc_domain, name, entry)
                     return True
-
-                if (mlist.dmarc_none_moderation_action and
-                        mlist.dmarc_quarantine_moderation_action and
-                        mlist.dmarc_moderation_action in (
-                            DMARCModerationAction.munge_from,
-                            DMARCModerationAction.wrap_message) and
-                        policy == 'none'):
-                    vlog.info(
-                        '%s: DMARC lookup for %s (%s) found p=none in %s = %s',
-                        mlist.list_name, email, dmarc_domain, name, entry)
-                    return True
-
     return False
 
 
 @public
 @implementer(IRule)
-class DMARCModeration:
-    """The DMARC moderation rule."""
+class DMARCMitigation:
+    """The DMARC mitigation rule."""
 
-    name = 'dmarc-moderation'
+    name = 'dmarc-mitigation'
     description = _('Find DMARC policy of From: domain.')
     record = True
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        if mlist.dmarc_moderation_action is DMARCModerationAction.none:
+        if mlist.dmarc_mitigate_action is DMARCMitigateAction.no_mitigation:
             # Don't bother to check if we're not going to do anything.
             return False
         dn, addr = parseaddr(msg.get('from'))
         if _IsDMARCProhibited(mlist, addr):
-            # If dmarc_moderation_action is discard or reject, this rule fires
+            # If dmarc_mitigate_action is discard or reject, this rule fires
             # and jumps to the 'moderation' chain to do the actual discard.
             # Otherwise, the rule misses but sets a flag for the dmarc handler
             # to do the appropriate action.
             msgdata['dmarc'] = True
-            if mlist.dmarc_moderation_action is DMARCModerationAction.discard:
+            if mlist.dmarc_mitigate_action is DMARCMitigateAction.discard:
                 msgdata['moderation_action'] = 'discard'
                 msgdata['moderation_reasons'] = [_('DMARC moderation')]
-            elif mlist.dmarc_moderation_action is DMARCModerationAction.reject:
+            elif mlist.dmarc_mitigate_action is DMARCMitigateAction.reject:
                 listowner = mlist.owner_address       # noqa F841
                 reason = (mlist.dmarc_moderation_notice or
                           _('You are not allowed to post to this mailing '

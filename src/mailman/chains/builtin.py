@@ -41,7 +41,7 @@ class BuiltInChain:
         # First check DMARC.  For a reject or discard, the rule hits and we
         # jump to the moderation chain to do the action.  Otherwise, the rule
         # misses buts sets msgdata['dmarc'] for the handler.
-        ('dmarc-moderation', LinkAction.jump, 'moderation'),
+        ('dmarc-mitigation', LinkAction.jump, 'moderation'),
         ('approved', LinkAction.jump, 'accept'),
         ('emergency', LinkAction.jump, 'hold'),
         ('loop', LinkAction.jump, 'discard'),

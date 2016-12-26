@@ -19,30 +19,22 @@ The settings and their effects are:
 ``anonymous_list``
    If True, no mitigations are ever applied because the message
    is already From: the list.
-``dmarc_moderation_action``
+``dmarc_mitigate_action``
    The action to apply to messages From: a domain
-   publishing a DMARC policy of reject and possibly quarantine or none
-   depending on the next two settings.
-``dmarc_quarantine_moderation_action``
-   A flag to apply the above dmarc_moderation_action
-   to messages From: a domain publishing a DMARC policy of quarantine in
-   addition to domains publishing a DMARC policy of reject.
-``dmarc_none_moderation_action``
-   A flag to apply the above dmarc_moderation_action to
-   messages From: a domain publishing a DMARC policy of none, but only when
-   dmarc_quarantine_moderation_action is also true.
+   publishing a DMARC policy of reject or quarantine or to all messages
+   depending on the next setting.
+``dmarc_mitigate_unconditionally``
+   A Flag to apply dmarc_mitigate_action to all messages, but only if
+   dmarc_mitigate_action is neither reject or discard.
 ``dmarc_moderation_notice``
    Text to include in any rejection notice to be sent
-   when dmarc_moderation_action of reject applies.  This overrides the bult-in
+   when dmarc_policy_mitigation of reject applies.  This overrides the bult-in
    default text.
 ``dmarc_wrapped_message_text``
    Text to be added as a separate text/plain MIME
-   part preceding the original message part in the wrapped message when
-   dmarc_moderation_action of wrap_message applies.  If this is not provided
-   the separate text/plain MIME part is not added.
-``from_is_list``
-   The action to be applied to all messages for which
-   dmarc_moderation_action is none or not applicable.
+   part preceding the original message part in the wrapped message when a
+   wrap_message mitigation applies.  If this is not provided the separate
+   text/plain MIME part is not added.
 ``reply_goes_to_list``
    If this is set to other than no_munging of Reply-To,
    the original From: goes in Cc: rather than Reply-To:.  This is intended to
@@ -50,9 +42,9 @@ The settings and their effects are:
    messages to which mitigations have been applied as they do with other
    messages.
 
-The possible actions for both dmarc_moderation_action and from_is_list are:
+The possible actions for dmarc_mitigate_action are:
 
-``none``
+``no_mitigation``
    Make no transformation to the message.
 ``munge_from``
    Change the From: header and put the original From: in Reply-To:
@@ -60,10 +52,6 @@ The possible actions for both dmarc_moderation_action and from_is_list are:
 ``wrap_message``
    Wrap the message in an outer message with headers as in
    munge_from.
-
-In addition, there are two more possible actions (actually processed by the
-dmarc-moderation rule) for dmarc_moderation_action only:
-
 ``reject``
    Bounce the message back to the sender with a default reason or one
    supplied in dmarc_moderation_notice.
@@ -72,10 +60,10 @@ dmarc-moderation rule) for dmarc_moderation_action only:
 
 Here's what happens when we munge the From.
 
-    >>> from mailman.interfaces.mailinglist import (DMARCModerationAction,
+    >>> from mailman.interfaces.mailinglist import (DMARCMitigateAction,
     ... ReplyToMunging)
     >>> mlist = create_list('test@example.com')
-    >>> mlist.dmarc_moderation_action = DMARCModerationAction.munge_from
+    >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
     >>> mlist.reply_goes_to_list = ReplyToMunging.no_munging
     >>> msg = message_from_string("""\
     ... From: A Person <aperson@example.com>
@@ -96,7 +84,7 @@ Here's what happens when we munge the From.
     
 Here we wrap the message without adding a text part.
 
-    >>> mlist.dmarc_moderation_action = DMARCModerationAction.wrap_message
+    >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.wrap_message
     >>> mlist.dmarc_wrapped_message_text = ''
     >>> msg = message_from_string("""\
     ... From: A Person <aperson@example.com>

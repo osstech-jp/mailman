@@ -24,8 +24,10 @@ from zope.interface import Attribute, Interface
 
 
 @public
-class DMARCModerationAction(Enum):
-    none = 0
+class DMARCMitigateAction(Enum):
+    # Mitigation to apply to messages From: domains publishing an applicable
+    # DMARC policy or unconditionally depending on settings.
+    no_mitigation = 0
     # No DMARC mitigations.
     munge_from = 1
     # Messages From: domains with DMARC policy will have From: replaced by
@@ -38,20 +40,6 @@ class DMARCModerationAction(Enum):
     # Messages From: domains with DMARC policy will be rejected.
     discard = 4
     # Messages From: domains with DMARC policy will be discarded.
-
-
-@public
-class FromIsList(Enum):
-    none = 0
-    # No DMARC transformations will be applied to all messages.
-    munge_from = 1
-    # All messages will have From: replaced by the list posting address and
-    # the original From: added to Reply-To: except DMARCModerationAction
-    # wrap_message, reject or discard takes precedence if applicable.
-    wrap_message = 2
-    # All messages will be wrapped in an outer message From: the list posting
-    # address except DMARCModerationAction reject or discard takes
-    # precedence if applicable.
 
 
 @public
@@ -249,35 +237,25 @@ class IMailingList(Interface):
 
     # DMARC attributes.
 
-    dmarc_moderation_action = Attribute(
-        """The DMARCModerationAction to be applied to messages From: a
-        domain publishing DMARC p=reject and possibly quarantine or none.
+    dmarc_mitigate_action = Attribute(
+        """The DMARCMitigateAction to be applied to messages From: a domain
+        publishing DMARC p=reject or quarantine and possibly unconditionally.
         """)
 
-    dmarc_quarantine_moderation_action = Attribute(
-        """Flag to apply DMARCModerationAction to messages From: a domain
-        publishing DMARC p=quarantine.
+    dmarc_mitigate_unconditionally = Attribute(
+        """A Flag to apply dmarc_mitigate_action to all messages but only if
+        dmarc_mitigate_action is other than reject or discard.
         """)
 
-    dmarc_none_moderation_action = Attribute(
-        """Flag to apply DMARCModerationAction to messages From: a domain
-        publishing DMARC p=none, but only when
-        dmarc_quarantine_moderation_action is also true.
-        """)
     dmarc_moderation_notice = Attribute(
         """Text to include in any rejection notice to be sent when
-        DMARCModerationAction of reject applies.
+        DMARCMitigateAction of reject applies.
         """)
 
     dmarc_wrapped_message_text = Attribute(
         """Text to be added as a separate text/plain MIME part preceding the
         original message part in the wrapped message when
-        DMARCModerationAction of wrap_message applies.
-        """)
-
-    from_is_list = Attribute(
-        """The FromIsList action to be applied to all messages for which
-        DMARCModerationAction is none or not applicable.
+        DMARCMitigateAction of wrap_message applies.
         """)
 
     # Rosters and subscriptions.

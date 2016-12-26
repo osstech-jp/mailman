@@ -268,7 +268,7 @@ This message will end up in the `pipeline` queue.
     Message-ID: <first>
     Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    X-Mailman-Rule-Misses: dmarc-moderation; approved; emergency; loop;
+    X-Mailman-Rule-Misses: dmarc-mitigation; approved; emergency; loop;
         banned-address; member-moderation; nonmember-moderation; administrivia;
         implicit-dest; max-recipients; max-size; news-moderation; no-subject;
         suspicious-header
@@ -285,7 +285,7 @@ hit and all rules that have missed.
     administrivia
     approved
     banned-address
-    dmarc-moderation
+    dmarc-mitigation
     emergency
     implicit-dest
     loop

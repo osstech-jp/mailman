@@ -31,8 +31,7 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    DMARCModerationAction, FromIsList, Personalization, ReplyToMunging,
-    SubscriptionPolicy)
+    DMARCMitigateAction, Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.nntp import NewsgroupModeration
 from public import public
 
@@ -87,12 +86,10 @@ class BasicOperation:
         mlist.digest_volume_frequency = DigestFrequency.monthly
         mlist.next_digest_number = 1
         # DMARC
-        mlist.dmarc_moderation_action = DMARCModerationAction.none
-        mlist.dmarc_quarantine_moderation_action = True
-        mlist.dmarc_none_moderation_action = False
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.no_mitigation
+        mlist.dmarc_mitigate_unconditionally = False
         mlist.dmarc_moderation_notice = ''
         mlist.dmarc_wrapped_message_text = ''
-        mlist.from_is_list = FromIsList.none
         # NNTP gateway
         mlist.nntp_host = ''
         mlist.linked_newsgroup = ''

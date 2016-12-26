@@ -24,8 +24,8 @@ from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    DMARCModerationAction, FromIsList, IAcceptableAliasSet, IMailingList,
-    ReplyToMunging, SubscriptionPolicy)
+    DMARCMitigateAction, IAcceptableAliasSet, IMailingList, ReplyToMunging,
+    SubscriptionPolicy)
 from mailman.interfaces.template import ITemplateManager
 from mailman.rest.helpers import (
     GetterSetter, bad_request, etag, no_content, not_found, okay)
@@ -152,16 +152,14 @@ ATTRIBUTES = dict(
     digest_size_threshold=GetterSetter(float),
     digest_volume_frequency=GetterSetter(enum_validator(DigestFrequency)),
     digests_enabled=GetterSetter(as_boolean),
-    dmarc_moderation_action=GetterSetter(
-        enum_validator(DMARCModerationAction)),
+    dmarc_mitigate_action=GetterSetter(
+        enum_validator(DMARCMitigateAction)),
+    dmarc_mitigate_unconditionally=GetterSetter(as_boolean),
     dmarc_moderation_notice=GetterSetter(str),
-    dmarc_none_moderation_action=GetterSetter(as_boolean),
-    dmarc_quarantine_moderation_action=GetterSetter(as_boolean),
     dmarc_wrapped_message_text=GetterSetter(str),
     filter_content=GetterSetter(as_boolean),
     first_strip_reply_to=GetterSetter(as_boolean),
     fqdn_listname=GetterSetter(None),
-    from_is_list=GetterSetter(enum_validator(FromIsList)),
     include_rfc2369_headers=GetterSetter(as_boolean),
     info=GetterSetter(str),
     join_address=GetterSetter(None),

@@ -21,8 +21,7 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.handlers import dmarc
-from mailman.interfaces.mailinglist import (
-    DMARCModerationAction, FromIsList, ReplyToMunging)
+from mailman.interfaces.mailinglist import DMARCMitigateAction, ReplyToMunging
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 
@@ -35,9 +34,10 @@ class TestDMARCMitigations(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('ant@example.com')
         self._mlist.anonymous_list = False
-        self._mlist.dmarc_moderation_action = DMARCModerationAction.none
+        self._mlist.dmarc_policy_mitigate_action = (
+            DMARCMitigateAction.no_mitigation)
         self._mlist.dmarc_wrapped_message_text = ''
-        self._mlist.from_is_list = FromIsList.none
+        self._mlist.dmarc_dmarc_mitigate_unconditionally = False
         self._mlist.reply_goes_to_list = ReplyToMunging.no_munging
         # We can use the same message text for most tests.
         self._text = """\
@@ -71,14 +71,14 @@ Content-Transfer-Encoding: 7bit
 
     def test_anonymous_no_change(self):
         self._mlist.anonymous_list = True
-        self._mlist.dmarc_moderation_action = DMARCModerationAction.munge_from
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         msgdata = {'dmarc': True}
         msg = mfs(self._text)
         dmarc.process(self._mlist, msg, msgdata)
         self.assertMultiLineEqual(msg.as_string(), self._text)
 
     def test_action_munge_from(self):
-        self._mlist.dmarc_moderation_action = DMARCModerationAction.munge_from
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         msgdata = {'dmarc': True}
         msg = mfs(self._text)
         dmarc.process(self._mlist, msg, msgdata)
@@ -108,13 +108,14 @@ Content-Transfer-Encoding: 7bit
 """)
 
     def test_no_action_without_msgdata(self):
-        self._mlist.dmarc_moderation_action = DMARCModerationAction.munge_from
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         msg = mfs(self._text)
         dmarc.process(self._mlist, msg, {})
         self.assertMultiLineEqual(msg.as_string(), self._text)
 
-    def test_from_is_list_no_msgdata(self):
-        self._mlist.from_is_list = FromIsList.munge_from
+    def test_unconditional_no_msgdata(self):
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        self._mlist.dmarc_mitigate_unconditionally = True
         msg = mfs(self._text)
         dmarc.process(self._mlist, msg, {})
         self.assertMultiLineEqual(msg.as_string(), """\
@@ -143,7 +144,7 @@ Content-Transfer-Encoding: 7bit
 """)
 
     def test_from_in_cc(self):
-        self._mlist.dmarc_moderation_action = DMARCModerationAction.munge_from
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         self._mlist.reply_goes_to_list = ReplyToMunging.point_to_list
         msgdata = {'dmarc': True}
         msg = mfs(self._text)
@@ -174,7 +175,8 @@ Content-Transfer-Encoding: 7bit
 """)
 
     def test_wrap_message_1(self):
-        self._mlist.from_is_list = FromIsList.wrap_message
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.wrap_message
+        self._mlist.dmarc_mitigate_unconditionally = True
         msg = mfs(self._text)
         dmarc.process(self._mlist, msg, {})
         # We can't predict the Message-ID in the wrapper so delete it, but
@@ -195,8 +197,7 @@ Content-Disposition: inline
 """ + self._text)
 
     def test_wrap_message_2(self):
-        self._mlist.dmarc_moderation_action = (
-            DMARCModerationAction.wrap_message)
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.wrap_message
         msgdata = {'dmarc': True}
         msg = mfs(self._text)
         dmarc.process(self._mlist, msg, msgdata)
@@ -219,8 +220,7 @@ Content-Disposition: inline
 """ + self._text)
 
     def test_wrap_message_cc(self):
-        self._mlist.dmarc_moderation_action = (
-            DMARCModerationAction.wrap_message)
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.wrap_message
         self._mlist.reply_goes_to_list = ReplyToMunging.point_to_list
         msgdata = {'dmarc': True}
         msg = mfs(self._text)
@@ -244,11 +244,12 @@ Content-Disposition: inline
 """ + self._text)
 
     def test_rfc2047_encoded_from(self):
-        self._mlist.from_is_list = FromIsList.munge_from
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        msgdata = {'dmarc': True}
         msg = mfs(self._text)
         del msg['from']
         msg['From'] = '=?iso-8859-1?Q?A_Pers=F3n?= <anne@example.com>'
-        dmarc.process(self._mlist, msg, {})
+        dmarc.process(self._mlist, msg, msgdata)
         self.assertMultiLineEqual(msg.as_string(), """\
 To: ant@example.com
 Subject: A subject
