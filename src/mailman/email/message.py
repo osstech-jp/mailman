@@ -133,7 +133,7 @@ class UserNotification(Message):
             self['To'] = recipients
             self.recipients = set([recipients])
 
-    def send(self, mlist, *, add_precedence=True, to_moderators=False, **_kws):
+    def send(self, mlist, *, add_precedence=True, **_kws):
         """Sends the message by enqueuing it to the 'virgin' queue.
 
         This is used for all internally crafted messages.
@@ -143,9 +143,6 @@ class UserNotification(Message):
         :param add_precedence: Flag indicating whether a `Precedence: bulk`
             header should be added to the message or not.
         :type add_precedence: bool
-        :param to_moderators: Flag indicating whether the message should be
-            sent to the list's moderators instead of the list's membership.
-        :type to_moderators: bool
 
         This function also accepts arbitrary keyword arguments.  The key/value
         pairs for **kws is added to the metadata dictionary associated with
@@ -163,12 +160,6 @@ class UserNotification(Message):
         # don't override an existing Precedence: header.
         if 'precedence' not in self and add_precedence:
             self['Precedence'] = 'bulk'
-        if to_moderators:
-            self.recipients = set(
-                member.address.email
-                for member in mlist.moderators.members
-                if member.delivery_status is DeliveryStatus.enabled)
-            self['To'] = COMMASPACE.join(self.recipients)
         self._enqueue(mlist, **_kws)
 
     def _enqueue(self, mlist, **_kws):
