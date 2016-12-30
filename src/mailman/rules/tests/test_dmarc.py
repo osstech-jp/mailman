@@ -21,8 +21,11 @@ organizational domain tests."""
 from contextlib import ExitStack
 from dns.rdatatype import TXT
 from dns.resolver import NXDOMAIN, NoAnswer
+from mailman.app.lifecycle import create_list
+from mailman.interfaces.mailinglist import DMARCMitigateAction
 from mailman.rules import dmarc
-from mailman.testing.helpers import LogFileMark
+from mailman.testing.helpers import (
+    LogFileMark, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from public import public
 from unittest import TestCase
@@ -132,3 +135,15 @@ class TestDMARCRules(TestCase):
             'https://publicsuffix.org/list/public_suffix_list.dat: '
             'no internet\n')
         self.assertEqual(domain, 'kobe.jp')
+
+    def test_no_at_sign_in_from_address(self):
+        # If there's no @ sign in the From: address, the rule can't hit.
+        mlist = create_list('ant@example.com')
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        msg = mfs("""\
+From: anne
+To: ant@example.com
+
+""")
+        rule = dmarc.DMARCMitigation()
+        self.assertFalse(rule.check(mlist, msg, {}))
