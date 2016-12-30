@@ -20,8 +20,10 @@
 import unittest
 
 from mailman.app.lifecycle import create_list
+from mailman.app.membership import add_member
 from mailman.handlers import dmarc
 from mailman.interfaces.mailinglist import DMARCMitigateAction, ReplyToMunging
+from mailman.interfaces.subscriptions import RequestRecord
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 
@@ -77,6 +79,32 @@ Content-Transfer-Encoding: 7bit
         dmarc.process(self._mlist, msg, msgdata)
         self.assertMultiLineEqual(msg.as_string(), self._text)
 
+    def test_no_mitigation_no_change_1(self):
+        msg = mfs(self._text)
+        self._mlist.dmarc_mitigate_unconditionally = True
+        dmarc.process(self._mlist, msg, {})
+        self.assertMultiLineEqual(msg.as_string(), self._text)
+
+    def test_no_mitigation_no_change_2(self):
+        msg = mfs(self._text)
+        msgdata = {'dmarc': True}
+        dmarc.process(self._mlist, msg, msgdata)
+        self.assertMultiLineEqual(msg.as_string(), self._text)
+
+    def test_action_reject_mitigate_unconditionally(self):
+        msg = mfs(self._text)
+        self._mlist.dmarc_mitigate_unconditionally = True
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        dmarc.process(self._mlist, msg, {})
+        self.assertMultiLineEqual(msg.as_string(), self._text)
+
+    def test_action_discard_mitigate_unconditionally(self):
+        msg = mfs(self._text)
+        self._mlist.dmarc_mitigate_unconditionally = True
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.discard
+        dmarc.process(self._mlist, msg, {})
+        self.assertMultiLineEqual(msg.as_string(), self._text)
+
     def test_action_munge_from(self):
         self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         msgdata = {'dmarc': True}
@@ -92,6 +120,106 @@ Another-Header: To test removal in wrapper
 MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="=====abc=="
 From: anne--- via Ant <ant@example.com>
+Reply-To: anne@example.com
+
+--=====abc==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Some things to say.
+--=====abc==
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+<html><head></head><body>Some things to say.</body></html>
+--=====abc==--
+""")
+
+    def test_action_munge_from_no_from(self):
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        msgdata = dict(
+            dmarc=True,
+            original_sender='anne@example.com',
+            )
+        msg = mfs(self._text)
+        del msg['from']
+        dmarc.process(self._mlist, msg, msgdata)
+        self.assertMultiLineEqual(msg.as_string(), """\
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Message-ID: <some-id@example.com>
+Date: Fri, 1 Jan 2016 00:00:01 +0000
+Another-Header: To test removal in wrapper
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=====abc=="
+From: anne--- via Ant <ant@example.com>
+Reply-To: anne@example.com
+
+--=====abc==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Some things to say.
+--=====abc==
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+<html><head></head><body>Some things to say.</body></html>
+--=====abc==--
+""")
+
+    def test_action_munge_from_display_name_in_from(self):
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        msgdata = {'dmarc': True}
+        msg = mfs(self._text)
+        del msg['from']
+        msg['From'] = 'Anne Person <anne@example.com>'
+        dmarc.process(self._mlist, msg, msgdata)
+        self.assertMultiLineEqual(msg.as_string(), """\
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Message-ID: <some-id@example.com>
+Date: Fri, 1 Jan 2016 00:00:01 +0000
+Another-Header: To test removal in wrapper
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=====abc=="
+From: Anne Person via Ant <ant@example.com>
+Reply-To: Anne Person <anne@example.com>
+
+--=====abc==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Some things to say.
+--=====abc==
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+<html><head></head><body>Some things to say.</body></html>
+--=====abc==--
+""")
+
+    def test_action_munge_from_display_name_in_list(self):
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        add_member(
+            self._mlist,
+            RequestRecord('anne@example.com', 'Anna Banana')
+            )
+        msgdata = {'dmarc': True}
+        msg = mfs(self._text)
+        dmarc.process(self._mlist, msg, msgdata)
+        self.assertMultiLineEqual(msg.as_string(), """\
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Message-ID: <some-id@example.com>
+Date: Fri, 1 Jan 2016 00:00:01 +0000
+Another-Header: To test removal in wrapper
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=====abc=="
+From: Anna Banana via Ant <ant@example.com>
 Reply-To: anne@example.com
 
 --=====abc==

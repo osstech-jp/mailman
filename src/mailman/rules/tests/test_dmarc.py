@@ -15,12 +15,15 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Support for mocking dnspython calls from dmarc rules."""
+"""Provides support for mocking dnspython calls from dmarc rules and some
+organizational domain tests."""
 
 from dns.rdatatype import TXT
 from dns.resolver import NXDOMAIN, NoAnswer
+from mailman.rules import dmarc
+from mailman.testing.layers import ConfigLayer
 from public import public
-from unittest import mock
+from unittest import TestCase, mock
 
 
 @public
@@ -79,3 +82,29 @@ def get_dns_resolver():
             return self
     patcher = mock.patch('dns.resolver.Resolver', Resolver)
     return patcher
+
+
+class TestDMARCRules(TestCase):
+    """Test organizational domain determination."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        pass
+
+    def test_no_url(self):
+        dmarc.s_dict = {}
+        dmarc._get_suffixes(None)
+        self.assertEqual(dmarc.s_dict, dict())
+
+    def test_no_data_for_domain(self):
+        self.assertEqual(
+            dmarc._get_org_dom('sub.dom.example.nxtld'), 'example.nxtld')
+
+    def test_domain_with_wild_card(self):
+        self.assertEqual(
+            dmarc._get_org_dom('ssub.sub.foo.kobe.jp'), 'sub.foo.kobe.jp')
+
+    def test_exception_to_wild_card(self):
+        self.assertEqual(
+            dmarc._get_org_dom('ssub.sub.city.kobe.jp'), 'city.kobe.jp')

@@ -43,8 +43,6 @@ def _get_suffixes(url):
     # This loads and parses the data from the url argument into s_dict for
     # use by _get_org_dom.
     global s_dict
-    if s_dict:
-        return
     if not url:
         return
     try:
@@ -199,17 +197,16 @@ def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
                         policy = mo.group(1).lower()
                     else:
                         continue
-                if policy == 'reject':
+                if policy in ('reject', 'quarantine'):
                     vlog.info(
                         """%s: DMARC lookup for %s (%s)
-                        found p=reject in %s = %s""",
-                        mlist.list_name, email, dmarc_domain, name, entry)
-                    return True
-                if policy == 'quarantine':
-                    vlog.info(
-                        """%s: DMARC lookup for %s (%s)
-                        found p=quarantine in %s = %s""",
-                        mlist.list_name, email, dmarc_domain, name, entry)
+                        found p=%s in %s = %s""",
+                        mlist.list_name,
+                        email,
+                        dmarc_domain,
+                        policy,
+                        name,
+                        entry)
                     return True
     return False
 
