@@ -18,13 +18,15 @@
 """Provides support for mocking dnspython calls from dmarc rules and some
 organizational domain tests."""
 
+from contextlib import ExitStack
 from dns.rdatatype import TXT
 from dns.resolver import NXDOMAIN, NoAnswer
 from mailman.rules import dmarc
 from mailman.testing.helpers import LogFileMark
 from mailman.testing.layers import ConfigLayer
 from public import public
-from unittest import TestCase, mock
+from unittest import TestCase
+from unittest.mock import patch
 from urllib.error import URLError
 
 
@@ -82,7 +84,7 @@ def get_dns_resolver():
                 raise NXDOMAIN
             self.response = Answer()
             return self
-    patcher = mock.patch('dns.resolver.Resolver', Resolver)
+    patcher = patch('dns.resolver.Resolver', Resolver)
     return patcher
 
 
@@ -92,34 +94,41 @@ class TestDMARCRules(TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        pass
+        self.resources = ExitStack()
+        self.addCleanup(self.resources.close)
+        # Make sure every test has a clean cache.
+        self.cache = {}
+        self.resources.enter_context(
+            patch('mailman.rules.dmarc.s_dict', self.cache))
 
     def test_no_url(self):
-        dmarc.s_dict = {}
         dmarc._get_suffixes(None)
-        self.assertEqual(dmarc.s_dict, dict())
+        self.assertEqual(len(self.cache), 0)
 
     def test_no_data_for_domain(self):
         self.assertEqual(
-            dmarc._get_org_dom('sub.dom.example.nxtld'), 'example.nxtld')
+            dmarc._get_org_dom('sub.dom.example.nxtld'),
+            'example.nxtld')
 
     def test_domain_with_wild_card(self):
         self.assertEqual(
-            dmarc._get_org_dom('ssub.sub.foo.kobe.jp'), 'sub.foo.kobe.jp')
+            dmarc._get_org_dom('ssub.sub.foo.kobe.jp'),
+            'sub.foo.kobe.jp')
 
     def test_exception_to_wild_card(self):
         self.assertEqual(
-            dmarc._get_org_dom('ssub.sub.city.kobe.jp'), 'city.kobe.jp')
+            dmarc._get_org_dom('ssub.sub.city.kobe.jp'),
+            'city.kobe.jp')
 
     def test_no_publicsuffix_dot_org(self):
         mark = LogFileMark('mailman.error')
-        with mock.patch('mailman.rules.dmarc.request.urlopen',
-                        side_effect=URLError('no internet')):
+        with patch('mailman.rules.dmarc.request.urlopen',
+                   side_effect=URLError('no internet')):
             domain = dmarc._get_org_dom('ssub.sub.city.kobe.jp')
-        self.assertEqual(domain, 'kobe.jp')
         line = mark.readline()
         self.assertEqual(
             line[-95:],
             'Unable to retrieve data from '
             'https://publicsuffix.org/list/public_suffix_list.dat: '
             'no internet\n')
+        self.assertEqual(domain, 'kobe.jp')
