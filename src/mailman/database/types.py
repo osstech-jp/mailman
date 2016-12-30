@@ -97,7 +97,7 @@ class SAUnicode(TypeDecorator):
 
 @compiles(SAUnicode)
 def default_sa_unicode(element, compiler, **kw):
-    return compiler.visit_Unicode(element, **kw)
+    return compiler.visit_unicode(element, **kw)
 
 
 @compiles(SAUnicode, 'mysql')
