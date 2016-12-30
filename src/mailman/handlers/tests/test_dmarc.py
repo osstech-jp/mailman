@@ -32,6 +32,7 @@ class TestDMARCMitigations(unittest.TestCase):
     """Test the dmarc handler."""
 
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('ant@example.com')
@@ -39,7 +40,7 @@ class TestDMARCMitigations(unittest.TestCase):
         self._mlist.dmarc_policy_mitigate_action = (
             DMARCMitigateAction.no_mitigation)
         self._mlist.dmarc_wrapped_message_text = ''
-        self._mlist.dmarc_dmarc_mitigate_unconditionally = False
+        self._mlist.dmarc_mitigate_unconditionally = False
         self._mlist.reply_goes_to_list = ReplyToMunging.no_munging
         # We can use the same message text for most tests.
         self._text = """\
@@ -47,7 +48,7 @@ From: anne@example.com
 To: ant@example.com
 Subject: A subject
 X-Mailman-Version: X.Y
-Message-ID: <some-id@example.com>
+Message-ID: <alpha@example.com>
 Date: Fri, 1 Jan 2016 00:00:01 +0000
 Another-Header: To test removal in wrapper
 MIME-Version: 1.0
@@ -114,7 +115,7 @@ Content-Transfer-Encoding: 7bit
 To: ant@example.com
 Subject: A subject
 X-Mailman-Version: X.Y
-Message-ID: <some-id@example.com>
+Message-ID: <alpha@example.com>
 Date: Fri, 1 Jan 2016 00:00:01 +0000
 Another-Header: To test removal in wrapper
 MIME-Version: 1.0
@@ -148,7 +149,7 @@ Content-Transfer-Encoding: 7bit
 To: ant@example.com
 Subject: A subject
 X-Mailman-Version: X.Y
-Message-ID: <some-id@example.com>
+Message-ID: <alpha@example.com>
 Date: Fri, 1 Jan 2016 00:00:01 +0000
 Another-Header: To test removal in wrapper
 MIME-Version: 1.0
@@ -180,7 +181,7 @@ Content-Transfer-Encoding: 7bit
 To: ant@example.com
 Subject: A subject
 X-Mailman-Version: X.Y
-Message-ID: <some-id@example.com>
+Message-ID: <alpha@example.com>
 Date: Fri, 1 Jan 2016 00:00:01 +0000
 Another-Header: To test removal in wrapper
 MIME-Version: 1.0
@@ -235,6 +236,44 @@ Content-Transfer-Encoding: 7bit
 --=====abc==--
 """)
 
+    def test_action_munge_multiple_froms(self):
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        msg = mfs(self._text)
+        # Put multiple addresses in the From: header.  The msgdata must
+        # contain a key naming the "original sender" as determined by the
+        # Message.sender attribute.
+        del msg['from']
+        msg['From'] = 'anne@example.com, bart@example.com'
+        msgdata = dict(
+            dmarc=True,
+            original_sender='cate@example.com',
+            )
+        dmarc.process(self._mlist, msg, msgdata)
+        self.assertMultiLineEqual(msg.as_string(), """\
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Message-ID: <alpha@example.com>
+Date: Fri, 1 Jan 2016 00:00:01 +0000
+Another-Header: To test removal in wrapper
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=====abc=="
+From: cate --- via Ant <ant@example.com>
+Reply-To: cate@example.com
+
+--=====abc==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Some things to say.
+--=====abc==
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+<html><head></head><body>Some things to say.</body></html>
+--=====abc==--
+""")
+
     def test_no_action_without_msgdata(self):
         self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         msg = mfs(self._text)
@@ -250,7 +289,7 @@ Content-Transfer-Encoding: 7bit
 To: ant@example.com
 Subject: A subject
 X-Mailman-Version: X.Y
-Message-ID: <some-id@example.com>
+Message-ID: <alpha@example.com>
 Date: Fri, 1 Jan 2016 00:00:01 +0000
 Another-Header: To test removal in wrapper
 MIME-Version: 1.0
@@ -302,7 +341,7 @@ Content-Transfer-Encoding: 7bit
 --=====abc==--
 """)
 
-    def test_wrap_message_1(self):
+    def test_wrap_message_unconditionally(self):
         self._mlist.dmarc_mitigate_action = DMARCMitigateAction.wrap_message
         self._mlist.dmarc_mitigate_unconditionally = True
         msg = mfs(self._text)
@@ -324,7 +363,7 @@ Content-Disposition: inline
 
 """ + self._text)
 
-    def test_wrap_message_2(self):
+    def test_wrap_message(self):
         self._mlist.dmarc_mitigate_action = DMARCMitigateAction.wrap_message
         msgdata = {'dmarc': True}
         msg = mfs(self._text)
@@ -333,7 +372,6 @@ Content-Disposition: inline
         # ensure we have one.
         self.assertIsNotNone(msg.get('message-id'))
         del msg['message-id']
-        self.maxDiff = None
         self.assertMultiLineEqual(msg.as_string(), """\
 To: ant@example.com
 Subject: A subject
@@ -357,7 +395,6 @@ Content-Disposition: inline
         # ensure we have one.
         self.assertIsNotNone(msg.get('message-id'))
         del msg['message-id']
-        self.maxDiff = None
         self.assertMultiLineEqual(msg.as_string(), """\
 To: ant@example.com
 Subject: A subject
