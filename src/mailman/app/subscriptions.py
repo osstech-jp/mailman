@@ -287,7 +287,7 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
             msg = UserNotification(
                 self.mlist.owner_address, self.mlist.owner_address,
                 subject, text, self.mlist.preferred_language)
-            msg.send(self.mlist, to_moderators=True)
+            msg.send(self.mlist)
         # The workflow must stop running here.
         raise StopIteration
 
@@ -435,7 +435,7 @@ class UnSubscriptionWorkflow(_SubscriptionWorkflowCommon):
             msg = UserNotification(
                 self.mlist.owner_address, self.mlist.owner_address,
                 subject, text, self.mlist.preferred_language)
-            msg.send(self.mlist, to_moderators=True)
+            msg.send(self.mlist)
         # The workflow must stop running here
         raise StopIteration
 
