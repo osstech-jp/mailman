@@ -170,6 +170,44 @@ Content-Transfer-Encoding: 7bit
 --=====abc==--
 """)
 
+    def test_action_munge_multiple_froms(self):
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        msgdata = dict(
+            dmarc=True,
+            original_sender='cate@example.com',
+            )
+        msg = mfs(self._text)
+        # Put multiple addresses in the From: header.  The msgdata must
+        # contain a key naming the "original sender" as determined by the
+        # Message.sender attribute.
+        del msg['from']
+        msg['From'] = 'anne@example.com, bart@example.com'
+        dmarc.process(self._mlist, msg, msgdata)
+        self.assertMultiLineEqual(msg.as_string(), """\
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Message-ID: <alpha@example.com>
+Date: Fri, 1 Jan 2016 00:00:01 +0000
+Another-Header: To test removal in wrapper
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=====abc=="
+From: cate--- via Ant <ant@example.com>
+Reply-To: cate@example.com
+
+--=====abc==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Some things to say.
+--=====abc==
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+<html><head></head><body>Some things to say.</body></html>
+--=====abc==--
+""")
+
     def test_action_munge_from_display_name_in_from(self):
         self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         msgdata = {'dmarc': True}
@@ -215,51 +253,13 @@ Content-Transfer-Encoding: 7bit
 To: ant@example.com
 Subject: A subject
 X-Mailman-Version: X.Y
-Message-ID: <some-id@example.com>
+Message-ID: <alpha@example.com>
 Date: Fri, 1 Jan 2016 00:00:01 +0000
 Another-Header: To test removal in wrapper
 MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="=====abc=="
 From: Anna Banana via Ant <ant@example.com>
 Reply-To: anne@example.com
-
---=====abc==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-Some things to say.
---=====abc==
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-<html><head></head><body>Some things to say.</body></html>
---=====abc==--
-""")
-
-    def test_action_munge_multiple_froms(self):
-        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
-        msg = mfs(self._text)
-        # Put multiple addresses in the From: header.  The msgdata must
-        # contain a key naming the "original sender" as determined by the
-        # Message.sender attribute.
-        del msg['from']
-        msg['From'] = 'anne@example.com, bart@example.com'
-        msgdata = dict(
-            dmarc=True,
-            original_sender='cate@example.com',
-            )
-        dmarc.process(self._mlist, msg, msgdata)
-        self.assertMultiLineEqual(msg.as_string(), """\
-To: ant@example.com
-Subject: A subject
-X-Mailman-Version: X.Y
-Message-ID: <alpha@example.com>
-Date: Fri, 1 Jan 2016 00:00:01 +0000
-Another-Header: To test removal in wrapper
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="=====abc=="
-From: cate --- via Ant <ant@example.com>
-Reply-To: cate@example.com
 
 --=====abc==
 Content-Type: text/plain; charset="us-ascii"
@@ -320,7 +320,7 @@ Content-Transfer-Encoding: 7bit
 To: ant@example.com
 Subject: A subject
 X-Mailman-Version: X.Y
-Message-ID: <some-id@example.com>
+Message-ID: <alpha@example.com>
 Date: Fri, 1 Jan 2016 00:00:01 +0000
 Another-Header: To test removal in wrapper
 MIME-Version: 1.0
@@ -419,7 +419,7 @@ Content-Disposition: inline
 To: ant@example.com
 Subject: A subject
 X-Mailman-Version: X.Y
-Message-ID: <some-id@example.com>
+Message-ID: <alpha@example.com>
 Date: Fri, 1 Jan 2016 00:00:01 +0000
 Another-Header: To test removal in wrapper
 MIME-Version: 1.0

@@ -21,9 +21,11 @@ organizational domain tests."""
 from dns.rdatatype import TXT
 from dns.resolver import NXDOMAIN, NoAnswer
 from mailman.rules import dmarc
+from mailman.testing.helpers import LogFileMark
 from mailman.testing.layers import ConfigLayer
 from public import public
 from unittest import TestCase, mock
+from urllib.error import URLError
 
 
 @public
@@ -108,3 +110,16 @@ class TestDMARCRules(TestCase):
     def test_exception_to_wild_card(self):
         self.assertEqual(
             dmarc._get_org_dom('ssub.sub.city.kobe.jp'), 'city.kobe.jp')
+
+    def test_no_publicsuffix_dot_org(self):
+        mark = LogFileMark('mailman.error')
+        with mock.patch('mailman.rules.dmarc.request.urlopen',
+                        side_effect=URLError('no internet')):
+            domain = dmarc._get_org_dom('ssub.sub.city.kobe.jp')
+        self.assertEqual(domain, 'kobe.jp')
+        line = mark.readline()
+        self.assertEqual(
+            line[-95:],
+            'Unable to retrieve data from '
+            'https://publicsuffix.org/list/public_suffix_list.dat: '
+            'no internet\n')

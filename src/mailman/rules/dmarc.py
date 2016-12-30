@@ -48,7 +48,7 @@ def _get_suffixes(url):
     try:
         d = request.urlopen(url)
     except error.URLError as e:
-        elog.error('Unable to retrieve data from %s: %s', url, e)
+        elog.error('Unable to retrieve data from %s: %s', url, e.reason)
         return
     for line in d.readlines():
         line = str(line, encoding='utf-8')
