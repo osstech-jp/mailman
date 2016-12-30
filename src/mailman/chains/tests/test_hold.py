@@ -173,8 +173,8 @@ A message body.
         # delivery to the moderators.
         items = get_queue_messages('virgin', expected_count=1)
         msgdata = items[0].msgdata
-        # Should get sent to moderators.
-        self.assertEqual(msgdata['recipients'], {'bart@example.com'})
+        # Should get sent to -owner address.
+        self.assertEqual(msgdata['recipients'], {'test-owner@example.com'})
         # Ensure that the subject looks correct in the postauth.txt.
         msg = items[0].msg
         value = None
