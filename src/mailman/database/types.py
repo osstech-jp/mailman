@@ -121,6 +121,6 @@ def compile_sa_unicode_large(element, compiler, **kw):
     return 'VARCHAR(510) COLLATE utf8_bin'
 
 
-@compiles(SAUnicode)
-def defalt_sa_unicode_large(element, compiler, **kw):
+@compiles(SAUnicodeLarge)
+def default_sa_unicode_large(element, compiler, **kw):
     return compiler.visit_unicode(element, **kw)
