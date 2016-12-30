@@ -21,13 +21,13 @@ docs:
 
 sqlite:
   script:
-  - tox -e py34,py35,py36
+  - tox -e py34-nocov,py35-nocov,py36-nocov
 
 pgsql:
   services:
   - postgres:latest
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py34-pg,py35-pg,py36-pg
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py34-nocov-pg,py35-nocov-pg,py36-nocov-pg
   tags:
   - postgres
 
@@ -35,6 +35,6 @@ mysql:
   services:
   - mysql:latest
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py34-mysql,py35-mysql,py36-mysql
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py34-nocov-mysql,py35-nocov-mysql,py36-nocov-mysql
   tags:
   - mysql
