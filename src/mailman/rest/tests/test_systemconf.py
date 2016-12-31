@@ -39,10 +39,6 @@ class TestSystemConfiguration(unittest.TestCase):
         self.assertEqual(json, dict(
             cache_life='7d',
             default_language='en',
-            dmarc_org_domain_data=                # noqa E251
-            'https://publicsuffix.org/list/public_suffix_list.dat',
-            dmarc_resolver_lifetime='5s',
-            dmarc_resolver_timeout='3s',
             email_commands_max_lines='10',
             filtered_messages_are_preservable='no',
             html_to_plain_text_command='/usr/bin/lynx -dump $filename',
@@ -53,6 +49,20 @@ class TestSystemConfiguration(unittest.TestCase):
             pre_hook='',
             sender_headers='from from_ reply-to sender',
             site_owner='noreply@example.com',
+            ))
+
+    def test_dmarc_system_configuration(self):
+        # Test the [dmarc] section.
+        url = 'http://localhost:9001/3.0/system/configuration/dmarc'
+        json, response = call_api(url)
+        # There must be an `http_etag` key, but we don't care about its value.
+        self.assertIn('http_etag', json)
+        del json['http_etag']
+        self.assertEqual(json, dict(
+            org_domain_data_url=                                  # noqa: E251
+                'https://publicsuffix.org/list/public_suffix_list.dat',
+            resolver_lifetime='5s',
+            resolver_timeout='3s',
             ))
 
     def test_dotted_section(self):
@@ -103,6 +113,7 @@ class TestSystemConfiguration(unittest.TestCase):
             'database',
             'devmode',
             'digests',
+            'dmarc',
             'language.ar',
             'language.ast',
             'language.ca',
