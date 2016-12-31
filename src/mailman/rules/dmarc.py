@@ -38,6 +38,8 @@ elog = logging.getLogger('mailman.error')
 vlog = logging.getLogger('mailman.vette')
 s_dict = dict()
 
+KEEP_LOOKING = object()
+
 
 def _get_suffixes(url):
     # This loads and parses the data from the url argument into s_dict for
@@ -111,103 +113,100 @@ def _IsDMARCProhibited(mlist, email):
     # p=reject or quarantine.
     email = email.lower()
     # Scan from the right in case quoted local part has an '@'.
-    at_sign = email.rfind('@')
-    if at_sign < 1:
+    local, at, from_domain = email.rpartition('@')
+    if at != '@':
         return False
-    f_dom = email[at_sign+1:]
-    x = _DMARCProhibited(mlist, email, '_dmarc.' + f_dom)
-    if x != 'continue':
+    x = _DMARCProhibited(mlist, email, '_dmarc.{}'.format(from_domain))
+    if x is not KEEP_LOOKING:
         return x
-    o_dom = _get_org_dom(f_dom)
-    if o_dom != f_dom:
-        x = _DMARCProhibited(mlist, email, '_dmarc.' + o_dom, org=True)
-        if x != 'continue':
+    org_dom = _get_org_dom(from_domain)
+    if org_dom != from_domain:
+        x = _DMARCProhibited(
+            mlist, email, '_dmarc.{}'.format(org_dom), org=True)
+        if x is not KEEP_LOOKING:
             return x
     return False
 
 
 def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
-
+    resolver = dns.resolver.Resolver()
+    resolver.timeout = as_timedelta(
+        config.mailman.dmarc_resolver_timeout).total_seconds()
+    resolver.lifetime = as_timedelta(
+        config.mailman.dmarc_resolver_lifetime).total_seconds()
     try:
-        resolver = dns.resolver.Resolver()
-        resolver.timeout = as_timedelta(
-            config.mailman.dmarc_resolver_timeout).total_seconds()
-        resolver.lifetime = as_timedelta(
-            config.mailman.dmarc_resolver_lifetime).total_seconds()
         txt_recs = resolver.query(dmarc_domain, dns.rdatatype.TXT)
     except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
-        return 'continue'
+        return KEEP_LOOKING
     except DNSException as e:
         elog.error(
             'DNSException: Unable to query DMARC policy for %s (%s). %s',
             email, dmarc_domain, e.__doc__)
-        return 'continue'
-    else:
-        # Be as robust as possible in parsing the result.
-        results_by_name = {}
-        cnames = {}
-        want_names = set([dmarc_domain + '.'])
-        for txt_rec in txt_recs.response.answer:
-            if txt_rec.rdtype == dns.rdatatype.CNAME:
-                cnames[txt_rec.name.to_text()] = (
-                    txt_rec.items[0].target.to_text())
-            if txt_rec.rdtype != dns.rdatatype.TXT:
-                continue
-            results_by_name.setdefault(
-                txt_rec.name.to_text(), []).append(
-                    "".join(
-                       [str(x, encoding='utf-8')
-                           for x in txt_rec.items[0].strings]))
-        expands = list(want_names)
-        seen = set(expands)
-        while expands:
-            item = expands.pop(0)
-            if item in cnames:
-                if cnames[item] in seen:
-                    continue  # cname loop
-                expands.append(cnames[item])
-                seen.add(cnames[item])
-                want_names.add(cnames[item])
-                want_names.discard(item)
-
-        if len(want_names) != 1:
+        return KEEP_LOOKING
+    # Be as robust as possible in parsing the result.
+    results_by_name = {}
+    cnames = {}
+    want_names = set([dmarc_domain + '.'])
+    for txt_rec in txt_recs.response.answer:
+        if txt_rec.rdtype == dns.rdatatype.CNAME:
+            cnames[txt_rec.name.to_text()] = (
+                txt_rec.items[0].target.to_text())
+        if txt_rec.rdtype != dns.rdatatype.TXT:
+            continue
+        results_by_name.setdefault(
+            txt_rec.name.to_text(), []).append(
+                "".join(
+                   [str(x, encoding='utf-8')
+                       for x in txt_rec.items[0].strings]))
+    expands = list(want_names)
+    seen = set(expands)
+    while expands:
+        item = expands.pop(0)
+        if item in cnames:
+            if cnames[item] in seen:
+                continue  # cname loop
+            expands.append(cnames[item])
+            seen.add(cnames[item])
+            want_names.add(cnames[item])
+            want_names.discard(item)
+    if len(want_names) != 1:
+        elog.error(
+            """multiple DMARC entries in results for %s,
+            processing each to be strict""",
+            dmarc_domain)
+    for name in want_names:
+        if name not in results_by_name:
+            continue
+        dmarcs = [x for x in results_by_name[name]
+                  if x.startswith('v=DMARC1;')]
+        if len(dmarcs) == 0:
+            return KEEP_LOOKING
+        if len(dmarcs) > 1:
             elog.error(
-                """multiple DMARC entries in results for %s,
-                processing each to be strict""",
-                dmarc_domain)
-        for name in want_names:
-            if name not in results_by_name:
-                continue
-            dmarcs = [x for x in results_by_name[name]
-                      if x.startswith('v=DMARC1;')]
-            if len(dmarcs) == 0:
-                return 'continue'
-            if len(dmarcs) > 1:
-                elog.error(
-                    """RRset of TXT records for %s has %d v=DMARC1 entries;
-                    testing them all""",
-                    dmarc_domain, len(dmarcs))
-            for entry in dmarcs:
-                mo = re.search(r'\bsp=(\w*)\b', entry, re.IGNORECASE)
-                if org and mo:
+                """RRset of TXT records for %s has %d v=DMARC1 entries;
+                testing them all""",
+                dmarc_domain, len(dmarcs))
+        for entry in dmarcs:
+            mo = re.search(r'\bsp=(\w*)\b', entry, re.IGNORECASE)
+            if org and mo:
+                policy = mo.group(1).lower()
+            else:
+                mo = re.search(r'\bp=(\w*)\b', entry, re.IGNORECASE)
+                if mo:
                     policy = mo.group(1).lower()
                 else:
-                    mo = re.search(r'\bp=(\w*)\b', entry, re.IGNORECASE)
-                    if mo:
-                        policy = mo.group(1).lower()
-                    else:
-                        continue
-                if policy in ('reject', 'quarantine'):
-                    vlog.info(
-                        """%s: DMARC lookup for %s (%s)
-                        found p=%s in %s = %s""",
-                        mlist.list_name,
-                        email,
-                        dmarc_domain,
-                        policy,
-                        name,
-                        entry)
-                    return True
+                    continue
+            if policy in ('reject', 'quarantine'):
+                vlog.info(
+                    """%s: DMARC lookup for %s (%s)
+                    found p=%s in %s = %s""",
+                    mlist.list_name,
+                    email,
+                    dmarc_domain,
+                    policy,
+                    name,
+                    entry)
+                return True
     return False
 
 

@@ -21,6 +21,7 @@ organizational domain tests."""
 import os
 
 from contextlib import ExitStack
+from dns.exception import DNSException
 from dns.rdatatype import TXT
 from dns.resolver import NXDOMAIN, NoAnswer
 from mailman.app.lifecycle import create_list
@@ -41,8 +42,8 @@ def get_dns_resolver():
     """Create a dns.resolver.Resolver mock.
 
     This is used to return a predictable response to a _dmarc query.  It
-    returns p=reject for the example.biz domain and raises either NXDOMAIN
-    or NoAnswer for any other.
+    returns p=reject for the example.biz domain and raises an exception for
+    other examples.
 
     It only implements those classes and attributes used by the dmarc rule.
     """
@@ -86,6 +87,8 @@ def get_dns_resolver():
                 raise NoAnswer
             if dparts[0] != '_dmarc':
                 raise NoAnswer
+            if dparts[2] == 'info':
+                raise DNSException('no internet')
             if dparts[1] != 'example' or dparts[2] != 'biz':
                 raise NXDOMAIN
             self.response = Answer()
@@ -176,3 +179,23 @@ To: ant@example.com
 """)
         rule = dmarc.DMARCMitigation()
         self.assertFalse(rule.check(mlist, msg, {}))
+
+    def test_dmarc_dns_exception(self):
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        msg = mfs("""\
+From: anne@example.info
+To: ant@example.com
+
+""")
+        mark = LogFileMark('mailman.error')
+        with get_dns_resolver():
+            rule = dmarc.DMARCMitigation()
+        self.assertFalse(rule.check(mlist, msg, {}))
+        line = mark.readline()
+        self.assertEqual(
+            line[-117:],
+            'DNSException: Unable to query DMARC policy for '
+            'anne@example.info (_dmarc.example.info). '
+            'The DNS operation timed out.\n')
