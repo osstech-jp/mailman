@@ -102,21 +102,15 @@ def get_org_data():
     """Create a mock to load the organizational domain data from our local
     test data.
     """
-    class oururlopen:
-        def __init__(self):
-            pass
-
-        def open(url):
-            datapath = os.path.join(
-                os.path.split(dmarc.__file__)[0],
-                'data',
-                'org_domain',
-                )
-            org_data_url = 'file:///{}'.format(datapath)
-            # Ensure we load the data.
-            dmarc.s_dict.clear()
-            return urlopen(org_data_url)
-    return patch('mailman.rules.dmarc.request.urlopen', oururlopen.open)
+    def ouropen(url):
+        datapath = os.path.join(
+            os.path.split(dmarc.__file__)[0],
+            'data',
+            'org_domain',
+            )
+        org_data_url = 'file:///{}'.format(datapath)
+        return urlopen(org_data_url)
+    return patch('mailman.rules.dmarc.request.urlopen', ouropen)
 
 
 class TestDMARCRules(TestCase):
@@ -195,7 +189,7 @@ To: ant@example.com
         self.assertFalse(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
-            line[-117:],
+            line[-132:],
             'DNSException: Unable to query DMARC policy for '
             'anne@example.info (_dmarc.example.info). '
-            'The DNS operation timed out.\n')
+            'All nameservers failed to answer the query.\n')
