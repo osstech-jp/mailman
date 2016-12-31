@@ -18,8 +18,6 @@
 """Provides support for mocking dnspython calls from dmarc rules and some
 organizational domain tests."""
 
-import os
-
 from contextlib import ExitStack
 from dns.exception import DNSException
 from dns.rdatatype import TXT
@@ -30,6 +28,7 @@ from mailman.rules import dmarc
 from mailman.testing.helpers import (
     LogFileMark, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
+from pkg_resources import resource_filename
 from public import public
 from unittest import TestCase
 from unittest.mock import patch
@@ -103,11 +102,8 @@ def get_org_data():
     test data.
     """
     def ouropen(url):
-        datapath = os.path.join(
-            os.path.split(dmarc.__file__)[0],
-            'data',
-            'org_domain',
-            )
+        datapath = resource_filename(
+            'mailman.rules.tests.data', 'org_domain.txt')
         org_data_url = 'file:///{}'.format(datapath)
         return urlopen(org_data_url)
     return patch('mailman.rules.dmarc.request.urlopen', ouropen)
