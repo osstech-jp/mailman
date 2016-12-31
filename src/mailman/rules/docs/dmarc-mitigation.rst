@@ -37,7 +37,7 @@ A message From: a domain without a DMARC policy does not set any flags.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver, patcher2 as urlopen:
+    >>> with patcher, patcher2:
     ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata == {}
@@ -54,7 +54,7 @@ action is no_mitigation.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver, patcher2 as urlopen:
+    >>> with patcher, patcher2:
     ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata == {}
@@ -70,7 +70,7 @@ But with a different list setting, the message is flagged.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver, patcher2 as urlopen:
+    >>> with patcher, patcher2:
     ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata['dmarc']
@@ -85,7 +85,7 @@ Subdomains which don't have a policy will check the organizational domain.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver, patcher2 as urlopen:
+    >>> with patcher, patcher2:
     ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata['dmarc']
@@ -103,7 +103,7 @@ message.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver, patcher2 as urlopen:
+    >>> with patcher, patcher2:
     ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']
@@ -122,7 +122,7 @@ We can reject the message with a default reason.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver, patcher2 as urlopen:
+    >>> with patcher, patcher2:
     ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']
@@ -143,7 +143,7 @@ And, we can reject with a custom message.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver, patcher2 as urlopen:
+    >>> with patcher, patcher2:
     ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']

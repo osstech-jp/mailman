@@ -131,19 +131,19 @@ class TestDMARCRules(TestCase):
         self.assertEqual(len(self.cache), 0)
 
     def test_no_data_for_domain(self):
-        with get_org_data() as urlopen:    # noqa  F841
+        with get_org_data():
             self.assertEqual(
                 dmarc._get_org_dom('sub.dom.example.nxtld'),
                 'example.nxtld')
 
     def test_domain_with_wild_card(self):
-        with get_org_data() as urlopen:    # noqa  F841
+        with get_org_data():
             self.assertEqual(
                 dmarc._get_org_dom('ssub.sub.foo.kobe.jp'),
                 'sub.foo.kobe.jp')
 
     def test_exception_to_wild_card(self):
-        with get_org_data() as urlopen:    # noqa  F841
+        with get_org_data():
             self.assertEqual(
                 dmarc._get_org_dom('ssub.sub.city.kobe.jp'),
                 'city.kobe.jp')
@@ -172,7 +172,8 @@ To: ant@example.com
 
 """)
         rule = dmarc.DMARCMitigation()
-        self.assertFalse(rule.check(mlist, msg, {}))
+        with get_dns_resolver():
+            self.assertFalse(rule.check(mlist, msg, {}))
 
     def test_dmarc_dns_exception(self):
         mlist = create_list('ant@example.com')
@@ -184,12 +185,12 @@ To: ant@example.com
 
 """)
         mark = LogFileMark('mailman.error')
+        rule = dmarc.DMARCMitigation()
         with get_dns_resolver():
-            rule = dmarc.DMARCMitigation()
-        self.assertFalse(rule.check(mlist, msg, {}))
+            self.assertFalse(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
-            line[-132:],
+            line[-144:],
             'DNSException: Unable to query DMARC policy for '
             'anne@example.info (_dmarc.example.info). '
-            'All nameservers failed to answer the query.\n')
+            'Abstract base class shared by all dnspython exceptions.\n')
