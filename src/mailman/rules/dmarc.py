@@ -51,8 +51,11 @@ def _get_suffixes(url):
         elog.error('Unable to retrieve data from %s: %s', url, e.reason)
         return
     for line in d.readlines():
-        line = str(line, encoding='utf-8').strip()
-        if not line or line.startswith(' ') or line.startswith('//'):
+        line = str(line, encoding='utf-8')
+        if not line.strip() or line.startswith('//'):
+            continue
+        line = re.sub('\s.*', '', line)
+        if not line:
             continue
         parts = line.lower().split('.')
         if parts[0].startswith('!'):

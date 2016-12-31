@@ -18,6 +18,8 @@
 """Provides support for mocking dnspython calls from dmarc rules and some
 organizational domain tests."""
 
+import os
+
 from contextlib import ExitStack
 from dns.rdatatype import TXT
 from dns.resolver import NXDOMAIN, NoAnswer
@@ -31,6 +33,7 @@ from public import public
 from unittest import TestCase
 from unittest.mock import patch
 from urllib.error import URLError
+from urllib.request import urlopen
 
 
 @public
@@ -91,6 +94,28 @@ def get_dns_resolver():
     return patcher
 
 
+@public
+def get_org_data():
+    """Create a mock to load the organizational domain data from our local
+    test data.
+    """
+    class oururlopen:
+        def __init__(self):
+            pass
+
+        def open(url):
+            datapath = os.path.join(
+                os.path.split(dmarc.__file__)[0],
+                'data',
+                'org_domain',
+                )
+            org_data_url = 'file:///{}'.format(datapath)
+            # Ensure we load the data.
+            dmarc.s_dict.clear()
+            return urlopen(org_data_url)
+    return patch('mailman.rules.dmarc.request.urlopen', oururlopen.open)
+
+
 class TestDMARCRules(TestCase):
     """Test organizational domain determination."""
 
@@ -109,19 +134,22 @@ class TestDMARCRules(TestCase):
         self.assertEqual(len(self.cache), 0)
 
     def test_no_data_for_domain(self):
-        self.assertEqual(
-            dmarc._get_org_dom('sub.dom.example.nxtld'),
-            'example.nxtld')
+        with get_org_data() as urlopen:    # noqa  F841
+            self.assertEqual(
+                dmarc._get_org_dom('sub.dom.example.nxtld'),
+                'example.nxtld')
 
     def test_domain_with_wild_card(self):
-        self.assertEqual(
-            dmarc._get_org_dom('ssub.sub.foo.kobe.jp'),
-            'sub.foo.kobe.jp')
+        with get_org_data() as urlopen:    # noqa  F841
+            self.assertEqual(
+                dmarc._get_org_dom('ssub.sub.foo.kobe.jp'),
+                'sub.foo.kobe.jp')
 
     def test_exception_to_wild_card(self):
-        self.assertEqual(
-            dmarc._get_org_dom('ssub.sub.city.kobe.jp'),
-            'city.kobe.jp')
+        with get_org_data() as urlopen:    # noqa  F841
+            self.assertEqual(
+                dmarc._get_org_dom('ssub.sub.city.kobe.jp'),
+                'city.kobe.jp')
 
     def test_no_publicsuffix_dot_org(self):
         mark = LogFileMark('mailman.error')
@@ -139,7 +167,8 @@ class TestDMARCRules(TestCase):
     def test_no_at_sign_in_from_address(self):
         # If there's no @ sign in the From: address, the rule can't hit.
         mlist = create_list('ant@example.com')
-        mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
         msg = mfs("""\
 From: anne
 To: ant@example.com

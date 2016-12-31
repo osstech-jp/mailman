@@ -20,6 +20,12 @@ This returns p=reject for the example.biz domain and not for any others.
     >>> from mailman.rules.tests.test_dmarc import get_dns_resolver
     >>> patcher = get_dns_resolver()
 
+And we do a similar thing to mock the organizational domain data.
+
+    >>> from mailman.rules.tests.test_dmarc import get_org_data
+    >>> patcher2 = get_org_data()
+
+
 A message From: a domain without a DMARC policy does not set any flags.
 
     >>> from mailman.interfaces.mailinglist import DMARCMitigateAction
@@ -31,7 +37,7 @@ A message From: a domain without a DMARC policy does not set any flags.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver:
+    >>> with patcher as Resolver, patcher2 as urlopen:
     ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata == {}
@@ -48,7 +54,7 @@ action is no_mitigation.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver:
+    >>> with patcher as Resolver, patcher2 as urlopen:
     ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata == {}
@@ -64,7 +70,7 @@ But with a different list setting, the message is flagged.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver:
+    >>> with patcher as Resolver, patcher2 as urlopen:
     ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata['dmarc']
@@ -79,7 +85,7 @@ Subdomains which don't have a policy will check the organizational domain.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver:
+    >>> with patcher as Resolver, patcher2 as urlopen:
     ...     rule.check(mlist, msg, msgdata)
     False
     >>> msgdata['dmarc']
@@ -97,7 +103,7 @@ message.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver:
+    >>> with patcher as Resolver, patcher2 as urlopen:
     ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']
@@ -116,7 +122,7 @@ We can reject the message with a default reason.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver:
+    >>> with patcher as Resolver, patcher2 as urlopen:
     ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']
@@ -137,7 +143,7 @@ And, we can reject with a custom message.
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher as Resolver:
+    >>> with patcher as Resolver, patcher2 as urlopen:
     ...     rule.check(mlist, msg, msgdata)
     True
     >>> msgdata['dmarc']
