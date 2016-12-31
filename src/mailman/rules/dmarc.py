@@ -83,7 +83,7 @@ def _get_org_dom(domain):
     # Domain which may be the same as the input.
     global s_dict
     if not s_dict:
-        _get_suffixes(config.mailman.dmarc_org_domain_data)
+        _get_suffixes(config.dmarc.org_domain_data)
     hits = []
     d = domain.lower().split('.')
     d.reverse()
@@ -108,32 +108,12 @@ def _get_org_dom(domain):
     return _get_dom(d, l)
 
 
-def _IsDMARCProhibited(mlist, email):
-    # This takes an email address, and returns True if DMARC policy is
-    # p=reject or quarantine.
-    email = email.lower()
-    # Scan from the right in case quoted local part has an '@'.
-    local, at, from_domain = email.rpartition('@')
-    if at != '@':
-        return False
-    x = _DMARCProhibited(mlist, email, '_dmarc.{}'.format(from_domain))
-    if x is not KEEP_LOOKING:
-        return x
-    org_dom = _get_org_dom(from_domain)
-    if org_dom != from_domain:
-        x = _DMARCProhibited(
-            mlist, email, '_dmarc.{}'.format(org_dom), org=True)
-        if x is not KEEP_LOOKING:
-            return x
-    return False
-
-
 def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
     resolver = dns.resolver.Resolver()
     resolver.timeout = as_timedelta(
-        config.mailman.dmarc_resolver_timeout).total_seconds()
+        config.dmarc.resolver_timeout).total_seconds()
     resolver.lifetime = as_timedelta(
-        config.mailman.dmarc_resolver_lifetime).total_seconds()
+        config.dmarc.resolver_lifetime).total_seconds()
     try:
         txt_recs = resolver.query(dmarc_domain, dns.rdatatype.TXT)
     except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
@@ -207,6 +187,26 @@ def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
                     name,
                     entry)
                 return True
+    return False
+
+
+def _IsDMARCProhibited(mlist, email):
+    # This takes an email address, and returns True if DMARC policy is
+    # p=reject or quarantine.
+    email = email.lower()
+    # Scan from the right in case quoted local part has an '@'.
+    local, at, from_domain = email.rpartition('@')
+    if at != '@':
+        return False
+    x = _DMARCProhibited(mlist, email, '_dmarc.{}'.format(from_domain))
+    if x is not KEEP_LOOKING:
+        return x
+    org_dom = _get_org_dom(from_domain)
+    if org_dom != from_domain:
+        x = _DMARCProhibited(
+            mlist, email, '_dmarc.{}'.format(org_dom), org=True)
+        if x is not KEEP_LOOKING:
+            return x
     return False
 
 
