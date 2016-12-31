@@ -83,7 +83,7 @@ def _get_org_dom(domain):
     # Domain which may be the same as the input.
     global s_dict
     if not s_dict:
-        _get_suffixes(config.dmarc.org_domain_data)
+        _get_suffixes(config.dmarc.org_domain_data_url)
     hits = []
     d = domain.lower().split('.')
     d.reverse()
