@@ -28,9 +28,10 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.mailinglist import DMARCMitigateAction
 from mailman.interfaces.rules import IRule
+from mailman.utilities import protocols
 from mailman.utilities.string import wrap
 from public import public
-from urllib import error, request
+from urllib import error
 from zope.interface import implementer
 
 
@@ -48,12 +49,11 @@ def _get_suffixes(url):
     if not url:
         return
     try:
-        d = request.urlopen(url)
+        d = protocols.get(url)
     except error.URLError as e:
         elog.error('Unable to retrieve data from %s: %s', url, e.reason)
         return
-    for line in d.readlines():
-        line = str(line, encoding='utf-8')
+    for line in d.splitlines():
         if not line.strip() or line.startswith('//'):
             continue
         line = re.sub('\s.*', '', line)

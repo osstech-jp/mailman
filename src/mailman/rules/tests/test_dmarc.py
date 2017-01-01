@@ -28,12 +28,12 @@ from mailman.rules import dmarc
 from mailman.testing.helpers import (
     LogFileMark, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.protocols import get as _get
 from pkg_resources import resource_filename
 from public import public
 from unittest import TestCase
 from unittest.mock import patch
 from urllib.error import URLError
-from urllib.request import urlopen
 
 
 @public
@@ -101,12 +101,12 @@ def get_org_data():
     """Create a mock to load the organizational domain data from our local
     test data.
     """
-    def ouropen(url):
+    def ourget(url):
         datapath = resource_filename(
             'mailman.rules.tests.data', 'org_domain.txt')
         org_data_url = 'file:///{}'.format(datapath)
-        return urlopen(org_data_url)
-    return patch('mailman.rules.dmarc.request.urlopen', ouropen)
+        return _get(org_data_url)
+    return patch('mailman.rules.dmarc.protocols.get', ourget)
 
 
 class TestDMARCRules(TestCase):
@@ -146,7 +146,7 @@ class TestDMARCRules(TestCase):
 
     def test_no_publicsuffix_dot_org(self):
         mark = LogFileMark('mailman.error')
-        with patch('mailman.rules.dmarc.request.urlopen',
+        with patch('mailman.rules.dmarc.protocols.get',
                    side_effect=URLError('no internet')):
             domain = dmarc._get_org_dom('ssub.sub.city.kobe.jp')
         line = mark.readline()
@@ -182,7 +182,7 @@ To: ant@example.com
 """)
         mark = LogFileMark('mailman.error')
         rule = dmarc.DMARCMitigation()
-        with get_dns_resolver():
+        with get_dns_resolver(), get_org_data():
             self.assertFalse(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
