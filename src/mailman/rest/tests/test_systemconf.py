@@ -59,6 +59,7 @@ class TestSystemConfiguration(unittest.TestCase):
         self.assertIn('http_etag', json)
         del json['http_etag']
         self.assertEqual(json, dict(
+            cache_lifetime='7d',
             org_domain_data_url=                                  # noqa: E251
                 'https://publicsuffix.org/list/public_suffix_list.dat',
             resolver_lifetime='5s',

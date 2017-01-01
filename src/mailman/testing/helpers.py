@@ -245,7 +245,7 @@ def get_nntp_server(cleanups):
     """
     patcher = mock.patch('nntplib.NNTP')
     server_class = patcher.start()
-    cleanups.append(patcher.stop)
+    cleanups.callback(patcher.stop)
     nntpd = server_class()
     # A class for more convenient access to the posted message.
     class NNTPProxy:                                              # noqa: E306
@@ -480,6 +480,11 @@ def reset_the_world():
     getUtility(IStyleManager).populate()
     # Remove all dynamic header-match rules.
     config.chains['header-match'].flush()
+    # Remove cached organizational domain suffix file.
+    from mailman.rules.dmarc import LOCAL_FILE_NAME
+    suffix_file = os.path.join(config.VAR_DIR, LOCAL_FILE_NAME)
+    with suppress(FileNotFoundError):
+        os.remove(suffix_file)
 
 
 @public

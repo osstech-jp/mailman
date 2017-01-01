@@ -17,6 +17,7 @@
 
 """DMARC mitigation rule."""
 
+import os
 import re
 import logging
 import dns.resolver
@@ -28,46 +29,100 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.mailinglist import DMARCMitigateAction
 from mailman.interfaces.rules import IRule
+from mailman.utilities.datetime import now
+from mailman.utilities.protocols import get
 from mailman.utilities.string import wrap
+from pkg_resources import resource_string as resource_bytes
 from public import public
-from urllib import error, request
+from requests.exceptions import HTTPError
+from urllib.error import URLError
 from zope.interface import implementer
 
 
 elog = logging.getLogger('mailman.error')
 vlog = logging.getLogger('mailman.vette')
-s_dict = dict()
 
+DOT = '.'
 KEEP_LOOKING = object()
+LOCAL_FILE_NAME = 'public_suffix_list.dat'
+
+# Map organizational domain suffix rules to a boolean indicating whether the
+# rule is an exception or not.
+suffix_cache = dict()
 
 
-def _get_suffixes(url):
-    # This loads and parses the data from the url argument into s_dict for
-    # use by _get_org_dom.
-    global s_dict
-    if not url:
-        return
+def ensure_current_suffix_list():
+    # Read and parse the organizational domain suffix list.  First look in the
+    # cached directory to see if we already have a valid copy of it.
+    cached_copy_path = os.path.join(config.VAR_DIR, LOCAL_FILE_NAME)
+    lifetime = as_timedelta(config.dmarc.cache_lifetime)
+    download = False
     try:
-        d = request.urlopen(url)
-    except error.URLError as e:
-        elog.error('Unable to retrieve data from %s: %s', url, e.reason)
-        return
-    for line in d.readlines():
-        line = str(line, encoding='utf-8')
-        if not line.strip() or line.startswith('//'):
-            continue
-        line = re.sub('\s.*', '', line)
-        if not line:
-            continue
-        parts = line.lower().split('.')
-        if parts[0].startswith('!'):
-            exc = True
-            parts = [parts[0][1:]] + parts[1:]
-        else:
-            exc = False
-        parts.reverse()
-        k = '.'.join(parts)
-        s_dict[k] = exc
+        mtime = os.stat(cached_copy_path).st_mtime
+    except FileNotFoundError:
+        vlog.info('No cached copy of the public suffix list found')
+        download = True
+        cache_found = False
+    else:
+        cache_found = True
+        # Is the cached copy out-of-date?  Note that when we write a new cache
+        # version we explicitly set its mtime to the time in the future when
+        # the cache will expire.
+        if mtime < now().timestamp():
+            download = True
+            vlog.info('Cached copy of public suffix list is out of date')
+    if download:
+        try:
+            content = get(config.dmarc.org_domain_data_url)
+        except (URLError, HTTPError) as error:
+            elog.error('Unable to retrieve public suffix list from %s: %s',
+                       config.dmarc.org_domain_data_url,
+                       getattr(error, 'reason', str(error)))
+            if cache_found:
+                vlog.info('Using out of date public suffix list')
+                content = None
+            else:
+                # We couldn't access the URL and didn't even have an out of
+                # date suffix list cached.  Use the shipped version.
+                content = resource_bytes('mailman.rules.data', LOCAL_FILE_NAME)
+        if content is not None:
+            # Content is either a string or UTF-8 encoded bytes.
+            if isinstance(content, bytes):
+                content = content.decode('utf-8')
+            # Write the cache atomically.
+            new_path = cached_copy_path + '.new'
+            with open(new_path, 'w', encoding='utf-8') as fp:
+                fp.write(content)
+            # Set the expiry time to the future.
+            mtime = (now() + lifetime).timestamp()
+            os.utime(new_path, (mtime, mtime))
+            # Flip the new file into the cached location.  This does not
+            # modify the mtime.
+            os.rename(new_path, cached_copy_path)
+    return cached_copy_path
+
+
+def parse_suffix_list():
+    # Parse the suffix list into a per process cache.
+    cached_copy_path = ensure_current_suffix_list()
+    # At this point the cached copy must exist and is as valid as possible.
+    # Read and return the contents as a UTF-8 string.
+    with open(cached_copy_path, 'r', encoding='utf-8') as fp:
+        for line in fp:
+            if not line.strip() or line.startswith('//'):
+                continue
+            line = re.sub('\s.*', '', line)
+            if not line:
+                continue
+            parts = line.lower().split('.')
+            if parts[0].startswith('!'):
+                exception = True
+                parts = [parts[0][1:]] + parts[1:]
+            else:
+                exception = False
+            parts.reverse()
+            k = DOT.join(parts)
+            suffix_cache[k] = exception
 
 
 def _get_dom(d, l):
@@ -81,13 +136,12 @@ def _get_dom(d, l):
 def _get_org_dom(domain):
     # Given a domain name, this returns the corresponding Organizational
     # Domain which may be the same as the input.
-    global s_dict
-    if not s_dict:
-        _get_suffixes(config.dmarc.org_domain_data_url)
+    if len(suffix_cache) == 0:
+        parse_suffix_list()
     hits = []
     d = domain.lower().split('.')
     d.reverse()
-    for k in s_dict.keys():
+    for k in suffix_cache:
         ks = k.split('.')
         if len(d) >= len(ks):
             for i in range(len(ks)-1):
@@ -100,7 +154,7 @@ def _get_org_dom(domain):
         return _get_dom(d, 1)
     l = 0
     for k in hits:
-        if s_dict[k]:
+        if suffix_cache[k]:
             # It's an exception
             return _get_dom(d, len(k.split('.'))-1)
         if len(k.split('.')) > l:

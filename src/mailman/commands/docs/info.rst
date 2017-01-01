@@ -51,7 +51,7 @@ system paths that Mailman is using.
     ... [mailman]
     ... layout: fhs
     ... """)
-    >>> cleanups.append((config.pop, 'fhs'))
+    >>> ignore = cleanups.callback(config.pop, 'fhs')
     >>> config.create_paths = True
 
 The `Filesystem Hierarchy Standard`_ layout is the same everywhere by
