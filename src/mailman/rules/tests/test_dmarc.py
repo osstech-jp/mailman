@@ -148,7 +148,7 @@ def use_test_organizational_data():
     # Point the organizational URL to our test data.
     path = resource_filename('mailman.rules.tests.data', 'org_domain.txt')
     url = 'file:///{}'.format(path)
-    return configuration('mailman', org_domain_data_url=url)
+    return configuration('dmarc', org_domain_data_url=url)
 
 
 class TestDMARCRules(TestCase):
