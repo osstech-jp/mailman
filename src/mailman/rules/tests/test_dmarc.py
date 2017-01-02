@@ -240,8 +240,7 @@ To: ant@example.com
 
 """)
         rule = dmarc.DMARCMitigation()
-        with get_dns_resolver(
-                rdata=b'v=DMARC1; sp=quarantine;'):
+        with get_dns_resolver(rdata=b'v=DMARC1; sp=quarantine;'):
             self.assertFalse(rule.check(mlist, msg, {}))
 
     def test_org_domain_with_subdomain_policy(self):
@@ -254,8 +253,7 @@ To: ant@example.com
 
 """)
         rule = dmarc.DMARCMitigation()
-        with get_dns_resolver(
-                rdata=b'v=DMARC1; sp=quarantine;'):
+        with get_dns_resolver(rdata=b'v=DMARC1; sp=quarantine;'):
             self.assertTrue(rule.check(mlist, msg, {}))
 
     def test_wrong_dmarc_version(self):
@@ -268,8 +266,7 @@ To: ant@example.com
 
 """)
         rule = dmarc.DMARCMitigation()
-        with get_dns_resolver(
-                rdata=b'v=DMARC01; p=reject;'):
+        with get_dns_resolver(rdata=b'v=DMARC01; p=reject;'):
             self.assertFalse(rule.check(mlist, msg, {}))
 
     def test_multiple_records(self):
@@ -335,6 +332,18 @@ To: ant@example.com
         rule = dmarc.DMARCMitigation()
         with get_dns_resolver(rdata=b'v=DMARC1; pct=100;'):
             self.assertFalse(rule.check(mlist, msg, {}))
+
+    def test_parser(self):
+        data_file = resource_filename(
+            'mailman.rules.tests.data', 'org_domain.txt')
+        dmarc.parse_suffix_list(data_file)
+        # There is no entry for example.biz because that line starts with
+        # whitespace.
+        self.assertNotIn('biz.example', self.cache)
+        # The file had !city.kobe.jp so the flag says there's an exception.
+        self.assertTrue(self.cache['jp.kobe.city'])
+        # The file had *.kobe.jp so there's no exception.
+        self.assertFalse(self.cache['jp.kobe.*'])
 
 
 # New in Python 3.5.
