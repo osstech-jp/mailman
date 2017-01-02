@@ -149,10 +149,8 @@ def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
             seen.add(cnames[item])
             want_names.add(cnames[item])
             want_names.discard(item)
-    if len(want_names) != 1:
-        elog.error(
-            """multiple DMARC entries in results for %s,
-            processing each to be strict""",
+    assert len(want_names) == 1, """\
+        Error in CNAME processing for {}; want_names != 1.""".format(
             dmarc_domain)
     for name in want_names:
         if name not in results_by_name:
