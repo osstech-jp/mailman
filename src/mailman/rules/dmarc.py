@@ -228,7 +228,13 @@ def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
                 if mo:
                     policy = mo.group(1).lower()
                 else:
-                    continue
+                    # This continue does actually get covered by
+                    # TestDMARCRules.test_domain_with_subdomain_policy() and
+                    # TestDMARCRules.test_no_policy() but because of
+                    # Coverage BitBucket issue #198 and
+                    # http://bugs.python.org/issue2506 coverage cannot report
+                    # it as such, so just pragma it away.
+                    continue                        # pragma: no cover
             if policy in ('reject', 'quarantine'):
                 vlog.info(
                     """%s: DMARC lookup for %s (%s)
