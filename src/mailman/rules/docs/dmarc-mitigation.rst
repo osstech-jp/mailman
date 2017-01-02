@@ -2,94 +2,89 @@
 DMARC mitigation
 ================
 
-This rule only matches in order to jump to the moderation chain to reject
-or discard the message.  The rule looks at the list's dmarc_mitigate_action
-and if it is other than 'no_mitigation', it checks the domain of the From:
-address for a DMARC policy and depending on settings may reject or discard
-the message or just flag it for the dmarc handler to apply DMARC mitigations
-to the message.
+This rule only matches in order to jump to the moderation chain to reject or
+discard the message.  The rule looks at the list's ``dmarc_mitigate_action``
+and if it is other than ``no_mitigation``, it checks the domain of the
+``From:`` address for a DMARC policy.  Depending on various settings, reject
+or discard the message, or just flag it for the dmarc handler to apply DMARC
+mitigations to the message.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('ant@example.com')
     >>> rule = config.rules['dmarc-mitigation']
     >>> print(rule.name)
     dmarc-mitigation
 
-First we set up a mock patcher to return predictable responses to DNS lookups.
-This returns p=reject for the example.biz domain and not for any others.
+First we set up a mock to return predictable responses to DNS lookups.  This
+returns ``p=reject`` for the ``example.biz`` domain and not for any others.
 
     >>> from mailman.rules.tests.test_dmarc import get_dns_resolver
-    >>> patcher = get_dns_resolver()
+    >>> ignore = cleanups.enter_context(get_dns_resolver())
 
-And we do a similar thing to mock the organizational domain data.
+Use test data for the organizational domain suffixes.
 
-    >>> from mailman.rules.tests.test_dmarc import get_org_data
-    >>> patcher2 = get_org_data()
+    >>> from mailman.rules.tests.test_dmarc import use_test_organizational_data
+    >>> cleanups.enter_context(use_test_organizational_data())
 
-
-A message From: a domain without a DMARC policy does not set any flags.
+A message ``From:`` a domain without a DMARC policy does not set any flags.
 
     >>> from mailman.interfaces.mailinglist import DMARCMitigateAction
     >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
-    ... To: _xtest@example.com
+    ... To: ant@example.com
     ... Subject: A posted message
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher, patcher2:
-    ...     rule.check(mlist, msg, msgdata)
+    >>> rule.check(mlist, msg, msgdata)
     False
-    >>> msgdata == {}
-    True
+    >>> msgdata
+    {}
 
-Even if the From: domain publishes p=reject, no flags are set if the list's
-action is no_mitigation.
+Even if the ``From:`` domain publishes ``p=reject``, no flags are set if the
+list's action is ``no_mitigation``.
 
     >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.no_mitigation
     >>> msg = message_from_string("""\
     ... From: aperson@example.biz
-    ... To: _xtest@example.com
+    ... To: ant@example.com
     ... Subject: A posted message
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher, patcher2:
-    ...     rule.check(mlist, msg, msgdata)
+    >>> rule.check(mlist, msg, msgdata)
     False
-    >>> msgdata == {}
-    True
+    >>> msgdata
+    {}
 
-But with a different list setting, the message is flagged.
+With a mitigation strategy chosen, the message is flagged.
 
     >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
     >>> msg = message_from_string("""\
     ... From: aperson@example.biz
-    ... To: _xtest@example.com
+    ... To: ant@example.com
     ... Subject: A posted message
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher, patcher2:
-    ...     rule.check(mlist, msg, msgdata)
+    >>> rule.check(mlist, msg, msgdata)
     False
-    >>> msgdata['dmarc']
-    True
+    >>> msgdata
+    {'dmarc': True}
 
 Subdomains which don't have a policy will check the organizational domain.
 
     >>> msg = message_from_string("""\
     ... From: aperson@sub.domain.example.biz
-    ... To: _xtest@example.com
+    ... To: ant@example.com
     ... Subject: A posted message
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher, patcher2:
-    ...     rule.check(mlist, msg, msgdata)
+    >>> rule.check(mlist, msg, msgdata)
     False
-    >>> msgdata['dmarc']
-    True
+    >>> msgdata
+    {'dmarc': True}
 
 The list's action can also be set to immediately discard or reject the
 message.
@@ -97,58 +92,54 @@ message.
     >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.discard
     >>> msg = message_from_string("""\
     ... From: aperson@example.biz
-    ... To: _xtest@example.com
+    ... To: ant@example.com
     ... Subject: A posted message
     ... Message-ID: <xxx_message_id@example.biz>
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher, patcher2:
-    ...     rule.check(mlist, msg, msgdata)
+    >>> rule.check(mlist, msg, msgdata)
     True
-    >>> msgdata['dmarc']
-    True
-    >>> msgdata['moderation_action']
-    'discard'
+    >>> dump_msgdata(msgdata)
+    dmarc             : True
+    moderation_action : discard
+    moderation_reasons: ['DMARC moderation']
+    moderation_sender : aperson@example.biz
 
 We can reject the message with a default reason.
 
     >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
     >>> msg = message_from_string("""\
     ... From: aperson@example.biz
-    ... To: _xtest@example.com
+    ... To: ant@example.com
     ... Subject: A posted message
     ... Message-ID: <xxx_message_id@example.biz>
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher, patcher2:
-    ...     rule.check(mlist, msg, msgdata)
+    >>> rule.check(mlist, msg, msgdata)
     True
-    >>> msgdata['dmarc']
-    True
-    >>> msgdata['moderation_action']
-    'reject'
-    >>> msgdata['moderation_reasons']
-    ['You are not allowed to post to this mailing list From: a domain ...
+    >>> dump_msgdata(msgdata)
+    dmarc             : True
+    moderation_action : reject
+    moderation_reasons: ['You are not allowed to post to this mailing list...
+    moderation_sender : aperson@example.biz
 
 And, we can reject with a custom message.
 
     >>> mlist.dmarc_moderation_notice = 'A silly reason'
     >>> msg = message_from_string("""\
     ... From: aperson@example.biz
-    ... To: _xtest@example.com
+    ... To: ant@example.com
     ... Subject: A posted message
     ... Message-ID: <xxx_message_id@example.biz>
     ...
     ... """)
     >>> msgdata = {}
-    >>> with patcher, patcher2:
-    ...     rule.check(mlist, msg, msgdata)
+    >>> rule.check(mlist, msg, msgdata)
     True
-    >>> msgdata['dmarc']
-    True
-    >>> msgdata['moderation_action']
-    'reject'
-    >>> msgdata['moderation_reasons']
-    ['A silly reason']
+    >>> dump_msgdata(msgdata)
+    dmarc             : True
+    moderation_action : reject
+    moderation_reasons: ['A silly reason']
+    moderation_sender : aperson@example.biz

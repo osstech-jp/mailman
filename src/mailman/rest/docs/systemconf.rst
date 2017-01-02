@@ -30,6 +30,7 @@ You can also get all the values for a particular section, such as the
 ...or the ``[dmarc]`` section (or any other).
 
     >>> dump_json('http://localhost:9001/3.0/system/configuration/dmarc')
+    cache_lifetime: 7d
     http_etag: ...
     org_domain_data_url: https://publicsuffix.org/list/public_suffix_list.dat
     resolver_lifetime: 5s

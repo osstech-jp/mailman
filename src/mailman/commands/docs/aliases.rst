@@ -34,7 +34,7 @@ write the appropriate files to a temporary directory.
 
     >>> import os, shutil, tempfile
     >>> output_directory = tempfile.mkdtemp()
-    >>> cleanups.append((shutil.rmtree, output_directory))
+    >>> ignore = cleanups.callback(shutil.rmtree, output_directory)
 
     >>> FakeArgs.directory = output_directory
     >>> mlist = create_list('test@example.com')

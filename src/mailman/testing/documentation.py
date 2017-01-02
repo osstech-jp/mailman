@@ -21,7 +21,7 @@ Note that doctest extraction does not currently work for zip file
 distributions.  doctest discovery currently requires file system traversal.
 """
 
-from inspect import isfunction, ismethod
+from contextlib import ExitStack
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.testing.helpers import (
@@ -153,13 +153,9 @@ def setup(testobj):
     testobj.globs['subscribe'] = subscribe
     testobj.globs['transaction'] = config.db
     # Add this so that cleanups can be automatically added by the doctest.
-    testobj.globs['cleanups'] = []
+    testobj.globs['cleanups'] = ExitStack()
 
 
 @public
 def teardown(testobj):
-    for cleanup in testobj.globs['cleanups']:
-        if isfunction(cleanup) or ismethod(cleanup):
-            cleanup()
-        else:
-            cleanup[0](*cleanup[1:])
+    testobj.globs['cleanups'].close()
