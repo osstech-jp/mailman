@@ -102,12 +102,13 @@ def ensure_current_suffix_list():
     return cached_copy_path
 
 
-def parse_suffix_list():
+def parse_suffix_list(filename=None):
     # Parse the suffix list into a per process cache.
-    cached_copy_path = ensure_current_suffix_list()
+    if filename is None:
+        filename = ensure_current_suffix_list()
     # At this point the cached copy must exist and is as valid as possible.
     # Read and return the contents as a UTF-8 string.
-    with open(cached_copy_path, 'r', encoding='utf-8') as fp:
+    with open(filename, 'r', encoding='utf-8') as fp:
         for line in fp:
             if not line.strip() or line.startswith('//'):
                 continue
@@ -121,8 +122,8 @@ def parse_suffix_list():
             else:
                 exception = False
             parts.reverse()
-            k = DOT.join(parts)
-            suffix_cache[k] = exception
+            key = DOT.join(parts)
+            suffix_cache[key] = exception
 
 
 def _get_dom(d, l):

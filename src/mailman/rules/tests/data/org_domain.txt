@@ -17,7 +17,7 @@ org
 !city.kobe.jp
 
 // A line with a trailing comment for testing
-co.uk  some nonesence
+co.uk  some nonsense
 
 // A line with leading white space (ignored)
   example.biz
