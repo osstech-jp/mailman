@@ -25,21 +25,21 @@ from zope.interface import Attribute, Interface
 
 @public
 class DMARCMitigateAction(Enum):
-    # Mitigation to apply to messages From: domains publishing an applicable
-    # DMARC policy or unconditionally depending on settings.
-    no_mitigation = 0
+    # Mitigations to apply to messages From: domains publishing an applicable
+    # DMARC policy, or unconditionally depending on settings.
+    #
     # No DMARC mitigations.
+    no_mitigation = 0
+    # Messages From: domains with DMARC policy will have From: replaced by the
+    # list posting address and the original From: added to Reply-To: or Cc:.
     munge_from = 1
-    # Messages From: domains with DMARC policy will have From: replaced by
-    # the list posting address and the original From: added to Reply-To:
-    # or Cc:.
-    wrap_message = 2
     # Messages From: domains with DMARC policy will be wrapped in an outer
     # message From: the list posting address.
-    reject = 3
+    wrap_message = 2
     # Messages From: domains with DMARC policy will be rejected.
-    discard = 4
+    reject = 3
     # Messages From: domains with DMARC policy will be discarded.
+    discard = 4
 
 
 @public
@@ -238,24 +238,33 @@ class IMailingList(Interface):
     # DMARC attributes.
 
     dmarc_mitigate_action = Attribute(
-        """The DMARCMitigateAction to be applied to messages From: a domain
-        publishing DMARC p=reject or quarantine and possibly unconditionally.
+        """The mitigation to apply to messages from a DMARC matching domain.
+
+        This is a  DMARCMitigateAction to be applied to messages From: a domain
+        publishing DMARC p=reject or quarantine, and possibly unconditionally
+        depending on the setting of dmarc_mitigate_unconditionally.
         """)
 
     dmarc_mitigate_unconditionally = Attribute(
-        """A Flag to apply dmarc_mitigate_action to all messages but only if
-        dmarc_mitigate_action is other than reject or discard.
+        """Should DMARC mitigations apply unconditionally?
+
+        A flag indicating whether to apply dmarc_mitigate_action to all
+        messages, but only if dmarc_mitigate_action is other than reject or
+        discard.
         """)
 
     dmarc_moderation_notice = Attribute(
-        """Text to include in any rejection notice to be sent when
-        DMARCMitigateAction of reject applies.
+        """Text to include in any DMARC rejected message.
+
+        Rejection notices are sent when DMARCMitigateAction of reject applies.
         """)
 
     dmarc_wrapped_message_text = Attribute(
-        """Text to be added as a separate text/plain MIME part preceding the
-        original message part in the wrapped message when
-        DMARCMitigateAction of wrap_message applies.
+        """Additional MIME text to include in DMARC wrapped messages.
+
+        This text is added as a separate text/plain MIME part preceding the
+        original message part in the wrapped message when DMARCMitigateAction
+        of wrap_message applies.
         """)
 
     # Rosters and subscriptions.

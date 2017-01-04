@@ -43,6 +43,7 @@ elog = logging.getLogger('mailman.error')
 vlog = logging.getLogger('mailman.vette')
 
 DOT = '.'
+EMPTYSTRING = ''
 KEEP_LOOKING = object()
 LOCAL_FILE_NAME = 'public_suffix_list.dat'
 
@@ -126,44 +127,53 @@ def parse_suffix_list(filename=None):
             suffix_cache[key] = exception
 
 
-def _get_dom(d, l):
-    # A helper to get a domain name consisting of the first l+1 labels
-    # in d.
-    dom = d[:min(l+1, len(d))]
-    dom.reverse()
-    return '.'.join(dom)
+def get_domain(parts, label):
+    # A helper to get a domain name consisting of the first label+1 labels in
+    # parts.
+    domain = parts[:min(label+1, len(parts))]
+    domain.reverse()
+    return DOT.join(domain)
 
 
-def _get_org_dom(domain):
+def get_organizational_domain(domain):
     # Given a domain name, this returns the corresponding Organizational
     # Domain which may be the same as the input.
     if len(suffix_cache) == 0:
         parse_suffix_list()
     hits = []
-    d = domain.lower().split('.')
-    d.reverse()
-    for k in suffix_cache:
-        ks = k.split('.')
-        if len(d) >= len(ks):
-            for i in range(len(ks)-1):
-                if d[i] != ks[i] and ks[i] != '*':
+    parts = domain.lower().split('.')
+    parts.reverse()
+    for key in suffix_cache:
+        key_parts = key.split('.')
+        if len(parts) >= len(key_parts):
+            for i in range(len(key_parts) - 1):
+                if parts[i] != key_parts[i] and key_parts[i] != '*':
                     break
             else:
-                if d[len(ks)-1] == ks[-1] or ks[-1] == '*':
-                    hits.append(k)
+                if (parts[len(key_parts) - 1] == key_parts[-1] or
+                        key_parts[-1] == '*'):
+                    hits.append(key)
     if not hits:
-        return _get_dom(d, 1)
-    l = 0
-    for k in hits:
-        if suffix_cache[k]:
-            # It's an exception
-            return _get_dom(d, len(k.split('.'))-1)
-        if len(k.split('.')) > l:
-            l = len(k.split('.'))
-    return _get_dom(d, l)
+        return get_domain(parts, 1)
+    label = 0
+    for key in hits:
+        key_parts = key.split('.')
+        if suffix_cache[key]:
+            # It's an exception.
+            return get_domain(parts, len(key_parts) - 1)
+        if len(key_parts) > label:
+            label = len(key_parts)
+    return get_domain(parts, label)
 
 
-def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
+def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
+    # This takes a mailing list, an email address as in the From: header, the
+    # _dmarc host name for the domain in question, and a flag stating whether
+    # we should check the organizational domains.  It returns one of three
+    # values:
+    # * True if the DMARC policy is reject or quarantine;
+    # * False if is not;
+    # * A special sentinel if we should continue looking
     resolver = dns.resolver.Resolver()
     resolver.timeout = as_timedelta(
         config.dmarc.resolver_timeout).total_seconds()
@@ -173,51 +183,56 @@ def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
         txt_recs = resolver.query(dmarc_domain, dns.rdatatype.TXT)
     except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
         return KEEP_LOOKING
-    except DNSException as e:
+    except DNSException as error:
         elog.error(
             'DNSException: Unable to query DMARC policy for %s (%s). %s',
-            email, dmarc_domain, e.__doc__)
+            email, dmarc_domain, error.__doc__)
         return KEEP_LOOKING
     # Be as robust as possible in parsing the result.
     results_by_name = {}
     cnames = {}
     want_names = set([dmarc_domain + '.'])
+    # Check all the TXT records returned by DNS.  Keep track of the CNAMEs for
+    # checking later on.  Ignore any other non-TXT records.
     for txt_rec in txt_recs.response.answer:
         if txt_rec.rdtype == dns.rdatatype.CNAME:
             cnames[txt_rec.name.to_text()] = (
                 txt_rec.items[0].target.to_text())
         if txt_rec.rdtype != dns.rdatatype.TXT:
             continue
-        results_by_name.setdefault(
-            txt_rec.name.to_text(), []).append(
-                "".join(
-                   [str(x, encoding='utf-8')
-                       for x in txt_rec.items[0].strings]))
+        result = EMPTYSTRING.join(
+            str(record, encoding='utf-8')
+            for record in txt_rec.items[0].strings)
+        name = txt_rec.name.to_text()
+        results_by_name.setdefault(name, []).append(result)
     expands = list(want_names)
     seen = set(expands)
     while expands:
         item = expands.pop(0)
         if item in cnames:
             if cnames[item] in seen:
-                continue  # cname loop
+                # CNAME loop.
+                continue
             expands.append(cnames[item])
             seen.add(cnames[item])
             want_names.add(cnames[item])
             want_names.discard(item)
-    assert len(want_names) == 1, """\
-        Error in CNAME processing for {}; want_names != 1.""".format(
-            dmarc_domain)
+    assert len(want_names) == 1, (
+        'Error in CNAME processing for {}; want_names != 1.'.format(
+            dmarc_domain))
     for name in want_names:
         if name not in results_by_name:
             continue
-        dmarcs = [x for x in results_by_name[name]
-                  if x.startswith('v=DMARC1;')]
+        dmarcs = [
+            record for record in results_by_name[name]
+            if record.startswith('v=DMARC1;')
+            ]
         if len(dmarcs) == 0:
             return KEEP_LOOKING
         if len(dmarcs) > 1:
             elog.error(
-                """RRset of TXT records for %s has %d v=DMARC1 entries;
-                testing them all""",
+                'RRset of TXT records for %s has %d v=DMARC1 entries; '
+                'testing them all',
                 dmarc_domain, len(dmarcs))
         for entry in dmarcs:
             mo = re.search(r'\bsp=(\w*)\b', entry, re.IGNORECASE)
@@ -237,8 +252,7 @@ def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
                     continue                        # pragma: no cover
             if policy in ('reject', 'quarantine'):
                 vlog.info(
-                    """%s: DMARC lookup for %s (%s)
-                    found p=%s in %s = %s""",
+                    '%s: DMARC lookup for %s (%s) found p=%s in %s = %s',
                     mlist.list_name,
                     email,
                     dmarc_domain,
@@ -249,23 +263,24 @@ def _DMARCProhibited(mlist, email, dmarc_domain, org=False):
     return False
 
 
-def _IsDMARCProhibited(mlist, email):
+def maybe_mitigate(mlist, email):
     # This takes an email address, and returns True if DMARC policy is
-    # p=reject or quarantine.
+    # p=reject or p=quarantine.
     email = email.lower()
     # Scan from the right in case quoted local part has an '@'.
     local, at, from_domain = email.rpartition('@')
     if at != '@':
         return False
-    x = _DMARCProhibited(mlist, email, '_dmarc.{}'.format(from_domain))
-    if x is not KEEP_LOOKING:
-        return x
-    org_dom = _get_org_dom(from_domain)
+    answer = is_reject_or_quarantine(
+        mlist, email, '_dmarc.{}'.format(from_domain))
+    if answer is not KEEP_LOOKING:
+        return answer
+    org_dom = get_organizational_domain(from_domain)
     if org_dom != from_domain:
-        x = _DMARCProhibited(
+        answer = is_reject_or_quarantine(
             mlist, email, '_dmarc.{}'.format(org_dom), org=True)
-        if x is not KEEP_LOOKING:
-            return x
+        if answer is not KEEP_LOOKING:
+            return answer
     return False
 
 
@@ -284,7 +299,7 @@ class DMARCMitigation:
             # Don't bother to check if we're not going to do anything.
             return False
         dn, addr = parseaddr(msg.get('from'))
-        if _IsDMARCProhibited(mlist, addr):
+        if maybe_mitigate(mlist, addr):
             # If dmarc_mitigate_action is discard or reject, this rule fires
             # and jumps to the 'moderation' chain to do the actual discard.
             # Otherwise, the rule misses but sets a flag for the dmarc handler

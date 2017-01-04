@@ -59,7 +59,7 @@ def get_dns_resolver(
     It only implements those classes and attributes used by the dmarc rule.
     """
     class Name:
-        # mock answer.name
+        # Mock answer.name.
         def __init__(self, name='_dmarc.example.biz.'):
             self.name = name
 
@@ -67,14 +67,14 @@ def get_dns_resolver(
             return self.name
 
     class Item:
-        # mock answer.items
+        # Mock answer.items.
         def __init__(self, rdata=rdata, cname='_dmarc.example.com.'):
             self.strings = [rdata]
-            # for CNAMES
+            # For CNAMEs.
             self.target = Name(cname)
 
     class Ans_e:
-        # mock answer element
+        # Mock answer element.
         def __init__(
                 self,
                 rtype=rtype,
@@ -86,7 +86,7 @@ def get_dns_resolver(
             self.name = Name(name)
 
     class Answer:
-        # mock answer
+        # Mock answer.
         def __init__(self):
             if cloop:
                 self.answer = [
@@ -143,10 +143,7 @@ def get_dns_resolver(
                 self.answer = [Ans_e()]
 
     class Resolver:
-        # mock dns.resolver.Resolver class.
-        def __init__(self):
-            pass
-
+        # Mock dns.resolver.Resolver class.
         def query(self, domain, data_type):
             if data_type != TXT:
                 raise NoAnswer
@@ -191,17 +188,17 @@ class TestDMARCRules(TestCase):
 
     def test_no_data_for_domain(self):
         self.assertEqual(
-            dmarc._get_org_dom('sub.dom.example.nxtld'),
+            dmarc.get_organizational_domain('sub.dom.example.nxtld'),
             'example.nxtld')
 
     def test_domain_with_wild_card(self):
         self.assertEqual(
-            dmarc._get_org_dom('ssub.sub.foo.kobe.jp'),
+            dmarc.get_organizational_domain('ssub.sub.foo.kobe.jp'),
             'sub.foo.kobe.jp')
 
     def test_exception_to_wild_card(self):
         self.assertEqual(
-            dmarc._get_org_dom('ssub.sub.city.kobe.jp'),
+            dmarc.get_organizational_domain('ssub.sub.city.kobe.jp'),
             'city.kobe.jp')
 
     def test_no_at_sign_in_from_address(self):
@@ -305,9 +302,9 @@ To: ant@example.com
             self.assertTrue(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
-            line[-68:],
-            'RRset of TXT records for _dmarc.example.biz has 2 v=DMARC1 '
-            'entries;\n')
+            line[-85:],
+            'RRset of TXT records for _dmarc.example.biz has 2 '
+            'v=DMARC1 entries; testing them all\n')
 
     def test_multiple_cnames(self):
         mlist = create_list('ant@example.com')
@@ -324,8 +321,10 @@ To: ant@example.com
             self.assertTrue(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
-            line[-60:],
-            'ant: DMARC lookup for anne@example.biz (_dmarc.example.biz)\n')
+            line[-128:],
+            'ant: DMARC lookup for anne@example.biz (_dmarc.example.biz) '
+            'found p=quarantine in _dmarc.example.com. = v=DMARC1; '
+            'p=quarantine;\n')
 
     def test_looping_cnames(self):
         mlist = create_list('ant@example.com')
@@ -342,8 +341,9 @@ To: ant@example.com
             self.assertTrue(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
-            line[-60:],
-            'ant: DMARC lookup for anne@example.biz (_dmarc.example.biz)\n')
+            line[-120:],
+            'ant: DMARC lookup for anne@example.biz (_dmarc.example.biz) '
+            'found p=reject in _dmarc.example.org. = v=DMARC1; p=reject;\n')
 
     def test_no_policy(self):
         mlist = create_list('ant@example.com')
