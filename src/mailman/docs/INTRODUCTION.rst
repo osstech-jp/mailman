@@ -33,7 +33,7 @@ But we really like Postorius and HyperKitty and hope you will too!
 Copyright
 =========
 
-Copyright 1998-2016 by the Free Software Foundation, Inc.
+Copyright 1998-2017 by the Free Software Foundation, Inc.
 
 This file is part of GNU Mailman.
 
