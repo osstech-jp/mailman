@@ -158,6 +158,7 @@ Internal
 
 Message handling
 ----------------
+ * New DMARC mitigations have been added.  Given by Mark Sapiro.  (Closes #247)
  * New placeholders have been added for message headers and footers.  You can
    use a placeholder of the format `$<archiver-name>_url` to insert the
    permalink to the message in the named archiver, for any archiver enabled
