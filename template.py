@@ -1,4 +1,4 @@
-# Copyright (C) 2016 by the Free Software Foundation, Inc.
+# Copyright (C) 2017 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -16,5 +16,3 @@
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
 """Module stuff."""
-
-from mailman import public
