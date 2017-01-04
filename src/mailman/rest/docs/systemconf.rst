@@ -9,7 +9,8 @@ get a list of all defined sections.
     http_etag: ...
     sections: ['antispam', 'archiver.mail_archive', 'archiver.master', ...
 
-You can also get all the values for a particular section.
+You can also get all the values for a particular section, such as the
+``[mailman]`` section...
 
     >>> dump_json('http://localhost:9001/3.0/system/configuration/mailman')
     cache_life: 7d
@@ -25,6 +26,15 @@ You can also get all the values for a particular section.
     pre_hook:
     sender_headers: from from_ reply-to sender
     site_owner: noreply@example.com
+
+...or the ``[dmarc]`` section (or any other).
+
+    >>> dump_json('http://localhost:9001/3.0/system/configuration/dmarc')
+    cache_lifetime: 7d
+    http_etag: ...
+    org_domain_data_url: https://publicsuffix.org/list/public_suffix_list.dat
+    resolver_lifetime: 5s
+    resolver_timeout: 3s
 
 Dotted section names work too, for example, to get the French language
 settings section.

@@ -44,6 +44,10 @@ All readable attributes for a list are available on a sub-resource.
     digest_volume_frequency: monthly
     digests_enabled: True
     display_name: Ant
+    dmarc_mitigate_action: no_mitigation
+    dmarc_mitigate_unconditionally: False
+    dmarc_moderation_notice:
+    dmarc_wrapped_message_text:
     filter_content: False
     first_strip_reply_to: False
     footer_uri:
@@ -110,6 +114,10 @@ When using ``PUT``, all writable attributes must be included.
     ...             digest_size_threshold=10.5,
     ...             digest_volume_frequency='yearly',
     ...             digests_enabled=False,
+    ...             dmarc_mitigate_action='munge_from',
+    ...             dmarc_mitigate_unconditionally=False,
+    ...             dmarc_moderation_notice='Some moderation notice',
+    ...             dmarc_wrapped_message_text='some message text',
     ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             first_strip_reply_to=True,
@@ -162,6 +170,10 @@ These values are changed permanently.
     digest_volume_frequency: yearly
     digests_enabled: False
     display_name: Fnords
+    dmarc_mitigate_action: munge_from
+    dmarc_mitigate_unconditionally: False
+    dmarc_moderation_notice: Some moderation notice
+    dmarc_wrapped_message_text: some message text
     filter_content: True
     first_strip_reply_to: True
     footer_uri:

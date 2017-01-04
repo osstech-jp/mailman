@@ -24,7 +24,8 @@ from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, IMailingList, ReplyToMunging, SubscriptionPolicy)
+    DMARCMitigateAction, IAcceptableAliasSet, IMailingList, ReplyToMunging,
+    SubscriptionPolicy)
 from mailman.interfaces.template import ITemplateManager
 from mailman.rest.helpers import (
     GetterSetter, bad_request, etag, no_content, not_found, okay)
@@ -128,7 +129,9 @@ ATTRIBUTES = dict(
     admin_notify_mchanges=GetterSetter(as_boolean),
     administrivia=GetterSetter(as_boolean),
     advertised=GetterSetter(as_boolean),
+    allow_list_posts=GetterSetter(as_boolean),
     anonymous_list=GetterSetter(as_boolean),
+    archive_policy=GetterSetter(enum_validator(ArchivePolicy)),
     autorespond_owner=GetterSetter(enum_validator(ResponseAction)),
     autorespond_postings=GetterSetter(enum_validator(ResponseAction)),
     autorespond_requests=GetterSetter(enum_validator(ResponseAction)),
@@ -136,7 +139,6 @@ ATTRIBUTES = dict(
     autoresponse_owner_text=GetterSetter(str),
     autoresponse_postings_text=GetterSetter(str),
     autoresponse_request_text=GetterSetter(str),
-    archive_policy=GetterSetter(enum_validator(ArchivePolicy)),
     bounces_address=GetterSetter(None),
     collapse_alternatives=GetterSetter(as_boolean),
     convert_html_to_plaintext=GetterSetter(as_boolean),
@@ -144,22 +146,27 @@ ATTRIBUTES = dict(
     default_member_action=GetterSetter(enum_validator(Action)),
     default_nonmember_action=GetterSetter(enum_validator(Action)),
     description=GetterSetter(no_newlines_validator),
+    display_name=GetterSetter(str),
     digest_last_sent_at=GetterSetter(None),
     digest_send_periodic=GetterSetter(as_boolean),
     digest_size_threshold=GetterSetter(float),
     digest_volume_frequency=GetterSetter(enum_validator(DigestFrequency)),
     digests_enabled=GetterSetter(as_boolean),
+    dmarc_mitigate_action=GetterSetter(
+        enum_validator(DMARCMitigateAction)),
+    dmarc_mitigate_unconditionally=GetterSetter(as_boolean),
+    dmarc_moderation_notice=GetterSetter(str),
+    dmarc_wrapped_message_text=GetterSetter(str),
     filter_content=GetterSetter(as_boolean),
     first_strip_reply_to=GetterSetter(as_boolean),
     fqdn_listname=GetterSetter(None),
-    mail_host=GetterSetter(None),
-    allow_list_posts=GetterSetter(as_boolean),
     include_rfc2369_headers=GetterSetter(as_boolean),
     info=GetterSetter(str),
     join_address=GetterSetter(None),
     last_post_at=GetterSetter(None),
     leave_address=GetterSetter(None),
     list_name=GetterSetter(None),
+    mail_host=GetterSetter(None),
     moderator_password=GetterSetter(password_bytes_validator),
     next_digest_number=GetterSetter(None),
     no_reply_address=GetterSetter(None),
@@ -167,7 +174,6 @@ ATTRIBUTES = dict(
     post_id=GetterSetter(None),
     posting_address=GetterSetter(None),
     posting_pipeline=GetterSetter(pipeline_validator),
-    display_name=GetterSetter(str),
     reply_goes_to_list=GetterSetter(enum_validator(ReplyToMunging)),
     reply_to_address=GetterSetter(str),
     request_address=GetterSetter(None),

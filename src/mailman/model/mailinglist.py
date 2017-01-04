@@ -22,7 +22,7 @@ import os
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import Enum, SAUnicode
+from mailman.database.types import Enum, SAUnicode, SAUnicodeLarge
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.archiver import ArchivePolicy
@@ -32,9 +32,9 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAlias, IAcceptableAliasSet, IHeaderMatch, IHeaderMatchList,
-    IListArchiver, IListArchiverSet, IMailingList, Personalization,
-    ReplyToMunging, SubscriptionPolicy)
+    DMARCMitigateAction, IAcceptableAlias, IAcceptableAliasSet,
+    IHeaderMatch, IHeaderMatchList, IListArchiver, IListArchiverSet,
+    IMailingList, Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError,
     SubscriptionEvent)
@@ -127,6 +127,11 @@ class MailingList(Model):
     forward_unrecognized_bounces_to = Column(
         Enum(UnrecognizedBounceDisposition))
     process_bounces = Column(Boolean)
+    # DMARC
+    dmarc_mitigate_action = Column(Enum(DMARCMitigateAction))
+    dmarc_mitigate_unconditionally = Column(Boolean)
+    dmarc_moderation_notice = Column(SAUnicodeLarge)
+    dmarc_wrapped_message_text = Column(SAUnicodeLarge)
     # Miscellaneous
     default_member_action = Column(Enum(Action))
     default_nonmember_action = Column(Enum(Action))

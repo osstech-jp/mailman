@@ -51,6 +51,21 @@ class TestSystemConfiguration(unittest.TestCase):
             site_owner='noreply@example.com',
             ))
 
+    def test_dmarc_system_configuration(self):
+        # Test the [dmarc] section.
+        url = 'http://localhost:9001/3.0/system/configuration/dmarc'
+        json, response = call_api(url)
+        # There must be an `http_etag` key, but we don't care about its value.
+        self.assertIn('http_etag', json)
+        del json['http_etag']
+        self.assertEqual(json, dict(
+            cache_lifetime='7d',
+            org_domain_data_url=                                  # noqa: E251
+                'https://publicsuffix.org/list/public_suffix_list.dat',
+            resolver_lifetime='5s',
+            resolver_timeout='3s',
+            ))
+
     def test_dotted_section(self):
         # A dotted section works too.
         url = 'http://localhost:9001/3.0/system/configuration/language.fr'
@@ -99,6 +114,7 @@ class TestSystemConfiguration(unittest.TestCase):
             'database',
             'devmode',
             'digests',
+            'dmarc',
             'language.ar',
             'language.ast',
             'language.ca',
