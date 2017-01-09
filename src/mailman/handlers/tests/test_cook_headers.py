@@ -86,3 +86,26 @@ Reply-To: "A multiline [...]" <ant@example.com>
 
 More things to say.
 """)
+
+    def test_non_ascii_description(self):
+        self._mlist.description = 'Some Coffee \u2615'
+        self._mlist.reply_goes_to_list = ReplyToMunging.point_to_list
+        msg = mfs("""\
+From: anne@example.com
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+
+More things to say.
+""")
+        cook_headers.process(self._mlist, msg, {})
+        self.assertMultiLineEqual(msg.as_string(), """\
+From: anne@example.com
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Precedence: list
+Reply-To: =?utf-8?b?U29tZSBDb2ZmZWUg4piV?= <ant@example.com>
+
+More things to say.
+""")
