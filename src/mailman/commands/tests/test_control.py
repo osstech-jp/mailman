@@ -180,7 +180,7 @@ class TestStart(unittest.TestCase):
         with open(config.LOCK_FILE, 'w') as fp:
             fp.write(claim_file)
         os.link(config.LOCK_FILE, claim_file)
-        expiration_date = datetime.now() - timedelta(minutes=2)
+        expiration_date = datetime.now() - timedelta(minutes=60)
         t = time.mktime(expiration_date.timetuple())
         os.utime(claim_file, (t, t))
         # Start without --force; no master will be running.
