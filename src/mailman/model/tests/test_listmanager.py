@@ -199,13 +199,19 @@ Message-ID: <argon>
 
     def test_pendings_are_deleted_when_mailing_list_is_deleted(self):
         pendingdb = getUtility(IPendings)
-        test1_list = create_list('test@example.com')
-        subscription_1 = SimplePendable(
+        pendable_1 = SimplePendable(
             type='subscription',
-            list_id='test.example.com')
-        pendingdb.add(subscription_1)
+            list_id='ant.example.com')
+        pendingdb.add(pendable_1)
+        pendable_2 = SimplePendable(
+            type='subscription',
+            list_id='bee.example.com')
+        pendingdb.add(pendable_2)
+        self.assertEqual(pendingdb.count, 2)
+        list_manager = getUtility(IListManager)
+        list_manager.delete(self._ant)
         self.assertEqual(pendingdb.count, 1)
-        getUtility(IListManager).delete(test1_list)
+        list_manager.delete(self._bee)
         self.assertEqual(pendingdb.count, 0)
 
 

@@ -166,10 +166,9 @@ class Pendings:
                 pkv_alias_type.value == pend_type
                 ))
         for pending in query:
-            if confirm:
-                yield pending.token, self.confirm(pending.token, expunge=False)
-            else:
-                yield pending.token
+            pendable = (self.confirm(pending.token, expunge=False)
+                        if confirm else None)
+            yield pending.token, pendable
 
     @dbconnection
     def __iter__(self, store):

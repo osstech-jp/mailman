@@ -142,10 +142,10 @@ class ListRequests:
 
     @dbconnection
     def clear(self, store):
-        for pended_token in getUtility(IPendings).find(
+        for token, pendable in getUtility(IPendings).find(
                 mlist=self.mailing_list,
                 confirm=False):
-            pended = store.query(Pended).filter_by(token=pended_token).first()
+            pended = store.query(Pended).filter_by(token=token).first()
             store.query(PendedKeyValue).filter_by(pended_id=pended.id).delete()
             store.delete(pended)
 

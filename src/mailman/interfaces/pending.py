@@ -96,14 +96,20 @@ class IPendings(Interface):
     def evict():
         """Remove all pended items whose lifetime has expired."""
 
-    def find(mlist=None, pend_type=None):
+    def find(mlist=None, pend_type=None, confirm=True):
         """Search for the pendables matching the given criteria.
 
-        :param mlist: The MailingList object that the pendables must be
-            related to.
-        :param pend_type: The type of the pendables that are looked for, this
-            corresponds to the `PEND_TYPE` attribute.
-        :return: An iterator over 2-tuples of the form (token, dict).
+        :param mlist: The mailing list object that the pendables must be
+            related to, or None.  The default returns all pendables regardless
+            of which mailing list they are related to.
+        :type mlist: IMailingList or None.
+        :param pend_type: The type of the pendables that are looked for, or
+            None.  This corresponds to the `PEND_TYPE` attribute.  The default
+            returns all pending types.
+        :param confirm: A flag indicating whether the found pendings should be
+            "confirmed" or not.  See ``confirm()`` for details.
+        :return: An iterator over 2-tuples of the form (token, pendable).
+            When ``confirm`` is False, ``pendable`` is None.
         """
 
     def __iter__():
