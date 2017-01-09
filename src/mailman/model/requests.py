@@ -23,6 +23,7 @@ from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
+from mailman.model.pending import Pended, PendedKeyValue
 from mailman.utilities.queries import QuerySequence
 from pickle import dumps, loads
 from public import public
@@ -138,6 +139,15 @@ class ListRequests:
         # Throw away the pended data.
         getUtility(IPendings).confirm(request.data_hash)
         store.delete(request)
+
+    @dbconnection
+    def clear(self, store):
+        for token, pendable in getUtility(IPendings).find(
+                mlist=self.mailing_list,
+                confirm=False):
+            pended = store.query(Pended).filter_by(token=token).first()
+            store.query(PendedKeyValue).filter_by(pended_id=pended.id).delete()
+            store.delete(pended)
 
 
 class _Request(Model):

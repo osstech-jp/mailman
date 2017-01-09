@@ -151,7 +151,7 @@ class Pendings:
                 store.delete(pending)
 
     @dbconnection
-    def find(self, store, mlist=None, pend_type=None):
+    def find(self, store, mlist=None, pend_type=None, confirm=True):
         query = store.query(Pended)
         if mlist is not None:
             pkv_alias_mlist = aliased(PendedKeyValue)
@@ -166,7 +166,9 @@ class Pendings:
                 pkv_alias_type.value == pend_type
                 ))
         for pending in query:
-            yield pending.token, self.confirm(pending.token, expunge=False)
+            pendable = (self.confirm(pending.token, expunge=False)
+                        if confirm else None)
+            yield pending.token, pendable
 
     @dbconnection
     def __iter__(self, store):

@@ -30,6 +30,7 @@ from mailman.interfaces.listmanager import (
     ListDeletedEvent, ListDeletingEvent)
 from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.interfaces.messages import IMessageStore
+from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.requests import IListRequests
 from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.usermanager import IUserManager
@@ -38,6 +39,12 @@ from mailman.testing.helpers import (
     event_subscribers, specialized_message_from_string)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
+from zope.interface import implementer
+
+
+@implementer(IPendable)
+class SimplePendable(dict):
+    PEND_TYPE = 'simple'
 
 
 class TestListManager(unittest.TestCase):
@@ -189,6 +196,23 @@ Message-ID: <argon>
         filters = config.db.store.query(ContentFilter).filter_by(
             mailing_list=self._ant)
         self.assertEqual(filters.count(), 0)
+
+    def test_pendings_are_deleted_when_mailing_list_is_deleted(self):
+        pendingdb = getUtility(IPendings)
+        pendable_1 = SimplePendable(
+            type='subscription',
+            list_id='ant.example.com')
+        pendingdb.add(pendable_1)
+        pendable_2 = SimplePendable(
+            type='subscription',
+            list_id='bee.example.com')
+        pendingdb.add(pendable_2)
+        self.assertEqual(pendingdb.count, 2)
+        list_manager = getUtility(IListManager)
+        list_manager.delete(self._ant)
+        self.assertEqual(pendingdb.count, 1)
+        list_manager.delete(self._bee)
+        self.assertEqual(pendingdb.count, 0)
 
 
 class TestListCreation(unittest.TestCase):

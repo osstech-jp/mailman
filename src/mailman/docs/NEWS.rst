@@ -101,6 +101,8 @@ Bugs
    ``reason`` attribute.  Given by Aurélien Bompard.
  * Don't return a 500 error from the REST API when trying to handle a held
    message with defective content.  Given by Abhilash Raj.  (Closes: #256)
+ * Delete subscription requests when a mailing list is deleted.  Given by
+   Abhilash Raj.  (Closes: #214)
 
 Configuration
 -------------
