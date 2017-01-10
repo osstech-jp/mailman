@@ -103,6 +103,8 @@ Bugs
    message with defective content.  Given by Abhilash Raj.  (Closes: #256)
  * Delete subscription requests when a mailing list is deleted.  Given by
    Abhilash Raj.  (Closes: #214)
+ * Messages were shunted when non-ASCII characters appeared in a mailing
+   list's description.  Given by Mark Sapiro.  (Closes: #215)
 
 Configuration
 -------------
