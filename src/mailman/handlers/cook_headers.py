@@ -17,7 +17,6 @@
 
 """Cook a message's headers."""
 
-import re
 import logging
 
 from email.header import Header
@@ -34,7 +33,6 @@ log = logging.getLogger('mailman.error')
 
 COMMASPACE = ', '
 MAXLINELEN = 78
-NONASCII = re.compile('[^\s!-~]')
 
 
 @public
@@ -49,13 +47,6 @@ def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
     If the header contains a newline, truncate it (see GL#273).
     """
     charset = mlist.preferred_language.charset
-    if NONASCII.search(s):
-        # use list charset but ...
-        if charset == 'us-ascii':
-            charset = 'iso-8859-1'
-    else:
-        # there is no non-ascii so ...
-        charset = 'us-ascii'
     if '\n' in s:
         s = '{} [...]'.format(s.split('\n')[0])
         log.warning('Header {} contains a newline, truncating it.'.format(
