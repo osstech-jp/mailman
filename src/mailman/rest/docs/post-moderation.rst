@@ -202,7 +202,7 @@ to the original author.
     Request to mailing list "Ant" rejected
 
 The subject of the message is decoded and the original subject is accessible
-under 'original_subject'
+under ``original_subject``.
 ::
 
     >>> msg = message_from_string("""\

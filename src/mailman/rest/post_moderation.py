@@ -17,9 +17,9 @@
 
 """REST API for held message moderation."""
 
-import email.header
-
+from contextlib import suppress
 from email.errors import MessageError
+from email.header import decode_header, make_header
 from mailman.app.moderator import handle_message
 from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
@@ -92,14 +92,12 @@ class _HeldMessageBase(_ModerationBase):
                 resource[key[5:]] = resource.pop(key)
             elif key.startswith('_mod_'):
                 del resource[key]
-        # Store the original header and then try decoding it
+        # Store the original header and then try decoding it.
         resource['original_subject'] = resource['subject']
-        try:
-            resource['subject'] = email.header.make_header(
-                email.header.decode_header(resource['subject'])).__str__()
-        except (LookupError, MessageError):
-            # If we can't decode the header, leave the subject unchanged
-            pass
+        # If we can't decode the header, leave the subject unchanged.
+        with suppress(LookupError, MessageError):
+            resource['subject'] = str(
+                make_header(decode_header(resource['subject'])))
         # Also, held message resources will always be this type, so ignore
         # this key value.
         del resource['type']
