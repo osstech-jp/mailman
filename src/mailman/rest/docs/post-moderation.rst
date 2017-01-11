@@ -50,6 +50,7 @@ When a message gets held for moderator approval, it shows up in this list.
     <BLANKLINE>
     Something else.
     <BLANKLINE>
+        original_subject: Something
         reason: Because
         request_id: 1
         self_link: http://localhost:9001/3.0/lists/ant.example.com/held/1
@@ -81,6 +82,7 @@ message.  This will include the text of the message.
     <BLANKLINE>
     Something else.
     <BLANKLINE>
+    original_subject: Something
     reason: Because
     request_id: 1
     self_link: http://localhost:9001/3.0/lists/ant.example.com/held/1
@@ -126,6 +128,7 @@ The message is still in the moderation queue.
     <BLANKLINE>
     Something else.
     <BLANKLINE>
+    original_subject: Something
     reason: Because
     request_id: 1
     self_link: http://localhost:9001/3.0/lists/ant.example.com/held/1
@@ -197,3 +200,27 @@ to the original author.
     1
     >>> print(messages[0].msg['subject'])
     Request to mailing list "Ant" rejected
+
+The subject of the message is decoded and the original subject is accessible
+under 'original_subject'
+::
+
+    >>> msg = message_from_string("""\
+    ... From: anne@example.com
+    ... To: ant@example.com
+    ... Subject: =?iso-8859-1?q?p=F6stal?=
+    ... Message-ID: <beta>
+    ...
+    ... Something else.
+    ... """)
+
+    >>> from mailman.app.moderator import hold_message
+    >>> request_id = hold_message(ant, msg, {'extra': 7}, 'Because')
+    >>> transaction.commit()
+
+    >>> results = call_http(url(request_id))
+    >>> print(results['subject'])
+    pöstal
+    >>> print(results['original_subject'])
+    =?iso-8859-1?q?p=F6stal?=
+
