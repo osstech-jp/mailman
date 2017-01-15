@@ -251,6 +251,10 @@ REST
    ``advertised`` boolean parameter.  Given by Aurélien Bompard.
  * Only the system-enabled archivers are returned in the REST API.  Given by
    Aurélien Bompard.
+ * **Backward incompatibility: mild** Held message resources now have an
+   ``original_subject`` key which is the raw value of the ``Subject:`` header
+   (i.e. without any RFC 2047 decoding).  The ``subject`` key is RFC 2047
+   decoded.  Given by Simon Hanna.  (Closes #219)
 
 Other
 -----
