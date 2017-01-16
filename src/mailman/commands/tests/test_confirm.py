@@ -28,13 +28,15 @@ from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner, Results
-from mailman.testing.helpers import get_queue_messages, make_testable_runner
+from mailman.testing.helpers import (
+    get_queue_messages, make_testable_runner,
+    specialized_message_from_string as mfs, subscribe)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
 
-class TestConfirm(unittest.TestCase):
-    """Test the `confirm` command."""
+class TestConfirmJoin(unittest.TestCase):
+    """Test the `confirm` command when joining a mailing list."""
 
     layer = ConfigLayer
 
@@ -70,6 +72,30 @@ class TestConfirm(unittest.TestCase):
         self.assertEqual(status, ContinueProcessing.yes)
         # There will be no messages in the queue.
         get_queue_messages('virgin', expected_count=0)
+
+
+class TestConfirmLeave(unittest.TestCase):
+    """Test the `confirm` command when leaving a mailing list."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        anne = subscribe(self._mlist, 'Anne', email='anne@example.com')
+        self._token, token_owner, member = ISubscriptionManager(
+            self._mlist).unregister(anne.address)
+
+    def test_confirm_leave(self):
+        msg = mfs("""\
+From: Anne Person <anne@example.com>
+To: test-confirm+{token}@example.com
+Subject: Re: confirm {token}
+
+""".format(token=self._token))
+        Confirm().process(self._mlist, msg, {}, (self._token,), Results())
+        # Anne is no longer a member of the mailing list.
+        member = self._mlist.members.get_member('anne@example.com')
+        self.assertIsNone(member)
 
 
 class TestEmailResponses(unittest.TestCase):

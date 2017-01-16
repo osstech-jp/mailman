@@ -198,7 +198,7 @@ You may be asked to confirm your request.""")
         already_left.add(email)
         manager = ISubscriptionManager(mlist)
         token, token_owner, member = manager.unregister(user_address)
-        person = formataddr((user.display_name, email))   # noqa
+        person = formataddr((user.display_name, email))   # noqa: F841
         if member is None:
             print(_('$person left $mlist.fqdn_listname'), file=results)
         else:
