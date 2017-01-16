@@ -53,7 +53,10 @@ class Confirm:
                 mlist).confirm(token)
             if new_token is None:
                 assert token_owner is TokenOwner.no_one, token_owner
-                assert member is not None, member
+                # We can't assert anything about member.  It will be None when
+                # the workflow we're confirming is an unsubscription request,
+                # and non-None when we're confirming a subscription request.
+                # This class doesn't know which is happening.
                 succeeded = True
             elif token_owner is TokenOwner.moderator:
                 # This must have been a confirm-then-moderator subscription.

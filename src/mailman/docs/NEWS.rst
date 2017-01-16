@@ -105,6 +105,7 @@ Bugs
    Abhilash Raj.  (Closes: #214)
  * Messages were shunted when non-ASCII characters appeared in a mailing
    list's description.  Given by Mark Sapiro.  (Closes: #215)
+ * Fix confirmation of unsubscription requests.  (Closes: #294)
 
 Configuration
 -------------
