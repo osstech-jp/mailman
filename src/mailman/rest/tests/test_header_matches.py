@@ -60,7 +60,7 @@ class TestHeaderMatches(unittest.TestCase):
                      '/header-matches', {
                          'header': 'header',
                          'pattern': 'pattern',
-                     })
+                        })
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          b'This header match already exists')

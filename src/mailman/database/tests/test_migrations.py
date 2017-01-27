@@ -135,9 +135,9 @@ class TestMigrations(unittest.TestCase):
             for i in range(1, 6):
                 query = sa.sql.select(
                     [keyvalue_table.c.key, keyvalue_table.c.value]
-                ).where(
-                    keyvalue_table.c.pended_id == i
-                )
+                    ).where(
+                        keyvalue_table.c.pended_id == i
+                    )
                 results[i] = dict([
                     (r['key'], r['value']) for r in
                     config.db.store.execute(query).fetchall()
