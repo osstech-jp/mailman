@@ -40,12 +40,14 @@ import logging
 
 from aiosmtpd.controller import Controller
 from aiosmtpd.lmtp import LMTP
+from contextlib import suppress
 from email.utils import parseaddr
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.database.transaction import transactional
 from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.runner import RunnerInterrupt
 from mailman.utilities.datetime import now
 from mailman.utilities.email import add_message_hash
 from public import public
@@ -240,7 +242,8 @@ class LMTPRunner(Runner):
 
     def run(self):
         """See `IRunner`."""
-        self.lmtp.start()
-        while not self._stop:
-            self._snooze(0)
-        self.lmtp.stop()
+        with suppress(RunnerInterrupt):
+            self.lmtp.start()
+            while not self._stop:
+                self._snooze(0)
+            self.lmtp.stop()

@@ -21,7 +21,9 @@ import signal
 import logging
 import threading
 
+from contextlib import suppress
 from mailman.core.runner import Runner
+from mailman.interfaces.runner import RunnerInterrupt
 from mailman.rest.wsgiapp import make_server
 from public import public
 
@@ -59,10 +61,12 @@ class RESTRunner(Runner):
 
     def run(self):
         """See `IRunner`."""
-        self._server.serve_forever()
+        with suppress(RunnerInterrupt):
+            self._server.serve_forever()
 
     def signal_handler(self, signum, frame):
-        super().signal_handler(signum, frame)
+        with suppress(RunnerInterrupt):
+            super().signal_handler(signum, frame)
         if signum in (signal.SIGTERM, signal.SIGINT, signal.SIGUSR1):
             # Set the flag that will terminate the TCPserver loop.
             self._event.set()
