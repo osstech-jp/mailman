@@ -131,7 +131,7 @@ class _UserBase(CollectionMixin):
             is_server_owner=user.is_server_owner,
             self_link=self.api.path_to('users/{}'.format(user_id)),
             user_id=user_id,
-        )
+            )
         # Add the password attribute, only if the user has a password.  Same
         # with the real name.  These could be None or the empty string.
         if user.password:
