@@ -363,7 +363,7 @@ class TestAddresses(unittest.TestCase):
             call_api(
                 'http://localhost:9001/3.0/addresses/anne@example.com/user', {
                     'email': 'anne.person@example.org',
-                })
+                    })
         self.assertEqual(cm.exception.code, 409)
 
     def test_user_subresource_post_new_user_no_auto_create(self):
@@ -377,7 +377,7 @@ class TestAddresses(unittest.TestCase):
                 'http://localhost:9001/3.0/addresses/anne@example.com/user', {
                     'display_name': 'Anne',
                     'auto_create': 0,
-                })
+                    })
         self.assertEqual(cm.exception.code, 403)
 
     def test_user_subresource_post_no_such_user(self):

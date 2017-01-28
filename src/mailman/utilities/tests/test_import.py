@@ -774,55 +774,55 @@ class TestRosterImport(unittest.TestCase):
             'members': {
                 'anne@example.com': 0,
                 'bob@example.com': b'bob@ExampLe.Com',
-            },
+                },
             'digest_members': {
                 'cindy@example.com': 0,
                 'dave@example.com': b'dave@ExampLe.Com',
-            },
+                },
             'passwords': {
                 'anne@example.com': b'annepass',
                 'bob@example.com': b'bobpass',
                 'cindy@example.com': b'cindypass',
                 'dave@example.com': b'davepass',
-            },
+                },
             'language': {
                 'anne@example.com': b'fr',
                 'bob@example.com': b'de',
                 'cindy@example.com': b'es',
                 'dave@example.com': b'it',
-            },
+                },
             # Usernames are unicode strings in the pickle
             'usernames': {
                 'anne@example.com': 'Anne',
                 'bob@example.com': 'Bob',
                 'cindy@example.com': 'Cindy',
                 'dave@example.com': 'Dave',
-            },
+                },
             'owner': [
                 'anne@example.com',
                 'emily@example.com',
-            ],
+                ],
             'moderator': [
                 'bob@example.com',
                 'fred@example.com',
-            ],
+                ],
             'accept_these_nonmembers': [
                 'gene@example.com',
                 '^gene-.*@example.com',
-            ],
+                ],
             'hold_these_nonmembers': [
                 'homer@example.com',
                 '^homer-.*@example.com',
-            ],
+                ],
             'reject_these_nonmembers': [
                 'iris@example.com',
                 '^iris-.*@example.com',
-            ],
+                ],
             'discard_these_nonmembers': [
                 'kenny@example.com',
                 '^kenny-.*@example.com',
-            ],
-        }
+                ],
+            }
         self._usermanager = getUtility(IUserManager)
         language_manager = getUtility(ILanguageManager)
         for code in self._pckdict['language'].values():
