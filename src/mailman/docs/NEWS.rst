@@ -106,6 +106,8 @@ Bugs
  * Messages were shunted when non-ASCII characters appeared in a mailing
    list's description.  Given by Mark Sapiro.  (Closes: #215)
  * Fix confirmation of unsubscription requests.  (Closes: #294)
+ * Fix ``mailman stop`` not stopping some runners due to PEP 475 interaction.
+   (Closes: #255)
 
 Configuration
 -------------
