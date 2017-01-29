@@ -520,8 +520,10 @@ class TestAPI31Addresses(unittest.TestCase):
 
     def test_addresses_user_ids_are_hex(self):
         user_manager = getUtility(IUserManager)
+        # Do this sequentially so we're sure which user gets which uid.
         with transaction():
             user_manager.create_user('anne@example.com', 'Anne')
+        with transaction():
             user_manager.create_user('bart@example.com', 'Bart')
         response, headers = call_api('http://localhost:9001/3.1/addresses')
         entries = response['entries']
