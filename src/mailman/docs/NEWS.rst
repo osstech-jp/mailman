@@ -108,6 +108,7 @@ Bugs
  * Fix confirmation of unsubscription requests.  (Closes: #294)
  * Fix ``mailman stop`` not stopping some runners due to PEP 475 interaction.
    (Closes: #255)
+ * Update documentation links for ``config.cfg`` settings.  (Closes: #306)
 
 Configuration
 -------------

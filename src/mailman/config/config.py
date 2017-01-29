@@ -46,9 +46,9 @@ MAILMAN_CFG_TEMPLATE = """\
 #
 # This is your GNU Mailman 3 configuration file.  You can edit this file to
 # configure Mailman to your needs, and Mailman will never overwrite it.
-# Additional configuration information is (for now) available in the
-# schema.cfg file <http://tinyurl.com/cm5rtqe> and the base mailman.cfg file
-# <http://tinyurl.com/dx9b8eg>.
+# Additional configuration information is available here:
+#
+# http://mailman.readthedocs.io/en/latest/src/mailman/config/docs/config.html
 #
 # For example, uncomment the following lines to run Mailman in developer mode.
 #
