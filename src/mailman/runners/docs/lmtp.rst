@@ -1,5 +1,5 @@
 ===========
-LTMP server
+LMTP server
 ===========
 
 Mailman can accept messages via LMTP (RFC 2033).  Most modern mail servers
