@@ -92,23 +92,24 @@ class Runner:
             signal.SIGINT: 'SIGINT',
             signal.SIGUSR1: 'SIGUSR1',
             }.get(signum, signum)
-        if signum in (signal.SIGTERM, signal.SIGINT, signal.SIGUSR1):
+        if signum == signal.SIGHUP:
+            reopen()
+            rlog.info('%s runner caught SIGHUP.  Reopening logs.', self.name)
+        elif signum in (signal.SIGTERM, signal.SIGINT, signal.SIGUSR1):
             self.stop()
             self.status = signum
             rlog.info('%s runner caught %s.  Stopping.', self.name, signame)
-        elif signum == signal.SIGHUP:
-            reopen()
-            rlog.info('%s runner caught SIGHUP.  Reopening logs.', self.name)
-        # As of Python 3.5, PEP 475 gets in our way.  Runners with long
-        # time.sleep()'s in their _snooze() method (e.g. the retry runner) will
-        # have their system call implemented time.sleep() automatically retried
-        # at the C layer.  The only reliable way to prevent this is to raise an
-        # exception in the signal handler.  The standard run() method
-        # automatically suppresses this exception, meaning, it's caught and
-        # ignored, but effectively breaks the run() loop, which is just what we
-        # want.  Runners which implement their own run() method must be
-        # prepared to catch RunnerInterrupts, usually also ignoring them.
-        raise RunnerInterrupt
+            # As of Python 3.5, PEP 475 gets in our way.  Runners with long
+            # time.sleep()'s in their _snooze() method (e.g. the retry runner)
+            # will have their system call implemented time.sleep()
+            # automatically retried at the C layer.  The only reliable way to
+            # prevent this is to raise an exception in the signal handler.  The
+            # standard run() method automatically suppresses this exception,
+            # meaning, it's caught and ignored, but effectively breaks the
+            # run() loop, which is just what we want.  Runners which implement
+            # their own run() method must be prepared to catch
+            # RunnerInterrupts, usually also ignoring them.
+            raise RunnerInterrupt
 
     def set_signals(self):
         """See `IRunner`."""
