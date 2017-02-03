@@ -58,7 +58,8 @@ class _AddressBase(CollectionMixin):
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        return list(getUtility(IUserManager).addresses)
+        return sorted(getUtility(IUserManager).addresses,
+                      key=attrgetter('original_email'))
 
 
 @public
