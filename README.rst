@@ -46,24 +46,24 @@ Table of Contents
     :glob:
     :maxdepth: 1
 
-    src/mailman/docs/INTRODUCTION
-    src/mailman/docs/RELEASENOTES
-    src/mailman/docs/INSTALL
+    src/mailman/docs/introduction
+    src/mailman/docs/release-notes
+    src/mailman/docs/install
     src/mailman/config/docs/config
-    src/mailman/docs/DATABASE
-    src/mailman/docs/MTA
-    src/mailman/docs/WebUIin5
-    src/mailman/docs/ArchiveUIin5
-    src/mailman/docs/CONTRIBUTE
+    src/mailman/docs/database
+    src/mailman/docs/mta
+    src/mailman/docs/postorius
+    src/mailman/docs/hyperkitty
+    src/mailman/docs/contribute
     src/mailman/docs/STYLEGUIDE
-    src/mailman/docs/ARCHITECTURE
+    src/mailman/docs/architecture
     src/mailman/docs/8-miles-high
 
 
 Mailman modules
 ---------------
 
-These documents are generated from the doctest suite.
+These documents are generated from the internal module documentation.
 
 .. toctree::
     :maxdepth: 1

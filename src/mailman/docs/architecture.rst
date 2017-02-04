@@ -1,6 +1,6 @@
-======================
-Mailman 3 architecture
-======================
+=============================
+ Mailman 3 Core architecture
+=============================
 
 This is a brief overview of the internal architecture of the Mailman 3 core
 delivery engine.  You should start here if you want to understand how Mailman
@@ -49,9 +49,9 @@ Process model
 Messages move around inside the Mailman system by way of *queue* directories
 managed by the *switchboard*.  For example, when a message is first received
 by Mailman, it is moved to the *in* (for "incoming") queue.  During the
-processing of this message, it -- or copies of it -- may be moved to other
-queues such as the *out* queue (for outgoing email), the *archive* queue (for
-sending to the archivers), the *digest* queue (for composing digests), etc.
+processing of this message, it -or copies of it- may be moved to other queues
+such as the *out* queue (for outgoing email), the *archive* queue (for sending
+to the archivers), the *digest* queue (for composing digests), etc.
 
 A message in a queue is represented by a single file, a ``.pck`` file.  This
 file contains two objects, serialized as `Python pickles`_.  The first object
@@ -65,7 +65,7 @@ processed.
 
 Each queue directory is associated with a *runner* process which wakes up
 every so often.  When the runner wakes up, it examines all the ``.pck`` files
-in FIFO order, deserializing the message and metadata objects, processing
+in FIFO order, deserializing the message and metadata objects, and processing
 them.  If the message needs further processing in a different queue, it will
 be re-serialized back into a ``.pck`` file.  If not (e.g. because processing
 of the message is complete), then no ``.pck`` file is written.
@@ -87,10 +87,10 @@ Rules and chains
 When a message is first received for posting to a mailing list, Mailman
 processes the message to determine whether the message is appropriate for the
 mailing list.  If so, it *accepts* the message and it gets posted.  Mailman
-can also *discard* the message so that no further processing occurs.  Mailman
-can also *reject* the message, bouncing it back to the original sender,
-usually with some indication of why the message was rejected.  Mailman can
-also *hold* the message for moderator approval.
+can *discard* the message so that no further processing occurs.  Mailman can
+also *reject* the message, bouncing it back to the original sender, usually
+with some indication of why the message was rejected.  Or, Mailman can *hold*
+the message for moderator approval.
 
 *Moderation* is the phase of processing that determines which of the above
 four dispositions will occur for the newly posted message.  Moderation does
@@ -115,7 +115,7 @@ the appropriate start chain.  The message is then passed to the chain, where
 each link in the chain first checks to see if its rule matches, and if so, it
 executes the linked action.  This action is usually one of *accept*, *reject*,
 *discard*, and *hold*, but other actions are possible, such as executing a
-function or jumping to another chain.
+function, deferring action, or jumping to another chain.
 
 As you might imagine, you can write new rules, compose them into new chains,
 and configure a mailing list to use your custom chain when processing the
@@ -149,16 +149,40 @@ Of course, you can define new handlers, compose them into new pipelines, and
 change a mailing list's pipelines.
 
 
+Integration and control
+=======================
+
+Humans and external programs can interact with a running Core system in may
+different ways.  There's an extensive command line interface that provides
+useful options to a system administrator.  For external applications such as
+the Postorius web user interface, and the HyperKitty archiver, the
+`administrative REST API <rest-api>` is the most common way to get information
+into and out of the Core.
+
+**Note**: The REST API is an administrative API and as such it must not be
+exposed to the public internet.  By default, the REST server only listens on
+``localhost``.
+
+Internally, the Python API is extensive and well-documented.  Most objects in
+the system are accessed through the `Zope Component Architecture`_ (ZCA).  If
+your Mailman installation is importable, you can write scripts directly
+against the internal public Python API.
+
+
 Other bits and pieces
 =====================
 
-There are lots of other pieces to the Mailman puzzle, such as the REST API,
-the set of core functionality (logging, initialization, event handling, etc.),
-mailing list *styles*, the API for integrating external archivers and mail
-servers.  The database layer is an critical piece, and Mailman has an
-extensive set of command line commands, and email commands.
+There are lots of other pieces to the Mailman puzzle, such as the set of core
+functionality (logging, initialization, event handling, etc.), mailing list
+*styles*, the API for integrating external archivers and mail servers.  The
+database layer is an critical piece, and Mailman has an extensive set of
+command line commands, and email commands.
+
+Almost the entire system is documented in these pages, but it maybe be a bit
+of a spelunking effort to find it.  Improvements are welcome!
 
 
 .. _`Architecture of Open Source Applications`: http://www.aosabook.org/en/mailman.html
 .. _`Python pickles`: http://docs.python.org/2/library/pickle.html
 .. _`more efficient internal representation`: https://docs.python.org/3/library/email.html
+.. _`Zope Component Architecture`: https://pypi.python.org/pypi/zope.component

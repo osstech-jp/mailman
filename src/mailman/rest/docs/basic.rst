@@ -1,21 +1,9 @@
-===========
-REST server
-===========
+=================
+ Basic operation
+=================
 
-Mailman exposes a REST HTTP server for administrative control.
-
-The server listens for connections on a configurable host name and port.
-
-It is always protected by HTTP basic authentication using a single global
-user name and password. The credentials are set in the `[webservice]` section
-of the configuration using the `admin_user` and `admin_pass` properties.
-
-Because the REST server has full administrative access, it should always be
-run only on localhost, unless you really know what you're doing.  In addition
-you should set the user name and password to secure values and distribute them
-to any REST clients with reasonable precautions.
-
-The Mailman major and minor version numbers are in the URL.
+In order to do anything with the REST API, you need to know its `Basic AUTH`_
+credentials, and the version of the API you wish to speak to.
 
 
 Credentials
@@ -35,8 +23,8 @@ succeeds.
     200
 
 
-Version information
-===================
+System version information
+==========================
 
 System version information can be retrieved from the server, in the form of a
 JSON encoded response.
@@ -49,4 +37,30 @@ JSON encoded response.
     self_link: http://localhost:9001/3.0/system/versions
 
 
+API Versions
+============
+
+The REST API exposes two versions which are almost completely identical.  As
+you've seen above, the ``3.0`` API is the base API.  There is also a ``3.1``
+API, which can be used interchangably::
+
+    >>> dump_json('http://localhost:9001/3.1/system/versions')
+    api_version: 3.1
+    http_etag: "..."
+    mailman_version: GNU Mailman 3...
+    python_version: ...
+    self_link: http://localhost:9001/3.1/system/versions
+
+The only difference is the way UUIDs are represented.  UUIDs are 128-bit
+unique ids for objects such as users and members.  In version ``3.0`` of the
+API, UUIDs are represented as 128-bit integers, but these were found to be
+incompatible for some versions of JavaScript, so in API version ``3.1`` UUIDs
+are represented as hex strings.
+
+Choose whichever API version makes sense for your application.  In general, we
+recommend using API ``3.1``, but most of the current documentation describes
+API ``3.0``.  Just make the mental substitution as you read along.
+
+
 .. _REST: http://en.wikipedia.org/wiki/REST
+.. _`Basic AUTH`: https://en.wikipedia.org/wiki/Basic_auth

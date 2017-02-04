@@ -1,6 +1,6 @@
-====================
-Installing Mailman 3
-====================
+======================
+ Installing Mailman 3
+======================
 
 Copyright (C) 2008-2017 by the Free Software Foundation, Inc.
 
@@ -28,6 +28,9 @@ core documentation (such as this file) is found in the ``src/mailman/docs``
 directory, but much of the documentation is in module-specific places.  Online
 versions of the `Mailman 3 Core documentation`_ is available online.
 
+Also helpful might be Mark Sapiro's documentation on `building out the
+mailman3.org`_ server.
+
 
 Get the sources
 ===============
@@ -47,43 +50,25 @@ Running Mailman 3
 
 You will need to set up a configuration file to override the defaults and set
 things up for your environment.  Mailman is configured using an "ini"-style
-configuration system.
-
-``src/mailman/config/schema.cfg`` defines the ini-file schema and contains
-documentation for every section and configuration variable.  Sections that end
-in ``.template`` or ``.master`` are templates that must be overridden in
-actual configuration files.  There is a default configuration file that
-defines these basic overrides in ``src/mailman/config/mailman.cfg``.  Your own
-configuration file will override those.
+configuration system.  Usually this means creating a ``mailman.cfg`` file and
+putting it in a standard search location.  See the :ref:`configuration
+<configuration>` documentation for details.
 
 By default, all runtime files are put under a ``var`` directory in the current
 working directory.
 
-Mailman searches for its configuration file using the following search path.
-The first existing file found wins.
-
-* ``-C config`` command line option
-* ``$MAILMAN_CONFIG_FILE`` environment variable
-* ``./mailman.cfg``
-* ``~/.mailman.cfg``
-* ``/etc/mailman.cfg``
-* ``argv[0]/../../etc/mailman.cfg``
-
-Run the ``mailman info`` command to see which configuration file Mailman will
-use, and where it will put its database file.  The first time you run this,
+Run the ``mailman info`` command to see which configuration file Mailman is
+using, and where it will put its database file.  The first time you run this,
 Mailman will also create any necessary run-time directories and log files.
 
 Try ``mailman --help`` for more details.  You can use the commands
 ``mailman start`` to start the runner subprocess daemons, and of course
 ``mailman stop`` to stop them.
 
-Postorius_, a web UI for administration and subscriber settings, is being
-developed as a separate, Django-based project.  For now, the most flexible
-means of configuration is via the command line and REST API.
-
-Note that you can also "run" Mailman from one of the virtual environments
+Note that you can also run Mailman from one of the virtual environments
 created by tox, e.g.::
 
+    $ tox -e py35-nocov --notest -r
     $ .tox/py35-nocov/bin/mailman info
 
 
@@ -94,7 +79,7 @@ This documentation has examples which use the Mailman shell to interact with
 Mailman.  To start the shell type ``mailman shell`` in your terminal.
 
 There are some testings functions which need to be imported first before you
-use them. They can be imported from the modules available in
+use them.  They can be imported from the modules available in
 ``mailman.testing``.  For example, to use ``dump_list`` you first need to
 import it from the ``mailman.testing.documentation`` module.
 
@@ -114,7 +99,7 @@ do::
     >>> list_manager = getUtility(IListManager)
 
 
-.. _`Postorius`: https://gitlab.com/mailman/postorius
 .. _`Python Cheeseshop`: http://pypi.python.org/pypi
 .. _`Mailman 3 Core documentation`: https://mailman.readthedocs.io
 .. _`Zope Component Architecture`: https://pypi.python.org/pypi/zope.component
+.. _`building out the mailman3.org`: https://wiki.list.org/DOC/Mailman%203%20installation%20experience

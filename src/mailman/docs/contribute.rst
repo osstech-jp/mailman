@@ -1,6 +1,6 @@
-=========================
-Contributing to Mailman 3
-=========================
+===========================
+ Contributing to Mailman 3
+===========================
 
 Copyright (C) 2008-2017 by the Free Software Foundation, Inc.
 
@@ -14,6 +14,8 @@ priority of bug reports.  For more substantial contributions, we may ask you
 to sign a `copyright assignment`_ to the Free Software Foundation, the owner
 of the GNU Mailman copyright.  If you'd like to jump start your copyright
 assignment, please contact the GNU Mailman `steering committee`_.
+
+Please read the :doc:`STYLEGUIDE` for required coding style guidelines.
 
 
 Contact Us
@@ -90,7 +92,7 @@ Testing with PostgreSQL and MySQL
 
 By default, the test suite runs with the built-in SQLite database engine.  If
 you want to run the full test suite against the PostgreSQL or MySQL databases,
-set the database up as described in :doc:`DATABASE`.
+set the database up as described in :doc:`database`.
 
 For PostgreSQL, then create a `postgres.cfg` file any where you want.  This
 `postgres.cfg` file will contain the ``[database]`` section for PostgreSQL,

@@ -1,6 +1,6 @@
-===========================
-Hooking up your mail server
-===========================
+=============================
+ Hooking up your mail server
+=============================
 
 Mailman needs to communicate with your *MTA* (*mail transport agent*
 or *mail server*, the software which handles sending mail across the
@@ -10,12 +10,11 @@ to its immediate upstream MTA, which delivers them.  In the same way,
 Mailman never receives mail directly.  Mail from outside always comes
 via the MTA.
 
-Mailman accepts incoming messages from the MTA using the `Local Mail
-Transfer Protocol`_ (LMTP_) interface.  Mailman can use other incoming
-transports, but LMTP is much more efficient than spawning a process
-just to do the delivery.  Most open source MTAs support LMTP for local
-delivery.  If yours doesn't, and you need to use a different
-interface, please ask on the `mailing list or on IRC`_.
+Mailman accepts incoming messages from the MTA using the `Local Mail Transfer
+Protocol`_ (LMTP_) interface.  LMTP is much more efficient than spawning a
+process just to do the delivery.  Most open source MTAs support LMTP for local
+delivery.  If yours doesn't, and you need to use a different interface, please
+ask on the `mailing list or on IRC`_.
 
 Mailman passes all outgoing messages to the MTA using the `Simple Mail
 Transfer Protocol`_ (SMTP_).
@@ -50,6 +49,10 @@ and other attributes of the communication channel.  This is why some
 constraints on the format of attributes arise (e.g., ``lmtp_host``), even
 though Mailman itself has no problem with them.
 
+It is possible (although not documented here) to completely replace or
+override the default mechanisms to handle both incoming and outgoing mail.
+Mailman is highly customizable here!
+
 The ``incoming`` and ``outgoing`` parameters identify the Python objects used
 to communicate with the MTA.  The ``python:`` scheme indicates that the paths
 should be a dotted Python module specification.  The ``deliver`` module used
@@ -57,23 +60,21 @@ in ``outgoing`` should be satisfactory for most MTAs.  The ``postfix`` module
 in ``incoming`` is specific to the Postfix MTA.  See the section for your MTA
 below for details on these parameters.
 
-``lmtp_host`` and ``lmtp_port`` are parameters which are used by
-Mailman, but also will be passed to the MTA to identify the Mailman
-host.  The "same host" case is special; some MTAs (including Postfix)
-do not recognize "localhost", and need the numerical IP address.  If
-they are on different hosts, ``lmtp_host`` should be set to the domain
-name or IP address of the Mailman host.  ``lmtp_port`` is fairly
-arbitrary (there is no standard port for LMTP).  Use any port
-convenient for your site.  "8024" is as good as any, unless another
-service is using it.
+``lmtp_host`` and ``lmtp_port`` are parameters which are used by Mailman, but
+also will be passed to the MTA to identify the Mailman host.  The "same host"
+case is special; some MTAs (including Postfix) do not recognize "localhost",
+and need the numerical IP address.  If they are on different hosts,
+``lmtp_host`` should be set to the domain name or IP address of the Mailman
+host.  ``lmtp_port`` is fairly arbitrary (there is no standard port for LMTP).
+Use any port convenient for your site.  "8024" is as good as any, unless
+another service is using it.
 
-``smtp_host`` and ``smtp_port`` are parameters used to identify the
-MTA to Mailman.  If the MTA and Mailman are on separate hosts,
-``smtp_host`` should be set to the domain name or IP address of the
-MTA host.  ``smtp_port`` will almost always be 25, which is the
-standard port for SMTP.  (Some special site configurations set it to a
-different port.  If you need this, you probably already know that,
-know why, and what to do, too!)
+``smtp_host`` and ``smtp_port`` are parameters used to identify the MTA to
+Mailman.  If the MTA and Mailman are on separate hosts, ``smtp_host`` should
+be set to the domain name or IP address of the MTA host.  ``smtp_port`` will
+almost always be 25, which is the standard port for SMTP.  (Some special site
+configurations set it to a different port.  If you need this, you probably
+already know that, know why, and what to do, too!)
 
 Mailman also provides many other configuration variables that you can
 use to tweak performance for your operating environment.  See the
@@ -317,9 +318,9 @@ Mostly defaults in mailman.cfg::
     # changed if there is a conflict with other software using that port.
     lmtp_port: 8024
 
-This will listen on localhost:8024 with LMTP and deliver outgoing
-messages to localhost:25.  See ``mailman/config/schema.cfg`` for more
-information on these settings.
+This will listen on ``localhost:8024`` with LMTP and deliver outgoing messages
+to ``localhost:25``.  See ``mailman/config/schema.cfg`` for more information
+on these settings.
 
 qmail configuration
 -------------------
