@@ -21,11 +21,11 @@ Requirements
 ============
 
 For the Core, Python 3.4 or newer is required.  It can either be the default
-'python3' on your ``$PATH`` or it can be accessible via the ``python3.4`` or
-``python3.5`` binary.  If your operating system does not include Python 3, see
-http://www.python.org for information about downloading installers (where
-available) and installing it from source (when necessary or preferred).
-Python 2 is not supported by the Core.
+'python3' on your ``$PATH`` or it can be accessible via the ``python3.4``,
+``python3.5``, or ``python3.6`` binary.  If your operating system does not
+include Python 3, see http://www.python.org for information about downloading
+installers (where available) and installing it from source (when necessary or
+preferred).  Python 2 is not supported by the Core.
 
 You may need some additional dependencies, which are either available from
 your OS vendor, or can be downloaded automatically from the `Python
@@ -84,40 +84,43 @@ available.  Very often, when you want to run the full test suite in the
 quickest manner with components that should be available everywhere, run one
 of these command, depending on which version of Python 3 you have::
 
-    $ tox -e py35
-    $ tox -e py34
+    $ tox -e py36-nocov
+    $ tox -e py35-nocov
+    $ tox -e py34-nocov
 
 You can run individual tests in any given environment by providing additional
 positional arguments.  For example, to run only the tests that match a
 specific pattern::
 
-    $ tox -e py35 -- -P user
+    $ tox -e py35-nocov -- -P user
 
 You can see all the other arguments supported by the test suite by running::
 
-    $ tox -e py35 -- --help
+    $ tox -e py35-nocov -- --help
 
 You also have access to the virtual environments created by tox, and you can
 use this run the virtual environment's Python executable, or run the
 ``mailman`` command locally, e.g.::
 
-    $ .tox/py35/bin/python
-    $ .tox/py35/bin/mailman --help
+    $ .tox/py35-nocov/bin/python
+    $ .tox/py35-nocov/bin/mailman --help
 
 If you want to set up the virtual environment without running the full test
 suite, you can do this::
 
-    $ tox -e py35 --notest -r
+    $ tox -e py35-nocov --notest -r
 
 
-Testing with  PostgreSQL
-========================
+Testing with PostgreSQL and MySQL
+=================================
 
 By default, the test suite runs with the built-in SQLite database engine.  If
-you want to run the full test suite against the PostgreSQL database, set the
-database up as described in :doc:`DATABASE`, then create a `postgres.cfg` file
-any where you want.  This `postgres.cfg` file will contain the ``[database]``
-section for PostgreSQL, e.g.::
+you want to run the full test suite against the PostgreSQL or MySQL databases,
+set the database up as described in :doc:`DATABASE`.
+
+For PostgreSQL, then create a `postgres.cfg` file any where you want.  This
+`postgres.cfg` file will contain the ``[database]`` section for PostgreSQL,
+e.g.::
 
     [database]
     class: mailman.database.postgresql.PostgreSQLDatabase
@@ -161,7 +164,14 @@ install.
 Building the documentation
 ==========================
 
-Build the online docs by running::
+To build the documentation, you need some additional dependencies.  The only
+one you probably need from your OS vendor is `graphiz`.  E.g. On Debian or
+Ubuntu, you can do::
+
+    $ sudo apt install graphiz
+
+All other dependencies should be automatically installed as needed.  Build the
+documentation by running::
 
     $ tox -e docs
 
@@ -214,7 +224,7 @@ means of configuration is via the command line and REST API.
 Note that you can also "run" Mailman from one of the virtual environments
 created by tox, e.g.::
 
-    $ .tox/py35/bin/mailman info
+    $ .tox/py35-nocov/bin/mailman info
 
 
 Mailman Shell

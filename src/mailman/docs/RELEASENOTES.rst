@@ -19,8 +19,7 @@ Mailman 3 may have bugs.
 Mailman 3 is not yet feature complete with Mailman 2.1.
 
 The documentation here describes the Mailman Core in great detail.  Postorius,
-Hyperkitty, mailman.client, and the bundler are described and developed
-elsewhere.
+Hyperkitty, and mailman.client are described and developed elsewhere.
 
 More release notes are maintained on the `Mailman wiki`_.
 
