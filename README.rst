@@ -47,6 +47,7 @@ Table of Contents
 
     src/mailman/docs/INTRODUCTION
     src/mailman/docs/RELEASENOTES
+    src/mailman/docs/INSTALL
     src/mailman/config/docs/config
     src/mailman/docs/DATABASE
     src/mailman/docs/MTA
