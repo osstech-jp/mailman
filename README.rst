@@ -44,6 +44,7 @@ Table of Contents
 
 .. toctree::
     :glob:
+    :maxdepth: 1
 
     src/mailman/docs/INTRODUCTION
     src/mailman/docs/RELEASENOTES

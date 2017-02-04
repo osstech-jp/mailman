@@ -95,7 +95,6 @@ answering questions on mailman-users.  Please let me know if you have been
 left off the list!
 
 * "office"
-* Abhilash Raj
 * Ademar de Souza Reis, Jr.
 * Alessio Bragadini
 * Alexander Sulfrian
@@ -103,11 +102,13 @@ left off the list!
 * Andrew Martynov
 * Anti Veeranna
 * Anton Antonov
+* Antonis Limperis
 * Ashley M. Kirchner
 * Balazs Nagy
 * Bartosz Sawicki
 * Ben Burnett
 * Bernhard Reiter
+* Bernhard Schmidt
 * Bert Hubert
 * Bill Wagner
 * Blair Zajac
@@ -120,6 +121,7 @@ left off the list!
 * Chris Pepper
 * Chris Ryan
 * Chris Snell
+* Christian F Buser
 * Christian Reis
 * Christopher P. Lindsey
 * Chuq Von Rospach
@@ -132,6 +134,7 @@ left off the list!
 * Dan Wilder
 * Daniel Buchmann
 * Daniel Zeiss
+* Danil Smirnov
 * Danny Terweij
 * Dario Lopez-Kästen
 * Darrell Fuhriman
@@ -144,24 +147,32 @@ left off the list!
 * David Martínez Moreno
 * David Soto
 * David T-G
+* Diego Francisco de Gastal Morales
 * Dirk Mueller
 * Dmitri I GOULIAEV
 * Don Porter
 * Donn Cave
 * Ed Lau
 * Eddie Kohler
+* Egon Frerich
+* Emerson Ribeiro de Mello
 * Emilio Delgado
 * Eric D. Christensen
 * Erik Forsberg
 * Erik Myllymaki
 * Eva Österlind
+* Fabian Wenk
 * Federico Grau
 * Fil
 * Florian Weimer
 * Francesco Potortì
+* Francis Jorissen
 * Franck Martin
 * Fred Drake
+* Gabriel P. Silva
 * Garey Mills
+* Gari Araolaza
+* Geoff Mayes
 * Gerald Oskoboiny
 * Gergely Madarasz
 * Gleydson Mazioli da Silva
@@ -174,17 +185,22 @@ left off the list!
 * Heiko Rommel
 * Henny Huisman
 * Hrvoje Niksic
+* Hugo Koji Kobayashi
 * Hye-Shik Chang
 * Ikeda Soji
 * J C Lawrence
-* J\. D\. Bronson
+* J. D. Bronson
 * James Henstridge
+* Jan Veuger
 * Jason R. Mastaler
+* Javad Hoseini
+* Javier Rial Rodríguez
 * Jay Luker
 * Jeff Berliner
 * Jeff Hahn
 * Jens Vagelpohl
 * Jeremy Hylton
+* Jim Popovitch
 * Jim Tittsler
 * Jimmy Bergman
 * Joe Peterson
@@ -194,18 +210,29 @@ left off the list!
 * John Read
 * Jon Parise
 * Jonas Muerer
+* Jonas Smedegaard
+* Joni Töyrylä
 * Jose Paulo Moitinho de Almeida
 * Julio A. Cartaya
 * Kai Schaetzl
+* Karl Chen
 * Karoly Segesdi
 * Kathleen Webb
 * Kerem Erkan
+* Kleber A. Benatti
 * L'homme Moderne
 * Les Niles
+* Lindsay Haisley
+* Lionel Elie Mamane
 * Luca Maranzano
 * Luigi Rosa
+* Mahyar Moghimi
 * Marc MERLIN
+* Marcos Costales
 * Mark Weaver
+* Martijn Dekker
+* Martin 'Joey' Schulze
+* Martin Matuska
 * Martin Mokrejs
 * Martin Pool
 * Martin von Loewis
@@ -213,6 +240,7 @@ left off the list!
 * Matthias Juchem
 * Matthias Klose
 * Maxim Dzumanenko
+* Maxime Carron
 * Maximillian Dornseif
 * Mentor Cana
 * Michael Fischer v. Mollard
@@ -224,6 +252,8 @@ left off the list!
 * Mike Noyes
 * Mikhail Sobolev
 * Mikhail Zabaluev
+* Miloslav Trmac
+* Mirian Margiani
 * Moreno Baricevic
 * Moritz Naumann
 * Ned Dawes
@@ -241,9 +271,12 @@ left off the list!
 * Paul Hebble
 * Peer Heinlein
 * Pekka Haavisto
+* Phil Pennock
 * Piarres Beobide Egaña
 * PieterB
 * Ping Yeh
+* Ralf Doeblitz
+* Ralf Hildebrandt
 * Ricardo Kustner
 * Rob Ellis
 * Robert Daeley
@@ -252,12 +285,15 @@ left off the list!
 * Roger Tsang
 * Ron Jarrell
 * Rostyk Ivantsiv
+* SATOH Fumiyasu
 * SHIGENO Kazutaka
 * Sean Reifschneider
 * Seb Wills
 * Skye Poier
 * Stan Bubrouski
 * Stefan Divjak
+* Stefan Förster
+* Stefan Plewako
 * Stefaniu Criste
 * Stephan Richter
 * Stig Hackvan
@@ -274,6 +310,7 @@ left off the list!
 * Terry Allen
 * Terry Grace
 * Terry Hardie
+* Thijs Kinkhorst
 * Tim Peters
 * Timothy O'Malley
 * Todd (Freedom Lover)
@@ -281,6 +318,7 @@ left off the list!
 * Todd Zullinger
 * Tollef Fog Heen
 * Tom G. Christensen
+* Tomasz Chmielewski
 * Toni Panadès
 * Tristan Roddis
 * Uros Kositer
@@ -290,6 +328,7 @@ left off the list!
 * Walter Hop
 * William Ahern
 * YASUDA Yukihiro
+* Yasuhito FUTATSUKI
 
 And everyone else on mailman-developers@python.org and
 mailman-users@python.org!  Thank you, all.
