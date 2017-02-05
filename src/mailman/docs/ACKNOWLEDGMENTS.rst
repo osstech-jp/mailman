@@ -22,7 +22,7 @@ Steering Committee which can be contacted directly via mailman-cabal@python.org
 Core Developers
 ===============
 
-The following folks are or have been core developers of Mailman (in reverse
+The following folks are or have been core developers of Mailman (in
 alphabetical order):
 
 * Abhilash Raj, Mailman's Youngest Core Dev
@@ -189,7 +189,7 @@ left off the list!
 * Hye-Shik Chang
 * Ikeda Soji
 * J C Lawrence
-* J. D. Bronson
+* \J. D. Bronson
 * James Henstridge
 * Jan Veuger
 * Jason R. Mastaler
