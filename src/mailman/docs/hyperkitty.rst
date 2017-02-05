@@ -1,6 +1,6 @@
-=====================================
-Set up the archive ui in five minutes
-=====================================
+===================================
+ Set up HyperKitty in five minutes
+===================================
 
 .. note::
    This document is way out of date.  If you have access to the Web,
@@ -9,7 +9,7 @@ Set up the archive ui in five minutes
    `FedoraHosted`_.  If you must work offline, this document may be of some
    use, but be careful.
 
-The `hyperkitty`_ application aims at providing an interface to visualize and
+The `HyperKitty`_ application aims at providing an interface to visualize and
 explore Mailman archives.
 
 This is a `Django`_ project.
@@ -18,18 +18,18 @@ Requirements
 ============
 
 - A mail archive in `maildir format`_ (no, you don't need a running Mailman
-  3!)  Eventually hyperkitty will support `mbox format`_ for backward
+  3!)  Eventually HyperKitty will support `mbox format`_ for backward
   compatibility with *Pipermail*, and *zipped maildirs* seem like a good idea
   to save space.  **Beware:** Although you'd think that we would be able to
   manipulate the venerable *mbox* format safely and efficiently, that doesn't
   seem to be the case.  *Maildir* archives are **strongly** preferred, because
-  they are more robust to program bugs (whether in Mailman, hyperkitty, or in
+  they are more robust to program bugs (whether in Mailman, HyperKitty, or in
   the originating MUA!)
 - Django is the web framework that supports the UI.
 - `bunch`_ DOES WHAT?
 - The `notmuch mail indexer`_ is used to generate indexes (and requires
   `Xapian`_).
-- hyperkitty itself, which is a UI, and not responsible for maintaining the
+- HyperKitty itself, which is a UI, and not responsible for maintaining the
   message archive itself.  (Since the archive is in `maildir format`_, any
   modern MTA or MDA can build one for you.)
 
@@ -73,14 +73,14 @@ omit the preceding steps.  Continue with these steps.
 
     % ln -s /usr/lib/python2.7/site-packages/notmuch-0.11-py2.7.egg-info .
 
-- Install the hyperkitty sources::
+- Install the HyperKitty sources::
 
     % git clone https://github.com/hyperkitty/kittystore.git
     % git clone https://github.com/hyperkitty/hyperkitty.git
     % git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 
 
-Running hyperkitty
+Running HyperKitty
 ------------------
 
 - Start it::
@@ -98,7 +98,7 @@ Running hyperkitty
 
 .. _`Development Setup Guide`: https://fedorahosted.org/hyperkitty/wiki/DevelopmentSetupGuide
 .. _`FedoraHosted`: https://fedorahosted.org/
-.. _`hyperkitty`: https://fedorahosted.org/hyperkitty/
+.. _`HyperKitty`: https://fedorahosted.org/hyperkitty/
 .. _`Django`: http://djangoproject.org/
 .. _`notmuch mail indexer`: http://notmuchmail.org
 .. _`bunch`: http://pypi.python.org/pypi/bunch

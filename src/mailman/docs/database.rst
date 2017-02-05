@@ -1,10 +1,10 @@
-========================
-Setting up your database
-========================
+==========================
+ Setting up your database
+==========================
 
 Mailman uses the SQLAlchemy_ ORM to provide persistence of data in a
 relational database.  By default, Mailman uses Python's built-in SQLite3_
-database, however, SQLAlchemy is compatible with PostgreSQL_ and MySQL, among
+database, however, SQLAlchemy is compatible with PostgreSQL_ and MySQL_, among
 possibly others.
 
 Currently, Mailman is known to work with the SQLite3, PostgreSQL, and MySQL
@@ -26,8 +26,8 @@ As mentioned, if you want to use SQLite3 in the default configuration, you
 generally don't need to change anything.  However, if you want to change where
 the SQLite3 database is stored, you can change the ``url`` variable in the
 ``[database]`` section.  By default, the database is stored in the *data
-directory* in the ``mailman.db`` file.  Here's how you'd force Mailman to
-store its database in ``/var/lib/mailman/sqlite.db`` file::
+directory* in the ``mailman.db`` file.  Here's how to tell Mailman to store
+its database in ``/var/lib/mailman/sqlite.db`` file::
 
     [database]
     url: sqlite:////var/lib/mailman/sqlite.db
@@ -41,7 +41,7 @@ help.  Let's say you create the `mailman` database in PostgreSQL via::
 
     $ sudo -u postgres createdb -O $USER mailman
 
-You would also need the python driver `psycopg2` for Postgresql.::
+You would also need the Python driver `psycopg2` for PostgreSQL::
 
     $ pip install psycopg2
 
@@ -52,21 +52,19 @@ You would then need to set both the `class` and `url` variables in
     class: mailman.database.postgresql.PostgreSQLDatabase
     url: postgres://myuser:mypassword@mypghost/mailman
 
-That should be it.
-
 If you have any problems, you may need to delete the database and re-create
 it::
 
     $ sudo -u postgres dropdb mailman
     $ sudo -u postgres createdb -O myuser mailman
 
-My thanks to Stephen A. Goss for his contribution of PostgreSQL support.
+Many thanks to Stephen A. Goss for his contribution of PostgreSQL support.
 
 
 MySQL
 =====
 
-First, you need to configure MySQL itself.  Lets say you create the `mailman`
+First you need to configure MySQL itself.  Lets say you create the `mailman`
 database in MySQL via::
 
     mysql> CREATE DATABASE mailman;
@@ -109,8 +107,8 @@ Mailman into that, and then run the ``alembic`` command.  For example::
       "<migration_name>"
     $ deactivate
 
-This would create a new migration which would automatically be migrated to the
-database on the next run of Mailman.
+This would create a new migration which would be applied to the database
+automatically on the next run of Mailman.
 
 People upgrading Mailman from previous versions need not do anything manually,
 as soon as a new migration is added in the sources, it will be automatically

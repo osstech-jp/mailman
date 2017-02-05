@@ -1,17 +1,17 @@
-==============================
-GNU Mailman Coding Style Guide
-==============================
+================================
+ GNU Mailman Coding Style Guide
+================================
 
 Copyright (C) 2002-2017 Barry A. Warsaw
 
 
-Python coding style guide for GNU Mailman
-=========================================
+Python coding style guide for GNU Mailman Core
+==============================================
 
 This document contains a style guide for Python programming, as used in GNU
-Mailman.  `PEP 8`_ is the basis for this style guide so its recommendations
-should be followed except for the differences outlined here.  This document
-assumes the use of Python 3.
+Mailman Core.  `PEP 8`_ is the basis for this style guide so its
+recommendations should be followed except for the differences outlined here.
+Core is a Python 3 application, so this document assumes the use of Python 3.
 
 Much of the style guide is enforced by the command ``tox -e qa``.
 
@@ -19,8 +19,8 @@ Much of the style guide is enforced by the command ``tox -e qa``.
   an example.
 
 * Public module-global names should be exported in the ``__all__`` but use the
-  ``@public`` decorator from the top-level ``mailman`` package to do this for
-  all classes and functions.
+  ``@public`` decorator from the public_ package to do this for all classes
+  and functions.
 
 * Imports are always put at the top of the file, just after any module
   comments and docstrings, and before module globals and constants.
@@ -70,18 +70,19 @@ Much of the style guide is enforced by the command ``tox -e qa``.
              """
 
 * Write docstrings for modules, functions, classes, and methods.  Docstrings
-  can be omitted for special methods (e.g. __init__() or __str__()) where the
-  meaning is obvious.
+  can be omitted for special methods (e.g. ``__init__()`` or ``__str__()``)
+  where the meaning is obvious.
 
-* PEP 257 describes good docstrings conventions.  Note that most importantly,
-  the """ that ends a multiline docstring should be on a line by itself, e.g.::
+* `PEP 257`_ describes good docstrings conventions.  Note that most
+  importantly, the ``"""`` that ends a multiline docstring should be on a line
+  by itself, e.g.::
 
     """Return a foobang
 
     Optional plotz says to frobnicate the bizbaz first.
     """
 
-* For one liner docstrings, keep the closing """ on the same line.
+* For one liner docstrings, keep the closing ``"""`` on the same line.
 
 * ``fill-column`` for docstrings should be 78.
 
@@ -106,3 +107,5 @@ Much of the style guide is enforced by the command ``tox -e qa``.
 
 .. _`PEP 8`: http://www.python.org/peps/pep-0008.html
 .. _`GNU Mailman Python template`: https://gitlab.com/mailman/mailman/blob/master/template.py
+.. _public: https://public.readthedocs.io/en/latest/
+.. _`PEP 257`: http://www.python.org/peps/pep-0257.html

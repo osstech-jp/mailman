@@ -1,6 +1,8 @@
-=======================
- Mailman Configuration
-=======================
+.. _configuration:
+
+=====================
+ Configuring Mailman
+=====================
 
 This is Mailman's default configuration, directly included from the source
 code.  The format is standard "ini"-style.
@@ -30,10 +32,10 @@ You will need to restart Mailman for any changes to take effect.
 schema.cfg
 ==========
 
-``schema.cfg`` includes templates for several configuration options that are
-instantiated inside of ``mailman.cfg``.  Sections that are named with a suffix
-of ``.master`` or ``.template`` (e.g. ``paths.master``) are "template"
-sections which require an instantiation in ``mailman.cfg`` [#]_.
+``schema.cfg`` defines the ini-file schema and contains documentation for
+every section and configuration variable.  Sections that are named with a
+suffix of ``.master`` or ``.template`` (e.g. ``paths.master``) are "template"
+sections which must be defined in the ``mailman.cfg`` file [#]_.
 
 .. literalinclude:: ../schema.cfg
 

@@ -1,44 +1,8 @@
-.. _start-here:
-
-=========================
-Contributing to Mailman 3
-=========================
+===========================
+ Contributing to Mailman 3
+===========================
 
 Copyright (C) 2008-2017 by the Free Software Foundation, Inc.
-
-
-Contact Us
-==========
-
-Contributions of code, problem reports, and feature requests are welcome.
-Please submit bug reports on the Mailman bug tracker at
-https://gitlab.com/mailman/mailman/issues (you need to have a login on GitLab
-to do so).  You can also send email to the mailman-developers@python.org
-mailing list, or ask on IRC channel ``#mailman`` on Freenode.
-
-
-Requirements
-============
-
-For the Core, Python 3.4 or newer is required.  It can either be the default
-'python3' on your ``$PATH`` or it can be accessible via the ``python3.4`` or
-``python3.5`` binary.  If your operating system does not include Python 3, see
-http://www.python.org for information about downloading installers (where
-available) and installing it from source (when necessary or preferred).
-Python 2 is not supported by the Core.
-
-You may need some additional dependencies, which are either available from
-your OS vendor, or can be downloaded automatically from the `Python
-Cheeseshop`_.
-
-
-Documentation
-=============
-
-The documentation for Mailman 3 is distributed throughout the sources.  The
-core documentation (such as this file) is found in the ``src/mailman/docs``
-directory, but much of the documentation is in module-specific places.  Online
-versions of the `Mailman 3 Core documentation`_ is available online.
 
 
 How to contribute
@@ -50,6 +14,18 @@ priority of bug reports.  For more substantial contributions, we may ask you
 to sign a `copyright assignment`_ to the Free Software Foundation, the owner
 of the GNU Mailman copyright.  If you'd like to jump start your copyright
 assignment, please contact the GNU Mailman `steering committee`_.
+
+Please read the :doc:`STYLEGUIDE` for required coding style guidelines.
+
+
+Contact Us
+==========
+
+Contributions of code, problem reports, and feature requests are welcome.
+Please submit bug reports on the Mailman bug tracker at
+https://gitlab.com/mailman/mailman/issues (you need to have a login on GitLab
+to do so).  You can also send email to the mailman-developers@python.org
+mailing list, or ask on IRC channel ``#mailman`` on Freenode.
 
 
 Get the sources
@@ -72,10 +48,10 @@ To run the Mailman test suite, just use the `tox`_ command::
 
     $ tox
 
-`tox` creates a virtual environment (virtualenv) for you, installs all the
+`tox` creates a virtual environment (virtualenv_) for you, installs all the
 dependencies into that virtualenv, and runs the test suite from that
 virtualenv.  By default it does not use the `--system-site-packages` so it
-downloads everything from the Cheeseshop.
+downloads everything from the `Python Cheeseshop`_.
 
 A bare ``tox`` command will try to run several test suites, which might take a
 long time, and/or require versions of Python or other components you might not
@@ -84,40 +60,43 @@ available.  Very often, when you want to run the full test suite in the
 quickest manner with components that should be available everywhere, run one
 of these command, depending on which version of Python 3 you have::
 
-    $ tox -e py35
-    $ tox -e py34
+    $ tox -e py36-nocov
+    $ tox -e py35-nocov
+    $ tox -e py34-nocov
 
 You can run individual tests in any given environment by providing additional
 positional arguments.  For example, to run only the tests that match a
 specific pattern::
 
-    $ tox -e py35 -- -P user
+    $ tox -e py35-nocov -- -P user
 
 You can see all the other arguments supported by the test suite by running::
 
-    $ tox -e py35 -- --help
+    $ tox -e py35-nocov -- --help
 
 You also have access to the virtual environments created by tox, and you can
 use this run the virtual environment's Python executable, or run the
 ``mailman`` command locally, e.g.::
 
-    $ .tox/py35/bin/python
-    $ .tox/py35/bin/mailman --help
+    $ .tox/py35-nocov/bin/python
+    $ .tox/py35-nocov/bin/mailman --help
 
 If you want to set up the virtual environment without running the full test
 suite, you can do this::
 
-    $ tox -e py35 --notest -r
+    $ tox -e py35-nocov --notest -r
 
 
-Testing with  PostgreSQL
-========================
+Testing with PostgreSQL and MySQL
+=================================
 
 By default, the test suite runs with the built-in SQLite database engine.  If
-you want to run the full test suite against the PostgreSQL database, set the
-database up as described in :doc:`DATABASE`, then create a `postgres.cfg` file
-any where you want.  This `postgres.cfg` file will contain the ``[database]``
-section for PostgreSQL, e.g.::
+you want to run the full test suite against the PostgreSQL or MySQL databases,
+set the database up as described in :doc:`database`.
+
+For PostgreSQL, then create a `postgres.cfg` file any where you want.  This
+`postgres.cfg` file will contain the ``[database]`` section for PostgreSQL,
+e.g.::
 
     [database]
     class: mailman.database.postgresql.PostgreSQLDatabase
@@ -161,60 +140,20 @@ install.
 Building the documentation
 ==========================
 
-Build the online docs by running::
+To build the documentation, you need some additional dependencies.  The only
+one you probably need from your OS vendor is `graphiz`.  E.g. On Debian or
+Ubuntu, you can do::
+
+    $ sudo apt install graphiz
+
+All other dependencies should be automatically installed as needed.  Build the
+documentation by running::
 
     $ tox -e docs
 
 Then visit::
 
     build/sphinx/html/index.html
-
-
-Running Mailman 3
-=================
-
-What, you actually want to *run* Mailman 3?  Oh well, if you insist.
-
-You will need to set up a configuration file to override the defaults and set
-things up for your environment.  Mailman is configured using an "ini"-style
-configuration system.
-
-``src/mailman/config/schema.cfg`` defines the ini-file schema and contains
-documentation for every section and configuration variable.  Sections that end
-in ``.template`` or ``.master`` are templates that must be overridden in
-actual configuration files.  There is a default configuration file that
-defines these basic overrides in ``src/mailman/config/mailman.cfg``.  Your own
-configuration file will override those.
-
-By default, all runtime files are put under a ``var`` directory in the current
-working directory.
-
-Mailman searches for its configuration file using the following search path.
-The first existing file found wins.
-
-* ``-C config`` command line option
-* ``$MAILMAN_CONFIG_FILE`` environment variable
-* ``./mailman.cfg``
-* ``~/.mailman.cfg``
-* ``/etc/mailman.cfg``
-* ``argv[0]/../../etc/mailman.cfg``
-
-Run the ``mailman info`` command to see which configuration file Mailman will
-use, and where it will put its database file.  The first time you run this,
-Mailman will also create any necessary run-time directories and log files.
-
-Try ``mailman --help`` for more details.  You can use the commands
-``mailman start`` to start the runner subprocess daemons, and of course
-``mailman stop`` to stop them.
-
-Postorius, a web UI for administration and subscriber settings, is being
-developed as a separate, Django-based project.  For now, the most flexible
-means of configuration is via the command line and REST API.
-
-Note that you can also "run" Mailman from one of the virtual environments
-created by tox, e.g.::
-
-    $ .tox/py35/bin/mailman info
 
 
 Mailman Shell
@@ -262,7 +201,7 @@ via the REST client API.  This architecture makes it possible for users with
 other needs to adapt the web UI, or even replace it entirely, with a
 reasonable amount of effort.  However, as a core feature of Mailman, the web
 UI emphasizes usability over modularity at first, so most users should use the
-web UI described here.  Postorius is a Django_ application.
+web UI described here.  Postorius_ is a Django_ application.
 
 
 The Archiver
@@ -276,28 +215,33 @@ is appropriate for that archiver.  Summary, search, and retrieval of archived
 posts are handled by a separate application.
 
 A new archive UI called `HyperKitty`_, based on the `notmuch mail indexer`_
-was prototyped at the PyCon 2012 sprint by Toshio Kuratomi.  The HyperKitty
+was prototyped at the `Pycon 2012 sprint`_ by Toshio Kuratomi.  The HyperKitty
 archiver is very loosely coupled to Mailman 3 core.  In fact, any email
 application that speaks LMTP or SMTP will be able to use HyperKitty.
 HyperKitty is also a Django application.
 
 
-.. _`Postorius`: https://gitlab.com/mailman/postorius
-.. _`HyperKitty`: https://gitlab.com/mailman/hyperkitty
-.. _`Django`: http://djangoproject.org/
-.. _`REST client module`: https://gitlab.com/mailman/mailmanclient
-.. _`Five Minute Guide the Web UI`: WebUIin5.html
-.. _`blog post`: http://wiki.list.org/display/DEV/A+5+minute+guide+to+get+the+Mailman+web+UI+running
-.. _`notmuch mail indexer`: http://notmuchmail.org
-.. _`five minute guide to Hyperkitty`: ArchiveUIin5.html
-.. _`Pycon 2012 sprint`: https://us.pycon.org/2012/community/sprints/projects/
-.. _`Python Cheeseshop`: http://pypi.python.org/pypi
-.. _`virtualenv`: http://www.virtualenv.org/en/latest/
-.. _`pyvenv`: https://docs.python.org/3/library/venv.html
-.. _`Mailman 3 Core documentation`: https://mailman.readthedocs.io
-.. _tox: https://testrun.org/tox/latest/
+REST API Python bindings
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Mailman 3 provides a REST API for administrative purposes, and this is used by
+both HyperKitty and Postorius.  You can of course use any HTTP client to speak
+to it, but we provide official Python bindings (for both Python 2 and 3) in a
+package we call `mailman.client`_.
+
+
 .. _`merge requests`: https://gitlab.com/mailman/mailman/merge_requests
 .. _`bug reports`: https://gitlab.com/mailman/mailman/issues
 .. _`copyright assignment`: https://www.fsf.org/licensing/assigning.html/?searchterm=copyright%20assignment
 .. _`steering committee`: mailto:mailman-cabal@python.org
+.. _tox: https://testrun.org/tox/latest/
 .. _`Zope Component Architecture`: https://pypi.python.org/pypi/zope.component
+.. _`Postorius`: https://gitlab.com/mailman/postorius
+.. _`Django`: http://djangoproject.org/
+.. _`HyperKitty`: https://gitlab.com/mailman/hyperkitty
+.. _`notmuch mail indexer`: http://notmuchmail.org
+.. _`mailman.client`: https://gitlab.com/mailman/mailmanclient
+.. _`Pycon 2012 sprint`: https://us.pycon.org/2012/community/sprints/projects/
+.. _`Python Cheeseshop`: http://pypi.python.org/pypi
+.. _`virtualenv`: http://www.virtualenv.org/en/latest/
+.. _`pyvenv`: https://docs.python.org/3/library/venv.html
