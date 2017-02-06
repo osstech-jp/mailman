@@ -104,10 +104,10 @@ class TestUsers(unittest.TestCase):
             anne = getUtility(IUserManager).create_user(
                 'anne@example.com', 'Anne Person')
             user_id = anne.user_id
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/users/anne@example.com',
                      method='DELETE')
@@ -124,14 +124,14 @@ class TestUsers(unittest.TestCase):
                 'anne@example.com', 'Anne Person')
             user_id = anne.user_id
         # You can still GET the user record.
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com')
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
         # Delete the user.
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # The user record can no longer be retrieved.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/users/anne@example.com')
@@ -152,7 +152,7 @@ class TestUsers(unittest.TestCase):
                      })
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'User already exists: anne@example.com')
+                         'User already exists: anne@example.com')
 
     def test_addresses_of_missing_user_id(self):
         # Trying to get the /addresses of a missing user id results in error.
@@ -218,29 +218,29 @@ class TestUsers(unittest.TestCase):
     def test_create_user_twice(self):
         # LP: #1418280.  No additional users should be created when an address
         # that already exists is given.
-        content, response = call_api('http://localhost:9001/3.0/users')
-        self.assertEqual(content['total_size'], 0)
+        json, response = call_api('http://localhost:9001/3.0/users')
+        self.assertEqual(json['total_size'], 0)
         # Create the user.
         call_api('http://localhost:9001/3.0/users', dict(
             email='anne@example.com'))
         # There is now one user.
-        content, response = call_api('http://localhost:9001/3.0/users')
-        self.assertEqual(content['total_size'], 1)
+        json, response = call_api('http://localhost:9001/3.0/users')
+        self.assertEqual(json['total_size'], 1)
         # Trying to create the user with the same address results in an error.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/users', dict(
                 email='anne@example.com'))
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'User already exists: anne@example.com')
+                         'User already exists: anne@example.com')
         # But at least no new users was created.
-        content, response = call_api('http://localhost:9001/3.0/users')
-        self.assertEqual(content['total_size'], 1)
+        json, response = call_api('http://localhost:9001/3.0/users')
+        self.assertEqual(json['total_size'], 1)
 
     def test_create_server_owner_false(self):
         # Issue #136: Creating a user with is_server_owner=no should create
         # user who is not a server owner.
-        content, response = call_api('http://localhost:9001/3.0/users', dict(
+        json, response = call_api('http://localhost:9001/3.0/users', dict(
             email='anne@example.com',
             is_server_owner='no'))
         anne = getUtility(IUserManager).get_user('anne@example.com')
@@ -249,7 +249,7 @@ class TestUsers(unittest.TestCase):
     def test_create_server_owner_true(self):
         # Issue #136: Creating a user with is_server_owner=yes should create a
         # new server owner user.
-        content, response = call_api('http://localhost:9001/3.0/users', dict(
+        json, response = call_api('http://localhost:9001/3.0/users', dict(
             email='anne@example.com',
             is_server_owner='yes'))
         anne = getUtility(IUserManager).get_user('anne@example.com')
@@ -274,10 +274,10 @@ class TestUsers(unittest.TestCase):
             id=anne.preferences.id)
         self.assertEqual(preferences.count(), 1)
         # Delete the user via REST.
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # The user's preference has been deleted.
         with transaction():
             preferences = config.db.store.query(Preferences).filter_by(
@@ -288,10 +288,10 @@ class TestUsers(unittest.TestCase):
         with transaction():
             user = getUtility(IUserManager).create_user('anne@example.com')
             user.preferences.delivery_mode = DeliveryMode.summary_digests
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/1/preferences')
         self.assertEqual(
-            content['self_link'],
+            json['self_link'],
             'http://localhost:9001/3.0/users/1/preferences')
 
 
@@ -309,11 +309,11 @@ class TestLogin(unittest.TestCase):
 
     def test_login_with_cleartext_password(self):
         # A user can log in with the correct clear text password.
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com/login', {
                 'cleartext_password': 'abc123',
                 }, method='POST')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # But the user cannot log in with an incorrect password.
         with self.assertRaises(HTTPError) as cm:
             call_api(
@@ -420,14 +420,14 @@ class TestLP1074374(unittest.TestCase):
             self.mlist.subscribe(address)
         call_api('http://localhost:9001/3.0/users/anne@example.com',
                  method='DELETE')
-        content, response = call_api('http://localhost:9001/3.0/addresses')
+        json, response = call_api('http://localhost:9001/3.0/addresses')
         # There are no addresses, and thus no entries in the returned JSON.
-        self.assertNotIn('entries', content)
-        self.assertEqual(content['total_size'], 0)
+        self.assertNotIn('entries', json)
+        self.assertEqual(json['total_size'], 0)
         # There are also no members.
-        content, response = call_api('http://localhost:9001/3.0/members')
-        self.assertNotIn('entries', content)
-        self.assertEqual(content['total_size'], 0)
+        json, response = call_api('http://localhost:9001/3.0/members')
+        self.assertNotIn('entries', json)
+        self.assertEqual(json['total_size'], 0)
         # Now we can create a new user record for Anne, and subscribe her to
         # the mailing list, this time all through the API.
         call_api('http://localhost:9001/3.0/users', dict(
@@ -440,17 +440,17 @@ class TestLP1074374(unittest.TestCase):
             pre_verified=True, pre_confirmed=True, pre_approved=True))
         # This is not the Anne you're looking for.  (IOW, the new Anne is a
         # different user).
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com')
-        self.assertNotEqual(user_id, content['user_id'])
+        self.assertNotEqual(user_id, json['user_id'])
         # Anne has an address record.
-        content, response = call_api('http://localhost:9001/3.0/addresses')
-        self.assertEqual(content['total_size'], 1)
-        self.assertEqual(content['entries'][0]['email'], 'anne@example.com')
+        json, response = call_api('http://localhost:9001/3.0/addresses')
+        self.assertEqual(json['total_size'], 1)
+        self.assertEqual(json['entries'][0]['email'], 'anne@example.com')
         # Anne is also a member of the mailing list.
-        content, response = call_api('http://localhost:9001/3.0/members')
-        self.assertEqual(content['total_size'], 1)
-        member = content['entries'][0]
+        json, response = call_api('http://localhost:9001/3.0/members')
+        self.assertEqual(json['total_size'], 1)
+        member = json['entries'][0]
         self.assertEqual(
             member['address'],
             'http://localhost:9001/3.0/addresses/anne@example.com')
@@ -493,10 +493,10 @@ class TestLP1419519(unittest.TestCase):
             'a09@example.com',
             'anne@example.com',
             ])
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # Now there should be no addresses in the database.
         config.db.abort()
         emails = sorted(address.email for address in self.manager.addresses)
@@ -511,12 +511,12 @@ class TestAPI31Users(unittest.TestCase):
     def test_get_user(self):
         with transaction():
             getUtility(IUserManager).create_user('anne@example.com')
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/users/00000000000000000000000000000001')
         self.assertEqual(
-            content['user_id'], '00000000000000000000000000000001')
+            json['user_id'], '00000000000000000000000000000001')
         self.assertEqual(
-            content['self_link'],
+            json['self_link'],
             'http://localhost:9001/3.1/users/00000000000000000000000000000001')
 
     def test_cannot_get_user_by_int(self):
@@ -531,8 +531,8 @@ class TestAPI31Users(unittest.TestCase):
         with transaction():
             user_manager.create_user('anne@example.com')
             user_manager.create_user('bart@example.com')
-        content, response = call_api('http://localhost:9001/3.1/users')
-        entries = content['entries']
+        json, response = call_api('http://localhost:9001/3.1/users')
+        entries = json['entries']
         self.assertEqual(len(entries), 2)
         self.assertEqual(
             entries[0]['user_id'], '00000000000000000000000000000001')
@@ -546,23 +546,23 @@ class TestAPI31Users(unittest.TestCase):
             'http://localhost:9001/3.1/users/00000000000000000000000000000002')
 
     def test_create_user(self):
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/users', {
                 'email': 'anne@example.com',
                 })
-        self.assertEqual(response.status, 201)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(
-            response['location'],
+            response.headers['location'],
             'http://localhost:9001/3.1/users/00000000000000000000000000000001')
 
     def test_preferences_self_link(self):
         with transaction():
             user = getUtility(IUserManager).create_user('anne@example.com')
             user.preferences.delivery_mode = DeliveryMode.summary_digests
-        content, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/users'
             '/00000000000000000000000000000001/preferences')
         self.assertEqual(
-            content['self_link'],
+            json['self_link'],
             'http://localhost:9001/3.1/users'
             '/00000000000000000000000000000001/preferences')

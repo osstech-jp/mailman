@@ -18,11 +18,9 @@
 """REST root object tests."""
 
 import os
-import json
+import requests
 import unittest
 
-from base64 import b64encode
-from httplib2 import Http
 from mailman.config import config
 from mailman.core.system import system
 from mailman.database.transaction import transaction
@@ -94,32 +92,21 @@ class TestRoot(unittest.TestCase):
 
     def test_no_basic_auth(self):
         # If Basic Auth credentials are missing, it is a 401 error.
-        url = 'http://localhost:9001/3.0/system'
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencode',
-            }
-        response, raw_content = Http().request(url, 'GET', None, headers)
-        self.assertEqual(response.status, 401)
-        content = json.loads(raw_content.decode('utf-8'))
-        self.assertEqual(content['title'], '401 Unauthorized')
-        self.assertEqual(content['description'],
-                         'REST API authorization failed')
+        response = requests.get('http://localhost:9001/3.0/system')
+        self.assertEqual(response.status_code, 401)
+        json = response.json()
+        self.assertEqual(json['title'], '401 Unauthorized')
+        self.assertEqual(json['description'], 'REST API authorization failed')
 
     def test_unauthorized(self):
         # Bad Basic Auth credentials results in a 401 error.
-        userpass = b64encode(b'baduser:badpass')
-        auth = 'Basic {}'.format(userpass.decode('ascii'))
-        url = 'http://localhost:9001/3.0/system'
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencode',
-            'Authorization': auth,
-            }
-        response, raw_content = Http().request(url, 'GET', None, headers)
-        self.assertEqual(response.status, 401)
-        content = json.loads(raw_content.decode('utf-8'))
-        self.assertEqual(content['title'], '401 Unauthorized')
-        self.assertEqual(content['description'],
-                         'REST API authorization failed')
+        response = requests.get(
+            'http://localhost:9001/3.0/system',
+            auth=('baduser', 'badpass'))
+        self.assertEqual(response.status_code, 401)
+        json = response.json()
+        self.assertEqual(json['title'], '401 Unauthorized')
+        self.assertEqual(json['description'], 'REST API authorization failed')
 
     def test_reserved_bad_subpath(self):
         # Only <api>/reserved/uids/orphans is a defined resource.  DELETEing
@@ -203,15 +190,15 @@ class TestSiteTemplates(unittest.TestCase):
                 'http://example.com/goodbye',
                 'a user', 'the password',
                 )
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/uris')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(resource['start'], 0)
-        self.assertEqual(resource['total_size'], 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['start'], 0)
+        self.assertEqual(json['total_size'], 2)
         self.assertEqual(
-            resource['self_link'],
+            json['self_link'],
             'http://localhost:9001/3.1/uris')
-        self.assertEqual(resource['entries'], [
+        self.assertEqual(json['entries'], [
             {'http_etag': '"063fd6635a6035a4b7e939a304fcbd16571aa662"',
              'name': 'list:user:notice:goodbye',
              'password': 'the password',
@@ -228,12 +215,12 @@ class TestSiteTemplates(unittest.TestCase):
              }])
 
     def test_patch_uris(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/uris', {
                 'list:user:notice:welcome': 'http://example.org/welcome',
                 'list:user:notice:goodbye': 'http://example.org/goodbye',
                 }, method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:user:notice:welcome', None)
         self.assertEqual(template.uri, 'http://example.org/welcome')
@@ -245,14 +232,14 @@ class TestSiteTemplates(unittest.TestCase):
         self.assertEqual(template.password, '')
 
     def test_patch_uris_with_credentials(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/uris', {
                 'list:user:notice:welcome': 'http://example.org/welcome',
                 'list:user:notice:goodbye': 'http://example.org/goodbye',
                 'password': 'some password',
                 'username': 'anne.person',
                 }, method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:user:notice:welcome', None)
         self.assertEqual(template.uri, 'http://example.org/welcome')
@@ -274,7 +261,7 @@ class TestSiteTemplates(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
 
     def test_put_all_uris(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/uris', {
                 'domain:admin:notice:new-list': '',
                 'list:admin:action:post': '',
@@ -300,7 +287,7 @@ class TestSiteTemplates(unittest.TestCase):
                 'password': 'some password',
                 'username': 'anne.person',
                 }, method='PUT')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:member:digest:footer', None)
         self.assertIsNone(template)
@@ -334,10 +321,10 @@ class TestSiteTemplates(unittest.TestCase):
                 'http://example.com/goodbye',
                 'a user', 'the password',
                 )
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/uris',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertIsNone(manager.raw('list:user:notice:welcome', None))
         self.assertIsNone(manager.raw('list:user:notice:goodbye', None))
 
@@ -346,10 +333,10 @@ class TestSiteTemplates(unittest.TestCase):
             getUtility(ITemplateManager).set(
                 'list:user:notice:welcome', None,
                 'http://example.com/welcome')
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/uris/list:user:notice:welcome')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(resource, {
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json, {
             'http_etag': '"86e360d83197561d50826ad6d15e9c30923b82d6"',
             'self_link': ('http://localhost:9001/3.1'
                           '/uris/list:user:notice:welcome'),

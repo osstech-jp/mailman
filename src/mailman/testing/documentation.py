@@ -92,8 +92,17 @@ def call_http(url, data=None, method=None, username=None, password=None):
     """
     content, response = call_api(url, data, method, username, password)
     if content is None:
-        for header in sorted(response):
-            print('{}: {}'.format(header, response[header]))
+        # We used to use httplib2 here, which included the status code in the
+        # response headers in the `status` key.  requests doesn't do this, but
+        # the doctests expect it so for backward compatibility, include the
+        # status code in the printed response.
+        headers = dict(status=response.status_code)
+        headers.update({
+            field.lower(): response.headers[field]
+            for field in response.headers
+            })
+        for field in sorted(headers):
+            print('{}: {}'.format(field, headers[field]))
         return None
     return content
 

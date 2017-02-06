@@ -65,8 +65,8 @@ class TestQueues(unittest.TestCase):
         content, response = call_api('http://localhost:9001/3.0/queues/bad', {
             'list_id': 'test.example.com',
             'text': TEXT})
-        self.assertEqual(response.status, 201)
-        location = response['location']
+        self.assertEqual(response.status_code, 201)
+        location = response.headers['location']
         filebase = location.split('/')[-1]
         # The message is in the 'bad' queue.
         content, response = call_api('http://localhost:9001/3.0/queues/bad')
@@ -94,9 +94,9 @@ class TestQueues(unittest.TestCase):
         content, response = call_api('http://localhost:9001/3.0/queues/bad', {
             'list_id': 'test.example.com',
             'text': TEXT})
-        location = response['location']
+        location = response.headers['location']
         self.assertEqual(len(config.switchboards['bad'].files), 1)
         # Delete the file through REST.
         content, response = call_api(location, method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(len(config.switchboards['bad'].files), 0)

@@ -9,17 +9,14 @@ credentials, and the version of the API you wish to speak to.
 Credentials
 ===========
 
-When the `Authorization` header contains the proper credentials, the request
+If you include the proper basic authorization credentials, the request
 succeeds.
 
-    >>> from httplib2 import Http
-    >>> headers = {
-    ...     'Content-Type': 'application/x-www-form-urlencode',
-    ...     'Authorization': 'Basic cmVzdGFkbWluOnJlc3RwYXNz',
-    ...     }
-    >>> url = 'http://localhost:9001/3.0/system/versions'
-    >>> response, content = Http().request(url, 'GET', None, headers)
-    >>> print(response.status)
+    >>> import requests
+    >>> response = requests.get(
+    ...     'http://localhost:9001/3.0/system/versions',
+    ...     auth=('restadmin', 'restpass'))
+    >>> print(response.status_code)
     200
 
 

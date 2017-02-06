@@ -59,9 +59,9 @@ class TestAddresses(unittest.TestCase):
     def test_membership_of_address_with_no_user(self):
         with transaction():
             getUtility(IUserManager).create_address('anne@example.com')
-        response, content = call_api(
+        json, content = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com/memberships')
-        self.assertEqual(response['total_size'], 0)
+        self.assertEqual(json['total_size'], 0)
 
     def test_verify_a_missing_address(self):
         # POSTing to the 'verify' sub-resource returns a 404.
@@ -84,9 +84,9 @@ class TestAddresses(unittest.TestCase):
         with transaction():
             anne = getUtility(IUserManager).create_address('anne@example.com')
             anne.verified_on = verified_on
-        response, content = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com/verify', {})
-        self.assertEqual(content['status'], '204')
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(anne.verified_on, verified_on)
 
     def test_unverify_already_unverified(self):
@@ -95,9 +95,9 @@ class TestAddresses(unittest.TestCase):
         with transaction():
             anne = getUtility(IUserManager).create_address('anne@example.com')
             self.assertEqual(anne.verified_on, None)
-        response, content = call_api(
+        json, response = call_api(
            'http://localhost:9001/3.0/addresses/anne@example.com/unverify', {})
-        self.assertEqual(content['status'], '204')
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(anne.verified_on, None)
 
     def test_verify_bad_request(self):
@@ -125,15 +125,15 @@ class TestAddresses(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         with transaction():
             anne = user_manager.create_user('anne@example.com')
-        response, content = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com/addresses', {
                 'email': 'anne.person@example.org',
                 })
         self.assertIn('anne.person@example.org',
                       [addr.email for addr in anne.addresses])
-        self.assertEqual(content['status'], '201')
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(
-            content['location'],
+            response.headers['location'],
             'http://localhost:9001/3.0/addresses/anne.person@example.org')
         # The address has no display name.
         anne_person = user_manager.get_address('anne.person@example.org')
@@ -144,16 +144,16 @@ class TestAddresses(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         with transaction():
             anne = user_manager.create_user('anne@example.com')
-        response, content = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com/addresses', {
                 'email': 'anne.person@example.org',
                 'display_name': 'Ann E Person',
                 })
         self.assertIn('anne.person@example.org',
                       [addr.email for addr in anne.addresses])
-        self.assertEqual(content['status'], '201')
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(
-            content['location'],
+            response.headers['location'],
             'http://localhost:9001/3.0/addresses/anne.person@example.org')
         # The address has no display name.
         anne_person = user_manager.get_address('anne.person@example.org')
@@ -169,22 +169,22 @@ class TestAddresses(unittest.TestCase):
                      'email': 'anne@example.com',
                      })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Address belongs to other user')
+        self.assertEqual(cm.exception.reason, 'Address belongs to other user')
 
     def test_add_unlinked_address_to_user(self):
         user_manager = getUtility(IUserManager)
         with transaction():
             anne = user_manager.create_user('anne.person@example.com')
             user_manager.create_address('anne@example.com')
-        response, content = call_api(
+        json, response = call_api(
          'http://localhost:9001/3.0/users/anne.person@example.com/addresses', {
             'email': 'anne@example.com',
             })
         self.assertIn('anne@example.com',
                       [address.email for address in anne.addresses])
-        self.assertEqual(content['status'], '201')
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(
-            content['location'],
+            response.headers['location'],
             'http://localhost:9001/3.0/addresses/anne@example.com')
         # The address has no display name.
         anne_person = user_manager.get_address('anne@example.com')
@@ -195,16 +195,16 @@ class TestAddresses(unittest.TestCase):
         with transaction():
             anne = user_manager.create_user('anne.person@example.com')
             user_manager.create_address('anne@example.com')
-        response, content = call_api(
+        json, response = call_api(
          'http://localhost:9001/3.0/users/anne.person@example.com/addresses', {
             'email': 'anne@example.com',
             'display_name': 'Anne Person',
             })
         self.assertIn('anne@example.com',
                       [address.email for address in anne.addresses])
-        self.assertEqual(content['status'], '201')
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(
-            content['location'],
+            response.headers['location'],
             'http://localhost:9001/3.0/addresses/anne@example.com')
         # Even though a display_name was given in the POST data, because the
         # address already existed, it still has no display name.
@@ -218,16 +218,16 @@ class TestAddresses(unittest.TestCase):
         with transaction():
             anne = user_manager.create_user('anne@example.com')
             user_manager.create_user('bart@example.com')
-        response, content = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/users/anne@example.com/addresses', {
                  'email': 'bart@example.com',
                  'absorb_existing': True,
                  })
         self.assertIn('bart@example.com',
                       [address.email for address in anne.addresses])
-        self.assertEqual(content['status'], '201')
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(
-            content['location'],
+            response.headers['location'],
             'http://localhost:9001/3.0/addresses/bart@example.com')
 
     def test_invalid_address_bad_request(self):
@@ -240,7 +240,7 @@ class TestAddresses(unittest.TestCase):
                      'email': 'invalid_address_string'
                      })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Invalid email address')
+        self.assertEqual(cm.exception.reason, 'Invalid email address')
 
     def test_empty_address_bad_request(self):
         # The address is required.
@@ -251,7 +251,7 @@ class TestAddresses(unittest.TestCase):
                 'http://localhost:9001/3.0/users/anne@example.com/addresses',
                 {})
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Missing parameters: email')
+        self.assertEqual(cm.exception.reason, 'Missing parameters: email')
 
     def test_get_addresses_of_missing_user(self):
         # There is no user associated with the given address.
@@ -274,9 +274,9 @@ class TestAddresses(unittest.TestCase):
         # JSON representation.
         with transaction():
             getUtility(IUserManager).create_user('anne@example.com')
-        json, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com')
-        self.assertEqual(headers['status'], '200')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(json['user'], 'http://localhost:9001/3.0/users/1')
 
     def test_address_without_user(self):
@@ -284,9 +284,9 @@ class TestAddresses(unittest.TestCase):
         # with no linked user.
         with transaction():
             getUtility(IUserManager).create_address('anne@example.com')
-        json, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com')
-        self.assertEqual(headers['status'], '200')
+        self.assertEqual(response.status_code, 200)
         self.assertNotIn('user', json)
 
     def test_user_subresource_on_unlinked_address(self):
@@ -305,15 +305,15 @@ class TestAddresses(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         with transaction():
             user_manager.create_user('anne@example.com', 'Anne')
-        json, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com/user')
-        self.assertEqual(headers['status'], '200')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(json['user_id'], 1)
         self.assertEqual(json['display_name'], 'Anne')
         user_resource = json['self_link']
         self.assertEqual(user_resource, 'http://localhost:9001/3.0/users/1')
         # The self_link points to the correct user.
-        json, headers = call_api(user_resource)
+        json, response = call_api(user_resource)
         self.assertEqual(json['user_id'], 1)
         self.assertEqual(json['display_name'], 'Anne')
         self.assertEqual(json['self_link'], user_resource)
@@ -325,11 +325,11 @@ class TestAddresses(unittest.TestCase):
         with transaction():
             anne = user_manager.create_user('anne.person@example.org', 'Anne')
             anne_addr = user_manager.create_address('anne@example.com')
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com/user', {
                 'user_id': anne.user_id.int,
                 })
-        self.assertEqual(headers['status'], '200')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(anne_addr.user, anne)
         self.assertEqual(sorted([a.email for a in anne.addresses]),
                          ['anne.person@example.org', 'anne@example.com'])
@@ -340,18 +340,18 @@ class TestAddresses(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         with transaction():
             anne_addr = user_manager.create_address('anne@example.com')
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com/user', {
                 'display_name': 'Anne',
                 })
-        self.assertEqual(headers['status'], '201')
+        self.assertEqual(response.status_code, 201)
         anne = user_manager.get_user('anne@example.com')
         self.assertIsNotNone(anne)
         self.assertEqual(anne.display_name, 'Anne')
         self.assertEqual([a.email for a in anne.addresses],
                          ['anne@example.com'])
         self.assertEqual(anne_addr.user, anne)
-        self.assertEqual(headers['location'],
+        self.assertEqual(response.headers['location'],
                          'http://localhost:9001/3.0/users/1')
 
     def test_user_subresource_post_conflict(self):
@@ -373,7 +373,7 @@ class TestAddresses(unittest.TestCase):
         with transaction():
             getUtility(IUserManager).create_address('anne@example.com')
         with self.assertRaises(HTTPError) as cm:
-            json, headers = call_api(
+            call_api(
                 'http://localhost:9001/3.0/addresses/anne@example.com/user', {
                     'display_name': 'Anne',
                     'auto_create': 0,
@@ -390,7 +390,7 @@ class TestAddresses(unittest.TestCase):
                     'user_id': 2,
                     })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'No user with ID 2')
+        self.assertEqual(cm.exception.reason, 'No user with ID 2')
 
     def test_user_subresource_unlink(self):
         # By DELETEing the usr subresource, you can unlink a user from an
@@ -398,10 +398,10 @@ class TestAddresses(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         with transaction():
             user_manager.create_user('anne@example.com')
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com/user',
             method='DELETE')
-        self.assertEqual(headers['status'], '204')
+        self.assertEqual(response.status_code, 204)
         anne_addr = user_manager.get_address('anne@example.com')
         self.assertIsNone(anne_addr.user, 'The address is still linked')
         self.assertIsNone(user_manager.get_user('anne@example.com'))
@@ -412,7 +412,7 @@ class TestAddresses(unittest.TestCase):
         with transaction():
             user_manager.create_address('anne@example.com')
         with self.assertRaises(HTTPError) as cm:
-            response, headers = call_api(
+            call_api(
                 'http://localhost:9001/3.0/addresses/anne@example.com/user',
                 method='DELETE')
         self.assertEqual(cm.exception.code, 404)
@@ -424,11 +424,11 @@ class TestAddresses(unittest.TestCase):
         with transaction():
             anne = user_manager.create_user('anne@example.com', 'Anne')
             bart = user_manager.create_user(display_name='Bart')
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com/user', {
                 'user_id': bart.user_id.int,
                 }, method='PUT')
-        self.assertEqual(headers['status'], '200')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(anne.addresses, [])
         self.assertEqual([address.email for address in bart.addresses],
                          ['anne@example.com'])
@@ -440,11 +440,11 @@ class TestAddresses(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         with transaction():
             anne = user_manager.create_user('anne@example.com', 'Anne')
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/addresses/anne@example.com/user', {
                 'email': 'anne.person@example.org',
                 }, method='PUT')
-        self.assertEqual(headers['status'], '201')
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(anne.addresses, [])
         anne_person = user_manager.get_user('anne.person@example.org')
         self.assertIsNotNone(anne_person)
@@ -459,7 +459,7 @@ class TestAddresses(unittest.TestCase):
         # DELETEing an address through the REST API that doesn't exist returns
         # a 404 error.
         with self.assertRaises(HTTPError) as cm:
-            response, headers = call_api(
+            call_api(
                 'http://localhost:9001/3.0/addresses/anne@example.com',
                 method='DELETE')
         self.assertEqual(cm.exception.code, 404)
@@ -512,10 +512,10 @@ class TestAPI31Addresses(unittest.TestCase):
         user_manager = getUtility(IUserManager)
         with transaction():
             user_manager.create_user('anne@example.com', 'Anne')
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/addresses/anne@example.com')
         self.assertEqual(
-            response['user'],
+            json['user'],
             'http://localhost:9001/3.1/users/00000000000000000000000000000001')
 
     def test_addresses_user_ids_are_hex(self):
@@ -525,8 +525,8 @@ class TestAPI31Addresses(unittest.TestCase):
             user_manager.create_user('anne@example.com', 'Anne')
         with transaction():
             user_manager.create_user('bart@example.com', 'Bart')
-        response, headers = call_api('http://localhost:9001/3.1/addresses')
-        entries = response['entries']
+        json, response = call_api('http://localhost:9001/3.1/addresses')
+        entries = json['entries']
         self.assertEqual(
             entries[0]['user'],
             'http://localhost:9001/3.1/users/00000000000000000000000000000001')
@@ -542,11 +542,11 @@ class TestAPI31Addresses(unittest.TestCase):
         with transaction():
             anne = user_manager.create_user('anne.person@example.org', 'Anne')
             anne_addr = user_manager.create_address('anne@example.com')
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/addresses/anne@example.com/user', {
                 'user_id': anne.user_id.hex,
                 })
-        self.assertEqual(headers['status'], '200')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(anne_addr.user, anne)
         self.assertEqual(sorted([a.email for a in anne.addresses]),
                          ['anne.person@example.org', 'anne@example.com'])
@@ -566,7 +566,7 @@ class TestAPI31Addresses(unittest.TestCase):
                     })
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: user_id')
+                         'Cannot convert parameters: user_id')
 
     def test_user_subresource_put(self):
         # By PUTing to the 'user' resource, you can change the user that an
@@ -575,11 +575,11 @@ class TestAPI31Addresses(unittest.TestCase):
         with transaction():
             anne = user_manager.create_user('anne@example.com', 'Anne')
             bart = user_manager.create_user(display_name='Bart')
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/addresses/anne@example.com/user', {
                 'user_id': bart.user_id.hex,
                 }, method='PUT')
-        self.assertEqual(headers['status'], '200')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(anne.addresses, [])
         self.assertEqual([address.email for address in bart.addresses],
                          ['anne@example.com'])
@@ -601,4 +601,4 @@ class TestAPI31Addresses(unittest.TestCase):
                     }, method='PUT')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: user_id')
+                         'Cannot convert parameters: user_id')
