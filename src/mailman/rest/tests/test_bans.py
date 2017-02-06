@@ -40,7 +40,7 @@ class TestBans(unittest.TestCase):
                      '/bans/notbanned@example.com')
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(cm.exception.reason,
-                         b'Email is not banned: notbanned@example.com')
+                         'Email is not banned: notbanned@example.com')
 
     def test_delete_missing_banned_address(self):
         with self.assertRaises(HTTPError) as cm:
@@ -49,7 +49,7 @@ class TestBans(unittest.TestCase):
                      method='DELETE')
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(cm.exception.reason,
-                         b'Email is not banned: notbanned@example.com')
+                         'Email is not banned: notbanned@example.com')
 
     def test_not_found_after_unbanning(self):
         manager = IBanManager(self._mlist)
@@ -57,30 +57,30 @@ class TestBans(unittest.TestCase):
             manager.ban('banned@example.com')
         url = ('http://localhost:9001/3.0/lists/ant.example.com'
                '/bans/banned@example.com')
-        response, content = call_api(url)
-        self.assertEqual(response['email'], 'banned@example.com')
-        response, content = call_api(url, method='DELETE')
-        self.assertEqual(content.status, 204)
+        json, response = call_api(url)
+        self.assertEqual(json['email'], 'banned@example.com')
+        json, response = call_api(url, method='DELETE')
+        self.assertEqual(response.status_code, 204)
         with self.assertRaises(HTTPError) as cm:
             call_api(url)
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(cm.exception.reason,
-                         b'Email is not banned: banned@example.com')
+                         'Email is not banned: banned@example.com')
 
     def test_not_found_after_unbanning_global(self):
         manager = IBanManager(None)
         with transaction():
             manager.ban('banned@example.com')
         url = ('http://localhost:9001/3.0/bans/banned@example.com')
-        response, content = call_api(url)
-        self.assertEqual(response['email'], 'banned@example.com')
-        response, content = call_api(url, method='DELETE')
-        self.assertEqual(content.status, 204)
+        json, response = call_api(url)
+        self.assertEqual(json['email'], 'banned@example.com')
+        json, response = call_api(url, method='DELETE')
+        self.assertEqual(response.status_code, 204)
         with self.assertRaises(HTTPError) as cm:
             call_api(url)
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(cm.exception.reason,
-                         b'Email is not banned: banned@example.com')
+                         'Email is not banned: banned@example.com')
 
     def test_ban_missing_mailing_list(self):
         with self.assertRaises(HTTPError) as cm:

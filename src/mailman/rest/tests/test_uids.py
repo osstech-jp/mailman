@@ -64,7 +64,7 @@ class TestUIDs(unittest.TestCase):
         content, response = call_api(
             'http://localhost:9001/3.0/reserved/uids/orphans',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # Now there are no uids in the table.
         config.db.abort()
         self.assertEqual(UID.get_total_uid_count(), 0)

@@ -96,35 +96,35 @@ class TestConfiguration(unittest.TestCase):
             call_api(
                 'http://localhost:9001/3.0/lists/ant.example.com/config/bogus')
         self.assertEqual(cm.exception.code, 404)
-        self.assertEqual(cm.exception.reason, b'Unknown attribute: bogus')
+        self.assertEqual(cm.exception.reason, 'Unknown attribute: bogus')
 
     def test_put_configuration(self):
         # When using PUT, all writable attributes must be included.
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/config',
             RESOURCE,
             'PUT')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(self._mlist.display_name, 'Fnords')
         # All three acceptable aliases were set.
         self.assertEqual(set(IAcceptableAliasSet(self._mlist).aliases),
                          set(RESOURCE['acceptable_aliases']))
 
     def test_put_attribute(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com'
             '/config/reply_to_address')
-        self.assertEqual(resource['reply_to_address'], '')
-        resource, response = call_api(
+        self.assertEqual(json['reply_to_address'], '')
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com'
             '/config/reply_to_address',
             dict(reply_to_address='bar@ant.example.com'),
             'PUT')
-        self.assertEqual(response.status, 204)
-        resource, response = call_api(
+        self.assertEqual(response.status_code, 204)
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com'
             '/config/reply_to_address')
-        self.assertEqual(resource['reply_to_address'], 'bar@ant.example.com')
+        self.assertEqual(json['reply_to_address'], 'bar@ant.example.com')
 
     def test_put_extra_attribute(self):
         bogus_resource = RESOURCE.copy()
@@ -135,22 +135,22 @@ class TestConfiguration(unittest.TestCase):
                 bogus_resource,
                 'PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Unexpected parameters: bogus')
+        self.assertEqual(cm.exception.reason, 'Unexpected parameters: bogus')
 
     def test_put_attribute_mismatch(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com'
             '/config/reply_to_address')
-        self.assertEqual(resource['reply_to_address'], '')
+        self.assertEqual(json['reply_to_address'], '')
         with self.assertRaises(HTTPError) as cm:
-            resource, response = call_api(
+            json, response = call_api(
                 'http://localhost:9001/3.0/lists/ant.example.com'
                 '/config/reply_to_address',
                 dict(display_name='bar@ant.example.com'),
                 'PUT')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Unexpected parameters: display_name')
+                         'Unexpected parameters: display_name')
 
     def test_put_attribute_double(self):
         with self.assertRaises(HTTPError) as cm:
@@ -162,7 +162,7 @@ class TestConfiguration(unittest.TestCase):
                 'PUT')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Unexpected parameters: display_name')
+                         'Unexpected parameters: display_name')
 
     def test_put_read_only_attribute(self):
         with self.assertRaises(HTTPError) as cm:
@@ -171,8 +171,7 @@ class TestConfiguration(unittest.TestCase):
                      dict(mail_host='foo.example.com'),
                      'PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         b'Read-only attribute: mail_host')
+        self.assertEqual(cm.exception.reason, 'Read-only attribute: mail_host')
 
     def test_put_missing_attribute(self):
         with self.assertRaises(HTTPError) as cm:
@@ -181,7 +180,7 @@ class TestConfiguration(unittest.TestCase):
                 dict(bogus='no matter'),
                 'PUT')
         self.assertEqual(cm.exception.code, 404)
-        self.assertEqual(cm.exception.reason, b'Unknown attribute: bogus')
+        self.assertEqual(cm.exception.reason, 'Unknown attribute: bogus')
 
     def test_patch_subscription_policy(self):
         # The new subscription_policy value can be patched.
@@ -195,7 +194,7 @@ class TestConfiguration(unittest.TestCase):
             'http://localhost:9001/3.0/lists/ant.example.com/config', dict(
                 subscription_policy='confirm_then_moderate'),
             method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # And now we verify that it has the requested setting.
         self.assertEqual(self._mlist.subscription_policy,
                          SubscriptionPolicy.confirm_then_moderate)
@@ -209,7 +208,7 @@ class TestConfiguration(unittest.TestCase):
                      reply_to_address='foo'),
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Expected 1 attribute, got 2')
+        self.assertEqual(cm.exception.reason, 'Expected 1 attribute, got 2')
 
     def test_unknown_patch_attribute(self):
         with self.assertRaises(HTTPError) as cm:
@@ -217,7 +216,7 @@ class TestConfiguration(unittest.TestCase):
                      dict(bogus=1),
                      'PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Unknown attribute: bogus')
+        self.assertEqual(cm.exception.reason, 'Unknown attribute: bogus')
 
     def test_read_only_patch_attribute(self):
         with self.assertRaises(HTTPError) as cm:
@@ -226,8 +225,7 @@ class TestConfiguration(unittest.TestCase):
                      dict(mail_host='foo.example.com'),
                      'PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         b'Read-only attribute: mail_host')
+        self.assertEqual(cm.exception.reason, 'Read-only attribute: mail_host')
 
     def test_patch_missing_attribute(self):
         with self.assertRaises(HTTPError) as cm:
@@ -236,7 +234,7 @@ class TestConfiguration(unittest.TestCase):
                 dict(bogus='no matter'),
                 'PATCH')
         self.assertEqual(cm.exception.code, 404)
-        self.assertEqual(cm.exception.reason, b'Unknown attribute: bogus')
+        self.assertEqual(cm.exception.reason, 'Unknown attribute: bogus')
 
     def test_patch_bad_value(self):
         with self.assertRaises(HTTPError) as cm:
@@ -247,7 +245,7 @@ class TestConfiguration(unittest.TestCase):
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: archive_policy')
+                         'Cannot convert parameters: archive_policy')
 
     def test_bad_pipeline_name(self):
         with self.assertRaises(HTTPError) as cm:
@@ -258,7 +256,7 @@ class TestConfiguration(unittest.TestCase):
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: posting_pipeline')
+                         'Cannot convert parameters: posting_pipeline')
 
     def test_get_digest_send_periodic(self):
         with transaction():
@@ -276,7 +274,7 @@ class TestConfiguration(unittest.TestCase):
             '/digest_send_periodic',
             dict(digest_send_periodic=True),
             'PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertTrue(self._mlist.digest_send_periodic)
 
     def test_put_digest_send_periodic(self):
@@ -287,7 +285,7 @@ class TestConfiguration(unittest.TestCase):
             '/digest_send_periodic',
             dict(digest_send_periodic=True),
             'PUT')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertTrue(self._mlist.digest_send_periodic)
 
     def test_get_digest_volume_frequency(self):
@@ -306,7 +304,7 @@ class TestConfiguration(unittest.TestCase):
             '/digest_volume_frequency',
             dict(digest_volume_frequency='monthly'),
             'PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(self._mlist.digest_volume_frequency,
                          DigestFrequency.monthly)
 
@@ -318,7 +316,7 @@ class TestConfiguration(unittest.TestCase):
             '/digest_volume_frequency',
             dict(digest_volume_frequency='monthly'),
             'PUT')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(self._mlist.digest_volume_frequency,
                          DigestFrequency.monthly)
 
@@ -333,7 +331,7 @@ class TestConfiguration(unittest.TestCase):
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: digest_volume_frequency')
+                         'Cannot convert parameters: digest_volume_frequency')
 
     def test_bad_put_digest_volume_frequency(self):
         with transaction():
@@ -346,7 +344,7 @@ class TestConfiguration(unittest.TestCase):
                 'PUT')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: digest_volume_frequency')
+                         'Cannot convert parameters: digest_volume_frequency')
 
     def test_get_digests_enabled(self):
         with transaction():
@@ -364,7 +362,7 @@ class TestConfiguration(unittest.TestCase):
             '/digests_enabled',
             dict(digests_enabled=True),
             'PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertTrue(self._mlist.digests_enabled)
 
     def test_put_digests_enabled(self):
@@ -375,7 +373,7 @@ class TestConfiguration(unittest.TestCase):
             '/digests_enabled',
             dict(digests_enabled=True),
             'PUT')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertTrue(self._mlist.digests_enabled)
 
     def test_get_goodbye_message_uri(self):
@@ -394,7 +392,7 @@ class TestConfiguration(unittest.TestCase):
             'http://localhost:9001/3.0/lists/ant.example.com/config',
             dict(goodbye_message_uri='mailman:///salutation.txt'),
             'PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(
             getUtility(ITemplateManager).raw(
                 'user:ack:goodbye', self._mlist.list_id).uri,
@@ -406,7 +404,7 @@ class TestConfiguration(unittest.TestCase):
             '/goodbye_message_uri',
             dict(goodbye_message_uri='mailman:///salutation.txt'),
             'PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(
             getUtility(ITemplateManager).raw(
                 'user:ack:goodbye', self._mlist.list_id).uri,
@@ -424,7 +422,7 @@ class TestConfiguration(unittest.TestCase):
             '/goodbye_message_uri',
             dict(goodbye_message_uri='mailman:///salutation.txt'),
             'PUT')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(
             manager.raw('user:ack:goodbye', self._mlist.list_id).uri,
             'mailman:///salutation.txt')
@@ -453,7 +451,7 @@ class TestConfiguration(unittest.TestCase):
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: description')
+                         'Cannot convert parameters: description')
 
     def test_patch_info(self):
         with transaction():

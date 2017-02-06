@@ -19,7 +19,6 @@
 
 import os
 import sys
-import json
 import time
 import uuid
 import shutil
@@ -30,10 +29,8 @@ import smtplib
 import datetime
 import threading
 
-from base64 import b64encode
 from contextlib import contextmanager, suppress
 from email import message_from_string
-from httplib2 import Http
 from lazr.config import as_timedelta
 from mailman.bin.master import Loop as Master
 from mailman.config import config
@@ -46,9 +43,9 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.digest import DigestRunner
 from mailman.utilities.mailbox import Mailbox
 from public import public
+from requests import request
 from unittest import mock
 from urllib.error import HTTPError
-from urllib.parse import urlencode
 from zope import event
 from zope.component import getUtility
 
@@ -295,35 +292,24 @@ def call_api(url, data=None, method=None, username=None, password=None):
     :rtype: 2-tuple of (dict, response)
     :raises HTTPError: when a non-2xx return code is received.
     """
-    headers = {}
-    if data is not None:
-        data = urlencode(data, doseq=True)
-        headers['Content-Type'] = 'application/x-www-form-urlencoded'
     if method is None:
         if data is None:
             method = 'GET'
         else:
             method = 'POST'
     method = method.upper()
-    if method in ('POST', 'PUT', 'PATCH') and data is None:
-        data = urlencode({}, doseq=True)
-    basic_auth = '{0}:{1}'.format(
+    basic_auth = (
         (config.webservice.admin_user if username is None else username),
         (config.webservice.admin_pass if password is None else password))
-    # b64encode() requires a bytes, but the header value must be str.  Do the
-    # necessary conversion dances.
-    token = b64encode(basic_auth.encode('utf-8')).decode('ascii')
-    headers['Authorization'] = 'Basic ' + token
-    response, content = Http().request(url, method, data, headers)
-    # If we did not get a 2xx status code, make this look like a urllib2
-    # exception, for backward compatibility with existing doctests.
-    if response.status // 100 != 2:
-        raise HTTPError(url, response.status, content, response, None)
-    if len(content) == 0:
+    response = request(method, url, data=data, auth=basic_auth)
+    # For backward compatibility with existing doctests, turn non-2xx response
+    # codes into a urllib.error exceptions.
+    if response.status_code // 100 != 2:
+        raise HTTPError(
+            url, response.status_code, response.text, response, None)
+    if len(response.content) == 0:
         return None, response
-    # XXX Workaround http://bugs.python.org/issue10038
-    content = content.decode('utf-8')
-    return json.loads(content), response
+    return response.json(), response
 
 
 @public

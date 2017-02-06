@@ -40,7 +40,7 @@ class TestHeaderMatches(unittest.TestCase):
                      '/header-matches/0')
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(cm.exception.reason,
-                         b'No header match at this position: 0')
+                         'No header match at this position: 0')
 
     def test_delete_missing_header_match(self):
         with self.assertRaises(HTTPError) as cm:
@@ -49,7 +49,7 @@ class TestHeaderMatches(unittest.TestCase):
                      method='DELETE')
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(cm.exception.reason,
-                         b'No header match at this position: 0')
+                         'No header match at this position: 0')
 
     def test_add_duplicate(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -63,7 +63,7 @@ class TestHeaderMatches(unittest.TestCase):
                         })
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'This header match already exists')
+                         'This header match already exists')
 
     def test_header_match_on_missing_list(self):
         with self.assertRaises(HTTPError) as cm:

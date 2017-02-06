@@ -27,6 +27,7 @@ from mailman.database.transaction import transaction
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
+from urllib.request import urlopen
 
 
 class TestBasicREST(unittest.TestCase):
@@ -39,7 +40,7 @@ class TestBasicREST(unittest.TestCase):
             self._mlist = create_list('test@example.com')
 
     def test_comma_fields(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test@example.com/config',
             dict(description='A description with , to check stuff'),
             method='PATCH')
@@ -50,6 +51,8 @@ class TestBasicREST(unittest.TestCase):
     def test_send_error(self):
         # GL#288 working around Python bug #28548.  The improperly encoded
         # space in the URL breaks error reporting due to default HTTP/0.9.
+        # Use urllib.request since requests will encode the URL, defeating the
+        # purpose of this test (i.e. we want the literal space, not %20).
         with self.assertRaises(HTTPError) as cm:
-            call_api('http://localhost:9001/3.0/lists/test @example.com')
+            urlopen('http://localhost:9001/3.0/lists/test @example.com')
         self.assertEqual(cm.exception.code, 400)

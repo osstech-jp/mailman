@@ -86,20 +86,20 @@ class TestLists(unittest.TestCase):
 
     def test_member_count_with_no_members(self):
         # The list initially has 0 members.
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test@example.com')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(resource['member_count'], 0)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['member_count'], 0)
 
     def test_member_count_with_one_member(self):
         # Add a member to a list and check that the resource reflects this.
         with transaction():
             anne = self._usermanager.create_address('anne@example.com')
             self._mlist.subscribe(anne)
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test@example.com')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(resource['member_count'], 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['member_count'], 1)
 
     def test_member_count_with_two_members(self):
         # Add two members to a list and check that the resource reflects this.
@@ -108,10 +108,10 @@ class TestLists(unittest.TestCase):
             self._mlist.subscribe(anne)
             bart = self._usermanager.create_address('bar@example.com')
             self._mlist.subscribe(bart)
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test@example.com')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(resource['member_count'], 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['member_count'], 2)
 
     def test_query_for_lists_in_missing_domain(self):
         # You cannot ask all the mailing lists in a non-existent domain.
@@ -127,7 +127,7 @@ class TestLists(unittest.TestCase):
                      })
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Domain does not exist: no-domain.example.org')
+                         'Domain does not exist: no-domain.example.org')
 
     def test_cannot_create_duplicate_list(self):
         # You cannot create a list that already exists.
@@ -139,7 +139,7 @@ class TestLists(unittest.TestCase):
                      'fqdn_listname': 'ant@example.com',
                      })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Mailing list exists')
+        self.assertEqual(cm.exception.reason, 'Mailing list exists')
 
     def test_cannot_delete_missing_list(self):
         # You cannot delete a list that does not exist.
@@ -167,14 +167,14 @@ class TestLists(unittest.TestCase):
             bart = self._usermanager.create_address('bart@example.com')
             self._mlist.subscribe(anne)
             self._mlist.subscribe(bart)
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test@example.com/roster/member')
-        self.assertEqual(resource['start'], 0)
-        self.assertEqual(resource['total_size'], 2)
-        member = resource['entries'][0]
+        self.assertEqual(json['start'], 0)
+        self.assertEqual(json['total_size'], 2)
+        member = json['entries'][0]
         self.assertEqual(member['email'], 'anne@example.com')
         self.assertEqual(member['role'], 'member')
-        member = resource['entries'][1]
+        member = json['entries'][1]
         self.assertEqual(member['email'], 'bart@example.com')
         self.assertEqual(member['role'], 'member')
 
@@ -222,19 +222,20 @@ class TestLists(unittest.TestCase):
             self._mlist.subscribe(aperson)
             self._mlist.subscribe(bperson)
             self._mlist.subscribe(cperson)
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test.example.com'
             '/roster/member', {
                 'emails': ['aperson@example.com',
                            'bperson@example.com',
                            ]},
             'DELETE')
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
         # Remove variable data.
-        resource.pop('http_etag')
-        self.assertEqual(resource, {'aperson@example.com': True,
-                                    'bperson@example.com': True,
-                                    })
+        json.pop('http_etag')
+        self.assertEqual(json, {
+            'aperson@example.com': True,
+            'bperson@example.com': True,
+            })
 
     def test_list_mass_unsubscribe_all_fail(self):
         with transaction():
@@ -244,19 +245,20 @@ class TestLists(unittest.TestCase):
             self._mlist.subscribe(aperson)
             self._mlist.subscribe(bperson)
             self._mlist.subscribe(cperson)
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test.example.com'
             '/roster/member', {
                 'emails': ['yperson@example.com',
                            'zperson@example.com',
                            ]},
             'DELETE')
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
         # Remove variable data.
-        resource.pop('http_etag')
-        self.assertEqual(resource, {'yperson@example.com': False,
-                                    'zperson@example.com': False,
-                                    })
+        json.pop('http_etag')
+        self.assertEqual(json, {
+            'yperson@example.com': False,
+            'zperson@example.com': False,
+            })
 
     def test_list_mass_unsubscribe_mixed_success(self):
         with transaction():
@@ -266,19 +268,20 @@ class TestLists(unittest.TestCase):
             self._mlist.subscribe(aperson)
             self._mlist.subscribe(bperson)
             self._mlist.subscribe(cperson)
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test.example.com'
             '/roster/member', {
                 'emails': ['aperson@example.com',
                            'zperson@example.com',
                            ]},
             'DELETE')
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
         # Remove variable data.
-        resource.pop('http_etag')
-        self.assertEqual(resource, {'aperson@example.com': True,
-                                    'zperson@example.com': False,
-                                    })
+        json.pop('http_etag')
+        self.assertEqual(json, {
+            'aperson@example.com': True,
+            'zperson@example.com': False,
+            })
 
     def test_list_mass_unsubscribe_with_duplicates(self):
         with transaction():
@@ -288,7 +291,7 @@ class TestLists(unittest.TestCase):
             self._mlist.subscribe(aperson)
             self._mlist.subscribe(bperson)
             self._mlist.subscribe(cperson)
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/test.example.com'
             '/roster/member', {
                 'emails': ['aperson@example.com',
@@ -297,13 +300,14 @@ class TestLists(unittest.TestCase):
                            'zperson@example.com',
                            ]},
             'DELETE')
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
         # Remove variable data.
-        resource.pop('http_etag')
-        self.assertEqual(resource, {'aperson@example.com': True,
-                                    'bperson@example.com': True,
-                                    'zperson@example.com': False,
-                                    })
+        json.pop('http_etag')
+        self.assertEqual(json, {
+            'aperson@example.com': True,
+            'bperson@example.com': True,
+            'zperson@example.com': False,
+            })
 
     def test_list_mass_unsubscribe_bogus_list(self):
         with self.assertRaises(HTTPError) as cm:
@@ -318,7 +322,7 @@ class TestLists(unittest.TestCase):
                      '/roster/member',
                      None, 'DELETE')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Missing parameters: emails')
+        self.assertEqual(cm.exception.reason, 'Missing parameters: emails')
 
 
 class TestListArchivers(unittest.TestCase):
@@ -331,12 +335,12 @@ class TestListArchivers(unittest.TestCase):
             self._mlist = create_list('ant@example.com')
 
     def test_archiver_statuses(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/archivers')
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
         # Remove the variable data.
-        resource.pop('http_etag')
-        self.assertEqual(resource, {
+        json.pop('http_etag')
+        self.assertEqual(json, {
             'mail-archive': True,
             'mhonarc': True,
             })
@@ -358,7 +362,7 @@ class TestListArchivers(unittest.TestCase):
                 method='PUT')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Unexpected parameters: bogus-archiver')
+                         'Unexpected parameters: bogus-archiver')
 
     def test_patch_bogus_archiver(self):
         # You cannot PATCH on an archiver the list doesn't know about.
@@ -370,7 +374,7 @@ class TestListArchivers(unittest.TestCase):
                 method='PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Unexpected parameters: bogus-archiver')
+                         'Unexpected parameters: bogus-archiver')
 
     def test_put_incomplete_statuses(self):
         # PUT requires the full resource representation.  This one forgets to
@@ -382,8 +386,7 @@ class TestListArchivers(unittest.TestCase):
                     },
                 method='PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         b'Missing parameters: mhonarc')
+        self.assertEqual(cm.exception.reason, 'Missing parameters: mhonarc')
 
     def test_patch_bogus_status(self):
         # Archiver statuses must be interpretable as booleans.
@@ -395,7 +398,7 @@ class TestListArchivers(unittest.TestCase):
                     },
                 method='PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Invalid boolean value: sure')
+        self.assertEqual(cm.exception.reason, 'Invalid boolean value: sure')
 
 
 class TestListPagination(unittest.TestCase):
@@ -419,36 +422,36 @@ class TestListPagination(unittest.TestCase):
             create_list('fly@example.com')
 
     def test_first_page(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/domains/example.com/lists'
             '?count=1&page=1')
         # There are 6 total lists, but only the first one in the page.
-        self.assertEqual(resource['total_size'], 6)
-        self.assertEqual(resource['start'], 0)
-        self.assertEqual(len(resource['entries']), 1)
-        entry = resource['entries'][0]
+        self.assertEqual(json['total_size'], 6)
+        self.assertEqual(json['start'], 0)
+        self.assertEqual(len(json['entries']), 1)
+        entry = json['entries'][0]
         self.assertEqual(entry['fqdn_listname'], 'ant@example.com')
 
     def test_second_page(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/domains/example.com/lists'
             '?count=1&page=2')
         # There are 6 total lists, but only the first one in the page.
-        self.assertEqual(resource['total_size'], 6)
-        self.assertEqual(resource['start'], 1)
-        self.assertEqual(len(resource['entries']), 1)
-        entry = resource['entries'][0]
+        self.assertEqual(json['total_size'], 6)
+        self.assertEqual(json['start'], 1)
+        self.assertEqual(len(json['entries']), 1)
+        entry = json['entries'][0]
         self.assertEqual(entry['fqdn_listname'], 'bee@example.com')
 
     def test_last_page(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/domains/example.com/lists'
             '?count=1&page=6')
         # There are 6 total lists, but only the first one in the page.
-        self.assertEqual(resource['total_size'], 6)
-        self.assertEqual(resource['start'], 5)
-        self.assertEqual(len(resource['entries']), 1)
-        entry = resource['entries'][0]
+        self.assertEqual(json['total_size'], 6)
+        self.assertEqual(json['start'], 5)
+        self.assertEqual(len(json['entries']), 1)
+        entry = json['entries'][0]
         self.assertEqual(entry['fqdn_listname'], 'fly@example.com')
 
     def test_zeroth_page(self):
@@ -469,13 +472,13 @@ class TestListPagination(unittest.TestCase):
 
     def test_past_last_page(self):
         # The 7th page doesn't exist so the collection is empty.
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/domains/example.com/lists'
             '?count=1&page=7')
         # There are 6 total lists, but only the first one in the page.
-        self.assertEqual(resource['total_size'], 6)
-        self.assertEqual(resource['start'], 6)
-        self.assertNotIn('entries', resource)
+        self.assertEqual(json['total_size'], 6)
+        self.assertEqual(json['start'], 6)
+        self.assertNotIn('entries', json)
 
 
 class TestListDigests(unittest.TestCase):
@@ -498,15 +501,15 @@ class TestListDigests(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
 
     def test_post_nothing_to_do(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/digest', {})
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_post_something_to_do(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
                 bump=True))
-        self.assertEqual(response.status, 202)
+        self.assertEqual(response.status_code, 202)
 
     def test_post_bad_request(self):
         with self.assertRaises(HTTPError) as cm:
@@ -514,7 +517,7 @@ class TestListDigests(unittest.TestCase):
                 'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
                     bogus=True))
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Unexpected parameters: bogus')
+        self.assertEqual(cm.exception.reason, 'Unexpected parameters: bogus')
 
     def test_bump_before_send(self):
         with transaction():
@@ -530,11 +533,11 @@ Subject: message 1
 
 """)
         config.handlers['to-digest'].process(self._mlist, msg, {})
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
                 send=True,
                 bump=True))
-        self.assertEqual(response.status, 202)
+        self.assertEqual(response.status_code, 202)
         make_testable_runner(DigestRunner, 'digest').run()
         # The volume is 8 and the digest number is 2 because a digest was sent
         # after the volume/number was bumped.
@@ -588,15 +591,15 @@ class TestListTemplates(unittest.TestCase):
                 'http://example.com/goodbye',
                 'a user', 'the password',
                 )
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/lists/ant.example.com/uris')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(resource['start'], 0)
-        self.assertEqual(resource['total_size'], 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['start'], 0)
+        self.assertEqual(json['total_size'], 2)
         self.assertEqual(
-            resource['self_link'],
+            json['self_link'],
             'http://localhost:9001/3.1/lists/ant.example.com/uris')
-        self.assertEqual(resource['entries'], [
+        self.assertEqual(json['entries'], [
             {'http_etag': '"6612187ed6604ce54a57405fd66742557391ed4a"',
              'name': 'list:user:notice:goodbye',
              'password': 'the password',
@@ -613,12 +616,12 @@ class TestListTemplates(unittest.TestCase):
              }])
 
     def test_patch_uris(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/lists/ant.example.com/uris', {
                 'list:user:notice:welcome': 'http://example.org/welcome',
                 'list:user:notice:goodbye': 'http://example.org/goodbye',
                 }, method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:user:notice:welcome', 'ant.example.com')
         self.assertEqual(template.uri, 'http://example.org/welcome')
@@ -630,14 +633,14 @@ class TestListTemplates(unittest.TestCase):
         self.assertEqual(template.password, '')
 
     def test_patch_uris_with_credentials(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/lists/ant.example.com/uris', {
                 'list:user:notice:welcome': 'http://example.org/welcome',
                 'list:user:notice:goodbye': 'http://example.org/goodbye',
                 'password': 'some password',
                 'username': 'anne.person',
                 }, method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:user:notice:welcome', 'ant.example.com')
         self.assertEqual(template.uri, 'http://example.org/welcome')
@@ -659,7 +662,7 @@ class TestListTemplates(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
 
     def test_put_all_uris(self):
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/lists/ant.example.com/uris', {
                 'list:admin:action:post': '',
                 'list:admin:action:subscribe': '',
@@ -684,7 +687,7 @@ class TestListTemplates(unittest.TestCase):
                 'password': 'some password',
                 'username': 'anne.person',
                 }, method='PUT')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:member:digest:footer', 'ant.example.com')
         self.assertIsNone(template)
@@ -718,10 +721,10 @@ class TestListTemplates(unittest.TestCase):
                 'http://example.com/goodbye',
                 'a user', 'the password',
                 )
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/lists/ant.example.com/uris',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertIsNone(
             manager.raw('list:user:notice:welcome', 'ant.example.com'))
         self.assertIsNone(
@@ -732,11 +735,11 @@ class TestListTemplates(unittest.TestCase):
             getUtility(ITemplateManager).set(
                 'list:user:notice:welcome', 'ant.example.com',
                 'http://example.com/welcome')
-        resource, response = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/lists/ant.example.com/uris'
             '/list:user:notice:welcome')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(resource, {
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json, {
             'http_etag': '"36f8bef800cfd278f097c61c5892a34c0650f4aa"',
             'self_link': ('http://localhost:9001/3.1/lists/ant.example.com'
                           '/uris/list:user:notice:welcome'),

@@ -46,7 +46,7 @@ class TestDomains(unittest.TestCase):
             )
         content, response = call_api(
             'http://localhost:9001/3.0/domains', data, method="POST")
-        self.assertEqual(response.status, 201)
+        self.assertEqual(response.status_code, 201)
 
     def test_patch_domain_description(self):
         # Patch the example.com description.
@@ -55,7 +55,7 @@ class TestDomains(unittest.TestCase):
             'http://localhost:9001/3.0/domains/example.com',
             data,
             method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # Check the result.
         domain = getUtility(IDomainManager).get('example.com')
         self.assertEqual(domain.description, 'Patched example domain')
@@ -67,7 +67,7 @@ class TestDomains(unittest.TestCase):
             'http://localhost:9001/3.0/domains/example.com',
             data,
             method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # Check the result.
         domain = getUtility(IDomainManager).get('example.com')
         self.assertEqual(
@@ -81,7 +81,7 @@ class TestDomains(unittest.TestCase):
             'http://localhost:9001/3.0/domains/example.com',
             data,
             method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         # Check the result.
         domain = getUtility(IDomainManager).get('example.com')
         self.assertEqual(
@@ -106,7 +106,7 @@ class TestDomains(unittest.TestCase):
                 owner='anne@example.com',
                 ),
             method='POST')
-        self.assertEqual(response.status, 201)
+        self.assertEqual(response.status_code, 201)
         # The domain has the expected owner.
         domain = getUtility(IDomainManager).get('example.net')
         self.assertEqual(
@@ -132,7 +132,7 @@ class TestDomains(unittest.TestCase):
             create_list('ant@example.com')
         content, response = call_api(
             'http://localhost:9001/3.0/domains/example.com', method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertIsNone(getUtility(IListManager).get('ant@example.com'))
 
     def test_missing_domain(self):
@@ -161,7 +161,7 @@ class TestDomains(unittest.TestCase):
         content, response = call_api(
             'http://localhost:9001/3.0/domains/example.com',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/domains/example.com',
                      method='DELETE')
@@ -255,7 +255,7 @@ class TestDomainTemplates(unittest.TestCase):
                 )
         resource, response = call_api(
             'http://localhost:9001/3.1/domains/example.com/uris')
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(resource['start'], 0)
         self.assertEqual(resource['total_size'], 2)
         self.assertEqual(
@@ -283,7 +283,7 @@ class TestDomainTemplates(unittest.TestCase):
                 'list:user:notice:welcome': 'http://example.org/welcome',
                 'list:user:notice:goodbye': 'http://example.org/goodbye',
                 }, method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:user:notice:welcome', 'example.com')
         self.assertEqual(template.uri, 'http://example.org/welcome')
@@ -302,7 +302,7 @@ class TestDomainTemplates(unittest.TestCase):
                 'password': 'some password',
                 'username': 'anne.person',
                 }, method='PATCH')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:user:notice:welcome', 'example.com')
         self.assertEqual(template.uri, 'http://example.org/welcome')
@@ -350,7 +350,7 @@ class TestDomainTemplates(unittest.TestCase):
                 'password': 'some password',
                 'username': 'anne.person',
                 }, method='PUT')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         manager = getUtility(ITemplateManager)
         template = manager.raw('list:member:digest:footer', 'example.com')
         self.assertIsNone(template)
@@ -387,7 +387,7 @@ class TestDomainTemplates(unittest.TestCase):
         resource, response = call_api(
             'http://localhost:9001/3.1/domains/example.com/uris',
             method='DELETE')
-        self.assertEqual(response.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertIsNone(
             manager.raw('list:user:notice:welcome', 'example.com'))
         self.assertIsNone(
@@ -401,7 +401,7 @@ class TestDomainTemplates(unittest.TestCase):
         resource, response = call_api(
             'http://localhost:9001/3.1/domains/example.com/uris'
             '/list:user:notice:welcome')
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(resource, {
             'http_etag': '"8884a0b3d675b4cb9899a7825daac9db88b70bed"',
             'self_link': ('http://localhost:9001/3.1/domains/example.com'

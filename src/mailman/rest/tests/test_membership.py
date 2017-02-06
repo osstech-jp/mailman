@@ -53,7 +53,7 @@ class TestMembership(unittest.TestCase):
                 'subscriber': 'nobody@example.com',
                 })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'No such list')
+        self.assertEqual(cm.exception.reason, 'No such list')
 
     def test_try_to_leave_missing_list(self):
         # A user tries to leave a non-existent list.
@@ -74,11 +74,11 @@ class TestMembership(unittest.TestCase):
             anne = self._usermanager.create_address('anne@example.com')
             self._mlist.subscribe(anne)
         url = 'http://localhost:9001/3.0/members/1'
-        content, response = call_api(url, method='DELETE')
+        json, response = call_api(url, method='DELETE')
         # For a successful DELETE, the response code is 204 and there is no
         # content.
-        self.assertEqual(content, None)
-        self.assertEqual(response.status, 204)
+        self.assertEqual(json, None)
+        self.assertEqual(response.status_code, 204)
         with self.assertRaises(HTTPError) as cm:
             call_api(url, method='DELETE')
         self.assertEqual(cm.exception.code, 404)
@@ -96,7 +96,7 @@ class TestMembership(unittest.TestCase):
                 'pre_approved': True,
                 })
         self.assertEqual(cm.exception.code, 409)
-        self.assertEqual(cm.exception.reason, b'Member already subscribed')
+        self.assertEqual(cm.exception.reason, 'Member already subscribed')
 
     def test_subscribe_user_without_preferred_address(self):
         with transaction():
@@ -111,7 +111,7 @@ class TestMembership(unittest.TestCase):
                 'pre_approved': True,
                 })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'User has no preferred address')
+        self.assertEqual(cm.exception.reason, 'User has no preferred address')
 
     def test_subscribe_bogus_user_by_uid(self):
         with self.assertRaises(HTTPError) as cm:
@@ -123,7 +123,7 @@ class TestMembership(unittest.TestCase):
                 'pre_approved': True,
                 })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'No such user')
+        self.assertEqual(cm.exception.reason, 'No such user')
 
     def test_add_member_with_mixed_case_email(self):
         # LP: #1425359 - Mailman is case-perserving, case-insensitive.  This
@@ -141,7 +141,7 @@ class TestMembership(unittest.TestCase):
                 'pre_approved': True,
                 })
         self.assertEqual(cm.exception.code, 409)
-        self.assertEqual(cm.exception.reason, b'Member already subscribed')
+        self.assertEqual(cm.exception.reason, 'Member already subscribed')
 
     def test_add_member_with_lower_case_email(self):
         # LP: #1425359 - Mailman is case-perserving, case-insensitive.  This
@@ -159,7 +159,7 @@ class TestMembership(unittest.TestCase):
                 'pre_approved': True,
                 })
         self.assertEqual(cm.exception.code, 409)
-        self.assertEqual(cm.exception.reason, b'Member already subscribed')
+        self.assertEqual(cm.exception.reason, 'Member already subscribed')
 
     def test_join_with_invalid_delivery_mode(self):
         with self.assertRaises(HTTPError) as cm:
@@ -171,10 +171,10 @@ class TestMembership(unittest.TestCase):
                 })
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: delivery_mode')
+                         'Cannot convert parameters: delivery_mode')
 
     def test_join_email_contains_slash(self):
-        content, response = call_api('http://localhost:9001/3.0/members', {
+        json, response = call_api('http://localhost:9001/3.0/members', {
             'list_id': 'test.example.com',
             'subscriber': 'hugh/person@example.com',
             'display_name': 'Hugh Person',
@@ -182,9 +182,9 @@ class TestMembership(unittest.TestCase):
             'pre_confirmed': True,
             'pre_approved': True,
             })
-        self.assertEqual(content, None)
-        self.assertEqual(response.status, 201)
-        self.assertEqual(response['location'],
+        self.assertEqual(json, None)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.headers['location'],
                          'http://localhost:9001/3.0/members/1')
         # Reset any current transaction.
         config.db.abort()
@@ -197,10 +197,10 @@ class TestMembership(unittest.TestCase):
             anne = self._usermanager.create_user('anne@example.com')
             set_preferred(anne)
             self._mlist.subscribe(anne)
-        content, response = call_api('http://localhost:9001/3.0/members')
-        self.assertEqual(response.status, 200)
-        self.assertEqual(int(content['total_size']), 1)
-        entry_0 = content['entries'][0]
+        json, response = call_api('http://localhost:9001/3.0/members')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(int(json['total_size']), 1)
+        entry_0 = json['entries'][0]
         self.assertEqual(entry_0['self_link'],
                          'http://localhost:9001/3.0/members/1')
         self.assertEqual(entry_0['role'], 'member')
@@ -231,7 +231,7 @@ class TestMembership(unittest.TestCase):
                 })
         self.assertEqual(cm.exception.code, 409)
         self.assertEqual(cm.exception.reason,
-                         b'Subscription request already pending')
+                         'Subscription request already pending')
 
     def test_duplicate_other_pending_subscription(self):
         # Issue #199 - a member's subscription is already pending and they try
@@ -255,7 +255,7 @@ class TestMembership(unittest.TestCase):
                 })
         self.assertEqual(cm.exception.code, 409)
         self.assertEqual(cm.exception.reason,
-                         b'Subscription request already pending')
+                         'Subscription request already pending')
 
     def test_member_changes_preferred_address(self):
         with transaction():
@@ -263,9 +263,9 @@ class TestMembership(unittest.TestCase):
             set_preferred(anne)
             self._mlist.subscribe(anne)
         # Take a look at Anne's current membership.
-        content, response = call_api('http://localhost:9001/3.0/members')
-        self.assertEqual(int(content['total_size']), 1)
-        entry_0 = content['entries'][0]
+        json, response = call_api('http://localhost:9001/3.0/members')
+        self.assertEqual(int(json['total_size']), 1)
+        entry_0 = json['entries'][0]
         self.assertEqual(entry_0['email'], 'anne@example.com')
         self.assertEqual(
             entry_0['address'],
@@ -277,9 +277,9 @@ class TestMembership(unittest.TestCase):
             new_preferred.verified_on = now()
             anne.preferred_address = new_preferred
         # Take another look at Anne's current membership.
-        content, response = call_api('http://localhost:9001/3.0/members')
-        self.assertEqual(int(content['total_size']), 1)
-        entry_0 = content['entries'][0]
+        json, response = call_api('http://localhost:9001/3.0/members')
+        self.assertEqual(int(json['total_size']), 1)
+        entry_0 = json['entries'][0]
         self.assertEqual(entry_0['email'], 'aperson@example.com')
         self.assertEqual(
             entry_0['address'],
@@ -307,7 +307,7 @@ class TestMembership(unittest.TestCase):
                 'address': 'bogus@example.com',
                 }, method='PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Address not registered')
+        self.assertEqual(cm.exception.reason, 'Address not registered')
 
     def test_patch_membership_with_unverified_address(self):
         # Try to change a subscription address to one that is not yet verified.
@@ -319,7 +319,7 @@ class TestMembership(unittest.TestCase):
                 'address': 'anne.person@example.com',
                 }, method='PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Unverified address')
+        self.assertEqual(cm.exception.reason, 'Unverified address')
 
     def test_patch_membership_of_preferred_address(self):
         # Try to change a subscription to an address when the user is
@@ -334,7 +334,7 @@ class TestMembership(unittest.TestCase):
                 }, method='PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Address is not controlled by user')
+                         'Address is not controlled by user')
 
     def test_patch_member_bogus_attribute(self):
         # /members/<id> PATCH 'bogus' returns 400
@@ -346,7 +346,7 @@ class TestMembership(unittest.TestCase):
                      'powers': 'super',
                      }, method='PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Unexpected parameters: powers')
+        self.assertEqual(cm.exception.reason, 'Unexpected parameters: powers')
 
     def test_member_all_without_preferences(self):
         # /members/<id>/all should return a 404 when it isn't trailed by
@@ -366,7 +366,7 @@ class TestMembership(unittest.TestCase):
                      }, method='PATCH')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         b'Cannot convert parameters: moderation_action')
+                         'Cannot convert parameters: moderation_action')
 
     def test_bad_preferences_url(self):
         with transaction():
@@ -388,10 +388,10 @@ class TestMembership(unittest.TestCase):
     def test_delete_other_role(self):
         with transaction():
             subscribe(self._mlist, 'Anne', MemberRole.moderator)
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/members/1',
             method='DELETE')
-        self.assertEqual(headers.status, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(len(list(self._mlist.moderators.members)), 0)
 
     def test_banned_member_tries_to_join(self):
@@ -404,7 +404,7 @@ class TestMembership(unittest.TestCase):
                 'subscriber': 'anne@example.com',
                 })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Membership is banned')
+        self.assertEqual(cm.exception.reason, 'Membership is banned')
 
     def test_globally_banned_member_tries_to_join(self):
         # A user tries to join a list they are banned from.
@@ -416,7 +416,7 @@ class TestMembership(unittest.TestCase):
                 'subscriber': 'anne@example.com',
                 })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, b'Membership is banned')
+        self.assertEqual(cm.exception.reason, 'Membership is banned')
 
 
 class CustomLayer(ConfigLayer):
@@ -475,13 +475,13 @@ Message-ID: <alpha>
 Some text.
 """)
         # Now use the REST API to try to find the nonmember.
-        response, content = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/members/find', {
                 # 'list_id': 'test.example.com',
                 'role': 'nonmember',
                 })
-        self.assertEqual(response['total_size'], 1)
-        nonmember = response['entries'][0]
+        self.assertEqual(json['total_size'], 1)
+        nonmember = json['entries'][0]
         self.assertEqual(nonmember['role'], 'nonmember')
         self.assertEqual(nonmember['email'], 'nonmember@example.com')
         self.assertEqual(
@@ -506,13 +506,13 @@ Message-ID: <alpha>
 Some text.
 """)
         # Now use the REST API to try to find the nonmember.
-        response, content = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.0/members/find', {
                 # 'list_id': 'test.example.com',
                 'role': 'nonmember',
                 })
-        self.assertEqual(response['total_size'], 1)
-        nonmember = response['entries'][0]
+        self.assertEqual(json['total_size'], 1)
+        nonmember = json['entries'][0]
         self.assertEqual(nonmember['role'], 'nonmember')
         self.assertEqual(nonmember['email'], 'nonmember@example.com')
         self.assertEqual(
@@ -535,8 +535,8 @@ class TestAPI31Members(unittest.TestCase):
         with transaction():
             subscribe(self._mlist, 'Anne')
             subscribe(self._mlist, 'Bart')
-        response, headers = call_api('http://localhost:9001/3.1/members')
-        entries = response['entries']
+        json, response = call_api('http://localhost:9001/3.1/members')
+        entries = json['entries']
         self.assertEqual(len(entries), 2)
         self.assertEqual(
           entries[0]['self_link'],
@@ -560,37 +560,38 @@ class TestAPI31Members(unittest.TestCase):
     def test_get_member_id_by_hex(self):
         with transaction():
             subscribe(self._mlist, 'Anne')
-        response, headers = call_api(
+        json, response = call_api(
           'http://localhost:9001/3.1/members/00000000000000000000000000000001')
         self.assertEqual(
-            response['member_id'],
+            json['member_id'],
             '00000000000000000000000000000001')
         self.assertEqual(
-          response['self_link'],
+          json['self_link'],
           'http://localhost:9001/3.1/members/00000000000000000000000000000001')
         self.assertEqual(
-            response['user'],
+            json['user'],
             'http://localhost:9001/3.1/users/00000000000000000000000000000001')
         self.assertEqual(
-            response['address'],
+            json['address'],
             'http://localhost:9001/3.1/addresses/aperson@example.com')
 
     def test_get_list_member_id_by_email(self):
         with transaction():
             subscribe(self._mlist, 'Anne', email="aperson@example.com")
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/lists/ant.example.com/member'
             '/aperson@example.com')
-        self.assertEqual(response['member_id'],
-                         '00000000000000000000000000000001')
         self.assertEqual(
-          response['self_link'],
+            json['member_id'],
+            '00000000000000000000000000000001')
+        self.assertEqual(
+          json['self_link'],
           'http://localhost:9001/3.1/members/00000000000000000000000000000001')
         self.assertEqual(
-            response['user'],
+            json['user'],
             'http://localhost:9001/3.1/users/00000000000000000000000000000001')
         self.assertEqual(
-            response['address'],
+            json['address'],
             'http://localhost:9001/3.1/addresses/aperson@example.com')
 
     def test_cannot_get_member_id_by_int(self):
@@ -604,26 +605,26 @@ class TestAPI31Members(unittest.TestCase):
         with transaction():
             member = subscribe(self._mlist, 'Anne')
             member.preferences.delivery_mode = DeliveryMode.summary_digests
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/members'
             '/00000000000000000000000000000001/preferences')
-        self.assertEqual(response['delivery_mode'], 'summary_digests')
+        self.assertEqual(json['delivery_mode'], 'summary_digests')
 
     def test_all_preferences(self):
         with transaction():
             member = subscribe(self._mlist, 'Anne')
             member.preferences.delivery_mode = DeliveryMode.summary_digests
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/members'
             '/00000000000000000000000000000001/all/preferences')
-        self.assertEqual(response['delivery_mode'], 'summary_digests')
+        self.assertEqual(json['delivery_mode'], 'summary_digests')
 
     def test_create_new_membership_by_hex(self):
         with transaction():
             user = getUtility(IUserManager).create_user('anne@example.com')
             set_preferred(user)
         # Subscribe the user to the mailing list by hex UUID.
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/members', {
                 'list_id': 'ant.example.com',
                 'subscriber': '00000000000000000000000000000001',
@@ -631,9 +632,9 @@ class TestAPI31Members(unittest.TestCase):
                 'pre_confirmed': True,
                 'pre_approved': True,
                 })
-        self.assertEqual(headers.status, 201)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(
-           headers['location'],
+           response.headers['location'],
            'http://localhost:9001/3.1/members/00000000000000000000000000000001'
            )
 
@@ -642,15 +643,15 @@ class TestAPI31Members(unittest.TestCase):
             user = getUtility(IUserManager).create_user('anne@example.com')
             set_preferred(user)
         # Subscribe the user to the mailing list by hex UUID.
-        response, headers = call_api(
+        json, response = call_api(
             'http://localhost:9001/3.1/members', {
                 'list_id': 'ant.example.com',
                 'subscriber': '00000000000000000000000000000001',
                 'role': 'owner',
                 })
-        self.assertEqual(headers.status, 201)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(
-           headers['location'],
+           response.headers['location'],
            'http://localhost:9001/3.1/members/00000000000000000000000000000001'
            )
 
@@ -686,4 +687,4 @@ class TestAPI31Members(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(
             cm.exception.reason,
-            b'anne@example.com is already an owner of ant@example.com')
+            'anne@example.com is already an owner of ant@example.com')

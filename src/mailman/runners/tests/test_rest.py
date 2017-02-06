@@ -38,6 +38,7 @@ class TestRESTRunner(unittest.TestCase):
         wait_for_webservice()
         # This should not raise an exception.  The best way to assert this is
         # to ensure that the response is valid.
-        response, json = call_api('http://localhost:9001/3.0/system')
-        self.assertEqual(json['content-location'],
-                         'http://localhost:9001/3.0/system')
+        json, response = call_api('http://localhost:9001/3.0/system/versions')
+        self.assertEqual(
+            json['self_link'],
+            'http://localhost:9001/3.0/system/versions')
