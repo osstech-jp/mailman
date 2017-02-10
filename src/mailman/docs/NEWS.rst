@@ -195,6 +195,8 @@ REST
    integers, since the latter are not compatible with all versions of
    JavaScript.  (Closes #121)
  * REST clients must minimally support HTTP/1.1. (Closes #288)
+ * Experimental Gunicorn support.  See ``contrib/gunicorn.py`` docstring for
+   details.  With assistance from Eric Searcy.  (Closes #287)
  * The new template system is introduced for API 3.1.  See
    ``src/mailman/rest/docs/templates.rst`` for details.  (Closes #249)
  * When creating a user via REST using an address that already exists, but
