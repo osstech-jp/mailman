@@ -20,6 +20,7 @@
 To use this do the following:
 
 * Install gunicorn as a Python 3 application (in a venv if necessary).
+* Copy this file into your Python's site-packages under the name mmgunicorn.py
 * Create a mailman.cfg with at least the following in it:
 
   [runner.rest]
@@ -28,7 +29,7 @@ To use this do the following:
 * Start Mailman as normal: `mailman start`
 * Set the MAILMAN_CONFIG_FILE environment variable to the location of your
   mailman.cfg file from above.
-* Run: gunicorn mailman.rest.gunicorn:run
+* Run: gunicorn mmgunicorn:run
 """
 
 from public import public
