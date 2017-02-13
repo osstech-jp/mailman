@@ -53,11 +53,12 @@ class TestLifecycle(unittest.TestCase):
         # This list create should succeed but log an error
         mlist = create_list('test@example.com')
         # Check the error log.
-        self.assertEqual(
-            mark.readline()[-83:-1],
-            'Bad config.mailman.listname_chars setting: '
-            '[a-z0-9-+\]: '
-            'unterminated character set'
+        self.assertRegex(
+            mark.readline()[-93:-1],
+            '^.*Bad config\.mailman\.listname_chars setting: '
+            '\[a-z0-9-\+\\\]: '
+            '(unterminated character set|'
+            'unexpected end of regular expression)$'
             )
         # Remove the list.
         remove_list(mlist)
