@@ -109,6 +109,7 @@ Bugs
  * Fix ``mailman stop`` not stopping some runners due to PEP 475 interaction.
    (Closes: #255)
  * Update documentation links for ``config.cfg`` settings.  (Closes: #306)
+ * Disallow problematic characters in listnames.  (Closes: #311)
 
 Configuration
 -------------

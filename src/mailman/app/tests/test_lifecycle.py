@@ -21,7 +21,8 @@ import os
 import shutil
 import unittest
 
-from mailman.app.lifecycle import create_list, remove_list
+from mailman.app.lifecycle import (
+    InvalidListNameError, create_list, remove_list)
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import IListManager
@@ -38,6 +39,12 @@ class TestLifecycle(unittest.TestCase):
         # Creating a mailing list with a bogus address raises an exception.
         self.assertRaises(InvalidEmailAddressError,
                           create_list, 'bogus address')
+
+    def test_listname_validation(self):
+        # Creating a mailing list with invalid characters in the listname
+        # raises an exception.
+        self.assertRaises(InvalidListNameError,
+                          create_list, 'my/list@example.com')
 
     def test_unregistered_domain(self):
         # Creating a list with an unregistered domain raises an exception.
