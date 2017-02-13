@@ -120,6 +120,8 @@ Configuration
    rules is not yet exposed through the REST API.  Given by Aurélien Bompard.
  * The default languages from Mailman 2.1 have been ported over.  Given by
    Aurélien Bompard.
+ * There is now a configuration setting to limit the characters that can be
+   used in list names.
 
 Command line
 ------------

@@ -38,7 +38,7 @@ from zope.component import getUtility
 
 log = logging.getLogger('mailman.error')
 # These are the only characters allowed in list names.
-_listname_chars = re.compile('[-0-9a-z_.]', re.IGNORECASE)
+_listname_chars = re.compile('[-_.+=!$*{}~0-9a-z]', re.IGNORECASE)
 
 
 class InvalidListNameError(InvalidEmailAddressError):
@@ -76,8 +76,22 @@ def create_list(fqdn_listname, owners=None, style_name=None):
     listname, domain = fqdn_listname.split('@', 1)
     # We need to be fussier than just validating the posting address.  Various
     # legal local-part characters will cause problems in list names.
+    # First we check our maximally allowed set.
     if len(_listname_chars.sub('', listname)) > 0:
         raise InvalidListNameError(listname)
+    # Then if another set is configured, check that.
+    if config.mailman.listname_chars:
+        try:
+            cre = re.compile(config.mailman.listname_chars, re.IGNORECASE)
+        except re.error as error:
+            log.error(
+                'Bad config.mailman.listname_chars setting: %s: %s',
+                config.mailman.listname_chars,
+                getattr(error, 'msg', str(error))
+                )
+        else:
+            if len(cre.sub('', listname)) > 0:
+                raise InvalidListNameError(listname)
     if domain not in getUtility(IDomainManager):
         raise BadDomainSpecificationError(domain)
     mlist = getUtility(IListManager).create(fqdn_listname)
