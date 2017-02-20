@@ -129,6 +129,28 @@ class TestLists(unittest.TestCase):
         self.assertEqual(cm.exception.reason,
                          'Domain does not exist: no-domain.example.org')
 
+    def test_cannot_create_list_with_invalid_posting_address(self):
+        # You cannot create a mailing list which would have an invalid list
+        # posting address.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists', {
+                     'fqdn_listname': '@example.com',
+                     })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'Invalid list posting address: @example.com')
+
+    def test_cannot_create_list_with_invalid_name(self):
+        # You cannot create a mailing list which would have an invalid list
+        # posting address.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists', {
+                     'fqdn_listname': 'a/list@example.com',
+                     })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'Invalid list name: a/list')
+
     def test_cannot_create_duplicate_list(self):
         # You cannot create a list that already exists.
         call_api('http://localhost:9001/3.0/lists', {

@@ -44,6 +44,10 @@ _listname_chars = re.compile('[-_.+=!$*{}~0-9a-z]', re.IGNORECASE)
 class InvalidListNameError(InvalidEmailAddressError):
     """List name is invalid."""
 
+    def __init__(self, listname):
+        super().__init__('{}@any.example.com'.format(listname))
+        self.listname = listname
+
 
 @public
 def create_list(fqdn_listname, owners=None, style_name=None):

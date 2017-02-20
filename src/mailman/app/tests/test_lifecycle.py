@@ -54,7 +54,7 @@ class TestLifecycle(unittest.TestCase):
         mlist = create_list('test@example.com')
         # Check the error log.
         self.assertRegex(
-            mark.readline()[-93:-1],
+            mark.readline(),
             '^.*Bad config\.mailman\.listname_chars setting: '
             '\[a-z0-9-\+\\\]: '
             '(unterminated character set|'
