@@ -38,3 +38,9 @@ mysql:
   - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py34-nocov-mysql,py35-nocov-mysql,py36-nocov-mysql
   tags:
   - mysql
+
+diffcov:
+  script:
+  - tox -e py34-diffcov,py35-diffcov,py36-diffcov
+  except:
+  - master
