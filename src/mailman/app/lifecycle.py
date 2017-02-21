@@ -23,11 +23,11 @@ import logging
 
 from contextlib import suppress
 from mailman.config import config
-from mailman.interfaces.address import (
-    IEmailValidator, InvalidEmailAddressError)
+from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.mailinglist import InvalidListNameError
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
@@ -37,16 +37,9 @@ from zope.component import getUtility
 
 
 log = logging.getLogger('mailman.error')
-# These are the only characters allowed in list names.
+# These are the only characters allowed in list names.  A more restrictive
+# class can be specified in config.mailman.listname_chars.
 _listname_chars = re.compile('[-_.+=!$*{}~0-9a-z]', re.IGNORECASE)
-
-
-class InvalidListNameError(InvalidEmailAddressError):
-    """List name is invalid."""
-
-    def __init__(self, listname):
-        super().__init__('{}@any.example.com'.format(listname))
-        self.listname = listname
 
 
 @public

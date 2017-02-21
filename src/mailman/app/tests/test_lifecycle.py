@@ -60,8 +60,8 @@ class TestLifecycle(unittest.TestCase):
             '(unterminated character set|'
             'unexpected end of regular expression)$'
             )
-        # Remove the list.
-        remove_list(mlist)
+        # Check that the list was actually created.
+        self.assertIs(os.path.isdir(mlist.data_path), True)
 
     @configuration('mailman', listname_chars='[a-z]')
     def test_listname_with_minimal_listname_chars(self):
