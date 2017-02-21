@@ -20,6 +20,7 @@ You can also get all the values for a particular section, such as the
     html_to_plain_text_command: /usr/bin/lynx -dump $filename
     http_etag: ...
     layout: testing
+    listname_chars: [-_.0-9a-z]
     noreply_address: noreply
     pending_request_life: 3d
     post_hook:

@@ -43,6 +43,7 @@ class TestSystemConfiguration(unittest.TestCase):
             filtered_messages_are_preservable='no',
             html_to_plain_text_command='/usr/bin/lynx -dump $filename',
             layout='testing',
+            listname_chars='[-_.0-9a-z]',
             noreply_address='noreply',
             pending_request_life='3d',
             post_hook='',

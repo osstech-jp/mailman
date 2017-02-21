@@ -20,8 +20,10 @@
 from lazr.config import as_boolean
 from mailman.app.digests import (
     bump_digest_number_and_volume, maybe_send_digest_now)
-from mailman.app.lifecycle import create_list, remove_list
+from mailman.app.lifecycle import (
+    InvalidListNameError, create_list, remove_list)
 from mailman.config import config
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
@@ -245,6 +247,12 @@ class AllLists(_ListBase):
             bad_request(response, b'Mailing list exists')
         except BadDomainSpecificationError as error:
             reason = 'Domain does not exist: {}'.format(error.domain)
+            bad_request(response, reason.encode('utf-8'))
+        except InvalidListNameError as error:
+            reason = 'Invalid list name: {}'.format(error.listname)
+            bad_request(response, reason.encode('utf-8'))
+        except InvalidEmailAddressError as error:
+            reason = 'Invalid list posting address: {}'.format(error.email)
             bad_request(response, reason.encode('utf-8'))
         else:
             location = self.api.path_to('lists/{0}'.format(mlist.list_id))

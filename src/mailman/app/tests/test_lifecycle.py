@@ -21,10 +21,12 @@ import os
 import shutil
 import unittest
 
-from mailman.app.lifecycle import create_list, remove_list
+from mailman.app.lifecycle import (
+    InvalidListNameError, create_list, remove_list)
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import IListManager
+from mailman.testing.helpers import LogFileMark, configuration
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -38,6 +40,35 @@ class TestLifecycle(unittest.TestCase):
         # Creating a mailing list with a bogus address raises an exception.
         self.assertRaises(InvalidEmailAddressError,
                           create_list, 'bogus address')
+
+    def test_listname_validation(self):
+        # Creating a mailing list with invalid characters in the listname
+        # raises an exception.
+        self.assertRaises(InvalidListNameError,
+                          create_list, 'my/list@example.com')
+
+    @configuration('mailman', listname_chars='[a-z0-9-+\]')
+    def test_bad_config_listname_chars(self):
+        mark = LogFileMark('mailman.error')
+        # This list create should succeed but log an error
+        mlist = create_list('test@example.com')
+        # Check the error log.
+        self.assertRegex(
+            mark.readline(),
+            '^.*Bad config\.mailman\.listname_chars setting: '
+            '\[a-z0-9-\+\\\]: '
+            '(unterminated character set|'
+            'unexpected end of regular expression)$'
+            )
+        # Check that the list was actually created.
+        self.assertIs(os.path.isdir(mlist.data_path), True)
+
+    @configuration('mailman', listname_chars='[a-z]')
+    def test_listname_with_minimal_listname_chars(self):
+        # This only allows letters in the listname.  A listname with digits
+        # Raises an exception.
+        self.assertRaises(InvalidListNameError,
+                          create_list, 'list1@example.com')
 
     def test_unregistered_domain(self):
         # Creating a list with an unregistered domain raises an exception.

@@ -18,9 +18,19 @@
 """Interface for a mailing list."""
 
 from enum import Enum
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.member import MemberRole
 from public import public
 from zope.interface import Attribute, Interface
+
+
+@public
+class InvalidListNameError(InvalidEmailAddressError):
+    """List name is invalid."""
+
+    def __init__(self, listname):
+        super().__init__('{}@'.format(listname))
+        self.listname = listname
 
 
 @public

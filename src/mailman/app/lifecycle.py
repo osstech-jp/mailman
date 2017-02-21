@@ -17,6 +17,7 @@
 
 """Application level list creation."""
 
+import re
 import shutil
 import logging
 
@@ -26,6 +27,7 @@ from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.mailinglist import InvalidListNameError
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
@@ -35,6 +37,9 @@ from zope.component import getUtility
 
 
 log = logging.getLogger('mailman.error')
+# These are the only characters allowed in list names.  A more restrictive
+# class can be specified in config.mailman.listname_chars.
+_listname_chars = re.compile('[-_.+=!$*{}~0-9a-z]', re.IGNORECASE)
 
 
 @public
@@ -57,6 +62,8 @@ def create_list(fqdn_listname, owners=None, style_name=None):
         `fqdn_listname` does not exist.
     :raises ListAlreadyExistsError: when the mailing list already exists.
     :raises InvalidEmailAddressError: when the fqdn email address is invalid.
+    :raises InvalidListNameError: when the fqdn email address is valid but the
+        listname contains disallowed characters.
     """
     if owners is None:
         owners = []
@@ -64,6 +71,24 @@ def create_list(fqdn_listname, owners=None, style_name=None):
     # posting address.  Let these percolate up.
     getUtility(IEmailValidator).validate(fqdn_listname)
     listname, domain = fqdn_listname.split('@', 1)
+    # We need to be fussier than just validating the posting address.  Various
+    # legal local-part characters will cause problems in list names.
+    # First we check our maximally allowed set.
+    if len(_listname_chars.sub('', listname)) > 0:
+        raise InvalidListNameError(listname)
+    # Then if another set is configured, check that.
+    if config.mailman.listname_chars:
+        try:
+            cre = re.compile(config.mailman.listname_chars, re.IGNORECASE)
+        except re.error as error:
+            log.error(
+                'Bad config.mailman.listname_chars setting: %s: %s',
+                config.mailman.listname_chars,
+                getattr(error, 'msg', str(error))
+                )
+        else:
+            if len(cre.sub('', listname)) > 0:
+                raise InvalidListNameError(listname)
     if domain not in getUtility(IDomainManager):
         raise BadDomainSpecificationError(domain)
     mlist = getUtility(IListManager).create(fqdn_listname)
