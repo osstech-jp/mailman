@@ -3,16 +3,17 @@ MTA connections
 ===============
 
 Outgoing connections to the outgoing mail transport agent (MTA) are mitigated
-through a ``Connection`` class, which can transparently manage multiple
+through a ``SMTPConnection`` class, which can transparently manage multiple
 sessions in a single connection.
 
-    >>> from mailman.mta.connection import Connection
+    >>> from mailman.mta.connection import SMTPConnection, SMTPSConnection
+    >>> from lazr.config import as_boolean
 
-The number of sessions per connections is specified when the ``Connection``
+The number of sessions per connections is specified when the ``SMTPConnection``
 object is created, as is the host and port number of the SMTP server.  Zero
 means there's an unlimited number of sessions per connection.
 
-    >>> connection = Connection(
+    >>> connection = SMTPConnection(
     ...     config.mta.smtp_host, int(config.mta.smtp_port), 0)
 
 At the start, there have been no connections to the server.
@@ -59,7 +60,7 @@ will authenticate with the mail server after each new connection.
     ... smtp_pass: testpass
     ... """)
 
-    >>> connection = Connection(
+    >>> connection = SMTPConnection(
     ...     config.mta.smtp_host, int(config.mta.smtp_port), 0,
     ...     config.mta.smtp_user, config.mta.smtp_pass)
     >>> connection.sendmail('anne@example.com', ['bart@example.com'], """\
@@ -75,6 +76,17 @@ will authenticate with the mail server after each new connection.
     >>> reset()
     >>> config.pop('auth')
 
+SMTPS and STARTTLS support works through ``SMTPSConnection``
+and ``STARTTLSConnection`` classes. These provide the same interface
+as ``SMTPConnection``.
+::
+
+    >>> connection = SMTPSConnection(
+    ...     config.mta.smtp_host, int(config.mta.smtp_port), 0,
+    ...     as_boolean(config.mta.smtp_verify_cert),
+    ...     as_boolean(config.mta.smtp_verify_hostname),
+    ...     config.mta.smtp_user, config.mta.smtp_pass)
+
 
 Sessions per connection
 =======================
@@ -86,13 +98,13 @@ created.
 The connection count starts at zero.
 ::
 
-    >>> connection = Connection(
+    >>> connection = SMTPConnection(
     ...     config.mta.smtp_host, int(config.mta.smtp_port), 2)
 
     >>> smtpd.get_connection_count()
     0
 
-We send two messages through the ``Connection`` object.  Only one connection
+We send two messages through the ``SMTPConnection`` object.  Only one connection
 is opened.
 ::
 
@@ -168,7 +180,7 @@ No maximum
 A value of zero means that there is an unlimited number of sessions per
 connection.
 
-    >>> connection = Connection(
+    >>> connection = SMTPConnection(
     ...     config.mta.smtp_host, int(config.mta.smtp_port), 0)
     >>> reset()
 
@@ -230,3 +242,4 @@ about accidental deliveries to unintended recipients.
     <BLANKLINE>
 
     >>> config.pop('devmode')
+

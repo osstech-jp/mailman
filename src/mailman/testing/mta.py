@@ -167,12 +167,14 @@ class ConnectionCountingSMTP(SMTP):
 class ConnectionCountingController(Controller):
     """Count the number of SMTP connections opened."""
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, ssl_context=None):
         self._msg_queue = Queue()
         self._oob_queue = Queue()
         self.err_queue = Queue()
+
         handler = ConnectionCountingHandler(self._msg_queue)
-        super().__init__(handler, hostname=host, port=port)
+        super().__init__(handler, hostname=host, port=port,
+                         ssl_context=ssl_context)
 
     def factory(self):
         return ConnectionCountingSMTP(
@@ -185,8 +187,7 @@ class ConnectionCountingController(Controller):
         self.reset()
 
     def _connect(self):
-        client = smtplib.SMTP()
-        client.connect(self.hostname, self.port)
+        client = smtplib.SMTP(self.hostname, self.port)
         return client
 
     def get_connection_count(self):
@@ -224,3 +225,47 @@ class ConnectionCountingController(Controller):
     def reset(self):
         client = self._connect()
         client.docmd('RSET')
+
+
+class ConnectionCountingSSLController(ConnectionCountingController):
+    """Count the number of SMTPS connections opened."""
+
+    def __init__(self, host, port, client_context=None, server_context=None):
+        super().__init__(host, port, ssl_context=server_context)
+        self._client_context = client_context
+
+    def _connect(self):
+        client = smtplib.SMTP_SSL(self.hostname, self.port,
+                                  context=self._client_context)
+        return client
+
+
+class ConnectionCountingSTARTLSController(ConnectionCountingController):
+    """Count the number of SMTP connections with STARTTLS opened."""
+
+    def __init__(self, host, port, client_context=None, server_context=None):
+        super().__init__(host, port)
+        self._client_context = client_context
+        self._server_context = server_context
+
+    def factory(self):
+        return ConnectionCountingSMTP(
+            self.handler, self._oob_queue,
+            self.err_queue, tls_context=self._server_context,
+            require_starttls=True)
+
+    def _connect(self):
+        client = smtplib.SMTP(self.hostname, self.port)
+        client.starttls(context=self._client_context)
+        return client
+
+    def get_connection_count(self):
+        count = super().get_connection_count()
+        # This is a hack, since when using STARTTLS for every connection the
+        # SMTP.connection_made(transport) method is called twice.
+        # The -1 is there for the last pair of connections made when checking
+        # the connection count, since one of them is already subtracted in
+        # ConnectionCountingSMTP.handle_STAT.
+        # The //2 is there for the rest of the connections which are counted
+        # twice.
+        return (count - 1) // 2
