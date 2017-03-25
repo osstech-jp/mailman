@@ -21,6 +21,12 @@ terms of the GNU General Public License (GPL) version 3 or later.  The name of
 this software is spelled "Mailman" with a leading capital 'M' but with a lower
 case second 'm'.  Any other spelling is incorrect.
 
+Technically speaking, you are reading the documentation for Mailman Core.  The
+full `Mailman 3 suite <http://docs.mailman3.org>`_ includes a web user
+interface called Postorius, a web archiver called HyperKitty, and a few other
+components.  If you're looking for instructions on installing the full suite,
+read that documentation.
+
 Mailman is written in Python which is available for all platforms that Mailman
 is supported on, including GNU/Linux and most other Unix-like operating
 systems (e.g. Solaris, \*BSD, MacOSX, etc.).  Mailman is not supported on
