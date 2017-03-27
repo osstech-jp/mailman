@@ -23,7 +23,7 @@ from mailman.config import config
 from mailman.interfaces.database import IDatabase
 from mailman.utilities.string import expand
 from public import public
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event, exc, select
 from sqlalchemy.orm import sessionmaker
 from zope.interface import implementer
 
@@ -107,3 +107,43 @@ class SABaseDatabase:
         session = sessionmaker(bind=self.engine)
         self.store = session()
         self.store.commit()
+        # This is from the Dealing with Disconnects section at
+        # <http://docs.sqlalchemy.org/en/latest/core/pooling.html>.  It
+        # establishes connection pinging to deal with lost connections due to
+        # database server restarts or other outside events.
+        #
+        # XXX This can all be removed once SQLAlchemy 1.2 is released, and we
+        # pass `pool_pre_ping=True` to create_engine().
+        @event.listens_for(self.engine, 'engine_connect')   # noqa: E306
+        def ping_connection(connection, branch):            # pragma: no cover
+            if branch:
+                # "branch" refers to a sub-connection of a connection;
+                # we don't want to bother pinging on these.
+                return
+            # Turn off "close with result".  This flag is only used with
+            # "connectionless" execution, otherwise will be False in any case.
+            old_scwr = connection.should_close_with_result
+            connection.should_close_with_result = False
+            try:
+                # Run a SELECT 1.  Use a core select() so that the SELECT of a
+                # scalar value without a table is appropriately formatted for
+                # the backend.
+                connection.scalar(select([1]))
+            except exc.DBAPIError as error:
+                # Catch SQLAlchemy's DBAPIError, which is a wrapper for the
+                # DBAPI's exception.  It includes a .connection_invalidated
+                # attribute which specifies if this connection is a
+                # "disconnect" condition, which is based on inspection of the
+                # original exception by the dialect in use.
+                if error.connection_invalidated:
+                    # Run the same SELECT again - the connection will
+                    # re-validate itself and establish a new connection.  The
+                    # disconnect detection here also causes the whole
+                    # connection pool to be invalidated so that all stale
+                    # connections are discarded.
+                    connection.scalar(select([1]))
+                else:
+                    raise
+            finally:
+                # Restore "close with result".
+                connection.should_close_with_result = old_scwr

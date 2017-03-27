@@ -140,6 +140,9 @@ Command line
 Database
 --------
  * MySQL is now an officially supported database.  Given by Abhilash Raj.
+ * Fix a problem with tracebacks when a PostgreSQL database is power cycled
+   while Mailman is still running.  This ports an upstream SQLAlchemy fix to
+   Mailman in lieu of a future SQLAlchemy 1.2 release.  (Closes: #313)
 
 Interfaces
 ----------
