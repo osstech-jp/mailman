@@ -1,6 +1,6 @@
-================================================
-Mailman - The GNU Mailing List Management System
-================================================
+=======================
+ GNU Mailman 3 changes
+=======================
 
 Copyright (C) 1998-2017 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA

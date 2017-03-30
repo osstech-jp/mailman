@@ -64,6 +64,8 @@ Table of Contents
     src/mailman/docs/STYLEGUIDE
     src/mailman/docs/architecture
     src/mailman/docs/8-miles-high
+    src/mailman/docs/NEWS
+    src/mailman/docs/ACKNOWLEDGMENTS
 
 
 Mailman modules
@@ -87,8 +89,6 @@ These documents are generated from the internal module documentation.
     src/mailman/mta/docs/mta
     src/mailman/bin/docs/master
     src/mailman/commands/docs/commands
-    src/mailman/docs/NEWS
-    src/mailman/docs/ACKNOWLEDGMENTS
     contrib/README
 
 
