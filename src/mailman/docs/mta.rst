@@ -235,9 +235,9 @@ installation.
 
     MM3_LMTP_PORT=8024
 
-    # Assuming a typical source installation in /usr/local, with
-    # links to the Mailman bin directory and so on from MM3_HOME.
-    MM3_HOME=/usr/local/var/mailman
+    # MM3_HOME must be set to mailman's var directory, wherever it is
+    # according to your installation.
+    MM3_HOME=/opt/mailman/var
     MM3_UID=list
     MM3_GID=list
 
@@ -247,7 +247,7 @@ installation.
 
     # The path to the list receipt (used as the required file when
     # matching list addresses)
-    MM3_LISTCHK=MM3_HOME/lists/${local_part}@${domain}
+    MM3_LISTCHK=MM3_HOME/lists/${local_part}.${domain}
 
     # /etc/exim4/conf.d/router/455_mm3_router
     mailman3_router:
@@ -270,6 +270,7 @@ installation.
       allow_localhost
       hosts = localhost
       port = MM3_LMTP_PORT
+      rcpt_include_affixes = true
 
 Troubleshooting
 ---------------
