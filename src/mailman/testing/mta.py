@@ -17,7 +17,6 @@
 
 """Fake MTA for testing purposes."""
 
-import socket
 import asyncio
 import smtplib
 
@@ -53,6 +52,17 @@ class ConnectionCountingHandler(MessageHandler):
 
     def handle_message(self, message):
         self._msg_queue.put(message)
+
+    @asyncio.coroutine
+    def handle_EHLO(self, server, session, envelope, hostname):
+        session.host_name = hostname
+        yield from server.push('250-AUTH PLAIN')
+        return '250 HELP'
+
+    @asyncio.coroutine
+    def handle_RSET(self, server, session, envelope):
+        self.connection_count = 0
+        return '250 OK'
 
 
 class ConnectionCountingSMTP(SMTP):
@@ -94,14 +104,6 @@ class ConnectionCountingSMTP(SMTP):
                 self._waiting_for_auth_response = True
         else:
             yield from self.push('571 Bad authentication')
-
-    @asyncio.coroutine
-    def ehlo_hook(self):
-        yield from self.push('250-AUTH PLAIN')
-
-    @asyncio.coroutine
-    def rset_hook(self):
-        self.event_handler.connection_count = 0
 
     @asyncio.coroutine
     def smtp_STAT(self, arg):
@@ -174,11 +176,6 @@ class ConnectionCountingController(Controller):
     def factory(self):
         return ConnectionCountingSMTP(
             self.handler, self._oob_queue, self.err_queue)
-
-    def make_socket(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
-        return sock
 
     def start(self):
         super().start()

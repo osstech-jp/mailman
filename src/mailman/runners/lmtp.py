@@ -35,7 +35,7 @@ so that the peer mail server can provide better diagnostics.
 """
 
 import email
-import socket
+import asyncio
 import logging
 
 from aiosmtpd.controller import Controller
@@ -122,19 +122,20 @@ def split_recipient(address):
 
 
 class LMTPHandler:
+    @asyncio.coroutine
     @transactional
-    def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
+    def handle_DATA(self, server, session, envelope):
         try:
             # Refresh the list of list names every time we process a message
             # since the set of mailing lists could have changed.
             listnames = set(getUtility(IListManager).names)
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam.
-            msg = email.message_from_bytes(data, Message)
+            msg = email.message_from_bytes(envelope.content, Message)
         except Exception:
             elog.exception('LMTP message parsing')
             config.db.abort()
-            return CRLF.join(ERR_451 for to in rcpttos)
+            return CRLF.join(ERR_451 for to in envelope.rcpt_tos)
         # Do basic post-processing of the message, checking it for defects or
         # other missing information.
         message_id = msg.get('message-id')
@@ -142,9 +143,9 @@ class LMTPHandler:
             return ERR_550_MID
         if msg.defects:
             return ERR_501
-        msg.original_size = len(data)
+        msg.original_size = len(envelope.content)
         add_message_hash(msg)
-        msg['X-MailFrom'] = mailfrom
+        msg['X-MailFrom'] = envelope.mail_from
         # RFC 2033 requires us to return a status code for every recipient.
         status = []
         # Now for each address in the recipients, parse the address to first
@@ -152,7 +153,7 @@ class LMTPHandler:
         # the message to the appropriate place and record a 250 status for
         # that recipient.  If not, record a failure status for that recipient.
         received_time = now()
-        for to in rcpttos:
+        for to in envelope.rcpt_tos:
             try:
                 to = parseaddr(to)[1].lower()
                 local, subaddress, domain = split_recipient(to)
@@ -218,11 +219,6 @@ class LMTPController(Controller):
         server = LMTP(self.handler)
         server.__ident__ = 'GNU Mailman LMTP runner 2.0'
         return server
-
-    def make_socket(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
-        return sock
 
 
 @public
