@@ -14,27 +14,28 @@ Here is a history of user visible changes to Mailman.
 
 Bugs
 ----
- * When the mailing list's `admin_notify_mchanges` is True, the list owners
+ * When the mailing list's ``admin_notify_mchanges`` is True, the list owners
    now get the subscription notification.  (Closes: #1)
- * Fix the traceback that occurred when trying to convert a `text/html`
-   subpart to plaintext via the `mimedel` handler.  Now, a configuration
-   variable `[mailman]html_to_plain_text_command` in the `mailman.cfg` file
-   defines the command to use.  It defaults to `lynx`.  (Closes: #109)
- * Confirmation messages should not be `Precedence: bulk`.  (Closes #75)
+ * Fix the traceback that occurred when trying to convert a ``text/html``
+   subpart to plaintext via the ``mimedel`` handler.  Now, a configuration
+   variable ``[mailman]html_to_plain_text_command`` in the ``mailman.cfg`` file
+   defines the command to use.  It defaults to ``lynx``.  (Closes: #109)
+ * Confirmation messages should not be ``Precedence: bulk``.  (Closes #75)
  * Fix constraint violations on mailing list deletes affecting PostgreSQL.
    Given by Abhilash Raj.  (Closes #115)
- * `mailman` command with no subcommand now prints the help text.  Given by
+ * ``mailman`` command with no subcommand now prints the help text.  Given by
    Abhilash Raj.  (Closes #137)
  * The MHonArc archiver must set stdin=PIPE when calling the subprocess.
    Given by Walter Doekes.
- * For now, treat `DeliveryMode.summary_digests` the same as `.mime_digests`.
+ * For now, treat ``DeliveryMode.summary_digests`` the same as
+   ``.mime_digests``.
    (Closes #141).  Also, don't enqueue a particular digest if there are no
    recipients for that digest.
  * For Python versions earlier than 3.5, use a compatibility layer for a
    backported smtpd module which can accept non-UTF-8 data.  (Closes #140)
  * Bulk emails are now decorated with headers and footers.  Given by Aurélien
    Bompard.  (Closes #145)
- * Core no longer depends on the standalone `mock` module.  (Closes: #146)
+ * Core no longer depends on the standalone ``mock`` module.  (Closes: #146)
  * The logging of moderation reasons has been fixed.  Given by Aurélien
    Bompard.
  * Collapse multiple ``Re:`` in Subject headers.  Given by Mark Sapiro.
@@ -148,10 +149,10 @@ Interfaces
 ----------
  * Implement reasons for why a message is being held for moderator approval.
    Given by Aurélien Bompard, tweaked by Barry Warsaw.
- * The default `postauth.txt` and `postheld.txt` templates now no longer
+ * The default ``postauth.txt`` and ``postheld.txt`` templates now no longer
    include the inaccurate admindb and confirmation urls.
- * Messages now include a `Message-ID-Hash` as the replacement for
-   `X-Message-ID-Hash` although the latter is still included for backward
+ * Messages now include a ``Message-ID-Hash`` as the replacement for
+   ``X-Message-ID-Hash`` although the latter is still included for backward
    compatibility.  Also be sure that all places which add the header use the
    same algorithm.  (Closes #118)
  * ``IMessageStore.delete_message()`` no longer raises a ``LookupError`` when
@@ -165,8 +166,8 @@ Internal
 --------
  * Add official support for Python 3.6. (Closes #295)
  * A handful of unused legacy exceptions have been removed.  The redundant
-   `MailmanException` has been removed; use `MailmanError` everywhere.
- * Drop the use of the `lazr.smtptest` library, which is based on the
+   ``MailmanException`` has been removed; use ``MailmanError`` everywhere.
+ * Drop the use of the ``lazr.smtptest`` library, which is based on the
    asynchat/asyncore-based smtpd.py stdlib module.  Instead, use the
    asyncio-based aiosmtpd package.
 
@@ -174,7 +175,7 @@ Message handling
 ----------------
  * New DMARC mitigations have been added.  Given by Mark Sapiro.  (Closes #247)
  * New placeholders have been added for message headers and footers.  You can
-   use a placeholder of the format `$<archiver-name>_url` to insert the
+   use a placeholder of the format ``$<archiver-name>_url`` to insert the
    permalink to the message in the named archiver, for any archiver enabled
    for the mailing list.  Given by Abhilash Raj.
  * The default posting chain has been modified so that the header-match chain
@@ -183,9 +184,9 @@ Message handling
    non-member posts instead of always holding them for moderator review.
    Given by Aurélien Bompard.  (Closes #163)
  * Bounces can now contain rejection messages.  Given by Aurélien Bompard.
- * The `moderation_action` for members and nonmember can now be ``None`` which
-   signals falling back to the appropriate list default action,
-   e.g. `default_member_action` and `default_nonmember_action`.  Given by
+ * The ``moderation_action`` for members and nonmember can now be ``None``
+   which signals falling back to the appropriate list default action,
+   e.g. ``default_member_action`` and ``default_nonmember_action``.  Given by
    Aurélien Bompard.  (Closes #189)
  * Ensure that postings from alternative emails aren't held for moderator
    approval.  For example, if a user is subscribed with one email but posts
@@ -208,14 +209,14 @@ REST
  * When creating a user via REST using an address that already exists, but
    isn't linked, the address is linked to the new user.  Given by Aurélien
    Bompard.
- * The REST API incorrectly parsed `is_server_owner` values when given
+ * The REST API incorrectly parsed ``is_server_owner`` values when given
    explicitly in the POST that creates a user.  (Closes #136)
  * A new top-level resource ``<api>/owners`` can be used to get the list of
    server owners as ``IUser`` s.  (Closes #135)
  * By POSTing to a user resource with an existing unlinked address, you can
    link the address to the user.  Given by Abhilash Raj.
- * Fix pagination values `start` and `total_size` in the REST API.  Given by
-   Aurélien Bompard.  (Closes: #154)
+ * Fix pagination values ``start`` and ``total_size`` in the REST API.  Given
+   by Aurélien Bompard.  (Closes: #154)
  * JSON representations for held message now include a ``self_link``.
  * When ``[devmode]enabled`` is set, the JSON output is sorted.  Given by
    Aurélien Bompard.
