@@ -255,7 +255,7 @@ installation.
       domains = +mm_domains
       require_files = MM3_LISTCHK
       local_part_suffix_optional
-      local_part_suffix = -admin : \
+      local_part_suffix = \
          -bounces   : -bounces+* : \
          -confirm   : -confirm+* : \
          -join      : -leave     : \
