@@ -167,6 +167,13 @@ class Switchboard:
     def finish(self, filebase, preserve=False):
         """See `ISwitchboard`."""
         bakfile = os.path.join(self.queue_directory, filebase + '.bak')
+        # It is possible for a queue entry to be created by a non-Mailman user
+        # and not be readable by the Mailman user:group.  If this happens, we
+        # get here and the file is a .pck rather than a .bak.
+        pckfile = os.path.join(self.queue_directory, filebase + '.pck')
+        if not os.path.isfile(bakfile) and os.path.isfile(pckfile):
+            # We have a .pck and not a .bak so switch the name for the next.
+            bakfile = pckfile
         try:
             if preserve:
                 bad_dir = config.switchboards['bad'].queue_directory
