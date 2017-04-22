@@ -17,6 +17,7 @@
 
 """REST for members."""
 
+from lazr.config import as_boolean
 from mailman.app.membership import add_member, delete_member
 from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
@@ -204,9 +205,9 @@ class AllMembers(_MemberBase):
                 display_name=str,
                 delivery_mode=enum_validator(DeliveryMode),
                 role=enum_validator(MemberRole),
-                pre_verified=bool,
-                pre_confirmed=bool,
-                pre_approved=bool,
+                pre_verified=as_boolean,
+                pre_confirmed=as_boolean,
+                pre_approved=as_boolean,
                 _optional=('delivery_mode', 'display_name', 'role',
                            'pre_verified', 'pre_confirmed', 'pre_approved'))
             arguments = validator(request)
