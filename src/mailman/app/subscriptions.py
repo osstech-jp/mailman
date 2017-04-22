@@ -32,7 +32,9 @@ from mailman.interfaces.address import IAddress
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import MembershipIsBannedError, NotAMemberError
+from mailman.interfaces.member import (
+    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
+    NotAMemberError)
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.subscriptions import (
     ISubscriptionManager, ISubscriptionService,
@@ -198,6 +200,21 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
             self.address = addresses[0]
         assert self.user is not None and self.address is not None, (
             'Insane sanity check results')
+        # Is this subscriber already a member?
+        if (self.which is WhichSubscriber.user and
+                self.user.preferred_address is not None):
+            subscriber = self.user
+        else:
+            subscriber = self.address
+        if self.mlist.is_subscribed(subscriber):
+            # 2017-04-22 BAW: This branch actually *does* get covered, as I've
+            # verified by a full coverage run, but diffcov for some reason
+            # claims that the test added in the branch that added this code
+            # does not cover the change.  That seems like a bug in diffcov.
+            raise AlreadySubscribedError(           # pragma: no cover
+                self.mlist.fqdn_listname,
+                self.address.email,
+                MemberRole.member)
         # Is this email address banned?
         if IBanManager(self.mlist).is_banned(self.address.email):
             raise MembershipIsBannedError(self.mlist, self.address.email)

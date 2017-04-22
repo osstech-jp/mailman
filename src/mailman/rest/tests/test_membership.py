@@ -98,6 +98,21 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(cm.exception.code, 409)
         self.assertEqual(cm.exception.reason, 'Member already subscribed')
 
+    def test_try_to_join_a_list_twice_issue260(self):
+        with transaction():
+            anne = self._usermanager.create_address('anne@example.com')
+            self._mlist.subscribe(anne)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': 'anne@example.com',
+                'pre_verified': False,
+                'pre_confirmed': False,
+                'pre_approved': False,
+                })
+        self.assertEqual(cm.exception.code, 409)
+        self.assertEqual(cm.exception.reason, 'Member already subscribed')
+
     def test_subscribe_user_without_preferred_address(self):
         with transaction():
             getUtility(IUserManager).create_user('anne@example.com')
