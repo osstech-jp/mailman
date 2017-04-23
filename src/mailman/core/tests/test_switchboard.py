@@ -17,6 +17,7 @@
 
 """Switchboard tests."""
 
+import os
 import unittest
 
 from mailman.config import config
@@ -51,3 +52,22 @@ Message-ID: <ant>
         traceback = error_log.read().splitlines()
         self.assertEqual(traceback[1], 'Traceback (most recent call last):')
         self.assertEqual(traceback[-1], 'OSError: Oops!')
+
+    def test_no_bak_but_pck(self):
+        # if there is no .bak file but a .pck with the same filebase,
+        # .finish() should handle the .pck.
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Message-ID: <ant>
+
+""")
+        switchboard = config.switchboards['shunt']
+        # Enqueue the message.
+        filebase = switchboard.enqueue(msg)
+        # Now call .finish() without first dequeueing.
+        switchboard.finish(filebase, preserve=True)
+        # And ensure the file got preserved.
+        bad_dir = config.switchboards['bad'].queue_directory
+        psvfile = os.path.join(bad_dir, filebase + '.psv')
+        self.assertTrue(os.path.isfile(psvfile))
