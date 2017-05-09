@@ -201,6 +201,10 @@ class TopLevel:
         """
         if len(segments) == 0:
             return AllLists()
+        # This does not prevent a mailing list being created with a short name
+        # 'styles', since list identifiers (see below) must either be a
+        # List-Id like styles.example.com, or an fqdn_listname like
+        # styles@example.com.
         elif len(segments) == 1 and segments[0] == 'styles':
             return Styles(), []
         else:
