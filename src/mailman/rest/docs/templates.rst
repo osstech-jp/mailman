@@ -53,8 +53,8 @@ subscribed to the mailing list, she sees this plain welcome message.
     with the word 'help' in the subject or body (don't include the
     quotes), and you will get back a message with instructions.  You will
     need your password to change your options, but for security purposes,
-    this email is not included here.  There is also a button on your
-    options page that will send your current password to you.
+    this email is not included here.  If you have forgotten your password you
+    will need to click on the 'Forgot Password?' link on the login page.
 
 Let's say though that you wanted to provide a link to a Code of Conduct in the
 welcome message.  You publish both the code of conduct and the welcome message
