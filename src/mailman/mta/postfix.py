@@ -56,6 +56,8 @@ class LMTP:
         # Locate and read the Postfix specific configuration file.
         mta_config = external_configuration(config.mta.configuration)
         self.postmap_command = mta_config.get('postfix', 'postmap_command')
+        self.transport_file_type = mta_config.get(
+            'postfix', 'transport_file_type')
 
     def create(self, mlist):
         """See `IMailTransportAgentLifecycle`."""
@@ -84,19 +86,21 @@ class LMTP:
                 self._generate_domains_file(fp)
             # Atomically rename to the intended path.
             os.rename(domains_path_new, domains_path)
-            # Now, run the postmap command on both newly generated files.  If
-            # one files, still try the other one.
-            errors = []
-            for path in (lmtp_path, domains_path):
-                command = self.postmap_command + ' ' + path
-                status = (os.system(command) >> 8) & 0xff
-                if status:
-                    msg = 'command failure: %s, %s, %s'
-                    errstr = os.strerror(status)
-                    log.error(msg, command, status, errstr)
-                    errors.append(msg % (command, status, errstr))
-            if errors:
-                raise RuntimeError(NL.join(errors))
+            # If the transport_file_type is 'hash' then run the postmap command
+            # on newly generated file to convert them in to hash table like
+            # Postfix wants.
+            if self.transport_file_type == 'hash':
+                errors = []
+                for path in (lmtp_path, domains_path):
+                    command = self.postmap_command + ' ' + path
+                    status = (os.system(command) >> 8) & 0xff
+                    if status:
+                        msg = 'command failure: %s, %s, %s'
+                        errstr = os.strerror(status)
+                        log.error(msg, command, status, errstr)
+                        errors.append(msg % (command, status, errstr))
+                if errors:
+                    raise RuntimeError(NL.join(errors))
 
     def _generate_lmtp_file(self, fp):
         # The format for Postfix's LMTP transport map is defined here:
@@ -125,11 +129,22 @@ class LMTP:
                   file=fp)
             for mlist in sorted(by_domain[domain], key=sort_key):
                 aliases = list(utility.aliases(mlist))
-                width = max(len(alias) for alias in aliases) + 3
-                print(ALIASTMPL.format(aliases.pop(0), config, width), file=fp)
+                width = max(len(alias) for alias in aliases) + \
+                    aliases[0].count('.') + 7
+                print(ALIASTMPL.format(self._decorate(aliases.pop(0)),
+                                       config, width), file=fp)
                 for alias in aliases:
-                    print(ALIASTMPL.format(alias, config, width), file=fp)
+                    print(ALIASTMPL.format(self._decorate(alias),
+                                           config, width), file=fp)
                 print(file=fp)
+
+    def _decorate(self, name):
+        # Postfix regex tables need regex matching listname or domains. This
+        # method just decorates the name to be printed in the transport map
+        # file or relay domains file.
+        if self.transport_file_type == 'regex':
+            return '/^{}$/'.format(name).replace('.', '\.')
+        return name
 
     def _generate_domains_file(self, fp):
         # Uniquify the domains, then sort them alphabetically.
@@ -145,5 +160,5 @@ class LMTP:
 # you're on your own.
 """.format(now().replace(microsecond=0)), file=fp)
         for domain in sorted(domains):
-            print('{0} {0}'.format(domain), file=fp)
+            print('{} {}'.format(self._decorate(domain), domain), file=fp)
         print(file=fp)
