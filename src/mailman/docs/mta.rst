@@ -145,9 +145,12 @@ Transport maps
 By default, Mailman works well with Postfix transport maps as a way to deliver
 incoming messages to Mailman's LMTP server.  Mailman will automatically write
 the correct transport map when its ``mailman aliases`` command is run, or
-whenever a mailing list is created or removed via other commands.  To connect
-Postfix to Mailman's LMTP server, add the following to Postfix's ``main.cf``
-file::
+whenever a mailing list is created or removed via other commands. Mailman
+supports two type of transport map tables for Postfix, namely ``hash`` and
+``regexp``. Tables using hash are processed by ``postmap`` command. To use this
+format, you should have ``postmap`` command available on the host running
+Mailman. It is also the default one of the two. To connect Postfix to
+Mailman's LMTP server, add the following to Postfix's ``main.cf`` file::
 
     transport_maps =
         hash:/path-to-mailman/var/data/postfix_lmtp
@@ -166,6 +169,36 @@ Note that if you are not using virtual domains, then `relay_domains`_ isn't
 strictly needed (but it is harmless).  All you need to do in this scenario is
 to make sure that Postfix accepts mail for your one domain, normally by
 including it in ``mydestination``.
+
+Regular Expression tables remove the additional dependency of having ``postmap``
+command available to Mailman. If you want to use ``regexp`` or Regular
+Expression tables, then add the following to Postfix's ``main.cf`` file::
+
+    transport_maps =
+        regexp:/path-to-mailman/var/data/postfix_lmtp
+    local_recipient_maps =
+        regexp:/path-to-mailman/var/data/postfix_lmtp
+    relay_domains =
+        regexp:/path-to-mailman/var/data/postfix_domains
+
+You will also have to instruct Mailman to generate regexp tables instead of hash
+tables by adding the following configuration to ``mailman.cfg``::
+
+    [mta]
+    incoming: mailman.mta.postfix.LMTP
+    outgoing: mailman.mta.deliver.deliver
+    lmtp_host: mail.example.com
+    lmtp_port: 8024
+    smtp_host: mail.example.com
+    smtp_port: 25
+    configuration: /path/to/postfix-mailman.cfg
+
+Also you will have to create another configuration file called as
+``postfix-mailman.cfg`` and add its path to the ``configuration`` parameter
+above. The ``postfix-mailman.cfg`` would look like this::
+
+    [postfix]
+    transport_file_type: regex
 
 
 Postfix documentation
@@ -339,7 +372,7 @@ the user ``mailman``, qmail will give you the destination address
 ``mailman-spam@lists.example.com`` while it should actually be
 ``spam@lists.example.com``.  The second argument to ``qmail-lmtp`` defines
 how many parts (separated by dashes) to filter out.  The first argument
-specifies the LMTP port of mailman.  Long story short, as user mailman:
+specifies the LMTP port of Mailman.  Long story short, as user mailman:
 ::
 
     % chmod +t "$HOME"
