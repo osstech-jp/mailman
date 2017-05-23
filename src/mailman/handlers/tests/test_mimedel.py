@@ -38,6 +38,7 @@ from mailman.testing.helpers import (
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from pkg_resources import resource_filename
+from unittest.mock import patch
 from zope.component import getUtility
 
 
@@ -224,6 +225,7 @@ class TestMiscellaneous(unittest.TestCase):
     """Test various miscellaneous filtering actions."""
 
     layer = ConfigLayer
+    maxDiff = None
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
@@ -256,8 +258,13 @@ multipart/signed
         with open(email_file) as fp:
             msg = email.message_from_file(fp)
         process = config.handlers['mime-delete'].process
-        process(self._mlist, msg, {})
-        with open(email_file2) as fp:
+        with ExitStack() as resources:
+            fp = resources.enter_context(open(email_file2))
+            # Mock this so that the X-Content-Filtered-By header isn't
+            # sensitive to Mailman version bumps.
+            resources.enter_context(
+                patch('mailman.handlers.mime_delete.VERSION', '123'))
+            process(self._mlist, msg, {})
             self.assertEqual(msg.as_string(), fp.read())
 
     def test_mixed_case_ext_and_recast(self):
