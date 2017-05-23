@@ -6,7 +6,7 @@ To: Someone <someone@example.net>
 Subject: Message Subject
 Content-Type: multipart/mixed;
  boundary="------------050603050603060608020908"
-X-Content-Filtered-By: Mailman/MimeDel 3.1.0b5
+X-Content-Filtered-By: Mailman/MimeDel 123
 
 This is a multi-part message in MIME format.
 --------------050603050603060608020908
