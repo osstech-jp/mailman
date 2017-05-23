@@ -76,7 +76,8 @@ Simple multipart filtering
 ==========================
 
 If one of the subparts in a ``multipart`` message matches the filter type,
-then just that subpart will be stripped.
+then just that subpart will be stripped.  If that leaves just a single subpart,
+the ``multipart`` will be replaced by the subpart.
 ::
 
     >>> msg = message_from_string("""\
@@ -101,17 +102,11 @@ then just that subpart will be stripped.
     >>> process(mlist, msg, {})
     >>> print(msg.as_string())
     From: aperson@example.com
-    Content-Type: multipart/mixed; boundary=BOUNDARY
     MIME-Version: 1.0
+    Content-Type: image/gif
     X-Content-Filtered-By: Mailman/MimeDel ...
     <BLANKLINE>
-    --BOUNDARY
-    Content-Type: image/gif
-    MIME-Version: 1.0
-    <BLANKLINE>
     yyy
-    --BOUNDARY--
-    <BLANKLINE>
 
 
 Collapsing multipart/alternative messages
@@ -128,7 +123,8 @@ Content filtering will remove the jpeg part, leaving the
 ``multipart/alternative`` with only a single gif subpart.  Because there's
 only one subpart left, the MIME structure of the message will be reorganized,
 removing the inner ``multipart/alternative`` so that the outer
-``multipart/mixed`` has just a single gif subpart.
+``multipart/mixed`` has just a single gif subpart, and then the multipart is
+recast as just the subpart.
 
     >>> mlist.collapse_alternatives = True
     >>> msg = message_from_string("""\
@@ -158,17 +154,11 @@ removing the inner ``multipart/alternative`` so that the outer
     >>> process(mlist, msg, {})
     >>> print(msg.as_string())
     From: aperson@example.com
-    Content-Type: multipart/mixed; boundary=BOUNDARY
     MIME-Version: 1.0
+    Content-Type: image/gif
     X-Content-Filtered-By: Mailman/MimeDel ...
     <BLANKLINE>
-    --BOUNDARY
-    Content-Type: image/gif
-    MIME-Version: 1.0
-    <BLANKLINE>
     yyy
-    --BOUNDARY--
-    <BLANKLINE>
 
 When the outer part is a ``multipart/alternative`` and filtering leaves this
 outer part with just one subpart, the entire message is converted to the left

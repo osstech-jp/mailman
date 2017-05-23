@@ -111,6 +111,8 @@ Bugs
    (Closes: #255)
  * Update documentation links for ``config.cfg`` settings.  (Closes: #306)
  * Disallow problematic characters in listnames.  (Closes: #311)
+ * Forward port several content filtering fixes from the 2.1 branch.
+   (Closes: #330, #331, #332 and #334)
 
 Configuration
 -------------

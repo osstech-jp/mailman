@@ -139,6 +139,11 @@ def process(mlist, msg, msgdata):
         if ctype == 'multipart/alternative':
             firstalt = msg.get_payload(0)
             reset_payload(msg, firstalt)
+    # Now that we've collapsed the MPA parts, go through the message
+    # and recast any multipart parts with only one sub-part as just
+    # the sub-part.
+    if msg.is_multipart():
+        recast_multipart(msg)
     # If we removed some parts, make note of this
     changedp = 0
     if numparts != len([subpart for subpart in msg.walk()]):
@@ -222,10 +227,41 @@ def collapse_multipart_alternatives(msg):
         if subpart.get_content_type() == 'multipart/alternative':
             with suppress(IndexError):
                 firstalt = subpart.get_payload(0)
-                newpayload.append(firstalt)
+                if msg.get_content_type() == 'message/rfc822':
+                    # This is a multipart/alternative message in a
+                    # message/rfc822 part. We treat it specially so as not to
+                    # lose the headers.
+                    reset_payload(subpart, firstalt)
+                    newpayload.append(subpart)
+                else:
+                    newpayload.append(firstalt)
+        elif subpart.is_multipart():
+            collapse_multipart_alternatives(subpart)
+            newpayload.append(subpart)
         else:
             newpayload.append(subpart)
     msg.set_payload(newpayload)
+
+
+def recast_multipart(msg):
+    # If we're left with a multipart message with only one sub-part, recast
+    # the message to just the sub-part, but not if the part is message/rfc822
+    # because we don't want to lose the headers.
+    # Also, if this is a multipart/signed part, stop now as the original part
+    # may have had a multipart sub-part with only one sub-sub-part, the sig
+    # may still be valid and going further may break it.  (LP: #1551075)
+    if msg.get_content_type() == 'multipart/signed':
+        return
+    if msg.is_multipart():
+        if (len(msg.get_payload()) == 1 and
+                msg.get_content_type() != 'message/rfc822'):
+            reset_payload(msg, msg.get_payload(0))
+            # now that we've recast this part, check the subordinate parts
+            recast_multipart(msg)
+        else:
+            # This part's OK but check deeper.
+            for part in msg.get_payload():
+                recast_multipart(part)
 
 
 def to_plaintext(msg):
@@ -263,12 +299,12 @@ def get_file_ext(m):
     fext = ''
     filename = m.get_filename('') or m.get_param('name', '')
     if filename:
-        fext = os.path.splitext(oneline(filename, 'utf-8'))[1]
+        fext = os.path.splitext(oneline(filename, 'utf-8', in_unicode=True))[1]
         if len(fext) > 1:
             fext = fext[1:]
         else:
             fext = ''
-    return fext
+    return fext.lower()
 
 
 @public
