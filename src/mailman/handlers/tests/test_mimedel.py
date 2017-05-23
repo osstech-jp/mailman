@@ -19,11 +19,13 @@
 
 import os
 import sys
+import email
 import shutil
 import tempfile
 import unittest
 
 from contextlib import ExitStack, contextmanager
+from io import StringIO
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers import mime_delete
@@ -35,6 +37,7 @@ from mailman.testing.helpers import (
     LogFileMark, configuration, get_queue_messages,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
+from pkg_resources import resource_filename
 from zope.component import getUtility
 
 
@@ -215,3 +218,73 @@ MIME-Version: 1.0
             msg['x-content-filtered-by'].startswith('Mailman/MimeDel'))
         payload_lines = msg.get_payload().splitlines()
         self.assertEqual(payload_lines[0], 'Converted text/html to text/plain')
+
+
+class TestMiscellaneous(unittest.TestCase):
+    """Test various miscellaneous filtering actions."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._mlist.collapse_alternatives = True
+        self._mlist.filter_content = True
+        self._mlist.filter_extensions = ['xlsx']
+
+    def test_collapse_alternatives(self):
+        email_file = resource_filename(
+            'mailman.handlers.tests.data', 'collapse_alternatives.eml')
+        with open(email_file) as fp:
+            msg = email.message_from_file(fp)
+        process = config.handlers['mime-delete'].process
+        process(self._mlist, msg, {})
+        structure = StringIO()
+        email.iterators._structure(msg, fp=structure)
+        self.assertEqual(structure.getvalue(), """\
+multipart/signed
+    multipart/mixed
+        text/plain
+        text/plain
+    application/pgp-signature
+""")
+
+    def test_msg_rfc822(self):
+        email_file = resource_filename(
+            'mailman.handlers.tests.data', 'msg_rfc822.eml')
+        email_file2 = resource_filename(
+            'mailman.handlers.tests.data', 'msg_rfc822_out.eml')
+        with open(email_file) as fp:
+            msg = email.message_from_file(fp)
+        process = config.handlers['mime-delete'].process
+        process(self._mlist, msg, {})
+        with open(email_file2) as fp:
+            self.assertEqual(msg.as_string(), fp.read())
+
+    def test_mixed_case_ext_and_recast(self):
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: Testing mixed extension
+Message-ID: <ant>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="AAAA"
+
+--AAAA
+Content-Type: text/plain; charset="utf-8"
+
+Plain text
+
+--AAAA
+Content-Type: application/octet-stream; name="test.xlsX"
+Content-Disposition: attachment; filename="test.xlsX"
+
+spreadsheet
+
+--AAAA--
+""")
+        process = config.handlers['mime-delete'].process
+        process(self._mlist, msg, {})
+        self.assertEqual(msg['content-type'], 'text/plain; charset="utf-8"')
+        self.assertEqual(msg.get_payload(), """\
+Plain text
+""")
