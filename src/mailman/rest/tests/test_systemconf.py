@@ -48,6 +48,7 @@ class TestSystemConfiguration(unittest.TestCase):
             pending_request_life='3d',
             post_hook='',
             pre_hook='',
+            self_link='http://localhost:9001/3.0/system/configuration/mailman',
             sender_headers='from from_ reply-to sender',
             site_owner='noreply@example.com',
             ))
@@ -65,6 +66,7 @@ class TestSystemConfiguration(unittest.TestCase):
                 'https://publicsuffix.org/list/public_suffix_list.dat',
             resolver_lifetime='5s',
             resolver_timeout='3s',
+            self_link='http://localhost:9001/3.0/system/configuration/dmarc',
             ))
 
     def test_dotted_section(self):
@@ -78,6 +80,8 @@ class TestSystemConfiguration(unittest.TestCase):
             description='French',
             charset='iso-8859-1',
             enabled='yes',
+            self_link=('http://localhost:9001/3.0/system'
+                       '/configuration/language.fr'),
             ))
 
     def test_multiline(self):

@@ -89,7 +89,9 @@ class SystemConfiguration:
     def on_get(self, request, response):
         if self._section is None:
             resource = dict(
-                sections=sorted(section.name for section in config))
+                sections=sorted(section.name for section in config),
+                self_link=self.api.path_to('system/configuration'),
+                )
             okay(response, etag(resource))
             return
         missing = object()
@@ -100,6 +102,14 @@ class SystemConfiguration:
         # Sections don't have .keys(), .values(), or .items() but we can
         # iterate over them.
         resource = {key: section[key] for key in section}
+        # Add a `self_link` attribute to the resource.  This is a little ugly
+        # because technically speaking we're mixing namespaces.  We can't have
+        # a variable named `self_link` in any section, but also we can't have
+        # `http_etag` either, so unless we want to shove all these values into
+        # a sub dictionary (which we don't), we have to live with it.
+        self_link = self.api.path_to(
+            'system/configuration/{}'.format(section.name))
+        resource['self_link'] = self_link
         okay(response, etag(resource))
 
 
