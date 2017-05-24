@@ -379,7 +379,7 @@ class TestConfiguration(unittest.TestCase):
     def test_get_goodbye_message_uri(self):
         with transaction():
             getUtility(ITemplateManager).set(
-                'user:ack:goodbye', self._mlist.list_id,
+                'list:user:notice:goodbye', self._mlist.list_id,
                 'mailman:///goodbye.txt')
         resource, response = call_api(
             'http://localhost:9001/3.0/lists/ant.example.com/config'
@@ -395,7 +395,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
             getUtility(ITemplateManager).raw(
-                'user:ack:goodbye', self._mlist.list_id).uri,
+                'list:user:notice:goodbye', self._mlist.list_id).uri,
             'mailman:///salutation.txt')
 
     def test_patch_goodbye_message_uri(self):
@@ -407,14 +407,14 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
             getUtility(ITemplateManager).raw(
-                'user:ack:goodbye', self._mlist.list_id).uri,
+                'list:user:notice:goodbye', self._mlist.list_id).uri,
             'mailman:///salutation.txt')
 
     def test_put_goodbye_message_uri(self):
         manager = getUtility(ITemplateManager)
         with transaction():
             manager.set(
-                'user:ack:goodbye',
+                'list:user:notice:goodbye',
                 self._mlist.list_id,
                 'mailman:///somefile.txt')
         resource, response = call_api(
@@ -424,7 +424,7 @@ class TestConfiguration(unittest.TestCase):
             'PUT')
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
-            manager.raw('user:ack:goodbye', self._mlist.list_id).uri,
+            manager.raw('list:user:notice:goodbye', self._mlist.list_id).uri,
             'mailman:///salutation.txt')
 
     def test_advertised(self):
