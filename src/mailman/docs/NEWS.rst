@@ -164,15 +164,6 @@ Interfaces
  * ``ISubscriptionService`` now supports mass unsubscribes.  Given by Harshit
    Bansal.
 
-Internal
---------
- * Add official support for Python 3.6. (Closes #295)
- * A handful of unused legacy exceptions have been removed.  The redundant
-   ``MailmanException`` has been removed; use ``MailmanError`` everywhere.
- * Drop the use of the ``lazr.smtptest`` library, which is based on the
-   asynchat/asyncore-based smtpd.py stdlib module.  Instead, use the
-   asyncio-based aiosmtpd package.
-
 Message handling
 ----------------
  * New DMARC mitigations have been added.  Given by Mark Sapiro.  (Closes #247)
@@ -273,7 +264,12 @@ REST
 
 Other
 -----
- * The test suite is now Python 3.5 compatible.
+ * Add official support for Python 3.5 and 3.6. (Closes #295)
+ * A handful of unused legacy exceptions have been removed.  The redundant
+   ``MailmanException`` has been removed; use ``MailmanError`` everywhere.
+ * Drop the use of the ``lazr.smtptest`` library, which is based on the
+   asynchat/asyncore-based smtpd.py stdlib module.  Instead, use the
+   asyncio-based `aiosmtpd <http://aiosmtpd.readthedocs.io/>`_ package.
  * Improvements in importing Mailman 2.1 lists, given by Aurélien Bompard.
  * The ``prototype`` archiver is not web accessible so it does not have a
    ``list_url`` or permalink.  Given by Aurélien Bompard.
