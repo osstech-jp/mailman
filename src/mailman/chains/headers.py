@@ -20,6 +20,7 @@
 import re
 import logging
 
+from email.header import Header
 from itertools import count
 from mailman.chains.base import Chain, Link
 from mailman.config import config
@@ -101,6 +102,8 @@ class HeaderMatchRule:
         for p in msg.walk():
             headers.extend(p.get_all(self.header, []))
         for value in headers:
+            if isinstance(value, Header):
+                value = value.encode()
             if re.search(self.pattern, value, re.IGNORECASE):
                 return True
         return False

@@ -19,6 +19,7 @@
 
 import unittest
 
+from email.header import Header
 from mailman.app.lifecycle import create_list
 from mailman.chains.headers import HeaderMatchRule, make_link
 from mailman.config import config
@@ -199,6 +200,35 @@ This is junk
         msgdata = {}
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('Content-Type', 'application/junk', 'hold')
+        # This event subscriber records the event that occurs when the message
+        # is processed by the owner chain.
+        events = []
+        with event_subscribers(events.append):
+            process(self._mlist, msg, msgdata, start_chain='header-match')
+        self.assertEqual(len(events), 1)
+        event = events[0]
+        self.assertIsInstance(event, HoldEvent)
+        self.assertEqual(event.chain, config.chains['hold'])
+
+    def test_get_all_returns_non_string(self):
+        # Test case where msg.get_all() returns header instance.
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: =?unknown-8bit?q?Become_smarter_now_=96_Increase__your_brain...?=
+Message-ID: <ant>
+
+body
+
+""")
+        # XXX In the wild we have seen a message instance in which the subject
+        # header value is an email.header.Header instance rather than a
+        # string.  We don't know how to recreate that here so we cheat.
+        msg['Subject'] = Header(
+            'Become_smarter_now \x96 Increase  your brain...', 'utf-8')
+        msgdata = {}
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('Subject', '=\?utf', 'hold')
         # This event subscriber records the event that occurs when the message
         # is processed by the owner chain.
         events = []
