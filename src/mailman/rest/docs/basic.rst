@@ -4,7 +4,7 @@
 
 The encoding of URI components addressing a REST endpoint is Unicode
 UTF-8.  There is :ref:`more information about internationalization in
-Mailman<internationalization>`.
+Mailman <internationalization>`.
 
 In order to do anything with the REST API, you need to know its `Basic AUTH`_
 credentials, and the version of the API you wish to speak to.
