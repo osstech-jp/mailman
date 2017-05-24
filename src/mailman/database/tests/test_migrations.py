@@ -374,16 +374,16 @@ class TestMigrations(unittest.TestCase):
                 'list:digest:header': 'digest_header',
                 'list:regular:footer': 'footer',
                 'list:regular:header': 'header',
-                'user:ack:goodbye': 'goodbye',
-                'user:ack:welcome': 'welcome',
+                'list:user:notice:goodbye': 'goodbye',
+                'list:user:notice:welcome': 'welcome',
                 }.get(name, name)))
         self.assertEqual(sorted(seen_names), [
             'list:digest:footer',
             'list:digest:header',
             'list:regular:footer',
             'list:regular:header',
-            'user:ack:goodbye',
-            'user:ack:welcome',
+            'list:user:notice:goodbye',
+            'list:user:notice:welcome',
             ])
 
     def test_fa0d96e28631_upgrade_no_uris(self):
@@ -435,10 +435,10 @@ class TestMigrations(unittest.TestCase):
             manager.set('list:regular:header',
                         'ant.example.com',
                         'mailman:///header.txt')
-            manager.set('user:ack:welcome',
+            manager.set('list:user:notice:welcome',
                         'ant.example.com',
                         'mailman:///welcome.txt')
-            manager.set('user:ack:goodbye',
+            manager.set('list:user:notice:goodbye',
                         'ant.example.com',
                         'mailman:///goodbye.txt')
         mlist_table = sa.sql.table(

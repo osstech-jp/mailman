@@ -48,7 +48,8 @@ class TestNotifications(unittest.TestCase):
         self._mlist = create_list('test@example.com')
         self._mlist.display_name = 'Test List'
         getUtility(ITemplateManager).set(
-            'user:ack:welcome', self._mlist.list_id, 'mailman:///welcome.txt')
+            'list:user:notice:welcome', self._mlist.list_id,
+            'mailman:///welcome.txt')
         config.push('template config', """\
         [paths.testing]
         template_dir: {}/templates
@@ -94,7 +95,7 @@ Welcome to the Test List mailing list.
         # The welcome message url can contain placeholders for the fqdn list
         # name and language.
         getUtility(ITemplateManager).set(
-            'user:ack:welcome', self._mlist.list_id,
+            'list:user:notice:welcome', self._mlist.list_id,
             'mailman:///$listname/$language/welcome.txt')
         # Add the xx language and subscribe Anne using it.
         manager = getUtility(ILanguageManager)

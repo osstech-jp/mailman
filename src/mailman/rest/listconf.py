@@ -65,9 +65,9 @@ TEMPLATE_ATTRIBUTES = dict(
     digest_footer_uri='list:digest:footer',
     digest_header_uri='list:digest:header',
     footer_uri='list:regular:footer',
-    goodbye_message_uri='user:ack:goodbye',
+    goodbye_message_uri='list:user:notice:goodbye',
     header_uri='list:regular:header',
-    welcome_message_uri='user:ack:welcome',
+    welcome_message_uri='list:user:notice:welcome',
     )
 
 
