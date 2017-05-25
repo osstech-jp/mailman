@@ -79,7 +79,8 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
     msgdata['_mod_message_id'] = message_id
     msgdata['_mod_listid'] = mlist.list_id
     msgdata['_mod_sender'] = msg.sender
-    msgdata['_mod_subject'] = msg.get('subject', _('(no subject)'))
+    # The subject can sometimes be a Header instance.  Stringify it.
+    msgdata['_mod_subject'] = str(msg.get('subject', _('(no subject)')))
     msgdata['_mod_reason'] = reason
     msgdata['_mod_hold_date'] = now().isoformat()
     # Now hold this request.  We'll use the message_id as the key.
