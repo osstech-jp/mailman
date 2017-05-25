@@ -10,7 +10,7 @@ Here is a history of user visible changes to Mailman.
 
 3.1.0 -- "Between The Wheels"
 =============================
-(2017-XX-XX)
+(2017-05-25)
 
 Bugs
 ----
