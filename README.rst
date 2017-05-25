@@ -62,6 +62,7 @@ Table of Contents
     src/mailman/docs/hyperkitty
     src/mailman/docs/contribute
     src/mailman/docs/STYLEGUIDE
+    src/mailman/docs/internationalization
     src/mailman/docs/architecture
     src/mailman/docs/8-miles-high
     src/mailman/docs/NEWS
