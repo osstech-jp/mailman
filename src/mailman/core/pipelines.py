@@ -15,19 +15,17 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Built-in pipelines."""
+"""Application support for pipeline processing."""
 
 import logging
 
 from mailman.app.bounces import bounce_message
 from mailman.config import config
-from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import (
     DiscardMessage, IPipeline, RejectMessage)
 from mailman.utilities.modules import add_components
 from public import public
-from zope.interface import implementer
 
 
 dlog = logging.getLogger('mailman.debug')
@@ -62,84 +60,9 @@ def process(mlist, msg, msgdata, pipeline_name='built-in'):
 
 
 @public
-@implementer(IPipeline)
-class BasePipeline:
-    """Base pipeline implementation."""
-
-    _default_handlers = ()
-
-    def __init__(self):
-        self._handlers = []
-        for handler_name in self._default_handlers:
-            self._handlers.append(config.handlers[handler_name])
-
-    def __iter__(self):
-        """See `IPipeline`."""
-        yield from self._handlers
-
-
-@public
-class OwnerPipeline(BasePipeline):
-    """The built-in owner pipeline."""
-
-    name = 'default-owner-pipeline'
-    description = _('The built-in owner pipeline.')
-
-    _default_handlers = (
-        'owner-recipients',
-        'to-outgoing',
-        )
-
-
-@public
-class PostingPipeline(BasePipeline):
-    """The built-in posting pipeline."""
-
-    name = 'default-posting-pipeline'
-    description = _('The built-in posting pipeline.')
-
-    _default_handlers = (
-        'mime-delete',
-        'tagger',
-        'member-recipients',
-        'avoid-duplicates',
-        'cleanse',
-        'cleanse-dkim',
-        'cook-headers',
-        'subject-prefix',
-        'rfc-2369',
-        'to-archive',
-        'to-digest',
-        'to-usenet',
-        'after-delivery',
-        'acknowledge',
-        'decorate',
-        'dmarc',
-        'to-outgoing',
-        )
-
-
-@public
-class VirginPipeline(BasePipeline):
-    """The processing pipeline for virgin messages.
-
-    Virgin messages are those that are crafted internally by Mailman.
-    """
-    name = 'virgin'
-    description = _('The virgin queue pipeline.')
-
-    _default_handlers = (
-        'cook-headers',
-        'to-outgoing',
-        )
-
-
-@public
 def initialize():
     """Initialize the pipelines."""
     # Find all handlers in the registered plugins.
     add_components('mailman.handlers', IHandler, config.handlers)
     # Set up some pipelines.
-    for pipeline_class in (OwnerPipeline, PostingPipeline, VirginPipeline):
-        pipeline = pipeline_class()
-        config.pipelines[pipeline.name] = pipeline
+    add_components('mailman.pipelines', IPipeline, config.pipelines)
