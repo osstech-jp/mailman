@@ -8,6 +8,10 @@ Copyright (C) 1998-2017 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
+3.2.0 -- "La Villa Strangiato"
+==============================
+(201X-XX-XX)
+
 3.1.0 -- "Between The Wheels"
 =============================
 (2017-05-25)
