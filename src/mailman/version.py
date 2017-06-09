@@ -19,7 +19,7 @@
 
 # Mailman version.
 VERSION = '3.2.0a1'
-CODENAME = 'Between The Wheels'
+CODENAME = 'La Villa Strangiato'
 
 # And as a hex number in the manner of PY_VERSION_HEX.
 ALPHA = 0xa
