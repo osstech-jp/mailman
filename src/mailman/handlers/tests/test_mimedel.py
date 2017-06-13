@@ -220,6 +220,31 @@ MIME-Version: 1.0
         payload_lines = msg.get_payload().splitlines()
         self.assertEqual(payload_lines[0], 'Converted text/html to text/plain')
 
+    def test_missing_html_to_plain_text_command(self):
+        # Calling a missing html_to_plain_text_command is properly logged.
+        msg = mfs("""\
+From: aperson@example.com
+Content-Type: text/html
+MIME-Version: 1.0
+
+<html><head></head>
+<body></body></html>
+""")
+        process = config.handlers['mime-delete'].process
+        config.push('html_filter', """\
+[mailman]
+html_to_plain_text_command = /non/existent/path/to/bogus/command $filename
+""")
+        self.addCleanup(config.pop, 'html_filter')
+        mark = LogFileMark('mailman.error')
+        process(self._mlist, msg, {})
+        line = mark.readline()[:-1]
+        self.assertTrue(line.endswith('HTML -> text/plain command error'))
+        self.assertEqual(msg.get_content_type(), 'text/html')
+        self.assertIsNone(msg['x-content-filtered-by'])
+        payload_lines = msg.get_payload().splitlines()
+        self.assertEqual(payload_lines[0], '<html><head></head>')
+
 
 class TestMiscellaneous(unittest.TestCase):
     """Test various miscellaneous filtering actions."""

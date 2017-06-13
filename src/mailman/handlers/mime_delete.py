@@ -279,7 +279,10 @@ def to_plaintext(msg):
             try:
                 stdout = subprocess.check_output(
                     command, universal_newlines=True)
-            except subprocess.CalledProcessError:
+            except (FileNotFoundError,
+                    PermissionError,
+                    subprocess.CalledProcessError,
+                    ):
                 log.exception('HTML -> text/plain command error')
             else:
                 # Replace the payload of the subpart with the converted text
