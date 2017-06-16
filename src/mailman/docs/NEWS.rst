@@ -12,6 +12,12 @@ Here is a history of user visible changes to Mailman.
 ==============================
 (201X-XX-XX)
 
+Bugs
+----
+ * A missing html_to_plain_text_command is now properly detected and logged.
+   (closes #345)
+
+
 3.1.0 -- "Between The Wheels"
 =============================
 (2017-05-25)
