@@ -59,15 +59,22 @@ class ListManager:
         return mlist
 
     @dbconnection
-    def get(self, store, fqdn_listname):
+    def get(self, store, list_spec):
         """See `IListManager`."""
-        listname, at, hostname = fqdn_listname.partition('@')
-        list_id = '{}.{}'.format(listname, hostname)
-        return store.query(MailingList).filter_by(_list_id=list_id).first()
+        return (self.get_by_fqdn(list_spec)
+                if '@' in list_spec
+                else self.get_by_list_id(list_spec))
 
     @dbconnection
     def get_by_list_id(self, store, list_id):
         """See `IListManager`."""
+        return store.query(MailingList).filter_by(_list_id=list_id).first()
+
+    @dbconnection
+    def get_by_fqdn(self, store, fqdn_listname):
+        """See `IListManager`."""
+        listname, at, hostname = fqdn_listname.partition('@')
+        list_id = '{}.{}'.format(listname, hostname)
         return store.query(MailingList).filter_by(_list_id=list_id).first()
 
     @dbconnection

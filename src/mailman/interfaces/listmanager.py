@@ -94,22 +94,36 @@ class IListManager(Interface):
         :raise `ListAlreadyExistsError` if the named list already exists.
         """
 
-    def get(fqdn_listname):
+    def get(list_spec):
+        """Return the mailing list with the given specification, if it exists.
+
+        :param list_spec: Either the fully qualified name of the mailing list,
+            or its List-ID.  If list_spec has an `@` in it, it's considered an
+            FQDN listname, otherwise it's considered a List-ID.
+        :type list_spec: str
+        :return: the matching mailing list or None if no matching list is
+            found.
+        :rtype: IMailingList
+        """
+
+    def get_by_fqdn(fqdn_listname):
         """Return the mailing list with the given name, if it exists.
 
         :param fqdn_listname: The fully qualified name of the mailing list.
-        :type fqdn_listname: Unicode.
-        :return: the matching `IMailingList` or None if the named list does
-            not exist.
+        :type fqdn_listname: str
+        :return: the matching mailing list or None if no matching list is
+            found.
+        :rtype: IMailingList
         """
 
     def get_by_list_id(list_id):
         """Return the mailing list with the given list id, if it exists.
 
-        :param fqdn_listname: The fully qualified name of the mailing list.
-        :type fqdn_listname: Unicode.
-        :return: the matching `IMailingList` or None if the named list does
-            not exist.
+        :param list_id: The List-ID
+        :type list_id: str
+        :return: the matching mailing list or None if no matching list is
+            found.
+        :rtype: IMailingList
         """
 
     def delete(mlist):

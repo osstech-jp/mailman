@@ -135,6 +135,24 @@ class TestListManager(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0], cat)
 
+    def test_find_by_list_spec(self):
+        ant = create_list('ant@example.com')
+        list_manager = getUtility(IListManager)
+        self.assertEqual(list_manager.get('ant@example.com'), ant)
+        self.assertEqual(list_manager.get('ant.example.com'), ant)
+
+    def test_find_by_list_id(self):
+        ant = create_list('ant@example.com')
+        list_manager = getUtility(IListManager)
+        self.assertEqual(list_manager.get_by_list_id('ant.example.com'), ant)
+        self.assertIsNone(list_manager.get_by_list_id('ant@example.com'))
+
+    def test_find_by_fqdn(self):
+        ant = create_list('ant@example.com')
+        list_manager = getUtility(IListManager)
+        self.assertEqual(list_manager.get_by_fqdn('ant@example.com'), ant)
+        self.assertIsNone(list_manager.get_by_fqdn('ant.example.com'))
+
 
 class TestListLifecycleEvents(unittest.TestCase):
     layer = ConfigLayer
