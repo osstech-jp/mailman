@@ -225,13 +225,13 @@ class MailingList(Model):
         listen(cls, 'load', cls._post_load)
 
     def __repr__(self):
-        return '<mailing list "{0}" at {1:#x}>'.format(
+        return '<mailing list "{}" at {:#x}>'.format(
             self.fqdn_listname, id(self))
 
     @property
     def fqdn_listname(self):
         """See `IMailingList`."""
-        return '{0}@{1}'.format(self.list_name, self.mail_host)
+        return '{}@{}'.format(self.list_name, self.mail_host)
 
     @property
     def list_id(self):

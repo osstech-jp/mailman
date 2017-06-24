@@ -17,6 +17,13 @@ Bugs
  * A missing html_to_plain_text_command is now properly detected and logged.
    (closes #345)
 
+Interfaces
+----------
+ * Broaden the semantics for ``IListManager.get()``.  This API now accepts
+   both ``List-ID``s and fully qualified list names, since that's the most
+   common use case.  There's now a separate ``.get_by_fqdn()`` which only
+   accepts the latter and mirrors the already existing ``.get_by_list_id()``.
+
 
 3.1.0 -- "Between The Wheels"
 =============================
