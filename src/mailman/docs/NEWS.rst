@@ -15,7 +15,8 @@ Here is a history of user visible changes to Mailman.
 Bugs
 ----
  * A missing html_to_plain_text_command is now properly detected and logged.
-   (closes #345)
+   (Closes #345)
+ * Syntactically invalid sender addresses are now ignored.  (Closes #229)
 
 Interfaces
 ----------
