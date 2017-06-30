@@ -17,6 +17,8 @@ Bugs
  * A missing html_to_plain_text_command is now properly detected and logged.
    (Closes #345)
  * Syntactically invalid sender addresses are now ignored.  (Closes #229)
+ * An AttributeError: 'str' object has no attribute 'decode' exception in
+   subject prefixing is fixed.  (Closes #359)
 
 Interfaces
 ----------
