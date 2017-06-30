@@ -19,6 +19,8 @@ Bugs
  * Syntactically invalid sender addresses are now ignored.  (Closes #229)
  * An AttributeError: 'str' object has no attribute 'decode' exception in
    subject prefixing is fixed.  (Closes #359)
+ * Messages with no syntactically valid senders are now automatically
+   discarded.  (Closes #369)
 
 Interfaces
 ----------
