@@ -105,8 +105,8 @@ class BadStyle:
                      in find_components('mypackage', IStyle)]
             self.assertEqual(names, ['good-style'])
 
-    def test_find_components_no_instantiate(self):
-        # find_components() now instantiates the class unless it's been
+    def test_find_components_abstract_component(self):
+        # find_components() finds the class unless it's been
         # decorated with the @abstract_component decorator.
         with ExitStack() as resources:
             # Creating a temporary directory and adding it to sys.path.
