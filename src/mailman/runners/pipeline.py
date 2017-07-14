@@ -30,6 +30,9 @@ from public import public
 @public
 class PipelineRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
+        # in case we need to abort & reprocess
+        msgdata['unprocessed'] = msg
+
         # Process the message through the mailing list's pipeline.
         pipeline = (mlist.owner_pipeline
                     if msgdata.get('to_owner', False)
