@@ -29,6 +29,10 @@ Interfaces
    common use case.  There's now a separate ``.get_by_fqdn()`` which only
    accepts the latter and mirrors the already existing ``.get_by_list_id()``.
 
+Other
+-----
+ * Drop support for Python 3.4.  (Closes #373)
+
 
 3.1.0 -- "Between The Wheels"
 =============================
