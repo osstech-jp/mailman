@@ -18,14 +18,17 @@
 """Importing list data into Mailman 3."""
 
 import sys
+import click
 import pickle
 
-from contextlib import ExitStack, contextmanager
+from contextlib import ExitStack
 from mailman.core.i18n import _
-from mailman.database.transaction import transactional
+from mailman.database.transaction import transaction
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.importer import Import21Error, import_config_pck
+from mailman.utilities.modules import hacked_sys_modules
+from mailman.utilities.options import I18nCommand
 from public import public
 from zope.component import getUtility
 from zope.interface import implementer
@@ -38,76 +41,46 @@ class Bouncer:
         pass
 
 
-@contextmanager
-def hacked_sys_modules():
-    assert 'Mailman.Bouncer' not in sys.modules
-    sys.modules['Mailman.Bouncer'] = Bouncer
-    try:
-        yield
-    finally:
-        del sys.modules['Mailman.Bouncer']
+@click.command(
+    cls=I18nCommand,
+    help=_("""\
+    Import Mailman 2.1 list data'.  Requires the fully-qualified name of the
+    list to import and the path to the Mailman 2.1 pickle file."""))
+@click.argument('listspec')
+@click.argument(
+    'pickle_file', metavar='PICKLE_FILE',
+    type=click.File(mode='rb'))
+@click.pass_context
+def import21(ctx, listspec, pickle_file):
+    mlist = getUtility(IListManager).get(listspec)
+    if mlist is None:
+        ctx.fail(_('No such list: $listspec'))
+    with ExitStack() as resources:
+        resources.enter_context(hacked_sys_modules('Mailman.Bouncer', Bouncer))
+        resources.enter_context(transaction())
+        while True:
+            try:
+                config_dict = pickle.load(
+                    pickle_file, encoding='utf-8', errors='ignore')
+            except EOFError:
+                break
+            except pickle.UnpicklingError:
+                ctx.fail(
+                    _('Not a Mailman 2.1 configuration file: $pickle_file'))
+            else:
+                if not isinstance(config_dict, dict):
+                    print(_('Ignoring non-dictionary: {0!r}').format(
+                        config_dict), file=sys.stderr)
+                    continue
+                try:
+                    import_config_pck(mlist, config_dict)
+                except Import21Error as error:
+                    print(error, file=sys.stderr)
+                    sys.exit(1)
 
 
 @public
 @implementer(ICLISubCommand)
 class Import21:
-    """Import Mailman 2.1 list data."""
-
     name = 'import21'
-
-    def add(self, parser, command_parser):
-        """See `ICLISubCommand`."""
-        self.parser = parser
-        # Required positional arguments.
-        command_parser.add_argument(
-            'listname', metavar='LISTNAME', nargs=1,
-            help=_("""\
-            The 'fully qualified list name', i.e. the posting address of the
-            mailing list to inject the message into."""))
-        command_parser.add_argument(
-            'pickle_file', metavar='FILENAME', nargs=1,
-            help=_('The path to the config.pck file to import.'))
-
-    @transactional
-    def process(self, args):
-        """See `ICLISubCommand`."""
-        # Could be None or sequence of length 0.
-        if args.listname is None:
-            self.parser.error(_('List name is required'))
-            return
-        assert len(args.listname) == 1, (
-            'Unexpected positional arguments: %s' % args.listname)
-        fqdn_listname = args.listname[0]
-        mlist = getUtility(IListManager).get(fqdn_listname)
-        if mlist is None:
-            self.parser.error(_('No such list: $fqdn_listname'))
-            return
-        if args.pickle_file is None:
-            self.parser.error(_('config.pck file is required'))
-            return
-        assert len(args.pickle_file) == 1, (
-            'Unexpected positional arguments: %s' % args.pickle_file)
-        filename = args.pickle_file[0]
-        with ExitStack() as resources:
-            fp = resources.enter_context(open(filename, 'rb'))
-            resources.enter_context(hacked_sys_modules())
-            while True:
-                try:
-                    config_dict = pickle.load(
-                        fp, encoding='utf-8', errors='ignore')
-                except EOFError:
-                    break
-                except pickle.UnpicklingError:
-                    self.parser.error(
-                        _('Not a Mailman 2.1 configuration file: $filename'))
-                    return
-                else:
-                    if not isinstance(config_dict, dict):
-                        print(_('Ignoring non-dictionary: {0!r}').format(
-                            config_dict), file=sys.stderr)
-                        continue
-                    try:
-                        import_config_pck(mlist, config_dict)
-                    except Import21Error as error:
-                        print(error, file=sys.stderr)
-                        sys.exit(1)
+    command = import21

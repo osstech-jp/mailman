@@ -42,7 +42,7 @@ class AcceptableAliases(GetterSetter):
     def get(self, mlist, attribute):
         """Return the mailing list's acceptable aliases."""
         assert attribute == 'acceptable_aliases', (
-            'Unexpected attribute: {}'.format(attribute))   # pragma: no cover
+            'Unexpected attribute: {}'.format(attribute))   # pragma: nocover
         aliases = IAcceptableAliasSet(mlist)
         return sorted(aliases.aliases)
 
@@ -54,7 +54,7 @@ class AcceptableAliases(GetterSetter):
         ignored.
         """
         assert attribute == 'acceptable_aliases', (
-            'Unexpected attribute: {}'.format(attribute))   # pragma: no cover
+            'Unexpected attribute: {}'.format(attribute))   # pragma: nocover
         alias_set = IAcceptableAliasSet(mlist)
         alias_set.clear()
         for alias in value:

@@ -59,7 +59,7 @@ class Workflow:
         name = self._next.popleft()
         step = getattr(self, '_step_{}'.format(name))
         self._count += 1
-        if self.debug:                              # pragma: no cover
+        if self.debug:                              # pragma: nocover
             print('[{:02d}] -> {}'.format(self._count, name), file=sys.stderr)
         return name, step
 

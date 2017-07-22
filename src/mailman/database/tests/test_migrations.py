@@ -35,6 +35,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
+from warnings import catch_warnings, simplefilter
 from zope.component import getUtility
 
 
@@ -63,11 +64,21 @@ class TestMigrations(unittest.TestCase):
     def test_all_migrations(self):
         script_dir = alembic.script.ScriptDirectory.from_config(alembic_cfg)
         revisions = [sc.revision for sc in script_dir.walk_revisions()]
-        for revision in revisions:
-            alembic.command.downgrade(alembic_cfg, revision)
-        revisions.reverse()
-        for revision in revisions:
-            alembic.command.upgrade(alembic_cfg, revision)
+        with catch_warnings():
+            simplefilter('ignore', UserWarning)
+            # Alembic/SQLite does not like something about these migrations.
+            # They're more or less inconsequential in practice (since users
+            # will rarely if ever downgrade their database), but it does
+            # clutter up the test output, so just suppress the warning.
+            #
+            # E.g.
+            # alembic/util/messaging.py:69: UserWarning:
+            # Skipping unsupported ALTER for creation of implicit constraint
+            for revision in revisions:
+                alembic.command.downgrade(alembic_cfg, revision)
+            revisions.reverse()
+            for revision in revisions:
+                alembic.command.upgrade(alembic_cfg, revision)
 
     def test_42756496720_header_matches(self):
         test_header_matches = [

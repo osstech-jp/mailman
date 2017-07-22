@@ -10,6 +10,7 @@ variables:
   MYSQL_USER: "runner"
   MYSQL_USER_PASSWORD: "runner"
   MYSQL_DATABASE: "test_mailman"
+  LC_ALL: "C.UTF-8"
 
 qa:
   script:

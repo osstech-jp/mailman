@@ -17,23 +17,27 @@
 
 """The 'help' subcommand."""
 
+import click
+
+from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.utilities.options import I18nCommand
 from public import public
 from zope.interface import implementer
+
+
+@click.command(
+    cls=I18nCommand,
+    help=_('Show this help message and exit.'))
+@click.pass_context
+# https://github.com/pallets/click/issues/832
+def help(ctx):                                      # pragma: nocover
+    click.echo(ctx.parent.get_help(), color=ctx.color)
+    ctx.exit()
 
 
 @public
 @implementer(ICLISubCommand)
 class Help:
-    # Lowercase, to match argparse's default --help text.
-    """Show this help message and exit."""
-
     name = 'help'
-
-    def add(self, parser, command_parser):
-        """See `ICLISubCommand`."""
-        self.parser = parser
-
-    def process(self, args):
-        """See `ICLISubCommand`."""
-        self.parser.print_help()
+    command = help

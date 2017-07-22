@@ -21,13 +21,28 @@ import os
 import tempfile
 import unittest
 
-from contextlib import suppress
+from click.testing import CliRunner
+from contextlib import ExitStack, suppress
 from datetime import timedelta
-from flufl.lock import Lock
+from flufl.lock import Lock, TimeOutError
+from io import StringIO
 from mailman.bin import master
+from mailman.config import config
+from mailman.testing.layers import ConfigLayer
+from pkg_resources import resource_filename
+from unittest.mock import patch
 
 
-class TestMasterLock(unittest.TestCase):
+class FakeLock:
+    details = ('host.example.com', 9999, '/tmp/whatever')
+
+    def unlock(self):
+        pass
+
+
+class TestMaster(unittest.TestCase):
+    layer = ConfigLayer
+
     def setUp(self):
         fd, self.lock_file = tempfile.mkstemp()
         os.close(fd)
@@ -59,4 +74,55 @@ class TestMasterLock(unittest.TestCase):
         finally:
             my_lock.unlock()
         self.assertEqual(state, master.WatcherState.conflict)
-        # XXX test stale_lock and host_mismatch states.
+
+    def test_acquire_lock_timeout_reason_unknown(self):
+        stderr = StringIO()
+        with ExitStack() as resources:
+            resources.enter_context(patch(
+                'mailman.bin.master.acquire_lock_1',
+                side_effect=TimeOutError))
+            resources.enter_context(patch(
+                'mailman.bin.master.master_state',
+                return_value=(master.WatcherState.none, FakeLock())))
+            resources.enter_context(patch(
+                'mailman.bin.master.sys.stderr', stderr))
+            with self.assertRaises(SystemExit) as cm:
+                master.acquire_lock(False)
+            self.assertEqual(cm.exception.code, 1)
+            self.assertEqual(stderr.getvalue(), """\
+For unknown reasons, the master lock could not be acquired.
+
+Lock file: {}
+Lock host: host.example.com
+
+Exiting.
+""".format(config.LOCK_FILE))
+
+    def test_main_cli(self):
+        command = CliRunner()
+        fake_lock = FakeLock()
+        with ExitStack() as resources:
+            config_file = resource_filename(
+                'mailman.testing', 'testing.cfg')
+            init_mock = resources.enter_context(patch(
+                'mailman.bin.master.initialize'))
+            lock_mock = resources.enter_context(patch(
+                'mailman.bin.master.acquire_lock',
+                return_value=fake_lock))
+            start_mock = resources.enter_context(patch.object(
+                master.Loop, 'start_runners'))
+            loop_mock = resources.enter_context(patch.object(
+                master.Loop, 'loop'))
+            command.invoke(
+                master.main,
+                ('-C', config_file,
+                 '--no-restart', '--force',
+                 '-r', 'in:1:1', '--verbose'))
+            # We got initialized with the custom configuration file and the
+            # verbose flag.
+            init_mock.assert_called_once_with(config_file, True)
+            # We returned a lock that was force-acquired.
+            lock_mock.assert_called_once_with(True)
+            # We created a non-restartable loop.
+            start_mock.assert_called_once_with([('in', 1, 1)])
+            loop_mock.assert_called_once_with()

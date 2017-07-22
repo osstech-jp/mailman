@@ -345,9 +345,9 @@ class configuration:
         self._values = kws.copy()
 
     def _apply(self):
-        lines = ['[{0}]'.format(self._section)]
+        lines = ['[{}]'.format(self._section)]
         for key, value in self._values.items():
-            lines.append('{0}: {1}'.format(key, value))
+            lines.append('{}: {}'.format(key, value))
         config.push(self._uuid, NL.join(lines))
 
     def _remove(self):
@@ -355,6 +355,7 @@ class configuration:
 
     def __enter__(self):
         self._apply()
+        return self
 
     def __exit__(self, *exc_info):
         self._remove()

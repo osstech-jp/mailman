@@ -115,7 +115,7 @@ class SABaseDatabase:
         # XXX This can all be removed once SQLAlchemy 1.2 is released, and we
         # pass `pool_pre_ping=True` to create_engine().
         @event.listens_for(self.engine, 'engine_connect')   # noqa: E306
-        def ping_connection(connection, branch):            # pragma: no cover
+        def ping_connection(connection, branch):            # pragma: nocover
             if branch:
                 # "branch" refers to a sub-connection of a connection;
                 # we don't want to bother pinging on these.

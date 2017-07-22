@@ -28,7 +28,7 @@ from public import public
 # New in Python 3.5.
 try:
     from http import HTTPStatus
-except ImportError:                                 # pragma: no cover
+except ImportError:                                 # pragma: nocover
     class HTTPStatus:
         FORBIDDEN = 403
         NOT_FOUND = 404
@@ -43,14 +43,14 @@ class TestableHandler(BaseHTTPRequestHandler):
 
     log_error = log_request
 
-    def do_GET(self):                             # pragma: no cover
+    def do_GET(self):                             # pragma: nocover
         if self.path == '/welcome_2.txt':
             if self.headers['Authorization'] != 'Basic YW5uZTppcyBzcGVjaWFs':
                 self.send_error(HTTPStatus.FORBIDDEN)
                 return
         response = TEXTS.get(self.path)
         if response is None:
-            self.send_error(HTTPStatus.NOT_FOUND)   # pragma: no cover
+            self.send_error(HTTPStatus.NOT_FOUND)   # pragma: nocover
             return
         self.send_response(HTTPStatus.OK)
         self.send_header('Content-Type', 'UTF-8')

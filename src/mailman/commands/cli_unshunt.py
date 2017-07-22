@@ -18,45 +18,44 @@
 """The 'unshunt' command."""
 
 import sys
+import click
 
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.utilities.options import I18nCommand
 from public import public
 from zope.interface import implementer
+
+
+@click.command(
+    cls=I18nCommand,
+    help=_('Unshunt messages.'))
+@click.option(
+    '--discard', '-d',
+    is_flag=True, default=False,
+    help=_("""\
+    Discard all shunted messages instead of moving them back to their original
+    queue."""))
+def unshunt(discard):
+    shunt_queue = config.switchboards['shunt']
+    shunt_queue.recover_backup_files()
+    for filebase in shunt_queue.files:
+        try:
+            msg, msgdata = shunt_queue.dequeue(filebase)
+            which_queue = msgdata.get('whichq', 'in')
+            if not discard:
+                config.switchboards[which_queue].enqueue(msg, msgdata)
+        except Exception as error:
+            print(_('Cannot unshunt message $filebase, skipping:\n$error'),
+                  file=sys.stderr)
+        else:
+            # Unlink the .bak file left by dequeue()
+            shunt_queue.finish(filebase)
 
 
 @public
 @implementer(ICLISubCommand)
 class Unshunt:
-    """Unshunt messages."""
-
     name = 'unshunt'
-
-    def add(self, parser, command_parser):
-        """See `ICLISubCommand`."""
-        self.parser = parser
-        command_parser.add_argument(
-            '-d', '--discard',
-            default=False, action='store_true',
-            help=_("""\
-            Discard all shunted messages instead of moving them back to their
-            original queue."""))
-
-    def process(self, args):
-        """See `ICLISubCommand`."""
-        shunt_queue = config.switchboards['shunt']
-        shunt_queue.recover_backup_files()
-
-        for filebase in shunt_queue.files:
-            try:
-                msg, msgdata = shunt_queue.dequeue(filebase)
-                which_queue = msgdata.get('whichq', 'in')
-                if not args.discard:
-                    config.switchboards[which_queue].enqueue(msg, msgdata)
-            except Exception:
-                print(_('Cannot unshunt message $filebase, skipping:\n$error'),
-                      file=sys.stderr)
-            else:
-                # Unlink the .bak file left by dequeue()
-                shunt_queue.finish(filebase)
+    command = unshunt

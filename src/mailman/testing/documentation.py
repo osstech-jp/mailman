@@ -21,7 +21,9 @@ Note that doctest extraction does not currently work for zip file
 distributions.  doctest discovery currently requires file system traversal.
 """
 
+from click.testing import CliRunner
 from contextlib import ExitStack
+from importlib import import_module
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.testing.helpers import (
@@ -143,6 +145,30 @@ def dump_json(url, data=None, method=None, username=None, password=None):
 
 
 @public
+def cli(command_path):
+    # Use this to invoke click commands in doctests.  This returns a partial
+    # that accepts a sequence of command line options, invokes the click
+    # command, and returns the results (unless the keyword argument 'quiet')
+    # is True.
+    package_path, dot, name = command_path.rpartition('.')
+    command = getattr(import_module(package_path), name)
+    def inner(command_string, quiet=False, input=None):           # noqa: E306
+        args = command_string.split()
+        assert args[0] == 'mailman', args
+        assert args[1] == command.name, args
+        # The first two will be `mailman <command>`.  That's just for
+        # documentation purposes, and aren't useful for the test.
+        result = CliRunner().invoke(command, args[2:], input=input)
+        if not quiet:
+            # Print the output, with any trailing newlines stripped, unless
+            # the quiet flag is set.  The extra newlines just make the
+            # doctests uglier and usually all we care about is the stdout
+            # text.
+            print(result.output.rstrip('\n'))
+    return inner
+
+
+@public
 def setup(testobj):
     """Test setup."""
     # In general, I don't like adding convenience functions, since I think
@@ -161,6 +187,7 @@ def setup(testobj):
     testobj.globs['stop'] = stop
     testobj.globs['subscribe'] = subscribe
     testobj.globs['transaction'] = config.db
+    testobj.globs['cli'] = cli
     # Add this so that cleanups can be automatically added by the doctest.
     testobj.globs['cleanups'] = ExitStack()
 

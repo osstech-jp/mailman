@@ -20,10 +20,10 @@
 import os
 import unittest
 
+from click.testing import CliRunner
 from datetime import timedelta
-from io import StringIO
 from mailman.app.lifecycle import create_list
-from mailman.commands.cli_digests import Digests
+from mailman.commands.cli_digests import digests
 from mailman.config import config
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.member import DeliveryMode
@@ -33,16 +33,6 @@ from mailman.testing.helpers import (
     specialized_message_from_string as mfs, subscribe)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now as right_now
-from unittest.mock import patch
-
-
-class FakeArgs:
-    def __init__(self):
-        self.lists = []
-        self.send = False
-        self.bump = False
-        self.dry_run = False
-        self.verbose = False
 
 
 class TestSendDigests(unittest.TestCase):
@@ -53,7 +43,7 @@ class TestSendDigests(unittest.TestCase):
         self._mlist.digests_enabled = True
         self._mlist.digest_size_threshold = 100000
         self._mlist.send_welcome_message = False
-        self._command = Digests()
+        self._command = CliRunner()
         self._handler = config.handlers['to-digest']
         self._runner = make_testable_runner(DigestRunner, 'digest')
         # The mailing list needs at least one digest recipient.
@@ -76,10 +66,7 @@ Subject: message 1
         get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
-        args = FakeArgs()
-        args.send = True
-        args.lists.append('ant.example.com')
-        self._command.process(args)
+        self._command.invoke(digests, ('-s', '-l', 'ant.example.com'))
         self._runner.run()
         # Now, there's no digest mbox and there's a plaintext digest in the
         # outgoing queue.
@@ -105,10 +92,7 @@ Subject: message 1
         get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
-        args = FakeArgs()
-        args.send = True
-        args.lists.append('ant@example.com')
-        self._command.process(args)
+        self._command.invoke(digests, ('-s', '-l', 'ant@example.com'))
         self._runner.run()
         # Now, there's no digest mbox and there's a plaintext digest in the
         # outgoing queue.
@@ -134,16 +118,12 @@ Subject: message 1
         get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
-        args = FakeArgs()
-        args.send = True
-        args.lists.append('bee.example.com')
-        stderr = StringIO()
-        with patch('mailman.commands.cli_digests.sys.stderr', stderr):
-            self._command.process(args)
+        result = self._command.invoke(digests, ('-s', '-l', 'bee.example.com'))
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(
+            result.output,
+            'No such list found: bee.example.com\n')
         self._runner.run()
-        # The warning was printed to stderr.
-        self.assertEqual(stderr.getvalue(),
-                         'No such list found: bee.example.com\n')
         # And no digest was prepared.
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         get_queue_messages('virgin', expected_count=0)
@@ -164,16 +144,12 @@ Subject: message 1
         get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
-        args = FakeArgs()
-        args.send = True
-        args.lists.append('bee@example.com')
-        stderr = StringIO()
-        with patch('mailman.commands.cli_digests.sys.stderr', stderr):
-            self._command.process(args)
+        result = self._command.invoke(digests, ('-s', '-l', 'bee@example.com'))
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(
+            result.output,
+            'No such list found: bee@example.com\n')
         self._runner.run()
-        # The warning was printed to stderr.
-        self.assertEqual(stderr.getvalue(),
-                         'No such list found: bee@example.com\n')
         # And no digest was prepared.
         self.assertGreater(os.path.getsize(mailbox_path), 0)
         get_queue_messages('virgin', expected_count=0)
@@ -194,16 +170,14 @@ Subject: message 1
         get_queue_messages('digest', expected_count=0)
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
-        args = FakeArgs()
-        args.send = True
-        args.lists.extend(('ant.example.com', 'bee.example.com'))
-        stderr = StringIO()
-        with patch('mailman.commands.cli_digests.sys.stderr', stderr):
-            self._command.process(args)
+        result = self._command.invoke(
+            digests,
+            ('-s', '-l', 'ant.example.com', '-l', 'bee.example.com'))
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(
+            result.output,
+            'No such list found: bee.example.com\n')
         self._runner.run()
-        # The warning was printed to stderr.
-        self.assertEqual(stderr.getvalue(),
-                         'No such list found: bee.example.com\n')
         # But ant's digest was still prepared.
         self.assertFalse(os.path.exists(mailbox_path))
         items = get_queue_messages('virgin', expected_count=1)
@@ -251,10 +225,8 @@ Subject: message 3
         # Both.
         get_queue_messages('digest', expected_count=0)
         # Process both list's digests.
-        args = FakeArgs()
-        args.send = True
-        args.lists.extend(('ant.example.com', 'bee@example.com'))
-        self._command.process(args)
+        self._command.invoke(
+            digests, ('-s', '-l', 'ant.example.com', '-l', 'bee@example.com'))
         self._runner.run()
         # Now, neither list has a digest mbox and but there are plaintext
         # digest in the outgoing queue for both.
@@ -318,9 +290,7 @@ Subject: message 3
         # Both.
         get_queue_messages('digest', expected_count=0)
         # Process all mailing list digests by not setting any arguments.
-        args = FakeArgs()
-        args.send = True
-        self._command.process(args)
+        self._command.invoke(digests, ('-s',))
         self._runner.run()
         # Now, neither list has a digest mbox and but there are plaintext
         # digest in the outgoing queue for both.
@@ -349,10 +319,7 @@ Subject: message 3
         # can be sent.
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertFalse(os.path.exists(mailbox_path))
-        args = FakeArgs()
-        args.send = True
-        args.lists.append('ant.example.com')
-        self._command.process(args)
+        self._command.invoke(digests, ('-s', '-l', 'ant.example.com'))
         self._runner.run()
         get_queue_messages('virgin', expected_count=0)
 
@@ -369,11 +336,8 @@ Subject: message 1
 
 """)
         self._handler.process(self._mlist, msg, {})
-        args = FakeArgs()
-        args.bump = True
-        args.send = True
-        args.lists.append('ant.example.com')
-        self._command.process(args)
+        self._command.invoke(
+            digests, ('-s', '--bump', '-l', 'ant.example.com'))
         self._runner.run()
         # The volume is 8 and the digest number is 2 because a digest was sent
         # after the volume/number was bumped.
@@ -393,15 +357,12 @@ class TestBumpVolume(unittest.TestCase):
         self._mlist.volume = 7
         self._mlist.next_digest_number = 4
         self.right_now = right_now()
-        self._command = Digests()
+        self._command = CliRunner()
 
     def test_bump_one_list(self):
         self._mlist.digest_last_sent_at = self.right_now + timedelta(
             days=-32)
-        args = FakeArgs()
-        args.bump = True
-        args.lists.append('ant.example.com')
-        self._command.process(args)
+        self._command.invoke(digests, ('-b', '-l', 'ant.example.com'))
         self.assertEqual(self._mlist.volume, 8)
         self.assertEqual(self._mlist.next_digest_number, 1)
         self.assertEqual(self._mlist.digest_last_sent_at, self.right_now)
@@ -416,36 +377,23 @@ class TestBumpVolume(unittest.TestCase):
         bee.next_digest_number = 4
         bee.digest_last_sent_at = self.right_now + timedelta(
             days=-32)
-        args = FakeArgs()
-        args.bump = True
-        args.lists.extend(('ant.example.com', 'bee.example.com'))
-        self._command.process(args)
+        self._command.invoke(
+            digests, ('-b', '-l', 'ant.example.com', '-l', 'bee.example.com'))
         self.assertEqual(self._mlist.volume, 8)
         self.assertEqual(self._mlist.next_digest_number, 1)
         self.assertEqual(self._mlist.digest_last_sent_at, self.right_now)
 
     def test_bump_verbose(self):
-        args = FakeArgs()
-        args.bump = True
-        args.verbose = True
-        args.lists.append('ant.example.com')
-        output = StringIO()
-        with patch('sys.stdout', output):
-            self._command.process(args)
-        self.assertMultiLineEqual(output.getvalue(), """\
+        result = self._command.invoke(
+            digests, ('-v', '-b', '-l', 'ant.example.com'))
+        self.assertMultiLineEqual(result.output, """\
 ant.example.com is at volume 7, number 4
 ant.example.com bumped to volume 7, number 5
 """)
 
     def test_send_verbose(self):
-        args = FakeArgs()
-        args.send = True
-        args.verbose = True
-        args.dry_run = True
-        args.lists.append('ant.example.com')
-        output = StringIO()
-        with patch('sys.stdout', output):
-            self._command.process(args)
-        self.assertMultiLineEqual(output.getvalue(), """\
+        result = self._command.invoke(
+            digests, ('-v', '-s', '-n', '-l', 'ant.example.com'))
+        self.assertMultiLineEqual(result.output, """\
 ant.example.com sent volume 7, number 4
 """)

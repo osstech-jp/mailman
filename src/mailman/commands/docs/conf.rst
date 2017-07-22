@@ -10,17 +10,12 @@ Mailman's configuration is divided in multiple sections which contain multiple
 key-value pairs.  The ``mailman conf`` command allows you to display a
 specific key-value pair, or several key-value pairs.
 
-    >>> class FakeArgs:
-    ...     key = None
-    ...     section = None
-    ...     output = None
-    >>> from mailman.commands.cli_conf import Conf
-    >>> command = Conf()
+    >>> command = cli('mailman.commands.cli_conf.conf')
 
 To get a list of all key-value pairs of any section, you need to call the
 command without any options.
 
-    >>> command.process(FakeArgs)
+    >>> command('mailman conf')
     [antispam] header_checks:
     ...
     [logging.bounce] level: info
@@ -30,8 +25,7 @@ command without any options.
 
 You can list all the key-value pairs of a specific section.
 
-    >>> FakeArgs.section = 'shell'
-    >>> command.process(FakeArgs)
+    >>> command('mailman conf --section shell')
     [shell] banner: Welcome to the GNU Mailman shell
     [shell] history_file:
     [shell] prompt: >>>
@@ -40,9 +34,7 @@ You can list all the key-value pairs of a specific section.
 You can also pass a key and display all key-value pairs matching the given
 key, along with the names of the corresponding sections.
 
-    >>> FakeArgs.section = None
-    >>> FakeArgs.key = 'path'
-    >>> command.process(FakeArgs)
+    >>> command('mailman conf --key path')
     [logging.archiver] path: mailman.log
     [logging.bounce] path: bounce.log
     [logging.config] path: mailman.log
@@ -61,9 +53,7 @@ key, along with the names of the corresponding sections.
 
 If you specify both a section and a key, you will get the corresponding value.
 
-    >>> FakeArgs.section = 'mailman'
-    >>> FakeArgs.key = 'site_owner'
-    >>> command.process(FakeArgs)
+    >>> command('mailman conf --section mailman --key site_owner')
     noreply@example.com
 
 

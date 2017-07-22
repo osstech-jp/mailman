@@ -18,65 +18,62 @@
 """Information about this Mailman instance."""
 
 import sys
+import click
 
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.core.api import API30, API31
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.utilities.options import I18nCommand
 from mailman.version import MAILMAN_VERSION_FULL
 from public import public
 from zope.interface import implementer
 
 
+@click.command(
+    cls=I18nCommand,
+    help=_('Information about this Mailman instance.'))
+@click.option(
+    '--output', '-o',
+    type=click.File(mode='w', encoding='utf-8', atomic=True),
+    help=_("""\
+    File to send the output to.  If not given, standard output is used."""))
+@click.option(
+    '--verbose', '-v',
+    is_flag=True, default=False,
+    help=_("""\
+    A more verbose output including the file system paths that Mailman is
+    using."""))
+def info(output, verbose):
+    """See `ICLISubCommand`."""
+    print(MAILMAN_VERSION_FULL, file=output)
+    print('Python', sys.version, file=output)
+    print('config file:', config.filename, file=output)
+    print('db url:', config.db.url, file=output)
+    print('devmode:',
+          'ENABLED' if as_boolean(config.devmode.enabled) else 'DISABLED',
+          file=output)
+    api = (API30 if config.webservice.api_version == '3.0' else API31)
+    print('REST root url:', api.path_to('/'), file=output)
+    print('REST credentials: {}:{}'.format(
+        config.webservice.admin_user, config.webservice.admin_pass),
+        file=output)
+    if verbose:
+        print('File system paths:', file=output)
+        longest = 0
+        paths = {}
+        for attribute in dir(config):
+            if attribute.endswith('_DIR') or attribute.endswith('_FILE'):
+                paths[attribute] = getattr(config, attribute)
+            longest = max(longest, len(attribute))
+        for attribute in sorted(paths):
+            print('    {0:{2}} = {1}'.format(
+                attribute, paths[attribute], longest))
+
+
 @public
 @implementer(ICLISubCommand)
 class Info:
-    """Information about this Mailman instance."""
-
     name = 'info'
-
-    def add(self, parser, command_parser):
-        """See `ICLISubCommand`."""
-        command_parser.add_argument(
-            '-o', '--output',
-            action='store', help=_("""\
-            File to send the output to.  If not given, standard output is
-            used."""))
-        command_parser.add_argument(
-            '-v', '--verbose',
-            action='store_true', help=_("""\
-            A more verbose output including the file system paths that Mailman
-            is using."""))
-
-    def process(self, args):
-        """See `ICLISubCommand`."""
-        if args.output is None:
-            output = sys.stdout
-        else:
-            # We don't need to close output because that will happen
-            # automatically when the script exits.
-            output = open(args.output, 'w')
-        print(MAILMAN_VERSION_FULL, file=output)
-        print('Python', sys.version, file=output)
-        print('config file:', config.filename, file=output)
-        print('db url:', config.db.url, file=output)
-        print('devmode:',
-              'ENABLED' if as_boolean(config.devmode.enabled) else 'DISABLED',
-              file=output)
-        api = (API30 if config.webservice.api_version == '3.0' else API31)
-        print('REST root url:', api.path_to('/'), file=output)
-        print('REST credentials: {}:{}'.format(
-            config.webservice.admin_user, config.webservice.admin_pass),
-            file=output)
-        if args.verbose:
-            print('File system paths:', file=output)
-            longest = 0
-            paths = {}
-            for attribute in dir(config):
-                if attribute.endswith('_DIR') or attribute.endswith('_FILE'):
-                    paths[attribute] = getattr(config, attribute)
-                longest = max(longest, len(attribute))
-            for attribute in sorted(paths):
-                print('    {0:{2}} = {1}'.format(
-                    attribute, paths[attribute], longest))
+    command = info

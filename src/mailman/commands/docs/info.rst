@@ -6,15 +6,9 @@ You can get information about Mailman's environment by using the command line
 script ``mailman info``.  By default, the info is printed to standard output.
 ::
 
-    >>> from mailman.commands.cli_info import Info
-    >>> command = Info()
+    >>> command = cli('mailman.commands.cli_info.info')
 
-    >>> class FakeArgs:
-    ...     output = None
-    ...     verbose = None
-    >>> args = FakeArgs()
-
-    >>> command.process(args)
+    >>> command('mailman info')
     GNU Mailman 3...
     Python ...
     ...
@@ -28,8 +22,7 @@ By passing in the ``-o/--output`` option, you can print the info to a file.
     >>> from mailman.config import config
     >>> import os
     >>> output_path = os.path.join(config.VAR_DIR, 'output.txt')
-    >>> args.output = output_path
-    >>> command.process(args)
+    >>> command('mailman info -o ' + output_path)
     >>> with open(output_path) as fp:
     ...     print(fp.read())
     GNU Mailman 3...
@@ -44,8 +37,6 @@ By passing in the ``-o/--output`` option, you can print the info to a file.
 You can also get more verbose information, which contains a list of the file
 system paths that Mailman is using.
 
-    >>> args.output = None
-    >>> args.verbose = True
     >>> config.create_paths = False
     >>> config.push('fhs', """
     ... [mailman]
@@ -57,7 +48,7 @@ system paths that Mailman is using.
 The `Filesystem Hierarchy Standard`_ layout is the same everywhere by
 definition.
 
-    >>> command.process(args)
+    >>> command('mailman info --verbose')
     GNU Mailman 3...
     Python ...
     ...

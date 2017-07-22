@@ -19,27 +19,23 @@
 
 import unittest
 
+from click.testing import CliRunner
 from mailman.app.lifecycle import create_list
-from mailman.commands.cli_import import Import21
+from mailman.commands.cli_import import import21
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.importer import Import21Error
+from pickle import dump
 from pkg_resources import resource_filename
+from tempfile import NamedTemporaryFile
 from unittest.mock import patch
-
-
-class FakeArgs:
-    listname = ['test@example.com']
-    pickle_file = [
-        resource_filename('mailman.testing', 'config-with-instances.pck'),
-        ]
 
 
 class TestImport(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        self.command = Import21()
-        self.args = FakeArgs()
-        self.mlist = create_list('test@example.com')
+        self._command = CliRunner()
+        self.mlist = create_list('ant@example.com')
 
     @patch('mailman.commands.cli_import.import_config_pck')
     def test_process_pickle_with_bounce_info(self, import_config_pck):
@@ -47,8 +43,34 @@ class TestImport(unittest.TestCase):
         # _BounceInfo instances.  We throw these away when importing to
         # Mailman 3, but we have to fake the instance's classes, otherwise
         # unpickling the dictionaries will fail.
+        pckfile = resource_filename(
+            'mailman.testing', 'config-with-instances.pck')
         try:
-            self.command.process(self.args)
+            self._command.invoke(import21, ('ant.example.com', pckfile))
         except ImportError as error:
             self.fail('The pickle failed loading: {}'.format(error))
         self.assertTrue(import_config_pck.called)
+
+    def test_missing_list_spec(self):
+        result = self._command.invoke(import21)
+        self.assertEqual(result.exit_code, 2, result.output)
+        self.assertEqual(
+            result.output,
+            'Usage: import21 [OPTIONS] LISTSPEC PICKLE_FILE\n\n'
+            'Error: Missing argument "listspec".\n')
+
+    def test_pickle_with_nondict(self):
+        with NamedTemporaryFile() as pckfile:
+            with open(pckfile.name, 'wb') as fp:
+                dump(['not', 'a', 'dict'], fp)
+            result = self._command.invoke(
+                import21, ('ant.example.com', pckfile.name))
+            self.assertIn('Ignoring non-dictionary', result.output)
+
+    def test_pickle_with_bad_language(self):
+        pckfile = resource_filename('mailman.testing', 'config.pck')
+        with patch('mailman.utilities.importer.check_language_code',
+                   side_effect=Import21Error('Fake bad language code')):
+            result = self._command.invoke(
+                import21, ('ant.example.com', pckfile))
+            self.assertIn('Fake bad language code', result.output)

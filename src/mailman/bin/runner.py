@@ -19,15 +19,16 @@
 
 import os
 import sys
+import click
 import signal
 import logging
-import argparse
 import traceback
 
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.initialize import initialize
 from mailman.utilities.modules import find_name
+from mailman.utilities.options import I18nCommand, validate_runner_spec
 from mailman.version import MAILMAN_VERSION_FULL
 from public import public
 
@@ -41,44 +42,19 @@ if os.environ.get('COVERAGE_PROCESS_START') is not None:
     coverage.process_startup()
 
 
-class ROptionAction(argparse.Action):
-    """Callback for -r/--runner option."""
-    def __call__(self, parser, namespace, values, option_string=None):
-        parts = values.split(':')
-        if len(parts) == 1:
-            runner = parts[0]
-            rslice = rrange = 1
-        elif len(parts) == 3:
-            runner = parts[0]
-            try:
-                rslice = int(parts[1])
-                rrange = int(parts[2])
-            except ValueError:
-                parser.error(_('Bad runner specification: $value'))
-        else:
-            parser.error(_('Bad runner specification: $value'))
-        setattr(namespace, self.dest, (runner, rslice, rrange))
-
-
 def make_runner(name, slice, range, once=False):
-    # Several conventions for specifying the runner name are supported.  It
-    # could be one of the shortcut names.  If the name is a full module path,
-    # use it explicitly.  If the name starts with a dot, it's a class name
-    # relative to the Mailman.runner package.
+    # The runner name must be defined in the configuration.  Only runner short
+    # names are supported.
     runner_config = getattr(config, 'runner.' + name, None)
-    if runner_config is not None:
-        # It was a shortcut name.
-        class_path = runner_config['class']
-    elif name.startswith('.'):
-        class_path = 'mailman.runners' + name
-    else:
-        class_path = name
+    if runner_config is None:
+        print(_('Undefined runner name: $name'), file=sys.stderr)
+        # Exit with SIGTERM exit code so the master won't try to restart us.
+        sys.exit(signal.SIGTERM)
+    class_path = runner_config['class']
     try:
         runner_class = find_name(class_path)
     except ImportError:
         if os.environ.get('MAILMAN_UNDER_MASTER_CONTROL') is not None:
-            # Exit with SIGTERM exit code so the master watcher won't try to
-            # restart us.
             print(_('Cannot import runner module: $class_path'),
                   file=sys.stderr)
             traceback.print_exc()
@@ -94,82 +70,98 @@ def make_runner(name, slice, range, once=False):
     return runner_class(name, slice)
 
 
+@click.command(
+    cls=I18nCommand,
+    context_settings=dict(help_option_names=['-h', '--help']),
+    help=_("""\
+    Start a runner.
+
+    The runner named on the command line is started, and it can either run
+    through its main loop once (for those runners that support this) or
+    continuously.  The latter is how the master runner starts all its
+    subprocesses.
+
+    -r is required unless -l or -h is given, and its argument must be one of
+    the names displayed by the -l switch.
+
+    Normally, this script should be started from `mailman start`.  Running it
+    separately or with -o is generally useful only for debugging.  When run
+    this way, the environment variable $MAILMAN_UNDER_MASTER_CONTROL will be
+    set which subtly changes some error handling behavior.
+    """))
+@click.option(
+    '-C', '--config', 'config_file',
+    envvar='MAILMAN_CONFIG_FILE',
+    type=click.Path(exists=True, dir_okay=False, resolve_path=True),
+    help=_("""\
+    Configuration file to use.  If not given, the environment variable
+    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a
+    default configuration file is loaded."""))
+@click.option(
+    '-l', '--list', 'list_runners',
+    is_flag=True, is_eager=True, default=False,
+    help=_('List the available runner names and exit.'))
+@click.option(
+    '-o', '--once',
+    is_flag=True, default=False,
+    help=_("""\
+    Run the named runner exactly once through its main loop.  Otherwise, the
+    runner runs indefinitely until the process receives a signal.  This is not
+    compatible with runners that cannot be run once."""))
+@click.option(
+    '-r', '--runner', 'runner_spec',
+    metavar='runner[:slice:range]',
+    callback=validate_runner_spec, default=None,
+    help=_("""\
+
+    Start the named runner, which must be one of the strings returned by the -l
+    option.
+
+    For runners that manage a queue directory, optional `slice:range` if given
+    is used to assign multiple runner processes to that queue.  range is the
+    total number of runners for the queue while slice is the number of this
+    runner from [0..range).  For runners that do not manage a queue, slice and
+    range are ignored.
+
+    When using the `slice:range` form, you must ensure that each runner for the
+    queue is given the same range value.  If `slice:runner` is not given, then
+    1:1 is used.
+    """))
+@click.option(
+    '-v', '--verbose',
+    is_flag=True, default=False,
+    help=_('Display more debugging information to the log file.'))
+@click.version_option(MAILMAN_VERSION_FULL)
+@click.pass_context
 @public
-def main():
+def main(ctx, config_file, verbose, list_runners, once, runner_spec):
+    # XXX https://github.com/pallets/click/issues/303
+    """Start a runner.
+
+    The runner named on the command line is started, and it can either run
+    through its main loop once (for those runners that support this) or
+    continuously.  The latter is how the master runner starts all its
+    subprocesses.
+
+    -r is required unless -l or -h is given, and its argument must be one
+    of the names displayed by the -l switch.
+
+    Normally, this script should be started from 'mailman start'.  Running
+    it separately or with -o is generally useful only for debugging.  When
+    run this way, the environment variable $MAILMAN_UNDER_MASTER_CONTROL
+    will be set which subtly changes some error handling behavior.
+    """
+
     global log
 
-    parser = argparse.ArgumentParser(
-        description=_("""\
-        Start a runner
-
-        The runner named on the command line is started, and it can either run
-        through its main loop once (for those runners that support this) or
-        continuously.  The latter is how the master runner starts all its
-        subprocesses.
-
-        -r is required unless -l or -h is given, and its argument must be one
-        of the names displayed by the -l switch.
-
-        Normally, this script should be started from 'mailman start'.  Running
-        it separately or with -o is generally useful only for debugging.  When
-        run this way, the environment variable $MAILMAN_UNDER_MASTER_CONTROL
-        will be set which subtly changes some error handling behavior.
-        """))
-    parser.add_argument(
-        '--version',
-        action='version', version=MAILMAN_VERSION_FULL,
-        help=_('Print this version string and exit'))
-    parser.add_argument(
-        '-C', '--config',
-        help=_("""\
-        Configuration file to use.  If not given, the environment variable
-        MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are
-        given, a default configuration file is loaded."""))
-    parser.add_argument(
-        '-r', '--runner',
-        metavar='runner[:slice:range]', dest='runner',
-        action=ROptionAction, default=None,
-        help=_("""\
-        Start the named runner, which must be one of the strings
-        returned by the -l option.
-
-        For runners that manage a queue directory, optional
-        `slice:range` if given is used to assign multiple runner
-        processes to that queue.  range is the total number of runners
-        for the queue while slice is the number of this runner from
-        [0..range).  For runners that do not manage a queue, slice and
-        range are ignored.
-
-        When using the `slice:range` form, you must ensure that each
-        runner for the queue is given the same range value.  If
-        `slice:runner` is not given, then 1:1 is used.
-        """))
-    parser.add_argument(
-        '-o', '--once',
-        default=False, action='store_true', help=_("""\
-        Run the named runner exactly once through its main loop.
-        Otherwise, the runner runs indefinitely until the process
-        receives a signal.  This is not compatible with runners that
-        cannot be run once."""))
-    parser.add_argument(
-        '-l', '--list',
-        default=False, action='store_true',
-        help=_('List the available runner names and exit.'))
-    parser.add_argument(
-        '-v', '--verbose',
-        default=None, action='store_true', help=_("""\
-        Display more debugging information to the log file."""))
-
-    args = parser.parse_args()
-    if args.runner is None and not args.list:
-        parser.error(_('No runner name given.'))
+    if runner_spec is None and not list_runners:
+        ctx.fail(_('No runner name given.'))
 
     # Initialize the system.  Honor the -C flag if given.
-    config_path = (None if args.config is None
-                   else os.path.abspath(os.path.expanduser(args.config)))
-    initialize(config_path, args.verbose)
+
+    initialize(config_file, verbose)
     log = logging.getLogger('mailman.runner')
-    if args.verbose:
+    if verbose:
         console = logging.StreamHandler(sys.stderr)
         formatter = logging.Formatter(config.logging.root.format,
                                       config.logging.root.datefmt)
@@ -177,7 +169,7 @@ def main():
         logging.getLogger().addHandler(console)
         logging.getLogger().setLevel(logging.DEBUG)
 
-    if args.list:
+    if list_runners:
         descriptions = {}
         for section in config.runner_configs:
             ignore, dot, shortname = section.name.rpartition('.')
@@ -191,10 +183,10 @@ def main():
             print(_('$name runs $classname'))
         sys.exit(0)
 
-    runner = make_runner(*args.runner, once=args.once)
+    runner = make_runner(*runner_spec, once=once)
     runner.set_signals()
     # Now start up the main loop
-    log.info('%s runner started.', runner.name)
+    log.info('%s runner started.'.format(runner.name))
     runner.run()
-    log.info('%s runner exiting.', runner.name)
+    log.info('%s runner exiting.'.format(runner.name))
     sys.exit(runner.status)

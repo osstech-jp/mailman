@@ -19,25 +19,19 @@
 
 import unittest
 
-from io import StringIO
+from click.testing import CliRunner
 from mailman.app.lifecycle import create_list
-from mailman.commands.cli_lists import Lists
+from mailman.commands.cli_lists import lists
 from mailman.interfaces.domain import IDomainManager
 from mailman.testing.layers import ConfigLayer
-from unittest.mock import patch
 from zope.component import getUtility
-
-
-class FakeArgs:
-    advertised = False
-    names = False
-    descriptions = False
-    quiet = False
-    domain = []
 
 
 class TestLists(unittest.TestCase):
     layer = ConfigLayer
+
+    def setUp(self):
+        self._command = CliRunner()
 
     def test_lists_with_domain_option(self):
         # LP: #1166911 - non-matching lists were returned.
@@ -48,14 +42,8 @@ class TestLists(unittest.TestCase):
         # Only this one should show up.
         create_list('test3@example.net')
         create_list('test4@example.com')
-        command = Lists()
-        args = FakeArgs()
-        args.domain.append('example.net')
-        output = StringIO()
-        with patch('sys.stdout', output):
-            command.process(args)
-        lines = output.getvalue().splitlines()
-        # The first line is the heading, so skip that.
-        lines.pop(0)
-        self.assertEqual(len(lines), 1, lines)
-        self.assertEqual(lines[0], 'test3@example.net')
+        result = self._command.invoke(lists, ('--domain', 'example.net'))
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(
+            result.output,
+            '1 matching mailing lists found:\ntest3@example.net\n')
