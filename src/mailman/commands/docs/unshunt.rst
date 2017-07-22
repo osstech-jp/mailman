@@ -7,11 +7,7 @@ the ``shunt`` queue.  The ``unshunt`` command allows system administrators to
 manage the shunt queue.
 ::
 
-    >>> from mailman.commands.cli_unshunt import Unshunt
-    >>> command = Unshunt()
-
-    >>> class FakeArgs:
-    ...     discard = False
+    >>> command = cli('mailman.commands.cli_unshunt.unshunt')
 
 Let's say there is a message in the shunt queue.
 ::
@@ -39,7 +35,7 @@ queue.
     >>> len(list(inq.files))
     0
 
-    >>> command.process(FakeArgs)
+    >>> command('mailman unshunt')
 
     >>> from mailman.testing.helpers import get_queue_messages
     >>> items = get_queue_messages('in')
@@ -77,7 +73,7 @@ queue.
     >>> len(list(shuntq.files))
     2
 
-    >>> command.process(FakeArgs)
+    >>> command('mailman unshunt')
     >>> items = get_queue_messages('in')
     >>> len(items)
     2
@@ -114,7 +110,7 @@ The queue that the message comes from is in message metadata.
 The message is automatically re-queued to the bounces queue.
 ::
 
-    >>> command.process(FakeArgs)
+    >>> command('mailman unshunt')
     >>> len(list(shuntq.files))
     0
     >>> items = get_queue_messages('bounces')
@@ -145,8 +141,7 @@ If you don't care about the shunted messages, just discard them.
     ... """)
     >>> base_name = shuntq.enqueue(msg, {})
 
-    >>> FakeArgs.discard = True
-    >>> command.process(FakeArgs)
+    >>> command('mailman unshunt --discard')
 
 The messages are now gone.
 

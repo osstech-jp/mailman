@@ -20,6 +20,8 @@
 import os
 import sys
 
+from contextlib import contextmanager
+from importlib import import_module
 from pkg_resources import resource_filename, resource_listdir
 from public import public
 
@@ -46,9 +48,9 @@ def find_name(dotted_name):
     :return: The object.
     :rtype: object
     """
-    package_path, dot, object_name = dotted_name.rpartition('.')
-    __import__(package_path)
-    return getattr(sys.modules[package_path], object_name)
+    module_path, dot, object_name = dotted_name.rpartition('.')
+    module = import_module(module_path)
+    return getattr(module, object_name)
 
 
 @public
@@ -87,7 +89,7 @@ def scan_module(module, interface):
     for name in module.__all__:
         component = getattr(module, name, missing)
         assert component is not missing, (
-            '%s has bad __all__: %s' % (module, name))   # pragma: no cover
+            '%s has bad __all__: %s' % (module, name))   # pragma: nocover
         if (interface.implementedBy(component)
                 # We cannot use getattr() here because that will return True
                 # for all subclasses.  __abstract_component__ should *not* be
@@ -166,3 +168,17 @@ def expand_path(url):
         return resource_filename(package, resource + '.cfg')
     else:
         return url
+
+
+@public
+@contextmanager
+def hacked_sys_modules(name, module):
+    old_module = sys.modules.get(name)
+    sys.modules[name] = module
+    try:
+        yield
+    finally:
+        if old_module is None:
+            del sys.modules[name]
+        else:
+            sys.modules[name] = old_module

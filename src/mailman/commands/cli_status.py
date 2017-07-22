@@ -17,43 +17,44 @@
 
 """The `mailman status` subcommand."""
 
+import sys
+import click
 import socket
 
 from mailman.bin.master import WatcherState, master_state
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.utilities.options import I18nCommand
 from public import public
 from zope.interface import implementer
+
+
+@click.command(
+    cls=I18nCommand,
+    help=_('Show the current running status of the Mailman system.'))
+def status():
+    status, lock = master_state()
+    if status is WatcherState.none:
+        message = _('GNU Mailman is not running')
+    elif status is WatcherState.conflict:
+        hostname, pid, tempfile = lock.details
+        message = _('GNU Mailman is running (master pid: $pid)')
+    elif status is WatcherState.stale_lock:
+        hostname, pid, tempfile = lock.details
+        message = _('GNU Mailman is stopped (stale pid: $pid)')
+    else:
+        hostname, pid, tempfile = lock.details
+        fqdn_name = socket.getfqdn()                         # noqa: F841
+        assert status is WatcherState.host_mismatch, (
+            'Invalid enum value: %s' % status)
+        message = _('GNU Mailman is in an unexpected state '
+                    '($hostname != $fqdn_name)')
+    print(message)
+    sys.exit(status.value)
 
 
 @public
 @implementer(ICLISubCommand)
 class Status:
-    """Status of the Mailman system."""
-
     name = 'status'
-
-    def add(self, parser, command_parser):
-        """See `ICLISubCommand`."""
-        pass
-
-    def process(self, args):
-        """See `ICLISubCommand`."""
-        status, lock = master_state()
-        if status is WatcherState.none:
-            message = _('GNU Mailman is not running')
-        elif status is WatcherState.conflict:
-            hostname, pid, tempfile = lock.details
-            message = _('GNU Mailman is running (master pid: $pid)')
-        elif status is WatcherState.stale_lock:
-            hostname, pid, tempfile = lock.details
-            message = _('GNU Mailman is stopped (stale pid: $pid)')
-        else:
-            hostname, pid, tempfile = lock.details
-            fqdn_name = socket.getfqdn()                         # noqa: F841
-            assert status is WatcherState.host_mismatch, (
-                'Invalid enum value: %s' % status)
-            message = _('GNU Mailman is in an unexpected state '
-                        '($hostname != $fqdn_name)')
-        print(message)
-        return status.value
+    command = status

@@ -35,7 +35,7 @@ class TemplateNotFoundError(MailmanError):
     def __init__(self, template_file):
         self.template_file = template_file
 
-    def __str__(self):                              # pragma: no cover
+    def __str__(self):                              # pragma: nocover
         return self.template_file
 
 

@@ -53,8 +53,11 @@ script that will produce no output to force the hooks to run.
     >>> from mailman.testing.layers import ConfigLayer
     >>> def call():
     ...     exe = os.path.join(os.path.dirname(sys.executable), 'mailman')
-    ...     env = dict(MAILMAN_CONFIG_FILE=config_path,
-    ...                PYTHONPATH=config_directory)
+    ...     env = os.environ.copy()
+    ...     env.update(
+    ...         MAILMAN_CONFIG_FILE=config_path,
+    ...         PYTHONPATH=config_directory,
+    ...         )
     ...     test_cfg = os.environ.get('MAILMAN_EXTRA_TESTING_CFG')
     ...     if test_cfg is not None:
     ...         env['MAILMAN_EXTRA_TESTING_CFG'] = test_cfg

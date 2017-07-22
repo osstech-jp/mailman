@@ -17,118 +17,98 @@
 
 """Print the mailman configuration."""
 
-import sys
+import click
 
-from contextlib import closing
 from lazr.config._config import Section
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.utilities.options import I18nCommand
 from public import public
 from zope.interface import implementer
+
+
+def _section_exists(section):
+    # Not all of the attributes in config are actual sections, so we have to
+    # check the section's type.
+    return (
+        hasattr(config, section) and
+        isinstance(getattr(config, section), Section)
+        )
+
+
+def _get_value(section, key):
+    return getattr(getattr(config, section), key)
+
+
+def _print_values_for_section(section, output):
+    current_section = sorted(getattr(config, section))
+    for key in current_section:
+        value = _get_value(section, key)
+        print('[{}] {}: {}'.format(section, key, value), file=output)
+
+
+@click.command(
+    cls=I18nCommand,
+    help=_('Print the Mailman configuration.'))
+@click.option(
+    '--output', '-o',
+    type=click.File(mode='w', encoding='utf-8', atomic=True),
+    help=_("""\
+    File to send the output to.  If not given, or if '-' is given, standard
+    output is used."""))
+@click.option(
+    '--section', '-s',
+    help=_("""\
+    Section to use for the lookup.  If no key is given, all the key-value pairs
+    of the given section will be displayed."""))
+@click.option(
+    '--key', '-k',
+    help=_("""\
+    Key to use for the lookup.  If no section is given, all the key-values pair
+    from any section matching the given key will be displayed."""))
+@click.pass_context
+def conf(ctx, output, section, key):
+    # Case 1: Both section and key are given, so we can look the value up
+    # directly.
+    if section is not None and key is not None:
+        if not _section_exists(section):
+            ctx.fail('No such section: {}'.format(section))
+        elif not hasattr(getattr(config, section), key):
+            ctx.fail('Section {}: No such key: {}'.format(section, key))
+        else:
+            print(_get_value(section, key), file=output)
+    # Case 2: Section is given, key is not given.
+    elif section is not None and key is None:
+        if _section_exists(section):
+            _print_values_for_section(section, output)
+        else:
+            ctx.fail('No such section: {}'.format(section))
+    # Case 3: Section is not given, key is given.
+    elif section is None and key is not None:
+        for current_section in sorted(config.schema._section_schemas):
+            # We have to ensure that the current section actually exists
+            # and that it contains the given key.
+            if (_section_exists(current_section) and
+                    hasattr(getattr(config, current_section), key)):
+                value = _get_value(current_section, key)
+                print('[{}] {}: {}'.format(
+                    current_section, key, value), file=output)
+    # Case 4: Neither section nor key are given, just display all the
+    # sections and their corresponding key/value pairs.
+    elif section is None and key is None:
+        for current_section in sorted(config.schema._section_schemas):
+            # However, we have to make sure that the current sections and
+            # key which are being looked up actually exist before trying
+            # to print them.
+            if _section_exists(current_section):
+                _print_values_for_section(current_section, output)
+    else:
+        raise AssertionError('Unexpected combination')
 
 
 @public
 @implementer(ICLISubCommand)
 class Conf:
-    """Print the mailman configuration."""
-
     name = 'conf'
-
-    def add(self, parser, command_parser):
-        """See `ICLISubCommand`."""
-
-        self.parser = parser
-        command_parser.add_argument(
-            '-o', '--output',
-            action='store', help=_("""\
-            File to send the output to.  If not given, or if '-' is given,
-            standard output is used."""))
-        command_parser.add_argument(
-            '-s', '--section',
-            action='store', help=_("""\
-            Section to use for the lookup.  If no key is given, all the
-            key-value pairs of the given section will be displayed.
-            """))
-        command_parser.add_argument(
-            '-k', '--key',
-            action='store', help=_("""\
-            Key to use for the lookup.  If no section is given, all the
-            key-values pair from any section matching the given key will be
-            displayed.
-            """))
-
-    def _get_value(self, section, key):
-        return getattr(getattr(config, section), key)
-
-    def _sections(self):
-        return sorted(config.schema._section_schemas)
-
-    def _print_full_syntax(self, section, key, value, output):
-        print('[{}] {}: {}'.format(section, key, value), file=output)
-
-    def _show_key_error(self, section, key):
-        self.parser.error('Section {}: No such key: {}'.format(section, key))
-
-    def _show_section_error(self, section):
-        self.parser.error('No such section: {}'.format(section))
-
-    def _print_values_for_section(self, section, output):
-        current_section = sorted(getattr(config, section))
-        for key in current_section:
-            self._print_full_syntax(section, key,
-                                    self._get_value(section, key), output)
-
-    def _section_exists(self, section):
-        # Not all of the attributes in config are actual sections, so we have
-        # to check the section's type.
-        return (hasattr(config, section) and
-                isinstance(getattr(config, section), Section))
-
-    def _inner_process(self, args, output):
-        # Process the command, ignoring the closing of the output file.
-        section = args.section
-        key = args.key
-        # Case 1: Both section and key are given, so we can directly look up
-        # the value.
-        if section is not None and key is not None:
-            if not self._section_exists(section):
-                self._show_section_error(section)
-            elif not hasattr(getattr(config, section), key):
-                self._show_key_error(section, key)
-            else:
-                print(self._get_value(section, key), file=output)
-        # Case 2: Section is given, key is not given.
-        elif section is not None and key is None:
-            if self._section_exists(section):
-                self._print_values_for_section(section, output)
-            else:
-                self._show_section_error(section)
-        # Case 3: Section is not given, key is given.
-        elif section is None and key is not None:
-            for current_section in self._sections():
-                # We have to ensure that the current section actually exists
-                # and that it contains the given key.
-                if (self._section_exists(current_section) and
-                        hasattr(getattr(config, current_section), key)):
-                    self._print_full_syntax(
-                        current_section, key,
-                        self._get_value(current_section, key),
-                        output)
-        # Case 4: Neither section nor key are given, just display all the
-        # sections and their corresponding key/value pairs.
-        elif section is None and key is None:
-            for current_section in self._sections():
-                # However, we have to make sure that the current sections and
-                # key which are being looked up actually exist before trying
-                # to print them.
-                if self._section_exists(current_section):
-                    self._print_values_for_section(current_section, output)
-
-    def process(self, args):
-        """See `ICLISubCommand`."""
-        if args.output is None or args.output == '-':
-            self._inner_process(args, sys.stdout)
-        else:
-            with closing(open(args.output, 'w')) as output:
-                self._inner_process(args, output)
+    command = conf

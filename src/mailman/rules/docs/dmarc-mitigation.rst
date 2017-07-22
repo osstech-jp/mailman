@@ -23,7 +23,7 @@ returns ``p=reject`` for the ``example.biz`` domain and not for any others.
 Use test data for the organizational domain suffixes.
 
     >>> from mailman.rules.tests.test_dmarc import use_test_organizational_data
-    >>> cleanups.enter_context(use_test_organizational_data())
+    >>> ignore = cleanups.enter_context(use_test_organizational_data())
 
 A message ``From:`` a domain without a DMARC policy does not set any flags.
 

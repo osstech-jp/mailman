@@ -61,24 +61,22 @@ class IEmailCommand(Interface):
 
 @public
 class ICLISubCommand(Interface):
-    """A command line interface subcommand."""
+    """A command line interface subcommand.
 
-    name = Attribute('The command name; must be unique')
+    Subcommands are implemented using the `click` package.  See
+    http://click.pocoo.org/ for details.
+    """
+    name = Attribute(
+        """The subcommand name as it will show up in `mailman --help`.
 
-    __doc__ = Attribute('The command short help')
+        This must be unique; it is a runtime error if any plugin provides a
+        subcommand with a clashing name.
+        """)
 
-    def add(parser, command_parser):
-        """Add the subcommand to the subparser.
+    command = Attribute(
+        """The click command to run for this subcommand.
 
-        :param parser: The argument parser.
-        :type parser: `argparse.ArgumentParser`
-        :param command_parser: The command subparser.
-        :type command_parser: `argparse.ArgumentParser`
-        """
-
-    def process(args):
-        """Process the subcommand.
-
-        :param args: The namespace, as passed in by argparse.
-        :type args: `argparse.Namespace`
-        """
+        This must be a function decorated with at least the @click.command()
+        decorator.  The function may also be decorated with other arguments as
+        needed.
+        """)

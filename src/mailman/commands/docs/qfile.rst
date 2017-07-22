@@ -5,8 +5,6 @@ Dumping queue files
 The ``qfile`` command dumps the contents of a queue pickle file.  This is
 especially useful when you have shunt files you want to inspect.
 
-XXX Test the interactive operation of qfile
-
 
 Pretty printing
 ===============
@@ -15,20 +13,14 @@ By default, the ``qfile`` command pretty prints the contents of a queue pickle
 file to standard output.
 ::
 
-    >>> from mailman.commands.cli_qfile import QFile
-    >>> command = QFile()
-
-    >>> class FakeArgs:
-    ...     interactive = False
-    ...     doprint = True
-    ...     qfile = []
+    >>> command = cli('mailman.commands.cli_qfile.qfile')
 
 Let's say Mailman shunted a message file.
 ::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: test@example.com
+    ... To: ant@example.com
     ... Subject: Uh oh
     ...
     ... I borkeded Mailman.
@@ -43,12 +35,11 @@ Once we've figured out the file name of the shunted message, we can print it.
     >>> from os.path import join
     >>> qfile = join(shuntq.queue_directory, basename + '.pck')
 
-    >>> FakeArgs.qfile = [qfile]
-    >>> command.process(FakeArgs)
+    >>> command('mailman qfile ' + qfile)
     [----- start pickle -----]
     <----- start object 1 ----->
     From: aperson@example.com
-    To: test@example.com
+    To: ant@example.com
     Subject: Uh oh
     <BLANKLINE>
     I borkeded Mailman.
@@ -60,5 +51,4 @@ Once we've figured out the file name of the shunted message, we can print it.
 Maybe we don't want to print the contents of the file though, in case we want
 to enter the interactive prompt.
 
-    >>> FakeArgs.doprint = False
-    >>> command.process(FakeArgs)
+    >>> command('mailman qfile --no-print ' + qfile)

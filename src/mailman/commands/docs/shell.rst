@@ -11,110 +11,93 @@ through custom made Python functions.
 Getting detailed help
 =====================
 
-Because ``withlist`` is so complex, you need to request detailed help.
+Because ``shell`` is so complex, you might want to read the detailed help.
 ::
 
-    >>> from mailman.commands.cli_withlist import Withlist
-    >>> command = Withlist()
+    >>> command = cli('mailman.commands.cli_withlist.shell')
 
-    >>> class FakeArgs:
-    ...     interactive = False
-    ...     run = None
-    ...     details = True
-    ...     listname = []
-
-    >>> class FakeParser:
-    ...     def error(self, message):
-    ...         print(message)
-    >>> command.parser = FakeParser()
-
-    >>> args = FakeArgs()
-    >>> command.process(args)
+    >>> command('mailman shell --details')
     This script provides you with a general framework for interacting with a
     mailing list.
     ...
 
 
-Running a command
-=================
+Running a function
+==================
 
 By putting a Python function somewhere on your ``sys.path``, you can have
-``withlist`` call that function on a given mailing list.  The function takes a
-single argument, the mailing list.
-::
+``shell`` call that function on a given mailing list.
 
     >>> import os, sys
     >>> old_path = sys.path[:]
     >>> sys.path.insert(0, config.VAR_DIR)
 
+.. cleanup
+    >>> ignore = cleanups.callback(setattr, sys, 'path', old_path)
+
+The function takes at least a single argument, the mailing list.
+::
+
     >>> with open(os.path.join(config.VAR_DIR, 'showme.py'), 'w') as fp:
     ...     print("""\
-    ... def showme(mailing_list):
-    ...     print("The list's name is", mailing_list.fqdn_listname)
+    ... def showme(mlist):
+    ...     print("The list's name is", mlist.fqdn_listname)
     ...
-    ... def displayname(mailing_list):
-    ...     print("The list's display name is", mailing_list.display_name)
+    ... def displayname(mlist):
+    ...     print("The list's display name is", mlist.display_name)
+    ...
+    ... def changeme(mlist, display_name):
+    ...     mlist.display_name = display_name
     ... """, file=fp)
 
 If the name of the function is the same as the module, then you only need to
 name the function once.
 
-    >>> mlist = create_list('aardvark@example.com')
-    >>> args.details = False
-    >>> args.run = 'showme'
-    >>> args.listname = 'aardvark@example.com'
-    >>> command.process(args)
-    The list's name is aardvark@example.com
+    >>> mlist = create_list('ant@example.com')
+    >>> command('mailman shell -l ant@example.com --run showme')
+    The list's name is ant@example.com
 
 The function's name can also be different than the modules name.  In that
 case, just give the full module path name to the function you want to call.
 
-    >>> args.run = 'showme.displayname'
-    >>> command.process(args)
-    The list's display name is Aardvark
+    >>> command('mailman shell -l ant@example.com --run showme.displayname')
+    The list's display name is Ant
+
+
+Passing arguments
+=================
+
+Your function can also accept an arbitrary number of arguments.  Every command
+line argument after the callable name is passed as a positional argument to
+the function.  For example, to change the mailing list's display name, you can
+do this::
+
+    >>> command('mailman shell -l ant@example.com --run showme.changeme ANT!')
+    >>> print(mlist.display_name)
+    ANT!
 
 
 Multiple lists
 ==============
 
 You can run a command over more than one list by using a regular expression in
-the `listname` argument.  To indicate a regular expression is used, the string
-must start with a caret.
+the ``listname`` argument.  To indicate a regular expression is used, the
+string must start with a caret.
 ::
 
     >>> mlist_2 = create_list('badger@example.com')
     >>> mlist_3 = create_list('badboys@example.com')
 
-    >>> args.listname = '^.*example.com'
-    >>> command.process(args)
-    The list's display name is Aardvark
+    >>> command('mailman shell --run showme.displayname -l ^.*example.com')
+    The list's display name is ANT!
     The list's display name is Badboys
     The list's display name is Badger
 
-    >>> args.listname = '^bad.*'
-    >>> command.process(args)
+    >>> command('mailman shell --run showme.displayname -l ^bad.*')
     The list's display name is Badboys
     The list's display name is Badger
 
-    >>> args.listname = '^foo'
-    >>> command.process(args)
-
-
-Error handling
-==============
-
-You get an error if you try to run a function over a non-existent mailing
-list.
-
-    >>> args.listname = 'mystery@example.com'
-    >>> command.process(args)
-    No such list: mystery@example.com
-
-You also get an error if no mailing list is named.
-
-    >>> args.listname = None
-    >>> command.process(args)
-    --run requires a mailing list name
+    >>> command('mailman shell --run showme.displayname -l ^foo')
 
 
 Interactive use
@@ -152,9 +135,6 @@ IPython must be installed and available on your system
 
 When using IPython, the ``[shell]history_file`` is not used.
 
-
-.. Clean up
-   >>> sys.path = old_path
 
 .. _IPython: http://ipython.org/
 .. _REPL: https://en.wikipedia.org/wiki/REPL

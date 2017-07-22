@@ -77,6 +77,7 @@ class Configuration:
         self.pipelines = {}
         self.commands = {}
         self.password_context = None
+        self.db = None
 
     def _clear(self):
         """Clear the cached configuration variables."""

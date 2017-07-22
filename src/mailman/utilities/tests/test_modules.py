@@ -23,7 +23,8 @@ import unittest
 
 from contextlib import ExitStack, contextmanager
 from mailman.interfaces.styles import IStyle
-from mailman.utilities.modules import add_components, find_components
+from mailman.utilities.modules import (
+    add_components, find_components, hacked_sys_modules)
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -228,3 +229,15 @@ class StyleA2:
                     'previously <mypackage.components.StyleA1 object at '
                     '.*>'):
                 add_components('mypackage', IStyle, {})
+
+    def test_hacked_sys_modules(self):
+        self.assertIsNone(sys.modules.get('mailman.not_a_module'))
+        with hacked_sys_modules('mailman.not_a_module', object()):
+            self.assertIsNotNone(sys.modules.get('mailman.not_a_module'))
+
+    def test_hacked_sys_modules_restore(self):
+        email_package = sys.modules['email']
+        sentinel = object()
+        with hacked_sys_modules('email', sentinel):
+            self.assertEqual(sys.modules.get('email'), sentinel)
+        self.assertEqual(sys.modules.get('email'), email_package)

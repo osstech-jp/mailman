@@ -2,11 +2,8 @@
 Printing the version
 ====================
 
-You can print the Mailman version number.
-::
+You can print the Mailman version number by invoking the ``version`` command.
 
-    >>> from mailman.commands.cli_version import Version
-    >>> command = Version()
-
-    >>> command.process(None)
+    >>> command = cli('mailman.commands.cli_version.version')
+    >>> command('mailman version')
     GNU Mailman 3...

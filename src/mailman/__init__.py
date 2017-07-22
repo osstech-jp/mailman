@@ -24,7 +24,7 @@ import sys
 try:
     import pkg_resources
     pkg_resources.declare_namespace(__name__)
-except ImportError:                                 # pragma: no cover
+except ImportError:                                 # pragma: nocover
     import pkgutil
     __path__ = pkgutil.extend_path(__path__, __name__)
 
@@ -35,7 +35,7 @@ except ImportError:                                 # pragma: no cover
 # imported.
 #
 # Do *not* do this if we're building the documentation.
-if 'build_sphinx' not in sys.argv:                  # pragma: no cover
+if 'build_sphinx' not in sys.argv:                  # pragma: nocover
     if any('nose2' in arg for arg in sys.argv):
         from mailman.testing.i18n import initialize
     else:

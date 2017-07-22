@@ -211,7 +211,7 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
             # verified by a full coverage run, but diffcov for some reason
             # claims that the test added in the branch that added this code
             # does not cover the change.  That seems like a bug in diffcov.
-            raise AlreadySubscribedError(           # pragma: no cover
+            raise AlreadySubscribedError(           # pragma: nocover
                 self.mlist.fqdn_listname,
                 self.address.email,
                 MemberRole.member)

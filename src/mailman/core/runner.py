@@ -86,7 +86,7 @@ class Runner:
     def __repr__(self):
         return '<{} at {:#x}>'.format(self.__class__.__name__, id(self))
 
-    def signal_handler(self, signum, frame):
+    def signal_handler(self, signum, frame):        # pragma: nocover
         signame = {
             signal.SIGTERM: 'SIGTERM',
             signal.SIGINT: 'SIGINT',
@@ -94,11 +94,13 @@ class Runner:
             }.get(signum, signum)
         if signum == signal.SIGHUP:
             reopen()
-            rlog.info('%s runner caught SIGHUP.  Reopening logs.', self.name)
+            rlog.info('{} runner caught SIGHUP.  Reopening logs.'.format(
+                self.name))
         elif signum in (signal.SIGTERM, signal.SIGINT, signal.SIGUSR1):
             self.stop()
             self.status = signum
-            rlog.info('%s runner caught %s.  Stopping.', self.name, signame)
+            rlog.info('{} runner caught {}.  Stopping.'.format(
+                self.name, signame))
             # As of Python 3.5, PEP 475 gets in our way.  Runners with long
             # time.sleep()'s in their _snooze() method (e.g. the retry runner)
             # will have their system call implemented time.sleep()
