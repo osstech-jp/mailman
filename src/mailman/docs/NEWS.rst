@@ -21,6 +21,8 @@ Bugs
   subject prefixing is fixed.  (Closes #359)
 * Messages with no syntactically valid senders are now automatically
   discarded.  (Closes #369)
+* Various message holds and rejects that gave 'N/A' as a reason now give an
+  appropriate reason.  (Closes #368)
 
 Command line
 ------------
