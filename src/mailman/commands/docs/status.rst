@@ -15,9 +15,10 @@ The status is printed to stdout and a status code is returned.
 
 We can simulate the master starting up by acquiring its lock.
 
+    >>> from datetime import timedelta
     >>> from flufl.lock import Lock
     >>> lock = Lock(config.LOCK_FILE)
-    >>> lock.lock()
+    >>> lock.lock(timeout=timedelta(seconds=20))
     >>> ignore = cleanups.callback(lock.unlock, unconditionally=True)
 
 Getting the status confirms that the master is running.
