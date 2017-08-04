@@ -23,6 +23,7 @@ Bugs
   discarded.  (Closes #369)
 * Various message holds and rejects that gave 'N/A' as a reason now give an
   appropriate reason.  (Closes #368)
+* Bounce messages are now composed for proper translations.
 
 Command line
 ------------
@@ -39,6 +40,8 @@ Interfaces
   both ``List-ID``s and fully qualified list names, since that's the most
   common use case.  There's now a separate ``.get_by_fqdn()`` which only
   accepts the latter and mirrors the already existing ``.get_by_list_id()``.
+* A new template ``list:user:notice:rejected`` has been added for customizing
+  the bounce message rejection notice.
 
 Other
 -----
