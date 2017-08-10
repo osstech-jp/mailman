@@ -81,6 +81,8 @@ class Subcommands(click.MultiCommand):
         if opts:
             with formatter.section('Options'):
                 formatter.write_dl(opts)
+        # Print the list of available commands.
+        super().format_commands(ctx, formatter)
 
 
 @click.group(
