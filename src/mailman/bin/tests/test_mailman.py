@@ -25,8 +25,10 @@ from mailman.app.lifecycle import create_list
 from mailman.bin.mailman import main
 from mailman.config import config
 from mailman.database.transaction import transaction
+from mailman.interfaces.command import ICLISubCommand
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
+from mailman.utilities.modules import add_components
 from unittest.mock import patch
 
 
@@ -45,6 +47,14 @@ class TestMailmanCommand(unittest.TestCase):
         # works.  It does actually show the correct program when run from the
         # command line.
         self.assertEqual(lines[0], 'Usage: main [OPTIONS] COMMAND [ARGS]...')
+        # The help output includes a list of subcommands, in sorted order.
+        commands = {}
+        add_components('mailman.commands', ICLISubCommand, commands)
+        help_commands = list(
+            line.split()[0].strip()
+            for line in lines[-len(commands):]
+            )
+        self.assertEqual(sorted(commands), help_commands)
 
     def test_mailman_command_with_bad_subcommand_prints_help(self):
         # Issue #137: Running `mailman` without a subcommand raises an
