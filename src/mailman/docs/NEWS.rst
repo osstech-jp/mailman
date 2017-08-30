@@ -24,6 +24,8 @@ Bugs
 * Various message holds and rejects that gave 'N/A' as a reason now give an
   appropriate reason.  (Closes #368)
 * Bounce messages are now composed for proper translations.
+* Messages with badly encoded ``Subject`` headers no longer crash the message
+  moderation REST API.  (Closes #383)
 
 Command line
 ------------
