@@ -97,19 +97,18 @@ def hacked_sys_modules(name, module):
 
 
 def scan_module(module, interface):
-    """Return all the object in a module that conform to an interface.
+    """Return all the items in a module that conform to an interface.
 
     Scan every item named in the module's `__all__`.  If that item conforms to
     the given interface, *and* the item is not declared as an
-    `@abstract_component`, then instantiate the item and return the resulting
-    instance.
+    `@abstract_component`, then return the item.
 
     :param module: A module object.
     :type module: module
     :param interface: The interface that returned objects must conform to.
     :type interface: `Interface`
-    :return: The sequence of instantiated matching components.
-    :rtype: instantiated objects implementing `interface`
+    :return: The sequence of matching components.
+    :rtype: items implementing `interface`
     """
     missing = object()
     for name in module.__all__:
@@ -125,22 +124,22 @@ def scan_module(module, interface):
                 # where the marker has been placed.  The value of
                 # __abstract_component__ doesn't matter, only its presence.
                 and '__abstract_component__' not in component.__dict__):
-            yield component()
+            yield component
 
 
 def find_components(package, interface):
     """Find components which conform to a given interface.
 
     Search all the modules in a given package, returning an iterator over all
-    objects found that conform to the given interface, unless that object is
+    items found that conform to the given interface, unless that object is
     decorated with `@abstract_component`.
 
     :param package: The package path to search.
     :type package: string
     :param interface: The interface that returned objects must conform to.
     :type interface: `Interface`
-    :return: The sequence of instantiated matching components.
-    :rtype: instantiated objects implementing `interface`
+    :return: The sequence of matching components.
+    :rtype: items implementing `interface`
     """
     for filename in resource_listdir(package, ''):
         basename, extension = os.path.splitext(filename)
@@ -198,9 +197,9 @@ def add_components(subpackage, interface, mapping):
     in the given subpackage, relative to the 'mailman' parent package,
     and all the plugin names, that match the given interface.  All such
     found objects (unless decorated with `@abstract_component`) are
-    added to the given mapping, keyed by the object's `.name` attribute,
-    which is required.  It is a fatal error if that key already exists
-    in the mapping.
+    instantiated and added to the given mapping, keyed by the object's `.name`
+    attribute, which is required.  It is a fatal error if that key already
+    exists in the mapping.
 
     :param subpackage: The subpackage path to search.
     :type subpackage: str
@@ -213,7 +212,8 @@ def add_components(subpackage, interface, mapping):
         containment tests (e.g. `in` and `not in`) and `__setitem__()`.
     :raises RuntimeError: when a duplicate key is found.
     """
-    for component in find_pluggable_components(subpackage, interface):
+    for component_class in find_pluggable_components(subpackage, interface):
+        component = component_class()
         if component.name in mapping:
             raise RuntimeError(     # pragma: nocover
                 'Duplicate key "{}" found in {}; previously {}'.format(
