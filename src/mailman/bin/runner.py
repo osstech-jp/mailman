@@ -184,7 +184,7 @@ def main(ctx, config_file, verbose, list_runners, once, runner_spec):
     runner = make_runner(*runner_spec, once=once)
     runner.set_signals()
     # Now start up the main loop
-    log.info('%s runner started.'.format(runner.name))
+    log.info('{} runner started.'.format(runner.name))
     runner.run()
-    log.info('%s runner exiting.'.format(runner.name))
+    log.info('{} runner exiting.'.format(runner.name))
     sys.exit(runner.status)
