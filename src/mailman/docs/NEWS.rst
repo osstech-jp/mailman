@@ -65,6 +65,12 @@ Other
 * Drop support for Python 3.4.  (Closes #373)
 * Bump minimum requirements for aiosmtpd (>= 1.1) and flufl.lock (>= 3.1).
 
+REST
+----
+* Allow a mailing list's acceptable aliases to be cleared by calling
+  ``DELETE`` on the list's ``config/acceptable_aliases`` resource.
+  (Closes #394)
+
 
 3.1.0 -- "Between The Wheels"
 =============================
