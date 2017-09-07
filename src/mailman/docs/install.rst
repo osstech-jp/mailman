@@ -1,6 +1,6 @@
-======================
- Installing Mailman 3
-======================
+==================================
+ Installing and running Mailman 3
+==================================
 
 Copyright (C) 2008-2017 by the Free Software Foundation, Inc.
 
@@ -8,12 +8,12 @@ Copyright (C) 2008-2017 by the Free Software Foundation, Inc.
 Requirements
 ============
 
-For the Core, Python 3.4 or newer is required.  It can either be the default
-'python3' on your ``$PATH`` or it can be accessible via the ``python3.4``,
-``python3.5``, or ``python3.6`` binary.  If your operating system does not
-include Python 3, see http://www.python.org for information about downloading
-installers (where available) and installing it from source (when necessary or
-preferred).  Python 2 is not supported by the Core.
+For the Core, Python 3.5 or newer is required.  It can either be the default
+'python3' on your ``$PATH`` or it can be accessible via the ``python3.5`` or
+``python3.6`` binary.  If your operating system does not include Python 3, see
+http://www.python.org for information about downloading installers (where
+available) and installing it from source (when necessary or preferred).
+Python 2 is not supported by the Core.
 
 You may need some additional dependencies, which are either available from
 your OS vendor, or can be downloaded automatically from the `Python
@@ -47,6 +47,17 @@ or if you have a GitLab account and prefer ssh::
 
 Running Mailman 3
 =================
+
+.. ATTENTION::
+   The Mailman command line interface requires a properly configured UTF-8
+   locale.  This is because the Core is implemented in `Python 3 and uses the
+   click`_ command line argument parsing library.  Generally this will not be
+   an issue since your shell is probably set up correctly.  However, in
+   certain environments such as init scripts and cron scripts, your locale may
+   not be UTF-8 compatible.  This can cause Mailman to mysteriously fail to
+   run (since often, proper logging may also not be set up).  If you're seeing
+   weird behavior in these types of environments, be sure they are UTF-8
+   compatible, e.g. by setting ``export LANG=en_US.UTF-8``.
 
 You will need to set up a configuration file to override the defaults and set
 things up for your environment.  Mailman is configured using an "ini"-style
@@ -103,3 +114,4 @@ do::
 .. _`Mailman 3 Core documentation`: https://mailman.readthedocs.io
 .. _`Zope Component Architecture`: https://pypi.python.org/pypi/zope.component
 .. _`building out the mailman3.org`: https://wiki.list.org/DOC/Mailman%203%20installation%20experience
+.. _`Python 3 and uses the click`: http://click.pocoo.org/6/python3/
