@@ -47,6 +47,8 @@ Configuration
 * A new logger has been added called ``logging.plugins``.
 * The ``[styles]paths`` variable has been removed; you can now specify
   additional styles using the new plugin architecture.
+* Mailman now also searches at ``/etc/mailman3/mailman.cfg`` for the
+  configuration file.
 
 Interfaces
 ----------
