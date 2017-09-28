@@ -376,7 +376,7 @@ specifies the LMTP port of Mailman.  Long story short, as user mailman:
 ::
 
     % chmod +t "$HOME"
-    % echo '|qmail-lmtp 1 8042' > .qmail # put appropriate values here
+    % echo '|qmail-lmtp 8042 1' > .qmail # put appropriate values here
     % ln -sf .qmail .qmail-default
     % chmod -t "$HOME"
 
