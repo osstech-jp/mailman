@@ -66,6 +66,8 @@ Other
   Jan Jancar.
 * Drop support for Python 3.4.  (Closes #373)
 * Bump minimum requirements for aiosmtpd (>= 1.1) and flufl.lock (>= 3.1).
+* Add '.pc' (patch directory) to list of ignored patterns when building the
+  documentation with Sphinx.
 
 REST
 ----
