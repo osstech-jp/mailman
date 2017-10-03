@@ -47,6 +47,15 @@ class Message(email.message.Message):
     def __setstate__(self, values):
         self.__dict__ = values
 
+    def as_string(self):
+        # Work around for https://bugs.python.org/issue27321.
+        try:
+            value = email.message.Message.as_string(self)
+        except KeyError:
+            value = email.message.Message.as_bytes(self).decode(
+                'ascii', 'replace')
+        return value
+
     @property
     def sender(self):
         """The address considered to be the author of the email.

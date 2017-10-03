@@ -19,7 +19,6 @@
 
 import unittest
 
-from email import message_from_binary_file
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
 from mailman.database.transaction import transaction
@@ -32,7 +31,6 @@ from mailman.testing.helpers import (
     call_api, get_queue_messages, set_preferred,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import RESTLayer
-from pkg_resources import resource_filename
 from urllib.error import HTTPError
 from zope.component import getUtility
 
@@ -226,24 +224,6 @@ class TestSubscriptionModeration(unittest.TestCase):
         self.assertEqual(tokens, {token_1, token_2})
         emails = set(entry['email'] for entry in json['entries'])
         self.assertEqual(emails, {'anne@example.com', 'bart@example.com'})
-
-    def test_view_malformed_held_message(self):
-        # Opening a bad (i.e. bad structure) email and holding it.
-        email_path = resource_filename(
-            'mailman.rest.tests.data', 'bad_email.eml')
-        with open(email_path, 'rb') as fp:
-            msg = message_from_binary_file(fp)
-        msg.sender = 'aperson@example.com'
-        with transaction():
-            hold_message(self._mlist, msg)
-        # Now trying to access held messages from REST API should not give
-        # 500 server error if one of the messages can't be parsed properly.
-        json, response = call_api(
-            'http://localhost:9001/3.0/lists/ant@example.com/held')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(json['entries']), 1)
-        self.assertEqual(json['entries'][0]['msg'],
-                         'This message is defective')
 
     def test_individual_request(self):
         # We can view an individual request.

@@ -78,6 +78,10 @@ class Connection:
             recipients = [config.devmode.recipient] * len(recipients)
         if self._connection is None:
             self._connect()
+        # smtplib.SMTP.sendmail requires the message string to be pure ascii.
+        # We have seen malformed messages with non-ascii unicodes, so ensure
+        # we have pure ascii.
+        msgtext = msgtext.encode('ascii', 'replace').decode('ascii')
         try:
             log.debug('envsender: %s, recipients: %s, size(msgtext): %s',
                       envsender, recipients, len(msgtext))
