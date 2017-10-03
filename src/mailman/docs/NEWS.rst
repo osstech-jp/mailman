@@ -26,6 +26,8 @@ Bugs
 * Bounce messages are now composed for proper translations.
 * Messages with badly encoded ``Subject`` headers no longer crash the message
   moderation REST API.  (Closes #383)
+* Generated ``regexp`` tables for Postfix now account for possible ``+extra``
+  additions to the ``-bounces`` and ``-confirm`` addresses.  (Closes #401)
 
 Command line
 ------------
