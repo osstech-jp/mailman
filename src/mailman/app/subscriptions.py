@@ -573,7 +573,9 @@ def _handle_confirmation_needed_events(event, template_name):
         domain_name=event.mlist.domain.mail_host,
         contact_address=event.mlist.owner_address,
         ))
-    msg = UserNotification(email_address, confirm_address, subject, text)
+    msg = UserNotification(
+        email_address, confirm_address, subject, text,
+        event.mlist.preferred_language)
     msg.send(event.mlist, add_precedence=False)
 
 

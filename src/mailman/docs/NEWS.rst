@@ -28,6 +28,8 @@ Bugs
   moderation REST API.  (Closes #383)
 * Generated ``regexp`` tables for Postfix now account for possible ``+extra``
   additions to the ``-bounces`` and ``-confirm`` addresses.  (Closes #401)
+* Address confirmation notices are now properly encoded in the character set
+  of the list's preferred_language.  (Closes #395 and #413)
 
 Command line
 ------------
