@@ -183,11 +183,23 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
         txt_recs = resolver.query(dmarc_domain, dns.rdatatype.TXT)
     except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
         return KEEP_LOOKING
+    except (dns.resolver.NoNameservers):
+        elog.error(
+            'DNSException: No Nameservers available for %s (%s).',
+            email, dmarc_domain)
+        # Typically this means a dnssec validation error.  Clients that don't
+        # perform validation *may* successfully see a _dmarc RR whereas a
+        # validating mailman server wont see the _dmarc RR.  We should mitigate
+        # this email to be safe.
+        return True
     except DNSException as error:
         elog.error(
             'DNSException: Unable to query DMARC policy for %s (%s). %s',
             email, dmarc_domain, error.__doc__)
-        return KEEP_LOOKING
+        # While we can't be sure what caused the error, there is potentially
+        # a DMARC policy record that we missed and that a receiver of the mail
+        # might see.  Thus, we should err on the side of caution and mitigate.
+        return True
     # Be as robust as possible in parsing the result.
     results_by_name = {}
     cnames = {}

@@ -24,7 +24,7 @@ from contextlib import ExitStack
 from datetime import timedelta
 from dns.exception import DNSException
 from dns.rdatatype import CNAME, TXT
-from dns.resolver import NXDOMAIN, NoAnswer
+from dns.resolver import NXDOMAIN, NoAnswer, NoNameservers
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
@@ -156,6 +156,8 @@ def get_dns_resolver(
                 raise NoAnswer
             if dparts[2] == 'info':
                 raise DNSException('no internet')
+            if dparts[2] == 'home':
+                raise NoNameservers
             if dparts[1] != 'example' or dparts[2] != 'biz':
                 raise NXDOMAIN
             self.response = Answer()
@@ -227,13 +229,32 @@ To: ant@example.com
         mark = LogFileMark('mailman.error')
         rule = dmarc.DMARCMitigation()
         with get_dns_resolver():
-            self.assertFalse(rule.check(mlist, msg, {}))
+            self.assertTrue(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
             line[-144:],
             'DNSException: Unable to query DMARC policy for '
             'anne@example.info (_dmarc.example.info). '
             'Abstract base class shared by all dnspython exceptions.\n')
+
+    def test_dmarc_nonameservers_exception(self):
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        msg = mfs("""\
+From: anne@example.home
+To: ant@example.com
+
+""")
+        mark = LogFileMark('mailman.error')
+        rule = dmarc.DMARCMitigation()
+        with get_dns_resolver():
+            self.assertTrue(rule.check(mlist, msg, {}))
+        line = mark.readline()
+        self.assertEqual(
+            line[-84:],
+            'DNSException: No Nameservers available for '
+            'anne@example.home (_dmarc.example.home).\n')
 
     def test_cname_wrong_txt_name(self):
         mlist = create_list('ant@example.com')
