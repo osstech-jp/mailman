@@ -189,8 +189,8 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
             email, dmarc_domain)
         # Typically this means a dnssec validation error.  Clients that don't
         # perform validation *may* successfully see a _dmarc RR whereas a
-        # validating mailman server wont see the _dmarc RR.  We should mitigate
-        # this email to be safe.
+        # validating mailman server won't see the _dmarc RR.  We should
+        # mitigate this email to be safe.
         return True
     except DNSException as error:
         elog.error(
