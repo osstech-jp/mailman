@@ -1,3 +1,4 @@
+
 # Copyright (C) 2012-2017 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
@@ -25,6 +26,7 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
@@ -74,6 +76,17 @@ Welcome to the $list_name mailing list.
         full_path = os.path.join(path, 'list:user:notice:welcome.txt')
         with open(full_path, 'w', encoding='utf-8') as fp:
             print('You just joined the $list_name mailing list!', file=fp)
+        # Write a list-specific welcome message with non-ascii.
+        path = os.path.join(self.var_dir, 'templates', 'lists',
+                            'test@example.com', 'yy')
+        os.makedirs(path)
+        full_path = os.path.join(path, 'list:user:notice:welcome.txt')
+        with open(full_path, 'w', encoding='utf-8') as fp:
+            print('Yöu just joined the $list_name mailing list!', file=fp)
+        # Write a list-specific address confirmation message with non-ascii.
+        full_path = os.path.join(path, 'list:user:action:subscribe.txt')
+        with open(full_path, 'w', encoding='utf-8') as fp:
+            print('Wé need your confirmation', file=fp)
 
     def test_welcome_message(self):
         subscribe(self._mlist, 'Anne', email='anne@example.com')
@@ -114,6 +127,104 @@ Welcome to the Test List mailing list.
         self.assertMultiLineEqual(
             message.get_payload(),
             'You just joined the Test List mailing list!')
+
+    def test_more_specific_messages_nonascii(self):
+        # The welcome message url can contain placeholders for the fqdn list
+        # name and language.
+        getUtility(ITemplateManager).set(
+            'list:user:notice:welcome', self._mlist.list_id,
+            'mailman:///$listname/$language/welcome.txt')
+        # Add the yy language and subscribe Anne using it.
+        getUtility(ILanguageManager).add('yy', 'utf-8', 'Ylandia')
+        # We can't use the subscribe() helper because that would send the
+        # welcome message before we set the member's preferred language.
+        address = getUtility(IUserManager).create_address(
+            'anne@example.com', 'Anné Person')
+        address.preferences.preferred_language = 'yy'
+        # Get the admin notice too.
+        self._mlist.admin_notify_mchanges = True
+        # Make another non-ascii replacement.
+        self._mlist.display_name = 'Tést List'
+        # And set the list's language.
+        self._mlist.preferred_language = 'yy'
+        self._mlist.subscribe(address)
+        # Now there are two messages in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=2)
+        if str(items[0].msg['subject']).startswith('Welcome'):
+            welcome = items[0].msg
+            admin_notice = items[1].msg
+        else:
+            welcome = items[1].msg
+            admin_notice = items[0].msg
+        self.assertEqual(str(welcome['subject']),
+                         'Welcome to the "Tést List" mailing list')
+        self.assertMultiLineEqual(
+            welcome.get_payload(decode=True).decode('utf-8'),
+            'Yöu just joined the Tést List mailing list!')
+        # Ensure the message is single part and properly encoded.
+        raw_payload = welcome.get_payload()
+        self.assertEqual(
+            raw_payload.encode('us-ascii', 'replace').decode('us-ascii'),
+            raw_payload)
+        self.assertEqual(str(admin_notice['subject']),
+                         'Tést List subscription notification')
+        self.assertMultiLineEqual(
+            admin_notice.get_payload(decode=True).decode('utf-8'),
+            '=?utf-8?q?Ann=C3=A9_Person?= <anne@example.com> has been'
+            ' successfully subscribed to Tést List.\n')
+        # Ensure the message is single part and properly encoded.
+        raw_payload = admin_notice.get_payload()
+        self.assertEqual(
+            raw_payload.encode('us-ascii', 'replace').decode('us-ascii'),
+            raw_payload)
+
+    def test_confirmation_message(self):
+        # Create an address to subscribe.
+        address = getUtility(IUserManager).create_address(
+            'anne@example.com', 'Anne Person')
+        # Register the address with the list to create a confirmation notice.
+        ISubscriptionManager(self._mlist).register(address)
+        # Now there's one message in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
+        self.assertTrue(str(message['subject']).startswith('confirm'))
+        self.assertMultiLineEqual(
+            message.get_payload(), """\
+Email Address Registration Confirmation
+
+Hello, this is the GNU Mailman server at example.com.
+
+We have received a registration request for the email address
+
+    anne@example.com
+
+Before you can start using GNU Mailman at this site, you must first confirm
+that this is your email address.  You can do this by replying to this message,
+keeping the Subject header intact.
+
+If you do not wish to register this email address, simply disregard this
+message.  If you think you are being maliciously subscribed to the list, or
+have any other questions, you may contact
+
+    test-owner@example.com
+""")
+
+    def test_nonascii_confirmation_message(self):
+        # Add the 'yy' language and set it
+        getUtility(ILanguageManager).add('yy', 'utf-8', 'Ylandia')
+        self._mlist.preferred_language = 'yy'
+        # Create an address to subscribe.
+        address = getUtility(IUserManager).create_address(
+            'anne@example.com', 'Anne Person')
+        # Register the address with the list to create a confirmation notice.
+        ISubscriptionManager(self._mlist).register(address)
+        # Now there's one message in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
+        self.assertTrue(str(message['subject']).startswith('confirm'))
+        self.assertMultiLineEqual(
+            message.get_payload(decode=True).decode('utf-8'),
+            'Wé need your confirmation\n')
 
     def test_no_welcome_message_to_owners(self):
         # Welcome messages go only to mailing list members, not to owners.
