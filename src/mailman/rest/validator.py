@@ -100,6 +100,15 @@ def list_of_strings_validator(values):
 
 
 @public
+def integer_ge_zero_validator(value):
+    """Validate that the value is a non-negative integer."""
+    value = int(value)
+    if value < 0:
+        raise ValueError('Expected a non-negative integer: {}'.format(value))
+    return value
+
+
+@public
 class Validator:
     """A validator of parameter input."""
 
