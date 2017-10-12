@@ -80,7 +80,7 @@ REST
 * Allow a mailing list's acceptable aliases to be cleared by calling
   ``DELETE`` on the list's ``config/acceptable_aliases`` resource.
   (Closes #394)
-* Allow setting max_message_size for a mailing list. (Closes #417)
+* Allow setting ``max_message_size`` for a mailing list. (Closes #417)
 
 
 3.1.0 -- "Between The Wheels"
