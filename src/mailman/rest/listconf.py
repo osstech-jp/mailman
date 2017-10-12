@@ -31,7 +31,9 @@ from mailman.rest.helpers import (
     GetterSetter, bad_request, etag, no_content, not_found, okay)
 from mailman.rest.validator import (
     PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
-    Validator, enum_validator, list_of_strings_validator)
+    Validator, enum_validator, integer_ge_zero_validator,
+    list_of_strings_validator
+    )
 from public import public
 from zope.component import getUtility
 
@@ -168,6 +170,7 @@ ATTRIBUTES = dict(
     list_name=GetterSetter(None),
     mail_host=GetterSetter(None),
     moderator_password=GetterSetter(password_bytes_validator),
+    max_message_size=GetterSetter(integer_ge_zero_validator),
     next_digest_number=GetterSetter(None),
     no_reply_address=GetterSetter(None),
     owner_address=GetterSetter(None),

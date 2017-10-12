@@ -23,7 +23,8 @@ from mailman.core.api import API30, API31
 from mailman.interfaces.action import Action
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.validator import (
-    enum_validator, list_of_strings_validator, subscriber_validator)
+    enum_validator, integer_ge_zero_validator, list_of_strings_validator,
+    subscriber_validator)
 from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
 
@@ -40,6 +41,14 @@ class TestValidators(unittest.TestCase):
         self.assertEqual(
             list_of_strings_validator(['ant', 'bee', 'cat']),
             ['ant', 'bee', 'cat'])
+
+    def test_integer_ge_zero_validator_invalid(self):
+        self.assertRaises(ValueError, integer_ge_zero_validator, 'foo')
+        self.assertRaises(ValueError, integer_ge_zero_validator, '-1')
+
+    def test_integer_ge_zero_validator_valid(self):
+        self.assertEquals(integer_ge_zero_validator('0'), 0)
+        self.assertEquals(integer_ge_zero_validator('100'), 100)
 
     def test_list_of_strings_validator_invalid(self):
         # Strings are required.

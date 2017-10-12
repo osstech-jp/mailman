@@ -72,6 +72,7 @@ RESOURCE = dict(
     include_rfc2369_headers=False,
     info='This is the mailing list info',
     moderator_password='password',
+    max_message_size='150',
     posting_pipeline='virgin',
     reply_goes_to_list='point_to_list',
     reply_to_address='bee@example.com',
