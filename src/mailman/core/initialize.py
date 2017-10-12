@@ -157,7 +157,7 @@ def initialize_2(debug=False, propagate_logs=None, testing=False):
     config = mailman.config.config
     if len(config.mailman.pre_hook) > 0:            # pragma: nocover
         log = logging.getLogger('mailman.plugins')
-        log.warn(
+        log.warning(
             'The [mailman]pre_hook configuration value has been replaced '
             "by the plugins infrastructure, and won't be called.")
     # Run the plugin pre_hooks, if one fails, disable the offending plugin.
@@ -199,7 +199,7 @@ def initialize_3():
     config = mailman.config.config
     log = logging.getLogger('mailman.plugins')
     if len(config.mailman.post_hook) > 0:           # pragma: nocover
-        log.warn(
+        log.warning(
             'The [mailman]post_hook configuration value has been replaced '
             "by the plugins infrastructure, and won't be called.")
     for plugin in config.plugins.values():          # pragma: nocover
