@@ -32,6 +32,8 @@ Bugs
   of the list's preferred_language.  (Closes #395 and #413)
 * Thanks to Jim Popovitch, certain failures in DNS lookups of DMARC policy
   will now result in mitigations being applied.  (Closes #415)
+* Messages without a sender can no longer bypass the ``nonmember-moderation``
+  rule.  (Closes #414)
 
 Command line
 ------------
