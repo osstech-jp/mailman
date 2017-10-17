@@ -70,3 +70,28 @@ class TestHeaderMatches(unittest.TestCase):
             call_api('http://localhost:9001/3.0/lists/bee.example.com'
                      '/header-matches/')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_add_bad_regexp(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                     '/header-matches', {
+                         'header': 'header',
+                         'pattern': '+invalid',
+                        })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'Cannot convert parameters: pattern')
+
+    def test_patch_bad_regexp(self):
+        header_matches = IHeaderMatchList(self._mlist)
+        with transaction():
+            header_matches.append('header', 'pattern')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                     '/header-matches/0', {
+                         'header': 'header',
+                         'pattern': '+invalid',
+                        }, method='PATCH')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'Cannot convert parameters: pattern')

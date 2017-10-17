@@ -261,7 +261,7 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
                     # Coverage BitBucket issue #198 and
                     # http://bugs.python.org/issue2506 coverage cannot report
                     # it as such, so just pragma it away.
-                    continue                        # pragma: no cover
+                    continue                        # pragma: missed
             if policy in ('reject', 'quarantine'):
                 vlog.info(
                     '%s: DMARC lookup for %s (%s) found p=%s in %s = %s',

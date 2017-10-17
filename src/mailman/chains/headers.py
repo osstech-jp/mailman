@@ -104,13 +104,22 @@ class HeaderMatchRule:
         for value in headers:
             if isinstance(value, Header):
                 value = value.encode()
-            if re.search(self.pattern, value, re.IGNORECASE):
-                msgdata['moderation_sender'] = msg.sender
-                with _.defer_translation():
-                    # This will be translated at the point of use.
-                    msgdata.setdefault('moderation_reasons', []).append(
-                        (_('Header "{}" matched a header rule'), str(value)))
-                return True
+            try:
+                mo = re.search(self.pattern, value, re.IGNORECASE)
+            except re.error as error:
+                log.error(
+                    "Invalid regexp '{}' in header_matches for {}: {}".format(
+                        self.pattern, mlist.list_id, error.msg))
+                return False
+            else:
+                if mo:
+                    msgdata['moderation_sender'] = msg.sender
+                    with _.defer_translation():
+                        # This will be translated at the point of use.
+                        msgdata.setdefault('moderation_reasons', []).append(
+                            (_('Header "{}" matched a header rule'),
+                             str(value)))
+                    return True
         return False
 
 

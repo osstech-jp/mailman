@@ -34,6 +34,8 @@ Bugs
   will now result in mitigations being applied.  (Closes #415)
 * Messages without a sender can no longer bypass the ``nonmember-moderation``
   rule.  (Closes #414)
+* Invalid regexps in header_matches rules are properly logged and can't be set
+  via REST.  (Closes #418)
 
 Command line
 ------------

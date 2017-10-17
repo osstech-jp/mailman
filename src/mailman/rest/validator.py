@@ -17,6 +17,8 @@
 
 """REST web form validation."""
 
+import re
+
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
@@ -105,6 +107,21 @@ def integer_ge_zero_validator(value):
     value = int(value)
     if value < 0:
         raise ValueError('Expected a non-negative integer: {}'.format(value))
+    return value
+
+
+@public
+def regexp_validator(value):                           # pragma: missed
+    """Validate that the value is a valid regexp."""
+    # This code is covered as proven by the fact that the tests
+    # test_add_bad_regexp and test_patch_bad_regexp in
+    # mailman/rest/tests/test_header_matches.py fail with AssertionError:
+    # HTTPError not raised if the code is bypassed, but coverage says it's
+    # not covered so work around it for now.
+    try:
+        re.compile(value)
+    except re.error:
+        raise ValueError('Expected a valid regexp, got {}'.format(value))
     return value
 
 

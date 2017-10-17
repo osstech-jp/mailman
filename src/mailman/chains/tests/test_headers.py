@@ -125,6 +125,35 @@ class TestHeaderChain(unittest.TestCase):
                          'Configuration error: [antispam]header_checks '
                          'contains bogus line: A-bad-line')
 
+    def test_bad_regexp(self):
+        # Take a mark on the error log file.
+        mark = LogFileMark('mailman.error')
+        # A bad regexp in header_checks should just get ignored, but
+        # with an error message logged.
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('Foo', '+a bad regexp', 'reject')
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A message
+Message-ID: <ant>
+Foo: foo
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        # This event subscriber records the event that occurs when the message
+        # is processed by the header-match chain.
+        events = []
+        with event_subscribers(events.append):
+            process(self._mlist, msg, msgdata, start_chain='header-match')
+        self.assertEqual(len(events), 0)
+        # Check the error log.
+        self.assertEqual(mark.readline()[-89:-1],
+                         "Invalid regexp '+a bad regexp' in header_matches "
+                         'for test.example.com: nothing to repeat')
+
     def test_duplicate_header_match_rule(self):
         # 100% coverage: test an assertion in a corner case.
         #
