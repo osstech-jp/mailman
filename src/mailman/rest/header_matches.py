@@ -20,9 +20,9 @@
 from mailman.interfaces.action import Action
 from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, child, created, etag, no_content, not_found,
-    okay)
-from mailman.rest.validator import Validator, enum_validator
+    CollectionMixin, GetterSetter, bad_request, child, created,
+    etag, no_content, not_found, okay)
+from mailman.rest.validator import Validator, enum_validator, regexp_validator
 from public import public
 
 
@@ -92,7 +92,7 @@ class HeaderMatch(_HeaderMatchBase):
             return
         kws = dict(
             header=lowercase,
-            pattern=str,
+            pattern=GetterSetter(regexp_validator),
             position=int,
             action=enum_validator(Action),
             )
@@ -142,7 +142,7 @@ class HeaderMatches(_HeaderMatchBase, CollectionMixin):
         """Add a header match."""
         validator = Validator(
             header=str,
-            pattern=str,
+            pattern=GetterSetter(regexp_validator),
             action=enum_validator(Action),
             _optional=('action',)
             )
