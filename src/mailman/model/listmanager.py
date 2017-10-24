@@ -74,8 +74,8 @@ class ListManager:
     def get_by_fqdn(self, store, fqdn_listname):
         """See `IListManager`."""
         listname, at, hostname = fqdn_listname.partition('@')
-        list_id = '{}.{}'.format(listname, hostname)
-        return store.query(MailingList).filter_by(_list_id=list_id).first()
+        return store.query(MailingList).filter_by(
+            list_name=listname, mail_host=hostname).first()
 
     @dbconnection
     def delete(self, store, mlist):

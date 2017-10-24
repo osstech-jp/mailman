@@ -165,12 +165,12 @@ class LMTPHandler:
                 if listname not in listnames:
                     status.append(ERR_550)
                     continue
-                listid = '{}.{}'.format(local, domain)
+                mlist = getUtility(IListManager).get_by_fqdn(listname)
                 # The recipient is a valid mailing list.  Find the subaddress
                 # if there is one, and set things up to enqueue to the proper
                 # queue.
                 queue = None
-                msgdata = dict(listid=listid,
+                msgdata = dict(listid=mlist.list_id,
                                original_size=msg.original_size,
                                received_time=received_time)
                 canonical_subaddress = SUBADDRESS_NAMES.get(subaddress)
