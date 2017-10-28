@@ -124,3 +124,29 @@ def compile_sa_unicode_large(element, compiler, **kw):
 @compiles(SAUnicodeLarge)
 def default_sa_unicode_large(element, compiler, **kw):
     return compiler.visit_unicode(element, **kw)
+
+
+@public
+class SAUnicodeXL(TypeDecorator):
+    """Similar to SAUnicode type, but compiles to VARCHAR(20000).
+
+    This allows very long values up to 20,000 bytes for cases where
+    SAUnicodeLarge is not enough.
+
+    Because of MySQL issues columns of this type should either not be indexed
+    or should be indexed with an Index() function specifying mysql_length=N
+    where N is (probably much) less than 767.
+    See http://docs.sqlalchemy.org/en/latest/dialects/mysql.html#index-length
+    """
+    impl = Unicode
+
+
+@compiles(SAUnicodeXL, 'mysql')
+def compile_sa_unicode_xl(element, compiler, **kw):
+    # We hardcode the collate here to make string comparison case sensitive.
+    return 'VARCHAR(20000) COLLATE utf8_bin'              # pragma: nocover
+
+
+@compiles(SAUnicodeXL)
+def default_sa_unicode_xl(element, compiler, **kw):
+    return compiler.visit_unicode(element, **kw)
