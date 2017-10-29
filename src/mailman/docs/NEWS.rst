@@ -36,6 +36,8 @@ Bugs
   rule.  (Closes #414)
 * Invalid regexps in header_matches rules are properly logged and can't be set
   via REST.  (Closes #418)
+* A list whose name is one of the ``admin``, ``bounces``, ``confirm``, etc.
+  subaddresses can now be posted to.  (Closes #433)
 
 Command line
 ------------
