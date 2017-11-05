@@ -63,7 +63,6 @@ slog = logging.getLogger('mailman.smtp')
 # listname-request@.  This maps user visible subaddress names (which may
 # include aliases) to the internal canonical subaddress name.
 SUBADDRESS_NAMES = dict(
-    admin='bounces',
     bounces='bounces',
     confirm='confirm',
     join='join',
