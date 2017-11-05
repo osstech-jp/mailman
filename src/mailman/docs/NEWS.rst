@@ -38,6 +38,8 @@ Bugs
   via REST.  (Closes #418)
 * A list whose name is one of the ``admin``, ``bounces``, ``confirm``, etc.
   subaddresses can now be posted to.  (Closes #433)
+* The ``admin`` subaddress, a synonym for ``bounces`` and deprecated since
+  Mailman 2.1, has been removed.  (Closes #435)
 
 Command line
 ------------
