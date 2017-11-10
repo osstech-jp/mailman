@@ -40,6 +40,7 @@ Bugs
   subaddresses can now be posted to.  (Closes #433)
 * The ``admin`` subaddress, a synonym for ``bounces`` and deprecated since
   Mailman 2.1, has been removed.  (Closes #435)
+* Better support for changing the ``list_name`` property.  (Closes #428)
 
 Command line
 ------------

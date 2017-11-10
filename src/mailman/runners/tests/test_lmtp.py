@@ -197,6 +197,24 @@ Subject: This will be recognized as a post to the -join list.
         get_queue_messages('in', expected_count=1)
         get_queue_messages('command', expected_count=0)
 
+    def test_mailing_list_with_different_address_and_list_id(self):
+        # A mailing list can be renamed, in which case the list_name
+        # will be different but the list_id will remain the same.
+        # https://gitlab.com/mailman/mailman/issues/428
+        with transaction():
+            self._mlist.list_name = 'renamed'
+        self.assertEqual(self._mlist.posting_address, 'renamed@example.com')
+        self._lmtp.sendmail('anne@example.com', ['renamed@example.com'], """\
+From: anne@example.com
+To: renamed@example.com
+Message-ID: <ant>
+Subject: This should be accepted.
+
+""")
+        # The message is in the incoming queue but not the command queue.
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual(items[0].msgdata['listid'], 'test.example.com')
+
 
 class TestBugs(unittest.TestCase):
     """Test some LMTP related bugs."""
