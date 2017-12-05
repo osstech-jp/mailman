@@ -43,7 +43,7 @@ class umask:
 
 
 @public
-def makedirs(path, mode=0o2775):
+def makedirs(path, mode=0o0755):
     """Create a directory hierarchy, ensuring permissions.
 
     Other than just calling os.makedirs(), this ensures that the umask is
