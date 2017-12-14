@@ -41,6 +41,9 @@ Bugs
 * The ``admin`` subaddress, a synonym for ``bounces`` and deprecated since
   Mailman 2.1, has been removed.  (Closes #435)
 * Better support for changing the ``list_name`` property.  (Closes #428)
+* Raw Message text is now coerced to pure ascii before sending, and
+  https://bugs.python.org/issue27321 is now defended against by overriding
+  Message.as_string() to cover more cases than before.  (Closes #406)
 
 Command line
 ------------

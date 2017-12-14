@@ -19,12 +19,14 @@
 
 import unittest
 
+from email import message_from_binary_file
 from email.header import Header
 from email.parser import FeedParser
 from mailman.app.lifecycle import create_list
 from mailman.email.message import Message, UserNotification
 from mailman.testing.helpers import get_queue_messages
 from mailman.testing.layers import ConfigLayer
+from pkg_resources import resource_filename
 
 
 class TestMessage(unittest.TestCase):
@@ -88,3 +90,12 @@ Test content
         msg['From'] = Header('test@example.com')
         # Make sure the senders property does not fail
         self.assertEqual(msg.senders, ['test@example.com'])
+
+    def test_as_string_python_bug_27321(self):
+        email_path = resource_filename(
+            'mailman.email.tests.data', 'bad_email.eml')
+        with open(email_path, 'rb') as fp:
+            msg = message_from_binary_file(fp, Message)
+            fp.seek(0)
+            text = fp.read().decode('ascii', 'replace')
+        self.assertEqual(msg.as_string(), text)
