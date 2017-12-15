@@ -44,6 +44,8 @@ Bugs
 * Raw Message text is now coerced to pure ascii before sending, and
   https://bugs.python.org/issue27321 is now defended against by overriding
   Message.as_string() to cover more cases than before.  (Closes #406)
+* The override of Message.as_string() has been extended to catch another
+  observed exception.  (Closes #441)
 
 Command line
 ------------

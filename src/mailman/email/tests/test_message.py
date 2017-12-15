@@ -99,3 +99,12 @@ Test content
             fp.seek(0)
             text = fp.read().decode('ascii', 'replace')
         self.assertEqual(msg.as_string(), text)
+
+    def test_as_string_python_bug_32330(self):
+        email_path = resource_filename(
+            'mailman.email.tests.data', 'bad_email_2.eml')
+        with open(email_path, 'rb') as fp:
+            msg = message_from_binary_file(fp, Message)
+            fp.seek(0)
+            text = fp.read().decode('ascii', 'replace')
+        self.assertEqual(msg.as_string(), text)

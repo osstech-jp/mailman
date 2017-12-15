@@ -1,0 +1,8 @@
+To: <test@example.com>
+Subject: Defective email
+From: user@example.com
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
+Message-Id: <20160614102505.9OFQ19L1C>
+
+This string contains non-ascii �

@@ -48,10 +48,11 @@ class Message(email.message.Message):
         self.__dict__ = values
 
     def as_string(self):
-        # Work around for https://bugs.python.org/issue27321.
+        # Work around for https://bugs.python.org/issue27321 and
+        # https://bugs.python.org/issue32330.
         try:
             value = email.message.Message.as_string(self)
-        except KeyError:
+        except (KeyError, UnicodeEncodeError):
             value = email.message.Message.as_bytes(self).decode(
                 'ascii', 'replace')
         return value
