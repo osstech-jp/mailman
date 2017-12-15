@@ -137,7 +137,7 @@ class UserNotification(Message):
         charset = (lang.charset if lang is not None else 'us-ascii')
         subject = ('(no subject)' if subject is None else subject)
         if text is not None:
-            self.set_payload(text.encode(charset), charset)
+            self.set_payload(text.encode(charset, errors='replace'), charset)
         self['Subject'] = Header(
             subject, charset, header_name='Subject', errors='replace')
         self['From'] = sender
