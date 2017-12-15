@@ -46,6 +46,9 @@ Bugs
   Message.as_string() to cover more cases than before.  (Closes #406)
 * The override of Message.as_string() has been extended to catch another
   observed exception.  (Closes #441)
+* The email.message.UserNotification() constructor will now not fail if given
+  a ``text`` argument containing a character not in the charset of the
+  ``lang`` argument.  (Closes #437)
 
 Command line
 ------------

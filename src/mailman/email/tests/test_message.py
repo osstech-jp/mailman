@@ -91,6 +91,14 @@ Test content
         # Make sure the senders property does not fail
         self.assertEqual(msg.senders, ['test@example.com'])
 
+    def test_user_notification_bad_charset(self):
+        msg = UserNotification(
+            'aperson@example.com',
+            'test@example.com',
+            'Something you need to know',
+            'Non-ascii text é.')
+        self.assertEqual(msg.get_payload(), 'Non-ascii text ?.')
+
     def test_as_string_python_bug_27321(self):
         email_path = resource_filename(
             'mailman.email.tests.data', 'bad_email.eml')
