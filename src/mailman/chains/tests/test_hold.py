@@ -21,7 +21,8 @@ import unittest
 
 from email import message_from_bytes as mfb
 from mailman.app.lifecycle import create_list
-from mailman.chains.hold import autorespond_to_sender
+from mailman.chains.builtin import BuiltInChain
+from mailman.chains.hold import HoldChain, autorespond_to_sender
 from mailman.core.chains import process as process_chain
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.member import MemberRole
@@ -34,6 +35,9 @@ from mailman.testing.helpers import (
 from mailman.testing.layers import ConfigLayer
 from pkg_resources import resource_filename
 from zope.component import getUtility
+
+
+SEMISPACE = '; '
 
 
 class TestAutorespond(unittest.TestCase):
@@ -224,3 +228,33 @@ A message body.
         messages = list(getUtility(IMessageStore).messages)
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0]['message-id'], '<ant>')
+
+    def test_hold_with_long_rule_misses(self):
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        rule_misses = [x[0] for x in BuiltInChain._link_descriptions
+                       if x[0] not in ('truth', 'any')]
+        for i in range(20):
+            rule_misses.append('header-match-test.example.com-{}'.format(i))
+        msgdata = dict(rule_misses=rule_misses)
+        msgdata['rule_hits'] = []
+        msgdata['moderation_reasons'] = ['something']
+        # We can't use process_chain because it clears rule hits and misses.
+        HoldChain()._process(self._mlist, msg, msgdata)
+        messages = get_queue_messages('virgin', expected_count=2)
+        for item in messages:
+            if item.msg['to'] == 'test-owner@example.com':
+                held_message = item.msg.get_payload(1).get_payload(0)
+            elif item.msg['To'] == 'anne@example.com':
+                pass
+            else:
+                self.fail('Unexpected message: %s' % item.msg)
+        self.assertEqual(held_message['x-mailman-rule-misses'],
+                         SEMISPACE.join(rule_misses))

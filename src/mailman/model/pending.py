@@ -23,13 +23,13 @@ from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import SAUnicode, SAUnicodeLarge
+from mailman.database.types import SAUnicode, SAUnicodeXL
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 from mailman.utilities.datetime import now
 from mailman.utilities.uid import TokenFactory
 from public import public
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, and_
+from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, and_
 from sqlalchemy.orm import aliased, relationship
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
@@ -44,10 +44,12 @@ class PendedKeyValue(Model):
     """A pended key/value pair, tied to a token."""
 
     __tablename__ = 'pendedkeyvalue'
+    __table_args__ = (Index('ix_pendedkeyvalue_value', 'value',
+                            mysql_length=100), )
 
     id = Column(Integer, primary_key=True)
     key = Column(SAUnicode, index=True)
-    value = Column(SAUnicodeLarge, index=True)
+    value = Column(SAUnicodeXL)
     pended_id = Column(Integer, ForeignKey('pended.id'), index=True)
 
     def __init__(self, key, value):

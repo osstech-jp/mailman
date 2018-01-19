@@ -49,6 +49,9 @@ Bugs
 * The email.message.UserNotification() constructor will now not fail if given
   a ``text`` argument containing a character not in the charset of the
   ``lang`` argument.  (Closes #437)
+* A new SQLAlchemy column type ``SAUnicodeXL`` has been implemented to support
+  large columns in MySQL and is used for the ``value`` column of the
+  ``pendedkeyvalue`` table.  (Closes #385)
 
 Command line
 ------------
