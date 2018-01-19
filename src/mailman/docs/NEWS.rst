@@ -52,6 +52,8 @@ Bugs
 * A new SQLAlchemy column type ``SAUnicodeXL`` has been implemented to support
   large columns in MySQL and is used for the ``value`` column of the
   ``pendedkeyvalue`` table.  (Closes #385)
+* Messages with ``Subject`` headers encoded in an unknown character set no
+  longer throw ``LookupError`` in subject prefixing.  (Closes #445)
 
 Command line
 ------------

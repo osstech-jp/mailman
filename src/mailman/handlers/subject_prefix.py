@@ -72,7 +72,11 @@ def all_same_charset(mlist, msgdata, subject, prefix, prefix_pattern, ws):
         if isinstance(chunk, str):
             chunks.append(chunk)
         else:
-            chunks.append(chunk.decode(charset))
+            try:
+                chunks.append(chunk.decode(charset))
+            except LookupError as e:
+                # The charset value is unknown.
+                return None
         if charset != list_charset:
             return None
     subject_text = EMPTYSTRING.join(chunks)
@@ -117,7 +121,12 @@ def mixed_charsets(mlist, msgdata, subject, prefix, prefix_pattern, ws):
     if isinstance(chunk_text, str):
         first_text = chunk_text
     else:
-        first_text = chunk_text.decode(chunk_charset)
+        try:
+            first_text = chunk_text.decode(chunk_charset)
+        except LookupError as e:
+            # The chunk_charset is unknown. Add a dummy first_text.
+            chunks.insert(0, ('', 'us-ascii'))
+            first_text = ''
     first_text = re.sub(prefix_pattern, '', first_text).lstrip()
     rematch = re.match(RE_PATTERN, first_text, re.I)
     if rematch:
