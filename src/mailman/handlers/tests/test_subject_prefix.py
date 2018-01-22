@@ -55,7 +55,7 @@ class TestSubjectPrefix(unittest.TestCase):
         self._mlist.subject_prefix = '    '
         msg = Message()
         msg['Subject'] = 'A test message'
-        self._process(self._mlist, msg, dict(_fasttrack=True))
+        self._process(self._mlist, msg, {})
         self.assertEqual(str(msg['subject']), 'A test message')
 
     def test_save_original_subject(self):
@@ -136,3 +136,11 @@ class TestSubjectPrefix(unittest.TestCase):
         subject = msg['subject']
         self.assertEqual(subject.encode(),
                          '=?iso-8859-1?q?=5BTest=5D_?= Plain text')
+
+    def test_unknown_encoded_subject(self):
+        msg = Message()
+        msg['Subject'] = '=?unknown-8bit?q?Non-ascii_subject_-_français?='
+        self._process(self._mlist, msg, {})
+        subject = msg['subject']
+        self.assertEqual(str(subject),
+                         '[Test]  Non-ascii subject - fran�ais')
