@@ -46,11 +46,18 @@ def process(mlist, msg, msgdata):
     member = msgdata.get('member')
     if member is not None:
         # Calculate the extra personalization dictionary.
-        recipient = msgdata.get('recipient', member.address.original_email)
+        # member.subscriber can be a User instance or an Address instance, and
+        # member.address can be None and so can member._user.preferred_address.
+        if member._address is not None:
+            _address = member._address
+        else:
+            _address = (member._user.preferred_address or
+                        list(member._user.addresses)[0])
+        recipient = msgdata.get('recipient', _address.original_email)
         d['member'] = formataddr(
-            (member.subscriber.display_name, member.subscriber.email))
+            (_address.display_name, _address.email))
         d['user_email'] = recipient
-        d['user_delivered_to'] = member.address.original_email
+        d['user_delivered_to'] = _address.original_email
         d['user_language'] = member.preferred_language.description
         d['user_name'] = member.display_name
         # For backward compatibility.
