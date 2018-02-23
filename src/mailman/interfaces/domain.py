@@ -75,6 +75,12 @@ class IDomain(Interface):
     owners = Attribute("""\
         The relationship with the user database representing domain owners.""")
 
+    alias_domain = Attribute("""\
+        An alternate domain to be used with the Postfix MTA for various
+        generated mappings for a configuration where mail_host is a Postfix
+        virtual alias domain.
+        """)
+
     mailing_lists = Attribute(
         """All mailing lists for this domain.
 
@@ -86,7 +92,7 @@ class IDomain(Interface):
 class IDomainManager(Interface):
     """The manager of domains."""
 
-    def add(mail_host, description=None, owners=None):
+    def add(mail_host, description=None, owners=None, alias_domain=None):
         """Add a new domain.
 
         :param mail_host: The email host name for the domain.
@@ -96,6 +102,9 @@ class IDomainManager(Interface):
         :param owners: Sequence of owners of the domain, defaults to None,
             meaning the domain does not have owners.
         :type owners: sequence of `IUser` or string emails.
+        :param alias_domain: Alternate domain for Postfix, defaults to None
+            meaning mail_host is not a Postfix virtual alias domain.
+        :type alias_domain: string
         :return: The new domain object.
         :rtype: `IDomain`
         :raises `BadDomainSpecificationError`: when the `mail_host` is

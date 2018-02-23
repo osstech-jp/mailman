@@ -43,13 +43,12 @@ We can remove domains too.
     >>> show_domains()
     no domains
 
-Sometimes the email host name is different than the base url for hitting the
-web interface for the domain.
+In some Postfix configurations, there is an additional alias host name.
 
-    >>> manager.add('example.com')
-    <Domain example.com>
+    >>> manager.add('example.com', alias_domain='x.example.com')
+    <Domain example.com, alias: x.example.com>
     >>> show_domains()
-    <Domain example.com>
+    <Domain example.com, alias: x.example.com>
 
 Domains can have explicit descriptions, and can be created with one or more
 owners.
@@ -62,7 +61,7 @@ owners.
     <Domain example.net, The example domain>
 
     >>> show_domains(with_owners=True)
-    <Domain example.com>
+    <Domain example.com, alias: x.example.com>
     <Domain example.net, The example domain>
     - owner: anne@example.com
 
@@ -73,7 +72,7 @@ configuration's default contact address may be used as a fallback.
    >>> net_domain = manager['example.net']
    >>> net_domain.add_owner('bart@example.org')
    >>> show_domains(with_owners=True)
-   <Domain example.com>
+   <Domain example.com, alias: x.example.com>
    <Domain example.net, The example domain>
    - owner: anne@example.com
    - owner: bart@example.org

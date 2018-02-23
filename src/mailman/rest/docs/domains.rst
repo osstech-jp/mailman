@@ -32,6 +32,7 @@ Once a domain is added, it is accessible through the API.
 
     >>> dump_json('http://localhost:9001/3.0/domains')
     entry 0:
+        alias_domain: None
         description: An example domain
         http_etag: "..."
         mail_host: example.com
@@ -49,27 +50,42 @@ At the top level, all domains are returned as separate entries.
     ...     'lists.example.net',
     ...     'Porkmasters')
     <Domain lists.example.net, Porkmasters>
+    >>> # A list with an alias domain.
+    >>> domain_manager.add(
+    ...     'mm.example.net',
+    ...     'Porkmasters2',
+    ...     alias_domain='mmx.example.net')
+    <Domain mm.example.net, Porkmasters2, alias: mmx.example.net>
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/domains')
     entry 0:
+        alias_domain: None
         description: An example domain
         http_etag: "..."
         mail_host: example.com
         self_link: http://localhost:9001/3.0/domains/example.com
     entry 1:
+        alias_domain: None
         description: None
         http_etag: "..."
         mail_host: example.org
         self_link: http://localhost:9001/3.0/domains/example.org
     entry 2:
+        alias_domain: None
         description: Porkmasters
         http_etag: "..."
         mail_host: lists.example.net
         self_link: http://localhost:9001/3.0/domains/lists.example.net
+    entry 3:
+        alias_domain: mmx.example.net
+        description: Porkmasters2
+        http_etag: "..."
+        mail_host: mm.example.net
+        self_link: http://localhost:9001/3.0/domains/mm.example.net
     http_etag: "..."
     start: 0
-    total_size: 3
+    total_size: 4
 
 
 Individual domains
@@ -79,6 +95,7 @@ The information for a single domain is available by following one of the
 ``self_links`` from the above collection.
 
     >>> dump_json('http://localhost:9001/3.0/domains/lists.example.net')
+    alias_domain: None
     description: Porkmasters
     http_etag: "..."
     mail_host: lists.example.net
@@ -140,6 +157,7 @@ New domains can be created by posting to the ``domains`` url.
 Now the web service knows about our new domain.
 
     >>> dump_json('http://localhost:9001/3.0/domains/lists.example.com')
+    alias_domain: None
     description: None
     http_etag: "..."
     mail_host: lists.example.com
@@ -168,6 +186,7 @@ You can also create a new domain with a description and a contact address.
     ...
 
     >>> dump_json('http://localhost:9001/3.0/domains/my.example.com')
+    alias_domain: None
     description: My new domain
     http_etag: "..."
     mail_host: my.example.com

@@ -25,8 +25,10 @@ from datetime import datetime
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
+from mailman.interfaces.domain import IDomainManager
 from mailman.testing.helpers import get_lmtp_client, get_queue_messages
 from mailman.testing.layers import LMTPLayer
+from zope.component import getUtility
 
 
 class TestLMTP(unittest.TestCase):
@@ -117,6 +119,45 @@ Message-ID: <aardvark>
         self.assertEqual(cm.exception.smtp_code, 550)
         self.assertEqual(cm.exception.smtp_error,
                          b'Requested action not taken: mailbox unavailable')
+
+    def test_nonexistent_domain(self):
+        # Trying to post to a nonexistent domain is an error.
+        with self.assertRaises(smtplib.SMTPDataError) as cm:
+            self._lmtp.sendmail('anne@example.com',
+                                ['test@x.example.com'], """\
+From: anne.person@example.com
+To: test@example.com
+Subject: An interesting message
+Message-ID: <aardvark>
+
+""")
+        self.assertEqual(cm.exception.smtp_code, 550)
+        self.assertEqual(cm.exception.smtp_error,
+                         b'Requested action not taken: mailbox unavailable')
+
+    def test_alias_domain(self):
+        # Posting to an alias_domain succeeds.
+        manager = getUtility(IDomainManager)
+        with transaction():
+            manager.get('example.com').alias_domain = 'x.example.com'
+        self._lmtp.sendmail('anne@example.com', ['test@x.example.com'], """\
+From: anne.person@example.com
+To: test@example.com
+Subject: An interesting message
+Message-ID: <aardvark>
+
+""")
+        items = get_queue_messages('in', expected_count=1)
+        self.assertMultiLineEqual(items[0].msg.as_string(), """\
+From: anne.person@example.com
+To: test@example.com
+Subject: An interesting message
+Message-ID: <aardvark>
+Message-ID-Hash: 75E2XSUXAFQGWANWEROVQ7JGYMNWHJBT
+X-Message-ID-Hash: 75E2XSUXAFQGWANWEROVQ7JGYMNWHJBT
+X-MailFrom: anne@example.com
+
+""")
 
     def test_missing_subaddress(self):
         # Trying to send a message to a bogus subaddress is an error.
