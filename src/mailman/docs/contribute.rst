@@ -2,7 +2,7 @@
  Contributing to Mailman 3
 ===========================
 
-Copyright (C) 2008-2017 by the Free Software Foundation, Inc.
+Copyright (C) 2008-2018 by the Free Software Foundation, Inc.
 
 
 How to contribute

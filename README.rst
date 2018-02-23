@@ -14,7 +14,7 @@ Mailman - The GNU Mailing List Management System
 .. image:: http://img.shields.io/pypi/dm/mailman.svg
     :target: https://pypi.python.org/pypi/mailman
 
-Copyright (C) 1998-2017 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2018 by the Free Software Foundation, Inc.
 
 This is GNU Mailman, a mailing list management system distributed under the
 terms of the GNU General Public License (GPL) version 3 or later.  The name of
