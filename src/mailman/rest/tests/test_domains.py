@@ -60,6 +60,22 @@ class TestDomains(unittest.TestCase):
         domain = getUtility(IDomainManager).get('example.com')
         self.assertEqual(domain.description, 'Patched example domain')
 
+    def test_patch_domain_multiple(self):
+        # Patch the example.com alias_domain and description.
+        data = dict(
+            alias_domain='zzz.example.net',
+            description='Some other description',
+            )
+        content, response = call_api(
+            'http://localhost:9001/3.0/domains/example.com',
+            data,
+            method='PATCH')
+        self.assertEqual(response.status_code, 204)
+        # Check the result.
+        domain = getUtility(IDomainManager).get('example.com')
+        self.assertEqual(domain.alias_domain, 'zzz.example.net')
+        self.assertEqual(domain.description, 'Some other description')
+
     def test_patch_domain_owner(self):
         # Patch the example.com owner.
         data = {'owner': 'anne@example.com'}
@@ -112,6 +128,20 @@ class TestDomains(unittest.TestCase):
         self.assertEqual(
             [list(owner.addresses)[0].email for owner in domain.owners],
             ['anne@example.com'])
+
+    def test_domain_create_with_alias(self):
+        # Create a domain with alias_domain.
+        content, response = call_api(
+            'http://localhost:9001/3.0/domains', dict(
+                mail_host='example.net',
+                owner='anne@example.com',
+                alias_domain='x.example.net',
+                ),
+            method='POST')
+        self.assertEqual(response.status_code, 201)
+        # The domain has the expected alias.
+        domain = getUtility(IDomainManager).get('example.net')
+        self.assertEqual(domain.alias_domain, 'x.example.net')
 
     def test_bogus_endpoint_extension(self):
         # /domains/<domain>/lists/<anything> is not a valid endpoint.

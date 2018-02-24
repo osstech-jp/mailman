@@ -216,8 +216,8 @@ test-unsubscribe@example.com           lmtp:[127.0.0.1]:9024
         # There are two files in this directory.
         self.assertEqual(sorted(os.listdir(self.tempdir)),
                          ['postfix_domains', 'postfix_lmtp'])
-        # Because both lists are in the same domain, there should be only one
-        # entry in the relays file.
+        # Because the lists are in different domains, there should be two
+        # entries in the relays file.
         with open(os.path.join(self.tempdir, 'postfix_domains')) as fp:
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
@@ -327,4 +327,144 @@ other-unsubscribe@example.net           lmtp:[127.0.0.1]:9024
 /^test\.list\.name\.dots-request@example\.com$/          lmtp:[127.0.0.1]:9024
 /^test\.list\.name\.dots-subscribe@example\.com$/        lmtp:[127.0.0.1]:9024
 /^test\.list\.name\.dots-unsubscribe@example\.com$/      lmtp:[127.0.0.1]:9024
+""")
+
+    def test_three_lists_three_domains_with_one_alias_domain(self):
+        # Now we have three lists in three different domains.  All lists will
+        # show up in the postfix_lmtp file, and both domains will show up in
+        # the postfix_domains file.  One domain has an alias_domain so there
+        # will also be a postfix_vmap file with mappings from the email_domain
+        # to the alias_domain for the list in that domain and entries for the
+        # alias_domain in the other files.
+        getUtility(IDomainManager).add('example.net')
+        create_list('other@example.net')
+        getUtility(IDomainManager).add(
+            'example.org', alias_domain='x.example.org')
+        create_list('third@example.org')
+        self.postfix.regenerate(self.tempdir)
+        # There are three files in this directory.
+        self.assertEqual(sorted(os.listdir(self.tempdir)),
+                         ['postfix_domains', 'postfix_lmtp', 'postfix_vmap'])
+        # Because the lists are in different domains, there should be three
+        # entries in the relays file.
+        with open(os.path.join(self.tempdir, 'postfix_domains')) as fp:
+            contents = _strip_header(fp.read())
+        self.assertMultiLineEqual(contents, """\
+example.com example.com
+example.net example.net
+x.example.org example.org
+""")
+        # The transport file contains entries for all three lists.
+        with open(os.path.join(self.tempdir, 'postfix_lmtp')) as fp:
+            contents = _strip_header(fp.read())
+        self.assertMultiLineEqual(contents, """\
+# Aliases which are visible only in the @example.com domain.
+test@example.com                       lmtp:[127.0.0.1]:9024
+test-bounces@example.com               lmtp:[127.0.0.1]:9024
+test-confirm@example.com               lmtp:[127.0.0.1]:9024
+test-join@example.com                  lmtp:[127.0.0.1]:9024
+test-leave@example.com                 lmtp:[127.0.0.1]:9024
+test-owner@example.com                 lmtp:[127.0.0.1]:9024
+test-request@example.com               lmtp:[127.0.0.1]:9024
+test-subscribe@example.com             lmtp:[127.0.0.1]:9024
+test-unsubscribe@example.com           lmtp:[127.0.0.1]:9024
+
+# Aliases which are visible only in the @example.net domain.
+other@example.net                       lmtp:[127.0.0.1]:9024
+other-bounces@example.net               lmtp:[127.0.0.1]:9024
+other-confirm@example.net               lmtp:[127.0.0.1]:9024
+other-join@example.net                  lmtp:[127.0.0.1]:9024
+other-leave@example.net                 lmtp:[127.0.0.1]:9024
+other-owner@example.net                 lmtp:[127.0.0.1]:9024
+other-request@example.net               lmtp:[127.0.0.1]:9024
+other-subscribe@example.net             lmtp:[127.0.0.1]:9024
+other-unsubscribe@example.net           lmtp:[127.0.0.1]:9024
+
+# Aliases which are visible only in the @x.example.org domain.
+third@x.example.org                        lmtp:[127.0.0.1]:9024
+third-bounces@x.example.org                lmtp:[127.0.0.1]:9024
+third-confirm@x.example.org                lmtp:[127.0.0.1]:9024
+third-join@x.example.org                   lmtp:[127.0.0.1]:9024
+third-leave@x.example.org                  lmtp:[127.0.0.1]:9024
+third-owner@x.example.org                  lmtp:[127.0.0.1]:9024
+third-request@x.example.org                lmtp:[127.0.0.1]:9024
+third-subscribe@x.example.org              lmtp:[127.0.0.1]:9024
+third-unsubscribe@x.example.org            lmtp:[127.0.0.1]:9024
+""")
+        # The virtual mapping contains only entries for the list with an
+        # alias_domain.
+        with open(os.path.join(self.tempdir, 'postfix_vmap')) as fp:
+            contents = _strip_header(fp.read())
+        self.assertMultiLineEqual(contents, """\
+# Virtual mappings for the @example.org domain.
+third@example.org                      third@x.example.org
+third-bounces@example.org              third-bounces@x.example.org
+third-confirm@example.org              third-confirm@x.example.org
+third-join@example.org                 third-join@x.example.org
+third-leave@example.org                third-leave@x.example.org
+third-owner@example.org                third-owner@x.example.org
+third-request@example.org              third-request@x.example.org
+third-subscribe@example.org            third-subscribe@x.example.org
+third-unsubscribe@example.org          third-unsubscribe@x.example.org
+""")
+
+    def test_vmap_regex(self):
+        # Test alias domain virtual mapping with regex.
+        self.postfix.transport_file_type = 'regex'
+        getUtility(IDomainManager).add(
+            'example.org', alias_domain='x.example.org')
+        create_list('other@example.org')
+        self.postfix.regenerate(self.tempdir)
+        # There are three files in this directory.
+        self.assertEqual(sorted(os.listdir(self.tempdir)),
+                         ['postfix_domains', 'postfix_lmtp', 'postfix_vmap'])
+        # Because the lists are in different domains, there should be two
+        # entries in the relays file.
+        with open(os.path.join(self.tempdir, 'postfix_domains')) as fp:
+            contents = _strip_header(fp.read())
+        self.assertMultiLineEqual(contents, """\
+/^example\.com$/ example.com
+/^x\.example\.org$/ example.org
+""")
+        # The transport file contains entries for both lists.
+        with open(os.path.join(self.tempdir, 'postfix_lmtp')) as fp:
+            contents = _strip_header(fp.read())
+        self.assertMultiLineEqual(contents, """\
+# Aliases which are visible only in the @example.com domain.
+/^test@example\.com$/                  lmtp:[127.0.0.1]:9024
+/^test-bounces(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
+/^test-confirm(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
+/^test-join@example\.com$/             lmtp:[127.0.0.1]:9024
+/^test-leave@example\.com$/            lmtp:[127.0.0.1]:9024
+/^test-owner@example\.com$/            lmtp:[127.0.0.1]:9024
+/^test-request@example\.com$/          lmtp:[127.0.0.1]:9024
+/^test-subscribe@example\.com$/        lmtp:[127.0.0.1]:9024
+/^test-unsubscribe@example\.com$/      lmtp:[127.0.0.1]:9024
+
+# Aliases which are visible only in the @x.example.org domain.
+/^other@x\.example\.org$/                  lmtp:[127.0.0.1]:9024
+/^other-bounces(\+.*)?@x\.example\.org$/   lmtp:[127.0.0.1]:9024
+/^other-confirm(\+.*)?@x\.example\.org$/   lmtp:[127.0.0.1]:9024
+/^other-join@x\.example\.org$/             lmtp:[127.0.0.1]:9024
+/^other-leave@x\.example\.org$/            lmtp:[127.0.0.1]:9024
+/^other-owner@x\.example\.org$/            lmtp:[127.0.0.1]:9024
+/^other-request@x\.example\.org$/          lmtp:[127.0.0.1]:9024
+/^other-subscribe@x\.example\.org$/        lmtp:[127.0.0.1]:9024
+/^other-unsubscribe@x\.example\.org$/      lmtp:[127.0.0.1]:9024
+""")
+        # The virtual mapping contains only entries for the list with an
+        # alias_domain.
+        with open(os.path.join(self.tempdir, 'postfix_vmap')) as fp:
+            contents = _strip_header(fp.read())
+        self.assertMultiLineEqual(contents, """\
+# Virtual mappings for the @example.org domain.
+/^other@example\.org$/                 other@x.example.org
+/^other-bounces(\+.*)?@example\.org$/  other-bounces@x.example.org
+/^other-confirm(\+.*)?@example\.org$/  other-confirm@x.example.org
+/^other-join@example\.org$/            other-join@x.example.org
+/^other-leave@example\.org$/           other-leave@x.example.org
+/^other-owner@example\.org$/           other-owner@x.example.org
+/^other-request@example\.org$/         other-request@x.example.org
+/^other-subscribe@example\.org$/       other-subscribe@x.example.org
+/^other-unsubscribe@example\.org$/     other-unsubscribe@x.example.org
 """)

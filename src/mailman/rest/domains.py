@@ -36,6 +36,7 @@ class _DomainBase(CollectionMixin):
     def _resource_as_dict(self, domain):
         """See `CollectionMixin`."""
         return dict(
+            alias_domain=domain.alias_domain,
             description=domain.description,
             mail_host=domain.mail_host,
             self_link=self.api.path_to('domains/{}'.format(domain.mail_host)),
@@ -76,6 +77,7 @@ class ADomain(_DomainBase):
         if domain is None:
             not_found(response)
         kws = dict(
+            alias_domain=GetterSetter(str),
             description=GetterSetter(str),
             owner=ListOfDomainOwners(list_of_strings_validator),
             )
@@ -148,8 +150,12 @@ class AllDomains(_DomainBase):
         try:
             validator = Validator(mail_host=str,
                                   description=str,
+                                  alias_domain=str,
                                   owner=list_of_strings_validator,
-                                  _optional=('description', 'owner'))
+                                  _optional=('description',
+                                             'owner',
+                                             'alias_domain')
+                                  )
             values = validator(request)
             # For consistency, owners are passed in as multiple `owner` keys,
             # but .add() requires an `owners` keyword.  Match impedence.

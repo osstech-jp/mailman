@@ -48,10 +48,12 @@ class Domain(Model):
     owners = relationship('User',
                           secondary='domain_owner',
                           backref='domains')
+    alias_domain = Column(SAUnicode)
 
     def __init__(self, mail_host,
                  description=None,
-                 owners=None):
+                 owners=None,
+                 alias_domain=None):
         """Create and register a domain.
 
         :param mail_host: The host name for the email interface.
@@ -60,11 +62,14 @@ class Domain(Model):
         :type description: string
         :param owners: Optional owners of this domain.
         :type owners: sequence of `IUser` or string emails.
+        :param alias_domain: Alternate domain for Postfix
+        :type alias_domain: string
         """
         self.mail_host = mail_host
         self.description = description
         if owners is not None:
             self.add_owners(owners)
+        self.alias_domain = alias_domain
 
     @property
     @dbconnection
@@ -76,10 +81,17 @@ class Domain(Model):
 
     def __repr__(self):
         """repr(a_domain)"""
-        if self.description is None:
+        if self.description is None and self.alias_domain is None:
             return ('<Domain {0.mail_host}>').format(self)
-        else:
+        elif self.alias_domain is None:
             return ('<Domain {0.mail_host}, {0.description}>').format(self)
+        elif self.description is None:
+            return ('<Domain {0.mail_host}, '
+                    'alias: {0.alias_domain}>').format(self)
+        else:
+            return ('<Domain {0.mail_host}, '
+                    '{0.description}, '
+                    'alias: {0.alias_domain}>').format(self)
 
     def add_owner(self, owner):
         """See `IDomain`."""
@@ -115,7 +127,8 @@ class DomainManager:
     def add(self, store,
             mail_host,
             description=None,
-            owners=None):
+            owners=None,
+            alias_domain=None):
         """See `IDomainManager`."""
         # Be sure the mail_host is not already registered.  This is probably
         # a constraint that should (also) be maintained in the database.
@@ -123,7 +136,7 @@ class DomainManager:
             raise BadDomainSpecificationError(
                 'Duplicate email host: {}'.format(mail_host))
         notify(DomainCreatingEvent(mail_host))
-        domain = Domain(mail_host, description, owners)
+        domain = Domain(mail_host, description, owners, alias_domain)
         store.add(domain)
         notify(DomainCreatedEvent(domain))
         return domain

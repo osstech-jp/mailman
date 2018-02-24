@@ -46,6 +46,7 @@ from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.database.transaction import transactional
 from mailman.email.message import Message
+from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.runner import RunnerInterrupt
 from mailman.utilities.datetime import now
@@ -107,8 +108,16 @@ def split_recipient(address):
     :param address: The destination address.
     :return: A 3-tuple of the form (list-shortname, subaddress, domain).
         subaddress may be None if this is the list's posting address.
+
+    If the domain of the destination address matches an alias_domain of some
+    IDomain Domain, the domain is replaced by the Domain's mail_host.
     """
     localpart, domain = address.split('@', 1)
+    domain_manager = getUtility(IDomainManager)
+    for d in domain_manager:
+        if d.alias_domain is not None and domain == d.alias_domain:
+            domain = d.mail_host
+            break
     localpart = localpart.split(config.mta.verp_delimiter, 1)[0]
     listname, dash, subaddress = localpart.rpartition('-')
     if subaddress not in SUBADDRESS_NAMES or listname == '' or dash == '':

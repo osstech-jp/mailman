@@ -96,6 +96,13 @@ Other
 * Bump minimum requirements for aiosmtpd (>= 1.1) and flufl.lock (>= 3.1).
 * Add '.pc' (patch directory) to list of ignored patterns when building the
   documentation with Sphinx.
+* Domain objects now have an ``alias_domain`` attribute which is normally
+  ``None``, but which can be set to an alternate domain.  This will enable
+  the Postfix MTA to generate ``virtual_alias_maps`` which will map list
+  addresses in the domain to addresses in the alternate domain, and will
+  modify the other generated mapings to use the ``alias_domain``.  The
+  ``lmtp`` runner will also accept the alias_domain as an alias for the
+  ``email_host``.
 
 REST
 ----
