@@ -239,7 +239,10 @@ Postfix documentation
 ---------------------
 
 For more information regarding how to configure Postfix, please see
-the Postfix documentation at:
+`The official Postfix documentation`_,
+`The reference page for all Postfix configuration parameters`_,
+and the documentation for the `relay_domains`_, `mydestination`_ and
+`virtual alias domain`_ settings.
 
 .. _`The official Postfix documentation`:
    http://www.postfix.org/documentation.html
@@ -357,7 +360,7 @@ There is `copious documentation for Exim`_.  The parts most relevant to
 configuring communication with Mailman 3 are the chapters on the `accept
 router`_ and the `LMTP transport`_.  Unless you are already familiar
 with Exim configuration, you probably want to start with the chapter on
-`how Exim receives and delivers mail`.
+`how Exim receives and delivers mail`_.
 
 .. _`Exim 4`: http://www.exim.org/
 .. _`University of Cambridge`: http://www.cam.ac.uk/
