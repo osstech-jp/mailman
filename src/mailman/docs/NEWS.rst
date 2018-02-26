@@ -78,6 +78,11 @@ Configuration
 * Mailman now also searches at ``/etc/mailman3/mailman.cfg`` for the
   configuration file.
 
+Database
+--------
+* The fix for #313 which ported an upstream SQLAlchemy fix to Mailman
+  has been refactored now that SQLAlchemy 1.2 has been released.
+
 Interfaces
 ----------
 * Broaden the semantics for ``IListManager.get()``.  This API now accepts
