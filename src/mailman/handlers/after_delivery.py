@@ -34,5 +34,5 @@ class AfterDelivery:
 
     def process(self, mlist, msg, msgdata):
         """See `IHander`."""
-        mlist.last_post_time = now()
+        mlist.last_post_at = now()
         mlist.post_id += 1

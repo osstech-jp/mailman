@@ -10,10 +10,10 @@ bookkeeping pieces of information are updated.
     >>> from mailman.utilities.datetime import now
     >>> mlist = create_list('_xtest@example.com')
     >>> post_time = now() - timedelta(minutes=10)
-    >>> mlist.last_post_time = post_time
+    >>> mlist.last_post_at = post_time
     >>> mlist.post_id = 10
 
-Processing a message with this handler updates the last_post_time and post_id
+Processing a message with this handler updates the last_post_at and post_id
 attributes.
 ::
 
@@ -25,7 +25,7 @@ attributes.
 
     >>> handler = config.handlers['after-delivery']
     >>> handler.process(mlist, msg, {})
-    >>> mlist.last_post_time > post_time
+    >>> mlist.last_post_at > post_time
     True
     >>> mlist.post_id
     11

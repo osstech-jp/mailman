@@ -54,6 +54,7 @@ Bugs
   ``pendedkeyvalue`` table.  (Closes #385)
 * Messages with ``Subject`` headers encoded in an unknown character set no
   longer throw ``LookupError`` in subject prefixing.  (Closes #445)
+* A list's ``last_post_at`` is now properly updated.  (Closes #453)
 
 Command line
 ------------
