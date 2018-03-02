@@ -55,6 +55,9 @@ Bugs
 * Messages with ``Subject`` headers encoded in an unknown character set no
   longer throw ``LookupError`` in subject prefixing.  (Closes #445)
 * A list's ``last_post_at`` is now properly updated.  (Closes #453)
+* Fixed an AttributeError in mailman/handlers/decorate.py when
+  member.subscriber is an ``IUser`` instance rather than an ``IAddress``
+  instance.  (Closes #449)
 
 Command line
 ------------

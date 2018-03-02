@@ -24,7 +24,11 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers import decorate
 from mailman.interfaces.archiver import IArchiver
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.template import ITemplateManager
+from mailman.interfaces.usermanager import IUserManager
+from mailman.model.member import Member
+from mailman.model.preferences import Preferences
 from mailman.testing.helpers import (
     LogFileMark, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
@@ -93,6 +97,44 @@ This is a test message.
         self._mlist.preferred_language = 'en'
         decorate.process(self._mlist, self._msg, {})
         self.assertIn('http://example.com/link_to_message',
+                      self._msg.as_string())
+
+    def test_decorate_member_as_address(self):
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('$member', file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
+        self._mlist.preferred_language = 'en'
+        address = getUtility(IUserManager).create_address(
+            'aperson@example.com', 'Anne Person')
+        member = Member(MemberRole.member, self._mlist.list_id, address)
+        member.preferences = Preferences()
+        member.preferences.preferred_language = 'en'
+        msgdata = dict(member=member)
+        decorate.process(self._mlist, self._msg, msgdata)
+        self.assertIn('Anne Person <aperson@example.com>',
+                      self._msg.as_string())
+
+    def test_decorate_member_as_user(self):
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('$member', file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
+        self._mlist.preferred_language = 'en'
+        user = getUtility(IUserManager).make_user(
+            'aperson@example.com', 'Anne Person')
+        member = Member(MemberRole.member, self._mlist.list_id, user)
+        member.preferences = Preferences()
+        member.preferences.preferred_language = 'en'
+        msgdata = dict(member=member)
+        decorate.process(self._mlist, self._msg, msgdata)
+        self.assertIn('Anne Person <aperson@example.com>',
                       self._msg.as_string())
 
     def test_list_id_allowed_in_template_uri(self):
