@@ -164,7 +164,7 @@ there are no calculated recipients, nothing gets sent.
     >>> len(list(smtpd.messages))
     0
 
-    >>> bulk.deliver(mlist, msg, dict(recipients=set()))
+    >>> bulk.deliver(mlist, msg, dict(recipients=set(), nodecorate=True))
     {}
     >>> len(list(smtpd.messages))
     0
@@ -175,7 +175,7 @@ message sent, with all the recipients packed into the envelope recipients
 ::
 
     >>> recipients = set('person_{0:02d}'.format(i) for i in range(100))
-    >>> msgdata = dict(recipients=recipients)
+    >>> msgdata = dict(recipients=recipients, nodecorate=True)
     >>> bulk.deliver(mlist, msg, msgdata)
     {}
 
@@ -193,6 +193,9 @@ message sent, with all the recipients packed into the envelope recipients
     ...
     <BLANKLINE>
     This is a test.
+    _______________________________________________
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
 
 The ``X-RcptTo:`` header contains the set of recipients, in sorted order.
 
@@ -233,7 +236,8 @@ message metadata...
     >>> bulk = BulkDelivery()
     >>> recipients = set(['aperson@example.com'])
     >>> msgdata = dict(recipients=recipients,
-    ...                sender='asender@example.org')
+    ...                sender='asender@example.org',
+    ...                nodecorate=True)
     >>> bulk.deliver(mlist, msg, msgdata)
     {}
 
@@ -243,11 +247,17 @@ message metadata...
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    MIME-Version: ...
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
     X-Peer: ...
     X-MailFrom: asender@example.org
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     This is a test.
+    _______________________________________________
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
 
 ...followed by the mailing list's bounces robot address...
 ::
@@ -262,11 +272,17 @@ message metadata...
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    MIME-Version: ...
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
     X-Peer: ...
     X-MailFrom: test-bounces@example.com
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     This is a test.
+    _______________________________________________
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
 
 ...and finally the site owner, if there is no mailing list target for this
 message.
@@ -286,11 +302,17 @@ message.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    MIME-Version: ...
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
     X-Peer: ...
     X-MailFrom: site-owner@example.com
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     This is a test.
+    _______________________________________________
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
 
     # Remove test configuration.
     >>> config.pop('site-owner')

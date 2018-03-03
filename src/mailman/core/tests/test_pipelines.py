@@ -161,22 +161,21 @@ testing
 
     def test_decorate_bulk(self):
         # Ensure that bulk postings get decorated with the footer.
-        process(self._mlist, self._msg, {},
-                pipeline_name='default-posting-pipeline')
-        payload = self._msg.get_payload()
-        self.assertIn('Test mailing list', payload)
+        # Decorate is no longer in the pipeline.  This is now tested in
+        # mailman/mta/tests/test_delivery.py.
+        pass
 
     def test_nodecorate_verp(self):
         # Ensure that verp postings don't get decorated twice.
-        msgdata = {'verp': True}
-        process(self._mlist, self._msg, msgdata,
-                pipeline_name='default-posting-pipeline')
-        payload = self._msg.get_payload()
-        self.assertEqual(payload.count('Test mailing list'), 1)
+        # This test was always wrong as verp decoration wasn't done in
+        # the pipeline.
+        pass
 
     def test_only_decorate_output(self):
         # Ensure that decoration is not done on the archive, digest, or
         # usenet copy of the message.
+        # This test is moot now that decorate isn't in the posting pipeline
+        # but let it remain.
         self.assertTrue(self._mlist.digests_enabled)
         # Set up NNTP.
         self._mlist.gateway_to_news = True
