@@ -37,8 +37,8 @@ Messages hit the pipeline after they've been accepted for posting.
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata, mlist.posting_pipeline)
 
-The message has been modified with additional headers, footer decorations,
-etc.
+The message has been modified with additional headers (footer decorations
+come later during delivery).
 
     >>> print(msg.as_string())
     From: aperson@example.com
@@ -55,14 +55,8 @@ etc.
     List-Post: <mailto:test@example.com>
     List-Subscribe: <mailto:test-join@example.com>
     List-Unsubscribe: <mailto:test-leave@example.com>
-    MIME-Version: 1.0
-    Content-Type: text/plain; charset="us-ascii"
-    Content-Transfer-Encoding: 7bit
     <BLANKLINE>
     First post!
-    _______________________________________________
-    Test mailing list -- test@example.com
-    To unsubscribe send an email to test-leave@example.com
     <BLANKLINE>
 
 The message metadata has information about recipients and other stuff.
@@ -133,9 +127,6 @@ delivered to end recipients.
     <BLANKLINE>
     First post!
     <BLANKLINE>
-    _______________________________________________
-    Test mailing list -- test@example.com
-    To unsubscribe send an email to test-leave@example.com
 
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg       : False

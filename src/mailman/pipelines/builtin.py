@@ -57,7 +57,8 @@ class PostingPipeline(BasePipeline):
         'to-usenet',
         'after-delivery',
         'acknowledge',
-        'decorate',
+        # All decoration is now done in delivery.
+        # 'decorate',
         'dmarc',
         'to-outgoing',
         )

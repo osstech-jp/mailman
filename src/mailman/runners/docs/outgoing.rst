@@ -77,11 +77,17 @@ Every recipient got the same copy of the message.
     To: test@example.com
     Subject: My first post
     Message-ID: <first>
+    MIME-Version: ...
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
     X-Peer: ...
     X-MailFrom: test-bounces@example.com
     X-RcptTo: aperson@example.com, bperson@example.com, cperson@example.com
     <BLANKLINE>
     First post!
+    _______________________________________________
+    Test mailing list -- test@example.com
+    To unsubscribe send an email to test-leave@example.com
 
 
 Personalization

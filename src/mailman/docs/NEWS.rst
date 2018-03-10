@@ -58,6 +58,9 @@ Bugs
 * Fixed an AttributeError in mailman/handlers/decorate.py when
   member.subscriber is an ``IUser`` instance rather than an ``IAddress``
   instance.  (Closes #449)
+* Message decoration has been removed from the posting pipeline and added to
+  bulk delivery to avoid duplicate decoration of personalized and VERPed
+  messages.  (Closes #450)
 
 Command line
 ------------

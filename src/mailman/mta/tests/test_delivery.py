@@ -26,6 +26,7 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.template import ITemplateManager
+from mailman.mta.bulk import BulkDelivery
 from mailman.mta.deliver import Deliver
 from mailman.testing.helpers import (
     specialized_message_from_string as mfs, subscribe)
@@ -42,6 +43,14 @@ _deliveries = []
 # we just want to capture the messages and metadata dictionaries for
 # inspection.
 class DeliverTester(Deliver):
+    def _deliver_to_recipients(self, mlist, msg, msgdata, recipients):
+        _deliveries.append((mlist, msg, msgdata, recipients))
+        # Nothing gets refused.
+        return []
+
+
+# We also need to test that BulkDeliver does decoration.
+class BulkDeliverTester(BulkDelivery):
     def _deliver_to_recipients(self, mlist, msg, msgdata, recipients):
         _deliveries.append((mlist, msg, msgdata, recipients))
         # Nothing gets refused.
@@ -125,5 +134,69 @@ address  : anne@example.org
 delivered: anne@example.org
 language : English (USA)
 name     : Anne Person
+
+""")
+
+
+class TestBulkDelivery(unittest.TestCase):
+    """Test bulk delivery decoration."""
+
+    layer = ConfigLayer
+    maxDiff = None
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        # Make Anne a member of this mailing list.
+        self._anne = subscribe(self._mlist, 'Anne', email='anne@example.org')
+        # Clear out any results from the previous test.
+        del _deliveries[:]
+        self._msg = mfs("""\
+From: anne@example.org
+To: test@example.com
+Subject: test
+
+""")
+        # Set up a footer for decoration.
+        self._template_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self._template_dir)
+        path = os.path.join(self._template_dir,
+                            'site', 'en', 'member-footer.txt')
+        os.makedirs(os.path.dirname(path))
+        with open(path, 'w', encoding='utf-8') as fp:
+            print("""\
+list: $display_name
+Footer
+""", file=fp)
+        config.push('templates', """
+        [paths.testing]
+        template_dir: {}
+        """.format(self._template_dir))
+        self.addCleanup(config.pop, 'templates')
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', self._mlist.list_id,
+            'mailman:///member-footer.txt')
+
+    def tearDown(self):
+        # Free global references.
+        del _deliveries[:]
+
+    def test_bulk_decoration(self):
+        msgdata = dict(recipients=['anne@example.org'])
+        agent = BulkDeliverTester()
+        refused = agent.deliver(self._mlist, self._msg, msgdata)
+        self.assertEqual(len(refused), 0)
+        self.assertEqual(len(_deliveries), 1)
+        _mlist, _msg, _msgdata, _recipients = _deliveries[0]
+        self.assertMultiLineEqual(_msg.as_string(), """\
+From: anne@example.org
+To: test@example.com
+Subject: test
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+
+list: Test
+Footer
 
 """)
