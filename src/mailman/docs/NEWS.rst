@@ -61,6 +61,8 @@ Bugs
 * Message decoration has been removed from the posting pipeline and added to
   bulk delivery to avoid duplicate decoration of personalized and VERPed
   messages.  (Closes #450)
+* The ``mailman inject`` command now reads standard input as documented if
+  there is no ``-f`` or ``--filename`` option.  (Closes #459)
 
 Command line
 ------------

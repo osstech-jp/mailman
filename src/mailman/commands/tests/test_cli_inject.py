@@ -20,10 +20,19 @@
 import unittest
 
 from click.testing import CliRunner
-from io import StringIO
+from io import BytesIO, StringIO
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_inject import inject
+from mailman.testing.helpers import get_queue_messages
 from mailman.testing.layers import ConfigLayer
+
+test_msg = b"""\
+To: ant@example.com
+From: user@example.com
+Message-ID: <some_id@example.com>
+
+body
+"""
 
 
 class InterruptRaisingReader(StringIO):
@@ -64,3 +73,13 @@ class TestInject(unittest.TestCase):
             result.output,
             'Usage: inject [OPTIONS] LISTSPEC\n\n'
             'Error: No such queue: bogus\n')
+
+    def test_inject_no_filename_option(self):
+        result = self._command.invoke(
+            inject, (('ant.example.com',)),
+            input=BytesIO(test_msg))
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.output, '')
+        msg = get_queue_messages('in', expected_count=1)[0].msg
+        # We can't compare the entire message because of inserted headers.
+        self.assertEqual(msg.as_bytes()[:75], test_msg[:75])
