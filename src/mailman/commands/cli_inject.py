@@ -56,7 +56,7 @@ def show_queues(ctx, param, value):
     help=_('Show a list of all available queue names and exit.'))
 @click.option(
     '--filename', '-f', 'message_file',
-    type=click.File(encoding='utf-8'),
+    default='-', type=click.File(encoding='utf-8'),
     help=_("""\
     Name of file containing the message to inject.  If not given, or
     '-' (without the quotes) standard input is used."""))
