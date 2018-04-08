@@ -59,7 +59,14 @@ class ICacheManager(Interface):
         :rtype: bytes or str, depending on the original contents.
         """
 
-    def evict():
+    def evict(file_id):
+        """Evict the file pointed to by file_id.
+
+        :param file_id: The key identifying the contents you want to evict.
+        :type file_id: str
+        """
+
+    def evict_expired():
         """Evict all files which have expired."""
 
     def clear():

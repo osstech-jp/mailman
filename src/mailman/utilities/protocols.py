@@ -28,13 +28,14 @@ from urllib.parse import urlparse
 from zope.component import getUtility
 
 COMMASPACE = ', '
+REQUEST_TIMEOUT = 5
 
 
 @public
 def get(url, **kws):
     parsed = urlparse(url)
     if parsed.scheme in ('http', 'https'):
-        response = requests.get(url, **kws)
+        response = requests.get(url, timeout=REQUEST_TIMEOUT, **kws)
         response.raise_for_status()
         return response.text
     if parsed.scheme == 'file':

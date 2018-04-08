@@ -140,7 +140,18 @@ class CacheManager:
         return contents
 
     @dbconnection
-    def evict(self, store):
+    def evict(self, store, file_id):
+        """See `ICacheManager`"""
+        entry = store.query(CacheEntry).filter(
+            CacheEntry.file_id == file_id).one_or_none()
+        if entry is None:
+            return
+        file_path, dir_path = self._id_to_path(entry.file_id)
+        os.remove(file_path)
+        store.delete(entry)
+
+    @dbconnection
+    def evict_expired(self, store):
         """See `ICacheManager`."""
         # Find all the cache entries which have expired.  We can probably do
         # this more efficiently, but for now there probably aren't that many

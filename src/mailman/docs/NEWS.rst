@@ -119,6 +119,7 @@ Other
   modify the other generated mapings to use the ``alias_domain``.  The
   ``lmtp`` runner will also accept the alias_domain as an alias for the
   ``email_host``.
+* ``ICacheManager`` now allows evicting a single file from cache.
 
 REST
 ----
