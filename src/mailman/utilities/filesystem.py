@@ -54,13 +54,28 @@ def makedirs(path, mode=0o0755):
     :param mode: The numeric permission mode to use.
     :type mode: int
     """
-    with suppress(FileExistsError):
-        with umask(0):
+    with umask(0):
+        # In order for os.walk to set permissions appropriately if required,
+        # the FIRST NON EXISTENT parent directory of the one we wanted to
+        # create has to be provided.
+        upwards = first_inexistent_directory(path)
+
+        # The directory exists, nothing to do.
+        if upwards is None:
+            return
+
+        try:
             os.makedirs(path, mode)
+        except FileExistsError as e:
+            if not os.path.isdir(path):
+                raise FileExistsError((
+                   "A race condition might have happened. %s actually "
+                   "exists and is not a directory."))
+
     # Some systems such as FreeBSD ignore mkdir's mode, so walk the just
     # created directories and try to set the mode, ignoring any OSErrors that
     # occur here.
-    for dirpath, dirnames, filenames in os.walk(path):
+    for dirpath, dirnames, filenames in os.walk(upwards):
         with suppress(OSError):
             os.chmod(dirpath, mode)
 
@@ -69,3 +84,27 @@ def makedirs(path, mode=0o0755):
 def safe_remove(path):
     with suppress(FileNotFoundError):
         os.remove(path)
+
+
+def first_inexistent_directory(path):
+    """Splits iteratively a path until it gives the first non-existent
+    directory in the tree.
+
+    That is, if /home/user/foo/bar/baz is given to the function, and
+    /home/user/foo/bar doesn't exist but /home/user/foo exists, returns
+    /home/user/foo/bar.
+    """
+    directory = path
+    rhs = None
+
+    while True:
+        if os.path.isdir(directory):
+            if rhs is None:
+                return None
+            else:
+                return os.path.join(directory, rhs)
+        elif os.path.exists(directory):
+            raise FileExistsError(
+                "The path %s exists but is not a directory.",
+                directory)
+        directory, rhs = os.path.split(directory)
