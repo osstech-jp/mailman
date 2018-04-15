@@ -63,6 +63,8 @@ Bugs
   messages.  (Closes #450)
 * The ``mailman inject`` command now reads standard input as documented if
   there is no ``-f`` or ``--filename`` option.  (Closes #459)
+* Mailman doesn't chmod existing configuration directories on startup (Closes
+  #439)
 
 Command line
 ------------
