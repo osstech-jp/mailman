@@ -87,16 +87,25 @@ class TestCache(unittest.TestCase):
         self.assertIsNone(self._cachemgr.get('abc'))
 
     @configuration('mailman', cache_life='1d')
-    def test_evict(self):
+    def test_evict_expired(self):
         # Evicting all expired cache entries makes them inaccessible.
         self._cachemgr.add('abc', 'xyz', lifetime=timedelta(hours=3))
         self._cachemgr.add('def', 'uvw', lifetime=timedelta(days=3))
         self.assertEqual(self._cachemgr.get('abc'), 'xyz')
         self.assertEqual(self._cachemgr.get('def'), 'uvw')
         factory.fast_forward(days=1)
-        self._cachemgr.evict()
+        self._cachemgr.evict_expired()
         self.assertIsNone(self._cachemgr.get('abc'))
         self.assertEqual(self._cachemgr.get('def'), 'uvw')
+
+    def test_evict(self):
+        # Evicting a single cached file makes them inaccessible.
+        file_id = self._cachemgr.add('abc', 'xyz', lifetime=timedelta(hours=2))
+        self.assertEqual(self._cachemgr.get('abc'), 'xyz')
+        self._cachemgr.evict(file_id)
+        self.assertIsNone(self._cachemgr.get('abc'))
+        # Nothing happens if we try to evict a non-existent cache entry.
+        self.assertIsNone(self._cachemgr.evict('somenonexistentid'))
 
     def test_clear(self):
         # Clearing the cache gets rid of all entries, regardless of lifetime.
