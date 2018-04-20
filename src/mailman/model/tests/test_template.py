@@ -31,6 +31,7 @@ from mailman.testing.layers import ConfigLayer
 from mailman.utilities.i18n import find
 from requests import HTTPError
 from tempfile import TemporaryDirectory
+from unittest import mock
 from urllib.error import URLError
 from zope.component import getUtility
 
@@ -87,6 +88,18 @@ class HTTPLayer(ConfigLayer):
         cls._thread.join()
 
 
+def mocked_requests_get(content):
+    class MockResponse:
+
+        text = content
+        status_code = 200
+
+        def raise_for_status(self):
+            pass
+
+    return MockResponse()
+
+
 class TestTemplateCache(unittest.TestCase):
     layer = HTTPLayer
 
@@ -105,8 +118,13 @@ class TestTemplateCache(unittest.TestCase):
         self._templatemgr.set(
             'list:user:notice:welcome', 'test.example.com',
             'http://localhost:8180/welcome_1.txt')
+        # This one warms the cache with welcome_1.txt
+        contents = self._templatemgr.get(
+            'list:user:notice:welcome', 'test.example.com')
+        self.assertEqual(contents, WELCOME_1)
         # Resetting the template with the same context and domain, but a
-        # different url overrides the previous value.
+        # different url overrides the previous value. This should also
+        # evict welcome_1.txt from cache.
         self._templatemgr.set(
             'list:user:notice:welcome', 'test.example.com',
             'http://localhost:8180/welcome_2.txt')
@@ -114,16 +132,44 @@ class TestTemplateCache(unittest.TestCase):
             'list:user:notice:welcome', 'test.example.com')
         self.assertEqual(contents, WELCOME_2)
 
+    def test_http_set_evicts_cache(self):
+        self._templatemgr.set(
+            'list:user:notice:welcome', 'test.example.com',
+            'http://localhost:8180/welcome_1.txt')
+        # This one warms the cache with welcome_1.txt
+        contents = self._templatemgr.get(
+            'list:user:notice:welcome', 'test.example.com')
+        self.assertEqual(contents, WELCOME_1)
+        # Re set'ing the same template with same context and same
+        # uri should evict the cache. We test that by making sure
+        # that by mocking 'requests.get' and testing that it was called
+        # atleast once.
+        self._templatemgr.set(
+            'list:user:notice:welcome', 'test.example.com',
+            'http://localhost:8180/welcome_1.txt')
+        with mock.patch(
+                'requests.get',
+                return_value=mocked_requests_get(WELCOME_2)) as mocked_get:
+            contents = self._templatemgr.get(
+                'list:user:notice:welcome', 'test.example.com')
+            # Check the requests.get was called.
+            mocked_get.assert_called_with(
+                'http://localhost:8180/welcome_1.txt', timeout=5)
+            self.assertEqual(contents, WELCOME_2)
+
     def test_http_get_cached(self):
         self._templatemgr.set(
             'list:user:notice:welcome', 'test.example.com',
             'http://localhost:8180/welcome_1.txt')
         # The first one warms the cache.
         self._templatemgr.get('list:user:notice:welcome', 'test.example.com')
-        # The second one hits the cache.
-        contents = self._templatemgr.get(
-            'list:user:notice:welcome', 'test.example.com')
-        self.assertEqual(contents, WELCOME_1)
+        # The second one hits the cache, we make sure of this by overwriting
+        # the network calling method.
+        with mock.patch('requests.get') as mocked_get:
+            contents = self._templatemgr.get(
+                'list:user:notice:welcome', 'test.example.com')
+            self.assertEqual(contents, WELCOME_1)
+            mocked_get.assert_not_called()
 
     def test_http_basic_auth(self):
         # We get an HTTP error when we forget the username and password.

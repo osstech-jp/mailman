@@ -100,9 +100,9 @@ class TestCache(unittest.TestCase):
 
     def test_evict(self):
         # Evicting a single cached file makes them inaccessible.
-        file_id = self._cachemgr.add('abc', 'xyz', lifetime=timedelta(hours=2))
+        self._cachemgr.add('abc', 'xyz', lifetime=timedelta(hours=2))
         self.assertEqual(self._cachemgr.get('abc'), 'xyz')
-        self._cachemgr.evict(file_id)
+        self._cachemgr.evict('abc')
         self.assertIsNone(self._cachemgr.get('abc'))
         # Nothing happens if we try to evict a non-existent cache entry.
         self.assertIsNone(self._cachemgr.evict('somenonexistentid'))

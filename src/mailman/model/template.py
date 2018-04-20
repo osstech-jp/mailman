@@ -84,6 +84,10 @@ class TemplateManager:
             store.add(template)
         else:
             template.reset(uri, username, password)
+            # Now, evict the cache for the previous template.
+            cache_mgr = getUtility(ICacheManager)
+            actual_uri = expand(uri, None)
+            cache_mgr.evict(actual_uri)
 
     @dbconnection
     def get(self, store, name, context, **kws):
