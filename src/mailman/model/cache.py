@@ -140,10 +140,10 @@ class CacheManager:
         return contents
 
     @dbconnection
-    def evict(self, store, file_id):
+    def evict(self, store, key):
         """See `ICacheManager`"""
         entry = store.query(CacheEntry).filter(
-            CacheEntry.file_id == file_id).one_or_none()
+            CacheEntry.key == key).one_or_none()
         if entry is None:
             return
         file_path, dir_path = self._id_to_path(entry.file_id)

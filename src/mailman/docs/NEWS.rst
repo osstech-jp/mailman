@@ -65,6 +65,8 @@ Bugs
   there is no ``-f`` or ``--filename`` option.  (Closes #459)
 * Mailman doesn't chmod existing configuration directories on startup (Closes
   #439)
+* Calling ``set`` on a template evicts the local cache if the template was
+  cached before. (Closes #463)
 
 Command line
 ------------
