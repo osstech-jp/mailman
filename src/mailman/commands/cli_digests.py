@@ -63,8 +63,20 @@ from zope.interface import implementer
     '--verbose', '-v',
     is_flag=True, default=False,
     help=_('Print some additional status.'))
+@click.option(
+    '--periodic', '-p',
+    is_flag=True, default=False,
+    help=_("""\
+    Send any collected digests for the List only if their digest_send_periodic
+    is set to False."""))
 @click.pass_context
-def digests(ctx, list_ids, send, bump, dry_run, verbose):
+def digests(ctx, list_ids, send, bump, dry_run, verbose, periodic):
+    # send and periodic options are mutually exclusive, if they both are
+    # specified, exit.
+    if send and periodic:
+        print(_('--send and --periodic flags cannot be used together'),
+              file=sys.stderr)
+        exit(1)
     list_manager = getUtility(IListManager)
     if list_ids:
         lists = []
@@ -99,6 +111,15 @@ ${mlist.next_digest_number}'))
 $mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}'))
             if not dry_run:
                 maybe_send_digest_now(mlist, force=True)
+
+    if periodic:
+        for mlist in lists:
+            if mlist.digest_send_periodic:
+                if verbose:
+                    print(_('\
+$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}'))
+                if not dry_run:
+                    maybe_send_digest_now(mlist, force=True)
 
 
 @public
