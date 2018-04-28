@@ -34,6 +34,9 @@ class IStyle(Interface):
     name = Attribute(
         """The name of this style.  Must be unique.""")
 
+    description = Attribute(
+        """A short description of this list style.""")
+
     def apply(mailing_list):
         """Apply the style to the mailing list.
 

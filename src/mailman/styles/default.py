@@ -17,6 +17,7 @@
 
 """Application of list styles to new and existing lists."""
 
+from mailman.core.i18n import _
 from mailman.interfaces.styles import IStyle
 from mailman.styles.base import (
     Announcement, BasicOperation, Bounces, Discussion, Identity, Moderation,
@@ -33,6 +34,7 @@ class LegacyDefaultStyle(
     """The legacy default style."""
 
     name = 'legacy-default'
+    description = _('Ordinary discussion mailing list style.')
 
     def apply(self, mailing_list):
         """See `IStyle`."""
@@ -52,6 +54,7 @@ class LegacyAnnounceOnly(
     """Similar to the legacy-default style, but for announce-only lists."""
 
     name = 'legacy-announce'
+    description = _('Announce only mailing list style.')
 
     def apply(self, mailing_list):
         """See `IStyle`."""

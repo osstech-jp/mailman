@@ -31,13 +31,10 @@ from zope.interface.exceptions import DoesNotImplement
 class DummyStyle:
 
     name = 'dummy'
-    priority = 1
+    description = 'A dummy style.'
 
     def apply(self, mlist):
         pass
-
-    def match(self, mlist, styles):
-        styles.append(self)
 
 
 class TestStyle(unittest.TestCase):

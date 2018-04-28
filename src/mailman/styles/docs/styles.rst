@@ -49,6 +49,7 @@ New styles must implement the ``IStyle`` interface.
     >>> @implementer(IStyle)
     ... class TestStyle:
     ...     name = 'a-test-style'
+    ...     description = 'Testing mailing list style.'
     ...     def apply(self, mailing_list):
     ...         # Just does something very simple.
     ...         mailing_list.display_name = 'TEST STYLE LIST'
@@ -115,6 +116,7 @@ If no style name is provided when creating the list, the system default style
     >>> @implementer(IStyle)
     ... class AnotherStyle:
     ...     name = 'another-style'
+    ...     description = 'Another testing mailing list style.'
     ...     def apply(self, mailing_list):
     ...         # Just does something very simple.
     ...         mailing_list.display_name = 'ANOTHER STYLE LIST'
