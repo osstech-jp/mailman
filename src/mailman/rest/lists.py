@@ -414,9 +414,14 @@ class Styles:
 
     def __init__(self):
         manager = getUtility(IStyleManager)
+        styles = [dict(name=style.name, description=style.description)
+                  for style in manager.styles]
         style_names = sorted(style.name for style in manager.styles)
         self._resource = dict(
+            # TODO (maxking): style_name is meant for backwards compatibility
+            # and should be removed in 3.3 release.
             style_names=style_names,
+            styles=styles,
             default=config.styles.default)
 
     def on_get(self, request, response):

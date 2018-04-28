@@ -347,6 +347,28 @@ class TestLists(unittest.TestCase):
         self.assertEqual(cm.exception.reason, 'Missing parameters: emails')
 
 
+class TestListStyles(unittest.TestCase):
+    """Test /lists/styles."""
+
+    layer = RESTLayer
+
+    def test_styles(self):
+        json, response = call_api('http://localhost:9001/3.0/lists/styles')
+        self.assertEqual(response.status_code, 200)
+        # Remove the variable data.
+        json.pop('http_etag')
+        self.assertEqual(json, {
+            'style_names': ['legacy-announce', 'legacy-default'],
+            'styles': [
+                {'name': 'legacy-announce',
+                 'description': 'Announce only mailing list style.'},
+                {'name': 'legacy-default',
+                 'description': 'Ordinary discussion mailing list style.'}
+                    ],
+            'default': 'legacy-default'
+            })
+
+
 class TestListArchivers(unittest.TestCase):
     """Test corner cases for list archivers."""
 

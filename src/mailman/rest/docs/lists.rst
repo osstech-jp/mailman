@@ -191,10 +191,13 @@ Apply a style at list creation time
 of a particular type, e.g. discussion lists.  We can see which styles are
 available, and which is the default style.
 
-    >>> dump_json('http://localhost:9001/3.0/lists/styles')
-    default: legacy-default
-    http_etag: "..."
-    style_names: ['legacy-announce', 'legacy-default']
+    >>> json = call_http('http://localhost:9001/3.0/lists/styles')
+    >>> json['default']
+    'legacy-default'
+    >>> for style in json['styles']:
+    ...     print('{}: {}'.format(style['name'], style['description']))
+    legacy-announce: Announce only mailing list style.
+    legacy-default: Ordinary discussion mailing list style.
 
 When creating a list, if we don't specify a style to apply, the default style
 is used.  However, we can provide a style name in the POST data to choose a

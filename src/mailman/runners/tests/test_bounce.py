@@ -227,6 +227,7 @@ class TestStyle:
     """See `IStyle`."""
 
     name = 'test'
+    description = 'A test style.'
 
     def apply(self, mailing_list):
         """See `IStyle`."""
