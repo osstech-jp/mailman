@@ -67,6 +67,8 @@ Bugs
   #439)
 * Calling ``set`` on a template evicts the local cache if the template was
   cached before. (Closes #463)
+* The override of Message.as_string() has been extended to catch yet another
+  observed exception.  (Closes #470)
 
 Command line
 ------------
