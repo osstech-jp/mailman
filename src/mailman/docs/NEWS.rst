@@ -132,6 +132,8 @@ REST
 * Added new attribute in ``lists/styles`` resource ``styles`` that contains the
   list of all the styles in Core along with their description. ``style_names``
   attribute is now deprecated and will be removed in future versions.
+* Add ``display_name`` for ``member`` in order to expose ``member.display_name``.
+  (Closes #398)
 
 
 3.1.0 -- "Between The Wheels"
