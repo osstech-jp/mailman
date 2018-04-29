@@ -155,7 +155,6 @@ class MailingList(Model):
     max_message_size = Column(Integer)
     max_num_recipients = Column(Integer)
     member_moderation_notice = Column(SAUnicode)
-    mime_is_default_digest = Column(Boolean)
     # FIXME: There should be no moderator_password
     moderator_password = Column(LargeBinary)             # TODO : was RawStr()
     newsgroup_moderation = Column(Enum(NewsgroupModeration))

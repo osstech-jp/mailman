@@ -80,7 +80,6 @@ class BasicOperation:
         # Digests.
         mlist.digests_enabled = True
         mlist.digest_is_default = False
-        mlist.mime_is_default_digest = False
         mlist.digest_size_threshold = 30          # KB
         mlist.digest_send_periodic = True
         mlist.digest_volume_frequency = DigestFrequency.monthly
