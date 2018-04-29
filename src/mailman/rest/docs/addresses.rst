@@ -384,6 +384,7 @@ Elle can get her memberships for each of her email addresses.
     entry 0:
         address: http://localhost:9001/3.0/addresses/elle@example.com
         delivery_mode: regular
+        display_name: Elle Person
         email: elle@example.com
         http_etag: "..."
         list_id: ant.example.com
@@ -394,6 +395,7 @@ Elle can get her memberships for each of her email addresses.
     entry 1:
         address: http://localhost:9001/3.0/addresses/elle@example.com
         delivery_mode: regular
+        display_name: Elle Person
         email: elle@example.com
         http_etag: "..."
         list_id: bee.example.com
@@ -425,6 +427,7 @@ does not show up in the list of memberships for his other address.
     entry 0:
         address: http://localhost:9001/3.0/addresses/elle@example.com
         delivery_mode: regular
+        display_name: Elle Person
         email: elle@example.com
         http_etag: "..."
         list_id: ant.example.com
@@ -435,6 +438,7 @@ does not show up in the list of memberships for his other address.
     entry 1:
         address: http://localhost:9001/3.0/addresses/elle@example.com
         delivery_mode: regular
+        display_name: Elle Person
         email: elle@example.com
         http_etag: "..."
         list_id: bee.example.com
@@ -451,6 +455,7 @@ does not show up in the list of memberships for his other address.
     entry 0:
         address: http://localhost:9001/3.0/addresses/eperson@example.com
         delivery_mode: regular
+        display_name: Elle Person
         email: eperson@example.com
         http_etag: "..."
         list_id: bee.example.com

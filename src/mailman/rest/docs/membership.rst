@@ -46,6 +46,7 @@ the REST interface.
     entry 0:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
         delivery_mode: regular
+        display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -62,6 +63,7 @@ Bart's specific membership can be accessed directly:
     >>> dump_json('http://localhost:9001/3.0/members/1')
     address: http://localhost:9001/3.0/addresses/bperson@example.com
     delivery_mode: regular
+    display_name: Bart Person
     email: bperson@example.com
     http_etag: ...
     list_id: bee.example.com
@@ -82,6 +84,7 @@ the REST interface.
     entry 0:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
         delivery_mode: regular
+        display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -92,6 +95,7 @@ the REST interface.
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -115,6 +119,7 @@ subscribes, she is returned first.
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -125,6 +130,7 @@ subscribes, she is returned first.
     entry 1:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
         delivery_mode: regular
+        display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -135,6 +141,7 @@ subscribes, she is returned first.
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -164,6 +171,7 @@ User ids are different than member ids.
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -174,6 +182,7 @@ User ids are different than member ids.
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -184,6 +193,7 @@ User ids are different than member ids.
     entry 2:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -194,6 +204,7 @@ User ids are different than member ids.
     entry 3:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
         delivery_mode: regular
+        display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -204,6 +215,7 @@ User ids are different than member ids.
     entry 4:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -222,6 +234,7 @@ We can also get just the members of a single mailing list.
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -232,6 +245,7 @@ We can also get just the members of a single mailing list.
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -258,6 +272,7 @@ page.
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -276,6 +291,7 @@ This works with members of a single list as well as with all members.
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -324,6 +340,7 @@ mailing list.
     entry 0:
         address: http://localhost:9001/3.0/addresses/dperson@example.com
         delivery_mode: regular
+        display_name:
         email: dperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -335,6 +352,7 @@ mailing list.
     entry 1:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -345,6 +363,7 @@ mailing list.
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -355,6 +374,7 @@ mailing list.
     entry 3:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -366,6 +386,7 @@ mailing list.
     entry 4:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -376,6 +397,7 @@ mailing list.
     entry 5:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
         delivery_mode: regular
+        display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -386,6 +408,7 @@ mailing list.
     entry 6:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -404,6 +427,7 @@ We can access all the owners of a list.
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -426,6 +450,7 @@ A specific member can always be referenced by their role and address.
     ...           'bee@example.com/owner/cperson@example.com')
     address: http://localhost:9001/3.0/addresses/cperson@example.com
     delivery_mode: regular
+    display_name: Cris Person
     email: cperson@example.com
     http_etag: ...
     list_id: bee.example.com
@@ -444,6 +469,7 @@ example, we can search for all the memberships of a particular address.
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -454,6 +480,7 @@ example, we can search for all the memberships of a particular address.
     entry 1:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -473,6 +500,7 @@ Or, we can find all the memberships for a particular mailing list.
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
         delivery_mode: regular
+        display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -483,6 +511,7 @@ Or, we can find all the memberships for a particular mailing list.
     entry 1:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
         delivery_mode: regular
+        display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -493,6 +522,7 @@ Or, we can find all the memberships for a particular mailing list.
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -503,6 +533,7 @@ Or, we can find all the memberships for a particular mailing list.
     entry 3:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -525,6 +556,7 @@ list.
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -535,6 +567,7 @@ list.
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -556,6 +589,7 @@ Or, we can find all the memberships for an address with a specific role.
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -566,6 +600,7 @@ Or, we can find all the memberships for an address with a specific role.
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -587,6 +622,7 @@ Finally, we can search for a specific member given all three criteria.
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -608,6 +644,7 @@ Search can also be performed using HTTP GET queries.
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
         delivery_mode: regular
+        display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
         list_id: bee.example.com
@@ -667,6 +704,7 @@ Elly is now a known user, and a member of the mailing list.
     entry 3:
         address: http://localhost:9001/3.0/addresses/eperson@example.com
         delivery_mode: regular
+        display_name: Elly Person
         email: eperson@example.com
         http_etag: ...
         list_id: ant.example.com
@@ -714,6 +752,7 @@ list with her preferred address.
     entry 4:
         address: http://localhost:9001/3.0/addresses/gwen@example.com
         delivery_mode: regular
+        display_name: Gwen Person
         email: gwen@example.com
         http_etag: "..."
         list_id: ant.example.com
@@ -739,6 +778,7 @@ the new address.
     entry 4:
         address: http://localhost:9001/3.0/addresses/gwen.person@example.com
         delivery_mode: regular
+        display_name: Gwen Person
         email: gwen.person@example.com
         http_etag: "..."
         list_id: ant.example.com
@@ -806,6 +846,7 @@ addresses.
     entry 4:
         address: http://localhost:9001/3.0/addresses/herb@example.com
         delivery_mode: regular
+        display_name: Herb Person
         email: herb@example.com
         http_etag: "..."
         list_id: ant.example.com
@@ -817,6 +858,7 @@ addresses.
     entry 9:
         address: http://localhost:9001/3.0/addresses/herb@example.com
         delivery_mode: regular
+        display_name: Herb Person
         email: herb@example.com
         http_etag: "..."
         list_id: bee.example.com
@@ -875,6 +917,7 @@ his membership ids have not changed.
     entry 0:
         address: http://localhost:9001/3.0/addresses/hperson@example.com
         delivery_mode: regular
+        display_name: Herb Person
         email: hperson@example.com
         http_etag: "..."
         list_id: ant.example.com
@@ -885,6 +928,7 @@ his membership ids have not changed.
     entry 1:
         address: http://localhost:9001/3.0/addresses/hperson@example.com
         delivery_mode: regular
+        display_name: Herb Person
         email: hperson@example.com
         http_etag: "..."
         list_id: bee.example.com
@@ -914,6 +958,7 @@ mode of delivery.
     entry 0:
         address: http://localhost:9001/3.0/addresses/herb@example.com
         delivery_mode: mime_digests
+        display_name: Herb Person
         email: herb@example.com
         http_etag: "..."
         list_id: bee.example.com
@@ -936,6 +981,7 @@ default, there is no such attribute in the resource.
     >>> dump_json('http://localhost:9001/3.0/members/10')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
     delivery_mode: regular
+    display_name: Herb Person
     email: hperson@example.com
     http_etag: "..."
     list_id: ant.example.com
@@ -976,6 +1022,7 @@ It can be reset to the list default by patching an empty value.
     >>> dump_json('http://localhost:9001/3.0/members/10')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
     delivery_mode: regular
+    display_name: Herb Person
     email: hperson@example.com
     http_etag: "..."
     list_id: ant.example.com
@@ -1122,6 +1169,7 @@ And now only Kate is still a member.
     entry 0:
         address: http://localhost:9001/3.0/addresses/kperson@example.com
         delivery_mode: regular
+        display_name: Kate Person
         email: kperson@example.com
         http_etag: "..."
         list_id: cat.example.com
