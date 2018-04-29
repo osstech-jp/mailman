@@ -52,7 +52,7 @@ class Message(email.message.Message):
         # https://bugs.python.org/issue32330.
         try:
             value = email.message.Message.as_string(self)
-        except (KeyError, UnicodeEncodeError):
+        except (KeyError, LookupError, UnicodeEncodeError):
             value = email.message.Message.as_bytes(self).decode(
                 'ascii', 'replace')
         return value
