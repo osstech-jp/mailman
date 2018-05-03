@@ -55,7 +55,7 @@ class TestConfirmJoin(unittest.TestCase):
         # enabled by the mailing list.
         status = self._command.process(
             self._mlist, Message(), {}, (self._token,), Results())
-        self.assertEqual(status, ContinueProcessing.yes)
+        self.assertEqual(status, ContinueProcessing.no)
         # There should be one messages in the queue; the welcome message.
         items = get_queue_messages('virgin', expected_count=1)
         # Grab the welcome message.
@@ -69,9 +69,19 @@ class TestConfirmJoin(unittest.TestCase):
         self._mlist.send_welcome_message = False
         status = self._command.process(
             self._mlist, Message(), {}, (self._token,), Results())
-        self.assertEqual(status, ContinueProcessing.yes)
+        self.assertEqual(status, ContinueProcessing.no)
         # There will be no messages in the queue.
         get_queue_messages('virgin', expected_count=0)
+
+    def test_confim_token_twice(self):
+        # Don't try to confirm the same token twice.
+        # We test this by passing a result that already confirms the same
+        # token and it doesn't try to look at the database.
+        result = Results()
+        result.confirms = self._token
+        status = self._command.process(
+            self._mlist, Message(), {}, (self._token,), result)
+        self.assertEqual(status, ContinueProcessing.no)
 
 
 class TestConfirmLeave(unittest.TestCase):

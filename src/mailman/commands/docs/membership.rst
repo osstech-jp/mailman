@@ -142,7 +142,7 @@ Anne confirms her registration.
 
     >>> results = Results()
     >>> print(confirm.process(mlist, msg, {}, (token,), results))
-    ContinueProcessing.yes
+    ContinueProcessing.no
     >>> print(results)
     The results of your email command are provided below.
     <BLANKLINE>
@@ -189,7 +189,7 @@ list.
 
     >>> results = Results()
     >>> print(confirm.process(mlist_2, msg, {}, (token,), results))
-    ContinueProcessing.yes
+    ContinueProcessing.no
     >>> print(results)
     The results of your email command are provided below.
     <BLANKLINE>
@@ -335,7 +335,7 @@ a user of the system.
 
     >>> results = Results()
     >>> print(confirm.process(mlist, msg, {}, (token,), results))
-    ContinueProcessing.yes
+    ContinueProcessing.no
 
     >>> print(results)
     The results of your email command are provided below.
