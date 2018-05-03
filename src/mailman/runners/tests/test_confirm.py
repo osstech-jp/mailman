@@ -249,3 +249,46 @@ From: Anne Person <anne@example.org>
                                    expected_count=2)
         self.assertEqual(str(items[1].msg['subject']),
                          'Welcome to the "Test" mailing list')
+
+    def test_confirm_subcommand_with_more_commands(self):
+        # confirm command stops the processing of rest of the commands.
+        get_queue_messages('virgin')
+        subject = 'bad-command'
+        to = 'test-confirm+{}@example.com'.format(self._token)
+        msg = mfs("""\
+From: Anne Person <anne@example.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+""")
+        msg['Subject'] = subject
+        msg['To'] = to
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='confirm'))
+        self._runner.run()
+        # This should send out one email that confirms that token was accepted.
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertNotIn('No such command: bad-command', str(items[0].msg))
+
+    def test_confirm_in_subject_with_more_commands(self):
+        get_queue_messages('virgin')
+        subject = 'confirm {}'.format(self._token)
+        to = 'test-request@example.com'
+        msg = mfs("""\
+From: Anne Person <anne@example.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+bad-command
+""")
+        msg['Subject'] = subject
+        msg['To'] = to
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='confirm'))
+        self._runner.run()
+        # This should send out one email that confirms that token was accepted.
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertNotIn('No such command: bad-command', str(items[0].msg))

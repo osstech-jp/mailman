@@ -56,15 +56,22 @@ class CommandFinder:
         # commands.  For example, if this was sent to the -join or -leave
         # addresses, it's the same as if 'join' or 'leave' commands were sent
         # to the -request address.
+        is_address_command = False
         subaddress = msgdata.get('subaddress')
         if subaddress == 'join':
             self.command_lines.append('join')
+            is_address_command = True
         elif subaddress == 'leave':
             self.command_lines.append('leave')
+            is_address_command = True
         elif subaddress == 'confirm':
             mo = re.match(config.mta.verp_confirm_regexp, msg.get('to', ''))
             if mo:
                 self.command_lines.append('confirm ' + mo.group('cookie'))
+                is_address_command = True
+        # Stop processing if the address already contained a valid command
+        if is_address_command:
+            return
         # Extract the subject header and do RFC 2047 decoding.
         raw_subject = msg.get('subject', '')
         try:
