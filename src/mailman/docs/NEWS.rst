@@ -81,6 +81,9 @@ Command line
   function taking no arguments.  This can be used to introspect Mailman
   outside of the context of a mailing list.
 * Fix ``mailman withlist`` command parsing.  (Closes #319)
+* Add a new option ``--periodic`` to ``mailman digests`` command. It sends out
+  digests for only those Mailing Lists that have ``digest_send_periodic`` option
+  set to ``True``. (Closes #384)
 
 Configuration
 -------------

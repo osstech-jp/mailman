@@ -392,10 +392,16 @@ class ListDigest:
             validator = Validator(
                 send=as_boolean,
                 bump=as_boolean,
-                _optional=('send', 'bump'))
+                periodic=as_boolean,
+                _optional=('send', 'bump', 'periodic'))
             values = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
+            return
+        if values.get('send', False) and values.get('periodic', False):
+            # Send and periodic and mutually exclusive options.
+            bad_request(
+                response, 'send and periodic options are mutually exclusive')
             return
         if len(values) == 0:
             # There's nothing to do, but that's okay.
@@ -404,6 +410,8 @@ class ListDigest:
         if values.get('bump', False):
             bump_digest_number_and_volume(self._mlist)
         if values.get('send', False):
+            maybe_send_digest_now(self._mlist, force=True)
+        if values.get('periodic', False) and self._mlist.digest_send_periodic:
             maybe_send_digest_now(self._mlist, force=True)
         accepted(response)
 

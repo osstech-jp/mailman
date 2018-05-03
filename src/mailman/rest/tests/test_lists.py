@@ -563,6 +563,17 @@ class TestListDigests(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason, 'Unexpected parameters: bogus')
 
+    def test_post_both_send_and_periodic_options(self):
+        # send and periodic options cannot both be set at the same time.
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
+                    send=True,
+                    periodic=True))
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'send and periodic options are mutually exclusive')
+
     def test_bump_before_send(self):
         with transaction():
             self._mlist.digest_volume_frequency = DigestFrequency.monthly
@@ -591,6 +602,38 @@ Subject: message 1
         items = get_queue_messages('virgin')
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0].msg['subject'], 'Ant Digest, Vol 8, Issue 1')
+
+    def test_periodic_digests_send(self):
+        with transaction():
+            self._mlist.digest_send_periodic = False
+        msg = mfs("""\
+To: ant@example.com
+From: anne@example.com
+Subject: message 2
+
+""")
+        config.handlers['to-digest'].process(self._mlist, msg, {})
+        json, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
+                periodic=True))
+        # There shouldn't be any message going out after the above call.
+        self.assertEqual(response.status_code, 202)
+        make_testable_runner(DigestRunner, 'digest').run()
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 0)
+        # Now, we set the periodic_send_digest to True and call the API again.
+        with transaction():
+            self._mlist.digest_send_periodic = True
+        json, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
+                periodic=True))
+        # Now, there should be one message in the virgin queue to be sent out.
+        make_testable_runner(DigestRunner, 'digest').run()
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        # This should be the first volume of the digest going out.
+        self.assertEqual(str(items[0].msg['subject']),
+                         'Ant Digest, Vol 1, Issue 1')
 
 
 class TestListTemplates(unittest.TestCase):
