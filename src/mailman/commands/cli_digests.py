@@ -68,7 +68,7 @@ from zope.interface import implementer
     is_flag=True, default=False,
     help=_("""\
     Send any collected digests for the List only if their digest_send_periodic
-    is set to False."""))
+    is set to True."""))
 @click.pass_context
 def digests(ctx, list_ids, send, bump, dry_run, verbose, periodic):
     # send and periodic options are mutually exclusive, if they both are
