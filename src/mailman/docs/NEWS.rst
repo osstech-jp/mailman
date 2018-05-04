@@ -69,6 +69,7 @@ Bugs
   cached before. (Closes #463)
 * The override of Message.as_string() has been extended to catch yet another
   observed exception.  (Closes #470)
+* Fixed a typo in the help for ``mailman digests --periodic``.  (Closes #472)
 
 Command line
 ------------
