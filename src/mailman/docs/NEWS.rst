@@ -70,6 +70,8 @@ Bugs
 * The override of Message.as_string() has been extended to catch yet another
   observed exception.  (Closes #470)
 * Fixed a typo in the help for ``mailman digests --periodic``.  (Closes #472)
+* Character encoding errors in adding headers and footers to multipart messages
+  are detected and ``replaced``.  (Closes #409)
 
 Command line
 ------------
