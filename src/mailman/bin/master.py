@@ -62,6 +62,7 @@ PRESERVE_ENVS = (
     'LC_TIME',
     'MAILMAN_EXTRA_TESTING_CFG',
     'PYTHONPATH',
+    'PYTHONHOME',
     )
 
 
