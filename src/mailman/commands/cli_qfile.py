@@ -42,7 +42,7 @@ m = None
     help=_("""\
     Don't attempt to pretty print the object.  This is useful if there is some
     problem with the object and you just want to get an unpickled
-    representation.  Useful with 'bin/dumpdb -i <file>'.  In that case, the
+    representation.  Useful with 'mailman qfile -i <file>'.  In that case, the
     list of unpickled objects will be left in a variable called 'm'."""))
 @click.option(
     '--interactive', '-i',
