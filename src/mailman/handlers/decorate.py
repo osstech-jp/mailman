@@ -156,11 +156,13 @@ def process(mlist, msg, msgdata):
         if not isinstance(payload, list):
             payload = [payload]
         if len(footer) > 0:
-            mimeftr = MIMEText(footer.encode(lcset), 'plain', lcset)
+            mimeftr = MIMEText(
+                footer.encode(lcset, errors='replace'), 'plain', lcset)
             mimeftr['Content-Disposition'] = 'inline'
             payload.append(mimeftr)
         if len(header) > 0:
-            mimehdr = MIMEText(header.encode(lcset), 'plain', lcset)
+            mimehdr = MIMEText(
+                header.encode(lcset, errors='replace'), 'plain', lcset)
             mimehdr['Content-Disposition'] = 'inline'
             payload.insert(0, mimehdr)
         msg.set_payload(payload)
@@ -198,11 +200,13 @@ def process(mlist, msg, msgdata):
     # any).
     payload = [inner]
     if len(header) > 0:
-        mimehdr = MIMEText(header.encode(lcset), 'plain', lcset)
+        mimehdr = MIMEText(
+            header.encode(lcset, errors='replace'), 'plain', lcset)
         mimehdr['Content-Disposition'] = 'inline'
         payload.insert(0, mimehdr)
     if len(footer) > 0:
-        mimeftr = MIMEText(footer.encode(lcset), 'plain', lcset)
+        mimeftr = MIMEText(
+            footer.encode(lcset, errors='replace'), 'plain', lcset)
         mimeftr['Content-Disposition'] = 'inline'
         payload.append(mimeftr)
     msg.set_payload(payload)

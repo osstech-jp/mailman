@@ -74,6 +74,38 @@ Content-Type: text/plain;
 
 This is a test message.
 """)
+        self._mpm = mfs("""\
+To: ant@example.com
+From: aperson@example.com
+Message-ID: <alpha>
+Content-Type: multipart/mixed; boundary="aaaaaa"
+
+--aaaaaa
+Content-Type: text/plain;
+
+This is a test message.
+--aaaaaa
+Content-Type: text/plain;
+
+This is part 2
+--aaaaaa--
+""")
+        self._mpa = mfs("""\
+To: ant@example.com
+From: aperson@example.com
+Message-ID: <alpha>
+Content-Type: multipart/alternative; boundary="aaaaaa"
+
+--aaaaaa
+Content-Type: text/plain;
+
+This is a test message.
+--aaaaaa
+Content-Type: text/html;
+
+This is a test message.
+--aaaaaa--
+""")
         temporary_dir = TemporaryDirectory()
         self.addCleanup(temporary_dir.cleanup)
         template_dir = temporary_dir.name
@@ -136,6 +168,42 @@ This is a test message.
         decorate.process(self._mlist, self._msg, msgdata)
         self.assertIn('Anne Person <aperson@example.com>',
                       self._msg.as_string())
+
+    def test_decorate_header_footer_with_bad_character_mpa(self):
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        header_path = os.path.join(site_dir, 'myheader.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('Foot\xe9r:', file=fp)
+        with open(header_path, 'w', encoding='utf-8') as fp:
+            print('Head\xe9r:', file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
+        getUtility(ITemplateManager).set(
+            'list:member:regular:header', None, 'mailman:///myheader.txt')
+        self._mlist.preferred_language = 'en'
+        decorate.process(self._mlist, self._mpa, {})
+        self.assertIn('Head?r:', self._mpa.get_payload(0).as_string())
+        self.assertIn('Foot?r:', self._mpa.get_payload(2).as_string())
+
+    def test_decorate_header_footer_with_bad_character_mpm(self):
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        header_path = os.path.join(site_dir, 'myheader.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('Foot\xe9r:', file=fp)
+        with open(header_path, 'w', encoding='utf-8') as fp:
+            print('Head\xe9r:', file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
+        getUtility(ITemplateManager).set(
+            'list:member:regular:header', None, 'mailman:///myheader.txt')
+        self._mlist.preferred_language = 'en'
+        decorate.process(self._mlist, self._mpm, {})
+        self.assertIn('Head?r:', self._mpm.get_payload(0).as_string())
+        self.assertIn('Foot?r:', self._mpm.get_payload(3).as_string())
 
     def test_list_id_allowed_in_template_uri(self):
         # Issue #196 - allow the list_id in the template uri expansion.
