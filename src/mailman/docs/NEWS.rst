@@ -72,6 +72,8 @@ Bugs
 * Fixed a typo in the help for ``mailman digests --periodic``.  (Closes #472)
 * Character encoding errors in adding headers and footers to multipart messages
   are detected and ``replaced``.  (Closes #409)
+* The help for ``mailman qfile`` has been fixed to reference ``mailman qfile``
+  rather than the non-existent ``bin/dumpdb``.  (Closes #475)
 
 Command line
 ------------
