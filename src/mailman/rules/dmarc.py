@@ -310,7 +310,7 @@ class DMARCMitigation:
         if mlist.dmarc_mitigate_action is DMARCMitigateAction.no_mitigation:
             # Don't bother to check if we're not going to do anything.
             return False
-        display_name, address = parseaddr(msg.get('from'))
+        display_name, address = parseaddr(str(msg.get('from', '')))
         if maybe_mitigate(mlist, address):
             # If dmarc_mitigate_action is discard or reject, this rule fires
             # and jumps to the 'moderation' chain to do the actual discard.

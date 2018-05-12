@@ -74,6 +74,8 @@ Bugs
   are detected and ``replaced``.  (Closes #409)
 * The help for ``mailman qfile`` has been fixed to reference ``mailman qfile``
   rather than the non-existent ``bin/dumpdb``.  (Closes #475)
+* The dmarc rule has been fixed to not throw a TypeError when msg.get('from')
+  returns a header instance.  (Closes #477)
 
 Command line
 ------------
