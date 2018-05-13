@@ -25,6 +25,7 @@ from datetime import timedelta
 from dns.exception import DNSException
 from dns.rdatatype import CNAME, TXT
 from dns.resolver import NXDOMAIN, NoAnswer, NoNameservers
+from email import message_from_bytes
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
@@ -210,6 +211,21 @@ class TestDMARCRules(TestCase):
         mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
         msg = mfs("""\
 From: anne
+To: ant@example.com
+
+""")
+        rule = dmarc.DMARCMitigation()
+        with get_dns_resolver():
+            self.assertFalse(rule.check(mlist, msg, {}))
+
+    def test_non_ascii_in_from_address(self):
+        # Non-ascii headers with message_from_bytes can return a Header
+        # objest on msg.get().
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        msg = message_from_bytes(b"""\
+From: Ann\xe9 <anne@example.com>
 To: ant@example.com
 
 """)
