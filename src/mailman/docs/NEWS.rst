@@ -91,6 +91,7 @@ Command line
 * Add a new option ``--periodic`` to ``mailman digests`` command. It sends out
   digests for only those Mailing Lists that have ``digest_send_periodic`` option
   set to ``True``. (Closes #384)
+* The ``mailman import21`` command now imports DMARC mitigations.
 
 Configuration
 -------------
