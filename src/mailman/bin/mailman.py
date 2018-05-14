@@ -19,6 +19,7 @@
 import click
 
 from contextlib import ExitStack
+from mailman.commands.cli_help import help as help_command
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.initialize import initialize
@@ -104,7 +105,8 @@ def initialize_config(ctx, param, value):
     is_eager=True, callback=initialize_config)
 @click.group(
     cls=Subcommands,
-    context_settings=dict(help_option_names=['-h', '--help']))
+    context_settings=dict(help_option_names=['-h', '--help']),
+    invoke_without_command=True)
 @click.pass_context
 @click.version_option(MAILMAN_VERSION_FULL, message='%(version)s')
 @public
@@ -116,3 +118,5 @@ def main(ctx, config_file):
     http://www.list.org
     """
     # click handles dispatching to the subcommand via the Subcommands class.
+    if ctx.invoked_subcommand is None:
+        ctx.invoke(help_command)
