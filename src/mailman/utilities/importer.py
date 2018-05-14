@@ -35,8 +35,8 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, IHeaderMatchList, Personalization, ReplyToMunging,
-    SubscriptionPolicy)
+    DMARCMitigateAction, IAcceptableAliasSet, IHeaderMatchList,
+    Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.template import ITemplateManager
@@ -84,6 +84,19 @@ def days_to_delta(value):
 
 def list_members_to_unicode(value):
     return [bytes_to_str(item) for item in value]
+
+
+def dmarc_action_mapping(value):
+    # Convert dmarc_moderation_action to a DMARCMitigateAction enum.
+    # 2.1 actions are 0==accept, 1==Munge From, 2==Wrap Message,
+    # 3==Reject, 4==discard
+    return {
+        0: DMARCMitigateAction.no_mitigation,
+        1: DMARCMitigateAction.munge_from,
+        2: DMARCMitigateAction.wrap_message,
+        3: DMARCMitigateAction.reject,
+        4: DMARCMitigateAction.discard,
+        }[value]
 
 
 def filter_action_mapping(value):
@@ -288,6 +301,27 @@ def import_config_pck(mlist, config_dict):
             config_dict.get('member_moderation_action'))
     else:
         mlist.default_member_action = Action.defer
+    # Handle DMARC mitigations.
+    # This would be straightforward except for from_is_list.  The issue
+    # is in MM 2.1 the from_is_list action applies if dmarc_moderation_action
+    # doesn't apply and they can be different.
+    # We will map as follows:
+    # from_is_list > dmarc_moderation_action
+    #    dmarc_mitigate_action = from_is_list action
+    #    dmarc_mitigate_unconditionally = True
+    # from_is_list <= dmarc_moderation_action
+    #    dmarc_mitigate_action = dmarc_moderation_action
+    #    dmarc_mitigate_unconditionally = False
+    # The text attributes are handled above.
+    if (config_dict.get('from_is_list', 0) >
+            config_dict.get('dmarc_moderation_action', 0)):
+        mlist.dmarc_mitigate_action = dmarc_action_mapping(
+            config_dict.get('from_is_list', 0))
+        mlist.dmarc_mitigate_unconditionally = True
+    else:
+        mlist.dmarc_mitigate_action = dmarc_action_mapping(
+            config_dict.get('dmarc_moderation_action', 0))
+        mlist.dmarc_mitigate_unconditionally = False
     # Handle the archiving policy.  In MM2.1 there were two boolean options
     # but only three of the four possible states were valid.  Now there's just
     # an enum.
