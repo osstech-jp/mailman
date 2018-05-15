@@ -677,12 +677,15 @@ class TestMemberActionImport(unittest.TestCase):
 
 class TestConvertToURI(unittest.TestCase):
     # The following values were plain text, and are now URIs in Mailman 3:
-    # - welcome_message_uri
-    # - goodbye_message_uri
-    # - header_uri
-    # - footer_uri
-    # - digest_header_uri
-    # - digest_footer_uri
+    # - welcome_message
+    # - goodbye_message
+    # - msg_header
+    # - msg_footer
+    # - digest_header
+    # - digest_footer
+    #
+    # We intentionally don't do welcome_message because it doesn't map well
+    # from MM 2.1
     #
     # The templates contain variables that must be replaced:
     # - %(real_name)s -> %(display_name)s
@@ -696,7 +699,6 @@ class TestConvertToURI(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('blank@example.com')
         self._conf_mapping = dict(
-            welcome_msg='list:user:notice:welcome',
             goodbye_msg='list:user:notice:goodbye',
             msg_header='list:member:regular:header',
             msg_footer='list:member:regular:footer',

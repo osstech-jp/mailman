@@ -92,6 +92,8 @@ Command line
   digests for only those Mailing Lists that have ``digest_send_periodic`` option
   set to ``True``. (Closes #384)
 * The ``mailman import21`` command now imports DMARC mitigations.
+* The ``mailman import21`` command no longer creates templates with
+  non-standard names,  (Closes #482)
 
 Configuration
 -------------
