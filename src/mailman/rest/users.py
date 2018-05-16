@@ -103,7 +103,8 @@ def create_user(api, arguments, response):
             user.link(address)
         else:
             bad_request(
-                response, 'User already exists: {}'.format(error.address))
+                response,
+                'User already exists: {}'.format(error.address).encode())
             return None
     if password is None:
         # This will have to be reset since it cannot be retrieved.
@@ -247,10 +248,12 @@ class AUser(_UserBase):
             validator = PatchValidator(request, ATTRIBUTES)
         except UnknownPATCHRequestError as error:
             bad_request(
-                response, b'Unknown attribute: {0}'.format(error.attribute))
+                response,
+                'Unknown attribute: {0}'.format(error.attribute).encode())
         except ReadOnlyPATCHRequestError as error:
             bad_request(
-                response, b'Read-only attribute: {0}'.format(error.attribute))
+                response,
+                'Read-only attribute: {0}'.format(error.attribute).encode())
         else:
             validator.update(self._user, request)
             no_content(response)
@@ -265,10 +268,12 @@ class AUser(_UserBase):
             validator.update(self._user, request)
         except UnknownPATCHRequestError as error:
             bad_request(
-                response, b'Unknown attribute: {0}'.format(error.attribute))
+                response,
+                'Unknown attribute: {0}'.format(error.attribute).encode())
         except ReadOnlyPATCHRequestError as error:
             bad_request(
-                response, b'Read-only attribute: {0}'.format(error.attribute))
+                response,
+                'Read-only attribute: {0}'.format(error.attribute).encode())
         except ValueError as error:
             bad_request(response, str(error))
         else:
@@ -332,7 +337,7 @@ class AddressUser(_UserBase):
             user = user_manager.get_user_by_id(user_id)
             if user is None:
                 bad_request(response, 'No user with ID {}'.format(
-                    self.api.from_uuid(user_id)))
+                    self.api.from_uuid(user_id)).encode())
                 return
             okay(response)
         else:
@@ -367,7 +372,8 @@ class AddressUser(_UserBase):
             user_id = arguments['user_id']
             user = user_manager.get_user_by_id(user_id)
             if user is None:
-                not_found(response, b'No user with ID {}'.format(user_id))
+                not_found(response,
+                          'No user with ID {}'.format(user_id).encode())
                 return
             okay(response)
         else:
