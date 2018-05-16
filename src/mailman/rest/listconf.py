@@ -184,6 +184,7 @@ ATTRIBUTES = dict(
     subject_prefix=GetterSetter(str),
     subscription_policy=GetterSetter(enum_validator(SubscriptionPolicy)),
     volume=GetterSetter(None),
+    respond_to_post_requests=GetterSetter(as_boolean),
     )
 
 

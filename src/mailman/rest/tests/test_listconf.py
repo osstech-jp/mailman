@@ -80,6 +80,7 @@ RESOURCE = dict(
     subject_prefix='[ant]',
     subscription_policy='confirm_then_moderate',
     welcome_message_uri='mailman:///welcome.txt',
+    respond_to_post_requests=True,
     )
 
 
