@@ -37,6 +37,7 @@ MISSING = object()
 SLASH = '/'
 EMPTYSTRING = ''
 REALM = 'mailman3-rest'
+UTF8 = 'utf-8'
 
 
 class AdminWSGIServer(WSGIServer):
@@ -96,10 +97,11 @@ class Middleware:
                 authorized = True
         if not authorized:
             # Not authorized.
+            realm = 'Basic realm="{}",charset="{}"'.format(REALM, UTF8)
             raise HTTPUnauthorized(
                 '401 Unauthorized',
                 'REST API authorization failed',
-                challenges=['Basic realm=Mailman3'])
+                challenges=[realm])
 
 
 class ObjectRouter:
