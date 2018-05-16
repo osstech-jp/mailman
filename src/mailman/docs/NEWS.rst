@@ -149,6 +149,7 @@ REST
   attribute is now deprecated and will be removed in future versions.
 * Add ``display_name`` for ``member`` in order to expose ``member.display_name``.
   (Closes #398)
+* Expose ``MailingList.respond_to_post_request`` through REST API. (Closes #420)
 
 
 3.1.0 -- "Between The Wheels"

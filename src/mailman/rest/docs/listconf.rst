@@ -73,7 +73,8 @@ All readable attributes for a list are available on a sub-resource.
     reply_goes_to_list: no_munging
     reply_to_address:
     request_address: ant-request@example.com
-    send_welcome_message: True
+    respond_to_post_requests: True
+		send_welcome_message: True
     subject_prefix: [Ant]
     subscription_policy: confirm
     volume: 1
@@ -133,6 +134,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             default_nonmember_action='discard',
     ...             moderator_password='password',
     ...             max_message_size='500',
+    ...             respond_to_post_requests=True,
     ...             ),
     ...           'PUT')
     content-length: 0
