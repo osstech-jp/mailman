@@ -39,12 +39,13 @@ from mailman.interfaces.mailinglist import (
     Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
-from mailman.interfaces.template import ITemplateManager
+from mailman.interfaces.template import ITemplateLoader, ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.i18n import search
 from public import public
 from sqlalchemy import Boolean
+from urllib.error import URLError
 from zope.component import getUtility
 
 log = logging.getLogger('mailman.error')
@@ -405,13 +406,15 @@ def import_config_pck(mlist, config_dict):
                 continue
     # Handle conversion to URIs.  In MM2.1, the decorations are strings
     # containing placeholders, and there's no provision for language-specific
-    # templates.  In MM3, template locations are specified by URLs with the
+    # strings.  In MM3, template locations are specified by URLs with the
     # special `mailman:` scheme indicating a file system path.  What we do
     # here is look to see if the list's decoration is different than the
     # default, and if so, we'll write the new decoration template to a
     # `mailman:` scheme path, then add the template to the template manager.
+    # We are intentionally omitting the 2.1 welcome_msg here because the
+    # string is actually interpolated into a larger template and there's
+    # no good way to figure where in the default template to insert it.
     convert_to_uri = {
-        'welcome_msg': 'list:user:notice:welcome',
         'goodbye_msg': 'list:user:notice:goodbye',
         'msg_header': 'list:member:regular:header',
         'msg_footer': 'list:member:regular:footer',
@@ -433,6 +436,23 @@ def import_config_pck(mlist, config_dict):
     manager = getUtility(ITemplateManager)
     defaults = {}
     for oldvar, newvar in convert_to_uri.items():
+        default_value = getUtility(ITemplateLoader).get(newvar, mlist)
+        if not default_value:
+            continue
+        # Get the decorated default text
+        try:
+            default_text = decorate_template(mlist, default_value)
+        except (URLError, KeyError):                      # pragma: nocover
+            # Use case: importing the old a@ex.com into b@ex.com.  We can't
+            # check if it changed from the default so don't import, we may do
+            # more harm than good and it's easy to change if needed.
+            # TESTME
+            print('Unable to convert mailing list attribute:', oldvar,
+                  'with old value "{}"'.format(default_value),
+                  file=sys.stderr)
+            continue
+        defaults[newvar] = default_text
+    for oldvar, newvar in convert_to_uri.items():
         if oldvar not in config_dict:
             continue
         text = config_dict[oldvar]
@@ -440,14 +460,14 @@ def import_config_pck(mlist, config_dict):
             text = text.decode('utf-8', 'replace')
         for oldph, newph in convert_placeholders:
             text = text.replace(oldph, newph)
-        default_value, default_text = defaults.get(newvar, (None, None))
-        if not text and not (default_value or default_text):
+        default_text = defaults.get(newvar, None)
+        if not text and not default_text:
             # Both are empty, leave it.
             continue
         # Check if the value changed from the default
         try:
             expanded_text = decorate_template(mlist, text)
-        except KeyError:
+        except KeyError:                                 # pragma: nocover
             # Use case: importing the old a@ex.com into b@ex.com
             # We can't check if it changed from the default
             # -> don't import, we may do more harm than good and it's easy to
@@ -464,12 +484,8 @@ def import_config_pck(mlist, config_dict):
         # Write the custom value to the right file and add it to the template
         # manager for real.
         base_uri = 'mailman:///$listname/$language/'
-        if default_value:
-            filename = default_value.rpartition('/')[2]
-        else:
-            filename = '{}.txt'.format(newvar.replace(':', '_'))
-        if not default_value or not default_value.startswith(base_uri):
-            manager.set(newvar, mlist.list_id, base_uri + filename)
+        filename = '{}.txt'.format(newvar)
+        manager.set(newvar, mlist.list_id, base_uri + filename)
         filepath = list(search(filename, mlist))[0]
         makedirs(os.path.dirname(filepath))
         with open(filepath, 'w', encoding='utf-8') as fp:
