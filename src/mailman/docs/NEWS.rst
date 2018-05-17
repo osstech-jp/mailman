@@ -76,6 +76,8 @@ Bugs
   rather than the non-existent ``bin/dumpdb``.  (Closes #475)
 * The dmarc rule has been fixed to not throw a TypeError when msg.get('from')
   returns a header instance.  (Closes #477)
+* ``mailman`` command without any sub-command now invokes ``mailman help`` by
+  default. (Closes #479)
 
 Command line
 ------------
