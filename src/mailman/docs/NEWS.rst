@@ -152,7 +152,8 @@ REST
 * Add ``display_name`` for ``member`` in order to expose ``member.display_name``.
   (Closes #398)
 * Expose ``MailingList.respond_to_post_request`` through REST API. (Closes #420)
-
+* Add a new API ``lists/find`` which returns all the lists related to a
+  subscriber. It optionally allows filtering based on a role. (See !388)
 
 3.1.0 -- "Between The Wheels"
 =============================

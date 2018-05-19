@@ -26,7 +26,7 @@ from mailman.database.transaction import transaction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import IAcceptableAliasSet
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import AcceptableAlias
@@ -72,6 +72,91 @@ class TestListsMissing(unittest.TestCase):
             call_api(
                 'http://localhost:9001/3.0/lists/missing@example.com/config')
         self.assertEqual(cm.exception.code, 404)
+
+
+class TestFindLists(unittest.TestCase):
+    """Test /list/find"""
+
+    layer = RESTLayer
+
+    def setUp(self):
+        with transaction():
+            self._mlist = create_list('test@example.com')
+        self._user_manager = getUtility(IUserManager)
+        self.address = self._user_manager.create_address('testing@example.com')
+
+    def test_find_lists(self):
+        # /lists/find gives 400 if no subscriber.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/lists/find')
+        self.assertEqual(cm.exception.code, 400)
+
+    def test_find_lists_with_subscriber(self):
+        # Test GET /lists/find with a valid
+        with transaction():
+            self._mlist.subscribe(self.address)
+            # We create another list so we have 2 lists.
+            create_list('test2@example.com')
+        json, response = call_api('http://localhost:9001/3.1/lists/find',
+                                  {'subscriber': 'testing@example.com'})
+        # This should return only one List.
+        self.assertEqual(json['total_size'], 1)
+        mlist = json['entries'][0]
+        self.assertEqual(mlist['list_id'], 'test.example.com')
+
+    def test_find_lists_with_subscriber_as_owner(self):
+        # Test GET /lists/find with a valid subscriber and a valid role.
+        with transaction():
+            list2 = create_list('test2@example.com')
+            create_list('test3@example.com')
+            anne_addr = self._user_manager.create_address('anne@example.com')
+            self._mlist.subscribe(anne_addr, role=MemberRole.owner)
+            list2.subscribe(anne_addr, role=MemberRole.moderator)
+        # With role=owner, only one list will be returned.
+        json, response = call_api(
+            'http://localhost:9001/3.1/lists/find',
+            {'subscriber': 'anne@example.com', 'role': 'owner'})
+        self.assertEqual(json['total_size'], 1)
+        mlist = json['entries'][0]
+        self.assertEqual(mlist['list_id'], 'test.example.com')
+        # With role=moderator, we should get 2nd list.
+        json, response = call_api(
+            'http://localhost:9001/3.1/lists/find',
+            {'subscriber': 'anne@example.com', 'role': 'moderator'})
+        self.assertEqual(json['total_size'], 1)
+        mlist = json['entries'][0]
+        self.assertEqual(mlist['list_id'], 'test2.example.com')
+
+    def test_find_lists_with_bad_role(self):
+        with transaction():
+            self._mlist.subscribe(self.address)
+        # with role=badrole, we should get a 400 error with right reason set.
+        with self.assertRaises(HTTPError) as cm:
+            json, response = call_api(
+                'http://localhost:9001/3.1/lists/find',
+                {'subscriber': 'testing@example.com', 'role': 'badrole'})
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'Cannot convert parameters: role')
+
+    def test_find_lists_no_results(self):
+        # No matching results exist for this query.
+        with self.assertRaises(HTTPError) as cm:
+            json, response = call_api(
+                'http://localhost:9001/3.1/lists/find',
+                {'subscriber': 'testing@example.com', 'role': 'owner'})
+        self.assertEqual(cm.exception.code, 404)
+        self.assertEqual(cm.exception.reason, '404 Not Found')
+
+    def test_find_lists_bad_subscriber(self):
+        # Bad subscriber should result in appropriate error.
+        with self.assertRaises(HTTPError) as cm:
+            json, response = call_api(
+                'http://localhost:9001/3.1/lists/find',
+                {'subscriber': 'testing.example.com', 'role': 'owner'})
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'Cannot convert parameters: subscriber')
 
 
 class TestLists(unittest.TestCase):

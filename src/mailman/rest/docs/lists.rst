@@ -78,6 +78,64 @@ The same applies to lists from a particular domain.
     total_size: 1
 
 
+Finding Lists
+-------------
+ .. Don't send welcome message when subscribing some people.
+	>>> mlist.send_welcome_message = False
+
+
+You can find a specific list based on their subscribers and their roles. For
+example, we can search for all related lists of a particular address.::
+
+    >>> from zope.component import getUtility
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> user_manager = getUtility(IUserManager)
+    >>> gwen = user_manager.create_address('gwen@example.com', 'Gwen Person')
+
+    >>> mlist.subscribe(gwen)
+    <Member: Gwen Person <gwen@example.com> on elk@example.com as MemberRole.member>
+    >>> transaction.commit()
+    >>> dump_json('http://localhost:9001/3.1/lists/find', {
+    ...           'subscriber': 'gwen@example.com'})
+    entry 0:
+        display_name: Elk
+        fqdn_listname: elk@example.com
+        http_etag: "..."
+        list_id: elk.example.com
+        list_name: elk
+        mail_host: example.com
+        member_count: 1
+        self_link: http://localhost:9001/3.1/lists/elk.example.com
+        volume: 1
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
+You can filter lists based on specific roles of a subscriber too.::
+
+    >>> from mailman.interfaces.member import MemberRole
+    >>> owner_addr = user_manager.create_address('owner@example.com')
+    >>> mlist.subscribe(owner_addr, role=MemberRole.owner)
+    <Member: owner@example.com on elk@example.com as MemberRole.owner>
+    >>> transaction.commit()
+    >>> dump_json('http://localhost:9001/3.1/lists/find', {
+    ...           'subscriber': 'owner@example.com',
+    ...           'role':'owner'})
+    entry 0:
+        display_name: Elk
+        fqdn_listname: elk@example.com
+        http_etag: "..."
+        list_id: elk.example.com
+        list_name: elk
+        mail_host: example.com
+        member_count: 1
+        self_link: http://localhost:9001/3.1/lists/elk.example.com
+        volume: 1
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
+
 Paginating over list records
 ----------------------------
 
@@ -112,7 +170,7 @@ page.
         list_id: elk.example.com
         list_name: elk
         mail_host: example.com
-        member_count: 0
+        member_count: 1
         self_link: http://localhost:9001/3.0/lists/elk.example.com
         volume: 1
     http_etag: "..."
