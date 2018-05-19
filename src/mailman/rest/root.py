@@ -28,7 +28,7 @@ from mailman.rest.bans import BannedEmail, BannedEmails
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import (
     BadRequest, NotFound, child, etag, no_content, not_found, okay)
-from mailman.rest.lists import AList, AllLists, Styles
+from mailman.rest.lists import AList, AllLists, FindLists, Styles
 from mailman.rest.members import AMember, AllMembers, FindMembers
 from mailman.rest.plugins import APlugin, AllPlugins
 from mailman.rest.preferences import ReadOnlyPreferences
@@ -218,6 +218,8 @@ class TopLevel:
         # styles@example.com.
         elif len(segments) == 1 and segments[0] == 'styles':
             return Styles(), []
+        elif len(segments) == 1 and segments[0] == 'find':
+            return FindLists(), []
         else:
             # list-id is preferred, but for backward compatibility,
             # fqdn_listname is also accepted.

@@ -41,7 +41,8 @@ from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
 from mailman.rest.uris import AListURI, AllListURIs
-from mailman.rest.validator import Validator, list_of_strings_validator
+from mailman.rest.validator import (
+    Validator, enum_validator, list_of_strings_validator, subscriber_validator)
 from public import public
 from zope.component import getUtility
 
@@ -117,6 +118,60 @@ class _ListBase(CollectionMixin):
         if advertised:
             kw['advertised'] = True
         return getUtility(IListManager).find(**kw)
+
+
+class _ListOfLists(_ListBase):
+    """An abstract class to return a sub-set of Lists.
+
+    This is used for filtering Lists based on some parameters.
+    """
+    def __init__(self, lists, api):
+        super().__init__()
+        self._lists = lists
+        self.api = api
+
+    def _get_collection(self, request):
+        return self._lists
+
+
+@public
+class FindLists(_ListBase):
+    """The mailing lists that a user is a member of."""
+
+    def on_get(self, request, response):
+        return self._find(request, response)
+
+    def on_post(self, request, response):
+        return self._find(request, response)
+
+    def _find(self, request, response):
+        validator = Validator(
+            subscriber=subscriber_validator(self.api),
+            role=enum_validator(MemberRole),
+            # Allow pagination.
+            page=int,
+            count=int,
+            _optional=('role', 'page', 'count'))
+        try:
+            data = validator(request)
+        except ValueError as error:
+            bad_request(response, str(error))
+            return
+        else:
+            # Remove any optional pagination query elements.
+            data.pop('page', None)
+            data.pop('count', None)
+            service = getUtility(ISubscriptionService)
+            # Get all membership records for given subscriber.
+            memberships = service.find_members(**data)
+            # Get all the lists from from the membership records.
+            lists = [getUtility(IListManager).get_by_list_id(member.list_id)
+                     for member in memberships]
+            # If there are no matching lists, return a 404.
+            if not len(lists):
+                return not_found(response)
+            resource = _ListOfLists(lists, self.api)
+            okay(response, etag(resource._make_collection(request)))
 
 
 @public
