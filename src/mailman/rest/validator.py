@@ -102,6 +102,19 @@ def list_of_strings_validator(values):
 
 
 @public
+def list_of_emails_validator(values):
+    """Turn a list of things, or a single thing, into a list of emails."""
+    if not isinstance(values, (list, tuple)):
+        if getUtility(IEmailValidator).is_valid(values):
+            return [values]
+        raise ValueError('Bad email address format: {}'.format(values))
+    for value in values:
+        if not getUtility(IEmailValidator).is_valid(value):
+            raise ValueError('Expected email address, got {!r}'.format(value))
+    return values
+
+
+@public
 def integer_ge_zero_validator(value):
     """Validate that the value is a non-negative integer."""
     value = int(value)
