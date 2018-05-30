@@ -121,6 +121,8 @@ Interfaces
   accepts the latter and mirrors the already existing ``.get_by_list_id()``.
 * A new template ``list:user:notice:rejected`` has been added for customizing
   the bounce message rejection notice.
+* The ``acceptable_alias`` and ``require_explicit_destination`` attributes
+  have been added to the ``IMailingList`` definition.  (Closes #483)
 
 Other
 -----
