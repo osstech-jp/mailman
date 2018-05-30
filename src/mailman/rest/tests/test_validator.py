@@ -42,6 +42,10 @@ class TestValidators(unittest.TestCase):
             list_of_strings_validator(['ant', 'bee', 'cat']),
             ['ant', 'bee', 'cat'])
 
+    def test_list_of_strings_validator_empty_list(self):
+        # This validator should return an empty list for an empty string input.
+        self.assertEqual(list_of_strings_validator(''), [])
+
     def test_integer_ge_zero_validator_invalid(self):
         self.assertRaises(ValueError, integer_ge_zero_validator, 'foo')
         self.assertRaises(ValueError, integer_ge_zero_validator, '-1')
