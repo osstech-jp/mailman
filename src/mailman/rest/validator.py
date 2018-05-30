@@ -93,6 +93,14 @@ def language_validator(code):
 @public
 def list_of_strings_validator(values):
     """Turn a list of things, or a single thing, into a list of unicodes."""
+    # There is no good way to pass around an empty list through HTTP API, so,
+    # we consider an empty string as an empty list, which can easily be passed
+    # around. This is a contract between Core and Postorius. This also fixes a
+    # bug where an empty string ('') would be interpreted as a valid value ['']
+    # to create a singleton list, instead of empty list, which in later stages
+    # would create other problems.
+    if values is '':
+        return []
     if not isinstance(values, (list, tuple)):
         values = [values]
     for value in values:
