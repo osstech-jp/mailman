@@ -76,6 +76,7 @@ RESOURCE = dict(
     posting_pipeline='virgin',
     reply_goes_to_list='point_to_list',
     reply_to_address='bee@example.com',
+    require_explicit_destination=True,
     send_welcome_message=False,
     subject_prefix='[ant]',
     subscription_policy='confirm_then_moderate',

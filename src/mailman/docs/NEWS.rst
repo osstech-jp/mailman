@@ -156,6 +156,8 @@ REST
 * Expose ``MailingList.respond_to_post_request`` through REST API. (Closes #420)
 * Add a new API ``lists/find`` which returns all the lists related to a
   subscriber. It optionally allows filtering based on a role. (See !388)
+* Expose ``MailingList.require_explicit_destination`` through REST API.
+  (Closes #484)
 
 3.1.0 -- "Between The Wheels"
 =============================
