@@ -73,6 +73,7 @@ All readable attributes for a list are available on a sub-resource.
     reply_goes_to_list: no_munging
     reply_to_address:
     request_address: ant-request@example.com
+    require_explicit_destination: True
     respond_to_post_requests: True
 		send_welcome_message: True
     subject_prefix: [Ant]
@@ -127,6 +128,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             collapse_alternatives=False,
     ...             reply_goes_to_list='point_to_list',
     ...             reply_to_address='bee@example.com',
+    ...             require_explicit_destination=False,
     ...             send_welcome_message=False,
     ...             subject_prefix='[ant]',
     ...             subscription_policy='moderate',
@@ -191,6 +193,8 @@ These values are changed permanently.
     reply_goes_to_list: point_to_list
     reply_to_address: bee@example.com
     ...
+    require_explicit_destination: False
+    respond_to_post_requests: True
     send_welcome_message: False
     subject_prefix: [ant]
     subscription_policy: moderate
