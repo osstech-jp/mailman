@@ -121,6 +121,8 @@ Interfaces
   accepts the latter and mirrors the already existing ``.get_by_list_id()``.
 * A new template ``list:user:notice:rejected`` has been added for customizing
   the bounce message rejection notice.
+* The ``acceptable_alias`` and ``require_explicit_destination`` attributes
+  have been added to the ``IMailingList`` definition.  (Closes #483)
 
 Other
 -----
@@ -154,6 +156,8 @@ REST
 * Expose ``MailingList.respond_to_post_request`` through REST API. (Closes #420)
 * Add a new API ``lists/find`` which returns all the lists related to a
   subscriber. It optionally allows filtering based on a role. (See !388)
+* Expose ``MailingList.require_explicit_destination`` through REST API.
+  (Closes #484)
 
 3.1.0 -- "Between The Wheels"
 =============================

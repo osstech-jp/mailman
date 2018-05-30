@@ -180,6 +180,7 @@ ATTRIBUTES = dict(
     reply_goes_to_list=GetterSetter(enum_validator(ReplyToMunging)),
     reply_to_address=GetterSetter(str),
     request_address=GetterSetter(None),
+    require_explicit_destination=GetterSetter(as_boolean),
     send_welcome_message=GetterSetter(as_boolean),
     subject_prefix=GetterSetter(str),
     subscription_policy=GetterSetter(enum_validator(SubscriptionPolicy)),
