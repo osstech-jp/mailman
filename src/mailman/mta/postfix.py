@@ -59,7 +59,7 @@ def atomic(path):
 def _get_alias_domain(domain):
     domain_manager = getUtility(IDomainManager)
     d = domain_manager.get(domain)
-    if d is not None and d.alias_domain is not None:
+    if d is not None and d.alias_domain:
         return d.alias_domain
     return domain
 
