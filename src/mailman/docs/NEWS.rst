@@ -78,6 +78,8 @@ Bugs
   returns a header instance.  (Closes #477)
 * ``mailman`` command without any sub-command now invokes ``mailman help`` by
   default. (Closes #479)
+* The ``alias_domain`` attribute can become a null string.  ``mta/postfix.py``
+  has been fixed to generate proper mappings in this case.  (Closes #485)
 
 Command line
 ------------
