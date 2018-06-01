@@ -110,6 +110,8 @@ Bugs
   has been fixed to generate proper mappings in this case.  (Closes #485)
 * Fix a bug where duplicate address records can be created when a user adds an
   existing address with a different case. (Closes #476)
+* Several additional templates can now be set in the ``var/templates``
+  hierarchy.  (Closes #486)
 
 Command line
 ------------
