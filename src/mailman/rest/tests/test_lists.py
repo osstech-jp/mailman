@@ -443,12 +443,17 @@ class TestListStyles(unittest.TestCase):
         # Remove the variable data.
         json.pop('http_etag')
         self.assertEqual(json, {
-            'style_names': ['legacy-announce', 'legacy-default'],
+            'style_names': [
+                'legacy-announce', 'legacy-default', 'private-default'
+                ],
             'styles': [
                 {'name': 'legacy-announce',
                  'description': 'Announce only mailing list style.'},
                 {'name': 'legacy-default',
-                 'description': 'Ordinary discussion mailing list style.'}
+                 'description': 'Ordinary discussion mailing list style.'},
+                {'name': 'private-default',
+                 'description': 'Discussion mailing list style with ' +
+                 'private archives.'},
                     ],
             'default': 'legacy-default'
             })

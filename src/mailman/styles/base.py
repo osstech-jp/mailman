@@ -193,6 +193,16 @@ class Public:
 
 
 @public
+class Private:
+    """Settings for private mailing lists."""
+
+    def apply(self, mailing_list):
+        mlist = mailing_list
+        mlist.advertised = False
+        mlist.archive_policy = ArchivePolicy.private
+
+
+@public
 class Announcement:
     """Settings for announce-only lists."""
 

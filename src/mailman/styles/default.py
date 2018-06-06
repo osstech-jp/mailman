@@ -21,7 +21,7 @@ from mailman.core.i18n import _
 from mailman.interfaces.styles import IStyle
 from mailman.styles.base import (
     Announcement, BasicOperation, Bounces, Discussion, Identity, Moderation,
-    Public)
+    Private, Public)
 from public import public
 from zope.interface import implementer
 
@@ -63,4 +63,24 @@ class LegacyAnnounceOnly(
         Bounces.apply(self, mailing_list)
         Public.apply(self, mailing_list)
         Announcement.apply(self, mailing_list)
+        Moderation.apply(self, mailing_list)
+
+
+@public
+@implementer(IStyle)
+class PrivateDefaultStyle(
+        Identity, BasicOperation, Bounces, Private, Discussion, Moderation):
+
+    """Style for mailing-lists with private archives."""
+
+    name = 'private-default'
+    description = _('Discussion mailing list style with private archives.')
+
+    def apply(self, mailing_list):
+        """See `IStyle`."""
+        Identity.apply(self, mailing_list)
+        BasicOperation.apply(self, mailing_list)
+        Bounces.apply(self, mailing_list)
+        Private.apply(self, mailing_list)
+        Discussion.apply(self, mailing_list)
         Moderation.apply(self, mailing_list)
