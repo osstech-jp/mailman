@@ -23,6 +23,7 @@ To start with, there are a few legacy styles.
     ...     print(style.name)
     legacy-announce
     legacy-default
+    private-default
 
 When you create a mailing list through the low-level `IListManager` API, no
 style is applied.
@@ -65,6 +66,7 @@ All registered styles are returned in alphabetical order by style name.
     a-test-style
     legacy-announce
     legacy-default
+    private-default
 
 You can also ask the style manager for the style, by name.
 
@@ -83,6 +85,7 @@ You can unregister a style, making it unavailable in the future.
     ...     print(style.name)
     legacy-announce
     legacy-default
+    private-default
 
 Asking for a missing style returns None.
 
