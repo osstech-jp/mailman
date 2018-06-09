@@ -160,7 +160,7 @@ class User(Model):
     def register(self, store, email, display_name=None):
         """See `IUser`."""
         # First, see if the address already exists
-        address = store.query(Address).filter_by(email=email).first()
+        address = store.query(Address).filter_by(email=email.lower()).first()
         if address is None:
             if display_name is None:
                 display_name = ''

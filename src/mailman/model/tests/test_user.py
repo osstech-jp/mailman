@@ -301,3 +301,16 @@ class TestUser(unittest.TestCase):
             [address.email for address in new_anne.addresses],
             ['anne@example.com'])
         self.assertEqual(new_anne.memberships.member_count, 1)
+
+    def test_add_duplicate_address(self):
+        # This duplicates #476
+        # We first create an address.
+        addr = self._manager.create_address('addr@example.com')
+        # Now we create a user with a different address and try to
+        # add this address to it with a different Case.
+        self._anne.register('Addr@example.com')
+        # Now, there should be only a single record for the Address, we make
+        # sure of this by trying to get the address.
+        new_addr = self._manager.get_address('addr@example.com')
+        # Both the addresses should be same.
+        self.assertEqual(addr.id, new_addr.id)
