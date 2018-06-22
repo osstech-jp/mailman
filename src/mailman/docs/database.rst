@@ -43,7 +43,7 @@ help.  Let's say you create the `mailman` database in PostgreSQL via::
 
 You would also need the Python driver `psycopg2` for PostgreSQL::
 
-    $ pip install psycopg2
+    $ pip install psycopg2-binary
 
 You would then need to set both the `class` and `url` variables in
 `mailman.cfg` like so::
