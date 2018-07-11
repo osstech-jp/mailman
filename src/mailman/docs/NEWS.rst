@@ -10,7 +10,7 @@ Here is a history of user visible changes to Mailman.
 
 3.2.0 -- "La Villa Strangiato"
 ==============================
-(201X-XX-XX)
+(2018-07-10)
 
 Bugs
 ----
