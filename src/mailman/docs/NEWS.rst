@@ -8,6 +8,10 @@ Copyright (C) 1998-2018 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
+3.3.0 -- "Tom Sawyer"
+=====================
+
+
 3.2.0 -- "La Villa Strangiato"
 ==============================
 (2018-07-10)
