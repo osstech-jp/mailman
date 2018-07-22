@@ -19,6 +19,7 @@ Create a mailing list in a domain and it's accessible via the API.
 
     >>> dump_json('http://localhost:9001/3.0/lists')
     entry 0:
+        description:
         display_name: Ant
         fqdn_listname: ant@example.com
         http_etag: "..."
@@ -36,6 +37,7 @@ You can also query for lists from a particular domain.
 
     >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists')
     entry 0:
+        description:
         display_name: Ant
         fqdn_listname: ant@example.com
         http_etag: "..."
@@ -81,7 +83,7 @@ The same applies to lists from a particular domain.
 Finding Lists
 -------------
  .. Don't send welcome message when subscribing some people.
-	>>> mlist.send_welcome_message = False
+    >>> mlist.send_welcome_message = False
 
 
 You can find a specific list based on their subscribers and their roles. For
@@ -98,6 +100,7 @@ example, we can search for all related lists of a particular address.::
     >>> dump_json('http://localhost:9001/3.1/lists/find', {
     ...           'subscriber': 'gwen@example.com'})
     entry 0:
+        description:
         display_name: Elk
         fqdn_listname: elk@example.com
         http_etag: "..."
@@ -122,6 +125,7 @@ You can filter lists based on specific roles of a subscriber too.::
     ...           'subscriber': 'owner@example.com',
     ...           'role':'owner'})
     entry 0:
+        description:
         display_name: Elk
         fqdn_listname: elk@example.com
         http_etag: "..."
@@ -148,6 +152,7 @@ page.
     >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists'
     ...           '?count=1&page=1')
     entry 0:
+        description:
         display_name: Ant
         fqdn_listname: ant@example.com
         http_etag: "..."
@@ -164,6 +169,7 @@ page.
     >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists'
     ...           '?count=1&page=2')
     entry 0:
+        description:
         display_name: Elk
         fqdn_listname: elk@example.com
         http_etag: "..."
@@ -215,6 +221,7 @@ The mailing list was created using the default style, which allows list posts.
 It is also available in the REST API via the location given in the response.
 
     >>> dump_json('http://localhost:9001/3.0/lists/bee.example.com')
+    description:
     display_name: Bee
     fqdn_listname: bee@example.com
     http_etag: "..."
@@ -231,6 +238,7 @@ address, if that has never been changed (since the list-id is immutable, but
 the posting address is not).
 
     >>> dump_json('http://localhost:9001/3.0/lists/bee@example.com')
+    description:
     display_name: Bee
     fqdn_listname: bee@example.com
     http_etag: "..."
