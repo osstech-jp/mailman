@@ -10,6 +10,12 @@ Here is a history of user visible changes to Mailman.
 
 3.3.0 -- "Tom Sawyer"
 =====================
+(20xx-xx-xx)
+
+Command line
+------------
+* The ``mailman import21`` command properly converts all acceptable_aliases
+  to regexps.  (Closes #496)
 
 
 3.2.0 -- "La Villa Strangiato"

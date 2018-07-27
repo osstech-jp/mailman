@@ -265,7 +265,9 @@ class TestBasicImport(unittest.TestCase):
             self.assertTrue(IBanManager(self._mlist).is_banned(addr))
 
     def test_acceptable_aliases(self):
-        # This used to be a plain-text field (values are newline-separated).
+        # This used to be a plain-text field (values are newline-separated)
+        # but values were interpreted as regexps even without '^' so we need
+        # to add the '^'.
         aliases = ['alias1@example.com',
                    'alias2@exemple.com',
                    'non-ascii-\xe8@example.com',
@@ -273,7 +275,8 @@ class TestBasicImport(unittest.TestCase):
         self._pckdict['acceptable_aliases'] = list_to_string(aliases)
         self._import()
         alias_set = IAcceptableAliasSet(self._mlist)
-        self.assertEqual(sorted(alias_set.aliases), aliases)
+        self.assertEqual(sorted(alias_set.aliases),
+                         [('^' + alias) for alias in aliases])
 
     def test_acceptable_aliases_invalid(self):
         # Values without an '@' sign used to be matched against the local
@@ -287,13 +290,23 @@ class TestBasicImport(unittest.TestCase):
 
     def test_acceptable_aliases_as_list(self):
         # In some versions of the pickle, this can be a list, not a string
-        # (seen in the wild).
+        # (seen in the wild).  We still need to add the '^'.
         aliases = [b'alias1@example.com', b'alias2@exemple.com']
         self._pckdict['acceptable_aliases'] = aliases
         self._import()
         alias_set = IAcceptableAliasSet(self._mlist)
         self.assertEqual(sorted(alias_set.aliases),
-                         sorted(a.decode('utf-8') for a in aliases))
+                         sorted(('^' + a.decode('utf-8')) for a in aliases))
+
+    def test_dont_add_caret_if_present(self):
+        # The 2.1 alias could have had a leading '^' even though not required.
+        aliases = ['^alias1@example.com',
+                   '^alias2@.*',
+                   ]
+        self._pckdict['acceptable_aliases'] = list_to_string(aliases)
+        self._import()
+        alias_set = IAcceptableAliasSet(self._mlist)
+        self.assertEqual(sorted(alias_set.aliases), aliases)
 
     def test_info_non_ascii(self):
         # info can contain non-ascii characters.
