@@ -351,12 +351,14 @@ def import_config_pck(mlist, config_dict):
         if len(address) == 0:
             continue
         address = bytes_to_str(address)
-        try:
-            alias_set.add(address)
-        except ValueError:
-            # When .add() rejects this, the line probably contains a regular
-            # expression.  Make that explicit for MM3.
-            alias_set.add('^' + address)
+        # All 2.1 acceptable aliases are regexps whether or not they start
+        # with '^' or contain '@'.
+        if not address.startswith('^'):
+            address = '^' + address
+        # This used to be in a try which would catch ValueError and add a '^',
+        # but .add() would not raise ValueError if address contained '@' and
+        # that needs the '^' too as it could be a regexp with an '@' in it.
+        alias_set.add(address)
     # Handle header_filter_rules conversion to header_matches.
     header_matches = IHeaderMatchList(mlist)
     header_filter_rules = config_dict.get('header_filter_rules', [])
