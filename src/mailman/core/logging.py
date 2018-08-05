@@ -19,6 +19,7 @@
 
 import os
 import sys
+import stat
 import codecs
 import logging
 
@@ -50,7 +51,17 @@ class ReopenableFileHandler(logging.Handler):
         self._stream = self._open()
 
     def _open(self):
-        return codecs.open(self.filename, 'a', 'utf-8')
+        open_mode = 'a'
+        try:
+            status = os.stat(self.filename)
+            if stat.S_ISREG(status.st_mode):
+                open_mode = 'a'
+            elif stat.S_ISFIFO(status.st_mode) or stat.S_ISCHR(status.st_mode):
+                open_mode = 'w'
+        except FileNotFoundError as e:
+            open_mode = 'a'    # Assume regular file
+
+        return codecs.open(self.filename, open_mode, 'utf-8')
 
     def flush(self):
         if self._stream:
