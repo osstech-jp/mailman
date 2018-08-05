@@ -17,6 +17,10 @@ Command line
 * The ``mailman import21`` command properly converts all acceptable_aliases
   to regexps.  (Closes #496)
 
+Bugs
+----
+* Open non-regular log files (e.g. fifos) in write mode instead of append mode.
+  (See !407)
 
 3.2.0 -- "La Villa Strangiato"
 ==============================
