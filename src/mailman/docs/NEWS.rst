@@ -21,6 +21,8 @@ Bugs
 ----
 * Open non-regular log files (e.g. fifos) in write mode instead of append mode.
   (See !407)
+* Autoresponses to posts and -owner and -request messages now work.
+  (Closes #504)
 
 3.2.0 -- "La Villa Strangiato"
 ==============================

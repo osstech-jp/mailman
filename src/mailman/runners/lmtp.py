@@ -197,6 +197,8 @@ class LMTPHandler:
                 else:
                     # A valid subaddress.
                     msgdata['subaddress'] = canonical_subaddress
+                    if subaddress == 'request':
+                        msgdata['to_request'] = True
                     if canonical_subaddress == 'owner':
                         msgdata.update(dict(
                             to_owner=True,

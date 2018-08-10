@@ -26,14 +26,20 @@ prepared for delivery.  Rejections, discards, and holds are processed
 immediately.
 """
 
+import logging
+
 from contextlib import suppress
+from mailman.config import config
 from mailman.core.chains import process
 from mailman.core.runner import Runner
 from mailman.database.transaction import transaction
 from mailman.interfaces.address import ExistingAddressError
+from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.usermanager import IUserManager
 from public import public
 from zope.component import getUtility
+
+log = logging.getLogger('mailman.vette')
 
 
 @public
@@ -44,6 +50,21 @@ class IncomingRunner(Runner):
         """See `IRunner`."""
         if msgdata.get('envsender') is None:
             msgdata['envsender'] = mlist.no_reply_address
+        # Do replybot actions for posts and -owner.
+        message_id = msg.get('message-id', 'n/a')
+        replybot = config.handlers['replybot']
+        replybot.process(mlist, msg, msgdata)
+        if (msgdata.get('to_owner') and
+                mlist.autorespond_owner == ResponseAction.respond_and_discard):
+            # Respond and discard.
+            log.info('%s -owner message replied and discarded', message_id)
+            return False
+        if (msgdata.get('to_list') and
+                mlist.autorespond_postings ==
+                ResponseAction.respond_and_discard):
+            # Respond and discard.
+            log.info('%s list post replied and discarded', message_id)
+            return False
         # Ensure that the email addresses of the message's senders are known
         # to Mailman.  This will be used in nonmember posting dispositions.
         user_manager = getUtility(IUserManager)

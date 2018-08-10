@@ -22,6 +22,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.chains.base import TerminalChainBase
 from mailman.config import config
+from mailman.interfaces.autorespond import ResponseAction
 from mailman.runners.incoming import IncomingRunner
 from mailman.testing.helpers import (
     get_queue_messages, make_testable_runner,
@@ -80,6 +81,29 @@ To: test@example.com
         items = get_queue_messages('out', expected_count=1)
         self.assertEqual(items[0].msgdata.get('marker'), 'posting')
 
+    def test_respond_and_continue_post(self):
+        # A post gets an autoresponse and continues processing.
+        msgdata = dict(listid='test.example.com', to_list=True)
+        self._mlist.autorespond_postings = ResponseAction.respond_and_continue
+        self._mlist.autoresponse_postings_text = 'Autoresponse'
+        config.switchboards['in'].enqueue(self._msg, msgdata)
+        self._in.run()
+        items = get_queue_messages('out', expected_count=1)
+        self.assertEqual(items[0].msgdata.get('marker'), 'posting')
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msg.get_payload(), 'Autoresponse')
+
+    def test_respond_and_discard_post(self):
+        # A post gets an autoresponse and is discarded.
+        msgdata = dict(listid='test.example.com', to_list=True)
+        self._mlist.autorespond_postings = ResponseAction.respond_and_discard
+        self._mlist.autoresponse_postings_text = 'Autoresponse'
+        config.switchboards['in'].enqueue(self._msg, msgdata)
+        self._in.run()
+        items = get_queue_messages('out', expected_count=0)
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msg.get_payload(), 'Autoresponse')
+
     def test_owner(self):
         # A message posted to the list goes through the posting chain.
         msgdata = dict(listid='test.example.com',
@@ -88,3 +112,26 @@ To: test@example.com
         self._in.run()
         items = get_queue_messages('out', expected_count=1)
         self.assertEqual(items[0].msgdata.get('marker'), 'owner')
+
+    def test_respond_and_continue_owner(self):
+        # A -owner message gets an autoresponse and continues processing.
+        msgdata = dict(listid='test.example.com', to_owner=True)
+        self._mlist.autorespond_owner = ResponseAction.respond_and_continue
+        self._mlist.autoresponse_owner_text = 'Autoresponse'
+        config.switchboards['in'].enqueue(self._msg, msgdata)
+        self._in.run()
+        items = get_queue_messages('out', expected_count=1)
+        self.assertEqual(items[0].msgdata.get('marker'), 'owner')
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msg.get_payload(), 'Autoresponse')
+
+    def test_respond_and_discard_owner(self):
+        # A -owner message gets an autoresponse and is discarded.
+        msgdata = dict(listid='test.example.com', to_owner=True)
+        self._mlist.autorespond_owner = ResponseAction.respond_and_discard
+        self._mlist.autoresponse_owner_text = 'Autoresponse'
+        config.switchboards['in'].enqueue(self._msg, msgdata)
+        self._in.run()
+        items = get_queue_messages('out', expected_count=0)
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msg.get_payload(), 'Autoresponse')
