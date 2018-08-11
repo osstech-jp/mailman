@@ -87,6 +87,12 @@ def list_members_to_unicode(value):
     return [bytes_to_str(item) for item in value]
 
 
+def autoresponder_mapping(value):
+    if value:
+        return ResponseAction.respond_and_continue
+    return ResponseAction.none
+
+
 def dmarc_action_mapping(value):
     # Convert dmarc_moderation_action to a DMARCMitigateAction enum.
     # 2.1 actions are 0==accept, 1==Munge From, 2==Wrap Message,
@@ -175,8 +181,8 @@ enabled: yes
 # Attributes in Mailman 2 which have a different type in Mailman 3.  Some
 # types (e.g. bools) are autodetected from their SA column types.
 TYPES = dict(
-    autorespond_owner=ResponseAction,
-    autorespond_postings=ResponseAction,
+    autorespond_owner=autoresponder_mapping,
+    autorespond_postings=autoresponder_mapping,
     autorespond_requests=ResponseAction,
     autoresponse_grace_period=days_to_delta,
     bounce_info_stale_after=seconds_to_delta,
