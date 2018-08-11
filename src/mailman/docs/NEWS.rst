@@ -16,6 +16,8 @@ Command line
 ------------
 * The ``mailman import21`` command properly converts all acceptable_aliases
   to regexps.  (Closes #496)
+* The ``mailman import21`` command correctly converts autorespond_* settings.
+  (Closes #505)
 
 Bugs
 ----
@@ -23,6 +25,7 @@ Bugs
   (See !407)
 * Autoresponses to posts and -owner and -request messages now work.
   (Closes #504)
+
 
 3.2.0 -- "La Villa Strangiato"
 ==============================

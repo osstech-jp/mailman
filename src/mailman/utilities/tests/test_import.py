@@ -136,6 +136,73 @@ class TestBasicImport(unittest.TestCase):
         self.assertEqual(self._mlist.autorespond_owner, ResponseAction.none)
         self.assertEqual(self._mlist.autoresponse_owner_text, '')
 
+    def test_autoresponse_owner_yes(self):
+        # Yes -> ResponseAction.respond_and_continue
+        self._mlist.autorespond_owner = DummyEnum.val
+        self._mlist.autoresponse_owner_text = 'DUMMY'
+        self._pckdict['autorespond_admin'] = 1
+        self._pckdict['autoresponse_admin_text'] = 'Autoresponse'
+        self._import()
+        self.assertEqual(self._mlist.autorespond_owner,
+                         ResponseAction.respond_and_continue)
+        self.assertEqual(self._mlist.autoresponse_owner_text, 'Autoresponse')
+
+    def test_autoresponse_post_yes(self):
+        # Yes -> ResponseAction.respond_and_continue
+        self._mlist.autorespond_postings = DummyEnum.val
+        self._mlist.autoresponse_postings_text = 'DUMMY'
+        self._pckdict['autorespond_postings'] = 1
+        self._pckdict['autoresponse_postings_text'] = 'Autoresponse'
+        self._import()
+        self.assertEqual(self._mlist.autorespond_postings,
+                         ResponseAction.respond_and_continue)
+        self.assertEqual(self._mlist.autoresponse_postings_text,
+                         'Autoresponse')
+
+    def test_autoresponse_post_no(self):
+        # No -> ResponseAction.none
+        self._mlist.autorespond_postings = DummyEnum.val
+        self._mlist.autoresponse_postings_text = 'DUMMY'
+        self._pckdict['autorespond_postings'] = 0
+        self._import()
+        self.assertEqual(self._mlist.autorespond_postings,
+                         ResponseAction.none)
+        self.assertEqual(self._mlist.autoresponse_postings_text, '')
+
+    def test_autoresponse_request_continue(self):
+        # Yes, w/forward -> ResponseAction.respond_and_continue
+        self._mlist.autorespond_requests = DummyEnum.val
+        self._mlist.autoresponse_request_text = 'DUMMY'
+        self._pckdict['autorespond_requests'] = 2
+        self._pckdict['autoresponse_request_text'] = 'Autoresponse'
+        self._import()
+        self.assertEqual(self._mlist.autorespond_requests,
+                         ResponseAction.respond_and_continue)
+        self.assertEqual(self._mlist.autoresponse_request_text,
+                         'Autoresponse')
+
+    def test_autoresponse_request_discard(self):
+        # Yes, w/discard -> ResponseAction.respond_and_discard
+        self._mlist.autorespond_requests = DummyEnum.val
+        self._mlist.autoresponse_request_text = 'DUMMY'
+        self._pckdict['autorespond_requests'] = 1
+        self._pckdict['autoresponse_request_text'] = 'Autoresponse'
+        self._import()
+        self.assertEqual(self._mlist.autorespond_requests,
+                         ResponseAction.respond_and_discard)
+        self.assertEqual(self._mlist.autoresponse_request_text,
+                         'Autoresponse')
+
+    def test_autoresponse_request_no(self):
+        # No -> ResponseAction.none
+        self._mlist.autorespond_requests = DummyEnum.val
+        self._mlist.autoresponse_request_text = 'DUMMY'
+        self._pckdict['autorespond_requests'] = 0
+        self._import()
+        self.assertEqual(self._mlist.autorespond_requests,
+                         ResponseAction.none)
+        self.assertEqual(self._mlist.autoresponse_request_text, '')
+
     def test_administrativia(self):
         self._mlist.administrivia = None
         self._import()
