@@ -34,6 +34,7 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.core.runner import Runner
 from mailman.email.message import UserNotification
+from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.command import ContinueProcessing, IEmailResults
 from mailman.interfaces.languages import ILanguageManager
 from public import public
@@ -164,9 +165,9 @@ class CommandRunner(Runner):
         # Do replybot for commands.
         replybot = config.handlers['replybot']
         replybot.process(mlist, msg, msgdata)
-        if mlist.autorespond_requests == 1:
+        if mlist.autorespond_requests == ResponseAction.respond_and_discard:
             # Respond and discard.
-            log.info('%s -request message replied and discard', message_id)
+            log.info('%s -request message replied and discarded', message_id)
             return False
         # Now craft the response and process the command lines.
         charset = msg.get_param('charset')

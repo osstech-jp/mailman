@@ -118,6 +118,7 @@ command queue for processing.
     listid       : mylist.example.com
     original_size: ...
     subaddress   : request
+    to_request   : True
     version      : ...
 
 
