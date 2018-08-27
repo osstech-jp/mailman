@@ -36,7 +36,7 @@ mysql:
   services:
   - mysql:5.6
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py35-nocov-mysql,py36-nocov-mysql,py37-nocov-pg
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py35-nocov-mysql,py36-nocov-mysql,py37-nocov-mysql
   tags:
   - mysql
 
