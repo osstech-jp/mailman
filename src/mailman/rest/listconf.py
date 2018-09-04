@@ -186,6 +186,7 @@ ATTRIBUTES = dict(
     subscription_policy=GetterSetter(enum_validator(SubscriptionPolicy)),
     volume=GetterSetter(None),
     respond_to_post_requests=GetterSetter(as_boolean),
+    max_num_recipients=GetterSetter(integer_ge_zero_validator),
     )
 
 

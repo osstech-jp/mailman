@@ -82,6 +82,7 @@ RESOURCE = dict(
     subscription_policy='confirm_then_moderate',
     welcome_message_uri='mailman:///welcome.txt',
     respond_to_post_requests=True,
+    max_num_recipients=150,
     )
 
 

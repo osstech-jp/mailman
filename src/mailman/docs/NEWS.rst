@@ -26,6 +26,10 @@ Bugs
 * Autoresponses to posts and -owner and -request messages now work.
   (Closes #504)
 
+REST
+----
+* Allow setting ``max_num_recipients`` for a mailing list. (Closes #508)
+
 
 3.2.0 -- "La Villa Strangiato"
 ==============================
