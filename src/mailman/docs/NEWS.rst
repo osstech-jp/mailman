@@ -160,7 +160,7 @@ Other
   ``None``, but which can be set to an alternate domain.  This will enable
   the Postfix MTA to generate ``virtual_alias_maps`` which will map list
   addresses in the domain to addresses in the alternate domain, and will
-  modify the other generated mapings to use the ``alias_domain``.  The
+  modify the other generated mappings to use the ``alias_domain``.  The
   ``lmtp`` runner will also accept the alias_domain as an alias for the
   ``email_host``.
 * ``ICacheManager`` now allows evicting a single file from cache.

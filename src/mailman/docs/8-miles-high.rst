@@ -182,7 +182,7 @@ name*, and optionally a list of linked addresses.
 Each *address* is a separate object, linked to no more than one user.
 
 A list *member* associates an address with a mailing list.  Each list member
-has a id, a mailing list name, an address (which may be `None`, representing
+has an id, a mailing list name, an address (which may be `None`, representing
 the user's *preferred address*), a list of preferences, and a *role* such as
 "owner" or "moderator".  Roles are used to determine what kinds of mail the
 user receives via that membership.  *Owners* will receive mail to
