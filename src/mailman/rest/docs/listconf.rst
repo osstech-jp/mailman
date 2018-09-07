@@ -63,6 +63,7 @@ All readable attributes for a list are available on a sub-resource.
     list_name: ant
     mail_host: example.com
     max_message_size: 40
+    max_num_recipients: 10
     moderator_password: None
     next_digest_number: 1
     no_reply_address: noreply@example.com
@@ -137,6 +138,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             moderator_password='password',
     ...             max_message_size='500',
     ...             respond_to_post_requests=True,
+    ...             max_num_recipients='20',
     ...             ),
     ...           'PUT')
     content-length: 0
