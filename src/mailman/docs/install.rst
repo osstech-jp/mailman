@@ -26,7 +26,7 @@ Documentation
 The documentation for Mailman 3 is distributed throughout the sources.  The
 core documentation (such as this file) is found in the ``src/mailman/docs``
 directory, but much of the documentation is in module-specific places.  Online
-versions of the `Mailman 3 Core documentation`_ is available online.
+version of the `Mailman 3 Core documentation`_ is available.
 
 Also helpful might be Mark Sapiro's documentation on `building out the
 mailman3.org`_ server.
