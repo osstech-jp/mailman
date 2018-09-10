@@ -117,9 +117,9 @@ class CommandFinder:
                 continue
             # Ensure that all the parts are unicodes.  Since we only accept
             # ASCII commands and arguments, ignore anything else.
-            parts = [(part
+            parts = [(part.lower()
                       if isinstance(part, str)
-                      else part.decode('ascii', 'ignore'))
+                      else part.decode('ascii', 'ignore').lower())
                      for part in parts]
             yield parts
 
