@@ -30,6 +30,11 @@ REST
 ----
 * Allow setting ``max_num_recipients`` for a mailing list. (Closes #508)
 
+  
+Other
+-----
+* Email commands are now case insensitive. (Closes #353)
+
 
 3.2.0 -- "La Villa Strangiato"
 ==============================

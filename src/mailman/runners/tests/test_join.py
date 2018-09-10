@@ -157,6 +157,34 @@ class TestJoinWithDigests(unittest.TestCase):
         self.assertEqual(rmember, members[0])
         return rmember
 
+    def test_join_in_subject_case_insensitive(self):
+        # Test that join commands are case insensitive.
+        msg = mfs("""\
+From: anne@example.org
+To: test-requests@example.com
+Subject: Join
+
+""")
+        self._commandq.enqueue(msg, dict(listid='test.example.com'))
+        self._runner.run()
+        anne = self._confirm()
+        self.assertEqual(anne.address.email, 'anne@example.org')
+        self.assertEqual(anne.delivery_mode, DeliveryMode.regular)
+
+    def test_join_case_insensitive(self):
+        # Test that join commands are case insensitive.
+        msg = mfs("""\
+From: anne@example.org
+To: test-requests@example.com
+
+Join
+""")
+        self._commandq.enqueue(msg, dict(listid='test.example.com'))
+        self._runner.run()
+        anne = self._confirm()
+        self.assertEqual(anne.address.email, 'anne@example.org')
+        self.assertEqual(anne.delivery_mode, DeliveryMode.regular)
+
     def test_join_with_implicit_no_digests(self):
         # Test the digest=mime argument to the join command.
         msg = mfs("""\
