@@ -20,28 +20,52 @@ docs:
   script:
   - tox -e docs
 
-sqlite:
+sqlite-35:
   script:
-  - tox -e py35-nocov,py36-nocov,py37-nocov
+  - tox -e py35-nocov
 
-pgsql:
+sqlite-36:
+  script:
+  - tox -e py36-nocov
+
+sqlite-37:
+  script:
+  - tox -e py37-nocov
+
+pgsql-35:
   services:
   - postgres:latest
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py35-nocov-pg,py36-nocov-pg,py37-nocov-pg
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py35-nocov-pg
   tags:
   - postgres
 
-mysql:
+pgsql-37:
+  services:
+  - postgres:latest
+  script:
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py37-nocov-pg
+  tags:
+  - postgres
+
+mysql-35:
   services:
   - mysql:5.6
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py35-nocov-mysql,py36-nocov-mysql,py37-nocov-mysql
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py35-nocov-mysql
+  tags:
+  - mysql
+
+mysql-37:
+  services:
+  - mysql:5.6
+  script:
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py37-nocov-mysql
   tags:
   - mysql
 
 diffcov:
   script:
-  - tox -e py35-diffcov,py36-diffcov,py37-diffcov
+  - tox -e py37-diffcov
   except:
   - master
