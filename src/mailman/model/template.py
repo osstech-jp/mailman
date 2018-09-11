@@ -27,9 +27,9 @@ from mailman.interfaces.cache import ICacheManager
 from mailman.interfaces.domain import IDomain
 from mailman.interfaces.mailinglist import IMailingList
 from mailman.interfaces.template import (
-    ALL_TEMPLATES, ITemplateLoader, ITemplateManager)
+    ALL_TEMPLATES, ALT_TEMPLATE_NAMES, ITemplateLoader, ITemplateManager)
 from mailman.utilities import protocols
-from mailman.utilities.i18n import find
+from mailman.utilities.i18n import TemplateNotFoundError, find
 from mailman.utilities.string import expand
 from public import public
 from requests import HTTPError
@@ -197,10 +197,19 @@ class TemplateLoader:
         missing = object()
         default_uri = ALL_TEMPLATES.get(name, missing)
         if default_uri is None:
-            return ''
+            # Currently default_uri is never None, but leave this in case
+            # of a future change.
+            return ''                                       # pragma: nocover
         elif default_uri is missing:
             raise URLError('No such file')
-        path, fp = find(default_uri, mlist, code)
+        try:
+            path, fp = find(default_uri, mlist, code)
+        except TemplateNotFoundError:
+            default_uri = ALT_TEMPLATE_NAMES.get(name, missing)
+            if default_uri is missing:
+                # Here again, default_uri is never missing, but leave it.
+                raise                                       # pragma: nocover
+            path, fp = find(default_uri, mlist, code)
         try:
             return fp.read()
         finally:

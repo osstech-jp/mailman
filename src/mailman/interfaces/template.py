@@ -159,7 +159,9 @@ class ITemplateManager(Interface):
 
 
 # Mapping of template names to their in-source file names.  A None value means
-# that there is no file in the tree for that template.
+# that there is no file in the tree for that template, but we have possibly
+# empty files for all templates so they can be defined in the var/templates
+# hierarchy.
 
 ALL_TEMPLATES = {
     key: '{}.txt'.format(key)
@@ -171,9 +173,14 @@ ALL_TEMPLATES = {
         'list:admin:notice:subscribe',
         'list:admin:notice:unrecognized',
         'list:admin:notice:unsubscribe',
+        'list:member:digest:footer',
+        'list:member:digest:header',
         'list:member:digest:masthead',
+        'list:member:regular:footer',
+        'list:member:regular:header',
         'list:user:action:subscribe',
         'list:user:action:unsubscribe',
+        'list:user:notice:goodbye',
         'list:user:notice:hold',
         'list:user:notice:no-more-today',
         'list:user:notice:post',
@@ -184,18 +191,11 @@ ALL_TEMPLATES = {
         }
     }
 
-# These have other names.
-ALL_TEMPLATES.update({
+# These have alternate names.
+ALT_TEMPLATE_NAMES = {
     'list:member:digest:footer': 'list:member:generic:footer.txt',
     'list:member:regular:footer': 'list:member:generic:footer.txt',
-    })
-
-# These are some extra supported templates which don't have a mapping to a
-# file in the source tree.
-ALL_TEMPLATES.update({
-    'list:member:digest:header': None,
-    'list:member:regular:header': None,
-    'list:user:notice:goodbye':  None,
-    })
+    }
 
 public(ALL_TEMPLATES=ALL_TEMPLATES)
+public(ALT_TEMPLATE_NAMES=ALT_TEMPLATE_NAMES)
