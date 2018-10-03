@@ -27,6 +27,8 @@ Bugs
   (See !407)
 * Autoresponses to posts and -owner and -request messages now work.
   (Closes #504)
+* Message parts are now properly decoded when trying to remove an Approved:
+  header.  (Closes #518)
 
 REST
 ----
