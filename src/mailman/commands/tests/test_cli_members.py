@@ -40,7 +40,8 @@ class TestCLIMembers(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: members [OPTIONS] LISTSPEC\n\n'
+            'Usage: members [OPTIONS] LISTSPEC\n'
+            'Try "members --help" for help.\n\n'
             'Error: No such list: bee.example.com\n')
 
     def test_role_administrator(self):

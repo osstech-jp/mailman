@@ -18,6 +18,8 @@ Command line
   to regexps.  (Closes #496)
 * The ``mailman import21`` command correctly converts autorespond_* settings.
   (Closes #505)
+* The various ``mailman`` commands now issue a help hint in case of error.
+  Tests have been updated to recognize this.  (Closes #519)
 
 Bugs
 ----

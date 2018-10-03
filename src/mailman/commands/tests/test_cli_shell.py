@@ -132,7 +132,8 @@ class TestShell(unittest.TestCase):
         self.assertEqual(results.exit_code, 2)
         self.assertEqual(
             results.output,
-            'Usage: shell [OPTIONS] [RUN_ARGS]...\n\n'
+            'Usage: shell [OPTIONS] [RUN_ARGS]...\n'
+            'Try "shell --help" for help.\n\n'
             'Error: Regular expression requires --run\n')
 
     def test_listspec_without_run(self):
@@ -154,7 +155,8 @@ class TestShell(unittest.TestCase):
         self.assertEqual(results.exit_code, 2)
         self.assertEqual(
             results.output,
-            'Usage: shell [OPTIONS] [RUN_ARGS]...\n\n'
+            'Usage: shell [OPTIONS] [RUN_ARGS]...\n'
+            'Try "shell --help" for help.\n\n'
             'Error: No such list: ant.example.com\n')
 
     def test_run_without_listspec(self):
@@ -171,5 +173,6 @@ class TestShell(unittest.TestCase):
         self.assertEqual(results.exit_code, 2)
         self.assertEqual(
             results.output,
-            'Usage: shell [OPTIONS] [RUN_ARGS]...\n\n'
+            'Usage: shell [OPTIONS] [RUN_ARGS]...\n'
+            'Try "shell --help" for help.\n\n'
             'Error: No such list: bee.example.com\n')

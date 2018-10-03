@@ -236,7 +236,8 @@ class TestControl(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: start [OPTIONS]\n\n'
+            'Usage: start [OPTIONS]\n'
+            'Try "start --help" for help.\n\n'
             'Error: A previous run of GNU Mailman did not exit cleanly '
             '(stale_lock).  Try using --force\n')
 
@@ -267,7 +268,8 @@ class TestControlSimple(unittest.TestCase):
             self.assertEqual(results.exit_code, 2)
             self.assertEqual(
                 results.output,
-                'Usage: start [OPTIONS]\n\n'
+                'Usage: start [OPTIONS]\n'
+                'Try "start --help" for help.\n\n'
                 'Error: GNU Mailman is already running\n')
 
     def test_reopen(self):
