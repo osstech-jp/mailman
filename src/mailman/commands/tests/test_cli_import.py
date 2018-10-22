@@ -56,8 +56,9 @@ class TestImport(unittest.TestCase):
         self.assertEqual(result.exit_code, 2, result.output)
         self.assertEqual(
             result.output,
-            'Usage: import21 [OPTIONS] LISTSPEC PICKLE_FILE\n\n'
-            'Error: Missing argument "listspec".\n')
+            'Usage: import21 [OPTIONS] LISTSPEC PICKLE_FILE\n'
+            'Try "import21 --help" for help.\n\n'
+            'Error: Missing argument "LISTSPEC".\n')
 
     def test_pickle_with_nondict(self):
         with NamedTemporaryFile() as pckfile:

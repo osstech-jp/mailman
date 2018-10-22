@@ -40,7 +40,8 @@ class TestCreate(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: create [OPTIONS] LISTNAME\n\n'
+            'Usage: create [OPTIONS] LISTNAME\n'
+            'Try "create --help" for help.\n\n'
             'Error: List already exists: ant@example.com\n')
 
     def test_invalid_posting_address(self):
@@ -49,7 +50,8 @@ class TestCreate(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: create [OPTIONS] LISTNAME\n\n'
+            'Usage: create [OPTIONS] LISTNAME\n'
+            'Try "create --help" for help.\n\n'
             'Error: Illegal list name: foo\n')
 
     def test_invalid_owner_addresses(self):
@@ -59,7 +61,8 @@ class TestCreate(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: create [OPTIONS] LISTNAME\n\n'
+            'Usage: create [OPTIONS] LISTNAME\n'
+            'Try "create --help" for help.\n\n'
             'Error: Illegal owner addresses: invalid\n')
 
     def test_create_without_domain_option(self):
@@ -88,7 +91,8 @@ class TestCreate(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: create [OPTIONS] LISTNAME\n\n'
+            'Usage: create [OPTIONS] LISTNAME\n'
+            'Try "create --help" for help.\n\n'
             'Error: Undefined domain: example.org\n')
 
     def test_create_with_nodomain(self):
@@ -97,7 +101,8 @@ class TestCreate(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: create [OPTIONS] LISTNAME\n\n'
+            'Usage: create [OPTIONS] LISTNAME\n'
+            'Try "create --help" for help.\n\n'
             'Error: Undefined domain: example.org\n')
 
 

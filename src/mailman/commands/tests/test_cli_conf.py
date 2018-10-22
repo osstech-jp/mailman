@@ -38,7 +38,8 @@ class TestConf(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: conf [OPTIONS]\n\n'
+            'Usage: conf [OPTIONS]\n'
+            'Try "conf --help" for help.\n\n'
             'Error: No such section: thissectiondoesnotexist\n')
 
     def test_cannot_access_nonexistent_section_and_key(self):
@@ -47,7 +48,8 @@ class TestConf(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: conf [OPTIONS]\n\n'
+            'Usage: conf [OPTIONS]\n'
+            'Try "conf --help" for help.\n\n'
             'Error: No such section: thissectiondoesnotexist\n')
 
     def test_cannot_access_nonexistent_key(self):
@@ -56,7 +58,8 @@ class TestConf(unittest.TestCase):
         self.assertEqual(result.exit_code, 2)
         self.assertEqual(
             result.output,
-            'Usage: conf [OPTIONS]\n\n'
+            'Usage: conf [OPTIONS]\n'
+            'Try "conf --help" for help.\n\n'
             'Error: Section mailman: No such key: thiskeydoesnotexist\n')
 
     def test_output_to_explicit_stdout(self):
