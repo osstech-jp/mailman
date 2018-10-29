@@ -186,7 +186,7 @@ def create(ctx, language, owners, notify, quiet, create_domain, fqdn_listname):
         ctx.fail(_('Illegal list name: $fqdn_listname'))
     except ListAlreadyExistsError:
         ctx.fail(_('List already exists: $fqdn_listname'))
-    except BadDomainSpecificationError as domain:
+    except BadDomainSpecificationError as domain:              # noqa: F841
         ctx.fail(_('Undefined domain: $domain'))
     # Find the language associated with the code, then set the mailing list's
     # preferred language to that.

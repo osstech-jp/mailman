@@ -46,7 +46,7 @@ def unshunt(discard):
             which_queue = msgdata.get('whichq', 'in')
             if not discard:
                 config.switchboards[which_queue].enqueue(msg, msgdata)
-        except Exception as error:
+        except Exception as error:                             # noqa: F841
             print(_('Cannot unshunt message $filebase, skipping:\n$error'),
                   file=sys.stderr)
         else:

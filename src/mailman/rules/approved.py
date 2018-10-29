@@ -111,7 +111,7 @@ class Approved:
                 # because line of HTML or other fancy text may include
                 # additional message text.  This pattern works with HTML.  It
                 # may not work with rtf or whatever else is possible.
-                pattern = header + ':(\s|&nbsp;)*' + re.escape(password)
+                pattern = (header + r':(\s|&nbsp;)*' + re.escape(password))
                 for part in typed_subpart_iterator(msg, 'text'):
                     payload = part.get_payload()
                     if payload is not None:

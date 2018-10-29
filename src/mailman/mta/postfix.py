@@ -178,11 +178,11 @@ class LMTP:
         if self.transport_file_type == 'regex':
             local, at, domain = name.partition('@')
             if local.endswith('-bounces') or local.endswith('-confirm'):
-                local = local.replace('.', '\.')
-                domain = domain.replace('.', '\.')
-                return '/^{}(\+.*)?@{}$/'.format(local, domain)
+                local = local.replace('.', '\\.')
+                domain = domain.replace('.', '\\.')
+                return '/^{}(\\+.*)?@{}$/'.format(local, domain)
             else:
-                return '/^{}$/'.format(name).replace('.', '\.')
+                return '/^{}$/'.format(name).replace('.', '\\.')
         return name
 
     def _generate_domains_file(self, fp):
