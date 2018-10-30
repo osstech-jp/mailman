@@ -58,7 +58,7 @@ class ReopenableFileHandler(logging.Handler):
                 open_mode = 'a'
             elif stat.S_ISFIFO(status.st_mode) or stat.S_ISCHR(status.st_mode):
                 open_mode = 'w'
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             open_mode = 'a'    # Assume regular file
 
         return codecs.open(self.filename, open_mode, 'utf-8')

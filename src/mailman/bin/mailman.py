@@ -52,7 +52,7 @@ class Subcommands(click.MultiCommand):
         self._load()
         try:
             return self._commands[name].command
-        except KeyError as error:
+        except KeyError:
             # Returning None here signals click to report usage information
             # and a "No such command" error message.
             return None

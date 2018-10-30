@@ -275,23 +275,22 @@ other-unsubscribe@example.net           lmtp:[127.0.0.1]:9024
         with open(os.path.join(self.tempdir, 'postfix_domains')) as fp:
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
-/^example\.com$/ example.com
+/^example\\.com$/ example.com
 """)
-
         # the    lmtp file contains transport mapping to the lmtp server.
         with open(os.path.join(self.tempdir, 'postfix_lmtp')) as fp:
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
 # Aliases which are visible only in the @example.com domain.
-/^test@example\.com$/                  lmtp:[127.0.0.1]:9024
-/^test-bounces(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
-/^test-confirm(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
-/^test-join@example\.com$/             lmtp:[127.0.0.1]:9024
-/^test-leave@example\.com$/            lmtp:[127.0.0.1]:9024
-/^test-owner@example\.com$/            lmtp:[127.0.0.1]:9024
-/^test-request@example\.com$/          lmtp:[127.0.0.1]:9024
-/^test-subscribe@example\.com$/        lmtp:[127.0.0.1]:9024
-/^test-unsubscribe@example\.com$/      lmtp:[127.0.0.1]:9024
+/^test@example\\.com$/                  lmtp:[127.0.0.1]:9024
+/^test-bounces(\\+.*)?@example\\.com$/   lmtp:[127.0.0.1]:9024
+/^test-confirm(\\+.*)?@example\\.com$/   lmtp:[127.0.0.1]:9024
+/^test-join@example\\.com$/             lmtp:[127.0.0.1]:9024
+/^test-leave@example\\.com$/            lmtp:[127.0.0.1]:9024
+/^test-owner@example\\.com$/            lmtp:[127.0.0.1]:9024
+/^test-request@example\\.com$/          lmtp:[127.0.0.1]:9024
+/^test-subscribe@example\\.com$/        lmtp:[127.0.0.1]:9024
+/^test-unsubscribe@example\\.com$/      lmtp:[127.0.0.1]:9024
 """)
 
     def test_aliases_regex_with_dots(self):
@@ -302,31 +301,40 @@ other-unsubscribe@example.net           lmtp:[127.0.0.1]:9024
         with open(os.path.join(self.tempdir, 'postfix_domains')) as fp:
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
-/^example\.com$/ example.com
+/^example\\.com$/ example.com
 """)
         with open(os.path.join(self.tempdir, 'postfix_lmtp')) as fp:
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
 # Aliases which are visible only in the @example.com domain.
-/^test@example\.com$/                  lmtp:[127.0.0.1]:9024
-/^test-bounces(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
-/^test-confirm(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
-/^test-join@example\.com$/             lmtp:[127.0.0.1]:9024
-/^test-leave@example\.com$/            lmtp:[127.0.0.1]:9024
-/^test-owner@example\.com$/            lmtp:[127.0.0.1]:9024
-/^test-request@example\.com$/          lmtp:[127.0.0.1]:9024
-/^test-subscribe@example\.com$/        lmtp:[127.0.0.1]:9024
-/^test-unsubscribe@example\.com$/      lmtp:[127.0.0.1]:9024
+/^test@example\\.com$/                  lmtp:[127.0.0.1]:9024
+/^test-bounces(\\+.*)?@example\\.com$/   lmtp:[127.0.0.1]:9024
+/^test-confirm(\\+.*)?@example\\.com$/   lmtp:[127.0.0.1]:9024
+/^test-join@example\\.com$/             lmtp:[127.0.0.1]:9024
+/^test-leave@example\\.com$/            lmtp:[127.0.0.1]:9024
+/^test-owner@example\\.com$/            lmtp:[127.0.0.1]:9024
+/^test-request@example\\.com$/          lmtp:[127.0.0.1]:9024
+/^test-subscribe@example\\.com$/        lmtp:[127.0.0.1]:9024
+/^test-unsubscribe@example\\.com$/      lmtp:[127.0.0.1]:9024
 
-/^test\.list\.name\.dots@example\.com$/                  lmtp:[127.0.0.1]:9024
-/^test\.list\.name\.dots-bounces(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
-/^test\.list\.name\.dots-confirm(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
-/^test\.list\.name\.dots-join@example\.com$/             lmtp:[127.0.0.1]:9024
-/^test\.list\.name\.dots-leave@example\.com$/            lmtp:[127.0.0.1]:9024
-/^test\.list\.name\.dots-owner@example\.com$/            lmtp:[127.0.0.1]:9024
-/^test\.list\.name\.dots-request@example\.com$/          lmtp:[127.0.0.1]:9024
-/^test\.list\.name\.dots-subscribe@example\.com$/        lmtp:[127.0.0.1]:9024
-/^test\.list\.name\.dots-unsubscribe@example\.com$/      lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots@example\\.com$/\
+                  lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots-bounces(\\+.*)?@example\\.com$/\
+   lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots-confirm(\\+.*)?@example\\.com$/\
+   lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots-join@example\\.com$/\
+             lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots-leave@example\\.com$/\
+            lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots-owner@example\\.com$/\
+            lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots-request@example\\.com$/\
+          lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots-subscribe@example\\.com$/\
+        lmtp:[127.0.0.1]:9024
+/^test\\.list\\.name\\.dots-unsubscribe@example\\.com$/\
+      lmtp:[127.0.0.1]:9024
 """)
 
     def test_three_lists_three_domains_with_one_alias_domain(self):
@@ -423,34 +431,34 @@ third-unsubscribe@example.org          third-unsubscribe@x.example.org
         with open(os.path.join(self.tempdir, 'postfix_domains')) as fp:
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
-/^example\.com$/ example.com
-/^x\.example\.org$/ example.org
+/^example\\.com$/ example.com
+/^x\\.example\\.org$/ example.org
 """)
         # The transport file contains entries for both lists.
         with open(os.path.join(self.tempdir, 'postfix_lmtp')) as fp:
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
 # Aliases which are visible only in the @example.com domain.
-/^test@example\.com$/                  lmtp:[127.0.0.1]:9024
-/^test-bounces(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
-/^test-confirm(\+.*)?@example\.com$/   lmtp:[127.0.0.1]:9024
-/^test-join@example\.com$/             lmtp:[127.0.0.1]:9024
-/^test-leave@example\.com$/            lmtp:[127.0.0.1]:9024
-/^test-owner@example\.com$/            lmtp:[127.0.0.1]:9024
-/^test-request@example\.com$/          lmtp:[127.0.0.1]:9024
-/^test-subscribe@example\.com$/        lmtp:[127.0.0.1]:9024
-/^test-unsubscribe@example\.com$/      lmtp:[127.0.0.1]:9024
+/^test@example\\.com$/                  lmtp:[127.0.0.1]:9024
+/^test-bounces(\\+.*)?@example\\.com$/   lmtp:[127.0.0.1]:9024
+/^test-confirm(\\+.*)?@example\\.com$/   lmtp:[127.0.0.1]:9024
+/^test-join@example\\.com$/             lmtp:[127.0.0.1]:9024
+/^test-leave@example\\.com$/            lmtp:[127.0.0.1]:9024
+/^test-owner@example\\.com$/            lmtp:[127.0.0.1]:9024
+/^test-request@example\\.com$/          lmtp:[127.0.0.1]:9024
+/^test-subscribe@example\\.com$/        lmtp:[127.0.0.1]:9024
+/^test-unsubscribe@example\\.com$/      lmtp:[127.0.0.1]:9024
 
 # Aliases which are visible only in the @x.example.org domain.
-/^other@x\.example\.org$/                  lmtp:[127.0.0.1]:9024
-/^other-bounces(\+.*)?@x\.example\.org$/   lmtp:[127.0.0.1]:9024
-/^other-confirm(\+.*)?@x\.example\.org$/   lmtp:[127.0.0.1]:9024
-/^other-join@x\.example\.org$/             lmtp:[127.0.0.1]:9024
-/^other-leave@x\.example\.org$/            lmtp:[127.0.0.1]:9024
-/^other-owner@x\.example\.org$/            lmtp:[127.0.0.1]:9024
-/^other-request@x\.example\.org$/          lmtp:[127.0.0.1]:9024
-/^other-subscribe@x\.example\.org$/        lmtp:[127.0.0.1]:9024
-/^other-unsubscribe@x\.example\.org$/      lmtp:[127.0.0.1]:9024
+/^other@x\\.example\\.org$/                  lmtp:[127.0.0.1]:9024
+/^other-bounces(\\+.*)?@x\\.example\\.org$/   lmtp:[127.0.0.1]:9024
+/^other-confirm(\\+.*)?@x\\.example\\.org$/   lmtp:[127.0.0.1]:9024
+/^other-join@x\\.example\\.org$/             lmtp:[127.0.0.1]:9024
+/^other-leave@x\\.example\\.org$/            lmtp:[127.0.0.1]:9024
+/^other-owner@x\\.example\\.org$/            lmtp:[127.0.0.1]:9024
+/^other-request@x\\.example\\.org$/          lmtp:[127.0.0.1]:9024
+/^other-subscribe@x\\.example\\.org$/        lmtp:[127.0.0.1]:9024
+/^other-unsubscribe@x\\.example\\.org$/      lmtp:[127.0.0.1]:9024
 """)
         # The virtual mapping contains only entries for the list with an
         # alias_domain.
@@ -458,13 +466,13 @@ third-unsubscribe@example.org          third-unsubscribe@x.example.org
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
 # Virtual mappings for the @example.org domain.
-/^other@example\.org$/                 other@x.example.org
-/^other-bounces(\+.*)?@example\.org$/  other-bounces@x.example.org
-/^other-confirm(\+.*)?@example\.org$/  other-confirm@x.example.org
-/^other-join@example\.org$/            other-join@x.example.org
-/^other-leave@example\.org$/           other-leave@x.example.org
-/^other-owner@example\.org$/           other-owner@x.example.org
-/^other-request@example\.org$/         other-request@x.example.org
-/^other-subscribe@example\.org$/       other-subscribe@x.example.org
-/^other-unsubscribe@example\.org$/     other-unsubscribe@x.example.org
+/^other@example\\.org$/                 other@x.example.org
+/^other-bounces(\\+.*)?@example\\.org$/  other-bounces@x.example.org
+/^other-confirm(\\+.*)?@example\\.org$/  other-confirm@x.example.org
+/^other-join@example\\.org$/            other-join@x.example.org
+/^other-leave@example\\.org$/           other-leave@x.example.org
+/^other-owner@example\\.org$/           other-owner@x.example.org
+/^other-request@example\\.org$/         other-request@x.example.org
+/^other-subscribe@example\\.org$/       other-subscribe@x.example.org
+/^other-unsubscribe@example\\.org$/     other-unsubscribe@x.example.org
 """)

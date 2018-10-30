@@ -113,7 +113,7 @@ def parse_suffix_list(filename=None):
         for line in fp:
             if not line.strip() or line.startswith('//'):
                 continue
-            line = re.sub('\s.*', '', line)
+            line = re.sub(r'\s.*', '', line)
             if not line:
                 continue
             parts = line.lower().split('.')

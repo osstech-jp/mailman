@@ -45,7 +45,7 @@ log = logging.getLogger('mailman.error')
 COMMASPACE = ', '
 EMPTYSTRING = ''
 MAXLINELEN = 78
-NONASCII = re.compile('[^\s!-~]')
+NONASCII = re.compile(r'[^\s!-~]')
 # Headers from the original that we want to keep in the wrapper.  These are
 # actually regexps matched with re.match so they match anything that starts
 # with the given string unless they end with '$'.
