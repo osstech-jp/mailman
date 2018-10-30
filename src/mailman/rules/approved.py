@@ -113,8 +113,17 @@ class Approved:
                 # may not work with rtf or whatever else is possible.
                 pattern = (header + r':(\s|&nbsp;)*' + re.escape(password))
                 for part in typed_subpart_iterator(msg, 'text'):
-                    payload = part.get_payload()
+                    payload = part.get_payload(decode=True)
                     if payload is not None:
+                        charset = part.get_content_charset('us-ascii')
+                        try:
+                            # Do the decoding inside the try/except so that if
+                            # the charset is unknown, we'll just drop back to
+                            # ascii.
+                            payload = payload.decode(charset, 'replace')
+                        except LookupError:
+                            # Unknown or empty charset.
+                            payload = payload.decode('us-ascii', 'replace')
                         if re.search(pattern, payload):
                             reset_payload(part, re.sub(pattern, '', payload))
         else:
@@ -138,7 +147,10 @@ def reset_payload(part, payload):
     delsp = part.get_param('delsp')
     del part['content-transfer-encoding']
     del part['content-type']
-    part.set_payload(payload, charset)
+    try:
+        part.set_payload(payload, charset)
+    except LookupError:
+        part.set_payload(payload, 'us-ascii')
     part.set_type(content_type)
     if format:
         part.set_param('Format', format)

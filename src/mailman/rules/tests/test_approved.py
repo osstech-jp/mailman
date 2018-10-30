@@ -531,3 +531,59 @@ Content-Transfer-Encoding: 7bit
 """)
         result = self._rule.check(self._mlist, msg, {})
         self.assertFalse(result)
+
+
+class TestProperDecodingOfAllParts(unittest.TestCase):
+    """Test that the approved handler properly decodes all message parts."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._mlist.moderator_password = config.password_context.encrypt(
+            'super secret')
+        self._rule = approved.Approved()
+        self._msg_text = """\
+From: anne@example.com
+To: test@example.com
+Subject: A Message with non-ascii body
+Message-ID: <ant>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AAA"
+
+--AAA
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Approved: super secret
+The above line will be removed=21
+
+--AAA
+Content-Type: text/html{}
+Content-Transfer-Encoding: quoted-printable
+
+
+<div dir=3D"ltr"><div>Approved:super=20secret</div><div>The =
+password approval will be removed=21</div></div>
+
+"""
+
+    def test_proper_decoding_mime(self):
+        msg = mfs(self._msg_text.format(''))
+        result = self._rule.check(self._mlist, msg, {})
+        self.assertTrue(result)
+        self.assertEqual(b'The above line will be removed!\n',
+                         msg.get_payload(0).get_payload(decode=True))
+        self.assertEqual(b'\n<div dir="ltr"><div></div><div>The password '
+                         b'approval will be removed!</div></div>\n',
+                         msg.get_payload(1).get_payload(decode=True))
+
+    def test_proper_decoding_mime_unknown_charset(self):
+        msg = mfs(self._msg_text.format('; charset="unknown-8bit"'))
+        result = self._rule.check(self._mlist, msg, {})
+        self.assertTrue(result)
+        self.assertEqual(b'The above line will be removed!\n',
+                         msg.get_payload(0).get_payload(decode=True))
+        self.assertEqual(b'\n<div dir="ltr"><div></div><div>The password '
+                         b'approval will be removed!</div></div>\n',
+                         msg.get_payload(1).get_payload(decode=True))
