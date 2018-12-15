@@ -20,7 +20,6 @@
 import unittest
 
 from datetime import datetime
-from email.iterators import body_line_iterator
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
@@ -205,22 +204,7 @@ From: Anne Person <anne@example.org>
         user = manager.get_user('anne@example.org')
         self.assertEqual(list(user.addresses)[0].email, 'anne@example.org')
         # Make sure that the confirmation was not attempted twice.
-        items = get_queue_messages('virgin', expected_count=1)
-        # Search the contents of the results message.  There should be just
-        # one 'Confirmation email' line.
-        confirmation_lines = []
-        in_results = False
-        for line in body_line_iterator(items[0].msg):
-            line = line.strip()
-            if in_results:
-                if line.startswith('- Done'):
-                    break
-                if len(line) > 0:
-                    confirmation_lines.append(line)
-            if line.strip() == '- Results:':
-                in_results = True
-        self.assertEqual(len(confirmation_lines), 1)
-        self.assertNotIn('did not match', confirmation_lines[0])
+        get_queue_messages('virgin', expected_count=0)
 
     def test_welcome_message_after_confirmation(self):
         # Confirmations with a welcome message set.
@@ -246,8 +230,8 @@ From: Anne Person <anne@example.org>
         # Now there's a email command notification and a welcome message.  All
         # we care about for this test is the welcome message.
         items = get_queue_messages('virgin', sort_on='subject',
-                                   expected_count=2)
-        self.assertEqual(str(items[1].msg['subject']),
+                                   expected_count=1)
+        self.assertEqual(str(items[0].msg['subject']),
                          'Welcome to the "Test" mailing list')
 
     def test_confirm_subcommand_with_more_commands(self):
@@ -267,9 +251,8 @@ Content-Transfer-Encoding: quoted-printable
         self._commandq.enqueue(msg, dict(listid='test.example.com',
                                          subaddress='confirm'))
         self._runner.run()
-        # This should send out one email that confirms that token was accepted.
-        items = get_queue_messages('virgin', expected_count=1)
-        self.assertNotIn('No such command: bad-command', str(items[0].msg))
+        # This should not send out any email.
+        get_queue_messages('virgin', expected_count=0)
 
     def test_confirm_in_subject_with_more_commands(self):
         get_queue_messages('virgin')

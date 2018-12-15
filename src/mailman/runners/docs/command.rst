@@ -138,7 +138,7 @@ address, and the other is the results of his email command.
     >>> command.run()
     >>> messages = get_queue_messages('virgin', sort_on='subject')
     >>> len(messages)
-    2
+    1
 
     >>> from mailman.interfaces.subscriptions import ISubscriptionManager
 
@@ -150,7 +150,6 @@ address, and the other is the results of his email command.
     ...         token = str(subject).split()[1].strip()
     ...         new_token, token_owner, member = manager.confirm(token)
     ...         assert new_token is None, 'Confirmation failed'
-    Subject: The results of your email commands
     Subject: confirm ...
 
 .. Clear the queue
@@ -173,7 +172,7 @@ Similarly, to leave a mailing list, the user need only email the ``-leave`` or
     >>> command.run()
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
-    2
+    1
 
     >>> print(messages[0].msg.as_string())
     MIME-Version: 1.0
@@ -183,17 +182,6 @@ Similarly, to leave a mailing list, the user need only email the ``-leave`` or
     To: dperson@example.com
     ...
 
-    >>> print(messages[1].msg.as_string())
-    Subject: The results of your email commands
-    From: test-bounces@example.com
-    To: dperson@example.com
-    ...
-    <BLANKLINE>
-    - Results:
-    Dirk Person <dperson@example.com> left test@example.com
-    <BLANKLINE>
-    - Done.
-    <BLANKLINE>
 
 The ``-confirm`` address is also available as an implicit command.
 ::
@@ -209,27 +197,7 @@ The ``-confirm`` address is also available as an implicit command.
     >>> command.run()
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
-    1
-
-    >>> print(messages[0].msg.as_string())
-    Subject: The results of your email commands
-    From: test-bounces@example.com
-    To: dperson@example.com
-    ...
-    <BLANKLINE>
-    The results of your email command are provided below.
-    <BLANKLINE>
-    - Original message details:
-    From: dperson@example.com
-    Subject: n/a
-    Date: ...
-    Message-ID: ...
-    <BLANKLINE>
-    - Results:
-    Confirmation token did not match
-    <BLANKLINE>
-    - Done.
-    <BLANKLINE>
+    0
 
 
 Stopping command processing

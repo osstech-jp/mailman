@@ -38,6 +38,8 @@ REST
 Other
 -----
 * Email commands are now case insensitive. (Closes #353)
+* Implicit commands sent to -join, -leave and -confirm addresses no longer
+  generate a Results email. (Closes #516)
 
 
 3.2.0 -- "La Villa Strangiato"
