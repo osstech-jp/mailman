@@ -53,6 +53,7 @@ class CommandFinder:
         self.command_lines = []
         self.ignored_lines = []
         self.processed_lines = []
+        self.send_response = True
         # Depending on where the message was destined to, add some implicit
         # commands.  For example, if this was sent to the -join or -leave
         # addresses, it's the same as if 'join' or 'leave' commands were sent
@@ -61,15 +62,18 @@ class CommandFinder:
         subaddress = msgdata.get('subaddress')
         if subaddress == 'join':
             self.command_lines.append('join')
+            self.send_response = False
             is_address_command = True
         elif subaddress == 'leave':
             self.command_lines.append('leave')
             is_address_command = True
+            self.send_response = False
         elif subaddress == 'confirm':
             mo = re.match(config.mta.verp_confirm_regexp, msg.get('to', ''))
             if mo:
                 self.command_lines.append('confirm ' + mo.group('cookie'))
                 is_address_command = True
+                self.send_response = False
         # Stop processing if the address already contained a valid command
         if is_address_command:
             return
@@ -206,7 +210,10 @@ class CommandRunner(Runner):
                     'Invalid status: %s' % status)
                 if status == ContinueProcessing.no:
                     break
-        # All done.  Strip blank lines and send the response.
+        # All done. If we don't need to send response, return.
+        if not finder.send_response:
+            return
+        # Strip blank lines and send the response.
         lines = [line.strip() for line in finder.command_lines if line]
         if len(lines) > 0:
             print(_('\n- Unprocessed:'), file=results)
