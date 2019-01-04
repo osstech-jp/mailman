@@ -17,6 +17,7 @@
 
 """The 'help' subcommand."""
 
+import sys
 import click
 
 from mailman.core.i18n import _
@@ -33,7 +34,7 @@ from zope.interface import implementer
 # https://github.com/pallets/click/issues/832
 def help(ctx):                                      # pragma: nocover
     click.echo(ctx.parent.get_help(), color=ctx.color)
-    ctx.exit()
+    sys.exit()
 
 
 @public
