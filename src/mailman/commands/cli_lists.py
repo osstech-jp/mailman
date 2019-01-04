@@ -85,7 +85,7 @@ def lists(ctx, advertised, names, descriptions, quiet, domains):
     if len(mailing_lists) == 0:
         if not quiet:
             print(_('No matching mailing lists found'))
-        ctx.exit()
+        sys.exit()
     count = len(mailing_lists)                  # noqa: F841
     if not quiet:
         print(_('$count matching mailing lists found:'))
