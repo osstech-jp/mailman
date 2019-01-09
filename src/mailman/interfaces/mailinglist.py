@@ -71,6 +71,9 @@ class ReplyToMunging(Enum):
     point_to_list = 1
     # An explicit Reply-To header is added
     explicit_header = 2
+    # An explicit Reply-To header is added and
+    # the list address is removed from CC
+    explicit_header_only = 3
 
 
 @public
