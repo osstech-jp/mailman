@@ -16,18 +16,18 @@ enabled by adding a section to your ``mailman.cfg`` file, such as:
 
 We have such a configuration file handy.
 
-    >>> from pkg_resources import resource_filename
-    >>> config_file = resource_filename('mailman.plugins.testing', 'hooks.cfg')
+    >>> from importlib_resources import path
+    >>> config_file = str(cleanups.enter_context(
+    ...     path('mailman.plugins.testing', 'hooks.cfg')))
 
 The section must at least define the class implementing the ``IPlugin``
 interface, using a Python dotted-name import path.  For the import to work,
 you must include the top-level directory on ``sys.path``.
 
     >>> import os
-    >>> from pkg_resources import resource_filename
-    >>> plugin_path = os.path.join(os.path.dirname(
-    ...     resource_filename('mailman.plugins', '__init__.py')),
-    ...     'testing')
+    >>> plugin_dir = str(cleanups.enter_context(
+    ...     path('mailman.plugins', '__init__.py')))
+    >>> plugin_path = os.path.join(os.path.dirname(plugin_dir), 'testing')
 
 
 Hooks
@@ -111,8 +111,8 @@ Here, ``rules.py`` likes like:
 You can see that this rule has a different name.  If we use the
 ``alternate.cfg`` configuration file from above::
 
-    >>> config_file = resource_filename(
-    ...     'mailman.plugins.testing', 'alternate.cfg')
+    >>> config_file = str(cleanups.enter_context(path(
+    ...     'mailman.plugins.testing', 'alternate.cfg')))
 
 we'll pick up the alternate rule when we print them out.
 

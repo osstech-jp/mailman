@@ -22,6 +22,7 @@ import unittest
 
 from datetime import timedelta, datetime
 from enum import Enum
+from importlib_resources import open_binary
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers.decorate import decorate
@@ -45,7 +46,6 @@ from mailman.utilities.filesystem import makedirs
 from mailman.utilities.importer import (
     Import21Error, check_language_code, import_config_pck)
 from pickle import load
-from pkg_resources import resource_filename
 from unittest import mock
 from urllib.error import URLError
 from zope.component import getUtility
@@ -69,9 +69,7 @@ class TestBasicImport(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('blank@example.com')
-        pickle_file = resource_filename('mailman.testing', 'config.pck')
-        with open(pickle_file, 'rb') as fp:
-            self._pckdict = load(fp)
+        self._pckdict = load(open_binary('mailman.testing', 'config.pck'))
 
     def _import(self):
         import_config_pck(self._mlist, self._pckdict)

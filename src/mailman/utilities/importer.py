@@ -23,6 +23,7 @@ import sys
 import logging
 import datetime
 
+from contextlib import ExitStack
 from mailman.config import config
 from mailman.handlers.decorate import decorate_template
 from mailman.interfaces.action import Action, FilterAction
@@ -494,7 +495,8 @@ def import_config_pck(mlist, config_dict):
         base_uri = 'mailman:///$listname/$language/'
         filename = '{}.txt'.format(newvar)
         manager.set(newvar, mlist.list_id, base_uri + filename)
-        filepath = list(search(filename, mlist))[0]
+        with ExitStack() as resources:
+            filepath = list(search(resources, filename, mlist))[0]
         makedirs(os.path.dirname(filepath))
         with open(filepath, 'w', encoding='utf-8') as fp:
             fp.write(text)

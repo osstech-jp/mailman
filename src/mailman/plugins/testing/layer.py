@@ -20,10 +20,10 @@
 import os
 
 from contextlib import ExitStack
+from importlib_resources import path
 from mailman.testing.helpers import (
     TestableMaster, hackenv, wait_for_webservice)
 from mailman.testing.layers import SMTPLayer
-from pkg_resources import resource_filename
 from public import public
 
 
@@ -35,11 +35,11 @@ class PluginRESTLayer(SMTPLayer):
     @classmethod
     def setUp(cls):
         cls.resources = ExitStack()
-        plugin_path = os.path.join(
-            os.path.dirname(
-                resource_filename('mailman.plugins', '__init__.py')),
-            'testing')
-        config_file = resource_filename('mailman.plugins.testing', 'rest.cfg')
+        plugin_dir = str(cls.resources.enter_context(
+            path('mailman.plugins', '__init__.py')))
+        plugin_path = os.path.join(os.path.dirname(plugin_dir), 'testing')
+        config_file = str(cls.resources.enter_context(
+            path('mailman.plugins.testing', 'rest.cfg')))
         cls.resources.enter_context(
             hackenv('MAILMAN_CONFIG_FILE', config_file))
         cls.resources.enter_context(

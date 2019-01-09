@@ -20,11 +20,12 @@
 import os
 import sys
 
+from contextlib import ExitStack
+from importlib_resources import path
 from itertools import product
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.interfaces.errors import MailmanError
-from pkg_resources import resource_filename
 from public import public
 
 
@@ -40,7 +41,7 @@ class TemplateNotFoundError(MailmanError):
 
 
 @public
-def search(template_file, mlist=None, language=None):
+def search(resources, template_file, mlist=None, language=None):
     """Generator that provides file system search order.
 
     This is Mailman's internal template search algorithm.  The first locations
@@ -116,10 +117,10 @@ def search(template_file, mlist=None, language=None):
         paths.append(os.path.join(
             config.TEMPLATE_DIR, 'lists', mlist.list_id))
     paths.reverse()
-    for language, path in product(languages, paths):
-        yield os.path.join(path, language, template_file)
+    for language, search_path in product(languages, paths):
+        yield os.path.join(search_path, language, template_file)
     # Finally, fallback to the in-tree English template.
-    templates_dir = resource_filename('mailman', 'templates')
+    templates_dir = str(resources.enter_context(path('mailman', 'templates')))
     yield os.path.join(templates_dir, 'en', template_file)
 
 
@@ -143,17 +144,18 @@ def find(template_file, mlist=None, language=None, _trace=False):
     :rtype: (string, file)
     :raises TemplateNotFoundError: when the template could not be found.
     """
-    raw_search_order = search(template_file, mlist, language)
-    for path in raw_search_order:
-        try:
-            if _trace:
-                print('@@@', path, end='', file=sys.stderr)
-            fp = open(path, 'r', encoding='utf-8')
-        except FileNotFoundError:
-            if _trace:
-                print(' MISSING', file=sys.stderr)
-        else:
-            if _trace:
-                print(' FOUND:', path, file=sys.stderr)
-            return path, fp
-    raise TemplateNotFoundError(template_file)
+    with ExitStack() as resources:
+        raw_search_order = search(resources, template_file, mlist, language)
+        for search_path in raw_search_order:
+            try:
+                if _trace:
+                    print('@@@', search_path, end='', file=sys.stderr)   # noqa: E501, pragma: nocover
+                fp = open(search_path, 'r', encoding='utf-8')
+            except FileNotFoundError:
+                if _trace:
+                    print(' MISSING', file=sys.stderr)   # pragma: nocover
+            else:
+                if _trace:
+                    print(' FOUND:', search_path, file=sys.stderr)  # noqa: E501, pragma: nocover
+                return search_path, fp
+        raise TemplateNotFoundError(template_file)

@@ -18,15 +18,11 @@
 """The `mailman` package."""
 
 import sys
+import pkgutil
 
 
 # This is a namespace package.
-try:
-    import pkg_resources
-    pkg_resources.declare_namespace(__name__)
-except ImportError:                                 # pragma: nocover
-    import pkgutil
-    __path__ = pkgutil.extend_path(__path__, __name__)
+__path__ = pkgutil.extend_path(__path__, __name__)   # noqa: F821
 
 
 # We have to initialize the i18n subsystem before anything else happens,

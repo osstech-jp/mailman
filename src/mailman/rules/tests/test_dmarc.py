@@ -27,6 +27,7 @@ from dns.rdatatype import CNAME, TXT
 from dns.resolver import NXDOMAIN, NoAnswer, NoNameservers
 from email import message_from_bytes
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from importlib_resources import path
 from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
 from mailman.config import config
@@ -37,7 +38,6 @@ from mailman.testing.helpers import (
     wait_for_webservice)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
-from pkg_resources import resource_filename
 from public import public
 from unittest import TestCase
 from unittest.mock import patch
@@ -168,11 +168,13 @@ def get_dns_resolver(
 
 
 @public
-def use_test_organizational_data():
+def use_test_organizational_data(resources):
     # Point the organizational URL to our test data.
-    path = resource_filename('mailman.rules.tests.data', 'org_domain.txt')
-    url = 'file:///{}'.format(path)
-    return configuration('dmarc', org_domain_data_url=url)
+    filename = str(resources.enter_context(
+        path('mailman.rules.tests.data', 'org_domain.txt')))
+    url = 'file:///{}'.format(filename)
+    return resources.enter_context(
+        configuration('dmarc', org_domain_data_url=url))
 
 
 class TestDMARCRules(TestCase):
@@ -187,7 +189,7 @@ class TestDMARCRules(TestCase):
         self.cache = {}
         self.resources.enter_context(
             patch('mailman.rules.dmarc.suffix_cache', self.cache))
-        self.resources.enter_context(use_test_organizational_data())
+        use_test_organizational_data(self.resources)
 
     def test_no_data_for_domain(self):
         self.assertEqual(
@@ -396,8 +398,8 @@ To: ant@example.com
             self.assertFalse(rule.check(mlist, msg, {}))
 
     def test_parser(self):
-        data_file = resource_filename(
-            'mailman.rules.tests.data', 'org_domain.txt')
+        data_file = str(self.resources.enter_context(
+            path('mailman.rules.tests.data', 'org_domain.txt')))
         dmarc.parse_suffix_list(data_file)
         # There is no entry for example.biz because that line starts with
         # whitespace.
