@@ -25,11 +25,11 @@ from click.testing import CliRunner
 from contextlib import ExitStack, suppress
 from datetime import timedelta
 from flufl.lock import Lock, TimeOutError
+from importlib_resources import path
 from io import StringIO
 from mailman.bin import master
 from mailman.config import config
 from mailman.testing.layers import ConfigLayer
-from pkg_resources import resource_filename
 from unittest.mock import patch
 
 
@@ -102,8 +102,8 @@ Exiting.
         command = CliRunner()
         fake_lock = FakeLock()
         with ExitStack() as resources:
-            config_file = resource_filename(
-                'mailman.testing', 'testing.cfg')
+            config_file = str(resources.enter_context(
+                path('mailman.testing', 'testing.cfg')))
             init_mock = resources.enter_context(patch(
                 'mailman.bin.master.initialize'))
             lock_mock = resources.enter_context(patch(

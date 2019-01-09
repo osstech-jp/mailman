@@ -22,7 +22,7 @@ import sys
 
 from contextlib import contextmanager
 from importlib import import_module
-from pkg_resources import resource_filename, resource_isdir, resource_listdir
+from importlib_resources import contents, is_resource, path
 from public import public
 
 
@@ -71,13 +71,14 @@ def call_name(dotted_name, *args, **kws):
 
 
 @public
-def expand_path(url):
+def expand_path(resources, url):
     """Expand a python: path, returning the absolute file system path."""
     # Is the context coming from a file system or Python path?
     if url.startswith('python:'):
         resource_path = url[7:]
         package, dot, resource = resource_path.rpartition('.')
-        return resource_filename(package, resource + '.cfg')
+        cfg_path = resources.enter_context(path(package, resource + '.cfg'))
+        return str(cfg_path)
     else:
         return url
 
@@ -141,7 +142,7 @@ def find_components(package, interface):
     :return: The sequence of matching components.
     :rtype: items implementing `interface`
     """
-    for filename in resource_listdir(package, ''):
+    for filename in contents(package):
         basename, extension = os.path.splitext(filename)
         if extension != '.py' or basename.startswith('.'):
             continue
@@ -184,7 +185,8 @@ def find_pluggable_components(subpackage, interface):
             package = name
         # It's possible that the plugin doesn't include the directory for this
         # subpackage.  That's fine.
-        if resource_isdir(package, subpackage):
+        if (subpackage in contents(package) and
+                not is_resource(package, subpackage)):
             plugin_package = '{}.{}'.format(package, subpackage)
             yield from find_components(plugin_package, interface)
 

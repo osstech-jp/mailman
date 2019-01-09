@@ -22,7 +22,9 @@ import sys
 import mailman.templates
 
 from configparser import ConfigParser
+from contextlib import ExitStack
 from flufl.lock import Lock
+from importlib_resources import path, read_text
 from lazr.config import ConfigSchema, as_boolean
 from mailman import version
 from mailman.interfaces.configuration import (
@@ -30,7 +32,6 @@ from mailman.interfaces.configuration import (
 from mailman.interfaces.languages import ILanguageManager
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.modules import call_name, expand_path
-from pkg_resources import resource_filename, resource_string as resource_bytes
 from public import public
 from string import Template
 from zope.component import getUtility
@@ -107,13 +108,13 @@ class Configuration:
 
     def load(self, filename=None):
         """Load the configuration from the schema and config files."""
-        schema_file = resource_filename('mailman.config', 'schema.cfg')
-        schema = ConfigSchema(schema_file)
+        with path('mailman.config', 'schema.cfg') as schema_file:
+            schema = ConfigSchema(str(schema_file))
         # If a configuration file was given, load it now too.  First, load
         # the absolute minimum default configuration, then if a
         # configuration filename was given by the user, push it.
-        config_file = resource_filename('mailman.config', 'mailman.cfg')
-        self._config = schema.load(config_file)
+        with path('mailman.config', 'mailman.cfg') as config_path:
+            self._config = schema.load(str(config_path))
         if filename is None:
             self._post_process()
         else:
@@ -312,7 +313,7 @@ def load_external(path):
     if path.startswith('python:'):
         resource_path = path[7:]
         package, dot, resource = resource_path.rpartition('.')
-        return resource_bytes(package, resource + '.cfg').decode('utf-8')
+        return read_text(package, resource + '.cfg')
     with open(path, 'r', encoding='utf-8') as fp:
         return fp.read()
 
@@ -330,7 +331,8 @@ def external_configuration(path):
     :return: A `ConfigParser` instance.
     """
     # Is the context coming from a file system or Python path?
-    cfg_path = expand_path(path)
+    with ExitStack() as resources:
+        cfg_path = str(expand_path(resources, path))
     parser = ConfigParser()
     files = parser.read(cfg_path)
     if files != [cfg_path]:

@@ -23,13 +23,13 @@ import shutil
 import tempfile
 import unittest
 
+from importlib_resources import path
 from mailman.app.lifecycle import create_list
 from mailman.archiving.mhonarc import MHonArc
 from mailman.database.transaction import transaction
 from mailman.testing.helpers import (
     configuration, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
-from pkg_resources import resource_filename
 
 
 class TestMhonarc(unittest.TestCase):
@@ -54,9 +54,8 @@ but the water deserves to be swum.
         tempdir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tempdir)
         # Here's the command to execute our fake MHonArc process.
-        shutil.copy(
-            resource_filename('mailman.archiving.tests', 'fake_mhonarc.py'),
-            tempdir)
+        with path('mailman.archiving.tests', 'fake_mhonarc.py') as source:
+            shutil.copy(str(source), tempdir)
         self._output_file = os.path.join(tempdir, 'output.txt')
         command = '{} {} {}'.format(
             sys.executable,

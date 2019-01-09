@@ -21,6 +21,7 @@ import unittest
 
 from click.testing import CliRunner
 from datetime import timedelta
+from importlib_resources import path
 from mailman.app.lifecycle import create_list
 from mailman.bin.mailman import main
 from mailman.config import config
@@ -29,7 +30,6 @@ from mailman.interfaces.command import ICLISubCommand
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from mailman.utilities.modules import add_components
-from pkg_resources import resource_filename
 from unittest.mock import patch
 
 
@@ -40,10 +40,10 @@ class TestMailmanCommand(unittest.TestCase):
         self._command = CliRunner()
 
     def test_mailman_command_config(self):
-        config_path = resource_filename('mailman.testing', 'testing.cfg')
-        with patch('mailman.bin.mailman.initialize') as init:
-            self._command.invoke(main, ('-C', config_path, 'info'))
-        init.assert_called_once_with(config_path)
+        with path('mailman.testing', 'testing.cfg') as config_path:
+            with patch('mailman.bin.mailman.initialize') as init:
+                self._command.invoke(main, ('-C', str(config_path), 'info'))
+            init.assert_called_once_with(str(config_path))
 
     def test_mailman_command_no_config(self):
         with patch('mailman.bin.mailman.initialize') as init:
@@ -54,7 +54,7 @@ class TestMailmanCommand(unittest.TestCase):
     def test_mailman_command_without_subcommand_prints_help(self, mock):
         # Issue #137: Running `mailman` without a subcommand raises an
         # AttributeError.
-        result = self._command.invoke(main)
+        result = self._command.invoke(main, [])
         lines = result.output.splitlines()
         # "main" instead of "mailman" because of the way the click runner
         # works.  It does actually show the correct program when run from the

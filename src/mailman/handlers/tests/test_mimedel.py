@@ -25,6 +25,7 @@ import tempfile
 import unittest
 
 from contextlib import ExitStack, contextmanager
+from importlib_resources import open_binary as resource_open, read_text
 from io import StringIO
 from mailman.app.lifecycle import create_list
 from mailman.config import config
@@ -37,7 +38,6 @@ from mailman.testing.helpers import (
     LogFileMark, configuration, get_queue_messages,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
-from pkg_resources import resource_filename
 from unittest.mock import patch
 from zope.component import getUtility
 
@@ -310,10 +310,10 @@ class TestMiscellaneous(unittest.TestCase):
         self._mlist.filter_extensions = ['xlsx']
 
     def test_collapse_alternatives(self):
-        email_file = resource_filename(
-            'mailman.handlers.tests.data', 'collapse_alternatives.eml')
-        with open(email_file) as fp:
-            msg = email.message_from_file(fp)
+        with resource_open(
+                'mailman.handlers.tests.data',
+                'collapse_alternatives.eml') as fp:
+            msg = email.message_from_binary_file(fp)
         process = config.handlers['mime-delete'].process
         process(self._mlist, msg, {})
         structure = StringIO()
@@ -327,21 +327,17 @@ multipart/signed
 """)
 
     def test_msg_rfc822(self):
-        email_file = resource_filename(
-            'mailman.handlers.tests.data', 'msg_rfc822.eml')
-        email_file2 = resource_filename(
-            'mailman.handlers.tests.data', 'msg_rfc822_out.eml')
-        with open(email_file) as fp:
-            msg = email.message_from_file(fp)
+        with resource_open(
+                'mailman.handlers.tests.data', 'msg_rfc822.eml') as fp:
+            msg = email.message_from_binary_file(fp)
         process = config.handlers['mime-delete'].process
-        with ExitStack() as resources:
-            fp = resources.enter_context(open(email_file2))
-            # Mock this so that the X-Content-Filtered-By header isn't
-            # sensitive to Mailman version bumps.
-            resources.enter_context(
-                patch('mailman.handlers.mime_delete.VERSION', '123'))
+        # Mock this so that the X-Content-Filtered-By header isn't sensitive to
+        # Mailman version bumps.
+        with patch('mailman.handlers.mime_delete.VERSION', '123'):
+            expected_msg = read_text(
+                'mailman.handlers.tests.data', 'msg_rfc822_out.eml')
             process(self._mlist, msg, {})
-            self.assertEqual(msg.as_string(), fp.read())
+            self.assertEqual(msg.as_string(), expected_msg)
 
     def test_mixed_case_ext_and_recast(self):
         msg = mfs("""\

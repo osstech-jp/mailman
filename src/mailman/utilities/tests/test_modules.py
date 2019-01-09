@@ -22,6 +22,7 @@ import sys
 import unittest
 
 from contextlib import ExitStack, contextmanager
+from importlib_resources import path
 from mailman.interfaces.rules import IRule
 from mailman.interfaces.styles import IStyle
 from mailman.testing.helpers import configuration
@@ -29,7 +30,6 @@ from mailman.testing.layers import ConfigLayer
 from mailman.utilities.modules import (
     find_components, find_pluggable_components, hacked_sys_modules)
 from pathlib import Path
-from pkg_resources import resource_filename
 from tempfile import TemporaryDirectory
 
 
@@ -160,9 +160,10 @@ class AbstractStyle:
         self.assertEqual(sys.modules.get('email'), email_package)
 
     def test_find_pluggable_components_by_plugin_name(self):
-        path = resource_filename('mailman.plugins.testing', '')
         with ExitStack() as resources:
-            resources.enter_context(hack_syspath(0, path))
+            testing_path = resources.enter_context(
+                path('mailman.plugins.testing', ''))
+            resources.enter_context(hack_syspath(0, str(testing_path)))
             resources.enter_context(configuration('plugin.example', **{
                 'class': 'example.hooks.ExamplePlugin',
                 'enabled': 'yes',
@@ -171,9 +172,10 @@ class AbstractStyle:
         self.assertIn('example-rule', {rule.name for rule in components})
 
     def test_find_pluggable_components_by_component_package(self):
-        path = resource_filename('mailman.plugins.testing', '')
         with ExitStack() as resources:
-            resources.enter_context(hack_syspath(0, path))
+            testing_path = resources.enter_context(
+                path('mailman.plugins.testing', ''))
+            resources.enter_context(hack_syspath(0, str(testing_path)))
             resources.enter_context(configuration('plugin.example', **{
                 'class': 'example.hooks.ExamplePlugin',
                 'enabled': 'yes',

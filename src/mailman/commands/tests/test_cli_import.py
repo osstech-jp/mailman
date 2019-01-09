@@ -20,12 +20,13 @@
 import unittest
 
 from click.testing import CliRunner
+from contextlib import ExitStack
+from importlib_resources import path
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_import import import21
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.importer import Import21Error
 from pickle import dump
-from pkg_resources import resource_filename
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch
 
@@ -43,12 +44,12 @@ class TestImport(unittest.TestCase):
         # _BounceInfo instances.  We throw these away when importing to
         # Mailman 3, but we have to fake the instance's classes, otherwise
         # unpickling the dictionaries will fail.
-        pckfile = resource_filename(
-            'mailman.testing', 'config-with-instances.pck')
-        try:
-            self._command.invoke(import21, ('ant.example.com', pckfile))
-        except ImportError as error:
-            self.fail('The pickle failed loading: {}'.format(error))
+        with path('mailman.testing', 'config-with-instances.pck') as pckpath:
+            pckfile = str(pckpath)
+            try:
+                self._command.invoke(import21, ('ant.example.com', pckfile))
+            except ImportError as error:
+                self.fail('The pickle failed loading: {}'.format(error))
         self.assertTrue(import_config_pck.called)
 
     def test_missing_list_spec(self):
@@ -69,9 +70,12 @@ class TestImport(unittest.TestCase):
             self.assertIn('Ignoring non-dictionary', result.output)
 
     def test_pickle_with_bad_language(self):
-        pckfile = resource_filename('mailman.testing', 'config.pck')
-        with patch('mailman.utilities.importer.check_language_code',
-                   side_effect=Import21Error('Fake bad language code')):
+        with ExitStack() as resources:
+            pckfile = str(resources.enter_context(
+                path('mailman.testing', 'config.pck')))
+            resources.enter_context(
+                patch('mailman.utilities.importer.check_language_code',
+                      side_effect=Import21Error('Fake bad language code')))
             result = self._command.invoke(
                 import21, ('ant.example.com', pckfile))
             self.assertIn('Fake bad language code', result.output)

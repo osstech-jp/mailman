@@ -20,6 +20,7 @@
 import unittest
 
 from email import message_from_bytes as mfb
+from importlib_resources import read_binary
 from mailman.app.lifecycle import create_list
 from mailman.chains.builtin import BuiltInChain
 from mailman.chains.hold import HoldChain, autorespond_to_sender
@@ -33,7 +34,6 @@ from mailman.testing.helpers import (
     LogFileMark, configuration, get_queue_messages, set_preferred,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
-from pkg_resources import resource_filename
 from zope.component import getUtility
 
 
@@ -173,9 +173,7 @@ A message body.
         bart = self._user_manager.create_user('bart@example.com', 'Bart User')
         address = set_preferred(bart)
         self._mlist.subscribe(address, MemberRole.moderator)
-        path = resource_filename('mailman.chains.tests', 'issue144.eml')
-        with open(path, 'rb') as fp:
-            msg = mfb(fp.read())
+        msg = mfb(read_binary('mailman.chains.tests', 'issue144.eml'))
         msg.sender = 'anne@example.com'
         process_chain(self._mlist, msg, {}, start_chain='hold')
         # The postauth.txt message is now in the virgin queue awaiting

@@ -21,13 +21,13 @@ import os
 import unittest
 
 from contextlib import ExitStack
+from importlib_resources import path
 from mailman.config.config import (
     Configuration, external_configuration, load_external)
 from mailman.interfaces.configuration import (
     ConfigurationUpdatedEvent, MissingConfigurationFileError)
 from mailman.testing.helpers import configuration, event_subscribers
 from mailman.testing.layers import ConfigLayer
-from pkg_resources import resource_filename
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from unittest import mock
 
@@ -76,8 +76,8 @@ class TestExternal(unittest.TestCase):
     """Test external configuration file loading APIs."""
 
     def test_load_external_by_filename(self):
-        filename = resource_filename('mailman.config', 'postfix.cfg')
-        contents = load_external(filename)
+        with path('mailman.config', 'postfix.cfg') as filename:
+            contents = load_external(str(filename))
         self.assertEqual(contents[:9], '[postfix]')
 
     def test_load_external_by_path(self):
@@ -85,8 +85,8 @@ class TestExternal(unittest.TestCase):
         self.assertEqual(contents[:9], '[postfix]')
 
     def test_external_configuration_by_filename(self):
-        filename = resource_filename('mailman.config', 'postfix.cfg')
-        parser = external_configuration(filename)
+        with path('mailman.config', 'postfix.cfg') as filename:
+            parser = external_configuration(str(filename))
         self.assertEqual(parser.get('postfix', 'postmap_command'),
                          '/usr/sbin/postmap')
 

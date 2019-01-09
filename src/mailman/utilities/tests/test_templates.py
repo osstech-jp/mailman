@@ -22,12 +22,13 @@ import shutil
 import tempfile
 import unittest
 
+from contextlib import ExitStack
+from importlib_resources import path as resource_path
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.i18n import TemplateNotFoundError, find, search
-from pkg_resources import resource_filename
 from zope.component import getUtility
 
 
@@ -61,8 +62,11 @@ class TestSearchOrder(unittest.TestCase):
         # $var_dir, except those files that live within Mailman's source
         # tree.  The former will use /v/ as the root and the latter will use
         # /m/ as the root.
-        in_tree = os.path.dirname(resource_filename('mailman', 'templates'))
-        raw_search_order = search(template_file, mailing_list, language)
+        with ExitStack() as resources:
+            in_tree = str(resources.enter_context(
+                resource_path('mailman', 'templates')).parent)
+            raw_search_order = search(
+                resources, template_file, mailing_list, language)
         for path in raw_search_order:
             if path.startswith(self.var_dir):
                 path = '/v' + path[len(self.var_dir):]

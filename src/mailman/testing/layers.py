@@ -31,6 +31,7 @@ import logging
 import datetime
 import tempfile
 
+from importlib_resources import read_text
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.core import initialize
@@ -42,7 +43,6 @@ from mailman.testing.helpers import (
     TestableMaster, get_lmtp_client, reset_the_world, wait_for_webservice)
 from mailman.testing.mta import ConnectionCountingController
 from mailman.utilities.string import expand
-from pkg_resources import resource_string as resource_bytes
 from public import public
 from textwrap import dedent
 from zope.component import getUtility
@@ -119,8 +119,7 @@ class ConfigLayer(MockAndMonkeyLayer):
         configuration: {}
         """.format(cls.var_dir, postfix_cfg))
         # Read the testing config and push it.
-        more = resource_bytes('mailman.testing', 'testing.cfg')
-        test_config += more.decode('utf-8')
+        test_config += read_text('mailman.testing', 'testing.cfg')
         config.create_paths = True
         config.push('test config', test_config)
         # Initialize everything else.
