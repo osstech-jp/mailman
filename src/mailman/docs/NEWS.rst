@@ -32,14 +32,13 @@ Bugs
 
 REST
 ----
-* Allow setting ``max_num_recipients`` for a mailing list. (Closes #508)
+* Allow setting ``max_num_recipients`` for a mailing list.  (Closes #508)
 
-  
 Other
 -----
-* Email commands are now case insensitive. (Closes #353)
+* Email commands are now case insensitive.  (Closes #353)
 * Implicit commands sent to -join, -leave and -confirm addresses no longer
-  generate a Results email. (Closes #516)
+  generate a Results email.  (Closes #516)
 
 
 3.2.0 -- "La Villa Strangiato"
