@@ -7,7 +7,7 @@ explore Mailman archives.  This is a `Django`_ project.
 
 To set up `HyperKitty`_, please see `the Hyperkitty documentation`_.
 
-.. _`HyperKitty`: https://fedorahosted.org/hyperkitty/
+.. _`HyperKitty`: https://gitlab.com/mailman/hyperkitty
 .. _`Django`: http://djangoproject.org/
 .. _`the Hyperkitty documentation`: https://hyperkitty.readthedocs.io
 
