@@ -29,6 +29,8 @@ Bugs
   (Closes #504)
 * Message parts are now properly decoded when trying to remove an Approved:
   header.  (Closes #518)
+* Outgoing SMTP connections are now closed following message delivery
+  regardless of the max_sessions_per_connection setting.  (Closes #529)
 
 REST
 ----
