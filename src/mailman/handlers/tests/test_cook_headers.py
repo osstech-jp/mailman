@@ -21,7 +21,7 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.handlers import cook_headers
-from mailman.interfaces.mailinglist import (Personalization, ReplyToMunging)
+from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.interfaces.member import DeliveryMode
 from mailman.testing.helpers import (
     LogFileMark, get_queue_messages, make_digest_messages,
