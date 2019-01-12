@@ -84,6 +84,15 @@ def deliver(mlist, msg, msgdata):
     # for re-delivery later.
     t0 = time.time()
     refused = agent.deliver(mlist, msg, msgdata)
+    # At this point we have completed the initial SMTP for this message.
+    # We should close the SMTP connection regardless of the
+    # sessions_per_connection setting because otherwise if there are no more
+    # messages in the queue, the connection is left open until it times out
+    # which can cause problems in the MTA.
+    # XXX It would arguably be better to close only if the queue is empty, but
+    # this means examining the queue here or closing from the outgoing runner,
+    # either of which requires more information than should be available.
+    agent._connection.quit()
     t1 = time.time()
     # Log this posting.
     size = getattr(msg, 'original_size', msgdata.get('original_size'))

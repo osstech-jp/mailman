@@ -30,7 +30,8 @@ from mailman.mta.bulk import BulkDelivery
 from mailman.mta.deliver import Deliver
 from mailman.testing.helpers import (
     specialized_message_from_string as mfs, subscribe)
-from mailman.testing.layers import ConfigLayer
+from mailman.testing.layers import ConfigLayer, SMTPLayer
+from mailman.utilities.modules import find_name
 from zope.component import getUtility
 
 
@@ -200,3 +201,61 @@ list: Test
 Footer
 
 """)
+
+
+class TestCloseAfterDelivery(unittest.TestCase):
+    """Test that connections close after delivery."""
+
+    layer = SMTPLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        # Set personalized delivery.
+        self._mlist.personalize = Personalization.individual
+        # Make Anne a member of this mailing list.
+        self._anne = subscribe(self._mlist, 'Anne', email='anne@example.org')
+        self._msg = mfs("""\
+From: anne@example.org
+To: test@example.com
+Subject: test
+
+""")
+        self._deliverer = find_name(config.mta.outgoing)
+        # Set the maximum transactions per connection.
+        config.push('maxtrans', """
+        [mta]
+        max_sessions_per_connection: 3
+        """)
+        self.addCleanup(config.pop, 'maxtrans')
+
+    def test_two_messages(self):
+        msgdata = dict(recipients=['anne@example.org'])
+        # Send a message.
+        self._deliverer(self._mlist, self._msg, msgdata)
+        # We should have made one SMTP connection.
+        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 1)
+        # Send a second message.
+        msgdata = dict(recipients=['bart@example.org'])
+        self._deliverer(self._mlist, self._msg, msgdata)
+        # This should result in a second connection.
+        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 2)
+
+    def test_one_message_two_recip(self):
+        msgdata = dict(recipients=['anne@example.org', 'bart@example.org'])
+        # Send the message.
+        self._deliverer(self._mlist, self._msg, msgdata)
+        # Sending to 2 recips sends 2 messages because of personalization.
+        # That's fewer than max_sessions_per_connection so there's only
+        # one connection.
+        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 1)
+
+    def test_one_message_four_recip(self):
+        msgdata = dict(recipients=['anne@example.org',
+                                   'bart@example.org',
+                                   'cate@example.com',
+                                   'dave@example.com'])
+        # Send the message.
+        self._deliverer(self._mlist, self._msg, msgdata)
+        # Since max_sessions_per_connection is 3, sending 4 personalized
+        # messages creates 2 connections.
+        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 2)
