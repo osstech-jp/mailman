@@ -42,6 +42,7 @@ Other
 * An ``explicit_header_only`` option has been added to Reply-To: munging to
   avoid putting the list address in Cc:.  (Closes #531)
 
+
 3.2.0 -- "La Villa Strangiato"
 ==============================
 (2018-07-10)
