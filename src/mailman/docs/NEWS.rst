@@ -39,6 +39,8 @@ Other
 * Email commands are now case insensitive.  (Closes #353)
 * Implicit commands sent to -join, -leave and -confirm addresses no longer
   generate a Results email.  (Closes #516)
+* An ``explicit_header_only`` option has been added to Reply-To: munging to
+  avoid putting the list address in Cc:.  (Closes #531)
 
 
 3.2.0 -- "La Villa Strangiato"

@@ -21,7 +21,7 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.handlers import cook_headers
-from mailman.interfaces.mailinglist import ReplyToMunging
+from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.interfaces.member import DeliveryMode
 from mailman.testing.helpers import (
     LogFileMark, get_queue_messages, make_digest_messages,
@@ -106,6 +106,34 @@ Subject: A subject
 X-Mailman-Version: X.Y
 Precedence: list
 Reply-To: =?utf-8?b?U29tZSBDb2ZmZWUg4piV?= <ant@example.com>
+
+More things to say.
+""")
+
+    def test_no_list_address_in_cc(self):
+        self._mlist.personalize = Personalization.full
+        self._mlist.reply_goes_to_list = ReplyToMunging.explicit_header_only
+        self._mlist.reply_to_address = 'my-list@example.com'
+        self._mlist.first_strip_reply_to = True
+        msg = mfs("""\
+From: anne@example.com
+To: ant@example.com
+Reply-To: bperson@example.com
+Cc: cperson@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+
+More things to say.
+""")
+        cook_headers.process(self._mlist, msg, {})
+        self.assertMultiLineEqual(msg.as_string(), """\
+From: anne@example.com
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Precedence: list
+Reply-To: my-list@example.com
+Cc: cperson@example.com
 
 More things to say.
 """)

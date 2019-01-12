@@ -129,3 +129,29 @@ header...
     1
     >>> print(msg['reply-to'])
     my-list@example.com, bperson@example.com
+
+
+Don't CC List Address in Reply
+==============================
+
+The default behavior of a personalized list is that a reply goes ``To``
+the message sender and the list address is added to ``Cc``.
+
+The list can be configured so that replying to a list message replies only
+to the explicit ``Reply-To`` header and does not include the list address
+in ``Cc``.
+
+    >>> mlist.reply_goes_to_list = ReplyToMunging.explicit_header_only
+    >>> mlist.reply_to_address = 'my-list@example.com'
+    >>> mlist.first_strip_reply_to = True
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... Reply-To: bperson@example.com
+    ... Cc: cperson@example.com
+    ...
+    ... """)
+    >>> process(mlist, msg, {})
+    >>> print(msg['reply-to'])
+    my-list@example.com
+    >>> print(msg['cc'])
+    cperson@example.com
