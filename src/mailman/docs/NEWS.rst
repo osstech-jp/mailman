@@ -43,6 +43,7 @@ Other
   generate a Results email.  (Closes #516)
 * An ``explicit_header_only`` option has been added to Reply-To: munging to
   avoid putting the list address in Cc:.  (Closes #531)
+* The default list welcome message has been cleaned up a bit.  (Closes #530)
 
 
 3.2.0 -- "La Villa Strangiato"

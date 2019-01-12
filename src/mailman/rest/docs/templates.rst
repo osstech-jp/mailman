@@ -46,15 +46,16 @@ subscribed to the mailing list, she sees this plain welcome message.
     <BLANKLINE>
       ant@example.com
     <BLANKLINE>
-    You can make such adjustments via email by sending a message to:
+    You can unsubscribe or make adjustments to your options via email by
+    sending a message to:
     <BLANKLINE>
       ant-request@example.com
     <BLANKLINE>
     with the word 'help' in the subject or body (don't include the
     quotes), and you will get back a message with instructions.  You will
     need your password to change your options, but for security purposes,
-    this email is not included here.  If you have forgotten your password you
-    will need to click on the 'Forgot Password?' link on the login page.
+    this password is not included here.  If you have forgotten your
+    password you will need to reset it via the web UI.
 
 Let's say though that you wanted to provide a link to a Code of Conduct in the
 welcome message.  You publish both the code of conduct and the welcome message
