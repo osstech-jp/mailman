@@ -466,6 +466,9 @@ below.  Here are all the supported template names:
     * ``user_language`` - the description of the user's preferred language
       (e.g. "French", "English", "Italian")
     * ``user_name`` - the recipient's display name if available
+    * ``user_name_or_email`` - the recipient's display name if available,
+      or their email address if no display name
+      (e.g. "Anne Person", "Bart", or "fperson@example.com")
 
 * ``list:member:regular:header``
     The header for a regular (non-digest) message.
@@ -479,6 +482,9 @@ below.  Here are all the supported template names:
     * ``user_language`` - the description of the user's preferred language
       (e.g. "French", "English", "Italian")
     * ``user_name`` - the recipient's display name if available
+    * ``user_name_or_email`` - the recipient's display name if available,
+      or their email address if no display name
+      (e.g. "Anne Person", "Bart", or "fperson@example.com")
 
 * ``list:user:action:subscribe``
     The message sent to subscribers when a subscription confirmation is
