@@ -44,6 +44,9 @@ Other
 * An ``explicit_header_only`` option has been added to Reply-To: munging to
   avoid putting the list address in Cc:.  (Closes #531)
 * The default list welcome message has been cleaned up a bit.  (Closes #530)
+* A substitution variable ``user_name_or_email`` has been added to
+  ``list:member:regular:header`` and ``list:member:regular:footer`` templates
+  when personalized deliveries are enabled.  (Closes #533)
 
 
 3.2.0 -- "La Villa Strangiato"
