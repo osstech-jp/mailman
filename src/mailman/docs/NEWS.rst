@@ -54,6 +54,8 @@ Other
   when personalized deliveries are enabled.  (Closes #533)
 * The template search algorithm was fixed to look for in-tree templates for
   each language in the search list. (Closes #535)
+* Set default subscription policy to "confirm then moderate" for private
+  mailing list style. (Closes #536)
 
 
 3.2.0 -- "La Villa Strangiato"

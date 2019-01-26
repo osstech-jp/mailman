@@ -200,6 +200,7 @@ class Private:
         mlist = mailing_list
         mlist.advertised = False
         mlist.archive_policy = ArchivePolicy.private
+        mlist.subscription_policy = SubscriptionPolicy.confirm_then_moderate
 
 
 @public
