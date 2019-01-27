@@ -88,24 +88,28 @@ class TestSearchOrder(unittest.TestCase):
         nexteq('/v/templates/lists/l@example.com/it/foo.txt')
         nexteq('/v/templates/domains/example.com/it/foo.txt')
         nexteq('/v/templates/site/it/foo.txt')
+        nexteq('/m/templates/it/foo.txt')
         # 2: Use mlist.preferred_language
         nexteq('/v/templates/lists/l.example.com/de/foo.txt')
         nexteq('/v/templates/lists/l@example.com/de/foo.txt')
         nexteq('/v/templates/domains/example.com/de/foo.txt')
         nexteq('/v/templates/site/de/foo.txt')
+        nexteq('/m/templates/de/foo.txt')
         # 3: Use the site's default language
         nexteq('/v/templates/lists/l.example.com/fr/foo.txt')
         nexteq('/v/templates/lists/l@example.com/fr/foo.txt')
         nexteq('/v/templates/domains/example.com/fr/foo.txt')
         nexteq('/v/templates/site/fr/foo.txt')
+        nexteq('/m/templates/fr/foo.txt')
         # 4: English
         nexteq('/v/templates/lists/l.example.com/en/foo.txt')
         nexteq('/v/templates/lists/l@example.com/en/foo.txt')
         nexteq('/v/templates/domains/example.com/en/foo.txt')
         nexteq('/v/templates/site/en/foo.txt')
+        nexteq('/m/templates/en/foo.txt')
         # 5: After all the site-admin override paths have been searched, the
-        # Mailman in-tree paths are searched.  Note that Mailman only ships
-        # one set of English templates.
+        # Mailman in-tree english path is searched.  Note that Mailman
+        # currently only ships one set of English templates.
         nexteq('/m/templates/en/foo.txt')
 
     def test_no_language_argument_search_order(self):
@@ -118,16 +122,19 @@ class TestSearchOrder(unittest.TestCase):
         nexteq('/v/templates/lists/l@example.com/de/foo.txt')
         nexteq('/v/templates/domains/example.com/de/foo.txt')
         nexteq('/v/templates/site/de/foo.txt')
+        nexteq('/m/templates/de/foo.txt')
         # 2: Use the site's default language
         nexteq('/v/templates/lists/l.example.com/fr/foo.txt')
         nexteq('/v/templates/lists/l@example.com/fr/foo.txt')
         nexteq('/v/templates/domains/example.com/fr/foo.txt')
         nexteq('/v/templates/site/fr/foo.txt')
+        nexteq('/m/templates/fr/foo.txt')
         # 3: English
         nexteq('/v/templates/lists/l.example.com/en/foo.txt')
         nexteq('/v/templates/lists/l@example.com/en/foo.txt')
         nexteq('/v/templates/domains/example.com/en/foo.txt')
         nexteq('/v/templates/site/en/foo.txt')
+        nexteq('/m/templates/en/foo.txt')
         # 4: After all the site-admin override paths have been searched, the
         # Mailman in-tree paths are searched.  Note that Mailman only ships
         # one set of English templates.
@@ -140,10 +147,13 @@ class TestSearchOrder(unittest.TestCase):
             self.assertEqual(next(search_order), path)
         # 1: Use the given language argument
         nexteq('/v/templates/site/it/foo.txt')
+        nexteq('/m/templates/it/foo.txt')
         # 2: Use the site's default language
         nexteq('/v/templates/site/fr/foo.txt')
+        nexteq('/m/templates/fr/foo.txt')
         # 3: English
         nexteq('/v/templates/site/en/foo.txt')
+        nexteq('/m/templates/en/foo.txt')
         # 4: After all the site-admin override paths have been searched, the
         # Mailman in-tree paths are searched.  Note that Mailman only ships
         # one set of English templates.
@@ -156,8 +166,10 @@ class TestSearchOrder(unittest.TestCase):
             self.assertEqual(next(search_order), path)
         # 1: Use the site's default language
         nexteq('/v/templates/site/fr/foo.txt')
+        nexteq('/m/templates/fr/foo.txt')
         # 2: English
         nexteq('/v/templates/site/en/foo.txt')
+        nexteq('/m/templates/en/foo.txt')
         # 3: After all the site-admin override paths have been searched, the
         # Mailman in-tree paths are searched.  Note that Mailman only ships
         # one set of English templates.

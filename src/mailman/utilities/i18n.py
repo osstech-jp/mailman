@@ -61,6 +61,9 @@ def search(resources, template_file, mlist=None, language=None):
     * The site-wide language directory
       $template_dir/site/<language>
 
+    * The template direcotry within the mailman source tree
+    * <source_dir>/templates/<language>
+
     The <language> path component is calculated as follows, in this order:
 
     * The `language` parameter if given
@@ -78,21 +81,25 @@ def search(resources, template_file, mlist=None, language=None):
     * $template_dir/lists/test@example.com/it/foo.txt (deprecated)
     * $template_dir/domains/example.com/it/foo.txt
     * $template_dir/site/it/foo.txt
+    * <source_dir>/templates/it/foo.txt
 
     * $template_dir/lists/test.example.com/de/foo.txt
     * $template_dir/lists/test@example.com/de/foo.txt (deprecated)
     * $template_dir/domains/example.com/de/foo.txt
     * $template_dir/site/de/foo.txt
+    * <source_dir>/templates/de/foo.txt
 
     * $template_dir/lists/test.example.com/fr/foo.txt
     * $template_dir/lists/test@example.com/fr/foo.txt (deprecated)
     * $template_dir/domains/example.com/fr/foo.txt
     * $template_dir/site/fr/foo.txt
+    * <source_dir>/templates/fr/foo.txt
 
     * $template_dir/lists/test.example.com/en/foo.txt
     * $template_dir/lists/test@example.com/en/foo.txt (deprecated)
     * $template_dir/domains/example.com/en/foo.txt
     * $template_dir/site/en/foo.txt
+    * <source_dir>/templates/en/foo.txt
 
     After all those paths are searched, the final fallback is the English
     template within the Mailman source tree.
@@ -107,7 +114,8 @@ def search(resources, template_file, mlist=None, language=None):
         languages.append(language)
     languages.reverse()
     # The non-language qualified $template_dir paths in search order.
-    paths = [os.path.join(config.TEMPLATE_DIR, 'site')]
+    templates_dir = str(resources.enter_context(path('mailman', 'templates')))
+    paths = [templates_dir, os.path.join(config.TEMPLATE_DIR, 'site')]
     if mlist is not None:
         # Don't forget these are in REVERSE search order!
         paths.append(os.path.join(
@@ -120,7 +128,6 @@ def search(resources, template_file, mlist=None, language=None):
     for language, search_path in product(languages, paths):
         yield os.path.join(search_path, language, template_file)
     # Finally, fallback to the in-tree English template.
-    templates_dir = str(resources.enter_context(path('mailman', 'templates')))
     yield os.path.join(templates_dir, 'en', template_file)
 
 

@@ -47,6 +47,8 @@ Other
 * A substitution variable ``user_name_or_email`` has been added to
   ``list:member:regular:header`` and ``list:member:regular:footer`` templates
   when personalized deliveries are enabled.  (Closes #533)
+* The template search algorithm was fixed to look for in-tree templates for
+  each language in the search list. (Closes #535)
 
 
 3.2.0 -- "La Villa Strangiato"
