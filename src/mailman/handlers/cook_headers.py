@@ -106,9 +106,9 @@ def process(mlist, msg, msgdata):
             new.append(pair)
         # List admin wants an explicit Reply-To: added
         if (mlist.reply_goes_to_list is ReplyToMunging.explicit_header
-            or mlist.reply_goes_to_list is
-                ReplyToMunging.explicit_header_only):
-                    add(parseaddr(mlist.reply_to_address))
+            or mlist.reply_goes_to_list
+                is ReplyToMunging.explicit_header_only):
+            add(parseaddr(mlist.reply_to_address))
         # If we're not first stripping existing Reply-To: then we need to add
         # the original Reply-To:'s to the list we're building up.  In both
         # cases we'll zap the existing field because RFC 2822 says max one is
