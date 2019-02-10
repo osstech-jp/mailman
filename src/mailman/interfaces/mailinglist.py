@@ -391,6 +391,12 @@ class IMailingList(Interface):
     reply_goes_to_list = Attribute(
         """Reply-To: header munging policy.""")
 
+    member_roster_visibility = Attribute(
+        """The policy for who can view the member roster of this mailing list.
+
+        The value is an `RosterVisibility` enum.  Use this to change who can
+        view the member list. Options are public, members, or moderators.""")
+
     # Digests.
 
     digests_enabled = Attribute(

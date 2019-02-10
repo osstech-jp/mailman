@@ -77,6 +77,7 @@ RESOURCE = dict(
     reply_goes_to_list='point_to_list',
     reply_to_address='bee@example.com',
     require_explicit_destination=True,
+    member_roster_visibility='public',
     send_welcome_message=False,
     subject_prefix='[ant]',
     subscription_policy='confirm_then_moderate',

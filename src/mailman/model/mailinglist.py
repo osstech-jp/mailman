@@ -174,6 +174,7 @@ class MailingList(Model):
     reply_to_address = Column(SAUnicode)
     require_explicit_destination = Column(Boolean)
     respond_to_post_requests = Column(Boolean)
+    member_roster_visibility = Column(Enum(roster.RosterVisibility))
     scrub_nondigest = Column(Boolean)
     send_goodbye_message = Column(Boolean)
     send_welcome_message = Column(Boolean)

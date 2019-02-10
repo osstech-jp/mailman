@@ -40,6 +40,7 @@ LOCALIZATION
 REST
 ----
 * Allow setting ``max_num_recipients`` for a mailing list.  (Closes #508)
+* Add a per-list visibility option for Members. (Closes #108)
 
 Other
 -----

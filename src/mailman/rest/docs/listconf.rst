@@ -64,6 +64,7 @@ All readable attributes for a list are available on a sub-resource.
     mail_host: example.com
     max_message_size: 40
     max_num_recipients: 10
+    member_roster_visibility: moderators
     moderator_password: None
     next_digest_number: 1
     no_reply_address: noreply@example.com
@@ -76,7 +77,7 @@ All readable attributes for a list are available on a sub-resource.
     request_address: ant-request@example.com
     require_explicit_destination: True
     respond_to_post_requests: True
-		send_welcome_message: True
+    send_welcome_message: True
     subject_prefix: [Ant]
     subscription_policy: confirm
     volume: 1
@@ -130,6 +131,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             reply_goes_to_list='point_to_list',
     ...             reply_to_address='bee@example.com',
     ...             require_explicit_destination=False,
+    ...             member_roster_visibility='members',
     ...             send_welcome_message=False,
     ...             subject_prefix='[ant]',
     ...             subscription_policy='moderate',
@@ -189,6 +191,7 @@ These values are changed permanently.
     ...
     include_rfc2369_headers: False
     ...
+    member_roster_visibility: members
     moderator_password: {plaintext}password
     ...
     posting_pipeline: virgin

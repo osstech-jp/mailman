@@ -22,6 +22,7 @@ the ones that fit a particular role.  These are used as the member, owner,
 moderator, and administrator roster filters.
 """
 
+from enum import Enum
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.roster import IRoster
@@ -30,6 +31,17 @@ from mailman.model.member import Member
 from public import public
 from sqlalchemy import or_
 from zope.interface import implementer
+
+
+@public
+class RosterVisibility(Enum):
+    # The member roster is entirely public.
+    public = 0
+    # Any list member can view the member roster.
+    members = 1
+    # Only list moderators and above (list owners, domain owners, admins,
+    # superusers) can view the member roster.
+    moderators = 2
 
 
 @public

@@ -33,6 +33,7 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
     DMARCMitigateAction, Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.nntp import NewsgroupModeration
+from mailman.model.roster import RosterVisibility
 from public import public
 
 
@@ -68,6 +69,7 @@ class BasicOperation:
         mlist.default_nonmember_action = Action.hold
         mlist.subscription_policy = SubscriptionPolicy.confirm
         mlist.unsubscription_policy = SubscriptionPolicy.confirm
+        mlist.member_roster_visibility = RosterVisibility.moderators
         # Notify the administrator of pending requests and membership changes.
         mlist.admin_immed_notify = True
         mlist.admin_notify_mchanges = False

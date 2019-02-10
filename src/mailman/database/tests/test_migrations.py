@@ -495,3 +495,19 @@ class TestMigrations(unittest.TestCase):
         self.assertEqual(
             len(list(config.db.store.execute(mlist_table.select()))),
             0)
+
+    def test_15401063d4e3_upgrade_if_exists(self):
+        mlist_table = sa.sql.table(
+            'mailinglist',
+            sa.sql.column('member_roster_visibility', sa.Integer),
+            sa.sql.column('list_id', sa.Unicode))
+        with transaction():
+            # Start at the previous revision.
+            alembic.command.downgrade(alembic_cfg, '15401063d4e3')
+            # Create a mailing list with some existing column.
+            config.db.store.execute(mlist_table.insert().values(
+                list_id='ant.example.com',
+                member_roster_visibility=2))
+        # Test that if the database already has member_roster_visibility filed,
+        # then make sure that we can ugprade.
+        alembic.command.upgrade(alembic_cfg, '15401063d4e3')
