@@ -1,0 +1,16 @@
+Sie wurden mit der Adresse "$email" zur Mailingliste $listname
+auf $hostname eingeladen. Sie können diese Einladung annehmen,
+indem sie einfach auf diese Nachricht antworten, ohne die 
+Betreffzeile zu verändern.
+
+Alternativ können Sie folgende Zeile (und nur diese) in einer
+Nachricht an $requestaddr senden:
+
+    confirm $cookie
+
+Im Normalfall sollte eine einfache Antwort auf diese Nachricht
+mit den meisten E-Mail-Programmen funktionieren.
+
+Um die Einladung abzulehnen, ignorieren Sie diese Nachricht
+einfach. Für weitere Fragen wenden Sie sich bitte an
+$listowner

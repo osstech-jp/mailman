@@ -32,6 +32,11 @@ Bugs
 * Outgoing SMTP connections are now closed following message delivery
   regardless of the max_sessions_per_connection setting.  (Closes #529)
 
+LOCALIZATION
+------------
+* Added German translations for mail templates. Thanks to the "Institut für
+  Gebrauchsgrafik" for providing them. (Closes #534)
+
 REST
 ----
 * Allow setting ``max_num_recipients`` for a mailing list.  (Closes #508)
