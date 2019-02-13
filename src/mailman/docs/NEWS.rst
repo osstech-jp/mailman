@@ -12,6 +12,12 @@ Here is a history of user visible changes to Mailman.
 =====================
 (20xx-xx-xx)
 
+
+
+3.2.1
+=====
+(2019-02-10)
+
 Command line
 ------------
 * The ``mailman import21`` command properly converts all acceptable_aliases
