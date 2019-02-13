@@ -54,7 +54,10 @@ def ascii_header(mlist, msgdata, subject, prefix, prefix_pattern, ws):
     else:
         recolon = ''
     lines = subject_text.splitlines()
-    first_line = [lines[0]]
+    # If the subject was only the prefix or Re:, the text could be null.
+    first_line = []
+    if lines:
+        first_line = [lines[0]]
     if recolon:
         first_line.insert(0, recolon)
     if prefix:
@@ -95,7 +98,10 @@ def all_same_charset(mlist, msgdata, subject, prefix, prefix_pattern, ws):
     else:
         recolon = ''
     lines = subject_text.splitlines()
-    first_line = [lines[0]]
+    # If the subject was only the prefix or Re:, the text could be null.
+    first_line = []
+    if lines:
+        first_line = [lines[0]]
     if recolon:
         first_line.insert(0, recolon)
     if prefix:

@@ -37,6 +37,7 @@ Bugs
   header.  (Closes #518)
 * Outgoing SMTP connections are now closed following message delivery
   regardless of the max_sessions_per_connection setting.  (Closes #529)
+* Messages with Subject: Re: only are now processed correctly.  (Closes #545)
 
 LOCALIZATION
 ------------
