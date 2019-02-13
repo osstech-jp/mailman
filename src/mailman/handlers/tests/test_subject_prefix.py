@@ -90,6 +90,23 @@ class TestSubjectPrefix(unittest.TestCase):
         self._process(self._mlist, msg, {})
         self.assertEqual(str(msg['subject']), '[Test] Re: A test message')
 
+    def test_re_prefix_all_same(self):
+        # Re: prefix with non-ascii.
+        msg = Message()
+        msg['Subject'] = '=?utf-8?Q?Re:_[Test]_A_test_message?='
+        old_charset = self._mlist.preferred_language.charset
+        self._mlist.preferred_language.charset = 'utf-8'
+        self._process(self._mlist, msg, {})
+        self._mlist.preferred_language.charset = old_charset
+        self.assertEqual(str(msg['subject']), '[Test] Re: A test message')
+
+    def test_re_prefix_mixed(self):
+        # Re: prefix with non-ascii and mixed charset.
+        msg = Message()
+        msg['Subject'] = '=?utf-8?Q?Re:_[Test]_A_test_message?='
+        self._process(self._mlist, msg, {})
+        self.assertEqual(str(msg['subject']), '[Test] Re: A test message')
+
     def test_multiline_subject(self):
         # The subject appears on multiple lines.
         msg = Message()
@@ -106,6 +123,60 @@ class TestSubjectPrefix(unittest.TestCase):
         self.assertEqual(subject.encode(),
                          '[Test] =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=')
         self.assertEqual(str(subject), '[Test] メールマン')
+
+    def test_prefix_only(self):
+        # Incoming subject is only the prefix.
+        msg = Message()
+        msg['Subject'] = '[Test] '
+        self._process(self._mlist, msg, {})
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] ')
+
+    def test_prefix_only_all_same(self):
+        # Incoming subject is only the prefix.
+        msg = Message()
+        msg['Subject'] = '=?utf-8?Q?[Test]_?='
+        old_charset = self._mlist.preferred_language.charset
+        self._mlist.preferred_language.charset = 'utf-8'
+        self._process(self._mlist, msg, {})
+        self._mlist.preferred_language.charset = old_charset
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] ')
+
+    def test_prefix_only_mixed(self):
+        # Incoming subject is only the prefix.
+        msg = Message()
+        msg['Subject'] = '=?utf-8?Q?[Test]_?='
+        self._process(self._mlist, msg, {})
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] ')
+
+    def test_re_only(self):
+        # Incoming subject is only Re:.
+        msg = Message()
+        msg['Subject'] = 'Re:'
+        self._process(self._mlist, msg, {})
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] Re: ')
+
+    def test_re_only_all_same(self):
+        # Incoming subject is only Re:.
+        msg = Message()
+        msg['Subject'] = '=?utf-8?Q?Re:?='
+        old_charset = self._mlist.preferred_language.charset
+        self._mlist.preferred_language.charset = 'utf-8'
+        self._process(self._mlist, msg, {})
+        self._mlist.preferred_language.charset = old_charset
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] Re: ')
+
+    def test_re_only_mixed(self):
+        # Incoming subject is only Re:.
+        msg = Message()
+        msg['Subject'] = '=?utf-8?Q?Re:?='
+        self._process(self._mlist, msg, {})
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] Re: ')
 
     def test_i18n_subject_with_sequential_prefix_and_re(self):
         # The mailing list defines a sequential prefix, and the original
