@@ -213,13 +213,15 @@ This is a challenge because ``virtual alias domains`` do not use
 
 In order to enable this configuration, Mailman `domains`_ have an
 ``alias_domain`` attribute.  This is normally ``None`` but can be set to any
-otherwise unused domain name.  For example if the actual domain is
-``example.com`` the ``alias_domain`` could be ``x.example.com``.  If this is
-done, and the configured MTA is Postfix, Mailman will create an additional
-``/path-to-mailman/var/data/postfix_vmap`` file with mappings from the
-``example.com`` addresses to the corresponding ``x.example.com`` addresses and
-will use the ``x.example.com`` domain in the other files.  To use this feature,
-add the following in ``main.cf``::
+otherwise unused domain name.  The ``alias_domain`` is a fictitious domain that
+is not exposed in ``DNS`` and is only known to Postfix via the Mailman
+generated mappings.  For example if the actual domain is ``example.com`` the
+``alias_domain`` could be ``x.example.com`` or even literally ``bogus.domain``.
+If this is done and the configured MTA is Postfix, Mailman will create an
+additional ``/path-to-mailman/var/data/postfix_vmap`` file with mappings from
+the ``example.com`` addresses to the corresponding addresses in the
+``alias_domain`` and will use the ``alias_domain`` in the other files.
+To use this feature, add the following in ``main.cf``::
 
     transport_maps =
         hash:/path-to-mailman/var/data/postfix_lmtp
@@ -231,8 +233,10 @@ add the following in ``main.cf``::
 where ``path-to-mailman`` is as above.  If any of these are already set, just
 add the ``hash`` references to the existing settings.  We don't add
 ``local_recipient_maps`` because the lists are in a virtual domain and are
-therefore not local.  Note that these can be ``regexp`` tables rather than
-``hash`` tables.  See the ``Transport maps`` section above.
+therefore not local, although if you have lists in multiple domains, some of
+which are local, you may need ``local_recipient_maps`` as above.  Note that
+these can be ``regexp`` tables rather than ``hash`` tables.  See the
+``Transport maps`` section above.
 
 
 Postfix documentation
