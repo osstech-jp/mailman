@@ -16,7 +16,7 @@ Here is a history of user visible changes to Mailman.
 
 3.2.1
 =====
-(2019-02-10)
+(2019-02-22)
 
 Command line
 ------------
