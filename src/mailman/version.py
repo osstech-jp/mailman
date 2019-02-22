@@ -18,7 +18,7 @@
 """Mailman version strings."""
 
 # Mailman version.
-VERSION = '3.2.1rc1'
+VERSION = '3.2.1'
 CODENAME = 'La Villa Strangiato'
 
 # And as a hex number in the manner of PY_VERSION_HEX.
@@ -34,7 +34,7 @@ MINOR_REV = 2
 MICRO_REV = 1
 REL_LEVEL = RC
 # At most 15 beta releases!
-REL_SERIAL = 1
+REL_SERIAL = FINAL
 
 HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
                (REL_LEVEL << 4)  | (REL_SERIAL << 0))             # noqa: E221
