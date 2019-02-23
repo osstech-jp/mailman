@@ -163,7 +163,7 @@ class AllDomains(_DomainBase):
             if owners is not None:
                 values['owners'] = owners
             domain = domain_manager.add(**values)
-        except BadDomainSpecificationError as error:
+        except (BadDomainSpecificationError, ValueError) as error:
             bad_request(response, str(error))
         else:
             location = self.api.path_to('domains/{}'.format(domain.mail_host))

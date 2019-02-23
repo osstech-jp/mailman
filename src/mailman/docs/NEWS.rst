@@ -16,6 +16,10 @@ Here is a history of user visible changes to Mailman.
 =====
 (2019-XX-XX)
 
+REST
+----
+* Failed validation to new Mailing List creation and Domain creation no longer
+  returns 500 errors.
 
 
 3.2.1
