@@ -225,6 +225,15 @@ class TestLists(unittest.TestCase):
         self.assertEqual(cm.exception.reason,
                          'Invalid list posting address: @example.com')
 
+    def test_create_list_failed_validator_returns_bad_requests(self):
+        # Test that missing parameter or any other error that fails validation
+        # doesn't raise 500 error.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists', method='POST')
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'Missing parameters: fqdn_listname')
+
     def test_cannot_create_list_with_invalid_name(self):
         # You cannot create a mailing list which would have an invalid list
         # posting address.

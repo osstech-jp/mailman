@@ -299,6 +299,8 @@ class AllLists(_ListBase):
                                   style_name=str,
                                   _optional=('style_name',))
             mlist = create_list(**validator(request))
+        except ValueError as error:
+            bad_request(response, str(error))
         except ListAlreadyExistsError:
             bad_request(response, b'Mailing list exists')
         except BadDomainSpecificationError as error:
