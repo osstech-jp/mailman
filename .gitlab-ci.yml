@@ -69,3 +69,12 @@ diffcov:
   - tox -e py37-diffcov
   except:
   - master
+
+upload:
+  stage: deploy
+  script:
+    - python3 setup.py sdist
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 week
