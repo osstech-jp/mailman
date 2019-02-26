@@ -33,7 +33,7 @@ from mailman.rest.helpers import (
 from mailman.rest.validator import (
     PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
     Validator, enum_validator, integer_ge_zero_validator,
-    list_of_strings_validator
+    language_validator, list_of_strings_validator
     )
 from public import public
 from zope.component import getUtility
@@ -62,6 +62,24 @@ class AcceptableAliases(GetterSetter):
         alias_set.clear()
         for alias in value:
             alias_set.add(alias)
+
+
+class LanguageGetterSetter(GetterSetter):
+
+    def get(self, mlist, attribute):
+        """Return the language code of the preferred language."""
+        assert attribute == 'preferred_language', (
+            'Unexpected attribute: {}'.format(attribute))   # pragma: nocover
+        return mlist.preferred_language.code
+
+    def put(self, mlist, attribute, value):
+        """Set the preferred language of the MailingList."""
+        assert attribute == 'preferred_language', (
+            'Unexpected attribute: {}'.format(attribute))   # pragma: nocover
+
+        # We can just set the language code as value since the setter takes
+        # cares of converting the language code to Language model.
+        mlist.preferred_language = value
 
 
 TEMPLATE_ATTRIBUTES = dict(
@@ -179,6 +197,7 @@ ATTRIBUTES = dict(
     post_id=GetterSetter(None),
     posting_address=GetterSetter(None),
     posting_pipeline=GetterSetter(pipeline_validator),
+    preferred_language=LanguageGetterSetter(language_validator),
     reply_goes_to_list=GetterSetter(enum_validator(ReplyToMunging)),
     reply_to_address=GetterSetter(str),
     request_address=GetterSetter(None),

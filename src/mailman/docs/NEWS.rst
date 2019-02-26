@@ -20,6 +20,7 @@ REST
 ----
 * Failed validation to new Mailing List creation and Domain creation no longer
   returns 500 errors.
+* Expose ``preferred_language`` for MailingList through REST API.
 
 
 3.2.1
