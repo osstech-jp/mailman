@@ -74,6 +74,7 @@ RESOURCE = dict(
     moderator_password='password',
     max_message_size='150',
     posting_pipeline='virgin',
+    preferred_language='en',
     reply_goes_to_list='point_to_list',
     reply_to_address='bee@example.com',
     require_explicit_destination=True,

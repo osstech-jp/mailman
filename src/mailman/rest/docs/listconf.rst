@@ -72,6 +72,7 @@ All readable attributes for a list are available on a sub-resource.
     post_id: 1
     posting_address: ant@example.com
     posting_pipeline: default-posting-pipeline
+    preferred_language: en
     reply_goes_to_list: no_munging
     reply_to_address:
     request_address: ant-request@example.com
@@ -123,6 +124,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             dmarc_mitigate_unconditionally=False,
     ...             dmarc_moderation_notice='Some moderation notice',
     ...             dmarc_wrapped_message_text='some message text',
+    ...             preferred_language='ja',
     ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             first_strip_reply_to=True,
@@ -195,6 +197,7 @@ These values are changed permanently.
     moderator_password: {plaintext}password
     ...
     posting_pipeline: virgin
+    preferred_language: ja
     reply_goes_to_list: point_to_list
     reply_to_address: bee@example.com
     ...
