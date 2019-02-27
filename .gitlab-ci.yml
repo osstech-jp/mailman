@@ -12,6 +12,11 @@ variables:
   MYSQL_DATABASE: "test_mailman"
   LC_ALL: "C.UTF-8"
 
+
+stages:
+  - test
+  - upload
+  - deploy
 qa:
   script:
   - tox -e qa
@@ -71,10 +76,16 @@ diffcov:
   - master
 
 upload:
-  stage: deploy
+  stage: upload
   script:
     - python3 setup.py sdist
   artifacts:
     paths:
       - dist/*
     expire_in: 1 week
+
+trigger-client:
+  stage: deploy
+  trigger:
+    project: mailman/mailmanclient
+    branch: master
