@@ -147,6 +147,34 @@ def regexp_validator(value):                           # pragma: missed
 
 
 @public
+def email_or_regexp_validator(value):
+    """ Email or regular expression validator
+
+    Validate that the value is not null and is a valid regular expression or
+     email.
+    """
+    if not value:
+        raise ValueError(
+            'Expected a valid email address or regular expression, got empty')
+    valid = True
+    # A string starts with ^ will be regarded as regex.
+    if value.startswith('^'):
+        try:
+            regexp_validator(value)
+        except ValueError:
+            valid = False
+    else:
+        valid = getUtility(IEmailValidator).is_valid(value)
+
+    if valid:
+        return value
+    else:
+        raise ValueError(
+            'Expected a valid email address or regular expression,'
+            ' got {}'.format(value))
+
+
+@public
 class Validator:
     """A validator of parameter input."""
 
@@ -224,6 +252,7 @@ class PatchValidator(Validator):
     you're only changing a subset of the attributes, so you only validate the
     ones that exist in the request.
     """
+
     def __init__(self, request, converters):
         """Create a validator for the PATCH request.
 

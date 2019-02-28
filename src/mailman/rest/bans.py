@@ -21,8 +21,9 @@ from mailman.interfaces.bans import IBanManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, created, etag, no_content, not_found,
     okay)
-from mailman.rest.validator import Validator
+from mailman.rest.validator import Validator, email_or_regexp_validator
 from public import public
+from urllib.parse import quote_plus
 
 
 class _BannedBase:
@@ -37,6 +38,8 @@ class _BannedBase:
             base_location = ''
         else:
             base_location = 'lists/{}/'.format(self._mlist.list_id)
+        if email.startswith('^'):
+            email = quote_plus(email)
         return self.api.path_to('{}bans/{}'.format(base_location, email))
 
 
@@ -95,12 +98,13 @@ class BannedEmails(_BannedBase, CollectionMixin):
 
     def on_post(self, request, response):
         """Ban some email from subscribing."""
-        validator = Validator(email=str)
+        validator = Validator(email=email_or_regexp_validator)
         try:
             email = validator(request)['email']
         except ValueError as error:
             bad_request(response, str(error))
             return
+
         if self.ban_manager.is_banned(email):
             bad_request(response, b'Address is already banned')
         else:
