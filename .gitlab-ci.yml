@@ -17,6 +17,7 @@ stages:
   - test
   - upload
   - deploy
+
 qa:
   script:
   - tox -e qa
@@ -83,9 +84,13 @@ upload:
     paths:
       - dist/*
     expire_in: 1 week
+  only:
+    - branches@mailman/mailman
 
 trigger-client:
   stage: deploy
+  only:
+    - branches@mailman/mailman
   trigger:
     project: mailman/mailmanclient
     branch: master
