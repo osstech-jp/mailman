@@ -9,3 +9,4 @@ diffcov.html
 build
 dist
 .idea
+venv

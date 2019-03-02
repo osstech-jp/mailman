@@ -21,6 +21,8 @@ REST
 * Failed validation to new Mailing List creation and Domain creation no longer
   returns 500 errors.
 * Expose ``preferred_language`` for MailingList through REST API.
+* Self-link of banned emails will be url-encoded when the email is actually
+  a regex, mainly to prevent misplaced `?` in the link.
 
 
 3.2.1
