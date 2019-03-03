@@ -22,7 +22,7 @@ import logging
 
 from base64 import b64decode
 from falcon import API, HTTPUnauthorized
-from falcon.routing import create_http_method_map
+from falcon.routing import map_http_methods, set_default_responders
 from mailman.config import config
 from mailman.database.transaction import transactional
 from mailman.rest.root import Root
@@ -184,7 +184,8 @@ class ObjectRouter:
                 if len(segments) == 0:
                     # We're at the end of the path, so the root must be the
                     # responder.
-                    method_map = create_http_method_map(resource)
+                    method_map = map_http_methods(resource)
+                    set_default_responders(method_map)
                     return resource, method_map, context
                 this_segment = segments.pop(0)
                 break
