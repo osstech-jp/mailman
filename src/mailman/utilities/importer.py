@@ -20,6 +20,7 @@
 import os
 import re
 import sys
+import click
 import logging
 import datetime
 
@@ -533,6 +534,9 @@ def import_config_pck(mlist, config_dict):
 def import_roster(mlist, config_dict, members, role, action=None):
     """Import members lists from a config.pck configuration dictionary.
 
+    This function wraps `_import_roster`, which actually performs the import,
+    in a progress bar.
+
     :param mlist: The mailing list.
     :type mlist: IMailingList
     :param config_dict: The Mailman 2.1 configuration dictionary.
@@ -544,16 +548,29 @@ def import_roster(mlist, config_dict, members, role, action=None):
     :param action: The default nonmember action.
     :type action: Action
     """
+    name = (action and action.name) or role.name
+    with click.progressbar(
+            members, label='Importing {} {:<10}'.format(
+                mlist.list_id, name + 's')) as iterator:
+        _import_roster(mlist, config_dict, iterator, role, action=action)
+
+
+def _import_roster(mlist, config_dict, members, role, action=None):
+    """Import members lists from a config.pck configuration dictionary.
+
+    The function signature is the same as `import_roster`. This function is
+    used internally.
+    """
     usermanager = getUtility(IUserManager)
     validator = getUtility(IEmailValidator)
     roster = mlist.get_roster(role)
+    skipped = []
     for email in members:
         # For owners and members, the emails can have a mixed case, so
         # lowercase them all.
         email = bytes_to_str(email).lower()
         if roster.get_member(email) is not None:
-            print('{} is already imported with role {}'.format(email, role),
-                  file=sys.stderr)
+            skipped.append((email, role))
             continue
         address = usermanager.get_address(email)
         user = usermanager.get_user(email)
@@ -640,3 +657,6 @@ def import_roster(mlist, config_dict, members, role, action=None):
             member.preferences.receive_own_postings = not bool(prefs & 2)
             # DontReceiveDuplicates
             member.preferences.receive_list_copy = not bool(prefs & 256)
+    for email, role in skipped:
+        print('{} is already imported with role {}'.format(email, role),
+              file=sys.stderr)
