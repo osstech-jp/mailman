@@ -13,11 +13,6 @@ variables:
   LC_ALL: "C.UTF-8"
 
 
-stages:
-  - test
-  - upload
-  - deploy
-
 qa:
   script:
   - tox -e qa
@@ -76,19 +71,10 @@ diffcov:
   except:
   - master
 
-upload:
-  stage: upload
-  script:
-    - python3 setup.py sdist
-  artifacts:
-    paths:
-      - dist/*
-    expire_in: 1 week
-  only:
-    - branches@mailman/mailman
-
 trigger-client:
   stage: deploy
+  variables:
+    CORE_COMMIT_SHA: $CI_COMMIT_SHORT_SHA
   only:
     - branches@mailman/mailman
   trigger:
