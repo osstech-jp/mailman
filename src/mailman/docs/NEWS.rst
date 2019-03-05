@@ -24,6 +24,9 @@ REST
 * Self-link of banned emails will be url-encoded when the email is actually
   a regex, mainly to prevent misplaced `?` in the link.
 
+Command line
+------------
+* The ``mailman import21`` command now displays import progress.  (Closes #561)
 
 3.2.1
 =====
