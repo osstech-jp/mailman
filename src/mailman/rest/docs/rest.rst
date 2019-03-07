@@ -30,6 +30,34 @@ You can write your own HTTP clients to speak this API, or you can use the
 `official Python bindings`_.
 
 
+Root URL
+========
+
+In this documentation, we mainly use ``http://localhost:9001/3.0/``   
+as the REST root url. Port ``9001`` is used for unit tests, but 
+for a running system, the port is ``8001`` unless changed in config. 
+
+In the documentation we use ``3.0`` as the primary API version, but 
+the latest version of the API might be different. You may check the 
+difference of versions in `Basic Operation`_.
+
+The ``hostname`` and ``port`` where Mailman's REST API will be 
+listening can be found by running `mailman info`_ command. 
+You can configure that in ``mailman.cfg`` configuration file.::
+
+    >>> command = cli('mailman.commands.cli_info.info')
+
+    >>> command('mailman info')
+    GNU Mailman 3...
+    Python ...
+    ...
+    config file: .../test.cfg
+    db url: ...
+    REST root url: http://localhost:9001/3.1/
+    REST credentials: restadmin:restpass
+
+
+
 .. toctree::
    :glob:
    :maxdepth: 1
@@ -49,3 +77,5 @@ You can write your own HTTP clients to speak this API, or you can use the
 
 
 .. _`official Python bindings`: https://mailmanclient.readthedocs.io/en/latest/
+.. _`mailman info`: https://mailman.readthedocs.io/en/latest/src/mailman/config/docs/config.html#which-configuration-file-is-in-use
+.. _`Basic Operation`: https://mailman.readthedocs.io/en/latest/src/mailman/rest/docs/basic.html#api-versions
