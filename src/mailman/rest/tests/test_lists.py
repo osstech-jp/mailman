@@ -136,8 +136,10 @@ class TestFindLists(unittest.TestCase):
                 'http://localhost:9001/3.1/lists/find',
                 {'subscriber': 'testing@example.com', 'role': 'badrole'})
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: role')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "role": Accepted Values are:'
+            ' member, owner, moderator, nonmember.')
 
     def test_find_lists_no_results(self):
         # No matching results exist for this query.
@@ -156,7 +158,7 @@ class TestFindLists(unittest.TestCase):
                 {'subscriber': 'testing.example.com', 'role': 'owner'})
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: subscriber')
+                         'Invalid Parameter "subscriber": .')
 
 
 class TestLists(unittest.TestCase):
@@ -232,7 +234,7 @@ class TestLists(unittest.TestCase):
             call_api('http://localhost:9001/3.0/lists', method='POST')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
-                         'Missing parameters: fqdn_listname')
+                         'Missing Parameter: fqdn_listname')
 
     def test_cannot_create_list_with_invalid_name(self):
         # You cannot create a mailing list which would have an invalid list
@@ -438,7 +440,7 @@ class TestLists(unittest.TestCase):
                      '/roster/member',
                      None, 'DELETE')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'Missing parameters: emails')
+        self.assertEqual('Missing Parameter: emails', cm.exception.reason)
 
 
 class TestListStyles(unittest.TestCase):
@@ -504,8 +506,8 @@ class TestListArchivers(unittest.TestCase):
                     },
                 method='PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Unexpected parameters: bogus-archiver')
+        self.assertTrue(
+            'Unexpected parameters: bogus-archiver' in cm.exception.reason,)
 
     def test_patch_bogus_archiver(self):
         # You cannot PATCH on an archiver the list doesn't know about.
@@ -516,8 +518,8 @@ class TestListArchivers(unittest.TestCase):
                     },
                 method='PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Unexpected parameters: bogus-archiver')
+        self.assertTrue(
+            'Unexpected parameters: bogus-archiver' in cm.exception.reason)
 
     def test_put_incomplete_statuses(self):
         # PUT requires the full resource representation.  This one forgets to
@@ -529,7 +531,7 @@ class TestListArchivers(unittest.TestCase):
                     },
                 method='PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'Missing parameters: mhonarc')
+        self.assertEqual('Missing Parameter: mhonarc', cm.exception.reason,)
 
     def test_patch_bogus_status(self):
         # Archiver statuses must be interpretable as booleans.
@@ -541,7 +543,7 @@ class TestListArchivers(unittest.TestCase):
                     },
                 method='PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'Invalid boolean value: sure')
+        self.assertEqual('Invalid boolean value: sure', cm.exception.reason)
 
 
 class TestListPagination(unittest.TestCase):
@@ -660,7 +662,7 @@ class TestListDigests(unittest.TestCase):
                 'http://localhost:9001/3.0/lists/ant.example.com/digest', dict(
                     bogus=True))
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'Unexpected parameters: bogus')
+        self.assertTrue('Unexpected parameters: bogus' in cm.exception.reason)
 
     def test_post_both_send_and_periodic_options(self):
         # send and periodic options cannot both be set at the same time.

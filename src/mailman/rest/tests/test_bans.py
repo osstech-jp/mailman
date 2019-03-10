@@ -94,10 +94,10 @@ class TestBans(unittest.TestCase):
                      method="POST")
         self.assertEqual(cm.exception.code, 400)
         # Workaround for coming API exception message change
-        self.assertIn(cm.exception.reason,
-                      ['Expected a valid email address or regular expression, '
-                       'got badaddress@example',
-                       'Cannot convert parameters: email'])
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "email": Expected a valid email '
+            'address or regular expression, got badaddress@example.')
 
     def test_invalid_ban_regex(self):
         with self.assertRaises(HTTPError) as cm:
@@ -106,10 +106,10 @@ class TestBans(unittest.TestCase):
                      method="POST")
         self.assertEqual(cm.exception.code, 400)
         # Workaround for coming API exception message change
-        self.assertIn(cm.exception.reason,
-                      ['Expected a valid email address or regular expression, '
-                       'got ^[^@]+@(?!(',
-                       'Cannot convert parameters: email'])
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "email": Expected a valid email address'
+            ' or regular expression, got ^[^@]+@(?!(.')
 
     def test_ban_regex_and_encoded_self_link(self):
         call_api('http://localhost:9001/3.0/lists/ant.example.com/bans',

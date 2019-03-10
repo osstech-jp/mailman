@@ -185,8 +185,10 @@ class TestMembership(unittest.TestCase):
                 'delivery_mode': 'invalid-mode',
                 })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: delivery_mode')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "delivery_mode": Accepted Values are: '
+            'regular, plaintext_digests, mime_digests, summary_digests.')
 
     def test_join_email_contains_slash(self):
         json, response = call_api('http://localhost:9001/3.0/members', {
@@ -361,7 +363,7 @@ class TestMembership(unittest.TestCase):
                      'powers': 'super',
                      }, method='PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'Unexpected parameters: powers')
+        self.assertTrue('Unexpected parameters: powers' in cm.exception.reason)
 
     def test_member_all_without_preferences(self):
         # /members/<id>/all should return a 404 when it isn't trailed by
@@ -380,8 +382,10 @@ class TestMembership(unittest.TestCase):
                      'moderation_action': 'invalid',
                      }, method='PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: moderation_action')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "moderation_action": Accepted Values are: '
+            'hold, reject, discard, accept, defer.')
 
     def test_bad_preferences_url(self):
         with transaction():

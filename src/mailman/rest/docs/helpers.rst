@@ -46,6 +46,7 @@ converting their values.
 
     >>> class FakeRequest:
     ...     params = None
+    ...     content_type = 'application/x-www-form-urlencoded'
     >>> FakeRequest.params = dict(one='1', two='two', three='yes')
 
 On valid input, the validator can be used as a ``**keyword`` argument.
@@ -61,7 +62,7 @@ On invalid input, an exception is raised.
     >>> print_request(**validator(FakeRequest))
     Traceback (most recent call last):
     ...
-    ValueError: Cannot convert parameters: one
+    ValueError: Invalid Parameter "one": invalid literal for int() with base 10: 'hello'.
 
 On missing input, an exception is raised.
 
@@ -69,7 +70,7 @@ On missing input, an exception is raised.
     >>> print_request(**validator(FakeRequest))
     Traceback (most recent call last):
     ...
-    ValueError: Missing parameters: one
+    ValueError: Missing Parameter: one
 
 If more than one key is missing, it will be reflected in the error message.
 
@@ -77,7 +78,7 @@ If more than one key is missing, it will be reflected in the error message.
     >>> print_request(**validator(FakeRequest))
     Traceback (most recent call last):
     ...
-    ValueError: Missing parameters: one, two
+    ValueError: Missing Parameter: one, two
 
 Extra keys are also not allowed.
 
@@ -117,7 +118,7 @@ But if the optional values are present, they must of course also be valid.
     >>> print_request(**validator(FakeRequest))
     Traceback (most recent call last):
     ...
-    ValueError: Cannot convert parameters: five, four
+    ValueError: Invalid Parameter "five": invalid literal for int() with base 10: 'maybe'. Invalid Parameter "four": invalid literal for int() with base 10: 'no'.
 
 
 Arrays
@@ -179,3 +180,57 @@ form data.
     1
     >>> print(values['many'])
     [3, 5, 4]
+
+
+
+PATCH Unpacking
+===============
+
+``PATCH`` requests are different from ``PUT`` and ``POST`` because with the
+latter, you're changing the entire resource, so all expected attributes must
+exist. With the former, you're only changing a subset of the attributes, so
+you only validate the ones that exist in the request.
+::
+
+    >>> from mailman.rest.validator import PatchValidator
+    >>> from mailman.rest.helpers import GetterSetter
+    >>> values = dict(one=GetterSetter(int),
+    ...               two=GetterSetter(str),
+    ...               three=GetterSetter(bool))
+    >>> FakeRequest.params = dict(one=1)
+    >>> validator = PatchValidator(FakeRequest, values)
+
+``PatchValidator`` can be used to update the attributes of an object directly:
+
+
+    >>> class FakeObject:
+    ...     one = 2
+    >>> fakeobj = FakeObject()
+    >>> validator.update(fakeobj, FakeRequest)
+    >>> print(fakeobj.one)
+    1
+
+
+
+JSON Unpacking
+==============
+
+Request can optionally consist of JSON body as parameters. If the
+``Content-Type`` header is set to ``application/json``, request's body is parsed
+to set ``request.media`` as a dict object
+::
+
+    >>> validator = Validator(one=int, two=str, three=bool)
+
+    >>> class FakeRequest:
+    ...     params = None
+    ...     content_type = 'application/json'
+    ...     media = None
+    >>> FakeRequest.media = dict(one='1', two='two', three='yes')
+
+On valid input, the validator can be used as a ``**keyword`` argument.
+
+    >>> def print_request(one, two, three):
+    ...     print(repr(one), repr(two), repr(three))
+    >>> print_request(**validator(FakeRequest))
+    1 'two' True

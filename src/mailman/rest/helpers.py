@@ -32,6 +32,10 @@ from pprint import pformat
 from public import public
 
 
+CONTENT_TYPE_JSON = 'application/json; charset=UTF-8'
+CONTENT_TYPE_TEXT_PLAIN = 'text/plain'
+
+
 class ExtendedEncoder(json.JSONEncoder):
     """An extended JSON encoder which knows about other data types."""
 
@@ -279,10 +283,13 @@ def no_content(response):
 
 
 @public
-def not_found(response, body=b'404 Not Found'):
+def not_found(response, body='404 Not Found'):
     response.status = falcon.HTTP_404
+    response.content_type = CONTENT_TYPE_JSON
+    if isinstance(body, bytes):
+        body = body.decode()
     if body is not None:
-        response.body = body
+        response.body = falcon.HTTPNotFound(description=body).to_json()
 
 
 @public
@@ -293,10 +300,13 @@ def accepted(response, body=None):
 
 
 @public
-def bad_request(response, body=b'400 Bad Request'):
+def bad_request(response, body='400 Bad Request'):
     response.status = falcon.HTTP_400
+    response.content_type = CONTENT_TYPE_JSON
+    if isinstance(body, bytes):
+        body = body.decode()
     if body is not None:
-        response.body = body
+        response.body = falcon.HTTPBadRequest(description=body).to_json()
 
 
 @public
@@ -306,14 +316,37 @@ def created(response, location):
 
 
 @public
-def conflict(response, body=b'409 Conflict'):
+def conflict(response, body='409 Conflict'):
     response.status = falcon.HTTP_409
+    response.content_type = CONTENT_TYPE_JSON
+    if isinstance(body, bytes):
+        body = body.decode()
     if body is not None:
-        response.body = body
+        response.body = falcon.HTTPConflict(description=body).to_json()
 
 
 @public
-def forbidden(response, body=b'403 Forbidden'):
+def forbidden(response, body='403 Forbidden'):
     response.status = falcon.HTTP_403
+    response.content_type = CONTENT_TYPE_JSON
+    if isinstance(body, bytes):
+        body = body.decode()
     if body is not None:
-        response.body = body
+        response.body = falcon.HTTPForbidden(description=body).to_json()
+
+
+@public
+def get_request_params(request):
+    """Return the request items based on the content-type header"""
+    # maxking: If there is a requirement for a new media type in future, The
+    # way to handle that would be add a new media type handler in Falcon's API
+    # class and then use the items returned by that handler here to return the
+    # values to validators in the form of a dictionary.
+
+    # We parse the request based on the content type. Falcon has a default
+    # JSONHandler handler to parse json media type, so we can just do
+    # `request.media` to return the request params passed as json body.
+    if request.content_type.startswith('application/json'):
+        return request.media
+    # request.params returns the parameters passed as URL form encoded.
+    return request.params

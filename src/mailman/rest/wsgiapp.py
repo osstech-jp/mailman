@@ -38,6 +38,7 @@ SLASH = '/'
 EMPTYSTRING = ''
 REALM = 'mailman3-rest'
 UTF8 = 'utf-8'
+WILDCARD_ACCEPT_HEADER = '*/*'
 
 
 class AdminWSGIServer(WSGIServer):
