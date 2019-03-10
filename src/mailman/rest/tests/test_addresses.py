@@ -251,7 +251,7 @@ class TestAddresses(unittest.TestCase):
                 'http://localhost:9001/3.0/users/anne@example.com/addresses',
                 {})
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'Missing parameters: email')
+        self.assertEqual('Missing Parameter: email', cm.exception.reason)
 
     def test_get_addresses_of_missing_user(self):
         # There is no user associated with the given address.
@@ -565,8 +565,10 @@ class TestAPI31Addresses(unittest.TestCase):
                     'user_id': anne.user_id.int,
                     })
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: user_id')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "user_id":'
+            ' badly formed hexadecimal UUID string.')
 
     def test_user_subresource_put(self):
         # By PUTing to the 'user' resource, you can change the user that an
@@ -600,5 +602,7 @@ class TestAPI31Addresses(unittest.TestCase):
                     'user_id': anne.user_id.int,
                     }, method='PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: user_id')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "user_id":'
+            ' badly formed hexadecimal UUID string.')

@@ -141,7 +141,7 @@ class TestConfiguration(unittest.TestCase):
                 bogus_resource,
                 'PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'Unexpected parameters: bogus')
+        self.assertTrue('Unexpected parameters: bogus' in cm.exception.reason)
 
     def test_put_attribute_mismatch(self):
         json, response = call_api(
@@ -155,8 +155,8 @@ class TestConfiguration(unittest.TestCase):
                 dict(display_name='bar@ant.example.com'),
                 'PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Unexpected parameters: display_name')
+        self.assertTrue(
+            'Unexpected parameters: display_name' in cm.exception.reason)
 
     def test_put_attribute_double(self):
         with self.assertRaises(HTTPError) as cm:
@@ -167,8 +167,8 @@ class TestConfiguration(unittest.TestCase):
                      reply_to_address='foo@example.com'),
                 'PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Unexpected parameters: display_name')
+        self.assertTrue(
+            'Unexpected parameters: display_name' in cm.exception.reason)
 
     def test_put_read_only_attribute(self):
         with self.assertRaises(HTTPError) as cm:
@@ -186,7 +186,7 @@ class TestConfiguration(unittest.TestCase):
                 dict(bogus='no matter'),
                 'PUT')
         self.assertEqual(cm.exception.code, 404)
-        self.assertEqual(cm.exception.reason, 'Unknown attribute: bogus')
+        self.assertTrue('Unknown attribute: bogus' in cm.exception.reason)
 
     def test_patch_subscription_policy(self):
         # The new subscription_policy value can be patched.
@@ -250,8 +250,10 @@ class TestConfiguration(unittest.TestCase):
                 dict(archive_policy='not a valid archive policy'),
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: archive_policy')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "archive_policy": Accepted Values are:'
+            ' never, private, public.')
 
     def test_bad_pipeline_name(self):
         with self.assertRaises(HTTPError) as cm:
@@ -261,8 +263,9 @@ class TestConfiguration(unittest.TestCase):
                 dict(posting_pipeline='not a valid pipeline'),
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: posting_pipeline')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "posting_pipeline": Unknown pipeline: not a valid pipeline.')  # noqa: E501
 
     def test_get_digest_send_periodic(self):
         with transaction():
@@ -336,8 +339,10 @@ class TestConfiguration(unittest.TestCase):
                 dict(digest_volume_frequency='once in a while'),
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: digest_volume_frequency')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "digest_volume_frequency": Accepted Values are:'
+            ' yearly, monthly, quarterly, weekly, daily.')
 
     def test_bad_put_digest_volume_frequency(self):
         with transaction():
@@ -349,8 +354,10 @@ class TestConfiguration(unittest.TestCase):
                 dict(digest_volume_frequency='once in a while'),
                 'PUT')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: digest_volume_frequency')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "digest_volume_frequency": Accepted Values are:'
+            ' yearly, monthly, quarterly, weekly, daily.')
 
     def test_get_digests_enabled(self):
         with transaction():
@@ -456,8 +463,10 @@ class TestConfiguration(unittest.TestCase):
                 dict(description='This\ncontains\nnewlines.'),
                 'PATCH')
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason,
-                         'Cannot convert parameters: description')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid Parameter "description":'
+            ' This value must be a single line: This\ncontains\nnewlines..')
 
     def test_patch_info(self):
         with transaction():

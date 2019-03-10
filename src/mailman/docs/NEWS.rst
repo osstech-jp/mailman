@@ -23,6 +23,11 @@ REST
 * Expose ``preferred_language`` for MailingList through REST API.
 * Self-link of banned emails will be url-encoded when the email is actually
   a regex, mainly to prevent misplaced `?` in the link.
+* REST API now accepts inputs in JSON format. (See !451)
+* REST API errors are now always formatted as JSON. (See !451)
+* Failed request validations now return more verbose errors, like ``Enum`` types
+  return all acceptable values. (See !451)	
+
 
 Command line
 ------------

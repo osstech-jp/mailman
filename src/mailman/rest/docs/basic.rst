@@ -63,5 +63,46 @@ recommend using API ``3.1``, but most of the current documentation describes
 API ``3.0``.  Just make the mental substitution as you read along.
 
 
+Input Types
+===========
+
+The REST API accepts POST data in two forms, ``application/json`` and
+``application/x-www-form-urlencoded``. You can send data as JSON::
+
+     >>> response = requests.post('http://localhost:9001/3.1/domains',
+     ...                          auth=('restadmin', 'restpass'),
+     ...                          json={'mail_host': 'example.org',})
+     >>> print(response.status_code)
+     201
+
+
+You can also send data as form parameters::
+
+    >>> response = requests.post('http://localhost:9001/3.1/domains',
+    ...                          auth=('restadmin', 'restpass'),
+    ...                          params={'mail_host': 'example.net',})
+    >>> print(response.status_code)
+    201
+
+
+Error Types
+===========
+
+The REST API always returns errors formatted as ``json`` with a content type of
+``application/json``::
+
+    >>> response = requests.post('http://localhost:9001/3.1/domains',
+    ...                          auth=('restadmin', 'restpass'),
+    ...                          json={'mail_host': 'example.org',})
+    >>> print(response.status_code)
+    400
+    >>> print(response.headers.get('content-type', None))
+    application/json; charset=UTF-8
+    >>> print(response.json()['title'])
+    400 Bad Request
+    >>> print(response.json()['description'])
+    Duplicate email host: example.org
+
+
 .. _REST: http://en.wikipedia.org/wiki/REST
 .. _`Basic AUTH`: https://en.wikipedia.org/wiki/Basic_auth

@@ -272,7 +272,8 @@ def wait_for_webservice(hostname=None, port=None):
 
 
 @public
-def call_api(url, data=None, method=None, username=None, password=None):
+def call_api(url, data=None, method=None, username=None, password=None,
+             headers=None, json=None):
     """'Call a URL with a given HTTP method and return the resulting object.
 
     The object will have been JSON decoded.
@@ -289,13 +290,17 @@ def call_api(url, data=None, method=None, username=None, password=None):
     :param password: The HTTP Basic Auth password.  None means use the value
         from the configuration.
     :type username: str
+    :param headers: List of additional headers to be included with the request.
+    :type headers: A dictionary of {'Header': 'Value'}
+    :param json: JSON body for the request.
+    :type json: dict
     :return: A 2-tuple containing the JSON decoded content (if there is any,
         else None) and the response object.
     :rtype: 2-tuple of (dict, response)
     :raises HTTPError: when a non-2xx return code is received.
     """
     if method is None:
-        if data is None:
+        if data is None and json is None:
             method = 'GET'
         else:
             method = 'POST'
@@ -303,12 +308,20 @@ def call_api(url, data=None, method=None, username=None, password=None):
     basic_auth = (
         (config.webservice.admin_user if username is None else username),
         (config.webservice.admin_pass if password is None else password))
-    response = request(method, url, data=data, auth=basic_auth)
+    response = request(
+        method, url, data=data, auth=basic_auth, headers=headers, json=json)
     # For backward compatibility with existing doctests, turn non-2xx response
     # codes into a urllib.error exceptions.
     if response.status_code // 100 != 2:
+        content = None
+        content_type = response.headers.get('content-type')
+        if ('application/json' in content_type and
+                response.content):
+            content = response.json().get('description', None)
+        else:
+            content = response.text
         raise HTTPError(
-            url, response.status_code, response.text, response, None)
+            url, response.status_code, content, response, None)
     if len(response.content) == 0:
         return None, response
     return response.json(), response
