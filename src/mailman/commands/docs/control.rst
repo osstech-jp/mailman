@@ -51,5 +51,6 @@ stops all the child processes too.
 ..
     # Clean up.
     >>> from mailman.commands.tests.test_cli_control import (
-    ...     kill_with_extreme_prejudice)
+    ...     kill_with_extreme_prejudice, clean_stale_locks)
     >>> kill_with_extreme_prejudice(pid)
+    >>> clean_stale_locks()

@@ -151,13 +151,30 @@ def kill_with_extreme_prejudice(pid_or_pidfile=None):
             os.kill(pid, signal.SIGKILL)
         until = timedelta(seconds=10) + datetime.now()
         while datetime.now() < until:
-            status = os.waitpid(pid, os.WNOHANG)
-            if status == (0, 0):
-                # The child was reaped.
+            try:
+                os.waitpid(pid, os.WNOHANG)
+            except ChildProcessError:
+                # 2016-03-10 maxking: We are seeing ChildProcessError very
+                # often in CI due to the os.waitpid on L155 above. This is
+                # raised when there is no child process left. We are clearly in
+                # the arena of a race condition where the process was killed
+                # somewhere after we checked and before we tried to wait on
+                # it. TOCTTOU problem.
                 return
             time.sleep(0.1)
         else:
             print('WARNING: SIGKILL DID NOT EXIT PROCESS!', file=sys.stderr)
+
+
+@public
+def clean_stale_locks():
+    """Cleanup the master.pid and master.lck file, if they exist."""
+    # If the master process was force-killed during the test suite run, it is
+    # possible that the stale pid file was left. Clean that file up.
+    if os.path.exists(config.PID_FILE):
+        os.unlink(config.PID_FILE)
+    if os.path.exists(config.LOCK_FILE):
+        os.unlink(config.LOCK_FILE)
 
 
 class TestControl(unittest.TestCase):
