@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """Datetime utilities.
 
@@ -36,7 +36,7 @@ public(RFC822_DATE_FMT='%a, %d %b %Y %H:%M:%S %z')
 
 
 # Definition of UTC timezone, taken from
-# http://docs.python.org/library/datetime.html
+# https://docs.python.org/3/library/datetime.html
 ZERO = datetime.timedelta(0)
 
 

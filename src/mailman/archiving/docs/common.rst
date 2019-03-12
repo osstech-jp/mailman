@@ -178,5 +178,5 @@ subprocess call.
          -stdout .../logs/mhonarc -spammode -umask 022
 
 
-.. _`The Mail Archive`: http://www.mail-archive.com
-.. _MHonArc: http://www.mhonarc.org
+.. _`The Mail Archive`: https://www.mail-archive.com
+.. _MHonArc: https://www.mhonarc.org

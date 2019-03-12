@@ -65,4 +65,4 @@ But if the user name and password does not match, the connection will fail.
     >>> config.pop('auth')
 
 
-.. _`smtplib module`: http://docs.python.org/library/smtplib.html
+.. _`smtplib module`: https://docs.python.org/3/library/smtplib.html

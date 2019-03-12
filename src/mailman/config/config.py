@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """Configuration file loading and management."""
 
@@ -62,7 +62,7 @@ MAILMAN_CFG_TEMPLATE = """\
 # configure Mailman to your needs, and Mailman will never overwrite it.
 # Additional configuration information is available here:
 #
-# http://mailman.readthedocs.io/en/latest/src/mailman/config/docs/config.html
+# https://mailman.readthedocs.io/en/latest/src/mailman/config/docs/config.html
 #
 # For example, uncomment the following lines to run Mailman in developer mode.
 #

@@ -105,7 +105,7 @@ Much of the style guide is enforced by the command ``tox -e qa``.
   than ``klass``.
 
 
-.. _`PEP 8`: http://www.python.org/peps/pep-0008.html
+.. _`PEP 8`: https://www.python.org/peps/pep-0008.html
 .. _`GNU Mailman Python template`: https://gitlab.com/mailman/mailman/blob/master/template.py
 .. _public: https://public.readthedocs.io/en/latest/
-.. _`PEP 257`: http://www.python.org/peps/pep-0257.html
+.. _`PEP 257`: https://www.python.org/peps/pep-0257.html

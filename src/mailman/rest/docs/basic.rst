@@ -104,5 +104,5 @@ The REST API always returns errors formatted as ``json`` with a content type of
     Duplicate email host: example.org
 
 
-.. _REST: http://en.wikipedia.org/wiki/REST
+.. _REST: https://en.wikipedia.org/wiki/REST
 .. _`Basic AUTH`: https://en.wikipedia.org/wiki/Basic_auth

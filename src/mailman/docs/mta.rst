@@ -367,7 +367,7 @@ with Exim configuration, you probably want to start with the chapter on
 `how Exim receives and delivers mail`_.
 
 .. _`Exim 4`: http://www.exim.org/
-.. _`University of Cambridge`: http://www.cam.ac.uk/
+.. _`University of Cambridge`: https://www.cam.ac.uk/
 .. _`copious documentation for Exim`: http://www.exim.org/docs.html
 .. _`accept router`: http://www.exim.org/exim-html-current/doc/html/spec_html/ch-the_accept_router.html
 .. _`LMTP transport`: http://www.exim.org/exim-html-current/doc/html/spec_html/ch-the_lmtp_transport.html
@@ -478,13 +478,13 @@ relay to the LMTP port of Mailman.
 
 .. _`mailing list or on IRC`: START.html#contact-us
 .. _`Local Mail Transfer Protocol`:
-   http://en.wikipedia.org/wiki/Local_Mail_Transfer_Protocol
+   https://en.wikipedia.org/wiki/Local_Mail_Transfer_Protocol
 .. _LMTP: http://www.faqs.org/rfcs/rfc2033.html
 .. _`Simple Mail Transfer Protocol`:
-   http://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol
+   https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol
 .. _SMTP: http://www.faqs.org/rfcs/rfc5321.html
 .. _Postfix: http://www.postfix.org
 .. _`Variable Envelope Return Path`:
-   http://en.wikipedia.org/wiki/Variable_envelope_return_path
+   https://en.wikipedia.org/wiki/Variable_envelope_return_path
 .. _postconf: http://www.postfix.org/postconf.1.html
 .. _domains: ../model/docs/domains.html

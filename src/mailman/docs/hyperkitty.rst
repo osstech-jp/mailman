@@ -8,6 +8,6 @@ explore Mailman archives.  This is a `Django`_ project.
 To set up `HyperKitty`_, please see `the Hyperkitty documentation`_.
 
 .. _`HyperKitty`: https://gitlab.com/mailman/hyperkitty
-.. _`Django`: http://djangoproject.org/
+.. _`Django`: https://www.djangoproject.com/
 .. _`the Hyperkitty documentation`: https://hyperkitty.readthedocs.io
 

@@ -32,4 +32,4 @@ Clean up
 
     >>> master.stop()
 
-.. _REST: http://en.wikipedia.org/wiki/REST
+.. _REST: https://en.wikipedia.org/wiki/REST

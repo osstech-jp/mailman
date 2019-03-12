@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """DMARC mitigation rule."""
 
@@ -259,7 +259,7 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
                     # TestDMARCRules.test_domain_with_subdomain_policy() and
                     # TestDMARCRules.test_no_policy() but because of
                     # Coverage BitBucket issue #198 and
-                    # http://bugs.python.org/issue2506 coverage cannot report
+                    # https://bugs.python.org/issue2506 coverage cannot report
                     # it as such, so just pragma it away.
                     continue                        # pragma: missed
             if policy in ('reject', 'quarantine'):

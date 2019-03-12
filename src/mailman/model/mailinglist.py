@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """Model for mailing lists."""
 
@@ -697,7 +697,7 @@ class HeaderMatchList:
 
     # All write operations must mark the mailing list's header_matches
     # collection as expired:
-    # http://docs.sqlalchemy.org/en/latest/orm/session_state_management.html#refreshing-expiring
+    # https://docs.sqlalchemy.org/en/latest/orm/session_state_management.html#refreshing-expiring
 
     def __init__(self, mailing_list):
         self._mailing_list = mailing_list
@@ -705,7 +705,7 @@ class HeaderMatchList:
     @dbconnection
     def clear(self, store):
         """See `IHeaderMatchList`."""
-        # http://docs.sqlalchemy.org/en/latest/orm/session_basics.html#deleting-from-collections
+        # https://docs.sqlalchemy.org/en/latest/orm/session_basics.html
         del self._mailing_list.header_matches[:]
 
     @dbconnection
@@ -745,7 +745,7 @@ class HeaderMatchList:
     def remove(self, store, header, pattern):
         header = header.lower()
         # Query.delete() has many caveats, don't use it here:
-        # http://docs.sqlalchemy.org/en/rel_1_0/orm/query.html#sqlalchemy.orm.query.Query.delete
+        # https://docs.sqlalchemy.org/en/latest/orm/query.html#sqlalchemy.orm.query.Query.delete
         try:
             existing = store.query(HeaderMatch).filter(
                 HeaderMatch.mailing_list == self._mailing_list,

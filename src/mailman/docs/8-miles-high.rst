@@ -203,5 +203,5 @@ Since these are functions, they can be composed in various ways, to create
 substyles, *etc*.
 
 
-.. _`lazr.config`: http://pypi.python.org/pypi/lazr.config
-.. _`Gitlab` : http://gitlab.com/mailman/mailman
+.. _`lazr.config`: https://pypi.org/project/lazr.config/
+.. _`Gitlab` : https://gitlab.com/mailman/mailman

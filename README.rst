@@ -8,11 +8,11 @@ Mailman - The GNU Mailing List Management System
 .. image:: https://readthedocs.org/projects/mailman/badge
     :target: https://mailman.readthedocs.io
 
-.. image:: http://img.shields.io/pypi/v/mailman.svg
-    :target: https://pypi.python.org/pypi/mailman
+.. image:: https://img.shields.io/pypi/v/mailman.svg
+    :target: https://pypi.org/project/mailman/
 
-.. image:: http://img.shields.io/pypi/dm/mailman.svg
-    :target: https://pypi.python.org/pypi/mailman
+.. image:: https://img.shields.io/pypi/dm/mailman.svg
+    :target: https://pypi.org/project/mailman/
 
 Copyright (C) 1998-2019 by the Free Software Foundation, Inc.
 
