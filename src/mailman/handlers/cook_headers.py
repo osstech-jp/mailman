@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """Cook a message's headers."""
 
@@ -72,7 +72,7 @@ def process(mlist, msg, msgdata):
     # just common practice, and we'll add more here as they become necessary.
     # Good places to look are:
     #
-    # http://www.dsv.su.se/~jpalme/ietf/jp-ietf-home.html
+    # https://people.dsv.su.se/~jpalme/ietf/jp-ietf-home.html
     # http://www.faqs.org/rfcs/rfc2076.html
     #
     # None of these headers are added if they already exist.  BAW: some
@@ -98,6 +98,7 @@ def process(mlist, msg, msgdata):
         # A convenience function, requires nested scopes.  pair is (name, addr)
         new = []
         d = {}
+
         def add(pair):                              # noqa: E306
             lcaddr = pair[1].lower()
             if lcaddr in d:

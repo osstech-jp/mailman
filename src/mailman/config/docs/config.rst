@@ -54,7 +54,7 @@ Schemas, templates, and master sections
 =======================================
 
 Mailman's configuration system is built on top of `lazr.config
-<http://pythonhosted.org/lazr.config/>`_ although in general the details
+<https://pythonhosted.org/lazr.config/>`_ although in general the details
 aren't important.  Basically there is a ``schema.cfg`` file included in the
 source tree, which defines all the available sections and variables, along
 with global defaults.  There is a built-in base ``mailman.cfg`` file also
@@ -152,5 +152,5 @@ overrides those provided in ``schema.cfg``.
 
 
 .. [#] The technical differences are described in the `lazr.config
-       <http://pythonhosted.org/lazr.config/>`_ package, upon which Mailman's
+       <https://pythonhosted.org/lazr.config/>`_ package, upon which Mailman's
        configuration system is based.

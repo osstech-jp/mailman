@@ -123,10 +123,10 @@ integer in the database.  A more complex migration would be needed for
 ``UUID`` depending upon the database layer to be used.
 
 
-.. _SQLAlchemy: http://www.sqlalchemy.org/
-.. _SQLite3: http://docs.python.org/library/sqlite3.html
-.. _PostgreSQL: http://www.postgresql.org/
-.. _MySQL: http://dev.mysql.com/
+.. _SQLAlchemy: https://www.sqlalchemy.org/
+.. _SQLite3: https://docs.python.org/3/library/sqlite3.html
+.. _PostgreSQL: https://www.postgresql.org/
+.. _MySQL: https://dev.mysql.com/
 .. _`Ubuntu article`: https://help.ubuntu.com/community/PostgreSQL
 .. _`Alembic`: https://alembic.readthedocs.org/en/latest/
-.. _`SQLAlchemy's MySQL page`: http://docs.sqlalchemy.org/en/latest/dialects/mysql.html#unicode
+.. _`SQLAlchemy's MySQL page`: https://docs.sqlalchemy.org/en/latest/dialects/mysql.html#unicode

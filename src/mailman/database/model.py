@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """Base class for all database classes."""
 
@@ -36,7 +36,9 @@ class ModelMeta:
             transaction = connection.begin()
             try:
                 # Delete all the tables in reverse foreign key dependency
-                # order.  http://tinyurl.com/on8dy6f
+                # order.
+                # https://docs.sqlalchemy.org/en/latest/core/metadata.html \
+                # #accessing-tables-and-columns
                 for table in reversed(Model.metadata.sorted_tables):
                     connection.execute(table.delete())
             except:                             # noqa: E722 pragma: nocover

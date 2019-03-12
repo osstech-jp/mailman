@@ -12,7 +12,7 @@ com
 org
 
 // jp geographic type names
-// http://jprs.jp/doc/rule/saisoku-1.html
+// https://jprs.jp/doc/rule/saisoku-1.html
 *.kobe.jp
 !city.kobe.jp
 

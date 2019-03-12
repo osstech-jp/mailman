@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """PostgreSQL database support."""
 
@@ -36,7 +36,7 @@ class PostgreSQLDatabase(SABaseDatabase):
         super()._post_reset(store)
         tables = reversed(Model.metadata.sorted_tables)
         # Recipe adapted from
-        # http://stackoverflow.com/questions/544791/
+        # https://stackoverflow.com/questions/544791/
         # django-postgresql-how-to-reset-primary-key
         for table in tables:
             for column in table.primary_key:

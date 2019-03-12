@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """Database type conversions."""
 
@@ -136,7 +136,7 @@ class SAUnicodeXL(TypeDecorator):
     Because of MySQL issues columns of this type should either not be indexed
     or should be indexed with an Index() function specifying mysql_length=N
     where N is (probably much) less than 767.
-    See http://docs.sqlalchemy.org/en/latest/dialects/mysql.html#index-length
+    See https://docs.sqlalchemy.org/en/latest/dialects/mysql.html#index-length
     """
     impl = Unicode
 

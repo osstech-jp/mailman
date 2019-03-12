@@ -48,7 +48,7 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
 A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 
 Spelling
@@ -101,8 +101,8 @@ For now, please leave the older mailman-users mailing list for Mailman 2.
 
 
 .. _`GNU Mailman`: http://www.list.org
-.. _`GNU General Public License`: http://www.gnu.org/licenses/gpl.txt
-.. _Python: http://www.python.org
+.. _`GNU General Public License`: https://www.gnu.org/licenses/gpl.txt
+.. _Python: https://www.python.org
 .. _FAQ: http://wiki.list.org/display/DOC/Frequently+Asked+Questions
 .. _`Python 3.4`: https://www.python.org/downloads/release/python-342/
 .. _`ACKNOWLEDGMENTS`: ACKNOWLEDGMENTS.html

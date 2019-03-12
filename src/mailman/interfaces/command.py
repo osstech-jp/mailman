@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """Interfaces defining email commands."""
 
@@ -64,7 +64,7 @@ class ICLISubCommand(Interface):
     """A command line interface subcommand.
 
     Subcommands are implemented using the `click` package.  See
-    http://click.pocoo.org/ for details.
+    https://click.palletsprojects.com/en/7.x/ for details.
     """
     name = Attribute(
         """The subcommand name as it will show up in `mailman --help`.

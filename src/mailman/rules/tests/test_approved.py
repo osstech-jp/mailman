@@ -13,7 +13,7 @@
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
+# GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """Test the `approved` handler."""
 
@@ -428,7 +428,7 @@ This is a message body with a non-ascii character =E4
 
 class TestPasswordHashMigration(unittest.TestCase):
     """Test that password hashing migrations work."""
-    # http://packages.python.org/passlib/lib/passlib.context-tutorial.html#integrating-hash-migration
+    # https://passlib.readthedocs.io/en/stable/narr/context-tutorial.html#integrating-hash-migration
 
     layer = ConfigLayer
 

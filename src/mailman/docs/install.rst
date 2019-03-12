@@ -11,7 +11,7 @@ Requirements
 For the Core, Python 3.5 or newer is required.  It can either be the default
 'python3' on your ``$PATH`` or it can be accessible via the ``python3.5`` or
 ``python3.6`` binary.  If your operating system does not include Python 3, see
-http://www.python.org for information about downloading installers (where
+https://www.python.org for information about downloading installers (where
 available) and installing it from source (when necessary or preferred).
 Python 2 is not supported by the Core.
 
@@ -110,8 +110,8 @@ do::
     >>> list_manager = getUtility(IListManager)
 
 
-.. _`Python Cheeseshop`: http://pypi.python.org/pypi
+.. _`Python Cheeseshop`: https://pypi.org/
 .. _`Mailman 3 Core documentation`: https://mailman.readthedocs.io
 .. _`Zope Component Architecture`: https://pypi.python.org/pypi/zope.component
 .. _`building out the mailman3.org`: https://wiki.list.org/DOC/Mailman%203%20installation%20experience
-.. _`Python 3 and uses the click`: http://click.pocoo.org/6/python3/
+.. _`Python 3 and uses the click`: https://click.palletsprojects.com/en/7.x/python3/

@@ -129,6 +129,6 @@ The deliverer made a copy of the original message, so it wasn't changed.
     <BLANKLINE>
 
 
-.. _VERP: http://en.wikipedia.org/wiki/Variable_envelope_return_path
+.. _VERP: https://en.wikipedia.org/wiki/Variable_envelope_return_path
 .. _bulk: bulk.html
-.. _`mail merge`: http://en.wikipedia.org/wiki/Mail_merge
+.. _`mail merge`: https://en.wikipedia.org/wiki/Mail_merge

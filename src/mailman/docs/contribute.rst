@@ -236,11 +236,11 @@ package we call `mailman.client`_.
 .. _tox: https://testrun.org/tox/latest/
 .. _`Zope Component Architecture`: https://pypi.python.org/pypi/zope.component
 .. _`Postorius`: https://gitlab.com/mailman/postorius
-.. _`Django`: http://djangoproject.org/
+.. _`Django`: https://www.djangoproject.com/
 .. _`HyperKitty`: https://gitlab.com/mailman/hyperkitty
-.. _`notmuch mail indexer`: http://notmuchmail.org
+.. _`notmuch mail indexer`: https://notmuchmail.org
 .. _`mailman.client`: https://gitlab.com/mailman/mailmanclient
 .. _`Pycon 2012 sprint`: https://us.pycon.org/2012/community/sprints/projects/
-.. _`Python Cheeseshop`: http://pypi.python.org/pypi
-.. _`virtualenv`: http://www.virtualenv.org/en/latest/
+.. _`Python Cheeseshop`: https://pypi.org/
+.. _`virtualenv`: https://virtualenv.pypa.io/en/latest/
 .. _`pyvenv`: https://docs.python.org/3/library/venv.html
