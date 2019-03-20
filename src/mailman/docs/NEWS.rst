@@ -32,6 +32,9 @@ REST
 Command line
 ------------
 * The ``mailman import21`` command now displays import progress.  (Closes #561)
+* An issue with ``mailman subcommand --help`` hanging has been worked around.
+  (Closes #520)
+
 
 3.2.1
 =====

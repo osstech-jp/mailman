@@ -134,3 +134,5 @@ class TestValidators(unittest.TestCase):
             ValueError, email_or_regexp_validator, 'foo.example.com')
         self.assertRaises(
             ValueError, email_or_regexp_validator, '^[^@]+(')
+        self.assertRaises(
+            ValueError, email_or_regexp_validator, '')
