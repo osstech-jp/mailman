@@ -27,6 +27,7 @@ REST
 * REST API errors are now always formatted as JSON. (See !451)
 * Failed request validations now return more verbose errors, like ``Enum`` types
   return all acceptable values. (See !451)	
+* REST API accepts request with content type None (See !479)
 
 
 Command line
