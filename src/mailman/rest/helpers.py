@@ -144,11 +144,20 @@ class CollectionMixin:
         """
         # Allow falcon's HTTPBadRequest exceptions to percolate up.  They'll
         # get turned into HTTP 400 errors.
-        count = request.get_param_as_int('count', min=0)
-        page = request.get_param_as_int('page', min=1)
+        count = request.get_param_as_int('count')
+        page = request.get_param_as_int('page')
         total_size = len(collection)
         if count is None and page is None:
             return 0, total_size, collection
+        # TODO(maxking): Count and page should be positive integers. Once
+        # falcon 2.0.0 is out and we can jump to it, we can remove this logic
+        # and use `min_value` parameter in request.get_param_as_int.
+        if count < 0:
+            raise falcon.HTTPInvalidParam(
+                count, 'count should be a positive integer.')
+        if page < 1:
+            raise falcon.HTTPInvalidParam(
+                page, 'page should be greater than 0.')
         list_start = (page - 1) * count
         list_end = page * count
         return list_start, total_size, collection[list_start:list_end]
@@ -347,6 +356,6 @@ def get_request_params(request):
     # JSONHandler handler to parse json media type, so we can just do
     # `request.media` to return the request params passed as json body.
     if request.content_type.startswith('application/json'):
-        return request.media
+        return request.media or dict()
     # request.params returns the parameters passed as URL form encoded.
-    return request.params
+    return request.params or dict()

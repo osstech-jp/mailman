@@ -48,15 +48,15 @@ class TestSupportedContentType(unittest.TestCase):
         response = requests.post(
             url,
             headers={'Content-Type': 'application/json'},
+            json=dict(),
             auth=basic_auth)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.headers.get('content-type', None),
                          'application/json; charset=UTF-8')
         self.assertEqual(
             response.json(),
-            {'title': 'Invalid JSON',
-             'description': 'Could not parse JSON body -'
-                            ' Expecting value: line 1 column 1 (char 0)'}
+            {'title': '400 Bad Request',
+             'description': 'Missing Parameter: mail_host'}
             )
         # Now, let's try to send in json valid json but cause a missing
         # required parameter error.
