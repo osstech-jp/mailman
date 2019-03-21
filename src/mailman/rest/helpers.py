@@ -355,7 +355,8 @@ def get_request_params(request):
     # We parse the request based on the content type. Falcon has a default
     # JSONHandler handler to parse json media type, so we can just do
     # `request.media` to return the request params passed as json body.
-    if request.content_type.startswith('application/json'):
+    if (request.content_type and
+            request.content_type.startswith('application/json')):
         return request.media or dict()
     # request.params returns the parameters passed as URL form encoded.
     return request.params or dict()

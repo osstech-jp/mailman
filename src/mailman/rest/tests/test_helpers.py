@@ -27,6 +27,12 @@ from mailman.rest import helpers
 from mailman.testing.layers import ConfigLayer, RESTLayer
 
 
+class FakeRequest:
+    def __init__(self):
+        self.content_type = None
+        self.params = 'not set'
+
+
 class FakeResponse:
     def __init__(self):
         self.body = 'not set'
@@ -161,6 +167,11 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(json.loads(response.body),
                          {'title': '403 Forbidden',
                           'description': 'Conflicting request', })
+
+    def test_get_request_params_with_none(self):
+        request = FakeRequest()
+        self.assertEqual(helpers.get_request_params(request),
+                         'not set')
 
 
 class TestJSONEncoder(unittest.TestCase):
