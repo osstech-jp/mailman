@@ -113,7 +113,7 @@ class ObjectRouter:
         # We don't need this method for object-based routing.
         raise NotImplementedError
 
-    def find(self, uri):
+    def find(self, uri, req=None):
         segments = uri.split(SLASH)
         # Since the path is always rooted at /, skip the first segment, which
         # will always be the empty string.
