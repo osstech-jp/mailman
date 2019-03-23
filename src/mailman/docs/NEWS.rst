@@ -14,7 +14,7 @@ Here is a history of user visible changes to Mailman.
 
 3.2.2
 =====
-(2019-XX-XX)
+(2019-03-23)
 
 REST
 ----
@@ -26,7 +26,7 @@ REST
 * REST API now accepts inputs in JSON format. (See !451)
 * REST API errors are now always formatted as JSON. (See !451)
 * Failed request validations now return more verbose errors, like ``Enum`` types
-  return all acceptable values. (See !451)	
+  return all acceptable values. (See !451)
 * REST API accepts request with content type None (See !479)
 
 
