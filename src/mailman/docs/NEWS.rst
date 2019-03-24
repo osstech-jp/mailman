@@ -32,6 +32,8 @@ Other
 -----
 * Add a new attribute ``tag`` to ``HeaderMatch`` to find and manage a set of
   rules. (See !497)
+* Expired cached entries will be deleted efficiently. (Closes #462)
+
 
 3.2.2
 =====

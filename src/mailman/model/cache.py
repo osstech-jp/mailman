@@ -156,11 +156,13 @@ class CacheManager:
         # Find all the cache entries which have expired.  We can probably do
         # this more efficiently, but for now there probably aren't that many
         # cached files.
-        for entry in store.query(CacheEntry):
-            if entry.is_expired:
-                file_path, dir_path = self._id_to_path(entry.file_id)
-                os.remove(file_path)
-                store.delete(entry)
+        expired_entries = (store.query(CacheEntry)
+                           .filter(CacheEntry.expires_on <= now())
+                           .all())
+        for entry in expired_entries:
+            file_path, _ = self._id_to_path(entry.file_id)
+            os.remove(file_path)
+            store.delete(entry)
 
     @dbconnection
     def clear(self, store):
