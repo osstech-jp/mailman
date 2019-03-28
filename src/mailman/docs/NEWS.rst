@@ -12,6 +12,11 @@ Here is a history of user visible changes to Mailman.
 =====================
 (20xx-xx-xx)
 
+3.2.3
+=====
+(2019-XX-XX)
+
+
 3.2.2
 =====
 (2019-03-23)
