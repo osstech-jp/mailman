@@ -28,6 +28,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.preferences import Preferences
 from mailman.testing.helpers import call_api, configuration
 from mailman.testing.layers import RESTLayer
+from mailman.utilities.datetime import now
 from urllib.error import HTTPError
 from zope.component import getUtility
 
@@ -566,3 +567,124 @@ class TestAPI31Users(unittest.TestCase):
             json['self_link'],
             'http://localhost:9001/3.1/users'
             '/00000000000000000000000000000001/preferences')
+
+
+class TestPreferredAddress(unittest.TestCase):
+
+    layer = RESTLayer
+
+    def setUp(self):
+        self.user_manager = getUtility(IUserManager)
+        with transaction():
+            self.mlist = create_list('test@example.com')
+            self.anne = self.user_manager.create_user(
+                'anne@example.com', 'Anne Person')
+
+    def test_no_preferred_address(self):
+        # Initially, a user doesn't have a preferred address.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/users'
+                     '/anne@example.com/preferred_address')
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_get_preferred_address(self):
+        # If a user has a preferred address, return it.
+        with transaction():
+            addr = self.anne.addresses[0]
+            addr.verified_on = now()
+            self.anne.preferred_address = addr
+        json, response = call_api('http://localhost:9001/3.1/users'
+                                  '/anne@example.com/preferred_address')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json['self_link'],
+            'http://localhost:9001/3.1/addresses/anne@example.com')
+
+    def test_set_preferred_address(self):
+        # Test that we can set the preferred address.
+        # Initially, a user doesn't have a preferred_address.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.1/users'
+                     '/anne@example.com/preferred_address')
+        self.assertEqual(cm.exception.code, 404)
+        # Let's try to set it by POST'ing.
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/users'
+                '/anne@example.com/preferred_address',
+                dict(email='anne@example.com'))
+        self.assertEqual(cm.exception.code, 400)
+        # An address must be verified first to set it as preferred addr.
+        with transaction():
+            addr = self.anne.addresses[0]
+            addr.verified_on = now()
+        # Now, let's try to set the address again.
+        json, response = call_api(
+            'http://localhost:9001/3.1/users'
+            '/anne@example.com/preferred_address',
+            dict(email='anne@example.com'))
+        self.assertEqual(response.status_code, 201)
+        # Now, we should be able to GET the preferred_address of the user.
+        json, response = call_api('http://localhost:9001/3.1/users'
+                                  '/anne@example.com/preferred_address')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json['self_link'],
+            'http://localhost:9001/3.1/addresses/anne@example.com')
+
+    def test_set_preferred_address_new_address(self):
+        # Test setting a preferred address to one that doesn't belong to the
+        # user.
+        with transaction():
+            self.user_manager.create_address(email='bart@example.com')
+            bart = self.user_manager.get_address('bart@example.com')
+            bart.verified_on = now()
+        # Let's try to set an address as preferred one.
+        json, response = call_api(
+            'http://localhost:9001/3.1/users'
+            '/anne@example.com/preferred_address',
+            dict(email='bart@example.com'))
+        self.assertEqual(response.status_code, 201)
+
+    def test_set_preferred_address_to_other_users_address(self):
+        # Test that we can't set a user's preferred address to something
+        # belonging to an address linked to another user.
+        with transaction():
+            bperson = self.user_manager.create_user('bperson@example.com')
+            bperson.addresses[0].verified_on = now()
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/users'
+                '/anne@example.com/preferred_address',
+                dict(email='bperson@example.com'))
+        self.assertEqual(cm.exception.code, 400)
+
+    def test_set_preferred_address_to_new_address(self):
+        # You can't set the preferred address to a new one since it needs to be
+        # verified before it can be set as a preferred address.
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/users'
+                '/anne@example.com/preferred_address',
+                dict(email='newaddress@example.com'))
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(
+            str(cm.exception),
+            'HTTP Error 400: Address does not exist: newaddress@example.com')
+
+    def test_unset_preferred_address(self):
+        with transaction():
+            addr = self.anne.addresses[0]
+            addr.verified_on = now()
+            self.anne.preferred_address = addr
+        json, response = call_api(
+            'http://localhost:9001/3.1/users'
+            '/anne@example.com/preferred_address', method='DELETE')
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNone(self.anne.preferred_address)
+        # Test calling unset when there is no preferred address returns None.
+        with self.assertRaises(HTTPError) as cm:
+            call_api(
+                'http://localhost:9001/3.1/users'
+                '/anne@example.com/preferred_address')
+        self.assertEqual(cm.exception.code, 404)
