@@ -159,4 +159,5 @@ class UserManager:
     @dbconnection
     def server_owners(self, store):
         """ See `IUserManager."""
-        yield from store.query(User).filter_by(is_server_owner=True)
+        yield from store.query(User).filter_by(
+            is_server_owner=True).order_by(User.id)
