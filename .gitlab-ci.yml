@@ -74,7 +74,7 @@ diffcov:
 trigger-client:
   stage: deploy
   variables:
-    CORE_COMMIT_SHA: $CI_COMMIT_SHORT_SHA
+    CORE_COMMIT_SHA: $CI_COMMIT_SHA
   only:
     - branches@mailman/mailman
   trigger:
