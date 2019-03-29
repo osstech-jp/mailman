@@ -23,8 +23,9 @@ from mailman.core.api import API30, API31
 from mailman.interfaces.action import Action
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.validator import (
-    email_or_regexp_validator, enum_validator, integer_ge_zero_validator,
-    list_of_emails_validator, list_of_strings_validator, subscriber_validator)
+    email_or_regexp_validator, email_validator, enum_validator,
+    integer_ge_zero_validator, list_of_emails_validator,
+    list_of_strings_validator, subscriber_validator)
 from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
 
@@ -136,3 +137,8 @@ class TestValidators(unittest.TestCase):
             ValueError, email_or_regexp_validator, '^[^@]+(')
         self.assertRaises(
             ValueError, email_or_regexp_validator, '')
+
+    def test_email_validator(self):
+        self.assertRaises(ValueError,
+                          email_validator, 'foo.example.com')
+        self.assertEqual('foo@example.com', email_validator('foo@example.com'))

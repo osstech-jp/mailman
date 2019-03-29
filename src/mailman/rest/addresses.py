@@ -18,14 +18,15 @@
 """REST for addresses."""
 
 from mailman.interfaces.address import (
-    ExistingAddressError, InvalidEmailAddressError)
+    AddressAlreadyLinkedError, ExistingAddressError, InvalidEmailAddressError)
+from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
     BadRequest, CollectionMixin, NotFound, bad_request, child, created, etag,
     no_content, not_found, okay)
 from mailman.rest.members import MemberCollection
 from mailman.rest.preferences import Preferences
-from mailman.rest.validator import Validator
+from mailman.rest.validator import Validator, email_validator
 from mailman.utilities.datetime import now
 from operator import attrgetter
 from public import public
@@ -87,6 +88,52 @@ class _VerifyResource:
         elif self._action == 'unverify':
             self._address.verified_on = None
         no_content(response)
+
+
+class PreferredAddress(_AddressBase):
+    """Preferred address of a user."""
+
+    def __init__(self, user):
+        """Get or Set a user's preferred address.
+
+        :param user: A valid user.
+        :type user: IUser
+        """
+        self._user = user
+        self._address = user.preferred_address
+
+    def on_get(self, request, response):
+        """Return the preferred address."""
+        if self._address is None:
+            not_found(response)
+        else:
+            okay(response, self._resource_as_json(self._address))
+
+    def on_delete(self, request, response):
+        if self._address is None:
+            not_found(response)
+        else:
+            del self._user.preferred_address
+            no_content(response)
+
+    def on_post(self, request, response):
+        user_manager = getUtility(IUserManager)
+        validator = Validator(email=email_validator)
+        try:
+            data = validator(request)
+        except ValueError as error:
+            bad_request(response, str(error))
+            return
+        addr = user_manager.get_address(data['email'])
+        if addr is None:
+            bad_request(response,
+                        'Address does not exist: {}'.format(data['email']))
+            return
+        try:
+            self._user.preferred_address = addr
+            created(response, self._resource_as_dict(addr)['self_link'])
+        except (UnverifiedAddressError, AddressAlreadyLinkedError) as e:
+            bad_request(response, str(e))
 
 
 @public

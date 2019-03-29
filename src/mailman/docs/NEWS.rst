@@ -17,6 +17,11 @@ Here is a history of user visible changes to Mailman.
 (2019-XX-XX)
 
 
+REST
+----
+* Expose a user's preferred address using REST API. (Closes #240)
+
+
 3.2.2
 =====
 (2019-03-23)

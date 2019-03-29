@@ -182,6 +182,15 @@ def email_or_regexp_validator(value):
 
 
 @public
+def email_validator(value):
+    """Validate the value is a valid email."""
+    if not getUtility(IEmailValidator).is_valid(value):
+        raise ValueError(
+            'Expected a valid email address, got {}'.format(value))
+    return value
+
+
+@public
 class Validator:
     """A validator of parameter input."""
 
