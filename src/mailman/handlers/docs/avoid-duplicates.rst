@@ -78,7 +78,8 @@ or ``Resent-CC``), then they will get a list copy.
     Something of great import.
     <BLANKLINE>
 
-If they're mentioned on the ``CC`` line, they won't get a list copy.
+If they're mentioned on the ``CC`` line, they won't get a list copy and will
+be removed from the ``CC``.
 
     >>> msg = message_from_string("""\
     ... From: Claire Person <cperson@example.com>
@@ -92,7 +93,6 @@ If they're mentioned on the ``CC`` line, they won't get a list copy.
     ['bperson@example.com']
     >>> print(msg.as_string())
     From: Claire Person <cperson@example.com>
-    CC: aperson@example.com
     <BLANKLINE>
     Something of great import.
     <BLANKLINE>

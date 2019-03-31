@@ -102,6 +102,6 @@ class AvoidDuplicates:
         # Set the new list of recipients.  XXX recips should always be a set.
         msgdata['recipients'] = list(newrecips)
         # RFC 2822 specifies zero or one CC header
+        del msg['cc']
         if cc_addresses:
-            del msg['cc']
             msg['CC'] = COMMASPACE.join(cc_addresses.values())
