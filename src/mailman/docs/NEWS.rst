@@ -16,6 +16,11 @@ Here is a history of user visible changes to Mailman.
 =====
 (2019-XX-XX)
 
+Bugs
+----
+* A list member with ``receive_list_copy`` set to ``False`` who is addressed in
+  ``CC`` will now be removed from ``CC`` even if this results in no ``CC``.
+  (Closes #575)
 
 REST
 ----
