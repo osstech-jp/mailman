@@ -43,7 +43,7 @@ class Domain(Model):
 
     id = Column(Integer, primary_key=True)
 
-    mail_host = Column(SAUnicode)
+    mail_host = Column(SAUnicode, unique=True)
     description = Column(SAUnicode)
     owners = relationship('User',
                           secondary='domain_owner',
