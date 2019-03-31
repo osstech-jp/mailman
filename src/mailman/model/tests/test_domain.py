@@ -20,13 +20,16 @@
 import unittest
 
 from mailman.app.lifecycle import create_list
+from mailman.database.transaction import dbconnection, transaction
 from mailman.interfaces.domain import (
     DomainCreatedEvent, DomainCreatingEvent, DomainDeletedEvent,
     DomainDeletingEvent, IDomainManager)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.usermanager import IUserManager
+from mailman.model.domain import Domain
 from mailman.testing.helpers import event_subscribers
 from mailman.testing.layers import ConfigLayer
+from sqlalchemy.exc import IntegrityError
 from zope.component import getUtility
 
 
@@ -173,6 +176,22 @@ class TestDomainManager(unittest.TestCase):
         self.assertEqual(len(domain.owners), 2)
         self.assertEqual([owner.addresses[0].email for owner in domain.owners],
                          ['anne@example.org', 'bart@example.net'])
+
+
+class TestDomain(unittest.TestCase):
+    layer = ConfigLayer
+
+    @dbconnection
+    def test_unique_mail_host(self, store):
+        domain = Domain('abc')
+        # Creates the first domain and commit it right away
+        with transaction():
+            store.add(domain)
+
+        # Now creating another Domain with same mail_host and committing it
+        with self.assertRaises(IntegrityError):
+            with transaction():
+                store.add(Domain('abc'))
 
 
 class TestDomainLifecycleEvents(unittest.TestCase):
