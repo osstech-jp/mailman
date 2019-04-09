@@ -414,7 +414,9 @@ the user ``mailman``, qmail will give you the destination address
 ``mailman-spam@lists.example.com`` while it should actually be
 ``spam@lists.example.com``.  The second argument to ``qmail-lmtp`` defines
 how many parts (separated by dashes) to filter out.  The first argument
-specifies the LMTP port of Mailman.  Long story short, as user mailman:
+specifies the LMTP port of Mailman.  An optional third argument specifies the
+LMTP hostname to connect to (by default localhost).
+Long story short, as user mailman:
 ::
 
     % chmod +t "$HOME"
