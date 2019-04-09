@@ -11,7 +11,7 @@ try:
     import os
 
     lmtp_host = sys.argv[3] if len(sys.argv) > 3 else 'localhost'
-    lmtp = smtplib.LMTP(lmtp_host, int(sys.argv[2]))
+    lmtp = smtplib.LMTP(lmtp_host, int(sys.argv[1]))
 
     try:
         # See <http://www.qmail.org/man/man8/qmail-command.html> for qmail command
