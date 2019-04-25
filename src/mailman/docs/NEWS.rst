@@ -25,7 +25,13 @@ Bugs
 REST
 ----
 * Expose a user's preferred address using REST API. (Closes #240)
+* Expose `header_matches/find` API to find a list of ``HeaderMatches`` belonging
+  to a MailingList. (See !497)
 
+Other
+-----
+* Add a new attribute ``tag`` to ``HeaderMatch`` to find and manage a set of
+  rules. (See !497)
 
 3.2.2
 =====

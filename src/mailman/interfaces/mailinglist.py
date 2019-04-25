@@ -789,6 +789,14 @@ class IHeaderMatch(Interface):
         file is used.
         """)
 
+    tag = Attribute(
+        """An arbitrary value to identify a set of IHeaderMatches.
+
+        This tag can be used to filter a set of IHeaderMatches, so that they
+        can set and removed together, without having to query the whole list
+        and iterate over them.
+        """)
+
 
 @public
 class IHeaderMatchList(Interface):
@@ -797,7 +805,7 @@ class IHeaderMatchList(Interface):
     def clear():
         """Clear the list of header matching rules."""
 
-    def append(header, pattern, chain=None):
+    def append(header, pattern, chain=None, tag=None):
         """Append the given rule to this mailing list's header match list.
 
         :param header: The email header to filter on.  It will be converted to
@@ -808,11 +816,13 @@ class IHeaderMatchList(Interface):
         :param chain: The chain to jump to, or None to use the site-wide
             antispam jump chain via the configuration.  Defaults to None.
         :type chain: string or None
+        :param tag: An arbitrary value to identify a set of IHeaderMatches.
+        :type tag: string or None
         :raises ValueError: if the header/pattern pair already exists for this
             mailing list.
         """
 
-    def insert(index, header, pattern, chain=None):
+    def insert(index, header, pattern, chain=None, tag=None):
         """Insert a header match rule.
 
         Inserts the given rule at the given index position in this
@@ -828,6 +838,8 @@ class IHeaderMatchList(Interface):
         :param chain: The chain to jump to, or None to use the site-wide
             antispam jump chain via the configuration.  Defaults to None.
         :type chain: string or None
+        :param tag: An arbitrary value to identify a set of IHeaderMatches.
+        :type tag: string or None
         :raises ValueError: if the header/pattern pair already exists for this
             mailing list.
         """

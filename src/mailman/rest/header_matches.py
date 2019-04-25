@@ -51,6 +51,8 @@ class _HeaderMatchBase:
             )
         if header_match.chain is not None:
             resource['action'] = header_match.chain
+        if header_match.tag is not None:
+            resource['tag'] = header_match.tag
         return resource
 
 
@@ -95,13 +97,15 @@ class HeaderMatch(_HeaderMatchBase):
             pattern=GetterSetter(regexp_validator),
             position=int,
             action=enum_validator(Action),
+            tag=lowercase,
             )
         if is_optional:
             # For a PATCH, all attributes are optional.
             kws['_optional'] = kws.keys()
         else:
-            # For a PUT, position can remain unchanged and action can be None.
-            kws['_optional'] = ('action', 'position')
+            # For a PUT, position can remain unchanged; tag and action can be
+            # None.
+            kws['_optional'] = ('action', 'position', 'tag')
         validator = Validator(**kws)
         try:
             arguments = validator(request)
@@ -144,7 +148,8 @@ class HeaderMatches(_HeaderMatchBase, CollectionMixin):
             header=str,
             pattern=GetterSetter(regexp_validator),
             action=enum_validator(Action),
-            _optional=('action',)
+            tag=str,
+            _optional=('action', 'tag')
             )
         try:
             arguments = validator(request)
@@ -170,3 +175,53 @@ class HeaderMatches(_HeaderMatchBase, CollectionMixin):
     @child(r'^(?P<position>\d+)')
     def header_match(self, context, segments, **kw):
         return HeaderMatch(self._mlist, int(kw['position']))
+
+    @child('find')
+    def find_matches(self, context, segments, **kw):
+        return FindHeaderMatches(self._mlist, **kw)
+
+
+@public
+class FindHeaderMatches(_HeaderMatchBase, CollectionMixin):
+
+    def __init__(self, mlist, **kw):
+        self._mlist = mlist
+
+    def on_get(self, request, response):
+        return self._find(request, response)
+
+    def on_post(self, request, response):
+        return self._find(request, response)
+
+    def _find(self, request, response):
+        validator = Validator(
+            header=str,
+            action=enum_validator(Action),
+            tag=str,
+            _optional=('action', 'tag', 'header')
+           )
+        try:
+            data = validator(request)
+        except ValueError as error:
+            bad_request(response, str(error))
+            return
+
+        # Remove any optional pagination elements.
+        action = data.pop('action', None)
+        if action is not None:
+            data['chain'] = action.name
+        service = IHeaderMatchList(self._mlist)
+        self.header_matches = list(service.filter(**data))
+
+        # Return 404 if no values were found.
+        if len(self.header_matches) == 0:
+            return not_found(
+                response,
+                'Cound not find any HeaderMatch for provided search options.')
+
+        resource = self._make_collection(request)
+        okay(response, etag(resource))
+
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        return self.header_matches

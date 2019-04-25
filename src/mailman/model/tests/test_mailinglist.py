@@ -204,11 +204,14 @@ class TestHeaderMatch(unittest.TestCase):
         self.assertEqual(len(self._mlist.header_matches), 1)
         self.assertEqual(self._mlist.header_matches[0].header, 'header')
 
-    def test_chain_defaults_to_none(self):
+    def test_optional_args_default_to_none(self):
+        # At the time of writing this, there are two optional fields, tag and
+        # chain.
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('header', 'pattern')
         self.assertEqual(len(self._mlist.header_matches), 1)
         self.assertIsNone(self._mlist.header_matches[0].chain)
+        self.assertIsNone(self._mlist.header_matches[0].tag)
 
     def test_duplicate(self):
         header_matches = IHeaderMatchList(self._mlist)
@@ -237,18 +240,18 @@ class TestHeaderMatch(unittest.TestCase):
 
     def test_iterator(self):
         header_matches = IHeaderMatchList(self._mlist)
-        header_matches.append('Header', 'pattern')
+        header_matches.append('Header', 'pattern', tag='tag1')
         header_matches.append('Subject', 'patt.*')
-        header_matches.append('From', '.*@example.com', 'discard')
+        header_matches.append('From', '.*@example.com', 'discard', 'tag2')
         header_matches.append('From', '.*@example.org', 'accept')
-        matches = [(match.header, match.pattern, match.chain)
+        matches = [(match.header, match.pattern, match.chain, match.tag)
                    for match in IHeaderMatchList(self._mlist)]
         self.assertEqual(
             matches, [
-                ('header', 'pattern', None),
-                ('subject', 'patt.*', None),
-                ('from', '.*@example.com', 'discard'),
-                ('from', '.*@example.org', 'accept'),
+                ('header', 'pattern', None, 'tag1'),
+                ('subject', 'patt.*', None, None),
+                ('from', '.*@example.com', 'discard', 'tag2'),
+                ('from', '.*@example.org', 'accept', None),
                 ])
 
     def test_clear(self):
@@ -408,3 +411,38 @@ class TestHeaderMatch(unittest.TestCase):
         header_matches = IHeaderMatchList(self._mlist)
         with self.assertRaises(IndexError):
             del header_matches[0]
+
+    def test_get_by_tag(self):
+        # Test that we can get a list of header_matches with a specifc tag.
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('header-1', 'pattern-1', tag='tag1')
+        header_matches.append('header-2', 'pattern-')
+        header_matches.append('header-3', 'pattern-2', tag='tag1')
+        self.assertEqual(
+            [(match.header, match.position)
+             for match in header_matches.get_by_tag('tag1')],
+            [('header-1', 0),
+             ('header-3', 2)]
+            )
+
+    def test_get_by_tag_nonexistent(self):
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('header-1', 'pattern-1', tag='tag1')
+        header_matches.append('header-2', 'pattern-')
+        header_matches.append('header-3', 'pattern-2', tag='tag1')
+        match_tag2 = header_matches.get_by_tag('tag2')
+        self.assertEqual(len(list(match_tag2)), 0)
+
+    def test_filter(self):
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('header-1', 'pattern-1', tag='tag1')
+        header_matches.append('header-1', 'pattern-3', tag='tag1')
+        header_matches.append('header-2', 'pattern-')
+        header_matches.append('header-3', 'pattern-2', tag='tag1')
+        header_matches.append('header-3', 'pattern-3', chain='hold')
+        match_tag = header_matches.filter(header='header-1', tag='tag1')
+        self.assertEqual(len(list(match_tag)), 2)
+        match_tag = header_matches.filter(tag='tag1')
+        self.assertEqual(len(list(match_tag)), 3)
+        match_tag = header_matches.filter(chain='hold')
+        self.assertEqual(len(list(match_tag)), 1)
