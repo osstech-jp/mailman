@@ -641,6 +641,7 @@ class HeaderMatch(Model):
     header = Column(SAUnicode)
     pattern = Column(SAUnicode)
     chain = Column(SAUnicode, nullable=True)
+    tag = Column(SAUnicode, nullable=True)
 
     def __init__(self, **kw):
         position = kw.pop('position', None)
@@ -709,7 +710,7 @@ class HeaderMatchList:
         del self._mailing_list.header_matches[:]
 
     @dbconnection
-    def append(self, store, header, pattern, chain=None):
+    def append(self, store, header, pattern, chain=None, tag=None):
         header = header.lower()
         existing = store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list,
@@ -725,19 +726,20 @@ class HeaderMatchList:
         header_match = HeaderMatch(
             mailing_list=self._mailing_list,
             header=header, pattern=pattern, chain=chain,
-            position=last_position + 1)
+            position=last_position + 1, tag=tag)
         store.add(header_match)
         store.expire(self._mailing_list, ['header_matches'])
 
     @dbconnection
-    def insert(self, store, index, header, pattern, chain=None):
-        self.append(header, pattern, chain)
+    def insert(self, store, index, header, pattern, chain=None, tag=None):
+        self.append(header, pattern, chain, tag)
         # Get the header match that was just added.
         header_match = store.query(HeaderMatch).filter(
             HeaderMatch.mailing_list == self._mailing_list,
             HeaderMatch.header == header.lower(),
             HeaderMatch.pattern == pattern,
-            HeaderMatch.chain == chain).one()
+            HeaderMatch.chain == chain,
+            HeaderMatch.tag == tag).one()
         header_match.position = index
         store.expire(self._mailing_list, ['header_matches'])
 
@@ -806,3 +808,24 @@ class HeaderMatchList:
                 ).order_by(HeaderMatch.position)):
             match._position = position
         store.expire(self._mailing_list, ['header_matches'])
+
+    @dbconnection
+    def get_by_tag(self, store, tag):
+        # Get all the header matches that correspond to a single tag.
+        entries = store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self._mailing_list,
+            HeaderMatch.tag == tag
+            ).order_by(HeaderMatch.position)
+        yield from entries
+
+    @dbconnection
+    def filter(self, store, header=None, chain=None, tag=None):
+        entries = store.query(HeaderMatch).filter(
+            HeaderMatch.mailing_list == self._mailing_list)
+        if tag:
+            entries = entries.filter(HeaderMatch.tag == tag)
+        if header:
+            entries = entries.filter(HeaderMatch.header == header)
+        if chain:
+            entries = entries.filter(HeaderMatch.chain == chain)
+        yield from entries.order_by(HeaderMatch.position)

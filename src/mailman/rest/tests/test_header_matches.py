@@ -60,7 +60,7 @@ class TestHeaderMatches(unittest.TestCase):
                      '/header-matches', {
                          'header': 'header',
                          'pattern': 'pattern',
-                        })
+                        }, method='POST')
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          'This header match already exists')
@@ -99,3 +99,50 @@ class TestHeaderMatches(unittest.TestCase):
             cm.exception.reason,
             'Invalid Parameter "pattern":'
             ' Expected a valid regexp, got +invalid.')
+        self.assertEqual(cm.exception.reason,
+                         'Invalid Parameter "pattern": '
+                         'Expected a valid regexp, got +invalid.')
+
+    def test_add_header_match(self):
+        _, resp = call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                           '/header-matches', {
+                               'header': 'header-1',
+                               'pattern': '^Yes',
+                               'action': 'hold',
+                               'tag': 'tag1',
+                               },
+                           method='POST')
+        self.assertEqual(resp.status_code, 201)
+        header_matches = IHeaderMatchList(self._mlist)
+        self.assertEqual(
+            [(match.header, match.pattern, match.chain, match.tag)
+             for match in header_matches],
+            [('header-1', '^Yes', 'hold', 'tag1')])
+
+    def test_get_header_match_by_tag(self):
+        header_matches = IHeaderMatchList(self._mlist)
+        with transaction():
+            header_matches.append('header-1', 'pattern-1')
+            header_matches.append(
+                'header-2', 'pattern-2', chain='hold', tag='tag')
+            header_matches.append('header-3', 'pattern-3', chain='accept')
+
+        content, resp = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com'
+            '/header-matches/find', {'tag': 'tag'}
+            )
+        self.assertEqual(resp.status_code, 200)
+        self.assertIsNotNone(content)
+        self.assertEqual(len(content['entries']), 1)
+        self.assertEqual(content['entries'][0]['header'], 'header-2')
+        self.assertEqual(content['entries'][0]['pattern'], 'pattern-2')
+        self.assertEqual(content['entries'][0]['action'], 'hold')
+
+    def test_get_header_match_empty(self):
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                     '/header-matches/find', {'tag': 'tag'})
+        self.assertEqual(cm.exception.code, 404)
+        self.assertEqual(
+            cm.exception.reason,
+            'Cound not find any HeaderMatch for provided search options.')
