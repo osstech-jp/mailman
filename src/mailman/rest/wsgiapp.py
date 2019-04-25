@@ -25,6 +25,7 @@ from falcon import API, HTTPUnauthorized
 from falcon.routing import map_http_methods, set_default_responders
 from mailman.config import config
 from mailman.database.transaction import transactional
+from mailman.rest.helpers import bad_request
 from mailman.rest.root import Root
 from public import public
 from wsgiref.simple_server import (
@@ -103,6 +104,20 @@ class Middleware:
                 '401 Unauthorized',
                 'REST API authorization failed',
                 challenges=[realm])
+
+
+def handle_ValueError(exc, request, response, params):
+    """Handle ValueErrors in API code to return HTTPBadRequest.
+
+    ValueErrors are raised often by Validator and should not return a 500 error
+    resposne to the client.  This is a stop-gap for 500 errors due to
+    ValueErrors, it is recommended that they be handled at the call-site,
+    instead of here.
+    """
+    # Only handle ValueError, raise anything else right back.
+    if not isinstance(exc, ValueError):
+        raise exc
+    bad_request(response, str(exc))
 
 
 class ObjectRouter:
@@ -221,7 +236,9 @@ class RootedAPI(API):
 @public
 def make_application():
     """Return a callable WSGI application object."""
-    return RootedAPI(Root())
+    app = RootedAPI(Root())
+    app.add_error_handler(ValueError, handle_ValueError)
+    return app
 
 
 @public
