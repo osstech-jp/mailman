@@ -194,7 +194,7 @@ New mailing lists can also be created through the API, by posting to the
     ...           'fqdn_listname': 'bee@example.com',
     ...           })
     content-length: 0
-    content-type: application/json; charset=UTF-8
+    content-type: application/json
     date: ...
     location: http://localhost:9001/3.0/lists/bee.example.com
     ...
@@ -275,7 +275,7 @@ different style.
     ...           'style_name': 'legacy-announce',
     ...           })
     content-length: 0
-    content-type: application/json; charset=UTF-8
+    content-type: application/json
     date: ...
     location: http://localhost:9001/3.0/lists/cat.example.com
     ...
@@ -434,7 +434,7 @@ can force the digest to be sent.
     ...           'send': True,
     ...           })
     content-length: 0
-    content-type: application/json; charset=UTF-8
+    content-type: application/json
     date: ...
 
 Once the runner does its thing, the digest message will be sent.
@@ -483,7 +483,7 @@ Let's bump the digest.
     ...           'bump': True,
     ...           })
     content-length: 0
-    content-type: application/json; charset=UTF-8
+    content-type: application/json
     date: ...
 
 And now the next digest to be sent will have a new volume number.
