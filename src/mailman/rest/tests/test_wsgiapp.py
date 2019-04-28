@@ -90,7 +90,7 @@ class TestSupportedContentType(unittest.TestCase):
             )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.headers.get('content-type', None),
-                         'application/json; charset=UTF-8')
+                         'application/json')
         self.assertEqual(response.json(),
                          {'title': '400 Bad Request'})
         # Now, let's try to call somewhere mailman.rest.helpers.bad_request()
