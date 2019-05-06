@@ -33,7 +33,8 @@ Other
 * Add a new attribute ``tag`` to ``HeaderMatch`` to find and manage a set of
   rules. (See !497)
 * Expired cached entries will be deleted efficiently. (Closes #462)
-
+* REST Runner now uses Gunicorn to run WSGI server instead of the standard
+  library wsgiref for better performance.
 
 3.2.2
 =====

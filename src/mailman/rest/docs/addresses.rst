@@ -100,7 +100,6 @@ Addresses can also be verified through the REST API, by POSTing to the
 
     >>> dump_json('http://localhost:9001/3.0/addresses/'
     ...           'cris@example.com/verify', {})
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -121,7 +120,6 @@ sub-resource.  Again, the POST data is ignored.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/'
     ...           'cris@example.com/unverify', {})
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -201,7 +199,6 @@ The address and the user can be unlinked by sending a DELETE request on the
 
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user',
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -242,7 +239,7 @@ followed by a POST request, or you can send a PUT request.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user',
     ...           {'display_name': 'Cris Q Person'}, method="PUT")
-    content-length: 0
+		content-length: 0
     content-type: application/json
     date: ...
     location: http://localhost:9001/3.0/users/2
@@ -399,7 +396,7 @@ Now, Ram can set his preferred address:
     content-type: application/json
     date: ...
     location: http://localhost:9001/3.1/addresses/ram@example.com
-    server: WSGIServer/0.2 CPython/3...
+    server: ...
     status: 201
     >>> dump_json('http://localhost:9001/3.1/users/ram@example.com/preferred_address')
     display_name: Ram Person
@@ -417,10 +414,9 @@ To unset Ram's preferred address, call a ``DELETE`` on preferred address resourc
 
    >>> dump_json('http://localhost:9001/3.1/users/ram@example.com/preferred_address',
    ...     method='DELETE')
-    content-length: 0
-    date: ...
-    server: WSGIServer/0.2 CPython/3...
-    status: 204
+   date: ...
+   server: ...
+   status: 204
 
 Memberships
 ===========
@@ -562,7 +558,6 @@ Addresses can be deleted via the REST API.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/fred@example.com',
     ...     method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -592,7 +587,6 @@ user, it just unlinks it.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/gwen@example.com',
     ...     method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204

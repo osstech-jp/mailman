@@ -179,7 +179,6 @@ Plugins and their child resources can support any HTTP method, such as
 
     >>> dump_json('http://localhost:9001/3.1/plugins/example/echo',
     ...           dict(number=7))
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -192,7 +191,6 @@ Plugins and their child resources can support any HTTP method, such as
 
     >>> dump_json('http://localhost:9001/3.1/plugins/example/echo',
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204

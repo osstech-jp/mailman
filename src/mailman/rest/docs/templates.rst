@@ -65,7 +65,6 @@ use this welcome message instead of the default one.
     >>> call_http('http://localhost:9001/3.1/lists/ant.example.com/uris', {
     ...     'list:user:notice:welcome': 'http://localhost:8180/welcome_1.txt',
     ...     }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -105,7 +104,6 @@ retrieving the welcome message.
     ...     'username': 'anne',
     ...     'password': 'is special',
     ...     }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -175,7 +173,6 @@ code.
     ...     'list:user:notice:welcome':
     ...     'http://localhost:8180/$list_id/$language/welcome_3.txt',
     ...     }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -247,7 +244,6 @@ to be shared.
     ...     'list:user:notice:welcome':
     ...     'http://localhost:8180/welcome_4.txt',
     ...     }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -297,7 +293,6 @@ Let's delete the Ant list's override.
     >>> call_http('http://localhost:9001/3.1/lists/ant.example.com/uris'
     ...           '/list:user:notice:welcome',
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -334,7 +329,6 @@ approach to delete the domain welcome message.
     >>> call_http('http://localhost:9001/3.1/domains/example.com/uris', {
     ...     'list:user:notice:welcome': '',
     ...     }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -345,7 +339,6 @@ Now let's set a new welcome template URI for the site.
     ...     'list:user:notice:welcome':
     ...     'http://localhost:8180/welcome_5.txt',
     ...     }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
