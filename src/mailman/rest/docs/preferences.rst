@@ -100,7 +100,6 @@ PUT operation.
     ...           'receive_list_copy': True,
     ...           'receive_own_postings': False,
     ...           }, method='PUT')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -125,7 +124,6 @@ You can also update just a few of the attributes using PATCH.
     ...           'delivery_mode': 'plaintext_digests',
     ...           'receive_list_copy': False,
     ...           }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -154,7 +152,6 @@ deleted.
     ...           '/preferences', {
     ...           'preferred_language': 'ja',
     ...           }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -168,7 +165,6 @@ deleted.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/anne@example.com'
     ...           '/preferences', method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204

@@ -121,7 +121,7 @@ existing mailing list.
     content-type: application/json
     date: ...
     location: http://localhost:9001/3.0/lists/ant.example.com
-    server: WSGIServer/0.2 CPython/...
+    server: ...
     status: 201
 
 While list creation takes an FQDN list name, injecting a message to the queue
@@ -160,7 +160,6 @@ We can delete the injected message.
     >>> dump_json('http://localhost:9001/3.0/queues/bad/{}'.format(
     ...           json['files'][0]),
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204

@@ -107,7 +107,6 @@ Let's see what happens when the above message is deferred.
     >>> dump_json(url(request_id), {
     ...     'action': 'defer',
     ...     })
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -140,7 +139,6 @@ The held message can be discarded.
     >>> dump_json(url(request_id), {
     ...     'action': 'discard',
     ...     })
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -161,7 +159,6 @@ moderation.
     >>> dump_json(url(request_id), {
     ...     'action': 'accept',
     ...     })
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -189,7 +186,6 @@ to the original author.
     >>> dump_json(url(request_id), {
     ...     'action': 'reject',
     ...     })
-    content-length: 0
     date: ...
     server: ...
     status: 204

@@ -145,9 +145,8 @@ When using ``PUT``, all writable attributes must be included.
     ...             max_num_recipients='20',
     ...             ),
     ...           'PUT')
-    content-length: 0
     date: ...
-    server: WSGIServer/...
+    server: ...
     status: 204
 
 These values are changed permanently.
@@ -218,7 +217,6 @@ Using ``PATCH``, you can change just one attribute.
     ...           'ant@example.com/config',
     ...           dict(display_name='My List'),
     ...           'PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -256,7 +254,6 @@ name of the resource.
     ...           '/config/display_name',
     ...           dict(display_name='Your List'),
     ...           'PUT')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -273,7 +270,6 @@ either method.
     ...           '/config/display_name',
     ...           dict(display_name='Their List'),
     ...           'PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -307,9 +303,8 @@ dictionary are ignored.
     ...           dict(acceptable_aliases=['foo@example.com',
     ...                                    'bar@example.net']),
     ...           'PUT')
-    content-length: 0
     date: ...
-    server: WSGIServer/...
+    server: ...
     status: 204
 
 You can get all the mailing list's acceptable aliases through the REST API.
@@ -337,9 +332,8 @@ The aliases can be removed by using ``DELETE``.
     ...     'http://localhost:9001/3.0/lists/'
     ...     'ant@example.com/config/acceptable_aliases',
     ...     method='DELETE')
-    content-length: 0
     date: ...
-    server: WSGIServer/...
+    server: ...
     status: 204
 
 Now the mailing list has no aliases.
@@ -376,7 +370,7 @@ New header matches can be created by POSTing to the resource.
     ...           'pattern': '^Yes',
     ...           })
     content-length: 0
-    ...
+		...
     location: .../3.0/lists/ant.example.com/header-matches/0
     ...
     status: 201
@@ -403,7 +397,7 @@ is desired, the ``action`` key must name a valid chain to jump to.
     ...           'action': 'discard',
     ...           })
     content-length: 0
-    ...
+		...
     location: .../3.0/lists/ant.example.com/header-matches/1
     ...
     status: 201
@@ -426,7 +420,6 @@ the priority is not changed.
     ...           '/header-matches/1',
     ...           dict(pattern='^No', action='accept'),
     ...           'PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -443,7 +436,6 @@ the priority is not changed.
     ...           '/header-matches/1',
     ...           dict(position=0),
     ...           'PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -476,7 +468,6 @@ optional; if it is omitted, the order will not be changed.
     ...                pattern='^Yes',
     ...                action='hold',
     ...           ), 'PUT')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -496,8 +487,8 @@ A header match can be removed using the DELETE method.
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches/1',
     ...           method='DELETE')
-    content-length: 0
-    ...
+    date: ...
+    server: ...
     status: 204
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
@@ -520,8 +511,8 @@ the top resource.
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'
     ...           '/header-matches',
     ...           method='DELETE')
-    content-length: 0
-    ...
+    date: ...
+    server: ...
     status: 204
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com'

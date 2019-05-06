@@ -207,7 +207,6 @@ Domains can also be deleted via the API.
 
     >>> dump_json('http://localhost:9001/3.0/domains/lists.example.com',
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -230,7 +229,6 @@ Anne and Bart volunteer to be a domain owners.
     >>> dump_json('http://localhost:9001/3.0/domains/my.example.com/owners', (
     ...     ('owner', 'anne@example.com'), ('owner', 'bart@example.com')
     ...     ))
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -256,7 +254,6 @@ We can delete all the domain owners.
 
     >>> dump_json('http://localhost:9001/3.0/domains/my.example.com/owners',
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204

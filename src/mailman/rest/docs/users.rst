@@ -215,7 +215,6 @@ Dave's display name can be changed through the REST API.
     >>> dump_json('http://localhost:9001/3.0/users/4', {
     ...           'display_name': 'David Person',
     ...           }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -237,7 +236,6 @@ password.  Mailman will hash this before it is stored internally.
     >>> dump_json('http://localhost:9001/3.0/users/4', {
     ...           'cleartext_password': 'clockwork angels',
     ...           }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -264,7 +262,6 @@ resource.
     ...           'display_name': 'David Personhood',
     ...           'is_server_owner': False,
     ...           }, method='PUT')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -288,7 +285,6 @@ Users can also be deleted via the API.
 
     >>> dump_json('http://localhost:9001/3.0/users/cris@example.com',
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -416,7 +412,6 @@ This time, Elly successfully logs into Mailman.
     >>> dump_json('http://localhost:9001/3.0/users/5/login', {
     ...           'cleartext_password': 'supersekrit',
     ...           }, method='POST')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -443,7 +438,6 @@ Let's make her a server owner.
     >>> dump_json('http://localhost:9001/3.0/users/5', {
     ...           'is_server_owner': True,
     ...           }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -463,7 +457,6 @@ Elly later retires as server owner.
     >>> dump_json('http://localhost:9001/3.0/users/5', {
     ...           'is_server_owner': False,
     ...           }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204

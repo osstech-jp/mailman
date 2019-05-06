@@ -300,7 +300,6 @@ Existing mailing lists can be deleted through the API, by doing an HTTP
 
     >>> dump_json('http://localhost:9001/3.0/lists/bee.example.com',
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -318,7 +317,6 @@ address as well.
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com',
     ...           method='DELETE')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -355,7 +353,6 @@ resource.
     ...         'mail-archive': False,
     ...         'mhonarc': True,
     ...         }, method='PUT')
-    content-length: 0
     date: ...
     server: ...
     status: 204
@@ -372,7 +369,6 @@ You can change the state of a subset of the list archivers.
     ...     'http://localhost:9001/3.0/lists/dog@example.com/archivers', {
     ...         'mhonarc': False,
     ...         }, method='PATCH')
-    content-length: 0
     date: ...
     server: ...
     status: 204

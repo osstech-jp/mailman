@@ -107,6 +107,8 @@ def call_http(url, data=None, method=None, username=None, password=None):
             field.lower(): response.headers[field]
             for field in response.headers
             })
+        # Remove the connection: close header from the response.
+        headers.pop('connection')
         for field in sorted(headers):
             print('{}: {}'.format(field, headers[field]))
         return None
