@@ -22,6 +22,11 @@ Bugs
   ``CC`` will now be removed from ``CC`` even if this results in no ``CC``.
   (Closes #575)
 
+Command line
+------------
+* The ``mailman import21`` command now leaves only regexps in the legacy
+  ``*_these_nonmembers`` list attributes.  (Closes #588)
+
 REST
 ----
 * Expose a user's preferred address using REST API. (Closes #240)
