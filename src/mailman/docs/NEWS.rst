@@ -21,6 +21,7 @@ Bugs
 * A list member with ``receive_list_copy`` set to ``False`` who is addressed in
   ``CC`` will now be removed from ``CC`` even if this results in no ``CC``.
   (Closes #575)
+* ``X-Mailman-Approved-At`` header now has correct timezone.  (Closes #584)
 
 Command line
 ------------
