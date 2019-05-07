@@ -29,6 +29,8 @@ Command line
 ------------
 * The ``mailman import21`` command now leaves only regexps in the legacy
   ``*_these_nonmembers`` list attributes.  (Closes #588)
+* The ``mailman import21`` command now imports nonmember accept actions as
+  ``Action.defer`` rather than ``Action.accept``.  (Closes #579)
 
 REST
 ----
