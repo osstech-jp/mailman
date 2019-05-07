@@ -738,7 +738,7 @@ class TestMemberActionImport(unittest.TestCase):
 
     def test_nonmember_accept(self):
         self._pckdict['generic_nonmember_action'] = 0
-        self._do_test(dict(default_nonmember_action=Action.accept))
+        self._do_test(dict(default_nonmember_action=Action.defer))
 
     def test_nonmember_hold(self):
         self._pckdict['generic_nonmember_action'] = 1
@@ -1139,7 +1139,7 @@ class TestRosterImport(unittest.TestCase):
     def test_nonmembers(self):
         import_config_pck(self._mlist, self._pckdict)
         expected = {
-            'gene': Action.accept,
+            'gene': Action.defer,
             'homer': Action.hold,
             'iris': Action.reject,
             'kenny': Action.discard,
@@ -1151,6 +1151,9 @@ class TestRosterImport(unittest.TestCase):
             member = self._mlist.nonmembers.get_member(
                 '{}@example.com'.format(name))
             self.assertEqual(member.moderation_action, action)
+            # Action.defer maps from accept; map it back to get the name.
+            if action == Action.defer:
+                action = Action.accept
             # Only regexps should remain in the list property.
             list_prop = getattr(
                 self._mlist,
