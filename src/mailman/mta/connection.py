@@ -17,9 +17,9 @@
 
 """MTA connections."""
 
+import ssl
 import enum
 import socket
-import ssl
 import logging
 import smtplib
 
@@ -32,26 +32,27 @@ from public import public
 log = logging.getLogger('mailman.smtp')
 
 
+@public
 class SecureMode(enum.Enum):
-    INSECURE = 'smtp',
-    IMPLICIT = 'smtps',
-    STARTTLS = 'starttls'               # STARTTLS can be invoked prior to any
-                                        # message submission, but we don't do
-                                        # that -- we invoke immediately.
+    INSECURE = 'smtp'
+    IMPLICIT = 'smtps'
+    STARTTLS = 'starttls'
+    # STARTTLS can be invoked prior to any message submission, but we don't do
+    # that -- we invoke immediately.
 
+
+@public
 def as_SecureMode(s):
     """
     Convert a string to an enum value.  Accepts any case.
     """
     s = s.lower()
-    if s == 'smtp':
-        return SecureMode.INSECURE
-    elif s == 'smtps':
-        return SecureMode.IMPLICIT
-    elif s == 'starttls':
-        return SecureMode.STARTTLS
-    else:
+
+    try:
+        return SecureMode(s)
+    except ValueError:
         raise InvalidConfigurationError('smtp_secure_mode', repr(s))
+
 
 class Connection:
     """Manage a connection to the SMTP server."""
@@ -77,8 +78,8 @@ class Connection:
         :param smtp_pass: Optional SMTP authentication password.  If given,
             `smtp_user` must also be given.
         :type smtp_pass: str
-        :param secure_mode: Whether to use implicit TLS (SMTPS), STARTTLS, or an
-            insecure connection.
+        :param secure_mode: Whether to use implicit TLS (SMTPS), STARTTLS, or
+            an insecure connection.
         :type secure_mode: SecureMode
         :param verify_cert: Whether to require a server cert and verify it.
             Verification in this context means that the server needs to supply
@@ -90,21 +91,23 @@ class Connection:
             RFC 2818 and RFC 6125 rules are followed.
         :type verify_hostname: bool
 
-        With the exception of the parameters specified here, this class uses the
-        defaults provided by your version of the Python 'ssl' module.
+        With the exception of the parameters specified here, this class
+        uses the defaults provided by your version of the Python 'ssl'
+        module.
 
-        If either of smtp_pass or smtp_user is omitted, the other will be ignored.
-        If secure_mode is INSECURE, verify_host and verify_cert will be ignored.
+        If either of smtp_pass or smtp_user is omitted, the other will
+        be ignored.  If secure_mode is INSECURE, verify_host and
+        verify_cert will be ignored.
         """
         self._host = host
         self._port = port
         self._sessions_per_connection = sessions_per_connection
         self.secure_mode = secure_mode
         self.verify_cert = verify_cert
-        self.verify_hostname = verify_hostname        
+        self.verify_hostname = verify_hostname
         self._username = smtp_user
         self._password = smtp_pass
-        
+
         self._session_count = None
         self._connection = None
         if self.secure_mode == SecureMode.INSECURE:
@@ -170,8 +173,12 @@ class Connection:
             self.quit()
             raise
         except Exception as error:
-            # If ANYTHING fails here, after ensuring connection is closed, we'll
-            # let the exception bubble up so a message in process will be shunted.
+            # This exception is kept here intentionally to make sure we log
+            # only when an exception other than 3 caught above happens and
+            # can't be handled.
+            # If ANYTHING fails here, after ensuring
+            # connection is closed, we'll let the exception bubble up so a
+            # message in process will be shunted.
             log.error('while connecting to SMTP: ' + str(error))
             self.quit()
             raise
@@ -183,7 +190,7 @@ class Connection:
             log.debug('logging in')
             try:
                 self._connection.login(self._username, self._password)
-            except smtplib.SMTPException as error:
+            except smtplib.SMTPException:
                 # Ensure connection is closed and pass to BaseDelivery.
                 self.quit()
                 raise
@@ -197,4 +204,3 @@ class Connection:
         else:
             ssl_context.verify_mode = ssl.CERT_NONE
         return ssl_context
-

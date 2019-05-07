@@ -53,8 +53,8 @@ Subject: This has no Message-ID header
 
 """)
         # LMTP returns a 550: Requested action not taken: mailbox unavailable
-        # (e.g., mailbox not found, no access, or command rejected for policy
-        # reasons)
+        # (e.g., mailmailman.runners.tests.test_lmtp.TestLMTPbox not found, no
+        # access, or command rejected for policy reasons)
         self.assertEqual(cm.exception.smtp_code, 550)
         self.assertEqual(cm.exception.smtp_error,
                          b'No Message-ID header provided')

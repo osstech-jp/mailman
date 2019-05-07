@@ -46,7 +46,7 @@ from mailman.testing.mta import (
     ConnectionCountingController, ConnectionCountingSSLController,
     ConnectionCountingSTARTTLSController)
 from mailman.utilities.string import expand
-from pkg_resources import resource_filename, resource_string as resource_bytes
+from pkg_resources import resource_filename
 from public import public
 from textwrap import dedent
 from zope.component import getUtility

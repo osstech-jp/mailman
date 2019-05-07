@@ -20,10 +20,11 @@
 import unittest
 
 from mailman.config import config
-from mailman.mta.connection import Connection, SecureMode, as_SecureMode
+from mailman.mta.connection import Connection, SecureMode
 from mailman.testing.helpers import LogFileMark
 from mailman.testing.layers import SMTPLayer, SMTPSLayer, STARTTLSLayer
 from smtplib import SMTPAuthenticationError, SMTPNotSupportedError
+from unittest.mock import patch
 
 
 class TestConnection(unittest.TestCase):
@@ -73,18 +74,12 @@ Subject: aardvarks
 
     def test_count_0(self):
         # So far, no connections.
-        unittest.TestCase.assertEqual(self,
-                                      self.layer.smtpd.get_connection_count(),
-                                      0)
-        pass
+        self.assertEqual(self.layer.smtpd.get_connection_count(), 0)
 
     def test_count_1(self):
         self.connection.sendmail(
             'anne@example.com', ['bart@example.com'], self.msg_text)
-        unittest.TestCase.assertEqual(self,
-                                      self.layer.smtpd.get_connection_count(),
-                                      1)
-        pass
+        self.assertEqual(self.layer.smtpd.get_connection_count(), 1)
 
     def test_count_2(self):
         self.connection.sendmail(
@@ -93,10 +88,7 @@ Subject: aardvarks
         self.connection.sendmail(
             'cate@example.com', ['dave@example.com'], self.msg_text)
         self.connection.quit()
-        unittest.TestCase.assertEqual(self,
-                                      self.layer.smtpd.get_connection_count(),
-                                      2)
-        pass
+        self.assertEqual(self.layer.smtpd.get_connection_count(), 2)
 
     def test_count_2_no_quit(self):
         self.connection.sendmail(
@@ -104,7 +96,7 @@ Subject: aardvarks
         self.connection.sendmail(
             'cate@example.com', ['dave@example.com'], self.msg_text)
         self.connection.quit()
-        self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 1)
+        self.assertEqual(self.layer.smtpd.get_connection_count(), 1)
 
     def test_count_reset(self):
         self.connection.sendmail(
@@ -115,12 +107,11 @@ Subject: aardvarks
         self.connection.quit()
         # Issue the fake SMTP command to reset the count.
         self.layer.smtpd.reset()
-        unittest.TestCase.assertEqual(self,
-                                      self.layer.smtpd.get_connection_count(),
-                                      0)
+        self.assertEqual(self.layer.smtpd.get_connection_count(), 0)
 
 
 class TestSMTPConnectionCount(_ConnectionCounter, unittest.TestCase):
+
     layer = SMTPLayer
 
     def setUp(self):
@@ -128,15 +119,21 @@ class TestSMTPConnectionCount(_ConnectionCounter, unittest.TestCase):
         self.connection = Connection(
             config.mta.smtp_host, int(config.mta.smtp_port), 0)
 
+    @patch('mailman.mta.connection.smtplib.SMTP', side_effect=Exception)
+    def test_exception_is_raised_from_connect(self, mocked_SMTP):
+        connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0)
+        with self.assertRaises(Exception):
+            connection._connect()
+        self.assertTrue(mocked_SMTP.called)
+
 
 class TestSMTPSConnectionCount(_ConnectionCounter, unittest.TestCase):
+
     layer = SMTPSLayer
 
     def setUp(self):
         super().setUp()
-        print('config.mta.smtp_port', config.mta.smtp_port)
-        import pdb
-        pdb.set_trace()
         self.connection = Connection(
             config.mta.smtp_host, int(config.mta.smtp_port), 0,
             secure_mode=SecureMode.IMPLICIT, verify_cert=False
@@ -144,6 +141,7 @@ class TestSMTPSConnectionCount(_ConnectionCounter, unittest.TestCase):
 
 
 class TestSTARTTLSConnectionCount(_ConnectionCounter, unittest.TestCase):
+
     layer = STARTTLSLayer
 
     def setUp(self):
@@ -167,7 +165,7 @@ From: anne@example.com
 To: bart@example.com
 Subject: aardvarks
 """
-        smtp_log = LogFileMark('mailman.smtp')
+        LogFileMark('mailman.smtp')
         with self.assertRaises(SMTPNotSupportedError):
             connection.sendmail(
                 'anne@example.com', ['bart@example.com'], msg_text)
