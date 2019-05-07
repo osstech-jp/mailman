@@ -57,10 +57,10 @@ def sign(msg, msgdata):
                            config.ARC.selector.encode(),
                            config.ARC.domain.encode(),
                            privkey.encode(), sig_headers,
-                           'ARC', config.ARC.authserv_id,
+                           'ARC', config.ARC.authserv_id.encode(),
                            timestamp=timestamp,
                            standardize=('ARC-Standardize' in msgdata))
-    except DKIMException as e:
+    except DKIMException:
         error_log.exception('Failed to sign message')
         return
 

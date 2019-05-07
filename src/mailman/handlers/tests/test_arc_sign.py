@@ -123,6 +123,18 @@ i=1; s=dummy; t=12345"""
         expected = set("".join(msg["ARC-Seal"].split()).split(";"))
         self.assertEqual(seal, expected)
 
+    # I *believe* that this test from Gene Shuman's PR is incorrect.  As I
+    # read the currect draft
+    # https://tools.ietf.org/html/draft-ietf-dmarc-arc-protocol-23#section-5.2
+    # the ARC Validator SHOULD have added an arc=none clause to the field,
+    # but its absence doesn't invalidate the Authentication-Results field.
+    # As far as I can see the draft says nothing about a missing arc method
+    # in the Authentication-Results field(s) used by the Signer.
+    # I suspect that the Signer might want to add a "missing arc" warning,
+    # but it's unclear what the syntax should be.
+    # Differences from previous test: no sig_headers in config, no arc=none
+    # in Authentication-Results.
+    @unittest.expectedFailure
     def test_arc_sign_message_no_chain_validation(self):
         config.push('arc_sign', """
         [ARC]

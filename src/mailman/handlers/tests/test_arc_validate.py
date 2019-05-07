@@ -38,7 +38,7 @@ class TestValidateAuthenticity(unittest.TestCase):
 
     def setUp(self):
         # stub dns
-        dkim0 = ["v=DKIM1\; k=rsa\; p=MIIBIjANBgkqhkiG9w0BAQEFAAO"
+        dkim0 = ["v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAO"
                  "CAQ8AMIIBCgKCAQEAg1i2lO83x/r58cbo/JSBwfZrrct6S/"
                  "yi4L6GsG3wNgFE9lO3orzBwnAEJJM33WrvJfOWia1fAx64V"
                  "s1QEpYtLFCzyeIhDDMaHv/G8NgKPgnWK4gI8/x2Q2SYCmiq"
@@ -52,8 +52,8 @@ class TestValidateAuthenticity(unittest.TestCase):
                  "y5bdOKb2jLQiY/J16JYi0Qvx/byYzCNb3W91y3FutACDfzw"
                  "Q/BC/e/8uBsCR+yz1Lxj+PL6lHvqMKrM3rG4hstT5QjvHO9"
                  "PzoxZyVYLzBfO2EeC3Ip3G+2kryOTIKT+l/K4w3QIDAQAB"]
-        dmarc = ["v=DMARC1\; p=reject\; rua=mailto:dmarc.reports@"
-                 "valimail.com,mailto:dmarc_agg@vali.email\; ruf="
+        dmarc = ["v=DMARC1; p=reject; rua=mailto:dmarc.reports@"
+                 "valimail.com,mailto:dmarc_agg@vali.email; ruf="
                  "mailto:dmarc.reports@valimail.com,mailto:dmarc_"
                  "c0cb7153_afrf@vali.email"]
 
