@@ -22,6 +22,8 @@ Bugs
   ``CC`` will now be removed from ``CC`` even if this results in no ``CC``.
   (Closes #575)
 * ``X-Mailman-Approved-At`` header now has correct timezone.  (Closes #584)
+* A spurious ``invalid FilterAction: discard. Treating as discard`` log
+  message is eliminated.  (Closes #592)
 
 Command line
 ------------
