@@ -32,7 +32,7 @@ class MissingConfigurationFileError(MailmanError):
 
 @public
 class InvalidConfigurationError(MailmanError):
-    """A configuration key had an unexpected/invalid value."""
+    """A valid configuration key received an invalid value."""
 
     def __init__(self, key, value):
         self.key = key

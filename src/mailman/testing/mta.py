@@ -240,7 +240,7 @@ class ConnectionCountingSSLController(ConnectionCountingController):
         return client
 
 
-class ConnectionCountingSTARTLSController(ConnectionCountingController):
+class ConnectionCountingSTARTTLSController(ConnectionCountingController):
     """Count the number of SMTP connections with STARTTLS opened."""
 
     def __init__(self, host, port, client_context=None, server_context=None):

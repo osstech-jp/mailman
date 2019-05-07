@@ -22,7 +22,7 @@ import unittest
 from mailman.config import config
 from mailman.interfaces.configuration import InvalidConfigurationError
 from mailman.mta.base import BaseDelivery
-from mailman.mta.connection import SMTPSConnection, STARTTLSConnection
+from mailman.mta.connection import Connection
 from mailman.testing.layers import SMTPLayer, SMTPSLayer, STARTTLSLayer
 
 
@@ -38,10 +38,10 @@ class TestSMTPSDelivery(unittest.TestCase):
     def test_smtps_config(self):
         config.push('smtps_config', """\
 [mta]
-smtp_protocol: smtps
+smtp_secure_mode: smtps
 """)
         delivery = BaseDeliveryTester()
-        self.assertIsInstance(delivery.connection, SMTPSConnection)
+        self.assertIsInstance(delivery.connection, Connection)
         config.pop('smtps_config')
 
 
@@ -51,10 +51,10 @@ class TestSTARTTLSDelivery(unittest.TestCase):
     def test_starttls_config(self):
         config.push('starttls_config', """\
 [mta]
-smtp_protocol: starttls
+smtp_secure_mode: starttls
 """)
         delivery = BaseDeliveryTester()
-        self.assertIsInstance(delivery.connection, STARTTLSConnection)
+        self.assertIsInstance(delivery.connection, Connection)
         config.pop('starttls_config')
 
 
@@ -64,7 +64,7 @@ class TestInvalidDelivery(unittest.TestCase):
     def test_invalid_config(self):
         config.push('invalid_config', """\
 [mta]
-smtp_protocol: invalid
+smtp_secure_mode: invalid
 """)
         with self.assertRaises(InvalidConfigurationError):
             BaseDeliveryTester()

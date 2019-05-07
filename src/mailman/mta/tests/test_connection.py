@@ -20,11 +20,10 @@
 import unittest
 
 from mailman.config import config
-from mailman.mta.connection import (
-    SMTPConnection, SMTPSConnection, STARTTLSConnection)
+from mailman.mta.connection import Connection, SecureMode, as_SecureMode
 from mailman.testing.helpers import LogFileMark
 from mailman.testing.layers import SMTPLayer, SMTPSLayer, STARTTLSLayer
-from smtplib import SMTPAuthenticationError
+from smtplib import SMTPAuthenticationError, SMTPNotSupportedError
 
 
 class TestConnection(unittest.TestCase):
@@ -34,7 +33,7 @@ class TestConnection(unittest.TestCase):
         # Logging in to the MTA with a bad user name and password produces a
         # 571 Bad Authentication error.
         with self.assertRaises(SMTPAuthenticationError) as cm:
-            connection = SMTPConnection(
+            connection = Connection(
                 config.mta.smtp_host, int(config.mta.smtp_port), 0,
                 'baduser', 'badpass')
             connection.sendmail('anne@example.com', ['bart@example.com'], """\
@@ -48,7 +47,7 @@ Subject: aardvarks
 
     def test_authentication_good_path(self):
         # Logging in with the correct user name and password succeeds.
-        connection = SMTPConnection(
+        connection = Connection(
             config.mta.smtp_host, int(config.mta.smtp_port), 0,
             'testuser', 'testpass')
         connection.sendmail('anne@example.com', ['bart@example.com'], """\
@@ -126,7 +125,7 @@ class TestSMTPConnectionCount(_ConnectionCounter, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        self.connection = SMTPConnection(
+        self.connection = Connection(
             config.mta.smtp_host, int(config.mta.smtp_port), 0)
 
 
@@ -135,8 +134,13 @@ class TestSMTPSConnectionCount(_ConnectionCounter, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        self.connection = SMTPSConnection(
-            config.mta.smtp_host, int(config.mta.smtp_port), 0)
+        print('config.mta.smtp_port', config.mta.smtp_port)
+        import pdb
+        pdb.set_trace()
+        self.connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0,
+            secure_mode=SecureMode.IMPLICIT, verify_cert=False
+            )
 
 
 class TestSTARTTLSConnectionCount(_ConnectionCounter, unittest.TestCase):
@@ -144,24 +148,26 @@ class TestSTARTTLSConnectionCount(_ConnectionCounter, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        self.connection = STARTTLSConnection(
-            config.mta.smtp_host, int(config.mta.smtp_port), 0)
+        self.connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0,
+            secure_mode=SecureMode.STARTTLS, verify_cert=False
+            )
 
 
 class TestSTARTTLSNotSupported(unittest.TestCase):
     layer = SMTPLayer
 
     def test_not_supported(self):
-        connection = STARTTLSConnection(
-                config.mta.smtp_host, int(config.mta.smtp_port), 0)
+        connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0,
+            secure_mode=SecureMode.STARTTLS, verify_cert=False
+            )
         msg_text = """\
 From: anne@example.com
 To: bart@example.com
 Subject: aardvarks
 """
         smtp_log = LogFileMark('mailman.smtp')
-        connection.sendmail(
-            'anne@example.com', ['bart@example.com'], msg_text)
-        lines = smtp_log.read()
-        self.assertIn('Starttls failed', lines)
-        connection.quit()
+        with self.assertRaises(SMTPNotSupportedError):
+            connection.sendmail(
+                'anne@example.com', ['bart@example.com'], msg_text)

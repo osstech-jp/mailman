@@ -24,10 +24,8 @@ import smtplib
 
 from lazr.config import as_boolean
 from mailman.config import config
-from mailman.interfaces.configuration import InvalidConfigurationError
 from mailman.interfaces.mta import IMailTransportAgentDelivery
-from mailman.mta.connection import (
-    SMTPConnection, SMTPSConnection, STARTTLSConnection)
+from mailman.mta.connection import Connection, as_SecureMode
 from public import public
 from zope.interface import implementer
 
@@ -42,30 +40,15 @@ class BaseDelivery:
 
     def __init__(self):
         """Create a basic deliverer."""
-        host = config.mta.smtp_host
-        port = int(config.mta.smtp_port)
-        username = (config.mta.smtp_user if config.mta.smtp_user else None)
-        password = (config.mta.smtp_pass if config.mta.smtp_pass else None)
-        protocol = config.mta.smtp_protocol
-        verify_cert = as_boolean(config.mta.smtp_verify_cert)
-        verify_hostname = as_boolean(config.mta.smtp_verify_hostname)
-        max_session_count = int(config.mta.max_sessions_per_connection)
-
-        proto = protocol.lower()
-        if proto == 'smtp':
-            self._connection = SMTPConnection(host, port, max_session_count,
-                                              username, password)
-        elif proto == 'smtps':
-            self._connection = SMTPSConnection(host, port, max_session_count,
-                                               verify_cert, verify_hostname,
-                                               username, password)
-        elif proto == 'starttls':
-            self._connection = STARTTLSConnection(host, port,
-                                                  max_session_count,
-                                                  verify_cert, verify_hostname,
-                                                  username, password)
-        else:
-            raise InvalidConfigurationError('mta.smtp_protocol', protocol)
+        self._connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port),
+            int(config.mta.max_sessions_per_connection),
+            config.mta.smtp_user if config.mta.smtp_user else None,
+            config.mta.smtp_pass if config.mta.smtp_pass else None,
+            as_SecureMode(config.mta.smtp_secure_mode),
+            as_boolean(config.mta.smtp_verify_cert),
+            as_boolean(config.mta.smtp_verify_hostname),
+            )
 
     def _deliver_to_recipients(self, mlist, msg, msgdata, recipients):
         """Low-level delivery to a set of recipients.

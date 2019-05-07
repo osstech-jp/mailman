@@ -44,7 +44,7 @@ from mailman.testing.helpers import (
     TestableMaster, get_lmtp_client, reset_the_world, wait_for_webservice)
 from mailman.testing.mta import (
     ConnectionCountingController, ConnectionCountingSSLController,
-    ConnectionCountingSTARTLSController)
+    ConnectionCountingSTARTTLSController)
 from mailman.utilities.string import expand
 from pkg_resources import resource_filename, resource_string as resource_bytes
 from public import public
@@ -273,8 +273,8 @@ class SMTPSLayer(ConfigLayer):
         # still be in use.
         config.push('smtps', """
         [mta]
-        smtp_port: 9026
-        smtp_protocol: smtps
+        smtp_port: 9465
+        smtp_secure_mode: smtps
         """)
         test_cert_path = resource_filename('mailman.testing',
                                            'ssl_test_cert.crt')
@@ -328,8 +328,8 @@ class STARTTLSLayer(ConfigLayer):
         # might still be in use.
         config.push('starttls', """
         [mta]
-        smtp_port: 9027
-        smtp_protocol: starttls
+        smtp_port: 9587
+        smtp_secure_mode: starttls
         """)
         test_cert_path = resource_filename('mailman.testing',
                                            'ssl_test_cert.crt')
@@ -345,7 +345,7 @@ class STARTTLSLayer(ConfigLayer):
         host = config.mta.smtp_host
         port = int(config.mta.smtp_port)
 
-        cls.smtpd = ConnectionCountingSTARTLSController(
+        cls.smtpd = ConnectionCountingSTARTTLSController(
             host, port,
             client_context=client_context,
             server_context=server_context)
