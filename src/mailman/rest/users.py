@@ -20,7 +20,8 @@
 from functools import lru_cache
 from lazr.config import as_boolean
 from mailman.config import config
-from mailman.interfaces.address import ExistingAddressError
+from mailman.interfaces.address import (
+    ExistingAddressError, InvalidEmailAddressError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import PreferredAddress, UserAddresses
 from mailman.rest.helpers import (
@@ -160,10 +161,10 @@ class AllUsers(_UserBase):
         try:
             validator = Validator(**CREATION_FIELDS)
             arguments = validator(request)
-        except ValueError as error:
+            create_user(self.api, arguments, response)
+        except (ValueError, InvalidEmailAddressError) as error:
             bad_request(response, str(error))
             return
-        create_user(self.api, arguments, response)
 
 
 @public
