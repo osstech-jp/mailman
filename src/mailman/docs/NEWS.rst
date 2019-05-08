@@ -36,6 +36,8 @@ Command line
   ``Action.defer`` rather than ``Action.accept``.  (Closes #579)
 * The ``mailman import21`` command now correctly imports ``*_these_nonmembers``
   actions for nonmembers following a member in the list.  (closes #580)
+* The progress meter while ``mailman import21`` is importing rosters has been
+  shortened so it no longer wraps and scrolls.  (Closes #589)
 
 REST
 ----
