@@ -31,6 +31,15 @@ class MissingConfigurationFileError(MailmanError):
 
 
 @public
+class InvalidConfigurationError(MailmanError):
+    """A valid configuration key received an invalid value."""
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+
+@public
 class IConfiguration(Interface):
     """Marker interface; used for adaptation in the REST API."""
 

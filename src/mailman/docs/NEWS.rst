@@ -45,6 +45,7 @@ Other
 * Expired cached entries will be deleted efficiently. (Closes #462)
 * REST Runner now uses Gunicorn to run WSGI server instead of the standard
   library wsgiref for better performance.
+* Add support for SMPTS/STARTTLS for connections to MTA. (See !508)
 
 3.2.2
 =====

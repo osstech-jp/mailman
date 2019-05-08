@@ -25,6 +25,7 @@
 # get rid of the layers and use something like testresources or some such.
 
 import os
+import ssl
 import sys
 import shutil
 import logging
@@ -41,12 +42,14 @@ from mailman.database.transaction import transaction
 from mailman.interfaces.domain import IDomainManager
 from mailman.testing.helpers import (
     TestableMaster, get_lmtp_client, reset_the_world, wait_for_webservice)
-from mailman.testing.mta import ConnectionCountingController
+from mailman.testing.mta import (
+    ConnectionCountingController, ConnectionCountingSSLController,
+    ConnectionCountingSTARTTLSController)
 from mailman.utilities.string import expand
+from pkg_resources import resource_filename
 from public import public
 from textwrap import dedent
 from zope.component import getUtility
-
 
 TEST_TIMEOUT = datetime.timedelta(seconds=5)
 NL = '\n'
@@ -255,6 +258,116 @@ class SMTPLayer(ConfigLayer):
     def testTearDown(cls):
         cls.smtpd.reset()
         cls.smtpd.clear()
+
+
+@public
+class SMTPSLayer(ConfigLayer):
+    """Layer for starting, stopping, and accessing a test SMTPS server."""
+
+    smtpd = None
+
+    @classmethod
+    def setUp(cls):
+        assert cls.smtpd is None, 'Layer already set up'
+        # Use a different port than the SMTP layer, since that one might
+        # still be in use.
+        config.push('smtps', """
+        [mta]
+        smtp_port: 9465
+        smtp_secure_mode: smtps
+        """)
+        test_cert_path = resource_filename('mailman.testing',
+                                           'ssl_test_cert.crt')
+        test_key_path = resource_filename('mailman.testing',
+                                          'ssl_test_key.key')
+
+        client_context = ssl.create_default_context()
+        client_context.load_verify_locations(cafile=test_cert_path)
+
+        server_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        server_context.load_cert_chain(test_cert_path, test_key_path)
+
+        host = config.mta.smtp_host
+        port = int(config.mta.smtp_port)
+
+        cls.smtpd = ConnectionCountingSSLController(
+            host, port,
+            client_context=client_context,
+            server_context=server_context)
+        cls.smtpd.start()
+
+    @classmethod
+    def testSetUp(cls):
+        # Make sure we don't call our superclass's testSetUp(), otherwise the
+        # example.com domain will get added twice.
+        pass
+
+    @classmethod
+    def testTearDown(cls):
+        cls.smtpd.reset()
+        cls.smtpd.clear()
+
+    @classmethod
+    def tearDown(cls):
+        assert cls.smtpd is not None, 'Layer not set up'
+        cls.smtpd.clear()
+        cls.smtpd.stop()
+        config.pop('smtps')
+
+
+@public
+class STARTTLSLayer(ConfigLayer):
+    """Layer for starting and stopping a test SMTP server with STARTTLS."""
+
+    smtpd = None
+
+    @classmethod
+    def setUp(cls):
+        assert cls.smtpd is None, 'Layer already set up'
+        # Use a different port than the SMTP and SMTPS layers, since that one
+        # might still be in use.
+        config.push('starttls', """
+        [mta]
+        smtp_port: 9587
+        smtp_secure_mode: starttls
+        """)
+        test_cert_path = resource_filename('mailman.testing',
+                                           'ssl_test_cert.crt')
+        test_key_path = resource_filename('mailman.testing',
+                                          'ssl_test_key.key')
+
+        client_context = ssl.create_default_context()
+        client_context.load_verify_locations(cafile=test_cert_path)
+
+        server_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        server_context.load_cert_chain(test_cert_path, test_key_path)
+
+        host = config.mta.smtp_host
+        port = int(config.mta.smtp_port)
+
+        cls.smtpd = ConnectionCountingSTARTTLSController(
+            host, port,
+            client_context=client_context,
+            server_context=server_context)
+        cls.smtpd.start()
+
+    @classmethod
+    def testSetUp(cls):
+        # Make sure we don't call our superclass's testSetUp(), otherwise the
+        # example.com domain will get added twice.
+        pass
+
+    @classmethod
+    def testTearDown(cls):
+        cls.smtpd.reset()
+        cls.smtpd.clear()
+
+    @classmethod
+    def tearDown(cls):
+        assert cls.smtpd is not None, 'Layer not set up'
+        cls.smtpd.clear()
+        cls.smtpd.stop()
+        config.pop('starttls')
 
 
 @public
