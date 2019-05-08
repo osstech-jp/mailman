@@ -24,6 +24,9 @@ Bugs
 * ``X-Mailman-Approved-At`` header now has correct timezone.  (Closes #584)
 * A spurious ``invalid FilterAction: discard. Treating as discard`` log
   message is eliminated.  (Closes #592)
+* A post from a nonmember matching the legacy ``accept_these_nonmembers`` is
+  now subject to subsequent rules rather than accepted immediately.
+  (Closes #587)
 
 Command line
 ------------

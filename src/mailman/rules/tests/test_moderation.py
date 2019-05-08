@@ -141,11 +141,15 @@ A message body.
 """.format(address))
             msgdata = {}
             result = rule.check(self._mlist, msg, msgdata)
-            self.assertTrue(result, 'NonmemberModeration rule should hit')
-            self.assertIn('member_moderation_action', msgdata)
-            self.assertEqual(
-                msgdata['member_moderation_action'], action_name,
-                'Wrong action for {}: {}'.format(address, action_name))
+            if action_name == 'accept':
+                self.assertFalse(
+                    result, 'NonmemberModeration rule should miss')
+            else:
+                self.assertTrue(result, 'NonmemberModeration rule should hit')
+                self.assertIn('member_moderation_action', msgdata)
+                self.assertEqual(
+                    msgdata['member_moderation_action'], action_name,
+                    'Wrong action for {}: {}'.format(address, action_name))
 
     def test_nonmember_fallback_to_list_defaults(self):
         # https://gitlab.com/mailman/mailman/issues/189
