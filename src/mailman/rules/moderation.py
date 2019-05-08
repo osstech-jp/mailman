@@ -155,6 +155,9 @@ class NonmemberModeration:
                 for addr in checklist:
                     if ((addr.startswith('^') and re.match(addr, sender))
                             or addr == sender):     # noqa: W503
+                        # accept_these_nonmembers should 'defer'.
+                        if action_name == 'accept':
+                            return False
                         with _.defer_translation():
                             # This will be translated at the point of use.
                             reason = (
