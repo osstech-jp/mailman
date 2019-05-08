@@ -569,6 +569,7 @@ def _import_roster(mlist, config_dict, members, role, action=None):
     validator = getUtility(IEmailValidator)
     roster = mlist.get_roster(role)
     skipped = []
+    action_arg = action
     for email in members:
         # For owners and members, the emails can have a mixed case, so
         # lowercase them all.
@@ -651,6 +652,10 @@ def _import_roster(mlist, config_dict, members, role, action=None):
             # Either this was set right above or in the function's arguments
             # for nonmembers.
             member.moderation_action = action
+            # We need to restore the action argument in case we changed it
+            # above so the changed action is not applied to the remaining
+            # members.
+            action = action_arg
         # Other preferences.
         if prefs is not None:
             # AcknowledgePosts

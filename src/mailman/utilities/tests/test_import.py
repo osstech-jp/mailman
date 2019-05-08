@@ -1161,6 +1161,19 @@ class TestRosterImport(unittest.TestCase):
             self.assertEqual(len(list_prop), 1)
             self.assertTrue(all(addr.startswith('^') for addr in list_prop))
 
+    def test_nonmember_following_member(self):
+        self._pckdict['hold_these_nonmembers'] = [
+            'linda@example.com',
+            'homer@example.com',
+            ]
+        self._pckdict['members']['linda@example.com'] = 0
+        self._pckdict['user_options'] = {'linda@example.com': 1}
+        import_config_pck(self._mlist, self._pckdict)
+        member = self._mlist.nonmembers.get_member('linda@example.com')
+        self.assertEqual(member.moderation_action, Action.defer)
+        member = self._mlist.nonmembers.get_member('homer@example.com')
+        self.assertEqual(member.moderation_action, Action.hold)
+
 
 class TestPreferencesImport(unittest.TestCase):
     """Preferences get imported too."""
