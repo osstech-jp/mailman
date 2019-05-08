@@ -119,7 +119,10 @@ class HeldMessage(_HeldMessageBase):
 
     def on_post(self, request, response):
         try:
-            validator = Validator(action=enum_validator(Action))
+            validator = Validator(
+                action=enum_validator(Action),
+                comment=str,
+                _optional=('comment',))
             arguments = validator(request)
         except ValueError as error:
             bad_request(response, str(error))

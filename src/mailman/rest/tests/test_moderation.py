@@ -162,6 +162,23 @@ Something else.
         self.assertEqual(json['total_size'], 1)
         self.assertEqual(json['entries'][0]['request_id'], held_id)
 
+    def test_handle_message_with_comment(self):
+        self._msg = mfs("""\
+From: anne@example.com
+To: ant@example.com
+Subject: Hello
+Message-ID: <alpha>
+
+Something else.
+""")
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+        json, response = call_api(
+            'http://localhost:9001/3.0/lists/ant@example.com'
+            '/held/{}'.format(held_id),
+            dict(action='reject', comment='Because I want to.'))
+        self.assertEqual(response.status_code, 204)
+
 
 class TestSubscriptionModeration(unittest.TestCase):
     layer = RESTLayer
