@@ -31,6 +31,8 @@ Command line
   ``*_these_nonmembers`` list attributes.  (Closes #588)
 * The ``mailman import21`` command now imports nonmember accept actions as
   ``Action.defer`` rather than ``Action.accept``.  (Closes #579)
+* The ``mailman import21`` command now correctly imports ``*_these_nonmembers``
+  actions for nonmembers following a member in the list.  (closes #580)
 
 REST
 ----
