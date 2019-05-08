@@ -554,8 +554,7 @@ def import_roster(mlist, config_dict, members, role, action=None):
     """
     name = (action and action.name) or role.name
     with click.progressbar(
-            members, label='Importing {} {:<10}'.format(
-                mlist.list_id, name + 's')) as iterator:
+            members, label='Importing {:<10}'.format(name + 's')) as iterator:
         _import_roster(mlist, config_dict, iterator, role, action=action)
 
 
