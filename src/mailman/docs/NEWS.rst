@@ -42,6 +42,7 @@ REST
 * Expose a user's preferred address using REST API. (Closes #240)
 * Expose `header_matches/find` API to find a list of ``HeaderMatches`` belonging
   to a MailingList. (See !497)
+* Allow adding a comment when rejecting held messages. (Closes #594)
 
 Other
 -----
