@@ -80,6 +80,8 @@ message.
             filebase = config.switchboards['bad'].enqueue(msg, msgdata)
             log.info('{} preserved in file base {}'.format(
                 msg.get('message-id', 'n/a'), filebase))
+    elif mlist.filter_action is FilterAction.discard:
+        pass
     else:
         log.error(
             '{} invalid FilterAction: {}.  Treating as discard'.format(

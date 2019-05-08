@@ -54,6 +54,7 @@ from sqlalchemy import (
     LargeBinary, PickleType)
 from sqlalchemy.event import listen
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
 from zope.component import getUtility
@@ -98,7 +99,7 @@ class MailingList(Model):
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
-    accept_these_nonmembers = Column(PickleType)       # XXX
+    accept_these_nonmembers = Column(MutableList.as_mutable(PickleType))  # XXX
     admin_immed_notify = Column(Boolean)
     admin_notify_mchanges = Column(Boolean)
     administrivia = Column(Boolean)
@@ -141,14 +142,14 @@ class MailingList(Model):
     digest_send_periodic = Column(Boolean)
     digest_size_threshold = Column(Float)
     digest_volume_frequency = Column(Enum(DigestFrequency))
-    discard_these_nonmembers = Column(PickleType)
+    discard_these_nonmembers = Column(MutableList.as_mutable(PickleType))
     emergency = Column(Boolean)
     encode_ascii_prefixes = Column(Boolean)
     first_strip_reply_to = Column(Boolean)
     forward_auto_discards = Column(Boolean)
     gateway_to_mail = Column(Boolean)
     gateway_to_news = Column(Boolean)
-    hold_these_nonmembers = Column(PickleType)
+    hold_these_nonmembers = Column(MutableList.as_mutable(PickleType))
     info = Column(SAUnicode)
     linked_newsgroup = Column(SAUnicode)
     max_days_to_hold = Column(Integer)
@@ -169,7 +170,7 @@ class MailingList(Model):
     posting_pipeline = Column(SAUnicode)
     _preferred_language = Column('preferred_language', SAUnicode)
     display_name = Column(SAUnicode)
-    reject_these_nonmembers = Column(PickleType)
+    reject_these_nonmembers = Column(MutableList.as_mutable(PickleType))
     reply_goes_to_list = Column(Enum(ReplyToMunging))
     reply_to_address = Column(SAUnicode)
     require_explicit_destination = Column(Boolean)

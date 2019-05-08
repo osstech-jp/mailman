@@ -134,9 +134,10 @@ def member_moderation_action_mapping(value):
 def nonmember_action_mapping(value):
     # For default_nonmember_action, which used to be called
     # generic_nonmember_action, the values were: 0==Accept, 1==Hold,
-    # 2==Reject, 3==Discard
+    # 2==Reject, 3==Discard, but note that Accept is really equivalent to
+    # what is now defer.
     return {
-        0: Action.accept,
+        0: Action.defer,
         1: Action.hold,
         2: Action.reject,
         3: Action.discard,
@@ -521,6 +522,9 @@ def import_config_pck(mlist, config_dict):
             emails = [addr
                       for addr in config_dict.get(prop_name, [])
                       if not addr.startswith('^')]
+            # MM 2.1 accept maps to MM 3 defer
+            if action_name == 'accept':
+                action_name = 'defer'
             import_roster(mlist, config_dict, emails, MemberRole.nonmember,
                           Action[action_name])
             # Only keep the regexes in the legacy list property.

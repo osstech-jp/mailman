@@ -21,6 +21,16 @@ Bugs
 * A list member with ``receive_list_copy`` set to ``False`` who is addressed in
   ``CC`` will now be removed from ``CC`` even if this results in no ``CC``.
   (Closes #575)
+* ``X-Mailman-Approved-At`` header now has correct timezone.  (Closes #584)
+* A spurious ``invalid FilterAction: discard. Treating as discard`` log
+  message is eliminated.  (Closes #592)
+
+Command line
+------------
+* The ``mailman import21`` command now leaves only regexps in the legacy
+  ``*_these_nonmembers`` list attributes.  (Closes #588)
+* The ``mailman import21`` command now imports nonmember accept actions as
+  ``Action.defer`` rather than ``Action.accept``.  (Closes #579)
 
 REST
 ----
@@ -33,6 +43,8 @@ Other
 * Add a new attribute ``tag`` to ``HeaderMatch`` to find and manage a set of
   rules. (See !497)
 * Expired cached entries will be deleted efficiently. (Closes #462)
+* REST Runner now uses Gunicorn to run WSGI server instead of the standard
+  library wsgiref for better performance.
 * Add support for SMPTS/STARTTLS for connections to MTA. (See !508)
 
 3.2.2

@@ -103,6 +103,13 @@ Message-ID: <ant>
         # There should be no messages in the 'bad' queue.
         get_queue_messages('bad', expected_count=0)
 
+    def test_dispose_discard_no_spurious_log(self):
+        self._mlist.filter_action = FilterAction.discard
+        mark = LogFileMark('mailman.error')
+        with self.assertRaises(DiscardMessage):
+            mime_delete.dispose(self._mlist, self._msg, {}, 'discarding')
+        self.assertEqual(mark.readline(), '')
+
     def test_dispose_bounce(self):
         self._mlist.filter_action = FilterAction.reject
         with self.assertRaises(RejectMessage) as cm:

@@ -90,7 +90,6 @@ Anne's subscription request is accepted.
     >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/requests'
     ...           '/0000000000000000000000000000000000000001',
     ...           {'action': 'accept'})
-    content-length: 0
     date: ...
     server: ...
     status: 204
