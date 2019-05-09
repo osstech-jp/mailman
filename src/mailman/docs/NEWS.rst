@@ -45,6 +45,7 @@ REST
 * Expose `header_matches/find` API to find a list of ``HeaderMatches`` belonging
   to a MailingList. (See !497)
 * Allow adding a comment when rejecting held messages. (Closes #594)
+* Fix a 500 error when creating a user with invalid email address. (Closes #263)
 
 Other
 -----

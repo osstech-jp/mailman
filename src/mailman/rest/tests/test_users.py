@@ -238,6 +238,15 @@ class TestUsers(unittest.TestCase):
         json, response = call_api('http://localhost:9001/3.0/users')
         self.assertEqual(json['total_size'], 1)
 
+    def test_create_user_bad_email(self):
+        # https://gitlab.com/mailman/mailman/issues/263
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/users', dict(
+                email='anne@invalid'))
+        # There is now one user.
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, 'anne@invalid')
+
     def test_create_server_owner_false(self):
         # Issue #136: Creating a user with is_server_owner=no should create
         # user who is not a server owner.
