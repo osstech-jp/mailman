@@ -27,6 +27,8 @@ Bugs
 * A post from a nonmember matching the legacy ``accept_these_nonmembers`` is
   now subject to subsequent rules rather than accepted immediately.
   (Closes #587)
+* Email attempts to subscribe a user who is banned or has a subscription
+  already pending are now handled properly.  (Closes #577 and #583)
 
 Command line
 ------------

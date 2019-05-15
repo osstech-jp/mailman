@@ -20,9 +20,10 @@
 from email.utils import formataddr, parseaddr
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
-from mailman.interfaces.member import DeliveryMode, MemberRole
+from mailman.interfaces.member import (
+    AlreadySubscribedError, DeliveryMode, MembershipIsBannedError)
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, ISubscriptionService)
+    ISubscriptionManager, SubscriptionPendingError)
 from mailman.interfaces.usermanager import IUserManager
 from public import public
 from zope.component import getUtility
@@ -93,16 +94,18 @@ used.
         joins.add(email)
         results.joins = joins
         person = formataddr((display_name, email))                # noqa: F841
-        # Is this person already a member of the list?  Search for all
-        # matching memberships.
-        members = getUtility(ISubscriptionService).find_members(
-            email, mlist.list_id, MemberRole.member)
-        if len(members) > 0:
-            print(_('$person is already a member'), file=results)
-            return ContinueProcessing.yes
         subscriber = match_subscriber(email, display_name)
-        ISubscriptionManager(mlist).register(subscriber)
-        print(_('Confirmation email sent to $person'), file=results)
+        try:
+            ISubscriptionManager(mlist).register(subscriber)
+        except (AlreadySubscribedError, MembershipIsBannedError) as e:
+            print(str(e), file=results)
+        except SubscriptionPendingError:
+            # SubscriptionPendingError doesn't return an error message.
+            listname = mlist.fqdn_listname                        # noqa: F841
+            print(_('$person has a pending subscription for $listname'),
+                  file=results)
+        else:
+            print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
 
     def _parse_arguments(self, arguments, results):
