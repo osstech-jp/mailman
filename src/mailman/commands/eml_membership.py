@@ -19,6 +19,7 @@
 
 from email.utils import formataddr, parseaddr
 from mailman.core.i18n import _
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MembershipIsBannedError)
@@ -97,7 +98,8 @@ used.
         subscriber = match_subscriber(email, display_name)
         try:
             ISubscriptionManager(mlist).register(subscriber)
-        except (AlreadySubscribedError, MembershipIsBannedError) as e:
+        except (AlreadySubscribedError, InvalidEmailAddressError,
+                MembershipIsBannedError) as e:
             print(str(e), file=results)
         except SubscriptionPendingError:
             # SubscriptionPendingError doesn't return an error message.

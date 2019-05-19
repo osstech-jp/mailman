@@ -23,7 +23,7 @@ from mailman.app.notifications import (
     send_welcome_message)
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
-from mailman.interfaces.address import IAddress
+from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MembershipIsBannedError,
@@ -53,12 +53,16 @@ def add_member(mlist, record, role=MemberRole.member):
     :rtype: `IMember`
     :raises AlreadySubscribedError: if the user is already subscribed to
         the mailing list.
-    :raises InvalidEmailAddressError: if the email address is not valid.
+    :raises InvalidEmailAddressError: if the email address is not valid or
+        is the list posting address.
     :raises MembershipIsBannedError: if the membership is not allowed.
     """
     # Check to see if the email address is banned.
     if IBanManager(mlist).is_banned(record.email):
         raise MembershipIsBannedError(mlist, record.email)
+    # Check for list posting address.
+    if record.email.lower() == mlist.posting_address:
+        raise InvalidEmailAddressError('List posting address not allowed')
     # Make sure there is a user linked with the given address.
     user_manager = getUtility(IUserManager)
     user = user_manager.make_user(record.email, record.display_name)

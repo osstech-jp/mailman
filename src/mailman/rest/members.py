@@ -20,7 +20,7 @@
 from lazr.config import as_boolean
 from mailman.app.membership import add_member, delete_member
 from mailman.interfaces.action import Action
-from mailman.interfaces.address import IAddress
+from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
@@ -273,6 +273,9 @@ class AllMembers(_MemberBase):
             except MembershipIsBannedError:
                 bad_request(response, b'Membership is banned')
                 return
+            except InvalidEmailAddressError:
+                bad_request(response, b'List posting address cannot subscribe')
+                return
             except SubscriptionPendingError:
                 conflict(response, b'Subscription request already pending')
                 return
@@ -329,6 +332,9 @@ class AllMembers(_MemberBase):
             bad_request(response,
                         '{} is already an {} of {}'.format(
                             email, role.name, mlist.fqdn_listname))
+            return
+        except InvalidEmailAddressError:
+            bad_request(response, b'List posting address cannot be added')
             return
         # The subscription completed.  Let's get the resulting member
         # and return the location to the new member.  Member ids are

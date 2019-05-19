@@ -24,7 +24,7 @@ from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum, SAUnicode, SAUnicodeLarge
 from mailman.interfaces.action import Action, FilterAction
-from mailman.interfaces.address import IAddress
+from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
@@ -485,6 +485,9 @@ class MailingList(Model):
     def subscribe(self, store, subscriber, role=MemberRole.member):
         """See `IMailingList`."""
         member, email = self._get_subscriber(store, subscriber, role)
+        test_email = email or subscriber.lower()
+        if test_email == self.posting_address:
+            raise InvalidEmailAddressError('List posting address not allowed')
         if member is not None:
             raise AlreadySubscribedError(self.fqdn_listname, email, role)
         member = Member(role=role,

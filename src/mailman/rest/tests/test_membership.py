@@ -437,6 +437,55 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason, 'Membership is banned')
 
+    def test_list_posting_address_as_member(self):
+        # The list posting address tries to subscribe.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': self._mlist.posting_address,
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'List posting address cannot subscribe')
+
+    def test_list_posting_address_as_member_approved(self):
+        # The list posting address tries to subscribe.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': self._mlist.posting_address,
+                'pre_verified': True,
+                'pre_confirmed': True,
+                'pre_approved': True,
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'List posting address cannot subscribe')
+
+    def test_list_posting_address_as_owner(self):
+        # The liust posting address tries to subscribe.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': self._mlist.posting_address,
+                'role': 'owner',
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'List posting address cannot be added')
+
+    def test_list_posting_address_as_moderator(self):
+        # The liust posting address tries to subscribe.
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': self._mlist.posting_address,
+                'role': 'moderator'
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason,
+                         'List posting address cannot be added')
+
 
 class CustomLayer(ConfigLayer):
     """Custom layer which starts both the REST and LMTP servers."""
