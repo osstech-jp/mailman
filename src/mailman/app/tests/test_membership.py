@@ -22,6 +22,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import add_member, delete_member
 from mailman.core.constants import system_preferences
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipIsBannedError,
@@ -88,6 +89,45 @@ class TestAddMember(unittest.TestCase):
             RequestRecord('anne@example.com', 'Anne Person',
                           DeliveryMode.regular,
                           system_preferences.preferred_language))
+
+    def test_add_posting_address(self):
+        # Test that we can't add the list posting address.
+        self.assertRaises(
+            InvalidEmailAddressError,
+            add_member, self._mlist,
+            RequestRecord(self._mlist.posting_address, 'The List',
+                          DeliveryMode.regular,
+                          system_preferences.preferred_language))
+
+    def test_add_posting_address_moderator(self):
+        # Test that we can't add the list posting address.
+        self.assertRaises(
+            InvalidEmailAddressError,
+            add_member, self._mlist,
+            RequestRecord(self._mlist.posting_address, 'The List',
+                          DeliveryMode.regular,
+                          system_preferences.preferred_language),
+            MemberRole.moderator)
+
+    def test_add_posting_address_owner(self):
+        # Test that we can't add the list posting address.
+        self.assertRaises(
+            InvalidEmailAddressError,
+            add_member, self._mlist,
+            RequestRecord(self._mlist.posting_address, 'The List',
+                          DeliveryMode.regular,
+                          system_preferences.preferred_language),
+            MemberRole.owner)
+
+    def test_add_posting_address_nonmember(self):
+        # Test that we can't add the list posting address.
+        self.assertRaises(
+            InvalidEmailAddressError,
+            add_member, self._mlist,
+            RequestRecord(self._mlist.posting_address, 'The List',
+                          DeliveryMode.regular,
+                          system_preferences.preferred_language),
+            MemberRole.nonmember)
 
     def test_add_member_banned_from_different_list(self):
         # Test that members who are banned by on a different list can still be

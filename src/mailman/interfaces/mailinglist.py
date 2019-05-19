@@ -367,6 +367,8 @@ class IMailingList(Interface):
             that it is possible to subscribe an address to a mailing list with
             a particular role, and also subscribe a user with a matching
             preferred address that is explicitly subscribed with the same role.
+        :raises InvalidEmailAddressError: If the address being subscribed is
+            the list's posting address.
         """
 
     # Delivery.

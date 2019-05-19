@@ -22,6 +22,7 @@ import unittest
 from contextlib import suppress
 from mailman.app.lifecycle import create_list
 from mailman.app.subscriptions import SubscriptionWorkflow
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import MemberRole, MembershipIsBannedError
@@ -155,6 +156,12 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         IBanManager(self._mlist).ban(self._anne)
         workflow = SubscriptionWorkflow(self._mlist, anne)
         self.assertRaises(MembershipIsBannedError, list, workflow)
+
+    def test_sanity_checks_list_posting_address(self):
+        # An exception is raised if the address is the list posting address.
+        anne = self._user_manager.create_address(self._mlist.posting_address)
+        workflow = SubscriptionWorkflow(self._mlist, anne)
+        self.assertRaises(InvalidEmailAddressError, list, workflow)
 
     def test_verification_checks_with_verified_address(self):
         # When the address is already verified, we skip straight to the

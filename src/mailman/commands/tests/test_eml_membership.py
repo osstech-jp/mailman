@@ -115,3 +115,13 @@ class TestJoin(unittest.TestCase):
         self.assertEqual(
             str(results).splitlines()[-1],
             'anne@example.com has a pending subscription for ant@example.com')
+
+    def test_join_posting_address(self):
+        # Try to subscribe the list posting address.
+        msg = Message()
+        msg['From'] = self._mlist.posting_address
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertEqual(
+            str(results).splitlines()[-1],
+            'List posting address not allowed')

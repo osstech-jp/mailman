@@ -22,6 +22,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, IHeaderMatchList, IListArchiverSet)
@@ -91,6 +92,10 @@ class TestMailingList(unittest.TestCase):
         items = get_queue_messages('virgin', expected_count=1)
         self.assertIn('Anne Person <aperson@example.com>',
                       items[0].msg.get_payload())
+
+    def test_cannot_subscribe_list(self):
+        self.assertRaises(InvalidEmailAddressError, self._mlist.subscribe,
+                          self._mlist.posting_address)
 
     def test_is_subscribed(self):
         manager = getUtility(IUserManager)

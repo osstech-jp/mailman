@@ -268,6 +268,8 @@ class ISubscriptionManager(Interface):
         :rtype: (str-or-None, ``TokenOwner``, ``IMember``-or-None)
         :raises MembershipIsBannedError: when the address being subscribed
             appears in the global or list-centric bans.
+        :raises InvalidEmailAddressError: If the address being subscribed is
+            the list's posting address.
         """
 
     def unregister(subscriber=None, *,

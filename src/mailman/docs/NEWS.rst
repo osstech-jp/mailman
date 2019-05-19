@@ -29,6 +29,8 @@ Bugs
   (Closes #587)
 * Email attempts to subscribe a user who is banned or has a subscription
   already pending are now handled properly.  (Closes #577 and #583)
+* It is no longer possible to add the list's posting address with any role to
+  a list.  (Closes #599)
 
 Command line
 ------------

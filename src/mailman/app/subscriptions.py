@@ -28,7 +28,7 @@ from mailman.app.workflow import Workflow
 from mailman.core.i18n import _
 from mailman.database.transaction import flush
 from mailman.email.message import UserNotification
-from mailman.interfaces.address import IAddress
+from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
@@ -218,6 +218,9 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         # Is this email address banned?
         if IBanManager(self.mlist).is_banned(self.address.email):
             raise MembershipIsBannedError(self.mlist, self.address.email)
+        # Don't allow the list posting address.
+        if self.address.email.lower() == self.mlist.posting_address:
+            raise InvalidEmailAddressError('List posting address not allowed')
         # Check if there is already a subscription request for this email.
         pendings = getUtility(IPendings).find(
             mlist=self.mlist,
