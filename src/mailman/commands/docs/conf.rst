@@ -16,7 +16,7 @@ To get a list of all key-value pairs of any section, you need to call the
 command without any options.
 
     >>> command('mailman conf')
-    [ARC] authserv_id: your_domain.com
+    [ARC] authserv_id:
     ...
     [logging.bounce] level: info
     ...

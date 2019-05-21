@@ -23,94 +23,96 @@ import logging
 from authheaders import authenticate_message
 from authres import AuthenticationResultsHeader
 from dns.resolver import Timeout
+from itertools import chain
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
+from mailman.utilities.retry import retry
 from public import public
 from zope.interface import implementer
 
-NUM_TIMEOUT_RETRIES = 2
-
-# This value is used by the test suite to
-# provide a faux DNS resolver.
-dnsfunc = None
 
 log = logging.getLogger('mailman.debug')
 
+# Number of times to retry authentication checks in case of DNS failure.
+NUM_TIMEOUT_RETRIES = 2
 
-# Appends a group of headers to the beginning of a message.
+# This value is used by the test suite to provide a faux DNS resolver.
+dnsfunc = None
+
+# Email header including the results of ARC validation from the sender.
+AUTH_RESULT_HEADER = 'Authentication-Results'
+
+
 def prepend_headers(msg, headers):
+    """Appends a group of headers to the beginning of a message.
+
+    :param msg: The message object to add headers to.
+    :type msg: email.message.EmailMessage
+    :param headers: The list of headers to added to message.
+    :type msg: List(email.headers.Header)
+    """
     old_headers = msg.items()
 
     for key in msg:
         del msg[key]
 
-    for k, v in (headers + old_headers):
+    for k, v in chain(headers, old_headers):
         msg[k] = v
 
 
-# Retry a validation in case of a DNS timout.
-def maybe_retry(msg, msgdata):
-    if msgdata['retries_remaining'] > 0:
-        log.debug('Authentication DNS Timout, retrying message')
-
-        msgdata['retries_remaining'] = msgdata['retries_remaining'] - 1
-        msgdata['abort_and_reprocess'] = True
-
-
-# Extracts the most recent trusted Authentication-Results header from a message
 def trusted_auth_res(msg):
-    trusted_authserv_ids = config.ARC.trusted_authserv_ids.split(',')
-    trusted_authserv_ids += [config.ARC.authserv_id]
-    trusted_authserv_ids = [x.strip() for x in trusted_authserv_ids]
+    """Extract the most recent trusted Authentication-Results(AR) header.
 
-    if trusted_authserv_ids and 'Authentication-Results' in msg:
-        prev = 'Authentication-Results: {}'.format(
-            msg['Authentication-Results'])
-        authserv_id = AuthenticationResultsHeader.parse(prev).authserv_id
-        if authserv_id in trusted_authserv_ids:
-            return prev
+    :param msg: The message to extract the AR header from.
+    :type msg: email.message.EmailMessage.
+    """
 
-    return None
+    if config.trusted_authserv_ids and (AUTH_RESULT_HEADER in msg):
+        header = '{}: {}'.format(AUTH_RESULT_HEADER, msg[AUTH_RESULT_HEADER])
+        authserv_id = AuthenticationResultsHeader.parse(header).authserv_id
+        if authserv_id in config.trusted_authserv_ids:
+            return header
 
 
-# ARC verify a message and update the Authentication-Results header
+@retry(Timeout, NUM_TIMEOUT_RETRIES)
 def authenticate(msg, msgdata):
-    try:
-        prev = trusted_auth_res(msg)
-        authres = authenticate_message(
-            msg.as_string().encode(), config.ARC.authserv_id,
-            prev=prev,
-            spf=False,  # cant spf check in mailman
-            dkim=(config.ARC.dkim == 'yes'),
-            dmarc=(config.ARC.dmarc == 'yes'),
-            arc=True,
-            dnsfunc=dnsfunc)
-    except Timeout:
-        maybe_retry(msg, msgdata)
-        return
+    """ARC verify a message and update the Authentication-Results header.
 
-    if 'Authentication-Results' in msg:
-        del msg['Authentication-Results']
+    If there is a previous Authentication-Results, remove that and add a
+    new one.
+    """
+    prev = trusted_auth_res(msg)
+    auth_result = authenticate_message(
+        msg.as_bytes(), config.ARC.authserv_id,
+        prev=prev,
+        spf=False,  # cant spf check in mailman
+        dkim=(config.ARC.dkim == 'yes'),
+        dmarc=(config.ARC.dmarc == 'yes'),
+        arc=True,
+        dnsfunc=dnsfunc)
 
-    authres = authres.split(':', 1)[1].strip()
-    prepend_headers(msg, [('Authentication-Results', authres)])
+    if AUTH_RESULT_HEADER in msg:
+        del msg[AUTH_RESULT_HEADER]
+
+    auth_result = auth_result.split(':', 1)[1].strip()
+    prepend_headers(msg, [(AUTH_RESULT_HEADER, auth_result)])
 
 
-# Validate the ARC chain of a message and add results to a new
-# Authentication-Results header
 @public
 @implementer(IHandler)
 class ValidateAuthenticity:
-    """Perform authentication checks and attach resulting headers"""
+    """Perform authentication checks and attach resulting headers.
+
+    Validate the ARC chain of a message and add results to a new
+    Authentication-Results header
+    """
 
     name = 'validate-authenticity'
-    description = _("""Perform auth checks and attach and AR header.""")
+    description = _(
+        """Perform auth checks and attach Authentication-Results header.""")
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        if config.ARC.enabled == 'yes':
-            if 'retries_remaining' not in msgdata:
-                msgdata['retries_remaining'] = NUM_TIMEOUT_RETRIES
-
+        if config.ARC.enabled.strip().lower() == 'yes':
             authenticate(msg, msgdata)

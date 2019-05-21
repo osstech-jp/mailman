@@ -60,13 +60,6 @@ class OutgoingRunner(Runner):
         self._retryq = config.switchboards['retry']
 
     def _dispose(self, mlist, msg, msgdata):
-        # cancel message & reprocess.  for dns timeouts, etc
-        if "abort_and_reprocess" in msgdata:
-            del msgdata["abort_and_reprocess"]
-            config.switchboards['pipeline'].enqueue(msgdata['unprocessed'],
-                                                    msgdata)
-            return False
-
         # See if we should retry delivery of this message again.
         deliver_after = msgdata.get('deliver_after', datetime.fromtimestamp(0))
         if now() < deliver_after:

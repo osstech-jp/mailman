@@ -17,6 +17,7 @@
 
 """Test the outgoing runner."""
 
+import logging
 import unittest
 import mailman.handlers.validate_authenticity
 
@@ -24,12 +25,10 @@ from dns.resolver import Timeout
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers.validate_authenticity import ValidateAuthenticity
-from mailman.runners.outgoing import OutgoingRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
     specialized_message_from_string as message_from_string)
 from mailman.testing.layers import ConfigLayer
-# tox -e py36-nocov mailman.handlers.tests.test_validate_authenticity
+from unittest.mock import patch
 
 
 class TestValidateAuthenticity(unittest.TestCase):
@@ -120,6 +119,9 @@ This is a test message.
         self.assertEqual(msg["Authentication-Results"], ''.join(res))
 
     def test_chain_validation_fail(self):
+        # Set the log-level for dkimpy to CRITICAL To avoid error output from
+        # logger.
+        logging.getLogger('dkimpy').setLevel(logging.CRITICAL)
         config.push('dkim_and_cv', """
         [ARC]
         enabled: yes
@@ -259,27 +261,29 @@ This is a test!
                          "test.com; dkim=pass header.d=valimail.com; arc=none")
 
 
-def run_once(runner):
-    """Predicate for make_testable_runner().
-
-    Ensures that the runner only runs once.
-    """
-    return True
-
-
 class TestTimeout(unittest.TestCase):
     """Test socket.error occurring in the delivery function."""
 
     layer = ConfigLayer
 
     def setUp(self):
-        self._outq = config.switchboards['out']
-        self._runner = make_testable_runner(OutgoingRunner, 'out', run_once)
 
-        def timeout(_):
-            raise Timeout
+        class timeout():
+            def __init__(self):
+                self.counter = 0
 
-        mailman.handlers.validate_authenticity.dnsfunc = timeout
+            def __call__(self, *args, **kwargs):
+                self.counter += 1
+                raise Timeout
+
+        self.mock_timeout = timeout()
+        self.patcher = patch(
+            'mailman.handlers.validate_authenticity.authenticate_message',
+            side_effect=self.mock_timeout)
+        self.patcher.start()
+
+    def tearDown(self):
+        self.patcher.stop()
 
     def test_timeout(self):
         config.push('just_dkim', """
@@ -313,12 +317,8 @@ This is a test!
 """
         msg = message_from_string(msg)
 
-        msgdata = {'unprocessed': msg}
-        ValidateAuthenticity().process(mlist, msg, msgdata)
-        self.assertTrue("abort_and_reprocess" in msgdata)
+        with self.assertRaises(Timeout):
+            ValidateAuthenticity().process(mlist, msg, {})
 
-        self._outq.enqueue(msg, msgdata, listid='test.example.com')
-        get_queue_messages('pipeline', expected_count=0)
-
-        self._runner.run()
-        get_queue_messages('pipeline', expected_count=1)
+        # Make sure that timeout was called twice.
+        self.assertEqual(self.mock_timeout.counter, 2)

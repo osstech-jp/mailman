@@ -3,19 +3,25 @@ ARC Signing
 ===========
 
 It is highly recommended that Mailman maintainers configure ARC siging of their
-outgoing email.  ARC is the standard protocol for authenticating the content and authenticity
-of indirect email flows. These are systems that are more complex than a basic
-sender -> reciever flow.  Mailing lists are a primary example of this.
+outgoing email.  ARC is the standard protocol for authenticating the content
+and authenticity of indirect email flows. These are systems that are more
+complex than a basic sender -> reciever flow.  Mailing lists are a primary
+example of this.
 
-Configuration is handled in the [ARC] section of schema.cfg, and is mostly a
-question of cryptographic key management.  A public/private key pair should be
-generated, and the various options configured. See
+Configuration is handled in the [ARC] section of ``mailman.cfg``, and is mostly
+a question of cryptographic key management.  A public/private key pair should
+be generated, and the various options configured. See
 http://www.gettingemaildelivered.com/dkim-explained-how-to-set-up-and-use-domainkeys-identified-mail-effectively
 for reference, as well as the additional documentaion about ARC configuration
 in general in schema.cfg.
 
 The private key should be secured locally and made readable to Mailman, and the
-location specified in config.ARC.privkey.
+can be specified in ``mailman.cfg``::
+
+  [ARC]
+  privkey: /path/to/private.key
+
+
 
 The public key should be put into a DNS TXT record, and located at:
 
@@ -29,5 +35,5 @@ The following is an example TXT record:
 
 The value of the above p= tag should be the public key from your pair.
 
-Enabling signing will result in the addition of three ARC header fields to the outgoing email,
-which will be evaluated by the reciever.
+Enabling signing will result in the addition of three ARC header fields to the
+outgoing email, which will be evaluated by the receiver.
