@@ -21,16 +21,17 @@ import tempfile
 import unittest
 import mailman.handlers.arc_sign
 
+from dkim import DKIMException
 from mailman.app.lifecycle import create_list
 from mailman.config import config
-from mailman.handlers.arc_sign import ArcSign
+from mailman.handlers.arc_sign import ARCSign
 from mailman.testing.helpers import (
     specialized_message_from_string as message_from_string)
 from mailman.testing.layers import ConfigLayer
-# tox -e py36-nocov mailman.handlers.tests.test_arc_sign
+from unittest.mock import patch
 
 
-class TestArcSignMessage(unittest.TestCase):
+class TestARCSignMessage(unittest.TestCase):
     """Test Authentication-Results generation."""
     layer = ConfigLayer
 
@@ -94,7 +95,7 @@ This is a test message.
 
         msg = message_from_string(msg)
 
-        ArcSign().process(lst, msg, msgdata)
+        ARCSign().process(lst, msg, msgdata)
 
         res = ["i=1;lists.example.org;arc=none;spf=passsmtp.mfrom=jqd@d1"
                ".example;dkim=pass(1024-bitkey)header.i=@d1.example;dmar"
@@ -167,154 +168,33 @@ This is a test message.
 --J."""
 
         msg = message_from_string(msg)
-        ArcSign().process(lst, msg, msgdata)
+        ARCSign().process(lst, msg, msgdata)
 
         self.assertEqual("ARC-Authentication-Results" in msg, False)
         self.assertEqual("ARC-Message-Signature" in msg, False)
         self.assertEqual("ARC-Seal" in msg, False)
 
-
-class TestArcSignExceptions(unittest.TestCase):
-    """Test ArcSigning Exceptions."""
-    layer = ConfigLayer
-
-    def setUp(self):
-        privkey = b"""-----BEGIN RSA PRIVATE KEY-----
-MIICXQIBAAKBgQDkHlOQoBTzWRiGs5V6NpP3idY6Wk08a5qhdR6wy5bdOKb2jLQi
-Y/J16JYi0Qvx/byYzCNb3W91y3FutACDfzwQ/BC/e/8uBsCR+yz1Lxj+PL6lHvqM
-KrM3rG4hstT5QjvHO9PzoxZyVYLzBfO2EeC3Ip3G+2kryOTIKT+l/K4w3QIDAQAB
-AoGAH0cxOhFZDgzXWhDhnAJDw5s4roOXN4OhjiXa8W7Y3rhX3FJqmJSPuC8N9vQm
-6SVbaLAE4SG5mLMueHlh4KXffEpuLEiNp9Ss3O4YfLiQpbRqE7Tm5SxKjvvQoZZe
-zHorimOaChRL2it47iuWxzxSiRMv4c+j70GiWdxXnxe4UoECQQDzJB/0U58W7RZy
-6enGVj2kWF732CoWFZWzi1FicudrBFoy63QwcowpoCazKtvZGMNlPWnC7x/6o8Gc
-uSe0ga2xAkEA8C7PipPm1/1fTRQvj1o/dDmZp243044ZNyxjg+/OPN0oWCbXIGxy
-WvmZbXriOWoSALJTjExEgraHEgnXssuk7QJBALl5ICsYMu6hMxO73gnfNayNgPxd
-WFV6Z7ULnKyV7HSVYF0hgYOHjeYe9gaMtiJYoo0zGN+L3AAtNP9huqkWlzECQE1a
-licIeVlo1e+qJ6Mgqr0Q7Aa7falZ448ccbSFYEPD6oFxiOl9Y9se9iYHZKKfIcst
-o7DUw1/hz2Ck4N5JrgUCQQCyKveNvjzkkd8HjYs0SwM0fPjK16//5qDZ2UiDGnOe
-uEzxBDAr518Z8VFbR41in3W4Y3yCDgQlLlcETrS+zYcL
------END RSA PRIVATE KEY-----
-"""
-        self.keyfile = tempfile.NamedTemporaryFile(delete=True)
-        self.keyfile.write(privkey)
-        self.keyfile.flush()
-
-        mailman.handlers.arc_sign.timestamp = "12345"
-
-    def tearDown(self):
-        self.keyfile.close()
-
-    def test_arc_sign_unicode_privkey(self):
+    @patch('mailman.handlers.arc_sign.sign_message', side_effect=DKIMException)
+    def test_arc_sign_raises_exception(self, mocked_sign_message):
         config.push('arc_sign', """
         [ARC]
         enabled: yes
-        authserv_id: lists.example.org
+        authserv_id: test.example.org
         selector: dummy
         domain: example.org
-        sig_headers: mime-version, date, from, to, subject
-        privkey:
-        """)
-
-        self.addCleanup(config.pop, 'arc_sign')
-
-        lst = create_list('test@example.com')
-        msgdata = {'ARC-Standardize': True}
-
-        msg = """Authentication-Results: lists.example.org; arc=none;
-        spf=pass smtp.mfrom=jqd@d1.example;
-        dkim=pass (1024-bit key) header.i=@d1.example; dmarc=pass
-MIME-Version: 1.0
-Return-Path: <jqd@d1.example.org>
-Received: by 10.157.14.6 with HTTP; Tue, 3 Jan 2017 12:22:54 -0800 (PST)
-Message-ID: <54B84785.1060301@d1.example.org>
-Date: Thu, 14 Jan 2015 15:00:01 -0800
-From: John Q Doe <jqd@d1.example.org>
-To: arc@dmarc.org
-Subject: Example 1
-
-Hey gang,
-This is a test message.
---J."""
-
-        msg = message_from_string(msg)
-
-        ArcSign().process(lst, msg, msgdata)
-
-        self.assertEqual("ARC-Authentication-Results" in msg, False)
-        self.assertEqual("ARC-Message-Signature" in msg, False)
-        self.assertEqual("ARC-Seal" in msg, False)
-
-    def test_arc_sign_non_ascii_privkey(self):
-        uni_keyfile = tempfile.NamedTemporaryFile(delete=True)
-        uni_keyfile.write("¢¢¢¢¢¢¢".encode('utf-8'))
-        uni_keyfile.flush()
-
-        config.push('arc_sign', """
-        [ARC]
-        enabled: yes
-        authserv_id: lists.example.org
-        selector: dummy
-        domain: example.org
-        sig_headers: mime-version, date, from, to, subject
-        privkey: %s
-        """ % (uni_keyfile.name))
-
-        self.addCleanup(config.pop, 'arc_sign')
-
-        lst = create_list('test@example.com')
-        msgdata = {'ARC-Standardize': True}
-
-        msg = """Authentication-Results: lists.example.org; arc=none;
-        spf=pass smtp.mfrom=jqd@d1.example;
-        dkim=pass (1024-bit key) header.i=@d1.example; dmarc=pass
-MIME-Version: 1.0
-Return-Path: <jqd@d1.example.org>
-Received: by 10.157.14.6 with HTTP; Tue, 3 Jan 2017 12:22:54 -0800 (PST)
-Message-ID: <54B84785.1060301@d1.example.org>
-Date: Thu, 14 Jan 2015 15:00:01 -0800
-From: John Q Doe <jqd@d1.example.org>
-To: arc@dmarc.org
-Subject: Example 1
-
-Hey gang,
-This is a test message.
---J."""
-
-        msg = message_from_string(msg)
-        ArcSign().process(lst, msg, msgdata)
-
-        self.assertEqual("ARC-Authentication-Results" in msg, False)
-        self.assertEqual("ARC-Message-Signature" in msg, False)
-        self.assertEqual("ARC-Seal" in msg, False)
-
-        uni_keyfile.close()
-
-    def test_arc_sign_dkim_exception(self):
-        config.push('arc_sign', """
-        [ARC]
-        enabled: yes
-        authserv_id: lists.example.org
-        selector: dummy
-        domain: example.org
-        sig_headers: to, subject, date
         privkey: %s
         """ % (self.keyfile.name))
 
         self.addCleanup(config.pop, 'arc_sign')
 
         lst = create_list('test@example.com')
-        msgdata = {'ARC-Standardize': True}
+        msgdata = {}
 
-        msg = """Authentication-Results: lists.example.org; arc=none;
-        spf=pass smtp.mfrom=jqd@d1.example;
-        dkim=pass (1024-bit key) header.i=@d1.example; dmarc=pass
-MIME-Version: 1.0
-Return-Path: <jqd@d1.example.org>
-Received: by 10.157.14.6 with HTTP; Tue, 3 Jan 2017 12:22:54 -0800 (PST)
+        msg = """\
 Message-ID: <54B84785.1060301@d1.example.org>
 Date: Thu, 14 Jan 2015 15:00:01 -0800
 From: John Q Doe <jqd@d1.example.org>
-To: arc@dmarc.org
+To: test@example.com
 Subject: Example 1
 
 Hey gang,
@@ -322,8 +202,6 @@ This is a test message.
 --J."""
 
         msg = message_from_string(msg)
-        ArcSign().process(lst, msg, msgdata)
-
-        self.assertEqual("ARC-Authentication-Results" in msg, False)
-        self.assertEqual("ARC-Message-Signature" in msg, False)
-        self.assertEqual("ARC-Seal" in msg, False)
+        with self.assertRaises(DKIMException):
+            ARCSign().process(lst, msg, msgdata)
+        self.assertTrue(mocked_sign_message.called)

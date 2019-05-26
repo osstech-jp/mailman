@@ -21,7 +21,6 @@ import os
 import sys
 import mailman.templates
 
-from collections import namedtuple
 from configparser import ConfigParser
 from contextlib import ExitStack
 from flufl.lock import Lock
@@ -70,6 +69,7 @@ MAILMAN_CFG_TEMPLATE = """\
 # [devmode]
 # enabled: yes
 # recipient: your.address@your.domain"""
+
 
 @public
 class ARC:
@@ -338,7 +338,7 @@ class Configuration:
             # enabled.
             if self.ARC.privkey.strip() == '':
                 print('[ARC] "enabled" but "privkey" is not configured.',
-                    file=sys.stderr)
+                      file=sys.stderr)
                 sys.exit(1)
             try:
                 # Open the private key in ascii encoding to make sure it
@@ -347,7 +347,7 @@ class Configuration:
                     arc_private_key = fd.read()
             except OSError as e:
                 print('[ARC] "privkey" is unreadable: ', str(e),
-                    file=sys.stderr)
+                      file=sys.stderr)
                 sys.exit(1)
             except UnicodeDecodeError:
                 print('[ARC] "privkey" contains non-ascii characters.',

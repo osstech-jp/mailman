@@ -68,10 +68,10 @@ def trusted_auth_res(msg):
     :type msg: email.message.EmailMessage.
     """
 
-    if config.trusted_authserv_ids and (AUTH_RESULT_HEADER in msg):
+    if config.arc.trusted_authserv_ids and (AUTH_RESULT_HEADER in msg):
         header = '{}: {}'.format(AUTH_RESULT_HEADER, msg[AUTH_RESULT_HEADER])
         authserv_id = AuthenticationResultsHeader.parse(header).authserv_id
-        if authserv_id in config.trusted_authserv_ids:
+        if authserv_id in config.arc.trusted_authserv_ids:
             return header
 
 
@@ -84,11 +84,11 @@ def authenticate(msg, msgdata):
     """
     prev = trusted_auth_res(msg)
     auth_result = authenticate_message(
-        msg.as_bytes(), config.ARC.authserv_id,
+        msg.as_bytes(), config.arc.authserv_id,
         prev=prev,
         spf=False,  # cant spf check in mailman
-        dkim=(config.ARC.dkim == 'yes'),
-        dmarc=(config.ARC.dmarc == 'yes'),
+        dkim=config.arc.dkim_enabled,
+        dmarc=config.arc.dmarc_enabled,
         arc=True,
         dnsfunc=dnsfunc)
 
@@ -114,5 +114,5 @@ class ValidateAuthenticity:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        if config.ARC.enabled.strip().lower() == 'yes':
+        if config.arc_enabled:
             authenticate(msg, msgdata)

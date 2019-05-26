@@ -18,6 +18,7 @@
 """Test the outgoing runner."""
 
 import logging
+import tempfile
 import unittest
 import mailman.handlers.validate_authenticity
 
@@ -60,6 +61,10 @@ class TestValidateAuthenticity(unittest.TestCase):
                    b"_dmarc.valimail.com.": ''.join(dmarc),
                    b"dummy._domainkey.example.org.": ''.join(dkim1)}
         mailman.handlers.validate_authenticity.dnsfunc = records.get
+        self.keyfile = tempfile.NamedTemporaryFile(delete=True)
+
+    def tearDown(self):
+        self.keyfile.close()
 
     def test_chain_validation_pass(self):
         config.push('dkim_and_cv', """
@@ -68,7 +73,8 @@ class TestValidateAuthenticity(unittest.TestCase):
         authserv_id: lists.example.org
         dkim: no
         dmarc: no
-        """)
+        privkey: {}
+        """.format(self.keyfile.name))
         self.addCleanup(config.pop, 'dkim_and_cv')
 
         lst = create_list('test@example.com')
@@ -128,7 +134,8 @@ This is a test message.
         authserv_id: lists.example.org
         dkim: yes
         dmarc: no
-        """)
+        privkey: {}
+        """.format(self.keyfile.name))
         self.addCleanup(config.pop, 'dkim_and_cv')
 
         lst = create_list('test@example.com')
@@ -184,7 +191,8 @@ This is a test message.
         authserv_id: example.com
         dkim: yes
         dmarc: no
-        """)
+        privkey: {}
+        """.format(self.keyfile.name))
         self.addCleanup(config.pop, 'just_dkim')
 
         lst = create_list('test@example.com')
@@ -227,7 +235,8 @@ This is a test!
         trusted_authserv_ids: example.com
         dkim: yes
         dmarc: no
-        """)
+        privkey: {}
+        """.format(self.keyfile.name))
         self.addCleanup(config.pop, 'just_dkim')
 
         lst = create_list('test@example.com')
@@ -281,9 +290,11 @@ class TestTimeout(unittest.TestCase):
             'mailman.handlers.validate_authenticity.authenticate_message',
             side_effect=self.mock_timeout)
         self.patcher.start()
+        self.keyfile = tempfile.NamedTemporaryFile(delete=True)
 
     def tearDown(self):
         self.patcher.stop()
+        self.keyfile.close()
 
     def test_timeout(self):
         config.push('just_dkim', """
@@ -291,7 +302,8 @@ class TestTimeout(unittest.TestCase):
         enabled: yes
         dkim: yes
         dmarc: no
-        """)
+        privkey: {}
+        """.format(self.keyfile.name))
         self.addCleanup(config.pop, 'just_dkim')
 
         mlist = create_list('test@example.com')

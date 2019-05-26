@@ -28,41 +28,29 @@ from mailman.interfaces.handler import IHandler
 from public import public
 from zope.interface import implementer
 
-# a manual override used by the test suite
+# A manual override used by the test suite.
 timestamp = None
 
-config_log = logging.getLogger('mailman.config')
-error_log = logging.getLogger('mailman.error')
+log = logging.getLogger('mailman.error')
 
 
-# ARC sign a message, and prepend the signature headers to the message
 def sign(msg, msgdata):
-    split_headers = config.ARC.sig_headers.encode().split(b',')
-    sig_headers = [x.strip() for x in split_headers]
-
+    """ARC sign a message, and prepend the signature headers to the message."""
     try:
-        with open(config.ARC.privkey, encoding='ascii') as fp:
-            privkey = fp.read()
-    except OSError:
-        config_log.error('Private key file is unreadable: {}'.format(
-            config.ARC.privkey))
-        return
-    except UnicodeDecodeError:
-        config_log.error('Private key file contains non-ASCII: {}'.format(
-            config.ARC.privkey))
-        return
-
-    try:
-        sig = sign_message(msg.as_string().encode(),
-                           config.ARC.selector.encode(),
-                           config.ARC.domain.encode(),
-                           privkey.encode(), sig_headers,
-                           'ARC', config.ARC.authserv_id.encode(),
+        # Since the underlying `sign_message` expects bytes for all the fields,
+        # we will encode all the parameters.
+        sig = sign_message(msg.as_bytes(),
+                           config.arc.selector,
+                           config.arc.domain,
+                           config.arc.private_key,
+                           config.arc.headers,
+                           'ARC',
+                           config.arc.authserv_id.encode(),
                            timestamp=timestamp,
                            standardize=('ARC-Standardize' in msgdata))
     except DKIMException:
-        error_log.exception('Failed to sign message')
-        return
+        log.exception('Failed to sign message: %s', msg['Message-ID'])
+        raise
 
     headers = [x.decode('utf-8').split(': ', 1) for x in sig]
     prepend_headers(msg, headers)
@@ -70,7 +58,7 @@ def sign(msg, msgdata):
 
 @public
 @implementer(IHandler)
-class ArcSign:
+class ARCSign:
     """Sign message and attach result headers."""
 
     name = 'arc-sign'
@@ -79,5 +67,5 @@ class ArcSign:
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
 
-        if config.ARC.enabled == 'yes':
+        if config.arc_enabled:
             sign(msg, msgdata)
