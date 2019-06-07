@@ -506,9 +506,11 @@ def import_config_pck(mlist, config_dict):
     regulars_set = set(config_dict.get('members', {}))
     digesters_set = set(config_dict.get('digest_members', {}))
     members = regulars_set.union(digesters_set)
-    # Don't send welcome messages when we import the rosters.
+    # Don't send welcome messages or notify admins when we import the rosters.
     send_welcome_message = mlist.send_welcome_message
     mlist.send_welcome_message = False
+    admin_notify_mchanges = mlist.admin_notify_mchanges
+    mlist.admin_notify_mchanges = False
     try:
         import_roster(mlist, config_dict, members, MemberRole.member)
         import_roster(mlist, config_dict, config_dict.get('owner', []),
@@ -533,6 +535,7 @@ def import_config_pck(mlist, config_dict):
                 list_prop.remove(email)
     finally:
         mlist.send_welcome_message = send_welcome_message
+        mlist.admin_notify_mchanges = admin_notify_mchanges
 
 
 def import_roster(mlist, config_dict, members, role, action=None):
