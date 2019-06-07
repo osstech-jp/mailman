@@ -42,6 +42,8 @@ Command line
   actions for nonmembers following a member in the list.  (closes #580)
 * The progress meter while ``mailman import21`` is importing rosters has been
   shortened so it no longer wraps and scrolls.  (Closes #589)
+* The ``mailman import21`` command no longer sends an email to existing owners
+  for each imported member.  (Closes #605)
 
 REST
 ----
