@@ -44,6 +44,9 @@ Command line
   shortened so it no longer wraps and scrolls.  (Closes #589)
 * The ``mailman import21`` command no longer sends an email to existing owners
   for each imported member.  (Closes #605)
+* A ``mailman notify`` command has been implemented to be run by cron to  send
+  periodic notices of held requests to list owners and moderators.
+  (Closes #258)
 
 REST
 ----
