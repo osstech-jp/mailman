@@ -110,6 +110,7 @@ class TestSystemConfiguration(unittest.TestCase):
         json, response = call_api(url)
         self.assertIn('http_etag', json)
         self.assertEqual(sorted(json['sections']), [
+            'ARC',
             'antispam',
             'archiver.mail_archive',
             'archiver.master',

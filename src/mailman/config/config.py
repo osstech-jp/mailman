@@ -72,6 +72,22 @@ MAILMAN_CFG_TEMPLATE = """\
 
 
 @public
+class ARC:
+    """ARC represents the parameters required for validation of arc."""
+    # This is a perfect candidate for dataclass when we are ready to support
+    # Python 3.7+. This class is a namespace to store the ARC related params in
+    # a single namespace.
+    authserv_id = None
+    trusted_authserv_ids = None
+    private_key = None
+    arc_headers = None
+    selector = None
+    domain = None
+    dkim_enabled = False
+    dmarc_enabled = False
+
+
+@public
 @implementer(IConfiguration)
 class Configuration:
     """The core global configuration object."""
@@ -93,6 +109,9 @@ class Configuration:
         self.plugins = {}
         self.password_context = None
         self.db = None
+        # ARC parameters.
+        self.arc_enabled = False
+        self.arc = ARC()
 
     def _clear(self):
         """Clear the cached configuration variables."""
@@ -139,6 +158,7 @@ class Configuration:
         # Expand and set up all directories.
         self._expand_paths()
         self.ensure_directories_exist()
+        self._update_arc_parameters()
         notify(ConfigurationUpdatedEvent(self))
 
     def _expand_paths(self):
@@ -294,6 +314,55 @@ class Configuration:
     def language_configs(self):
         """Iterate over all the language configuration sections."""
         yield from self._config.getByCategory('language', [])
+
+    def _update_arc_parameters(self):
+        """Update ARC related parameters by loading them from new config."""
+
+        self.arc_enabled = self.ARC.enabled.strip().lower() == 'yes'
+        # Load the private key to sign the messages.
+        if self.arc_enabled:
+            ids = self.ARC.trusted_authserv_ids.split(',')
+            ids.append(self.ARC.authserv_id)
+            self.arc.trusted_authserv_ids = [x.strip() for x in ids]
+            # The list of headers we need to sign for ARC.
+            self.arc.headers = [header.strip().lower().encode()
+                                for header in self.ARC.sig_headers.split(',')]
+            # Make sure the "From" header is included in arc_headers because we
+            # are going to fail when trying to sign a message with a
+            # DKIM-exception. It is better to fail early.
+            if b'from' not in self.arc.headers:
+                print('[ARC] "sig_headers" do not include "From" header.',
+                      file=sys.stderr)
+                sys.exit(1)
+            # Make sure the private signing key is configured if ARC is
+            # enabled.
+            if self.ARC.privkey.strip() == '':
+                print('[ARC] "enabled" but "privkey" is not configured.',
+                      file=sys.stderr)
+                sys.exit(1)
+            try:
+                # Open the private key in ascii encoding to make sure it
+                # doesn't include any non-ascii characters.
+                with open(self.ARC.privkey, encoding='ascii') as fd:
+                    arc_private_key = fd.read()
+            except OSError as e:
+                print('[ARC] "privkey" is unreadable: ', str(e),
+                      file=sys.stderr)
+                sys.exit(1)
+            except UnicodeDecodeError:
+                print('[ARC] "privkey" contains non-ascii characters.',
+                      file=sys.stderr)
+                sys.exit(1)
+
+            self.arc.private_key = arc_private_key.encode()
+            self.arc.domain = self.ARC.domain.encode()
+            self.arc.selector = self.ARC.selector.encode()
+            self.arc.authserv_id = self.ARC.authserv_id
+            self.arc.dkim_enabled = self.ARC.dkim == 'yes'
+            self.arc.dmarc_enabled = self.ARC.dmarc == 'yes'
+        else:
+            # Reset arc params.
+            self.arc = ARC()
 
 
 @public

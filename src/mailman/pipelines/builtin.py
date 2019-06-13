@@ -43,6 +43,7 @@ class PostingPipeline(BasePipeline):
     description = _('The built-in posting pipeline.')
 
     _default_handlers = (
+        'validate-authenticity',
         'mime-delete',
         'tagger',
         'member-recipients',
@@ -60,5 +61,6 @@ class PostingPipeline(BasePipeline):
         # All decoration is now done in delivery.
         # 'decorate',
         'dmarc',
+        'arc-sign',
         'to-outgoing',
         )
