@@ -40,6 +40,7 @@ from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.template import ITemplateLoader, ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
+from mailman.model.roster import RosterVisibility
 from mailman.testing.helpers import LogFileMark
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.filesystem import makedirs
@@ -1173,6 +1174,38 @@ class TestRosterImport(unittest.TestCase):
         self.assertEqual(member.moderation_action, Action.defer)
         member = self._mlist.nonmembers.get_member('homer@example.com')
         self.assertEqual(member.moderation_action, Action.hold)
+
+
+class TestRosterVisibilityImport(unittest.TestCase):
+    """Test that member_roster_visibility is imported correctly.
+
+    Mailman 2.1 lists have a private_roster attribute to control roster
+    visibility with values 0==public, 1==members, 2==admins
+    These correspond to the Mailman 3 member_roster_visibility values
+    RosterVisibility.public, RosterVisibility.members and
+    RosterVisibility.moderators
+    """
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('blank@example.com')
+        self._mlist.member_roster_visibility = DummyEnum.val
+
+    def _do_test(self, original, expected):
+        import_config_pck(self._mlist, dict(private_roster=original))
+        self.assertEqual(self._mlist.member_roster_visibility, expected)
+
+    def test_roster_visibility_public(self):
+        self._do_test(0, RosterVisibility.public)
+
+    def test_roster_visibility_members(self):
+        self._do_test(1, RosterVisibility.members)
+
+    def test_roster_visibility_moderators(self):
+        self._do_test(2, RosterVisibility.moderators)
+
+    def test_roster_visibility_bad(self):
+        self._do_test(3, DummyEnum.val)
 
 
 class TestPreferencesImport(unittest.TestCase):

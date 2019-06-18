@@ -39,7 +39,7 @@ Command line
 * The ``mailman import21`` command now imports nonmember accept actions as
   ``Action.defer`` rather than ``Action.accept``.  (Closes #579)
 * The ``mailman import21`` command now correctly imports ``*_these_nonmembers``
-  actions for nonmembers following a member in the list.  (closes #580)
+  actions for nonmembers following a member in the list.  (Closes #580)
 * The progress meter while ``mailman import21`` is importing rosters has been
   shortened so it no longer wraps and scrolls.  (Closes #589)
 * The ``mailman import21`` command no longer sends an email to existing owners
@@ -47,6 +47,8 @@ Command line
 * A ``mailman notify`` command has been implemented to be run by cron to  send
   periodic notices of held requests to list owners and moderators.
   (Closes #258)
+* The ``mailman import21`` command now imports ``private_roster``.
+  (Closes #607)
 
 REST
 ----
