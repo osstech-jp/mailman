@@ -43,6 +43,7 @@ from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.template import ITemplateLoader, ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
+from mailman.model.roster import RosterVisibility
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.i18n import search
 from public import public
@@ -142,6 +143,17 @@ def nonmember_action_mapping(value):
         2: Action.reject,
         3: Action.discard,
         }[value]
+
+
+def member_roster_visibility_mapping(value):
+    # For member_roster_visibility, which used to be called private_roster.
+    # The values were: 0==public, 1==members, 2==admins.
+    mapping = {
+        0: RosterVisibility.public,
+        1: RosterVisibility.members,
+        2: RosterVisibility.moderators,
+        }
+    return mapping.get(value, None)
 
 
 def action_to_chain(value):
@@ -368,6 +380,11 @@ def import_config_pck(mlist, config_dict):
         # but .add() would not raise ValueError if address contained '@' and
         # that needs the '^' too as it could be a regexp with an '@' in it.
         alias_set.add(address)
+    # Handle roster visibility.
+    mapping = member_roster_visibility_mapping(
+        config_dict.get('private_roster', None))
+    if mapping is not None:
+        mlist.member_roster_visibility = mapping
     # Handle header_filter_rules conversion to header_matches.
     header_matches = IHeaderMatchList(mlist)
     header_filter_rules = config_dict.get('header_filter_rules', [])
