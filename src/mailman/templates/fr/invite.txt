@@ -1,0 +1,15 @@
+Votre adresse électronique "$email" a été invitée à joindre la liste de
+diffusion $listname sur la machine $hostname par le propriétaire de la
+liste. Vous pouvez accepter cette invitation en répondant à ce message sans
+toucher à son objet.
+
+Ou vous pouvez inclure la ligne suivante (et seulement la ligne suivante) dans
+un message à $requestaddr :
+
+    confirm $cookie
+
+Notez qu’une simple réponse à ce présent courriel devrait suffire depuis la
+plupart des clients de messagerie.
+
+Si vous souhaitez refuser cette invitation, veuillez ignorer ce courriel.
+Si vous avez des questions, veuillez les envoyer à $listowner.
