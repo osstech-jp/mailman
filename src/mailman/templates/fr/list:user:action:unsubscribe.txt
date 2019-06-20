@@ -1,0 +1,18 @@
+Confirmation de la désinscription de votre adresse électronique
+
+Bonjour, c’est le serveur GNU Mailman de $domain.
+
+Nous avons reçu une demande de désinscription pour l’adresse électronique
+
+    $user_email
+
+Pour que GNU Mailman puisse vous désinscrire, vous devez confirmer votre
+requête. Vous pouvez le faire en répondant à ce courriel sans toucher à son
+objet.
+
+Si vous ne souhaitez pas désinscrire cette adresse électronique, vous pouvez
+simplement ignorer ce message. Si vous pensez que quelqu’un a essayé de vous
+désinscrire malicieusement de la liste, ou si vous avez n’importe quelle autre
+question, vous pouvez contacter
+
+    $owner_email

@@ -1,0 +1,4 @@
+Une demande de désinscription à une liste est en attente de votre validation :
+
+    Pour :  $member
+    Liste : $listname

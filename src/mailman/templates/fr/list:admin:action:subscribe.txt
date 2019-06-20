@@ -1,0 +1,4 @@
+Une demande d’inscription à une liste est en attente de votre validation :
+
+    Pour :  $member
+    Liste : $listname

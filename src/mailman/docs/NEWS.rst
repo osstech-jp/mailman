@@ -58,6 +58,10 @@ REST
 * Allow adding a comment when rejecting held messages. (Closes #594)
 * Fix a 500 error when creating a user with invalid email address. (Closes #263)
 
+Localization
+------------
+* Add French translations for mail templates. (See !522)
+
 Other
 -----
 * Add a new attribute ``tag`` to ``HeaderMatch`` to find and manage a set of
