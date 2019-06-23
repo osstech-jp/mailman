@@ -329,6 +329,10 @@ request approval:
             message['Subject'], 'confirm {}'.format(workflow.token))
         self.assertEqual(
             message['From'], 'test-confirm+{}@example.com'.format(token))
+        # The confirmation message is not `Precedence: bulk`.
+        self.assertIsNone(message['precedence'])
+        # The confirmation message is `Auto-Submitted: auto-generated`.
+        self.assertEqual(message['auto-submitted'], 'auto-generated')
         # The state machine stopped at the member confirmation step so there
         # will be one token still in the database.
         self._expected_pendings_count = 1

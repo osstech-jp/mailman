@@ -508,6 +508,8 @@ approval:
             message['From'], 'test-confirm+{}@example.com'.format(token))
         # The confirmation message is not `Precedence: bulk`.
         self.assertIsNone(message['precedence'])
+        # The confirmation message is `Auto-Submitted: auto-generated`.
+        self.assertEqual(message['auto-submitted'], 'auto-generated')
         # The state machine stopped at the moderator approval so there will be
         # one token still in the database.
         self._expected_pendings_count = 1

@@ -72,6 +72,8 @@ Other
 * Add support for SMPTS/STARTTLS for connections to MTA. (See !508)
 * The last remnants of the mailing list attribute ``nntp_host`` have been
   removed.  (Closes #611)
+* Email confirmation requests now include an ``Auto-Submitted`` header to
+  prevent robotic replies per ``RFC 3834``.  (Closes #23)
 
 3.2.2
 =====

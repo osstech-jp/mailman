@@ -579,6 +579,8 @@ def _handle_confirmation_needed_events(event, template_name):
     msg = UserNotification(
         email_address, confirm_address, subject, text,
         event.mlist.preferred_language)
+    del msg['auto-submitted']
+    msg['Auto-Submitted'] = 'auto-generated'
     msg.send(event.mlist, add_precedence=False)
 
 
