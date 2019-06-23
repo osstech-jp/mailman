@@ -70,6 +70,8 @@ Other
 * REST Runner now uses Gunicorn to run WSGI server instead of the standard
   library wsgiref for better performance.
 * Add support for SMPTS/STARTTLS for connections to MTA. (See !508)
+* The last remnants of the mailing list attribute ``nntp_host`` have been
+  removed.  (Closes #611)
 
 3.2.2
 =====

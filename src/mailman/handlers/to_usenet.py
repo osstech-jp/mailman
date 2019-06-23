@@ -50,8 +50,6 @@ class ToUsenet:
         error = []
         if not mlist.linked_newsgroup:
             error.append('no newsgroup')
-        if not mlist.nntp_host:
-            error.append('no NNTP host')
         if error:
             log.error('NNTP gateway improperly configured: %s',
                       COMMASPACE.join(error))

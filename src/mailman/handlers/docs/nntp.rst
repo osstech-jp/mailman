@@ -44,12 +44,11 @@ Neither are digests ever gated to the newsgroup.
     []
 
 However, other posted messages get gated to the newsgroup via the nntp queue.
-The list owner can set the linked newsgroup and the nntp host that its
-messages are gated to.
+The list owner can set the linked newsgroup.  The nntp host that messages are
+gated to is a global configuration.
 ::
 
     >>> mlist.linked_newsgroup = 'comp.lang.thing'
-    >>> mlist.nntp_host = 'news.example.com'
     >>> handler.process(mlist, msg, {})
     >>> messages = get_queue_messages('nntp')
     >>> len(messages)

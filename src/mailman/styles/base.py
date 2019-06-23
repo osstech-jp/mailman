@@ -92,7 +92,6 @@ class BasicOperation:
         mlist.dmarc_moderation_notice = ''
         mlist.dmarc_wrapped_message_text = ''
         # NNTP gateway
-        mlist.nntp_host = ''
         mlist.linked_newsgroup = ''
         mlist.gateway_to_news = False
         mlist.gateway_to_mail = False
