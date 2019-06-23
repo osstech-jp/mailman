@@ -180,7 +180,6 @@ testing
         # Set up NNTP.
         self._mlist.gateway_to_news = True
         self._mlist.linked_newsgroup = 'testing'
-        self._mlist.nntp_host = 'news.example.com'
         # Process the email.
         process(self._mlist, self._msg, {},
                 pipeline_name='default-posting-pipeline')
