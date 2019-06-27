@@ -23,7 +23,7 @@ import socket
 import logging
 import nntplib
 
-from io import StringIO
+from io import BytesIO
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.nntp import NewsgroupModeration
@@ -66,8 +66,8 @@ class NNTPRunner(Runner):
         # Make sure we have the most up-to-date state
         if not msgdata.get('prepped'):
             prepare_message(mlist, msg, msgdata)
-        # Flatten the message object, sticking it in a StringIO object
-        fp = StringIO(msg.as_string())
+        # Flatten the message object, sticking it in a BytesIO object
+        fp = BytesIO(msg.as_bytes())
         conn = None
         try:
             conn = nntplib.NNTP(host, port,
