@@ -21,6 +21,7 @@ import socket
 import nntplib
 import unittest
 
+from email import message_from_bytes
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.nntp import NewsgroupModeration
@@ -274,7 +275,7 @@ Testing
         self.assertEqual(len(args[0]), 1)
         # No keyword arguments.
         self.assertEqual(len(args[1]), 0)
-        msg = mfs(args[0][0].read())
+        msg = message_from_bytes(args[0][0].read())
         self.assertEqual(msg['subject'], 'A newsgroup posting')
 
     @mock.patch('nntplib.NNTP')

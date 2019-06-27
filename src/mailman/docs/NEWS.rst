@@ -31,6 +31,8 @@ Bugs
   already pending are now handled properly.  (Closes #577 and #583)
 * It is no longer possible to add the list's posting address with any role to
   a list.  (Closes #599)
+* Fixed the nntp runner which was calling the ``nntplib.NNTP.post()`` method
+  with a string object instead of bytes.  (Closes #613)
 
 Command line
 ------------

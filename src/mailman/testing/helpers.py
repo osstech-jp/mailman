@@ -30,7 +30,7 @@ import datetime
 import threading
 
 from contextlib import contextmanager, suppress
-from email import message_from_string
+from email import message_from_bytes, message_from_string
 from lazr.config import as_timedelta
 from mailman.bin.master import Loop as Master
 from mailman.config import config
@@ -250,7 +250,7 @@ def get_nntp_server(cleanups):
     class NNTPProxy:                                              # noqa: E306
         def get_message(self):
             args = nntpd.post.call_args
-            return specialized_message_from_string(args[0][0].read())
+            return message_from_bytes(args[0][0].read())
     return NNTPProxy()
 
 
