@@ -19,8 +19,10 @@
 
 import re
 
+from contextlib import suppress
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.rules import IRule
@@ -134,7 +136,10 @@ class NonmemberModeration:
                 address = user_manager.get_address(sender)
                 assert address is not None, (
                     'Posting address is not registered: {}'.format(sender))
-                mlist.subscribe(address, MemberRole.nonmember)
+                with suppress(InvalidEmailAddressError):
+                    # This might be a list posting address in Reply-To: or
+                    # some other invalid address.  In any case, ignore it.
+                    mlist.subscribe(address, MemberRole.nonmember)
         # Check to see if any of the sender emails is already a member.  If
         # so, then this rule misses.
         member = _find_sender_member(mlist, msg)

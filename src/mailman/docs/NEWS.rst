@@ -33,6 +33,8 @@ Bugs
   a list.  (Closes #599)
 * Fixed the nntp runner which was calling the ``nntplib.NNTP.post()`` method
   with a string object instead of bytes.  (Closes #613)
+* A post with a Reply-To: the list address will no longer be shunted.
+  (Closes #614)
 
 Command line
 ------------

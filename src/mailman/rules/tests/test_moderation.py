@@ -332,3 +332,23 @@ A message body.
             'moderation_reasons': ['No sender was found in the message.'],
             'moderation_sender': 'No sender',
             })
+
+    def test_reply_to_list(self):
+        # Test a post from a member with the list posting address in Reply-To:.
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        anne = user_manager.create_address('anne.person@example.com')
+        user_manager.create_address('test@example.com')
+        self._mlist.subscribe(anne, MemberRole.member)
+        msg = mfs("""\
+From: anne.person@example.com
+To: test@example.com
+Reply-To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        result = rule.check(self._mlist, msg, {})
+        self.assertFalse(result)
