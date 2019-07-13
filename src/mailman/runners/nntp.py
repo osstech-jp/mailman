@@ -35,17 +35,16 @@ COMMASPACE = ', '
 log = logging.getLogger('mailman.error')
 
 
-# Matches our Mailman crafted Message-IDs.  See Utils.unique_message_id()
-# XXX The move to email.utils.make_msgid() breaks this.
+# Matches our crafted Message-ID.
 mcre = re.compile(r"""
-    <mailman.                                     # match the prefix
-    \d+.                                          # serial number
-    \d+.                                          # time in seconds since epoch
-    \d+.                                          # pid
-    (?P<listname>[^@]+)                           # list's internal_name()
-    @                                             # localpart@dom.ain
-    (?P<hostname>[^>]+)                           # list's mail_host
-    >                                             # trailer
+    <                                    # match the prefix
+    \d+\.                                # time in centi-seconds since epoch
+    \d+\.                                # pid
+    \d+\.                                # random number
+    (?P<listname>[^@]+)                  # list's list_name
+    @                                    # localpart@dom.ain
+    (?P<hostname>[^>]+)                  # list's mail_host
+    >                                    # trailer
     """, re.VERBOSE)
 
 
@@ -76,8 +75,26 @@ class NNTPRunner(Runner):
                                 password=config.nntp.password)
             conn.post(fp)
         except nntplib.NNTPTemporaryError:
-            log.exception('{} NNTP error for {}'.format(
-                msg.get('message-id', 'n/a'), mlist.fqdn_listname))
+            # This could be a duplicate Message-ID for a message cross-posted
+            # to another group.  See if we already munged the Message-ID.
+            mo = mcre.search(msg.get('message-id', 'n/a'))
+            if (mo and mo.group('listname') == mlist.list_name and
+                    mo.group('hostname') == mlist.mail_host):
+                # This is our munged Message-ID.  This must be a failure of the
+                # requeued message or a Message-ID we added in prepare_message.
+                # Get the original Message-ID or the one we added and log it.
+                log_message_id = msgdata.get('original_message-id',
+                                             msg.get('message-id', 'n/a'))
+                log.exception('{} NNTP error for {}'.format(
+                    log_message_id, mlist.fqdn_listname))
+            else:
+                # This might be a duplicate Message-ID.  Munge it and requeue
+                # the message, but save the original Message-ID for logging.
+                msgdata['original_message-id'] = msg.get('message-id', 'n/a')
+                del msg['message-id']
+                msg['Message-ID'] = email.utils.make_msgid(mlist.list_name,
+                                                           mlist.mail_host)
+                return True
         except socket.error:
             log.exception('{} NNTP socket error for {}'.format(
                 msg.get('message-id', 'n/a'), mlist.fqdn_listname))
@@ -126,30 +143,10 @@ def prepare_message(mlist, msg, msgdata):
             # Subtitute our new header for the old one.
             del msg['newsgroups']
             msg['Newsgroups'] = COMMASPACE.join(newsgroups)
-    # Note: We need to be sure two messages aren't ever sent to the same list
-    # in the same process, since message ids need to be unique.  Further, if
-    # messages are crossposted to two gated mailing lists, they must each have
-    # unique message ids or the nntpd will only accept one of them.  The
-    # solution here is to substitute any existing message-id that isn't ours
-    # with one of ours, so we need to parse it to be sure we're not looping.
-    #
-    # Our Message-ID format is <mailman.secs.pid.listname@hostname>
-    #
-    # XXX 2012-03-31 BAW: What we really want to do is try posting the message
-    # to the nntpd first, and only if that fails substitute a unique
-    # Message-ID.  The following should get moved out of prepare_message() and
-    # into _dispose() above.
-    msgid = msg['message-id']
-    hackmsgid = True
-    if msgid:
-        mo = mcre.search(msgid)
-        if mo:
-            lname, hname = mo.group('listname', 'hostname')
-            if lname == mlist.internal_name() and hname == mlist.mail_host:
-                hackmsgid = False
-    if hackmsgid:
-        del msg['message-id']
-        msg['Message-ID'] = email.utils.make_msgid()
+    # Ensure we have a Message-ID.
+    if not msg.get('message-id'):
+        msg['Message-ID'] = email.utils.make_msgid(mlist.list_name,
+                                                   mlist.mail_host)
     # Lines: is useful.
     if msg['Lines'] is None:
         # BAW: is there a better way?
