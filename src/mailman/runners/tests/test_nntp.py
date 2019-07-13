@@ -21,7 +21,7 @@ import socket
 import nntplib
 import unittest
 
-from email import message_from_bytes
+from email import message_from_bytes, utils
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.nntp import NewsgroupModeration
@@ -349,9 +349,35 @@ Testing
         # Add a side-effect to the instance mock's .post() method.
         conn_mock = class_mock()
         conn_mock.post.side_effect = nntplib.NNTPTemporaryError
+        # Set the Message-ID to ours so the message isn't retried.
+        del self._msg['message-id']
+        self._msg['message-id'] = utils.make_msgid(self._mlist.list_name,
+                                                   self._mlist.mail_host)
         self._nntpq.enqueue(self._msg, {}, listid='test.example.com')
         self._runner.run()
         # The connection object's post() method was called once with a
-        # file-like object containing the message's bytes.  Read those bytes
-        # and make some simple checks that the message is what we expected.
+        # file-like object containing the message's bytes.  The
+        # NNTPTemporaryError will not be retried because the Message-ID is
+        # ours.
         conn_mock.quit.assert_called_once_with()
+
+    @mock.patch('nntplib.NNTP')
+    def test_connection_got_two_quit_after_post_failure(self, class_mock):
+        # The NNTP connection does get closed after a unsuccessful post.
+        # Add a side-effect to the instance mock's .post() method.
+        conn_mock = class_mock()
+        conn_mock.post.side_effect = nntplib.NNTPTemporaryError
+        self._nntpq.enqueue(self._msg, {}, listid='test.example.com')
+        mark = LogFileMark('mailman.error')
+        self._runner.run()
+        # The connection object's post() method was called twice with a
+        # file-like object containing the message's bytes.  The
+        # NNTPTemporaryError is retried with a munged Message-ID because it
+        # might have been due to a duplicate Message-ID.  Check that quit is
+        # called twice.
+        self.assertEqual(conn_mock.quit.call_count, 2)
+        # There should be a log message with the original Message-ID.
+        log_message = mark.readline()[:-1]
+        self.assertTrue(
+            log_message.endswith('<ant> NNTP error for test@example.com'),
+            log_message)

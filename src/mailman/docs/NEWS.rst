@@ -78,6 +78,8 @@ Other
   removed.  (Closes #611)
 * Email confirmation requests now include an ``Auto-Submitted`` header to
   prevent robotic replies per ``RFC 3834``.  (Closes #23)
+* The mail->news gateway no longer munges Message-ID headers unless the
+  original Message-ID is rejected by the ``nntp_host``.  (Closes #24)
 
 3.2.2
 =====
