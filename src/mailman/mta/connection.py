@@ -96,15 +96,16 @@ class Connection:
         module.
 
         If either of smtp_pass or smtp_user is omitted, the other will
-        be ignored.  If secure_mode is INSECURE, verify_host and
-        verify_cert will be ignored.
+        be ignored.  If secure_mode is INSECURE, verify_hostname and
+        verify_cert will be ignored. If secure_mode is not INSECURE,
+        verify_hostname will be ignored unless verify_cert is true.
         """
         self._host = host
         self._port = port
         self._sessions_per_connection = sessions_per_connection
         self.secure_mode = secure_mode
         self.verify_cert = verify_cert
-        self.verify_hostname = verify_hostname
+        self.verify_hostname = verify_hostname and verify_cert
         self._username = smtp_user
         self._password = smtp_pass
 
@@ -114,7 +115,7 @@ class Connection:
             self._tls_context = None
         else:
             self._tls_context = self._get_tls_context(self.verify_cert,
-                                                      self.verify_cert)
+                                                      self.verify_hostname)
 
     def sendmail(self, envsender, recipients, msgtext):
         """Mimic `smtplib.SMTP.sendmail`."""

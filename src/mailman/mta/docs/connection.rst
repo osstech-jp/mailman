@@ -126,7 +126,8 @@ The verify_cert and verify_hostname arguments control whether the
 ensure that the certificate hostname is identical to the hostname
 expected by Mailman.  These default to True, and setting them to False
 is strongly discouraged: fix the MTA host!  (They will be ignored if
-TLS is not used, i.e., secure_mode is INSECURE.)
+TLS is not used, i.e., secure_mode is INSECURE. verify_hostname will be ignored
+unless verify_cert is true.)
 ::
 
     >>> connection = Connection(
