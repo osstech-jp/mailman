@@ -185,6 +185,7 @@ class MailingList(Model):
     topics_bodylines_limit = Column(Integer)
     topics_enabled = Column(Boolean)
     unsubscription_policy = Column(Enum(SubscriptionPolicy))
+    usenet_watermark = Column(Integer)
     # ORM relationships.
     header_matches = relationship(
         'HeaderMatch', backref='mailing_list',

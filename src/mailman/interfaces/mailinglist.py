@@ -649,9 +649,6 @@ class IMailingList(Interface):
         without any other checks.
         """)
 
-    newsgroup_moderation = Attribute(
-        """The moderation policy for the linked newsgroup, if there is one.""")
-
     # Bounces.
 
     forward_unrecognized_bounces_to = Attribute(
@@ -688,6 +685,30 @@ class IMailingList(Interface):
 
     send_goodbye_message = Attribute(
         """Flag indicating whether a goodbye message should be sent.""")
+
+    # Usenet gateway.
+
+    gateway_to_mail = Attribute(
+        """Flag indicating that posts to the linked newsgroup should be gated
+        to the list.""")
+
+    gateway_to_news = Attribute(
+        """Flag indicating that posts to the list should be gated to the
+        linked newsgroup.""")
+
+    linked_newsgroup = Attribute(
+        """The name of the linked newsgroup.""")
+
+    newsgroup_moderation = Attribute(
+        """The moderation policy for the linked newsgroup, if there is one.""")
+
+    nntp_prefix_subject_too = Attribute(
+        """Flag indicating whether the list's subject_prefix should be included
+        in posts gated to usenet.""")
+
+    usenet_watermark = Attribute(
+        """The NNTP server's message number of the last post gated to the
+        list.""")
 
 
 @public

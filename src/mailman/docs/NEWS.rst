@@ -48,11 +48,13 @@ Command line
   shortened so it no longer wraps and scrolls.  (Closes #589)
 * The ``mailman import21`` command no longer sends an email to existing owners
   for each imported member.  (Closes #605)
-* A ``mailman notify`` command has been implemented to be run by cron to  send
+* A ``mailman notify`` command has been implemented to be run by cron to send
   periodic notices of held requests to list owners and moderators.
   (Closes #258)
 * The ``mailman import21`` command now imports ``private_roster``.
   (Closes #607)
+* A ``mailman gatenews`` command has been implemented to be run by cron to gate
+  messages from usenet to those lists which have the gateway configured.
 
 REST
 ----
