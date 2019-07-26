@@ -188,6 +188,7 @@ Plugins and their child resources can support any HTTP method, such as
     number: 7
 
 ... or ``DELETE``.
+::
 
     >>> dump_json('http://localhost:9001/3.1/plugins/example/echo',
     ...           method='DELETE')
