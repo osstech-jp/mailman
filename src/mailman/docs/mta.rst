@@ -357,6 +357,14 @@ configuration is order-sensitive.  Especially if you are being tricky and
 supporting Mailman 2 and Mailman 3 at the same time, you could have one shadow
 the other.
 
+Another issue, not specific to Exim, is Mailman's requirement that every
+message have a ``Message-ID:`` header.  Exim can ensure this if you add these
+two lines to the ``mailman3_transport:`` section.
+::
+
+      headers_remove = message-id
+      headers_add = "Message-ID: ${if def:header_message-id:{$h_message-id:}{<E${message_exim_id}@${qualify_domain}>}}"
+
 Exim 4 documentation
 --------------------
 
