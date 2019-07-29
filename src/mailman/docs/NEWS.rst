@@ -35,6 +35,8 @@ Bugs
   with a string object instead of bytes.  (Closes #613)
 * A post with a Reply-To: the list address will no longer be shunted.
   (Closes #614)
+* Encoded (base64 or quoted-printable) HTML message bodies are now decoded for
+  ``html_to_plaintext``.  (Closes #616)
 
 Command line
 ------------
