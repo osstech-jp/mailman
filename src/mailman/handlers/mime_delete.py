@@ -274,8 +274,10 @@ def to_plaintext(msg):
         resources.callback(shutil.rmtree, tempdir)
         for subpart in typed_subpart_iterator(msg, 'text', 'html'):
             filename = os.path.join(tempdir, '{}.html'.format(next(counter)))
+            ctype = msg.get_content_charset('utf-8')
             with open(filename, 'w', encoding='utf-8') as fp:
-                fp.write(subpart.get_payload())
+                fp.write(subpart.get_payload(decode=True).decode(ctype,
+                         errors='replace'))
             template = Template(config.mailman.html_to_plain_text_command)
             command = template.safe_substitute(filename=filename).split()
             try:

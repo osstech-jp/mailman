@@ -61,6 +61,7 @@ if len(sys.argv) > 2:
     sys.exit(1)
 print('Converted text/html to text/plain')
 print('Filename:', sys.argv[1])
+print(open(sys.argv[1]).readlines()[0])
 """, file=fp)
         config.push('dummy script', """\
 [mailman]
@@ -238,6 +239,27 @@ MIME-Version: 1.0
             msg['x-content-filtered-by'].startswith('Mailman/MimeDel'))
         payload_lines = msg.get_payload().splitlines()
         self.assertEqual(payload_lines[0], 'Converted text/html to text/plain')
+
+    def test_convert_html_to_plaintext_base64(self):
+        # Converting to plain text calls a command line script with decoded
+        # message body.
+        msg = mfs("""\
+From: aperson@example.com
+Content-Type: text/html
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PGh0bWw+PGhlYWQ+PC9oZWFkPgo8Ym9keT48L2JvZHk+PC9odG1sPgo=
+""")
+        process = config.handlers['mime-delete'].process
+        with dummy_script():
+            process(self._mlist, msg, {})
+        self.assertEqual(msg.get_content_type(), 'text/plain')
+        self.assertTrue(
+            msg['x-content-filtered-by'].startswith('Mailman/MimeDel'))
+        payload_lines = msg.get_payload().splitlines()
+        self.assertEqual(payload_lines[0], 'Converted text/html to text/plain')
+        self.assertEqual(payload_lines[2], '<html><head></head>')
 
     def test_convert_html_to_plaintext_error_return(self):
         # Calling a script which returns an error status is properly logged.
