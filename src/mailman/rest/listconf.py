@@ -26,6 +26,7 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
     DMARCMitigateAction, IAcceptableAliasSet, IMailingList, ReplyToMunging,
     SubscriptionPolicy)
+from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.template import ITemplateManager
 from mailman.model.roster import RosterVisibility
 from mailman.rest.helpers import (
@@ -181,17 +182,22 @@ ATTRIBUTES = dict(
     filter_content=GetterSetter(as_boolean),
     first_strip_reply_to=GetterSetter(as_boolean),
     fqdn_listname=GetterSetter(None),
+    gateway_to_mail=GetterSetter(as_boolean),
+    gateway_to_news=GetterSetter(as_boolean),
     include_rfc2369_headers=GetterSetter(as_boolean),
     info=GetterSetter(str),
     join_address=GetterSetter(None),
     last_post_at=GetterSetter(None),
     leave_address=GetterSetter(None),
     list_name=GetterSetter(None),
+    linked_newsgroup=GetterSetter(str),
     mail_host=GetterSetter(None),
     moderator_password=GetterSetter(password_bytes_validator),
     max_message_size=GetterSetter(integer_ge_zero_validator),
     member_roster_visibility=GetterSetter(enum_validator(RosterVisibility)),
+    newsgroup_moderation=GetterSetter(enum_validator(NewsgroupModeration)),
     next_digest_number=GetterSetter(None),
+    nntp_prefix_subject_too=GetterSetter(as_boolean),
     no_reply_address=GetterSetter(None),
     owner_address=GetterSetter(None),
     post_id=GetterSetter(None),
@@ -205,6 +211,7 @@ ATTRIBUTES = dict(
     send_welcome_message=GetterSetter(as_boolean),
     subject_prefix=GetterSetter(str),
     subscription_policy=GetterSetter(enum_validator(SubscriptionPolicy)),
+    usenet_watermark=GetterSetter(None),
     volume=GetterSetter(None),
     respond_to_post_requests=GetterSetter(as_boolean),
     max_num_recipients=GetterSetter(integer_ge_zero_validator),
