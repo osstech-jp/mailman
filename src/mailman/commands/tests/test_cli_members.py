@@ -111,3 +111,13 @@ class TestCLIMembers(unittest.TestCase):
            result.output,
            'Already subscribed (skipping): Anne Person <aperson@example.com>\n'
            )
+
+    def test_add_invalid_email(self):
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('foobar@', file=infp)
+            result = self._command.invoke(members, (
+                '--add', infp.name, 'ant.example.com'))
+        self.assertEqual(
+           result.output,
+           'Cannot parse as valid subscriber address (skipping): foobar@\n'
+           )
