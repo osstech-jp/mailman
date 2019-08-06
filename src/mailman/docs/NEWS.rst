@@ -57,6 +57,8 @@ Command line
   (Closes #607)
 * A ``mailman gatenews`` command has been implemented to be run by cron to gate
   messages from usenet to those lists which have the gateway configured.
+* The ``mailman members --add`` command no longer prints a stack trace if an
+  invalid email address is given.  (See !544)
 
 REST
 ----

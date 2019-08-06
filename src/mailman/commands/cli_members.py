@@ -23,6 +23,7 @@ from email.utils import formataddr, parseaddr
 from mailman.app.membership import add_member
 from mailman.core.i18n import _
 from mailman.database.transaction import transactional
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
@@ -116,6 +117,12 @@ def add_members(mlist, infp):
                        RequestRecord(email, display_name,
                                      DeliveryMode.regular,
                                      mlist.preferred_language.code))
+        except InvalidEmailAddressError:
+            # It's okay if the address is invalid, we print a
+            # warning and continue.
+            line = line.strip()
+            print(_('Cannot parse as valid subscriber '
+                    'address (skipping): $line'))
         except AlreadySubscribedError:
             # It's okay if the address is already subscribed, just print a
             # warning and continue.
