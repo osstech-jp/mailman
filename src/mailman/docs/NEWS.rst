@@ -59,6 +59,8 @@ Command line
   messages from usenet to those lists which have the gateway configured.
 * The ``mailman members --add`` command no longer prints a stack trace if an
   invalid email address is given.  (See !544)
+* A new ``mailman members --remove`` command has been added to help you
+  mass-unsubscribe subscribers from a mailing list.
 
 REST
 ----

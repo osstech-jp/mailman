@@ -121,3 +121,65 @@ class TestCLIMembers(unittest.TestCase):
            result.output,
            'Cannot parse as valid subscriber address (skipping): foobar@\n'
            )
+
+    def test_not_subscribed_without_display_name(self):
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('aperson@example.com', file=infp)
+            result = self._command.invoke(members, (
+                '--delete', infp.name, 'ant.example.com'))
+        self.assertEqual(
+           result.output,
+           'Member not subscribed (skipping): ' +
+           'aperson@example.com\n'
+           )
+
+    def test_not_subscribed_with_display_name(self):
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            result = self._command.invoke(members, (
+                '--delete', infp.name, 'ant.example.com'))
+        self.assertEqual(
+           result.output,
+           'Member not subscribed (skipping): ' +
+           'Anne Person <aperson@example.com>\n'
+           )
+
+    def test_deletion_blank_lines(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        subscribe(self._mlist, 'Cate')
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            print('', file=infp)
+            print('   ', file=infp)
+            print('\t', file=infp)
+            print('Bart Person <bperson@example.com>', file=infp)
+            result = self._command.invoke(members, (
+                '--delete', infp.name, 'ant.example.com'))
+        self.assertEqual(result.output, "")
+
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Cate Person <cperson@example.com>\n')
+
+    def test_deletion_commented_lines(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            print('#Bart Person <bperson@example.com>', file=infp)
+            result = self._command.invoke(members, (
+                '--delete', infp.name, 'ant.example.com'))
+        self.assertEqual(result.output, "")
+
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Bart Person <bperson@example.com>\n')
