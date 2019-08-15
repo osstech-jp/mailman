@@ -169,7 +169,10 @@ Original-Recipient: rfc822; bart@example.com
     def test_nonverp_detectable_nonfatal_bounce(self):
         # Here's a bounce that is not VERPd, but which has a bouncing address
         # that can be parsed from a known bounce format.  The bounce is
-        # non-fatal so no bounce event is registered.
+        # non-fatal so no bounce event is registered and the bounce is not
+        # reported as unrecognized.
+        self._mlist.forward_unrecognized_bounces_to = (
+            UnrecognizedBounceDisposition.site_owner)
         dsn = message_from_string("""\
 From: mail-daemon@example.com
 To: test-bounces@example.com
@@ -186,10 +189,15 @@ Original-Recipient: rfc822; bart@example.com
 --AAA--
 """)
         self._bounceq.enqueue(dsn, self._msgdata)
+        mark = LogFileMark('mailman.bounce')
         self._runner.run()
         get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 0)
+        # There should be nothing in the 'virgin' queue.
+        get_queue_messages('virgin', expected_count=0)
+        # There should be nothing logged.
+        self.assertEqual(len(mark.readline()), 0)
 
     def test_no_detectable_bounce_addresses(self):
         # A bounce message was received, but no addresses could be detected.
