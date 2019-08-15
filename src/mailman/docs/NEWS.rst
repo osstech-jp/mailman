@@ -37,6 +37,8 @@ Bugs
   (Closes #614)
 * Encoded (base64 or quoted-printable) HTML message bodies are now decoded for
   ``html_to_plaintext``.  (Closes #616)
+* Non-VERPed temporary failure DSNs are no longer reported as unrecognized
+  bounces.  (Closes #622)
 
 Command line
 ------------

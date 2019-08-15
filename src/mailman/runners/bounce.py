@@ -19,7 +19,7 @@
 
 import logging
 
-from flufl.bounce import all_failures, scan_message
+from flufl.bounce import all_failures
 from mailman.app.bounces import ProbeVERP, StandardVERP, maybe_forward
 from mailman.core.runner import Runner
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor
@@ -64,11 +64,14 @@ class BounceRunner(Runner):
                 context = BounceContext.probe
             else:
                 # That didn't give us anything useful, so try the old fashion
-                # bounce matching modules.  This returns only the permanently
-                # failing addresses.  Since Mailman currently doesn't score
-                # temporary failures, if we get no permanent failures, we're
-                # done.s
-                addresses = scan_message(msg)
+                # bounce matching modules.  Since Mailman currently doesn't
+                # score temporary failures, if we get no permanent failures,
+                # we're done, but we do need to check for temporary failures
+                # to know if the bounce was recognized.
+                temporary, addresses = all_failures(msg)
+                if len(addresses) == 0 and len(temporary) > 0:
+                    # This is a recognized temp fail so ignore it.
+                    return False
         # If that still didn't return us any useful addresses, then send it on
         # or discard it.  The addresses will come back from flufl.bounce as
         # bytes/8-bit strings, but we must store them as unicodes in the
