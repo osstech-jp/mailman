@@ -127,7 +127,7 @@ def prepare_message(mlist, msg, msgdata):
                                    msgdata.get('original_subject'))
     if not mlist.nntp_prefix_subject_too and stripped_subject is not None:
         del msg['subject']
-        msg['subject'] = stripped_subject
+        msg['Subject'] = stripped_subject
     # Add the appropriate Newsgroups header.  Multiple Newsgroups headers are
     # generally not allowed so we're not testing for them.
     header = msg.get('newsgroups')
