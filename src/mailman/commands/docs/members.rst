@@ -3,7 +3,7 @@ Managing members
 ================
 
 The ``mailman members`` command allows a site administrator to display, add,
-and remove members from a mailing list.
+and delete members from a mailing list.
 
     >>> command = cli('mailman.commands.cli_members.members')
 
@@ -252,18 +252,96 @@ printed.
     jperson@example.com
 
 
+Deleting members
+==============
+
+You can delete members from a mailing list from the command line.  To do so, you
+need a file containing email addresses and full names that can be parsed by
+``email.utils.parseaddr()``.  All mail addresses in the file will be deleted
+from the mailing list.
+
+Assuming you have populated a mailing list with the code examples from above,
+use these code snippets to delete subscriptions from the list again.
+::
+
+    >>> with open(filename, 'w', encoding='utf-8') as fp:
+    ...     print("""\
+    ... aperson@example.com
+    ... cperson@example.com (Cate Person)
+    ... """, file=fp)
+
+    >>> command('mailman members --delete ' + filename + ' bee.example.com')
+
+    >>> from operator import attrgetter
+    >>> dump_list(bee.members.addresses, key=attrgetter('email'))
+    Bart Person <bperson@example.com>
+    dperson@example.com
+    Elly Person <eperson@example.com>
+    Fred Person <fperson@example.com>
+    gperson@example.com
+    iperson@example.com
+    jperson@example.com
+
+You can also specify ``-`` as the filename, in which case the addresses are
+taken from standard input.
+::
+
+    >>> stdin = """\
+    ... dperson@example.com
+    ... Elly Person <eperson@example.com>
+    ... """
+    >>> command('mailman members --delete - bee.example.com', input=stdin)
+
+    >>> dump_list(bee.members.addresses, key=attrgetter('email'))
+    Bart Person <bperson@example.com>
+    Fred Person <fperson@example.com>
+    gperson@example.com
+    iperson@example.com
+    jperson@example.com
+
+Blank lines and lines that begin with '#' are ignored.
+::
+
+    >>> with open(filename, 'w', encoding='utf-8') as fp:
+    ...     print("""\
+    ... # cperson@example.com
+    ...
+    ... bperson@example.com
+    ... """, file=fp)
+
+    >>> command('mailman members --delete ' + filename + ' bee.example.com')
+
+    >>> dump_list(bee.members.addresses, key=attrgetter('email'))
+    Fred Person <fperson@example.com>
+    gperson@example.com
+    iperson@example.com
+    jperson@example.com
+
+Addresses which are not subscribed are ignored, although a warning is
+printed.
+::
+
+    >>> with open(filename, 'w', encoding='utf-8') as fp:
+    ...     print("""\
+    ... kperson@example.com
+    ... iperson@example.com
+    ... """, file=fp)
+
+    >>> command('mailman members --delete ' + filename + ' bee.example.com')
+    Member not subscribed (skipping): kperson@example.com
+
+    >>> dump_list(bee.members.addresses, key=attrgetter('email'))
+    Fred Person <fperson@example.com>
+    gperson@example.com
+    jperson@example.com
+
+
 Displaying members
 ==================
 
 With no arguments, the command displays all members of the list.
 
     >>> command('mailman members bee.example.com')
-    aperson@example.com
-    Bart Person <bperson@example.com>
-    Cate Person <cperson@example.com>
-    dperson@example.com
-    Elly Person <eperson@example.com>
     Fred Person <fperson@example.com>
     gperson@example.com
-    iperson@example.com
     jperson@example.com
