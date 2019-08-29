@@ -253,7 +253,7 @@ printed.
 
 
 Deleting members
-==============
+================
 
 You can delete members from a mailing list from the command line.  To do so, you
 need a file containing email addresses and full names that can be parsed by
