@@ -34,9 +34,13 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-# A fake Bouncer class from Mailman 2.1, we don't use it but there are
-# instances in the .pck files.
-class Bouncer:
+# A fake module to go with `Bouncer`.
+class _Mailman:
+    __path__ = 'src/mailman/commands/cli_import.py'
+
+# A fake Mailman object with Bouncer class from Mailman 2.1, we don't use it
+# but there are instances in the .pck files.
+class _Bouncer:
     class _BounceInfo:
         pass
 
@@ -56,7 +60,8 @@ def import21(ctx, listspec, pickle_file):
     if mlist is None:
         ctx.fail(_('No such list: $listspec'))
     with ExitStack() as resources:
-        resources.enter_context(hacked_sys_modules('Mailman.Bouncer', Bouncer))
+        resources.enter_context(hacked_sys_modules('Mailman', _Mailman))
+        resources.enter_context(hacked_sys_modules('Mailman.Bouncer', _Bouncer))
         resources.enter_context(transaction())
         while True:
             try:

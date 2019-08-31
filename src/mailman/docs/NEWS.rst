@@ -39,6 +39,8 @@ Bugs
   ``html_to_plaintext``.  (Closes #616)
 * Non-VERPed temporary failure DSNs are no longer reported as unrecognized
   bounces.  (Closes #622)
+* Fix ``mailman import21`` command to work in Python 3.7.4 and Python 3.8b4
+  (Closes #625)
 
 Command line
 ------------
