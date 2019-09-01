@@ -90,8 +90,13 @@ class ListRequests:
 
     @dbconnection
     def hold_request(self, store, request_type, key, data=None):
-        if request_type not in RequestType:
-            raise TypeError(request_type)
+        # Check to make sure `request_type` is a valid Enum.
+        if not isinstance(request_type, RequestType):
+            try:
+                request_type = RequestType(request_type)
+            except ValueError:
+                raise TypeError(request_type)
+
         if data is None:
             data_hash = None
         else:
