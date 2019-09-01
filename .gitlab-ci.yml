@@ -33,6 +33,10 @@ sqlite-37:
   script:
   - tox -e py37-nocov
 
+sqlite-38:
+  script:
+  - tox -e py38-nocov
+
 pgsql-35:
   services:
   - postgres:latest
@@ -64,6 +68,7 @@ mysql-37:
   - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py37-nocov-mysql
   tags:
   - mysql
+
 
 diffcov:
   script:

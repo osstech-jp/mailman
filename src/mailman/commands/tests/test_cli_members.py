@@ -119,7 +119,7 @@ class TestCLIMembers(unittest.TestCase):
                 '--add', infp.name, 'ant.example.com'))
         self.assertEqual(
            result.output,
-           'Cannot parse as valid subscriber address (skipping): foobar@\n'
+           'Cannot parse as valid email address (skipping): foobar@\n'
            )
 
     def test_not_subscribed_without_display_name(self):

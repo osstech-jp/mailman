@@ -21,13 +21,13 @@ The request database handles events that must be approved by the list
 moderators, such as subscription requests and held messages.
 """
 
-from enum import Enum
+from enum import IntEnum
 from public import public
 from zope.interface import Attribute, Interface
 
 
 @public
-class RequestType(Enum):
+class RequestType(IntEnum):
     held_message = 1
     subscription = 2
     unsubscription = 3

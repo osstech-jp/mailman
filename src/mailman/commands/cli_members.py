@@ -17,6 +17,7 @@
 
 """The 'members' subcommand."""
 
+import sys
 import click
 
 from email.utils import formataddr, parseaddr
@@ -113,25 +114,31 @@ def add_members(mlist, add_infp):
             continue
         # Parse the line and ensure that the values are unicodes.
         display_name, email = parseaddr(line)
+        if email == '':                                       # pragma: nocover
+            line = line.strip()                               # pragma: nocover
+            print(_('Cannot parse as valid email address (skipping): $line'),
+                  file=sys.stderr)                            # pragma: nocover
+            continue                                          # pragma: nocover
         try:
             add_member(mlist,
                        RequestRecord(email, display_name,
                                      DeliveryMode.regular,
                                      mlist.preferred_language.code))
         except InvalidEmailAddressError:
-            # It's okay if the address is invalid, we print a
-            # warning and continue.
+            # It's okay if the address is invalid, we print a warning and
+            # continue.
             line = line.strip()
-            print(_('Cannot parse as valid subscriber '
-                    'address (skipping): $line'))
+            print(_('Cannot parse as valid email address (skipping): $line'),
+                  file=sys.stderr)
         except AlreadySubscribedError:
             # It's okay if the address is already subscribed, just print a
             # warning and continue.
             if not display_name:
-                print(_('Already subscribed (skipping): $email'))
+                print(_('Already subscribed (skipping): $email'),
+                      file=sys.stderr)
             else:
-                print(_('Already subscribed (skipping): '
-                        '$display_name <$email>'))
+                print(_('Already subscribed (skipping): $display_name <$email>'
+                        ), file=sys.stderr)
 
 
 @transactional

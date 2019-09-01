@@ -22,6 +22,7 @@ For example, test the integration between Mailman and Falcon.
 
 import unittest
 
+from http.client import InvalidURL
 from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
 from mailman.testing.helpers import call_api
@@ -53,6 +54,8 @@ class TestBasicREST(unittest.TestCase):
         # space in the URL breaks error reporting due to default HTTP/0.9.
         # Use urllib.request since requests will encode the URL, defeating the
         # purpose of this test (i.e. we want the literal space, not %20).
-        with self.assertRaises(HTTPError) as cm:
+        with self.assertRaises((HTTPError, InvalidURL)) as cm:
             urlopen('http://localhost:9001/3.0/lists/test @example.com')
-        self.assertEqual(cm.exception.code, 400)
+
+        if isinstance(cm, HTTPError):
+            self.assertEqual(cm.exception.code, 400)

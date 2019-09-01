@@ -152,7 +152,7 @@ class TokenFactory(_PredictableIDGenerator):
         discarded because they're the most predictable bits.
         """
         right_now = time.time()
-        x = random.random() + right_now % 1.0 + time.clock() % 1.0
+        x = random.random() + right_now % 1.0 + time.process_time() % 1.0
         # Use sha1 because it produces shorter strings.
         return hashlib.sha1(repr(x).encode('utf-8')).hexdigest()
 
