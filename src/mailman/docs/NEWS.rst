@@ -10,11 +10,7 @@ Here is a history of user visible changes to Mailman.
 
 3.3.0 -- "Tom Sawyer"
 =====================
-(20xx-xx-xx)
-
-3.2.3
-=====
-(2019-XX-XX)
+(2019-09-04)
 
 Bugs
 ----
