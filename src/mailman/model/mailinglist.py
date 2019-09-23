@@ -487,7 +487,9 @@ class MailingList(Model):
         """See `IMailingList`."""
         member, email = self._get_subscriber(store, subscriber, role)
         test_email = email or subscriber.lower()
-        if test_email == self.posting_address:
+        # Allow list posting address only for nonmember role.
+        if (test_email == self.posting_address and
+                role != MemberRole.nonmember):
             raise InvalidEmailAddressError('List posting address not allowed')
         if member is not None:
             raise AlreadySubscribedError(self.fqdn_listname, email, role)
