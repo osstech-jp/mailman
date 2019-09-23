@@ -13,7 +13,10 @@ Here is a history of user visible changes to Mailman.
 
 (2019-XX-XX)
 
-
+Bugs
+----
+* It is now possible to add the list posting address with nonmember role, e.g.
+  to give it a moderaction of discard.  (Closes #633)
 
 3.3.0 -- "Tom Sawyer"
 =====================

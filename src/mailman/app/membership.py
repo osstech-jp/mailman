@@ -60,8 +60,9 @@ def add_member(mlist, record, role=MemberRole.member):
     # Check to see if the email address is banned.
     if IBanManager(mlist).is_banned(record.email):
         raise MembershipIsBannedError(mlist, record.email)
-    # Check for list posting address.
-    if record.email.lower() == mlist.posting_address:
+    # Check for list posting address, but allow for nonmember.
+    if (record.email.lower() == mlist.posting_address and
+            role != MemberRole.nonmember):
         raise InvalidEmailAddressError('List posting address not allowed')
     # Make sure there is a user linked with the given address.
     user_manager = getUtility(IUserManager)

@@ -120,14 +120,15 @@ class TestAddMember(unittest.TestCase):
             MemberRole.owner)
 
     def test_add_posting_address_nonmember(self):
-        # Test that we can't add the list posting address.
-        self.assertRaises(
-            InvalidEmailAddressError,
-            add_member, self._mlist,
-            RequestRecord(self._mlist.posting_address, 'The List',
-                          DeliveryMode.regular,
-                          system_preferences.preferred_language),
-            MemberRole.nonmember)
+        # Test that we can add the list posting address as a nonmember.
+        request_record = RequestRecord(self._mlist.posting_address,
+                                       'The List',
+                                       DeliveryMode.regular,
+                                       system_preferences.preferred_language)
+        member = add_member(self._mlist, request_record, MemberRole.nonmember)
+        self.assertEqual(member.address.email, self._mlist.posting_address)
+        self.assertEqual(member.list_id, 'test.example.com')
+        self.assertEqual(member.role, MemberRole.nonmember)
 
     def test_add_member_banned_from_different_list(self):
         # Test that members who are banned by on a different list can still be
