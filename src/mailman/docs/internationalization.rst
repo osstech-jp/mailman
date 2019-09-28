@@ -116,8 +116,57 @@ because the necessary support in the mail system itself is not yet
 widespread, but this is likely to change in the near future.
 
 
+.. _localization:
+
 Localization
 ============
 
-We have it!  We just don't have proper documentation here yet.
+GNU Mailman project uses `Weblate`_ for translations. If you are interested to
+translate Mailman into language of your choice, please create an account at
+`Weblate`_ and follow the instructions in `weblate docs`_ for translating a
+project.
 
+If you want to add a new language to Mailman or have any questions related to
+translations, please reach out to us at mailman-developers@python.org.
+
+
+.. _Weblate: https://hosted.weblate.org/projects/gnu-mailman/mailman/
+.. _weblate docs: https://docs.weblate.org/en/latest/user/translating.html
+
+
+Generating pot files
+--------------------
+
+This is the documentation for adding a new language or updating existing
+``.pot`` files in Mailman source.
+
+.. note:: This is only meant for Mailman Developers, if you are interested in
+          translating, please see the :ref:`localization`: for instructions on
+          how to translate.
+
+This is a great `gettext tutorial`_ refresh memory on how GNU gettext works.
+
+We use xgettext_ tool to generate ``mailman.pot``::
+
+  # from Mailman's root directory.
+  $ ls src/mailman/*/*.py | xargs xgettext -o src/mailman/messages/mailman.pot -w 110
+
+This will generate or update the ``src/mailman/messages/mailman.pot`` file.
+
+To generate ``po`` file for a new language::
+
+  $ cd src/mailman/messages/
+  $ mkdir -p <lang>/LC_MESSAGES/
+  $ msginit -i mailman.pot -l <lang> --no-translator -o <lang>/LC_MESSAGES/mailman.po
+
+Finally, before releasing a new version, run:
+
+  $ ./generate_mo.sh
+
+This script will run ``msgfmt`` command on all the ``.po`` files in the source
+and generate a compiled ``.mo`` which is used at runtime. This should not be
+checked in the source control.
+
+
+.. _gettext tutorial: https://www.labri.fr/perso/fleury/posts/programming/a-quick-gettext-tutorial.html
+.. _xgettext: https://www.gnu.org/software/gettext/manual/html_node/xgettext-Invocation.html
