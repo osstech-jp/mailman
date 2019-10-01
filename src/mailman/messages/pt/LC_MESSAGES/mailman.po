@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: ssantos <ssantos@web.de>\n"
+"Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/pt/>\n"
 "Language: pt\n"
@@ -334,7 +334,8 @@ msgstr ""
 
 #: src/mailman/bin/master.py:551 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
-msgstr "Exibir mais informação de depuração para o ficheiros de registo de eventos."
+msgstr ""
+"Exibir mais informação de depuração para o ficheiros de registo de eventos."
 
 #: src/mailman/bin/runner.py:50
 #, python-brace-format
