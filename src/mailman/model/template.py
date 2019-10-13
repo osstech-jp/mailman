@@ -55,6 +55,7 @@ class Template(Model):
     password = Column(SAUnicode, nullable=True)
 
     def __init__(self, name, context, uri, username, password):
+        super().__init__()
         self.name = name
         self.context = context
         self.reset(uri, username, password)
