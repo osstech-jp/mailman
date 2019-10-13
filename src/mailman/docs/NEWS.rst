@@ -17,6 +17,8 @@ Bugs
 ----
 * It is now possible to add the list posting address with nonmember role, e.g.
   to give it a moderaction of discard.  (Closes #633)
+* The issue of posting a message without a To: header to a fully personalized
+  list throwing a KeyError has been fixed.  (Closes #639)
 
 3.3.0 -- "Tom Sawyer"
 =====================
