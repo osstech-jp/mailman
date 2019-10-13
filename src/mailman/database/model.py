@@ -32,6 +32,8 @@ class ModelMeta:
     """
     @staticmethod
     def _reset(db):
+        # Make sure we delete/expunge all objects before we drop tables.
+        config.db.store.expunge_all()
         with closing(config.db.engine.connect()) as connection:
             transaction = connection.begin()
             try:
