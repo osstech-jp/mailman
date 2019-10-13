@@ -1,8 +1,8 @@
 .. _rest-api:
 
-========================================
- Mailman 3 Core administrative REST API
-========================================
+========================
+ Mailman 3 Core REST API
+========================
 
 Here is extensive documentation on the Mailman Core administrative REST API.
 
@@ -57,6 +57,8 @@ You can configure that in ``mailman.cfg`` configuration file.::
     REST credentials: restadmin:restpass
 
 
+REST API Documentation
+======================
 
 .. toctree::
    :glob:
