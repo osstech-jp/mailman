@@ -25,7 +25,6 @@ import logging
 import datetime
 
 from contextlib import ExitStack
-from mailman.config import config
 from mailman.handlers.decorate import decorate_template
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IEmailValidator
@@ -640,9 +639,16 @@ def _import_roster(mlist, config_dict, members, role, action=None):
                 bytes_to_str(config_dict['usernames'][email])
             user.display_name = \
                 bytes_to_str(config_dict['usernames'][email])
-        if email in config_dict.get('passwords', {}):
-            user.password = config.password_context.encrypt(
-                config_dict['passwords'][email])
+
+        # XXX(abraj): Importing passwords are very slow since encryption takes
+        # a lot of time and tends to slow down the import process a lot,
+        # especially for large lists. There is really no use of user passwords
+        # from list config. For now, this code is just being commented out in
+        # case some use case pops up.
+        #
+        # if email in config_dict.get('passwords', {}):
+        #     user.password = config.password_context.encrypt(
+        #         config_dict['passwords'][email])
         # delivery_status
         oldds = config_dict.get('delivery_status', {}).get(email, (0, 0))[0]
         if oldds == 0:

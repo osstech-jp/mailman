@@ -1043,16 +1043,17 @@ class TestRosterImport(unittest.TestCase):
                          [a.email for a in self._mlist.members.addresses],
                          'Address fred@ was wrongly added to the members list')
 
-    def test_password(self):
-        # self.anne.password = config.password_context.encrypt('abc123')
-        import_config_pck(self._mlist, self._pckdict)
-        for name in ('anne', 'bob', 'cindy', 'dave'):
-            addr = '%s@example.com' % name
-            user = self._usermanager.get_user(addr)
-            self.assertIsNotNone(user, 'Address %s was not imported' % addr)
-            self.assertEqual(
-                user.password, '{plaintext}%spass' % name,
-                'Password for %s was not imported' % addr)
+    # Commented out because password importing has been disabled.
+    # def test_password(self):
+    #     # self.anne.password = config.password_context.encrypt('abc123')
+    #     import_config_pck(self._mlist, self._pckdict)
+    #     for name in ('anne', 'bob', 'cindy', 'dave'):
+    #         addr = '%s@example.com' % name
+    #         user = self._usermanager.get_user(addr)
+    #         self.assertIsNotNone(user, 'Address %s was not imported' % addr)
+    #         self.assertEqual(
+    #             user.password, '{plaintext}%spass' % name,
+    #             'Password for %s was not imported' % addr)
 
     def test_same_user(self):
         # Adding the address of an existing User must not create another user.
