@@ -138,6 +138,104 @@ name     : Anne Person
 
 """)
 
+    def test_full_personalization(self):
+        self._mlist.personalize = Personalization.full
+        msgdata = dict(recipients=['anne@example.org'])
+        agent = DeliverTester()
+        refused = agent.deliver(self._mlist, self._msg, msgdata)
+        self.assertEqual(len(refused), 0)
+        self.assertEqual(len(_deliveries), 1)
+        _mlist, _msg, _msgdata, _recipients = _deliveries[0]
+        self.assertMultiLineEqual(_msg.as_string(), """\
+From: anne@example.org
+To: Anne Person <anne@example.org>
+Subject: test
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+
+address  : anne@example.org
+delivered: anne@example.org
+language : English (USA)
+name     : Anne Person
+
+""")
+
+    def test_full_personalization_no_to(self):
+        self._mlist.personalize = Personalization.full
+        del self._msg['to']
+        msgdata = dict(recipients=['anne@example.org'])
+        agent = DeliverTester()
+        refused = agent.deliver(self._mlist, self._msg, msgdata)
+        self.assertEqual(len(refused), 0)
+        self.assertEqual(len(_deliveries), 1)
+        _mlist, _msg, _msgdata, _recipients = _deliveries[0]
+        self.assertMultiLineEqual(_msg.as_string(), """\
+From: anne@example.org
+Subject: test
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Anne Person <anne@example.org>
+
+
+address  : anne@example.org
+delivered: anne@example.org
+language : English (USA)
+name     : Anne Person
+
+""")
+
+    def test_full_personalization_no_user(self):
+        self._mlist.personalize = Personalization.full
+        msgdata = dict(recipients=['bart@example.org'])
+        agent = DeliverTester()
+        refused = agent.deliver(self._mlist, self._msg, msgdata)
+        self.assertEqual(len(refused), 0)
+        self.assertEqual(len(_deliveries), 1)
+        _mlist, _msg, _msgdata, _recipients = _deliveries[0]
+        self.assertMultiLineEqual(_msg.as_string(), """\
+From: anne@example.org
+To: bart@example.org
+Subject: test
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+
+address  : $user_address
+delivered: $user_delivered_to
+language : $user_language
+name     : $user_name
+
+""")
+
+    def test_full_personalization_no_user_no_to(self):
+        self._mlist.personalize = Personalization.full
+        del self._msg['to']
+        msgdata = dict(recipients=['bart@example.org'])
+        agent = DeliverTester()
+        refused = agent.deliver(self._mlist, self._msg, msgdata)
+        self.assertEqual(len(refused), 0)
+        self.assertEqual(len(_deliveries), 1)
+        _mlist, _msg, _msgdata, _recipients = _deliveries[0]
+        self.assertMultiLineEqual(_msg.as_string(), """\
+From: anne@example.org
+Subject: test
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: bart@example.org
+
+
+address  : $user_address
+delivered: $user_delivered_to
+language : $user_language
+name     : $user_name
+
+""")
+
 
 class TestBulkDelivery(unittest.TestCase):
     """Test bulk delivery decoration."""
