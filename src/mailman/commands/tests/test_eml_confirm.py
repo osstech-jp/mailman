@@ -23,6 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.commands.eml_confirm import Confirm
 from mailman.config import config
 from mailman.email.message import Message
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.command import ContinueProcessing
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.subscriptions import ISubscriptionManager
@@ -82,6 +83,19 @@ class TestConfirmJoin(unittest.TestCase):
         status = self._command.process(
             self._mlist, Message(), {}, (self._token,), result)
         self.assertEqual(status, ContinueProcessing.no)
+
+    def test_confirm_banned_address(self):
+        # Confirmation of a banned address should return an appropriate error.
+        IBanManager(self._mlist).ban('anne@example.com')
+        result = Results()
+        status = self._command.process(
+            self._mlist, Message(), {}, (self._token,), result)
+        self.assertEqual(status, ContinueProcessing.no)
+        # Anne will not be subscribed.
+        self.assertFalse(self._mlist.is_subscribed('anne@example.com'))
+        # The result will contain an error message.
+        self.assertIn('anne@example.com is not allowed to subscribe to '
+                      'test@example.com', str(result))
 
 
 class TestConfirmLeave(unittest.TestCase):

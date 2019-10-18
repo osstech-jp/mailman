@@ -21,6 +21,9 @@ Bugs
   list throwing a KeyError has been fixed.  (Closes #639)
 * Confirmation or moderator approval of a subscription from an address banned
   subsequent to subscribing will no longer succeed.  (Closes #642)
+* Fixed an issue caused by the fix for #642 where email confirmation of a
+  banned subscription address would cause a shunted message.  (Closes #643)
+
 
 3.3.0 -- "Tom Sawyer"
 =====================
