@@ -23,11 +23,13 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.address import InvalidEmailAddressError
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAliasSet, IHeaderMatchList, IListArchiverSet)
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MissingPreferredAddressError)
+    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
+    MissingPreferredAddressError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     configuration, get_queue_messages, set_preferred)
@@ -96,6 +98,13 @@ class TestMailingList(unittest.TestCase):
     def test_cannot_subscribe_list(self):
         self.assertRaises(InvalidEmailAddressError, self._mlist.subscribe,
                           self._mlist.posting_address)
+
+    def test_cannot_subscribe_banned_address(self):
+        manager = getUtility(IUserManager)
+        user = manager.create_user('anne@example.com', 'Anne Person')
+        set_preferred(user)
+        IBanManager(self._mlist).ban('anne@example.com')
+        self.assertRaises(MembershipIsBannedError, self._mlist.subscribe, user)
 
     def test_is_subscribed(self):
         manager = getUtility(IUserManager)

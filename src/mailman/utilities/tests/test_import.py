@@ -321,8 +321,8 @@ class TestBasicImport(unittest.TestCase):
 
     def test_ban_list(self):
         banned = [
-            ('anne@example.com', 'anne@example.com'),
-            ('^.*@example.com', 'bob@example.com'),
+            ('anne@example.net', 'anne@example.net'),
+            ('^.*@example.edu', 'bob@example.edu'),
             ('non-ascii-\xe8@example.com', 'non-ascii-\ufffd@example.com'),
             ]
         self._pckdict['ban_list'] = [b[0].encode('iso-8859-1') for b in banned]
