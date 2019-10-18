@@ -19,6 +19,8 @@ Bugs
   to give it a moderaction of discard.  (Closes #633)
 * The issue of posting a message without a To: header to a fully personalized
   list throwing a KeyError has been fixed.  (Closes #639)
+* Confirmation or moderator approval of a subscription from an address banned
+  subsequent to subscribing will no longer succeed.  (Closes #642)
 
 3.3.0 -- "Tom Sawyer"
 =====================

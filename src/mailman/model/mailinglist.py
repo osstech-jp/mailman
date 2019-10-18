@@ -27,6 +27,7 @@ from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
@@ -36,8 +37,8 @@ from mailman.interfaces.mailinglist import (
     IHeaderMatch, IHeaderMatchList, IListArchiver, IListArchiverSet,
     IMailingList, Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MissingPreferredAddressError,
-    SubscriptionEvent)
+    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
+    MissingPreferredAddressError, SubscriptionEvent)
 from mailman.interfaces.mime import FilterType
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.user import IUser
@@ -493,6 +494,8 @@ class MailingList(Model):
             raise InvalidEmailAddressError('List posting address not allowed')
         if member is not None:
             raise AlreadySubscribedError(self.fqdn_listname, email, role)
+        if IBanManager(self).is_banned(test_email):
+            raise MembershipIsBannedError(self, test_email)
         member = Member(role=role,
                         list_id=self._list_id,
                         subscriber=subscriber)
