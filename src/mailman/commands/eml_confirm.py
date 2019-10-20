@@ -19,6 +19,7 @@
 
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
+from mailman.interfaces.member import MembershipIsBannedError
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from public import public
 from zope.interface import implementer
@@ -70,6 +71,9 @@ class Confirm:
         except LookupError:
             # The token must not exist in the database.
             succeeded = False
+        except MembershipIsBannedError as e:
+            print(str(e), file=results)
+            return ContinueProcessing.no
         if succeeded:
             print(_('Confirmed'), file=results)
             # After the 'confirm' command, do not process any other commands in
