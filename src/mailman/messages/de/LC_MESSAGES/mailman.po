@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2019-09-29 17:44+0000\n"
+"PO-Revision-Date: 2019-10-21 08:53+0000\n"
 "Last-Translator: nautilusx <mail.ka@mailbox.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/de/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 3.9.1-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -33,7 +33,7 @@ msgstr ""
 
 #: src/mailman/app/bounces.py:221
 msgid "$mlist.display_name mailing list probe message"
-msgstr ""
+msgstr "$mlist.display_name Mailinglisten-Testnachricht"
 
 #: src/mailman/app/bounces.py:254
 msgid "Uncaught bounce notification"
