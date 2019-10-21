@@ -34,7 +34,7 @@ But we really like Postorius and HyperKitty and hope you will too!
 Copyright
 =========
 
-Copyright 1998-2018 by the Free Software Foundation, Inc.
+Copyright 1998-2019 by the Free Software Foundation, Inc.
 
 This file is part of GNU Mailman.
 
@@ -70,10 +70,10 @@ Viega.  Since version 1.0 the project has been led by Barry Warsaw with
 contributions from many; see the `ACKNOWLEDGMENTS`_ file for details.  Jeremy
 Hylton helped considerably with the Pipermail code in Mailman 2.0.  Mailman
 2.1 is primarily maintained by Mark Sapiro, with previous help by Tokio
-Kikuchi (RIP).  Barry Warsaw is the lead developer on Mailman 3.  Aurélien
-Bompard and Florian Fuchs lead development of Postorius and HyperKitty.
-Abhilash Raj is a core developer contributing to all the bits and maintains
-the CI infrastructure.
+Kikuchi (RIP).  Mark also contributes to Mailman 3.  Barry Warsaw recently
+(2019) retired as the lead developer on Mailman 3.  Abhilash Raj is now the
+lead developer and also maintains the CI infrastructure.  Aurélien Bompard
+and Florian Fuchs lead development of Postorius and HyperKitty.
 
 
 Project details
