@@ -25,9 +25,11 @@ can be specified in ``mailman.cfg``::
 
 The public key should be put into a DNS TXT record, and located at:
 
-#{config.ARC.selector}._domainkeys.#{config.ARC.domain}
---ex.--
-test._domainkeys.example.com
+#{config.ARC.selector}._domainkey.#{config.ARC.domain}
+
+For example:
+
+test._domainkey.example.com
 
 The following is an example TXT record:
 ::
