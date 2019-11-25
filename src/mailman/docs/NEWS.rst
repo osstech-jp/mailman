@@ -23,6 +23,8 @@ Bugs
   subsequent to subscribing will no longer succeed.  (Closes #642)
 * Fixed an issue caused by the fix for #642 where email confirmation of a
   banned subscription address would cause a shunted message.  (Closes #643)
+* Fixed a bug where the ``postfix_vmap`` file would merge two columns for long
+  domain names. (Closes #651)
 
 
 3.3.0 -- "Tom Sawyer"
