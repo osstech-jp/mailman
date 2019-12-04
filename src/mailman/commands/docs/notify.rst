@@ -7,7 +7,7 @@ cron to send a notice summarizing pending subscriptions, unsubscriptions and
 held messages waiting moderator approval to a list's owners and moderators.
 
 There are options for doing selected lists and reporting but not actually
-senting the notices.  Complete information about command options may be
+sending the notices.  Complete information about command options may be
 obtained by running ``mailman notify --help``.
 ::
 
