@@ -25,6 +25,8 @@ Bugs
   banned subscription address would cause a shunted message.  (Closes #643)
 * Fixed a bug where the ``postfix_vmap`` file would merge two columns for long
   domain names. (Closes #651)
+* Fix failing test cases due to changed API in a new version of dkimpy. (Closes
+  #655)
 
 
 3.3.0 -- "Tom Sawyer"
