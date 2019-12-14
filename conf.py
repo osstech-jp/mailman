@@ -210,6 +210,11 @@ latex_documents = [
 #latex_domain_indices = True
 
 
+autodoc_mock_imports = [
+    "mailman.testing.helpers"
+]
+
+
 # -- Options for manual page output --------------------------------------------
 
 # One entry per manual page. List of tuples
