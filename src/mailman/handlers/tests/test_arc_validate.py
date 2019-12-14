@@ -32,6 +32,15 @@ from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 
 
+def get_mock_dnsfunc(mapping):
+    """Mock dnsfunc to pass to load_pk_from_dns."""
+
+    def mock_dnsfunc(dom, **kw):
+        return mapping.get(dom)
+
+    return mock_dnsfunc
+
+
 class TestValidateAuthenticity(unittest.TestCase):
     """Test Authentication-Results generation."""
     layer = ConfigLayer
@@ -60,7 +69,8 @@ class TestValidateAuthenticity(unittest.TestCase):
         records = {b"google2048._domainkey.valimail.com.": ''.join(dkim0),
                    b"_dmarc.valimail.com.": ''.join(dmarc),
                    b"dummy._domainkey.example.org.": ''.join(dkim1)}
-        mailman.handlers.validate_authenticity.dnsfunc = records.get
+        mailman.handlers.validate_authenticity.dnsfunc = get_mock_dnsfunc(
+            records)
         self.keyfile = tempfile.NamedTemporaryFile(delete=True)
 
     def tearDown(self):
