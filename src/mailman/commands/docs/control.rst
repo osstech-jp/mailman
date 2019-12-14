@@ -27,6 +27,7 @@ process in the background.
 
     >>> command('mailman start')
     Starting Mailman's master runner
+    Generating MTA alias maps
 
     >>> from mailman.commands.tests.test_cli_control import find_master
 

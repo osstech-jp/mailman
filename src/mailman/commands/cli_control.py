@@ -28,6 +28,7 @@ from mailman.bin.master import WatcherState, master_state
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.utilities.modules import call_name
 from mailman.utilities.options import I18nCommand
 from public import public
 from zope.interface import implementer
@@ -50,6 +51,15 @@ qlog = logging.getLogger('mailman.runner')
     clean up the lock.  But if no matching process is found, the master will
     remove the apparently stale lock and make another attempt to claim the
     master lock."""))
+@click.option(
+    '--generate-alias-file', '-g',
+    is_flag=True, default=True,
+    help=_("""\
+    Generate the MTA alias files upon startup. Some MTA, like postfix, can't
+    deliver email if alias files mentioned in its configuration are not
+    present. In some situations, this could lead to a deadlock at the first
+    start of mailman3 server. Setting this option to true will make this
+    script create the files and thus allow the MTA to operate smoothly."""))
 @click.option(
     '--run-as-user', '-u',
     is_flag=True, default=True,
@@ -74,7 +84,7 @@ qlog = logging.getLogger('mailman.runner')
     Don't print status messages.  Error messages are still printed to standard
     error."""))
 @click.pass_context
-def start(ctx, force, run_as_user, quiet):
+def start(ctx, force, generate_alias_file, run_as_user, quiet):
     # Although there's a potential race condition here, it's a better user
     # experience for the parent process to refuse to start twice, rather than
     # having it try to start the master, which will error exit.
@@ -93,6 +103,10 @@ def start(ctx, force, run_as_user, quiet):
         # parent
         if not quiet:
             print(_("Starting Mailman's master runner"))
+        if generate_alias_file:
+            if not quiet:
+                print(_("Generating MTA alias maps"))
+            call_name(config.mta.incoming).regenerate()
         return
     # child: Create a new session and become the session leader, but since we
     # won't be opening any terminal devices, don't do the ultra-paranoid

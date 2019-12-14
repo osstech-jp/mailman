@@ -27,7 +27,8 @@ Bugs
   domain names. (Closes #651)
 * Fix failing test cases due to changed API in a new version of dkimpy. (Closes
   #655)
-
+* Mailman now auto-geneartes alias maps when it starts for the first
+  time. (Closes #469)
 
 REST
 ----
