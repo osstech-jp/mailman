@@ -162,10 +162,13 @@ def dump_json(url, data=None, method=None, username=None, password=None):
 
 @public
 def cli(command_path):
-    # Use this to invoke click commands in doctests.  This returns a partial
-    # that accepts a sequence of command line options, invokes the click
-    # command, and returns the results (unless the keyword argument 'quiet')
-    # is True.
+    """Call a CLI command in doctests.
+
+    Use this to invoke click commands in doctests.  This returns a partial
+    that accepts a sequence of command line options, invokes the click
+    command, and returns the results (unless the keyword argument 'quiet')
+    is True.
+    """
     package_path, dot, name = command_path.rpartition('.')
     command = getattr(import_module(package_path), name)
     def inner(command_string, quiet=False, input=None):           # noqa: E306
@@ -186,6 +189,7 @@ def cli(command_path):
 
 @public
 def run_mailman(args, **overrides):
+    """Execute `mailman` command with the given arguments and return output."""
     exe = os.path.join(os.path.dirname(sys.executable), 'mailman')
     env = os.environ.copy()
     env.update(overrides)
