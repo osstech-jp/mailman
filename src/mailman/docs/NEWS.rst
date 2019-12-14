@@ -29,6 +29,14 @@ Bugs
   #655)
 
 
+REST
+----
+
+* Expose ``max_days_to_hold``, ``accept_these_nonmembers``,
+  ``reject_these_nonmembers``, ``discard_these_nonmembers``,
+  ``hold_these_nonmembers``, ``personalize``, and ``unsubscription_policy``
+  attributes of a MailingList through API. (See !570)
+
 3.3.0 -- "Tom Sawyer"
 =====================
 (2019-09-04)

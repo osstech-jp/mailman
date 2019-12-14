@@ -14,6 +14,7 @@ Reading a configuration
 All readable attributes for a list are available on a sub-resource.
 
     >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/config')
+    accept_these_nonmembers: []
     acceptable_aliases: []
     admin_immed_notify: True
     admin_notify_mchanges: False
@@ -43,6 +44,7 @@ All readable attributes for a list are available on a sub-resource.
     digest_size_threshold: 30.0
     digest_volume_frequency: monthly
     digests_enabled: True
+    discard_these_nonmembers: []
     display_name: Ant
     dmarc_mitigate_action: no_mitigation
     dmarc_mitigate_unconditionally: False
@@ -56,6 +58,7 @@ All readable attributes for a list are available on a sub-resource.
     gateway_to_news: False
     goodbye_message_uri:
     header_uri:
+    hold_these_nonmembers: []
     http_etag: "..."
     include_rfc2369_headers: True
     info:
@@ -65,6 +68,7 @@ All readable attributes for a list are available on a sub-resource.
     linked_newsgroup:
     list_name: ant
     mail_host: example.com
+    max_days_to_hold: 0
     max_message_size: 40
     max_num_recipients: 10
     member_roster_visibility: moderators
@@ -74,10 +78,12 @@ All readable attributes for a list are available on a sub-resource.
     nntp_prefix_subject_too: True
     no_reply_address: noreply@example.com
     owner_address: ant-owner@example.com
+    personalize: none
     post_id: 1
     posting_address: ant@example.com
     posting_pipeline: default-posting-pipeline
     preferred_language: en
+    reject_these_nonmembers: []
     reply_goes_to_list: no_munging
     reply_to_address:
     request_address: ant-request@example.com
@@ -86,6 +92,7 @@ All readable attributes for a list are available on a sub-resource.
     send_welcome_message: True
     subject_prefix: [Ant]
     subscription_policy: confirm
+    unsubscription_policy: confirm
     usenet_watermark: None
     volume: 1
     welcome_message_uri:
@@ -104,6 +111,7 @@ When using ``PUT``, all writable attributes must be included.
     ...           'ant@example.com/config',
     ...           dict(
     ...             acceptable_aliases=['one@example.com', 'two@example.com'],
+    ...             accept_these_nonmembers=['aperson@example.com'],
     ...             admin_immed_notify=False,
     ...             admin_notify_mchanges=True,
     ...             administrivia=False,
@@ -117,6 +125,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             autoresponse_owner_text='the owner',
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
+    ...             discard_these_nonmembers=[r'name_*bperson*@example.com'],
     ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
@@ -130,6 +139,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             dmarc_mitigate_unconditionally=False,
     ...             dmarc_moderation_notice='Some moderation notice',
     ...             dmarc_wrapped_message_text='some message text',
+    ...             personalize='none',
     ...             preferred_language='ja',
     ...             posting_pipeline='virgin',
     ...             filter_content=True,
@@ -141,6 +151,8 @@ When using ``PUT``, all writable attributes must be included.
     ...             nntp_prefix_subject_too=False,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
+    ...             reject_these_nonmembers=[r'b[hello]*@example.com'],
+    ...             hold_these_nonmembers=[r're[gG]ex@example.com'],
     ...             reply_goes_to_list='point_to_list',
     ...             reply_to_address='bee@example.com',
     ...             require_explicit_destination=False,
@@ -148,11 +160,13 @@ When using ``PUT``, all writable attributes must be included.
     ...             send_welcome_message=False,
     ...             subject_prefix='[ant]',
     ...             subscription_policy='moderate',
+    ...             unsubscription_policy='confirm',
     ...             default_member_action='hold',
     ...             default_nonmember_action='discard',
     ...             moderator_password='password',
     ...             max_message_size='500',
     ...             respond_to_post_requests=True,
+    ...             max_days_to_hold='20',
     ...             max_num_recipients='20',
     ...             ),
     ...           'PUT')
@@ -164,6 +178,7 @@ These values are changed permanently.
 
     >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'ant@example.com/config')
+    accept_these_nonmembers: ['aperson@example.com']
     acceptable_aliases: ['one@example.com', 'two@example.com']
     admin_immed_notify: False
     admin_notify_mchanges: True
@@ -191,6 +206,7 @@ These values are changed permanently.
     digest_size_threshold: 10.5
     digest_volume_frequency: yearly
     digests_enabled: False
+    discard_these_nonmembers: ['name_*bperson*@example.com']
     display_name: Fnords
     dmarc_mitigate_action: munge_from
     dmarc_mitigate_unconditionally: False
@@ -203,6 +219,8 @@ These values are changed permanently.
     gateway_to_mail: True
     gateway_to_news: True
     ...
+    hold_these_nonmembers: ['re[gG]ex@example.com']
+    http_etag: "..."
     include_rfc2369_headers: False
     ...
     member_roster_visibility: members
@@ -213,6 +231,7 @@ These values are changed permanently.
     ...
     posting_pipeline: virgin
     preferred_language: ja
+    reject_these_nonmembers: ['b[hello]*@example.com']
     reply_goes_to_list: point_to_list
     reply_to_address: bee@example.com
     ...
@@ -221,6 +240,7 @@ These values are changed permanently.
     send_welcome_message: False
     subject_prefix: [ant]
     subscription_policy: moderate
+    unsubscription_policy: confirm
     ...
 
 
@@ -386,7 +406,7 @@ New header matches can be created by POSTing to the resource.
     ...           'pattern': '^Yes',
     ...           })
     content-length: 0
-		...
+    ...
     location: .../3.0/lists/ant.example.com/header-matches/0
     ...
     status: 201
@@ -413,7 +433,7 @@ is desired, the ``action`` key must name a valid chain to jump to.
     ...           'action': 'discard',
     ...           })
     content-length: 0
-		...
+    ...
     location: .../3.0/lists/ant.example.com/header-matches/1
     ...
     status: 201

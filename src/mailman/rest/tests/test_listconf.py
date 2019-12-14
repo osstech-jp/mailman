@@ -38,6 +38,9 @@ RESOURCE = dict(
         'bee@example.com',
         'cat@example.com',
         ],
+    accept_these_nonmembers=[
+        r'ant_*@example.com',
+        ],
     admin_immed_notify=False,
     admin_notify_mchanges=True,
     administrivia=False,
@@ -61,6 +64,9 @@ RESOURCE = dict(
     digest_size_threshold=10.5,
     digest_volume_frequency='monthly',
     digests_enabled=True,
+    discard_these_nonmembers=[
+       'aperson@example.com',
+       ],
     display_name='Fnords',
     dmarc_mitigate_action='munge_from',
     dmarc_mitigate_unconditionally=False,
@@ -71,6 +77,9 @@ RESOURCE = dict(
     gateway_to_mail=False,
     gateway_to_news=False,
     goodbye_message_uri='mailman:///goodbye.txt',
+    hold_these_nonmembers=[
+        r'*@example.com',
+        ],
     include_rfc2369_headers=False,
     info='This is the mailing list info',
     linked_newsgroup='',
@@ -78,8 +87,12 @@ RESOURCE = dict(
     max_message_size='150',
     newsgroup_moderation='none',
     nntp_prefix_subject_too=False,
+    personalize='none',
     posting_pipeline='virgin',
     preferred_language='en',
+    reject_these_nonmembers=[
+       'bperson@example.com',
+       ],
     reply_goes_to_list='point_to_list',
     reply_to_address='bee@example.com',
     require_explicit_destination=True,
@@ -87,9 +100,11 @@ RESOURCE = dict(
     send_welcome_message=False,
     subject_prefix='[ant]',
     subscription_policy='confirm_then_moderate',
+    unsubscription_policy='confirm',
     welcome_message_uri='mailman:///welcome.txt',
     respond_to_post_requests=True,
     max_num_recipients=150,
+    max_days_to_hold=20,
     )
 
 
