@@ -41,7 +41,7 @@ class FakeMTA:
     def delete(self, mlist):
         pass
 
-    def regenerate(self, output=None):
+    def regenerate(self, directory=None):
         pass
 
 
