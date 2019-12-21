@@ -114,17 +114,18 @@ def add_members(mlist, add_infp):
             continue
         # Parse the line and ensure that the values are unicodes.
         display_name, email = parseaddr(line)
-        if email == '':                                       # pragma: nocover
-            line = line.strip()                               # pragma: nocover
+        if email == '':
+            line = line.strip()
             print(_('Cannot parse as valid email address (skipping): $line'),
-                  file=sys.stderr)                            # pragma: nocover
-            continue                                          # pragma: nocover
+                  file=sys.stderr)
+            continue
         try:
             add_member(mlist,
                        RequestRecord(email, display_name,
                                      DeliveryMode.regular,
                                      mlist.preferred_language.code))
-        except InvalidEmailAddressError:
+        except InvalidEmailAddressError:                    # pragma: nocover
+            # There is a test for this, but it hits the if email == '' above.
             # It's okay if the address is invalid, we print a warning and
             # continue.
             line = line.strip()
