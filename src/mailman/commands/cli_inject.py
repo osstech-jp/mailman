@@ -47,7 +47,7 @@ def show_queues(ctx, param, value):
     '--queue', '-q',
     help=_("""\
     The name of the queue to inject the message to.  QUEUE must be one of the
-    directories inside the qfiles directory.  If omitted, the incoming queue is
+    directories inside the queue directory.  If omitted, the incoming queue is
     used."""))
 @click.option(
     '--show', '-s',
