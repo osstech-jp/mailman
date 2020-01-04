@@ -158,4 +158,11 @@ if this address is their preferred address.
              on aardvark@example.com as MemberRole.member>
 
 
+MailingList Attributes
+======================
+
+This defines all the attributes of a MailingList.
+
+.. autointerface:: mailman.interfaces.mailinglist.IMailingList
+
 .. _`RFC 2369`: http://www.faqs.org/rfcs/rfc2369.html
