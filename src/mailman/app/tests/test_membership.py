@@ -19,18 +19,21 @@
 
 import unittest
 
+from contextlib import ExitStack
 from mailman.app.lifecycle import create_list
-from mailman.app.membership import add_member, delete_member
+from mailman.app.membership import (
+    add_member, delete_member, handle_SubscriptionEvent)
 from mailman.core.constants import system_preferences
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipIsBannedError,
-    NotAMemberError)
+    NotAMemberError, SubscriptionEvent)
 from mailman.interfaces.subscriptions import RequestRecord
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
+from unittest.mock import patch
 from zope.component import getUtility
 
 
@@ -313,3 +316,72 @@ class TestDeleteMember(unittest.TestCase):
         self.assertEqual(
             str(cm.exception),
             'noperson@example.com is not a member of test@example.com')
+
+
+class TestHandleSubscriptionEvent(unittest.TestCase):
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._user_manager = getUtility(IUserManager)
+        self._handler = handle_SubscriptionEvent
+
+    def test_sending_welcome_message(self):
+        # Test that welcome message is sent when the mlist is configured to do
+        # so.
+        self._mlist.admin_notify_mchanges = False
+        self._mlist.send_welcome_message = True
+        with ExitStack() as stack:
+            mocked_send_admin = stack.enter_context(
+                patch('mailman.app.membership.send_admin_subscription_notice'))
+            mocked_send_user = stack.enter_context(
+                patch('mailman.app.membership.send_welcome_message'))
+
+            anne = self._user_manager.create_address('anne@example.com')
+            member = self._mlist.subscribe(anne)
+
+            self._handler(SubscriptionEvent(
+                self._mlist, member, send_welcome_message=None))
+
+            self.assertTrue(mocked_send_user.called)
+            mocked_send_user.assert_called_with(
+                self._mlist, member, member.preferred_language)
+            self.assertFalse(mocked_send_admin.called)
+
+            # Now, let's disable sending of the message.
+            mocked_send_user.reset_mock()
+
+            self._handler(SubscriptionEvent(
+                self._mlist, member, send_welcome_message=False))
+
+            self.assertFalse(mocked_send_user.called)
+
+            # Now, if mlist is configured not to but event says yes.
+            mocked_send_user.reset_mock()
+            self._mlist.send_welcome_message = False
+
+            self._handler(SubscriptionEvent(
+                self._mlist, member, send_welcome_message=True))
+
+            self.assertTrue(mocked_send_user.called)
+
+    def test_admin_subscription_notice(self):
+        # Test admins are notified of the subscription.
+        self._mlist.admin_notify_mchanges = True
+        self._mlist.send_welcome_message = False
+        with ExitStack() as stack:
+            mocked_send_admin = stack.enter_context(
+                patch('mailman.app.membership.send_admin_subscription_notice'))
+            stack.enter_context(
+                patch('mailman.app.membership.send_welcome_message'))
+
+            anne = self._user_manager.create_address('anne@example.com')
+            member = self._mlist.subscribe(anne)
+
+            self._handler(SubscriptionEvent(
+                self._mlist, member, send_welcome_message=None))
+
+            self.assertTrue(mocked_send_admin.called)
+            mocked_send_admin.assert_called_with(
+                self._mlist, anne.email, anne.display_name)

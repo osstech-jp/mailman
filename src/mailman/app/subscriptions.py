@@ -171,14 +171,17 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         'subscriber_key',
         'user_key',
         'token_owner_key',
+        'send_welcome_message',
         )
 
     def __init__(self, mlist, subscriber=None, *,
-                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+                 pre_verified=False, pre_confirmed=False, pre_approved=False,
+                 send_welcome_message=None):
         super().__init__(mlist, subscriber)
         self.pre_verified = pre_verified
         self.pre_confirmed = pre_confirmed
         self.pre_approved = pre_approved
+        self.send_welcome_message = send_welcome_message
 
     def _step_sanity_checks(self):
         # Ensure that we have both an address and a user, even if the address
@@ -326,7 +329,8 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
 
     def _step_do_subscription(self):
         # We can immediately subscribe the user to the mailing list.
-        self.member = self.mlist.subscribe(self.subscriber)
+        self.member = self.mlist.subscribe(
+            self.subscriber, send_welcome_message=self.send_welcome_message)
         assert self.token is None and self.token_owner is TokenOwner.no_one, (
             'Unexpected active token at end of subscription workflow')
 
@@ -513,13 +517,15 @@ class SubscriptionManager:
         self._mlist = mlist
 
     def register(self, subscriber=None, *,
-                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+                 pre_verified=False, pre_confirmed=False, pre_approved=False,
+                 send_welcome_message=None):
         """See `ISubscriptionManager`."""
         workflow = SubscriptionWorkflow(
             self._mlist, subscriber,
             pre_verified=pre_verified,
             pre_confirmed=pre_confirmed,
-            pre_approved=pre_approved)
+            pre_approved=pre_approved,
+            send_welcome_message=send_welcome_message)
         list(workflow)
         return workflow.token, workflow.token_owner, workflow.member
 

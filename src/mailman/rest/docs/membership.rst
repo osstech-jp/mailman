@@ -669,9 +669,11 @@ known to Mailman, a user is created for her.  By default, she gets a regular
 delivery.
 
 By pre-verifying her subscription, we don't require Elly to verify that her
-email address is valid.  By pre-confirming her subscription too, no
-confirmation email will be sent.  Pre-approval means that the list moderator
-won't have to approve her subscription request.
+email address is valid. By pre-confirming her subscription too, no confirmation
+email will be sent. Pre-approval means that the list moderator won't have to
+approve her subscription request. ``send_welcome_message`` controls whether a
+welcome message will be sent to the user. This option overrides the
+Mailinglist's ``send_welcome_message`` setting.
 
     >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'list_id': 'ant.example.com',
@@ -680,6 +682,7 @@ won't have to approve her subscription request.
     ...           'pre_verified': True,
     ...           'pre_confirmed': True,
     ...           'pre_approved': True,
+    ...           'send_welcome_message': True,
     ...           })
     content-length: 0
     content-type: application/json

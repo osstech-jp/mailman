@@ -29,8 +29,8 @@ from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.incoming import IncomingRunner
 from mailman.testing.helpers import (
-    TestableMaster, call_api, get_lmtp_client, make_testable_runner,
-    set_preferred, subscribe, wait_for_webservice)
+    TestableMaster, call_api, get_lmtp_client, get_queue_messages,
+    make_testable_runner, set_preferred, subscribe, wait_for_webservice)
 from mailman.testing.layers import ConfigLayer, RESTLayer
 from mailman.utilities.datetime import now
 from urllib.error import HTTPError
@@ -485,6 +485,43 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(cm.exception.code, 400)
         self.assertEqual(cm.exception.reason,
                          'List posting address cannot be added')
+
+    def test_subscribe_supress_welcome_message(self):
+        # Test subscription of a new member is able to supress welcome message,
+        # even if Mailinglist is configured to do so.
+        self._mlist.send_welcome_message = True
+        content, response = call_api('http://localhost:9001/3.0/members', {
+            'list_id': 'test.example.com',
+            'subscriber': 'ANNE@example.com',
+            'pre_verified': True,
+            'pre_confirmed': True,
+            'pre_approved': True,
+            'send_welcome_message': False,
+            })
+        self.assertEqual(response.status_code, 201)
+        member = self._mlist.members.get_member('anne@example.com')
+        self.assertIsNotNone(member)
+        get_queue_messages('virgin', expected_count=0)
+
+    def test_send_welcome_message(self):
+        # Test that the send_welcome_message flag sends welcome message, even
+        # when the mlist isn't configured to do so.
+        self._mlist.send_welcome_message = False
+        content, response = call_api('http://localhost:9001/3.0/members', {
+            'list_id': 'test.example.com',
+            'subscriber': 'ANNE@example.com',
+            'pre_verified': True,
+            'pre_confirmed': True,
+            'pre_approved': True,
+            'send_welcome_message': True,
+            })
+        self.assertEqual(response.status_code, 201)
+        member = self._mlist.members.get_member('anne@example.com')
+        self.assertIsNotNone(member)
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(str(items[0].msg['to']), 'anne@example.com')
+        self.assertEqual(
+            str(items[0].msg['subject']), 'Welcome to the "Test" mailing list')
 
 
 class CustomLayer(ConfigLayer):
