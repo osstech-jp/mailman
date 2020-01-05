@@ -37,6 +37,8 @@ REST
   ``reject_these_nonmembers``, ``discard_these_nonmembers``,
   ``hold_these_nonmembers``, ``personalize``, and ``unsubscription_policy``
   attributes of a MailingList through API. (See !570)
+* Add a new ``send_welcome_message`` flag when subscribing users to override
+  MailingList's default setting. (Closes #362)
 
 3.3.0 -- "Tom Sawyer"
 =====================

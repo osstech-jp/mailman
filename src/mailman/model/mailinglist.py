@@ -484,7 +484,8 @@ class MailingList(Model):
         return member is not None
 
     @dbconnection
-    def subscribe(self, store, subscriber, role=MemberRole.member):
+    def subscribe(self, store, subscriber, role=MemberRole.member,
+                  send_welcome_message=None):
         """See `IMailingList`."""
         member, email = self._get_subscriber(store, subscriber, role)
         test_email = email or subscriber.lower()
@@ -501,7 +502,8 @@ class MailingList(Model):
                         subscriber=subscriber)
         member.preferences = Preferences()
         store.add(member)
-        notify(SubscriptionEvent(self, member))
+        notify(SubscriptionEvent(
+            self, member, send_welcome_message=send_welcome_message))
         return member
 
 

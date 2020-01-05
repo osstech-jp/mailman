@@ -219,7 +219,8 @@ class ISubscriptionManager(Interface):
     To use this, adapt an ``IMailingList`` to this interface.
     """
     def register(subscriber=None, *,
-                 pre_verified=False, pre_confirmed=False, pre_approved=False):
+                 pre_verified=False, pre_confirmed=False, pre_approved=False,
+                 send_welcome_message=None):
         """Subscribe an address or user according to subscription policies.
 
         The mailing list's subscription policy is used to subscribe
@@ -259,6 +260,10 @@ class ISubscriptionManager(Interface):
             acknowledged in some manner.  Setting this flag to True
             automatically approves the subscription request.
         :type pre_approved: bool
+        :param send_welcome_message: A flag indicating whether the new member
+            should receive a welcome message. This overrides the list's
+            configuration of send_welcome_message if it is specified.
+        :type send_welcome_message: bool
         :return: A 3-tuple is returned where the first element is the token
             hash, the second element is a ``TokenOwner`, and the third element
             is the subscribed member.  If the subscriber got subscribed
@@ -270,6 +275,7 @@ class ISubscriptionManager(Interface):
             appears in the global or list-centric bans.
         :raises InvalidEmailAddressError: If the address being subscribed is
             the list's posting address.
+
         """
 
     def unregister(subscriber=None, *,

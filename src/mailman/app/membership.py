@@ -169,6 +169,8 @@ def handle_SubscriptionEvent(event):
             address = subscriber.preferred_address.email
             display_name = subscriber.display_name
         send_admin_subscription_notice(mlist, address, display_name)
-    # Maybe send a welcome message to the new member.
-    if mlist.send_welcome_message:
+    # Maybe send a welcome message to the new member. The event's flag
+    # overrides the mailinglist's configuration, iff it is non-None.
+    if ((event.send_welcome_message is None and mlist.send_welcome_message)
+            or event.send_welcome_message):
         send_welcome_message(mlist, member, member.preferred_language)
