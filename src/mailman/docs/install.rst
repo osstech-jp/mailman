@@ -106,6 +106,9 @@ do::
 
     $ mailman shell
     Welcome to the GNU Mailman shell
+    Use commit() to commit changes.
+    Use abort() to discard changes since the last commit.
+    Exit with ctrl+D does an implicit commit() but exit() does not.
 
     >>> list_manager = getUtility(IListManager)
 

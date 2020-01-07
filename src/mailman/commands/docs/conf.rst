@@ -27,6 +27,9 @@ You can list all the key-value pairs of a specific section.
 
     >>> command('mailman conf --section shell')
     [shell] banner: Welcome to the GNU Mailman shell
+    Use commit() to commit changes.
+    Use abort() to discard changes since the last commit.
+    Exit with ctrl+D does an implicit commit() but exit() does not.
     [shell] history_file:
     [shell] prompt: >>>
     [shell] use_ipython: no
