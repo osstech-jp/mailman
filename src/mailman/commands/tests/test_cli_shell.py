@@ -80,7 +80,10 @@ class TestShell(unittest.TestCase):
             self._command.invoke(shell, ('--interactive',))
         posargs, kws = mock.InteractiveShellEmbed.instance().mainloop.call_args
         self.assertEqual(
-            kws['display_banner'], 'Welcome to the GNU Mailman shell\n')
+            kws['display_banner'], """Welcome to the GNU Mailman shell
+Use commit() to commit changes.
+Use abort() to discard changes since the last commit.
+Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
 
     @configuration('shell', use_ipython='yes')
     def test_start_ipython1(self):
@@ -89,7 +92,10 @@ class TestShell(unittest.TestCase):
             self._command.invoke(shell, ('--interactive',))
         posargs, kws = mock.InteractiveShellEmbed.instance.call_args
         self.assertEqual(
-            kws['banner1'], 'Welcome to the GNU Mailman shell\n')
+            kws['banner1'], """Welcome to the GNU Mailman shell
+Use commit() to commit changes.
+Use abort() to discard changes since the last commit.
+Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
 
     @configuration('shell', use_ipython='debug')
     def test_start_ipython_debug(self):
@@ -98,7 +104,10 @@ class TestShell(unittest.TestCase):
             self._command.invoke(shell, ('--interactive',))
         posargs, kws = mock.InteractiveShellEmbed.instance().mainloop.call_args
         self.assertEqual(
-            kws['display_banner'], 'Welcome to the GNU Mailman shell\n')
+            kws['display_banner'], """Welcome to the GNU Mailman shell
+Use commit() to commit changes.
+Use abort() to discard changes since the last commit.
+Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
 
     @configuration('shell', use_ipython='oops')
     def test_start_ipython_invalid(self):
