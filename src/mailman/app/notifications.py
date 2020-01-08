@@ -85,7 +85,7 @@ def send_goodbye_message(mlist, address, language):
     :param address: The address to respond to
     :type address: string
     :param language: the language of the response
-    :type language: string
+    :type language: ILanguage
     """
     goodbye_message = wrap(getUtility(ITemplateLoader).get(
         'list:user:notice:goodbye', mlist, language=language.code))
@@ -117,3 +117,71 @@ def send_admin_subscription_notice(mlist, address, display_name):
             ))
     msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
     msg.send(mlist)
+
+
+@public
+def send_admin_disable_notice(mlist, address, display_name):
+    """Send the list administrators a membership disabled by-bounce notice.
+
+    :param mlist: The mailing list
+    :type mlist: IMailingList
+    :param address: The address of the member
+    :type address: string
+    :param display_name: The name of the subscriber
+    :type display_name: string
+    """
+    member = formataddr((display_name, address))
+    data = {'member': member}
+    with _.using(mlist.preferred_language.code):
+        subject = _('$member\'s subscription disabled on $mlist.display_name')
+    text = expand(
+        getUtility(ITemplateLoader).get('list:admin:notice:disable', mlist),
+        mlist, data)
+    msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
+    msg.send(mlist)
+
+
+def send_admin_removal_notice(mlist, address, display_name):
+    """Send the list administrators a membership removed due to bounce notice.
+
+    :param mlist: The mailing list.
+    :type mlist: IMailingList
+    :param address: The address of the member
+    :type address: string
+    :param display_name: The name of the subscriber
+    :type display_name: string
+    """
+    member = formataddr((display_name, address))
+    data = {'member': member, 'mlist': mlist.display_name}
+    with _.using(mlist.preferred_language.code):
+        subject = _('$member unsubscribed from ${mlist.display_name} '
+                    'mailing list due to bounces')
+    text = expand(
+        getUtility(ITemplateLoader).get('list:admin:notice:removal', mlist),
+        mlist, data)
+    msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
+    msg.send(mlist)
+
+
+@public
+def send_user_disable_warning(mlist, address, language):
+    """Sends a warning mail to the user reminding the person to
+    reenable its DeliveryStatus.
+
+    :param mlist: The mailing list
+    :type mlist: IMailingList
+    :param address: The address of the member
+    :type address: string.
+    :param language: member's preferred language
+    :type language: ILanguage
+    """
+    warning_message = wrap(getUtility(ITemplateLoader).get(
+        'list:user:notice:warning', mlist, language=language.code))
+    warning_message_text = expand(
+        warning_message, mlist, dict(sender_email=address))
+    msg = UserNotification(
+        address, mlist.bounces_address,
+        _('Your subscription for ${mlist.display_name} mailing list'
+          ' has been disabled'),
+        warning_message_text, language)
+    msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))

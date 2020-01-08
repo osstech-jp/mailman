@@ -270,6 +270,8 @@ class TestSiteTemplates(unittest.TestCase):
                 'list:admin:notice:subscribe': '',
                 'list:admin:notice:unrecognized': '',
                 'list:admin:notice:unsubscribe': '',
+                'list:admin:notice:disable': '',
+                'list:admin:notice:removal': '',
                 'list:member:digest:footer': '',
                 'list:member:digest:header': '',
                 'list:member:digest:masthead': '',
@@ -285,6 +287,7 @@ class TestSiteTemplates(unittest.TestCase):
                 'list:user:notice:refuse': '',
                 'list:user:notice:rejected': '',
                 'list:user:notice:welcome': 'http://example.org/welcome',
+                'list:user:notice:warning': '',
                 'password': 'some password',
                 'username': 'anne.person',
                 }, method='PUT')

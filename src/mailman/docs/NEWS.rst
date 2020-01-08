@@ -40,6 +40,15 @@ REST
 * Add a new ``send_welcome_message`` flag when subscribing users to override
   MailingList's default setting. (Closes #362)
 
+
+Features
+--------
+
+* Add support for processing of email bounce events. Thanks to Aaryan Bhagat for
+  working on this as a part of his GSoC project and Thanks to Google for
+  sponsoring the project as a part of GSoC.(See !584)
+
+
 3.3.0 -- "Tom Sawyer"
 =====================
 (2019-09-04)

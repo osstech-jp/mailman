@@ -30,6 +30,12 @@ All readable attributes for a list are available on a sub-resource.
     autoresponse_owner_text:
     autoresponse_postings_text:
     autoresponse_request_text:
+    bounce_info_stale_after: 7d
+    bounce_notify_owner_on_disable: True
+    bounce_notify_owner_on_removal: True
+    bounce_score_threshold: 5
+    bounce_you_are_disabled_warnings: 3
+    bounce_you_are_disabled_warnings_interval: 7d
     bounces_address: ant-bounces@example.com
     collapse_alternatives: True
     convert_html_to_plaintext: False
@@ -53,6 +59,7 @@ All readable attributes for a list are available on a sub-resource.
     filter_content: False
     first_strip_reply_to: False
     footer_uri:
+    forward_unrecognized_bounces_to: administrators
     fqdn_listname: ant@example.com
     gateway_to_mail: False
     gateway_to_news: False
@@ -83,6 +90,7 @@ All readable attributes for a list are available on a sub-resource.
     posting_address: ant@example.com
     posting_pipeline: default-posting-pipeline
     preferred_language: en
+    process_bounces: True
     reject_these_nonmembers: []
     reply_goes_to_list: no_munging
     reply_to_address:
@@ -125,6 +133,14 @@ When using ``PUT``, all writable attributes must be included.
     ...             autoresponse_owner_text='the owner',
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
+    ...             bounce_info_stale_after='5d',
+    ...             bounce_notify_owner_on_disable=True,
+    ...             bounce_notify_owner_on_removal=True,
+    ...             bounce_score_threshold=5,
+    ...             bounce_you_are_disabled_warnings=3,
+    ...             bounce_you_are_disabled_warnings_interval='1d',
+    ...             forward_unrecognized_bounces_to='administrators',
+    ...             process_bounces=True,
     ...             discard_these_nonmembers=[r'name_*bperson*@example.com'],
     ...             display_name='Fnords',
     ...             description='This is my mailing list',
@@ -194,6 +210,12 @@ These values are changed permanently.
     autoresponse_owner_text: the owner
     autoresponse_postings_text: the mailing list
     autoresponse_request_text: the robot
+    bounce_info_stale_after: 5d
+    bounce_notify_owner_on_disable: True
+    bounce_notify_owner_on_removal: True
+    bounce_score_threshold: 5
+    bounce_you_are_disabled_warnings: 3
+    bounce_you_are_disabled_warnings_interval: 1d
     ...
     collapse_alternatives: False
     convert_html_to_plaintext: True
@@ -215,6 +237,7 @@ These values are changed permanently.
     filter_content: True
     first_strip_reply_to: True
     footer_uri:
+    forward_unrecognized_bounces_to: administrators
     fqdn_listname: ant@example.com
     gateway_to_mail: True
     gateway_to_news: True
@@ -231,6 +254,7 @@ These values are changed permanently.
     ...
     posting_pipeline: virgin
     preferred_language: ja
+    process_bounces: True
     reject_these_nonmembers: ['b[hello]*@example.com']
     reply_goes_to_list: point_to_list
     reply_to_address: bee@example.com

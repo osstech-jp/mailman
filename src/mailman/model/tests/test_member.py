@@ -19,12 +19,14 @@
 
 import unittest
 
+from datetime import timedelta
 from mailman.app.lifecycle import create_list
 from mailman.interfaces.action import Action
-from mailman.interfaces.member import MemberRole, MembershipError
+from mailman.interfaces.member import (
+    DeliveryStatus, MemberRole, MembershipError)
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
-from mailman.model.member import Member
+from mailman.model.member import Member, MembershipManager
 from mailman.testing.helpers import set_preferred
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
@@ -121,3 +123,221 @@ class TestMember(unittest.TestCase):
         self.assertEqual(bart_member.moderation_action, Action.accept)
         self.assertIsNone(cris_member.moderation_action)
         self.assertIsNone(dana_member.moderation_action)
+
+
+class TestMembershipManager(unittest.TestCase):
+    """Test MembershipManager. """
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._bestlist = create_list('best@example.com')
+        self._mlist = create_list('test@example.com')
+
+        self._mlist.bounce_score_threshold = 5
+        self._mlist.bounce_you_are_disabled_warnings = 2
+        self._mlist.bounce_you_are_disabled_warnings_interval = timedelta(
+            days=2)
+
+        self._bestlist.bounce_score_threshold = 3
+        self._bestlist.bounce_you_are_disabled_warnings = 1
+        self._bestlist.bounce_you_are_disabled_warnings_interval = timedelta(
+            days=3)
+
+        self._usermanager = getUtility(IUserManager)
+        self._mmanager = MembershipManager()
+
+        anne = self._usermanager.create_user('anne@example.com')
+        bart = self._usermanager.create_user('bart@example.com')
+
+        set_preferred(anne)
+        set_preferred(bart)
+
+        self.anne_member = self._mlist.subscribe(anne)
+        self.bart_member = self._mlist.subscribe(bart)
+
+        self.anne_member_best = self._bestlist.subscribe(anne)
+        self.bart_member_best = self._bestlist.subscribe(bart)
+
+    def _test_membership_pending_x(
+            self,
+            anne_score, anne_tot, anne_last, bart_score, bart_tot, bart_last,
+            anne2_score, anne2_tot, anne2_last, bart2_score, bart2_tot,
+            bart2_last, expected_total, expected_members,
+            func):
+
+        self.anne_member.bounce_score = anne_score
+        if anne_tot:
+            self.anne_member.total_warnings_sent = anne_tot
+        if anne_last:
+            self.anne_member.last_warning_sent = now() - timedelta(
+                days=anne_last)
+
+        self.bart_member.bounce_score = bart_score
+        if bart_tot:
+            self.bart_member.total_warnings_sent = bart_tot
+        if bart_last:
+            self.bart_member.last_warning_sent = now() - timedelta(
+                days=bart_last)
+
+        self.anne_member_best.bounce_score = anne2_score
+        if anne2_tot:
+            self.anne_member_best.total_warnings_sent = anne2_tot
+        if anne2_last:
+            self.anne_member_best.last_warning_sent = now() - timedelta(
+                days=anne2_last)
+
+        self.bart_member_best.bounce_score = bart2_score
+        if bart2_tot:
+            self.bart_member_best.total_warnings_sent = bart2_tot
+        if bart2_last:
+            self.bart_member_best.last_warning_sent = now() - timedelta(
+                days=bart2_last)
+
+        pending_members = list(func())
+        self.assertEqual(len(pending_members), expected_total)
+        member_ids = list(member.id for member in pending_members)
+        self.assertEqual(sorted(member_ids), sorted(expected_members))
+
+    def _test_membership_pending_warning(self, *args):
+        self._test_membership_pending_x(
+            *args, func=self._mmanager.memberships_pending_warning)
+
+    def _test_membership_pending_removal(self, *args):
+        self._test_membership_pending_x(
+            *args, func=self._mmanager.memberships_pending_removal)
+
+    def _disable_delivery(self, member):
+        member.preferences.delivery_status = DeliveryStatus.by_bounces
+
+    def test_membership_pending_warnings(self):
+        # No one gets warnings since everyone's bounce score < threshold.
+        self._test_membership_pending_warning(
+            2, None, None, 2, None, None,
+            2, None, None, None, None, None,
+            0, [])
+
+    def test_membership_pending_warnings_bounce_processing_disabled(self):
+        # Test that no members of the list whose bounce processing are
+        # disabled show up.
+        self._bestlist.process_bounces = False
+        args = [4, None, None, 4, None, None,
+                4, None, None, 4, None, None]
+        # We disable delivery for the members.
+        self._disable_delivery(self.anne_member_best)
+        self._disable_delivery(self.bart_member_best)
+
+        self._test_membership_pending_warning(
+            *args,
+            0, [])
+
+    def test_warnings_after_threshold_crossed(self):
+        # Threshold exceeds on bestlist, but only if delivery is disabled.
+        args = [4, None, None, 4, None, None,
+                4, None, None, 4, None, None]
+        self._test_membership_pending_warning(
+            *args,
+            0, [])
+        # Now if the delivery is disabled for them (only, via bounce processing
+        # i.e. DeliveryStatus.by_bounces), they should get the warnings.
+        self._disable_delivery(self.anne_member_best)
+        self._disable_delivery(self.bart_member_best)
+
+        self._test_membership_pending_warning(
+            *args,
+            2, [self.anne_member_best.id, self.bart_member_best.id])
+
+    def test_warnings_for_all_lists(self):
+        # Threshold exceeds on both lists and warnings pending for everyone.
+        self._disable_delivery(self.anne_member_best)
+        self._disable_delivery(self.bart_member_best)
+        self._disable_delivery(self.anne_member)
+        self._disable_delivery(self.bart_member)
+
+        self._test_membership_pending_warning(
+            6, None, None, 6, None, None,
+            4, None, None, 4, None, None,
+            4, [self.anne_member.id, self.bart_member.id,
+                self.anne_member_best.id, self.bart_member_best.id])
+
+    def test_warnings_sent_only_after_interval(self):
+        # Threshold exceeds but last warning was sent recently.
+        self._disable_delivery(self.anne_member_best)
+        self._disable_delivery(self.bart_member_best)
+        self._disable_delivery(self.anne_member)
+        self._disable_delivery(self.bart_member)
+
+        self._test_membership_pending_warning(
+            6, 1, 4, 6, 1, 1,
+            4, 1, 1, 4, 1, 1,
+            1, [self.anne_member.id])
+
+    def test_only_max_warnings(self):
+        # Threshold exceeds but total warnings sent equal max for some, so no
+        # more warnings for them.
+        self._disable_delivery(self.anne_member_best)
+        self._disable_delivery(self.bart_member_best)
+        self._disable_delivery(self.anne_member)
+        self._disable_delivery(self.bart_member)
+
+        self._test_membership_pending_warning(
+            6, 2, 4, 6, 1, 3,
+            4, 1, 1, 4, None, None,
+            2, [self.bart_member.id, self.bart_member_best.id])
+
+    def test_membership_pending_removal_bounce_processing_disabled(self):
+        # Test that no members of the list whose bounce processing are
+        # disabled show up.
+        self._bestlist.process_bounces = False
+        args = [5, 2, 0, 6, 1, 0,
+                3, 1, 0, 4, 0, 0]
+        # We disable delivery for the members.
+        self._disable_delivery(self.anne_member_best)
+        self._disable_delivery(self.bart_member_best)
+
+        self._test_membership_pending_removal(
+            *args,
+            0, [])
+
+    def test_removal_only_after_delivery_disabled(self):
+        # Test that we get the right list of Members who are supposed to be
+        # removed from the MailingList and have received required number of
+        # warnings.
+        args = [5, 2, 0, 6, 1, 0,
+                3, 1, 0, 4, 0, 0]
+        # First, people who haven't had delivery disabled first will not be
+        # removed from the lists.
+        self._test_membership_pending_removal(
+            *args,
+            0, [])
+
+        # Now, if we disable delivery for them, they should be removed.
+        for mem in (self.anne_member_best, self.bart_member_best,
+                    self.anne_member, self.bart_member):
+            self._disable_delivery(mem)
+
+        self._test_membership_pending_removal(
+            *args,
+            2, [self.anne_member.id, self.anne_member_best.id])
+
+    def test_total_warnings_sent_maxed_out(self):
+        # Test that we remove users only which have max warnings sent out.
+        for mem in (self.anne_member_best, self.bart_member_best,
+                    self.anne_member, self.bart_member):
+            self._disable_delivery(mem)
+
+        self._test_membership_pending_removal(
+            6, 1, 0, 6, 2, 0,
+            4, 0, 0, 4, 1, 0,
+            2, [self.bart_member.id, self.bart_member_best.id])
+
+    def test_total_warnings_sent_more_than_max(self):
+        # Warnings more than the threshold should also be removed.
+        for mem in (self.anne_member_best, self.bart_member_best,
+                    self.anne_member, self.bart_member):
+            self._disable_delivery(mem)
+
+        self._test_membership_pending_removal(
+            6, 1, 0, 6, 4, 0,
+            4, 0, 0, 4, 0, 0,
+            1, [self.bart_member.id])

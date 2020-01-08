@@ -650,6 +650,43 @@ class IMailingList(Interface):
         """)
 
     # Bounces.
+    bounce_info_stale_after = Attribute(
+        """Number of days after which bounce info is considered stale.
+
+        The number of days after which a member's bounce information is
+        considered stale. If no new bounces have been received in the interim,
+        the bounce score is reset to zero. This value must be an integer.
+        """)
+
+    bounce_notify_owner_on_disable = Attribute(
+        """This option controls whether or not the list owner
+        is notified when a member's subscription is automatically
+        disabled due to their bounce threshold being reached.
+        """)
+
+    bounce_notify_owner_on_removal = Attribute(
+        """This option controls whether or not the list owner
+        is notified when a member is removed from the list after
+        their disabled notifications have been exhausted.
+        """)
+
+    bounce_score_threshold = Attribute(
+        """Bounce score threshold for a mailing-list.
+
+        Threshold value for a Member's bounce_score after which we will either
+        disable membership or unsubscribe the member from the mailing list.
+        """)
+
+    bounce_you_are_disabled_warnings = Attribute(
+        """The number of notices a disabled member will
+        receive before their address is removed from the
+        mailing list's roster. Set this to 0 to immediately
+        remove an address from the list once their bounce
+        score exceeds the threshold. This value must be an integer.
+        """)
+
+    bounce_you_are_disabled_warnings_interval = Attribute(
+        """The number of days between each disabled notification.""")
 
     forward_unrecognized_bounces_to = Attribute(
         """What to do when a bounce contains no recognizable addresses.

@@ -4,7 +4,6 @@ Bounces
 
 An important feature of Mailman is automatic bounce processing.
 
-
 Bounces, or message rejection
 =============================
 

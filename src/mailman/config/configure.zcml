@@ -139,4 +139,9 @@
     factory="mailman.model.workflow.WorkflowStateManager"
     />
 
+  <utility
+    provides="mailman.interfaces.member.IMembershipManager"
+    factory="mailman.model.member.MembershipManager"
+    />
+
 </configure>

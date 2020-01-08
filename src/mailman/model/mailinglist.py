@@ -119,13 +119,13 @@ class MailingList(Model):
     collapse_alternatives = Column(Boolean)
     convert_html_to_plaintext = Column(Boolean)
     # Bounces.
-    bounce_info_stale_after = Column(Interval)                   # XXX
+    bounce_info_stale_after = Column(Interval)
     bounce_matching_headers = Column(SAUnicode)                  # XXX
-    bounce_notify_owner_on_disable = Column(Boolean)             # XXX
-    bounce_notify_owner_on_removal = Column(Boolean)             # XXX
-    bounce_score_threshold = Column(Integer)                     # XXX
-    bounce_you_are_disabled_warnings = Column(Integer)           # XXX
-    bounce_you_are_disabled_warnings_interval = Column(Interval)  # XXX
+    bounce_notify_owner_on_disable = Column(Boolean)
+    bounce_notify_owner_on_removal = Column(Boolean)
+    bounce_score_threshold = Column(Integer)
+    bounce_you_are_disabled_warnings = Column(Integer)
+    bounce_you_are_disabled_warnings_interval = Column(Interval)
     forward_unrecognized_bounces_to = Column(
         Enum(UnrecognizedBounceDisposition))
     process_bounces = Column(Boolean)

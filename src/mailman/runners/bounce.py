@@ -22,7 +22,8 @@ import logging
 from flufl.bounce import all_failures
 from mailman.app.bounces import ProbeVERP, StandardVERP, maybe_forward
 from mailman.core.runner import Runner
-from mailman.interfaces.bounce import BounceContext, IBounceProcessor
+from mailman.interfaces.bounce import (
+    BounceContext, IBounceProcessor, InvalidBounceEvent)
 from public import public
 from zope.component import getUtility
 
@@ -92,3 +93,24 @@ class BounceRunner(Runner):
             maybe_forward(mlist, msg)
         # Dequeue this message.
         return False
+
+    def _do_periodic(self):
+        """Invoked periodically by the run() method in the super class."""
+        self._process_events()
+        self._send_warnings()
+
+    def _process_events(self):
+        """Process all the pending bounce events."""
+        log.debug('Processing bounce events.')
+        for bounce_event in self._processor.unprocessed:
+            try:
+                self._processor.process_event(bounce_event)
+            except InvalidBounceEvent as e:
+                # This member is either unsubscribed or this is a very stale
+                # event.
+                log.info('Bounce message for a non subscriber: {}'.format(e))
+
+    def _send_warnings(self):
+        """Send warnings to disabled users and remove them if needed."""
+        log.debug('Sending warnings to members with disabled delivery.')
+        self._processor.send_warnings_and_remove()

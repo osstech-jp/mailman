@@ -22,6 +22,7 @@ from mailman.config import config
 from mailman.interfaces.action import Action
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
+from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
     DMARCMitigateAction, IAcceptableAliasSet, IMailingList,  Personalization,
@@ -163,6 +164,13 @@ ATTRIBUTES = dict(
     autoresponse_postings_text=GetterSetter(str),
     autoresponse_request_text=GetterSetter(str),
     bounces_address=GetterSetter(None),
+    bounce_info_stale_after=GetterSetter(as_timedelta),
+    bounce_notify_owner_on_disable=GetterSetter(as_boolean),
+    bounce_notify_owner_on_removal=GetterSetter(as_boolean),
+    bounce_score_threshold=GetterSetter(integer_ge_zero_validator),
+    bounce_you_are_disabled_warnings=GetterSetter(integer_ge_zero_validator),
+    bounce_you_are_disabled_warnings_interval=GetterSetter(
+        as_timedelta),
     collapse_alternatives=GetterSetter(as_boolean),
     convert_html_to_plaintext=GetterSetter(as_boolean),
     created_at=GetterSetter(None),
@@ -182,6 +190,8 @@ ATTRIBUTES = dict(
     dmarc_wrapped_message_text=GetterSetter(str),
     filter_content=GetterSetter(as_boolean),
     first_strip_reply_to=GetterSetter(as_boolean),
+    forward_unrecognized_bounces_to=GetterSetter(
+        enum_validator(UnrecognizedBounceDisposition)),
     fqdn_listname=GetterSetter(None),
     gateway_to_mail=GetterSetter(as_boolean),
     gateway_to_news=GetterSetter(as_boolean),
@@ -209,6 +219,7 @@ ATTRIBUTES = dict(
     posting_address=GetterSetter(None),
     posting_pipeline=GetterSetter(pipeline_validator),
     preferred_language=LanguageGetterSetter(language_validator),
+    process_bounces=GetterSetter(as_boolean),
     reject_these_nonmembers=GetterSetter(list_of_strings_validator),
     reply_goes_to_list=GetterSetter(enum_validator(ReplyToMunging)),
     reply_to_address=GetterSetter(str),

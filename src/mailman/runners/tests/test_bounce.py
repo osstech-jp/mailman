@@ -19,12 +19,14 @@
 
 import unittest
 
+from datetime import timedelta
 from mailman.app.bounces import send_probe
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.interfaces.bounce import (
     BounceContext, IBounceProcessor, UnrecognizedBounceDisposition)
-from mailman.interfaces.member import MemberRole
+from mailman.interfaces.member import DeliveryStatus, MemberRole
 from mailman.interfaces.styles import IStyle, IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.bounce import BounceRunner
@@ -32,6 +34,7 @@ from mailman.testing.helpers import (
     LogFileMark, get_queue_messages, make_testable_runner,
     specialized_message_from_string as message_from_string)
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.datetime import now
 from zope.component import getUtility
 from zope.interface import implementer
 
@@ -84,7 +87,7 @@ Message-Id: <first>
         self.assertEqual(events[0].list_id, 'test.example.com')
         self.assertEqual(events[0].message_id, '<first>')
         self.assertEqual(events[0].context, BounceContext.normal)
-        self.assertEqual(events[0].processed, False)
+        self.assertEqual(events[0].processed, True)
 
     def test_nonfatal_verp_detection(self):
         # A VERPd bounce was received, but the error was nonfatal.
@@ -164,7 +167,7 @@ Original-Recipient: rfc822; bart@example.com
         self.assertEqual(events[0].list_id, 'test.example.com')
         self.assertEqual(events[0].message_id, '<first>')
         self.assertEqual(events[0].context, BounceContext.normal)
-        self.assertEqual(events[0].processed, False)
+        self.assertEqual(events[0].processed, True)
 
     def test_nonverp_detectable_nonfatal_bounce(self):
         # Here's a bounce that is not VERPd, but which has a bouncing address
@@ -196,8 +199,9 @@ Original-Recipient: rfc822; bart@example.com
         self.assertEqual(len(events), 0)
         # There should be nothing in the 'virgin' queue.
         get_queue_messages('virgin', expected_count=0)
-        # There should be nothing logged.
-        self.assertEqual(len(mark.readline()), 0)
+        # There should be log event in the log file.
+        log_lines = mark.read().splitlines()
+        self.assertTrue(len(log_lines) > 0)
 
     def test_no_detectable_bounce_addresses(self):
         # A bounce message was received, but no addresses could be detected.
@@ -279,3 +283,131 @@ Message-Id: <first>
         get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 0)
+
+
+class TestBounceRunnerPeriodicRun(unittest.TestCase):
+    """Test the bounce runner's periodic function.."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._mlist.send_welcome_message = False
+        self._runner = make_testable_runner(BounceRunner, 'bounces')
+        self._anne = getUtility(IUserManager).create_address(
+            'anne@example.com')
+        self._member = self._mlist.subscribe(self._anne, MemberRole.member)
+        self._msg = message_from_string("""\
+From: mail-daemon@example.com
+To: test-bounces+anne=example.com@example.com
+Message-Id: <first>
+
+""")
+        self._msgdata = dict(listid='test.example.com')
+        self._processor = getUtility(IBounceProcessor)
+        config.push('site owner', """
+        [mailman]
+        site_owner: postmaster@example.com
+        """)
+        self.addCleanup(config.pop, 'site owner')
+
+    def _subscribe_and_add_bounce_event(
+            self, addr, subscribe=True, create=True, context=None, count=1):
+        user_mgr = getUtility(IUserManager)
+        with transaction():
+            if create:
+                anne = user_mgr.create_address(addr)
+            else:
+                anne = user_mgr.get_address(addr)
+            if subscribe:
+                self._mlist.subscribe(anne)
+            self._processor.register(
+                self._mlist, addr, self._msg, where=context)
+        return self._mlist.members.get_member(addr)
+
+    def test_periodic_bounce_event_processing(self):
+        anne = self._subscribe_and_add_bounce_event(
+            'anne@example.com', subscribe=False, create=False)
+        bart = self._subscribe_and_add_bounce_event('bart@example.com')
+        # Since MailingList has process_bounces set to False, nothing happens
+        # with the events.
+        self._runner.run()
+        self.assertEqual(anne.bounce_score, 1.0)
+        self.assertEqual(bart.bounce_score, 1.0)
+        for event in self._processor.events:
+            self.assertEqual(event.processed, True)
+
+    def test_events_disable_delivery(self):
+        self._mlist.bounce_score_threshold = 3
+        anne = self._subscribe_and_add_bounce_event(
+            'anne@example.com', subscribe=False, create=False)
+        anne.bounce_score = 2
+        anne.last_bounce_received = now() - timedelta(days=2)
+        self._runner.run()
+        self.assertEqual(anne.bounce_score, 3)
+        self.assertEqual(
+            anne.preferences.delivery_status, DeliveryStatus.by_bounces)
+        # There should also be a pending notification for the the list
+        # administrator.
+        items = get_queue_messages('virgin', expected_count=2)
+        if items[0].msg['to'] == 'test-owner@example.com':
+            owner_notif, disable_notice = items
+        else:
+            disable_notice, owner_notif = items
+        self.assertEqual(owner_notif.msg['Subject'],
+                         "anne@example.com's subscription disabled on Test")
+
+        self.assertEqual(disable_notice.msg['to'].email,
+                         'anne@example.com')
+        self.assertEqual(
+            str(disable_notice.msg['subject']),
+            'Your subscription for Test mailing list has been disabled')
+
+    def test_events_send_warning(self):
+        self._mlist.bounce_you_are_disabled_warnings = 3
+        self._mlist.bounce_you_are_disabled_warnings_interval = timedelta(
+            days=2)
+
+        anne = self._mlist.members.get_member(self._anne.email)
+        anne.preferences.delivery_status = DeliveryStatus.by_bounces
+        anne.total_warnings_sent = 1
+        anne.last_warning_sent = now() - timedelta(days=3)
+
+        self._runner.run()
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(str(items[0].msg['to']), 'anne@example.com')
+        self.assertEqual(
+            str(items[0].msg['subject']),
+            'Your subscription for Test mailing list has been disabled')
+        self.assertEqual(anne.total_warnings_sent, 2)
+        self.assertEqual(anne.last_warning_sent.day, now().day)
+
+    def test_events_membership_removal(self):
+        self._mlist.bounce_notify_owner_on_removal = True
+        self._mlist.bounce_you_are_disabled_warnings = 3
+        self._mlist.bounce_you_are_disabled_warnings_interval = timedelta(
+            days=2)
+
+        anne = self._mlist.members.get_member(self._anne.email)
+        anne.preferences.delivery_status = DeliveryStatus.by_bounces
+        anne.total_warnings_sent = 3
+        anne.last_warning_sent = now()
+
+        self._runner.run()
+        items = get_queue_messages('virgin', expected_count=2)
+        if items[0].msg['to'] == 'test-owner@example.com':
+            owner_notif, user_notif = items
+        else:
+            user_notif, owner_notif = items
+        self.assertEqual(user_notif.msg['to'], 'anne@example.com')
+        self.assertEqual(
+            user_notif.msg['subject'],
+            'You have been unsubscribed from the Test mailing list')
+
+        self.assertEqual(
+            str(owner_notif.msg['subject']),
+            'anne@example.com unsubscribed from Test mailing '
+            'list due to bounces')
+        # The membership should no longer exist.
+        self.assertIsNone(
+            self._mlist.members.get_member(self._anne.email))
