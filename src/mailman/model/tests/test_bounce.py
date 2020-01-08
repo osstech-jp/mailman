@@ -208,14 +208,15 @@ Message-Id: <first>
     def test_bounce_score_over_threshold_sends_probe(self):
         # Test that bounce score over threshold does not disables delivery if
         # the MailingList is configured to send probes first.
+        # Sending probe also resets bounce_score.
         # Disable welcome message so we can assert admin notice later.
         self._mlist.send_welcome_message = False
         self._mlist.bounce_score_threshold = 0
         member = self._subscribe_and_add_bounce_event('anne@example.com')
-
+        member.bounce_score = 1
         # Process events.
         self._process_pending_events()
-        self.assertEqual(member.bounce_score, 1)
+        self.assertEqual(member.bounce_score, 0)
         self.assertIsNone(member.preferences.delivery_status)
         messages = get_queue_messages('virgin', expected_count=1)
         msg = messages[0].msg

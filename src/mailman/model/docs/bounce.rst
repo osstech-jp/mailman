@@ -195,7 +195,7 @@ reached the Mailinglist's threshold.
     >>> anne_member.bounce_score = 4
     >>> anne_member.last_bounce_received = now() - timedelta(days=1)
 
-Next bounce event for anne should trigger a probe:
+Next bounce event for anne should trigger a probe which resets bounce_score:
 
     >>> event = processor.register(
     ...    mlist, 'anne@example.com', msg, BounceContext.normal)
@@ -203,7 +203,7 @@ Next bounce event for anne should trigger a probe:
     >>> with configuration('mta', verp_probes='yes'):
     ...     processor.process_event(event)
     >>> print(anne_member.bounce_score)
-    5
+    0
     >>> print(anne_member.preferences.delivery_status)
     None
     >>> items = get_queue_messages('virgin', expected_count=1)
