@@ -29,6 +29,7 @@ Bugs
   #655)
 * Mailman now auto-geneartes alias maps when it starts for the first
   time. (Closes #469)
+* Sending a bounce probe now resets ``bounce_score``.  (Closes #660)
 
 REST
 ----

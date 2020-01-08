@@ -280,6 +280,13 @@ list owner at
         items = get_queue_messages('virgin', expected_count=1)
         self.assertIsNone(items[0].msg['precedence'])
 
+    def test_send_probe_resets_bounce_score(self):
+        # Sending a probe should reset bounce_score so every subsequent bounce
+        # doesn't send another probe.
+        self._member.bounce_score = 5
+        send_probe(self._member, self._msg)
+        self.assertEqual(self._member.bounce_score, 0)
+
 
 class TestSendProbeNonEnglish(unittest.TestCase):
     """Test sending of the probe message to a non-English speaker."""
