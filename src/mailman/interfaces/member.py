@@ -273,3 +273,52 @@ class IMember(Interface):
         4. System default
 
         XXX I'm not sure this is the right place to put this.""")
+
+    bounce_score = Attribute(
+        """The bounce score of this address for the list_id.
+
+        This is a metric of how much the emails sent to this address bounces.
+        This value is incremented first time a bounce is received for the
+        address and mailing list pair on that day.
+
+        The bounce_score of an address on one mailing list does not affect
+        their bounce_score on other mailing lists.
+        """)
+
+    last_bounce_received = Attribute(
+        """The last time when a bounce was received for this mailing list
+        address pair.
+        """)
+
+    last_warnings_sent = Attribute(
+        """The last time when a warning email was sent to the address""")
+
+    total_warnings_sent = Attribute(
+        """Total number of warnings sent to the address. """)
+
+    disabled = Attribute(
+        """Has the email delivery been disabled. """)
+
+    def reset_bounce_info():
+        """Reset the bounce related information. """
+
+
+@public
+class IMembershipManager(Interface):
+    """Member object manager."""
+
+    def memberships_pending_warning():
+        """Memberships that have been disabled due to excessive bounces and require a
+        warning to be sent.
+
+        The total number of warnings sent to these are less than the
+        MailingList's configured number of warnings to be sent before the
+        membership is removed.
+        """
+
+    def memberships_pending_removal():
+        """Memberships pending removal.
+
+        These memberships have maximum number of warnings already sent out and
+        are pending removal.
+        """

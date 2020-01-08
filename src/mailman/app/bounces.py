@@ -175,7 +175,7 @@ class _ProbePendable(dict):
 
 
 @public
-def send_probe(member, msg):
+def send_probe(member, msg=None, message_id=None):
     """Send a VERP probe to the member.
 
     :param member: The member to send the probe to.  From this object, both
@@ -183,9 +183,13 @@ def send_probe(member, msg):
     :type member: IMember
     :param msg: The bouncing message that caused the probe to be sent.
     :type msg:
+    :param message_id: MessageID of the bouncing message.
+    :type message_id: str
     :return: The token representing this probe in the pendings database.
     :rtype: string
     """
+    if (message_id or msg) is None:
+        raise ValueError('Required at least one of "message_id" and "msg".')
     mlist = getUtility(IListManager).get_by_list_id(
         member.mailing_list.list_id)
     template = getUtility(ITemplateLoader).get(
@@ -201,7 +205,8 @@ def send_probe(member, msg):
         email=member.address.email,
         owneraddr=mlist.owner_address,
         )))
-    message_id = msg['message-id']
+    if message_id is None:
+        message_id = msg['message-id']
     if isinstance(message_id, bytes):
         message_id = message_id.decode('ascii')
     pendable = _ProbePendable(
@@ -221,13 +226,14 @@ def send_probe(member, msg):
         subject = _('$mlist.display_name mailing list probe message')
     # Craft the probe message.  This will be a multipart where the first part
     # is the probe text and the second part is the message that caused this
-    # probe to be sent.
+    # probe to be sent, if it provied.
     probe = UserNotification(member.address.email, probe_sender,
                              subject, lang=member.preferred_language)
     probe.set_type('multipart/mixed')
     notice = MIMEText(text, _charset=mlist.preferred_language.charset)
     probe.attach(notice)
-    probe.attach(MIMEMessage(msg))
+    if msg is not None:
+        probe.attach(MIMEMessage(msg))
     # Probes should not have the Precedence: bulk header.
     probe.send(mlist, envsender=probe_sender, verp=False, probe_token=token,
                add_precedence=False)

@@ -437,6 +437,18 @@ below.  Here are all the supported template names:
 
     * ``member`` - display name and email address of the subscriber
 
+* ``list:admin:notice:disable``
+    Sent to the list administrators to notify them when a member's delivery
+    is disabled due to excessive bounces.
+
+    * ``member`` - display name and email address of the subscriber
+
+* ``list:admin:notice:removal``
+   Sent to the list administrators to notify them when a member is unsubscribed
+   from am mailing list due to excessive bounces.
+
+   * ``member`` - display name and email address of the subscriber
+
 * ``list:member:digest:footer``
     The footer for a digest message.
 
@@ -544,6 +556,12 @@ below.  Here are all the supported template names:
 
     * ``user_name`` - the display name of the new member
     * ``user_email`` - the email address of the new member
+
+* ``list:user:notice:warning``
+   The notice sent to a member when their membership has been disabled due to
+   excessive bounces.
+
+    * ``user_email`` - the email address of the bouncing member.
 
 
 .. _requests: http://docs.python-requests.org/en/master/

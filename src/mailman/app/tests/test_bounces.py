@@ -191,6 +191,10 @@ Message-ID: <first>
 
 """)
 
+    def test_send_probe_missing_required_params(self):
+        with self.assertRaises(ValueError):
+            send_probe(self._member)
+
     def test_token(self):
         # Show that send_probe() returns a proper token, and that the token
         # corresponds to a record in the pending database.

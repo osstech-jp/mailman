@@ -17,15 +17,29 @@
 
 """Bounce support."""
 
+import logging
+
+from mailman.app.bounces import send_probe
+from mailman.app.membership import delete_member
+from mailman.app.notifications import (
+    send_admin_disable_notice, send_admin_removal_notice,
+    send_user_disable_warning)
+from mailman.config import config
 from mailman.database.model import Model
-from mailman.database.transaction import dbconnection
+from mailman.database.transaction import dbconnection, transactional
 from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceEvent, IBounceProcessor)
+    BounceContext, IBounceEvent, IBounceProcessor, InvalidBounceEvent)
+from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.member import DeliveryStatus, IMembershipManager
 from mailman.utilities.datetime import now
 from public import public
 from sqlalchemy import Boolean, Column, DateTime, Integer
+from zope.component import getUtility
 from zope.interface import implementer
+
+
+log = logging.getLogger('mailman.bounce')
 
 
 @public
@@ -76,3 +90,162 @@ class BounceProcessor:
     def unprocessed(self, store):
         """See `IBounceProcessor`."""
         yield from store.query(BounceEvent).filter_by(processed=False)
+
+    def _disable_delivery(self, mlist, member, event):
+        """Disable deliver for the member and maybe notify the admin.
+
+        :param mlist: The mailing list which bounce event belongs to.
+        :type mlist: IMailingList
+        :param member: The member object the bouncing address belongs to.
+        :type member: IMember
+        :param event: The bounce event that causes this.
+        :type event:" IBounceEvent
+        """
+        # If the membership is already disabled, do not sent another notice to
+        # the admin.
+        if member.preferences.delivery_status == DeliveryStatus.by_bounces:
+            return
+        member.preferences.delivery_status = DeliveryStatus.by_bounces
+        log.info('Disabling delivery for %s on list %s by bounce',
+                 event.email, mlist.list_id)
+        if mlist.bounce_notify_owner_on_disable:
+            send_admin_disable_notice(
+                mlist, event.email, display_name=member.display_name)
+
+    @transactional
+    @dbconnection
+    def process_event(self, store, event):
+        """See `IBounceProcessor`."""
+        list_manager = getUtility(IListManager)
+        mlist = list_manager.get(event.list_id)
+        member = mlist.members.get_member(event.email)
+        if member is None:
+            event.processed = True
+            # This needs an explicit commit because of the raise.
+            config.db.commit()
+            raise InvalidBounceEvent(
+                'Email {} is not a subcriber of {}'.format(
+                    event.email, mlist.list_id))
+
+        # If this is a probe bounce, that we are sent before to check for this
+        # Mailbox, we just disable the delivery for this member.
+        if event.context == BounceContext.probe:
+            self._disable_delivery(mlist, member, event)
+            return
+
+        # Looks like this is a regular bounce event, we need to process it
+        # in the follow order:
+        # 0. If the date of the bounce is same as the previous bounce, we
+        #    ignore this event.
+        # 1. Check if the bounce info is valid, bump the bounce_score and
+        #    update the last bounce info.
+        # 2. If the bounce info is stale, reset the bounce score with
+        #    this new value.
+        # 3. If the bounce_score is greater than threshold after the above,
+        #    a) Send a VERP probe, if configured to do so
+        #    b) Disable membership otherwise and notify the user and
+        #       warnings.
+        if (member.last_bounce_received is not None and
+                member.last_bounce_received.date() == event.timestamp.date()):
+            # Update the timestamp of the last bounce received.
+            member.last_bounce_received = event.timestamp
+            event.processed = True
+            log.info('Member %s already scored a bounce on list %s today.',
+                     event.email, mlist.list_id)
+            return
+
+        if member.last_bounce_received is None or (
+                member.last_bounce_received <
+                event.timestamp - mlist.bounce_info_stale_after):
+            # Reset the bounce score to 1, for the current bounce that we got.
+            member.bounce_score = 1
+        else:
+            # Update the bounce score to reflect this bounce.
+            member.bounce_score += 1
+        # Update the last received time for the bounce.
+        member.last_bounce_received = event.timestamp
+        log.info('Member %s on list %s, bounce score = %d.', event.email,
+                 mlist.list_id, member.bounce_score)
+        # Now, we are done updating. Let's see if the threshold is reached and
+        # disable based on that.
+        if member.bounce_score >= mlist.bounce_score_threshold:
+            if config.mta.verp_probes == 'yes':
+                send_probe(member, message_id=event.message_id)
+                action = 'sending probe'
+            else:
+                self._disable_delivery(mlist, member, event)
+                action = 'disabling delivery'
+            log.info(
+                'Member %s on list %s, bounce score %d >= threshold %d, %s.',
+                event.email, mlist.list_id, member.bounce_score,
+                mlist.bounce_score_threshold, action)
+        event.processed = True
+
+    @dbconnection
+    def send_warnings_and_remove(self, store):
+        """Send a warning email to the users who are disabled, if needed.
+
+        Also, if the max number of warnings have already been sent, remove the
+        member.
+        """
+        # Query the database for all the Members, who have:
+
+        # 1. Last warning was sent more than Mailinglist's disable notice
+        #    warnings interval ago.
+        # 2. Total warnings sent are less that Mailinglist's maximum number of
+        #    warnings to be sent before the member is removed.
+        self._send_warnings()
+        self._remove_memberships()
+
+    @dbconnection
+    def _remove_memberships(self, store):
+        """Remove all the memberships for whom max number of warnings have been sent.
+        """
+        manager = getUtility(IMembershipManager)
+        for member in manager.memberships_pending_removal():
+            # We do not want to send duplicate notifications to the
+            # administrators, so we send them a membership change event only if
+            # the list is configured not to notify them about removal due to
+            # bounces.
+            # Although, note that if admin_notif is None, they will receive
+            # notification only if the mailinglist is configured to notify on
+            # membership changes, which is a different setting..
+            admin_notif = None
+            send_admin_notif = False
+            if member.mailing_list.bounce_notify_owner_on_removal:
+                admin_notif = False
+                send_admin_notif = True
+
+            delete_member(
+                mlist=member._mailing_list, email=member.address.email,
+                admin_notif=admin_notif, userack=True)
+
+            if send_admin_notif:
+                send_admin_removal_notice(
+                    member.mailing_list, member.address.email,
+                    member.display_name)
+
+            log.info('Removed %s as a member of %s mailing list due to '
+                     'excessive bounces', member.address.email,
+                     member._mailing_list.display_name)
+
+    @dbconnection
+    def _send_warnings(self, store):
+        """Send warnings to the user who have reached their bounce score threshold.
+
+        We send warnings only to the members who have delivery disabled and
+        haven't already got a warning in the last
+        ``MalingLists.you_are_disabled_warnings_interval`` number of days.
+        """
+        manager = getUtility(IMembershipManager)
+        for member in manager.memberships_pending_warning():
+            log.debug('Sending membership disabled warning no. %s to %s due to'
+                      ' excessive bounces on %s mailing list',
+                      member.total_warnings_sent + 1,
+                      member.address,
+                      member.mailing_list.display_name)
+
+            send_user_disable_warning(
+                member.mailing_list, member.address, member.preferred_language)
+            member.total_warnings_sent += 1
+            member.last_warning_sent = now()

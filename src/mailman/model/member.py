@@ -17,6 +17,8 @@
 
 """Model for members."""
 
+from datetime import datetime
+
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -25,12 +27,14 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    IMember, MemberRole, MembershipError, UnsubscriptionEvent)
+    DeliveryStatus, IMember, IMembershipManager, MemberRole, MembershipError,
+    UnsubscriptionEvent)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
+from mailman.utilities.datetime import now
 from mailman.utilities.uid import UIDFactory
 from public import public
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, and_
 from sqlalchemy.orm import relationship
 from zope.component import getUtility
 from zope.event import notify
@@ -51,6 +55,7 @@ class Member(Model):
     _member_id = Column(UUID)
     role = Column(Enum(MemberRole), index=True)
     list_id = Column(SAUnicode, index=True)
+
     moderation_action = Column(Enum(Action))
 
     address_id = Column(Integer, ForeignKey('address.id'), index=True)
@@ -59,6 +64,13 @@ class Member(Model):
     preferences = relationship('Preferences')
     user_id = Column(Integer, ForeignKey('user.id'), index=True)
     _user = relationship('User')
+
+    bounce_score = Column(Integer, default=0, index=True)
+    last_bounce_received = Column(DateTime)
+    last_warning_sent = Column(DateTime, default=datetime.min, index=True)
+    total_warnings_sent = Column(Integer, default=0, index=True)
+
+    _mailing_list = None
 
     def __init__(self, role, list_id, subscriber):
         self._member_id = uid_factory.new()
@@ -88,8 +100,10 @@ class Member(Model):
     @property
     def mailing_list(self):
         """See `IMember`."""
-        list_manager = getUtility(IListManager)
-        return list_manager.get_by_list_id(self.list_id)
+        if self._mailing_list is None:
+            self._mailing_list = getUtility(
+                IListManager).get_by_list_id(self.list_id)
+        return self._mailing_list
 
     @property
     def member_id(self):
@@ -202,3 +216,58 @@ class Member(Model):
         notify(UnsubscriptionEvent(self.mailing_list, self))
         store.delete(self.preferences)
         store.delete(self)
+
+
+@public
+@implementer(IMembershipManager)
+class MembershipManager:
+    """See `IMembershipManager`."""
+
+    @dbconnection
+    def memberships_pending_warning(self, store):
+        """See `IMembershipManager`."""
+        from mailman.model.mailinglist import MailingList
+        from mailman.model.preferences import Preferences
+
+        # maxking: We don't care so much about the bounce score here since it
+        # could have been reset due to bounce info getting stale. We will send
+        # warnings to people who have been disabled already, regardless of
+        # their bounce score. Same is true below for removal.
+        query = store.query(Member).join(
+            MailingList, Member.list_id == MailingList._list_id).join(
+            Member.preferences).filter(and_(
+            MailingList.process_bounces == True,
+            Member.total_warnings_sent < MailingList.bounce_you_are_disabled_warnings,  # noqa: E501
+            Preferences.delivery_status == DeliveryStatus.by_bounces))
+
+        # XXX(maxking): This is IMO a query that *should* work, but I haven't
+        # been able to get it to work in my tests. It could be due to lack of
+        # native datetime type in SQLite, which we use for tests. Hence, we are
+        # going to do some filtering in Python, which is inefficient, but
+        # works. We do filter as much as possible in SQL, so hopefully the
+        # output of the above query won't be *too* many.
+        # TODO: Port the Python loop below to SQLAlchemy.
+
+        # (func.DATETIME(Member.last_warning_sent) +
+        # func.DATETIME(MailingList.bounce_you_are_disabled_warnings_interval))
+        # < func.DATETIME(now())))
+
+        for member in query.all():
+            if (member.last_warning_sent +
+                member.mailing_list.bounce_you_are_disabled_warnings_interval) < now():   # noqa: E501
+                yield member
+
+    @dbconnection
+    def memberships_pending_removal(self, store):
+        """See `IMembershipManager`."""
+        from mailman.model.mailinglist import MailingList
+        from mailman.model.preferences import Preferences
+
+        query = store.query(Member).join(
+            MailingList, Member.list_id == MailingList._list_id).join(
+            Member.preferences).filter(and_(
+            MailingList.process_bounces == True,
+            Member.total_warnings_sent >= MailingList.bounce_you_are_disabled_warnings,     # noqa: E501
+            Preferences.delivery_status == DeliveryStatus.by_bounces))
+
+        yield from query
