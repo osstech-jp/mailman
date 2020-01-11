@@ -27,7 +27,7 @@ from mailman.interfaces.bounce import (
 from mailman.interfaces.member import DeliveryStatus
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    configuration, get_queue_messages,
+    LogFileMark, configuration, get_queue_messages,
     specialized_message_from_string as message_from_string)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
@@ -184,8 +184,9 @@ Message-Id: <first>
         # Now, process the events and check that user is disabled.
         for event in events:
             self._processor.process_event(event)
-
-        self.assertEqual(member.bounce_score, 2)
+        # The first event scores 1 and disables delivery.  The second is
+        # not processed because delivery is already disabled.
+        self.assertEqual(member.bounce_score, 1)
         self.assertEqual(
             member.preferences.delivery_status, DeliveryStatus.by_bounces)
 
@@ -230,6 +231,23 @@ Message-Id: <first>
         self._process_pending_events()
         self.assertEqual(
             member.preferences.delivery_status, DeliveryStatus.by_bounces)
+
+    def test_disable_delivery_already_disabled(self):
+        # Attempting to disable delivery for an already disabled member does
+        # nothing.
+        self._mlist.send_welcome_message = False
+        member = self._subscribe_and_add_bounce_event('anne@example.com')
+        events = list(self._processor.events)
+        self.assertEqual(len(events), 1)
+        member.total_warnings_sent = 3
+        member.last_warning_sent = now() - timedelta(days=2)
+        member.preferences.delivery_status = DeliveryStatus.by_bounces
+        mark = LogFileMark('mailman.bounce')
+        self._processor._disable_delivery(self._mlist, member, events[0])
+        self.assertEqual(mark.read(), '')
+        self.assertEqual(member.total_warnings_sent, 3)
+        self.assertEqual(member.last_warning_sent, now() - timedelta(days=2))
+        get_queue_messages('virgin', expected_count=0)
 
     def test_send_warnings_after_disable(self):
         # Test that required number of warnings are sent after the delivery is

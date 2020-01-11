@@ -235,7 +235,7 @@ def send_probe(member, msg=None, message_id=None):
     if msg is not None:
         probe.attach(MIMEMessage(msg))
     # Probes should not have the Precedence: bulk header.
-    probe.send(mlist, envsender=probe_sender, verp=False, probe_token=token,
+    probe.send(mlist, sender=probe_sender, verp=False, probe_token=token,
                add_precedence=False)
     # When we send a probe, we reset the score.
     member.bounce_score = 0

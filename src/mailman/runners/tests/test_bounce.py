@@ -137,7 +137,7 @@ Message-Id: <second>
         self.assertEqual(events[0].list_id, 'test.example.com')
         self.assertEqual(events[0].message_id, '<second>')
         self.assertEqual(events[0].context, BounceContext.probe)
-        self.assertEqual(events[0].processed, False)
+        self.assertEqual(events[0].processed, True)
 
     def test_nonverp_detectable_fatal_bounce(self):
         # Here's a bounce that is not VERPd, but which has a bouncing address
@@ -357,8 +357,7 @@ Message-Id: <first>
         self.assertEqual(owner_notif.msg['Subject'],
                          "anne@example.com's subscription disabled on Test")
 
-        self.assertEqual(disable_notice.msg['to'].email,
-                         'anne@example.com')
+        self.assertEqual(disable_notice.msg['to'], 'anne@example.com')
         self.assertEqual(
             str(disable_notice.msg['subject']),
             'Your subscription for Test mailing list has been disabled')
@@ -382,6 +381,24 @@ Message-Id: <first>
         self.assertEqual(anne.total_warnings_sent, 2)
         self.assertEqual(anne.last_warning_sent.day, now().day)
 
+    def test_events_bounce_already_disabled(self):
+        # A bounce received for an already disabled member is only logged.
+        anne = self._subscribe_and_add_bounce_event(
+            'anne@example.com', subscribe=False, create=False)
+        self._mlist.bounce_score_threshold = 3
+        anne.bounce_score = 3
+        anne.preferences.delivery_status = DeliveryStatus.by_bounces
+        anne.total_warnings_sent = 1
+        anne.last_warning_sent = now() - timedelta(days=3)
+        mark = LogFileMark('mailman.bounce')
+        self._runner.run()
+        get_queue_messages('virgin', expected_count=0)
+        self.assertEqual(anne.total_warnings_sent, 1)
+        self.assertIn(
+           'Residual bounce received for member anne@example.com '
+           'on list test.example.com.', mark.read()
+           )
+
     def test_events_membership_removal(self):
         self._mlist.bounce_notify_owner_on_removal = True
         self._mlist.bounce_you_are_disabled_warnings = 3
@@ -391,6 +408,38 @@ Message-Id: <first>
         anne = self._mlist.members.get_member(self._anne.email)
         anne.preferences.delivery_status = DeliveryStatus.by_bounces
         anne.total_warnings_sent = 3
+        # Don't remove immediately.
+        anne.last_warning_sent = now() - timedelta(days=2)
+
+        self._runner.run()
+        items = get_queue_messages('virgin', expected_count=2)
+        if items[0].msg['to'] == 'test-owner@example.com':
+            owner_notif, user_notif = items
+        else:
+            user_notif, owner_notif = items
+        self.assertEqual(user_notif.msg['to'], 'anne@example.com')
+        self.assertEqual(
+            user_notif.msg['subject'],
+            'You have been unsubscribed from the Test mailing list')
+
+        self.assertEqual(
+            str(owner_notif.msg['subject']),
+            'anne@example.com unsubscribed from Test mailing '
+            'list due to bounces')
+        # The membership should no longer exist.
+        self.assertIsNone(
+            self._mlist.members.get_member(self._anne.email))
+
+    def test_events_membership_removal_no_warnings(self):
+        self._mlist.bounce_notify_owner_on_removal = True
+        self._mlist.bounce_you_are_disabled_warnings = 0
+        self._mlist.bounce_you_are_disabled_warnings_interval = timedelta(
+            days=2)
+
+        anne = self._mlist.members.get_member(self._anne.email)
+        anne.preferences.delivery_status = DeliveryStatus.by_bounces
+        anne.total_warnings_sent = 0
+        # Remove immediately.
         anne.last_warning_sent = now()
 
         self._runner.run()
@@ -410,4 +459,22 @@ Message-Id: <first>
             'list due to bounces')
         # The membership should no longer exist.
         self.assertIsNone(
+            self._mlist.members.get_member(self._anne.email))
+
+    def test_events_membership_removal_not_immediate(self):
+        self._mlist.bounce_notify_owner_on_removal = True
+        self._mlist.bounce_you_are_disabled_warnings = 3
+        self._mlist.bounce_you_are_disabled_warnings_interval = timedelta(
+            days=2)
+
+        anne = self._mlist.members.get_member(self._anne.email)
+        anne.preferences.delivery_status = DeliveryStatus.by_bounces
+        anne.total_warnings_sent = 3
+        # Don't remove immediately.
+        anne.last_warning_sent = now()
+
+        self._runner.run()
+        get_queue_messages('virgin', expected_count=0)
+        # The membership should still exist.
+        self.assertIsNotNone(
             self._mlist.members.get_member(self._anne.email))
