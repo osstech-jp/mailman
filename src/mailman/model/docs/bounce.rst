@@ -313,11 +313,16 @@ removes members when max number of warnings are sent.
     <BLANKLINE>
 
 
-After Mailinglist's configured ``bounce_you_are_disabled_warnings`` have been sent:
+After Mailinglist's configured ``bounce_you_are_disabled_warnings`` have been
+sent and another ``bounce_you_are_disabled_warnings_interval`` has elapsed:
 
     >>> print(mlist.bounce_you_are_disabled_warnings)
     3
     >>> anne_member.total_warnings_sent = 3
+    >>> print(mlist.bounce_you_are_disabled_warnings_interval)
+    7 days, 0:00:00
+    >>> anne_member.last_warning_sent = (
+    ...    now() - mlist.bounce_you_are_disabled_warnings_interval)
 
 Now, the processor will unsubscribe ``anne``:
 

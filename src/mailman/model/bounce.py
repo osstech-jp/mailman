@@ -18,6 +18,7 @@
 """Bounce support."""
 
 import logging
+import datetime
 
 from mailman.app.bounces import send_probe
 from mailman.app.membership import delete_member
@@ -106,6 +107,10 @@ class BounceProcessor:
         if member.preferences.delivery_status == DeliveryStatus.by_bounces:
             return
         member.preferences.delivery_status = DeliveryStatus.by_bounces
+        # We also need to set these.  It doesn't matter if they are already
+        # set from a prior disable.  They should be set no for this one.
+        member.total_warnings_sent = 0
+        member.last_warning_sent = datetime.datetime.min
         log.info('Disabling delivery for %s on list %s by bounce',
                  event.email, mlist.list_id)
         if mlist.bounce_notify_owner_on_disable:
@@ -130,21 +135,30 @@ class BounceProcessor:
         # If this is a probe bounce, that we are sent before to check for this
         # Mailbox, we just disable the delivery for this member.
         if event.context == BounceContext.probe:
+            log.info('Probe bounce received for member %s on list %s.',
+                     event.email, mlist.list_id)
+            event.processed = True
             self._disable_delivery(mlist, member, event)
             return
 
         # Looks like this is a regular bounce event, we need to process it
         # in the follow order:
-        # 0. If the date of the bounce is same as the previous bounce, we
+        # 0. If the member is already disabled by bounce, we ignore this
+        #    event.
+        # 1. If the date of the bounce is same as the previous bounce, we
         #    ignore this event.
-        # 1. Check if the bounce info is valid, bump the bounce_score and
+        # 2. Check if the bounce info is valid, bump the bounce_score and
         #    update the last bounce info.
-        # 2. If the bounce info is stale, reset the bounce score with
+        # 3. If the bounce info is stale, reset the bounce score with
         #    this new value.
-        # 3. If the bounce_score is greater than threshold after the above,
+        # 4. If the bounce_score is greater than threshold after the above,
         #    a) Send a VERP probe, if configured to do so
         #    b) Disable membership otherwise and notify the user and
         #       warnings.
+        if member.preferences.delivery_status == DeliveryStatus.by_bounces:
+            log.info('Residual bounce received for member %s on list %s.',
+                     event.email, mlist.list_id)
+            return
         if (member.last_bounce_received is not None and
                 member.last_bounce_received.date() == event.timestamp.date()):
             # Update the timestamp of the last bounce received.
@@ -169,6 +183,8 @@ class BounceProcessor:
         # Now, we are done updating. Let's see if the threshold is reached and
         # disable based on that.
         if member.bounce_score >= mlist.bounce_score_threshold:
+            # Save bounce_score because sending probe resets it.
+            saved_bounce_score = member.bounce_score
             if config.mta.verp_probes == 'yes':
                 send_probe(member, message_id=event.message_id)
                 action = 'sending probe'
@@ -177,7 +193,7 @@ class BounceProcessor:
                 action = 'disabling delivery'
             log.info(
                 'Member %s on list %s, bounce score %d >= threshold %d, %s.',
-                event.email, mlist.list_id, member.bounce_score,
+                event.email, mlist.list_id, saved_bounce_score,
                 mlist.bounce_score_threshold, action)
         event.processed = True
 
@@ -246,6 +262,7 @@ class BounceProcessor:
                       member.mailing_list.display_name)
 
             send_user_disable_warning(
-                member.mailing_list, member.address, member.preferred_language)
+                member.mailing_list, member.address.email,
+                member.preferred_language)
             member.total_warnings_sent += 1
             member.last_warning_sent = now()

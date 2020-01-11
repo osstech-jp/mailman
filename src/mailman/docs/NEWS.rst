@@ -30,6 +30,15 @@ Bugs
 * Mailman now auto-geneartes alias maps when it starts for the first
   time. (Closes #469)
 * Sending a bounce probe now resets ``bounce_score``.  (Closes #660)
+* Bounce probes which bounce are now properly recognized.  (Closes #661)
+* Residual bounces are logged but are not processed further.  (Closes #662)
+* Disabling delivery by bounce properly initializes some bounce info so
+  warnings can be sent and the member eventually removed.  (Closes #663)
+* Bouncing member is not removed until
+  ``bounce_you_are_disabled_warnings_interval`` after the last warning was
+  sent.  (Closes #664)
+* Fixed recipient address in delivery disabled by bounce notice to the user.
+  (Closes #665)
 
 REST
 ----

@@ -254,7 +254,7 @@ class MembershipManager:
 
         for member in query.all():
             if (member.last_warning_sent +
-                member.mailing_list.bounce_you_are_disabled_warnings_interval) < now():   # noqa: E501
+                member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now():   # noqa: E501
                 yield member
 
     @dbconnection
@@ -270,4 +270,8 @@ class MembershipManager:
             Member.total_warnings_sent >= MailingList.bounce_you_are_disabled_warnings,     # noqa: E501
             Preferences.delivery_status == DeliveryStatus.by_bounces))
 
-        yield from query
+        for member in query.all():
+            if ((member.last_warning_sent +
+                member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now() or   # noqa: E501
+                member.mailing_list.bounce_you_are_disabled_warnings == 0):
+                yield member
