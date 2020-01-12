@@ -158,6 +158,7 @@ class BounceProcessor:
         if member.preferences.delivery_status == DeliveryStatus.by_bounces:
             log.info('Residual bounce received for member %s on list %s.',
                      event.email, mlist.list_id)
+            event.processed = True
             return
         if (member.last_bounce_received is not None and
                 member.last_bounce_received.date() == event.timestamp.date()):
