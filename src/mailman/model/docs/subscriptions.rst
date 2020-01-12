@@ -248,7 +248,7 @@ There may be no matching memberships.
     []
 
 The address may contain asterisks, which will be interpreted as a wildcard in
-the search pattern.
+the search pattern for their email address or display name.
 
     >>> for member in service.find_members('*person*'):
     ...     print(member)
@@ -260,6 +260,8 @@ the search pattern.
         on ant@example.com as MemberRole.moderator>
     <Member: Bart Person <bperson@example.com>
         on bee@example.com as MemberRole.owner>
+    <Member: Anne Person <anne@example.com>
+        on cat@example.com as MemberRole.member>
     <Member: Cris Person <cperson@example.com>
         on cat@example.com as MemberRole.member>
 

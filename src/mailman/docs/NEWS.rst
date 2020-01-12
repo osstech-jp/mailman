@@ -40,6 +40,7 @@ Bugs
 * Fixed recipient address in delivery disabled by bounce notice to the user.
   (Closes #665)
 * Residial bounces are now marked as processed.  (Closes #669)
+* Find members API now searches for the Member's display name too. (Closes #667)
 
 REST
 ----
