@@ -30,6 +30,7 @@ from mailman.model.user import User
 from mailman.utilities.queries import QuerySequence
 from operator import attrgetter
 from public import public
+from sqlalchemy import or_
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from zope.component import getUtility
 from zope.interface import implementer
@@ -96,9 +97,12 @@ class SubscriptionService:
                 subscriber = subscriber.lower()
                 if '*' in subscriber:
                     subscriber = subscriber.replace('*', '%')
-                    q_address = q_address.filter(
-                        Address.email.like(subscriber))
-                    q_user = q_user.filter(Address.email.like(subscriber))
+                    q_address = q_address.filter(or_(
+                        Address.email.like(subscriber),
+                        Address.display_name.ilike(subscriber)))
+                    q_user = q_user.filter(or_(
+                        Address.email.like(subscriber),
+                        User.display_name.ilike(subscriber)))
                 else:
                     q_address = q_address.filter(Address.email == subscriber)
                     q_user = q_user.filter(Address.email == subscriber)

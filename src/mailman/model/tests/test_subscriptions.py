@@ -512,3 +512,20 @@ class TestSubscriptionService(unittest.TestCase):
         # Search for the user.
         members = self._service.find_members(anne.user_id)
         self.assertEqual(len(members), 2)
+
+    def test_find_members_with_display_name(self):
+        # Test that we can search members through the display_name of either
+        # the attached user or the address.
+        anne = self._user_manager.create_address(
+            'anne@example.com', display_name='Anita')
+        bart = self._user_manager.create_user(
+            'bart@example.com', display_name='Bob')
+        set_preferred(bart)
+        self._mlist.subscribe(anne)
+        self._mlist.subscribe(bart)
+        # Search for Anne's name.
+        members = self._service.find_members('*Ani*')
+        self.assertEqual(len(members), 1)
+        # Search for Bob's name.
+        members = self._service.find_members('*Bo*')
+        self.assertEqual(len(members), 1)
