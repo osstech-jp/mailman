@@ -39,6 +39,7 @@ Bugs
   sent.  (Closes #664)
 * Fixed recipient address in delivery disabled by bounce notice to the user.
   (Closes #665)
+* Residial bounces are now marked as processed.  (Closes #669)
 
 REST
 ----

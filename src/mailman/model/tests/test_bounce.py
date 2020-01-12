@@ -249,6 +249,17 @@ Message-Id: <first>
         self.assertEqual(member.last_warning_sent, now() - timedelta(days=2))
         get_queue_messages('virgin', expected_count=0)
 
+    def test_residual_bounce_marked_processed(self):
+        # A bounce received after delivery is disabled should be marked as
+        # processed.
+        member = self._subscribe_and_add_bounce_event('anne@example.com')
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 1)
+        member.preferences.delivery_status = DeliveryStatus.by_bounces
+        self._processor.process_event(events[0])
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 0)
+
     def test_send_warnings_after_disable(self):
         # Test that required number of warnings are sent after the delivery is
         # disabled.
