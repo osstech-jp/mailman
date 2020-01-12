@@ -8,89 +8,94 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2020-01-12 20:50+0000\n"
+"Last-Translator: Juri Grabowski <hosted-weblate@jugra.de>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.10.1\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
 #: src/mailman/handlers/subject_prefix.py:90 src/mailman/handlers/subject_prefix.py:118
 #: src/mailman/runners/digest.py:86
 msgid "(no subject)"
-msgstr ""
+msgstr "(без темы)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
-msgstr ""
+msgstr "[Детали отказов не доступны]"
 
 #: src/mailman/app/bounces.py:221
 msgid "$mlist.display_name mailing list probe message"
-msgstr ""
+msgstr "тестовое сообщение списка рассылки $ mlist.display_name"
 
 #: src/mailman/app/bounces.py:254
 msgid "Uncaught bounce notification"
-msgstr ""
+msgstr "Непойманные уведомление отказов"
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
-msgstr ""
+msgstr "уведомление об отказе от подписки $mlist.display_name"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
-msgstr ""
+msgstr "опубликовать сообщение под заголовком $subject"
 
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228 src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Причина не указана]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "Пересылка модерируемого сообщения"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr ""
+msgstr "Новый запрос на отписку от $ mlist.display_name от $ email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
-msgstr ""
+msgstr "Запрос на отмену подписки"
 
 #: src/mailman/app/moderator.py:268
 msgid "Original Message"
-msgstr ""
+msgstr "Оригинальное Сообщение"
 
 #: src/mailman/app/moderator.py:271
 msgid "Request to mailing list \"$display_name\" rejected"
-msgstr ""
+msgstr "Запрос на список рассылки \"$ display_name\" отклонен"
 
 #: src/mailman/app/notifications.py:66
 msgid " (Digest mode)"
-msgstr ""
+msgstr " (Дайджест)"
 
 #: src/mailman/app/notifications.py:70
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr ""
+msgstr "Добро пожаловать в список рассылки \"$ mlist.display_name\" $ {digmode}"
 
 #: src/mailman/app/notifications.py:94
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr ""
+msgstr "Вы были отписаны от списка рассылки $ mlist.display_name"
 
 #: src/mailman/app/notifications.py:112
 msgid "$mlist.display_name subscription notification"
-msgstr ""
+msgstr "Уведомление о подписке $mlist.display_name"
 
 #: src/mailman/app/subscriptions.py:296
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
+"Новый запрос на подписку на $self.mlist.display_name от $self.address.email"
 
 #: src/mailman/app/subscriptions.py:444
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
-msgstr ""
+msgstr "Новый запрос на отписку от $ mlist.display_name от $ email"
 
 #: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:510 src/mailman/bin/runner.py:96
 msgid ""
@@ -104,6 +109,9 @@ msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
+"Мастер блокировка не может быть получена, потому что кажется, как будто "
+"другой\n"
+"мастер уже работает."
 
 #: src/mailman/bin/master.py:158
 msgid ""
@@ -182,15 +190,15 @@ msgstr ""
 
 #: src/mailman/bin/master.py:543 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
-msgstr ""
+msgstr "Показать больше отладочной информации в файл журнала."
 
 #: src/mailman/bin/runner.py:50
 msgid "Undefined runner name: $name"
-msgstr ""
+msgstr "Неизвестное название программы: $name"
 
 #: src/mailman/bin/runner.py:58
 msgid "Cannot import runner module: $class_path"
-msgstr ""
+msgstr "Невозможно импортировать модуль запуска: $class \\ u path"
 
 #: src/mailman/bin/runner.py:76
 msgid ""
@@ -213,7 +221,7 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
-msgstr ""
+msgstr "Список доступных запущенных программ и выход."
 
 #: src/mailman/bin/runner.py:107
 msgid ""
@@ -246,27 +254,28 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:181
 msgid "$name runs $classname"
-msgstr ""
+msgstr "$ name запускает $ classname"
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
-msgstr ""
+msgstr "Принять сообщение."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "Встроенная цепь модерации."
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
-msgstr ""
+msgstr "Отменить сообщение и прекратить обработку."
 
 #: src/mailman/chains/dmarc.py:30
+#, fuzzy
 msgid "Process DMARC reject or discard mitigations"
-msgstr ""
+msgstr "Процесс DMARC отклоняет или отменяет меры по смягчению"
 
 #: src/mailman/chains/headers.py:120
 msgid "Header \"{}\" matched a header rule"
-msgstr ""
+msgstr "Заголовок \"{}\" соответствует правилу заголовка"
 
 #: src/mailman/chains/headers.py:135
 msgid "The built-in header matching chain"
@@ -274,23 +283,24 @@ msgstr ""
 
 #: src/mailman/chains/hold.py:58
 msgid "N/A"
-msgstr ""
+msgstr "Н/Д"
 
 #: src/mailman/chains/hold.py:117
 msgid "Last autoresponse notification for today"
-msgstr ""
+msgstr "Последнее уведомление автоответ на сегодня"
 
 #: src/mailman/chains/hold.py:132
 msgid "Hold a message and stop processing."
-msgstr ""
+msgstr "Удерживайте сообщение и прекратить обработку."
 
 #: src/mailman/chains/hold.py:198
 msgid "Your message to $mlist.fqdn_listname awaits moderator approval"
-msgstr ""
+msgstr "Ваше сообщение для $ mlist.fqdn_listname ожидает одобрения модератора"
 
 #: src/mailman/chains/hold.py:226
 msgid "$mlist.fqdn_listname post from $msg.sender requires approval"
 msgstr ""
+"Сообщение $mlist.fqdn_listname от отправителя $msg.sender требует одобрения."
 
 #: src/mailman/chains/hold.py:236
 msgid ""
@@ -303,27 +313,27 @@ msgstr ""
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
-msgstr ""
+msgstr "Цепь модерации"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
-msgstr ""
+msgstr "Встроенная цепочка сообщений владельца."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
-msgstr ""
+msgstr "Отклонить сообщение и прекратить обработку."
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
-msgstr ""
+msgstr "Регенерировать псевдонимы, подходящие для вашего MTA."
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
-msgstr ""
+msgstr "Альтернативный каталог для вывода различных файлов MTA."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
-msgstr ""
+msgstr "Распечатайте конфигурацию Mailman."
 
 #: src/mailman/commands/cli_conf.py:57
 msgid ""
