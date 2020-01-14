@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-01-12 20:50+0000\n"
+"PO-Revision-Date: 2020-01-15 20:21+0000\n"
 "Last-Translator: Juri Grabowski <hosted-weblate@jugra.de>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ru/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
 "4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.10.1\n"
+"X-Generator: Weblate 3.11-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -269,7 +269,6 @@ msgid "Discard a message and stop processing."
 msgstr "Отменить сообщение и прекратить обработку."
 
 #: src/mailman/chains/dmarc.py:30
-#, fuzzy
 msgid "Process DMARC reject or discard mitigations"
 msgstr "Процесс DMARC отклоняет или отменяет меры по смягчению"
 
@@ -355,7 +354,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:41
 msgid "Start the Mailman master and runner processes."
-msgstr ""
+msgstr "Запустите процессы Mailman master и runner."
 
 #: src/mailman/commands/cli_control.py:45
 msgid ""
@@ -394,7 +393,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:83
 msgid "GNU Mailman is already running"
-msgstr ""
+msgstr "GNU Mailman уже запущен"
 
 #: src/mailman/commands/cli_control.py:87
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
@@ -402,15 +401,15 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:95
 msgid "Starting Mailman's master runner"
-msgstr ""
+msgstr "Запуск процесса Mailman master"
 
 #: src/mailman/commands/cli_control.py:135
 msgid "PID unreadable in: $config.PID_FILE"
-msgstr ""
+msgstr "PID нечитаемый в: $config.PID_FILE"
 
 #: src/mailman/commands/cli_control.py:137
 msgid "Is the master even running?"
-msgstr ""
+msgstr "Мастер еще работает?"
 
 #: src/mailman/commands/cli_control.py:144
 msgid "No child with pid: $pid"
@@ -418,35 +417,37 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:146
 msgid "Stale pid file removed."
-msgstr ""
+msgstr "Устаревший файл pid удален."
 
 #: src/mailman/commands/cli_control.py:152
 msgid "Stop the Mailman master and runner processes."
-msgstr ""
+msgstr "остановить процесс Mailman master и runner."
 
 #: src/mailman/commands/cli_control.py:161
 msgid "Shutting down Mailman's master runner"
-msgstr ""
+msgstr "Отключение главного бегуна Mailman"
 
 #: src/mailman/commands/cli_control.py:174
 msgid "Signal the Mailman processes to re-open their log files."
 msgstr ""
+"Подать сигнал процессам mailman, чтобы они снова открыли свои файлы журналов."
 
 #: src/mailman/commands/cli_control.py:183
 msgid "Reopening the Mailman runners"
-msgstr ""
+msgstr "Повторное открытие бегунов Mailman"
 
 #: src/mailman/commands/cli_control.py:196
 msgid "Stop and restart the Mailman runner subprocesses."
-msgstr ""
+msgstr "Остановите и перезапустите подпроцессы бегуна Mailman."
 
 #: src/mailman/commands/cli_control.py:205
 msgid "Restarting the Mailman runners"
-msgstr ""
+msgstr "Перезапуск бегунов Mailman"
 
 #: src/mailman/commands/cli_digests.py:36
+#, fuzzy
 msgid "Operate on digests."
-msgstr ""
+msgstr "Работать на дайджестах."
 
 #: src/mailman/commands/cli_digests.py:39
 msgid ""
@@ -476,7 +477,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:53
 msgid "Print some additional status."
-msgstr ""
+msgstr "Вывод дополнительного статуса."
 
 #: src/mailman/commands/cli_digests.py:69
 msgid ""
@@ -490,7 +491,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:66
 msgid "No such list found: $spec"
-msgstr ""
+msgstr "Такая рассылка не найдена: $spec"
 
 #: src/mailman/commands/cli_digests.py:98
 #, python-brace-format
@@ -509,11 +510,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_gatenews.py:166
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
-msgstr ""
+msgstr "Опросите NNTP-сервер, чтобы сообщения шлюзовались в списки рассылки."
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr ""
+msgstr "Показать это справочное сообщение и выйти."
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
@@ -525,19 +526,19 @@ msgstr ""
 #: src/mailman/commands/cli_members.py:233 src/mailman/commands/cli_withlist.py:292
 #: src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
-msgstr ""
+msgstr "Нет такой рассылки: $listspec"
 
 #: src/mailman/commands/cli_import.py:76
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
-msgstr ""
+msgstr "Не файл конфигурации Mailman 2.1: $ pickle_file"
 
 #: src/mailman/commands/cli_import.py:79
 msgid "Ignoring non-dictionary: {0!r}"
-msgstr ""
+msgstr "Игнорируя не-словарь: {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
-msgstr ""
+msgstr "Информация об этом экземпляре Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
@@ -551,7 +552,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
-msgstr ""
+msgstr "Вставить сообщение из файла в очередь списка рассылки."
 
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
@@ -562,7 +563,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
-msgstr ""
+msgstr "Показать список всех доступных имен очередей и выйти."
 
 #: src/mailman/commands/cli_inject.py:60
 msgid ""
@@ -579,11 +580,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:79
 msgid "No such queue: $queue"
-msgstr ""
+msgstr "Нет такой очереди: $queue"
 
 #: src/mailman/commands/cli_lists.py:49
 msgid "List all mailing lists."
-msgstr ""
+msgstr "Список всех рассылок."
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List only those mailing lists that are publicly advertised"
