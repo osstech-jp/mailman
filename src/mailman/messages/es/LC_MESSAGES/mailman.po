@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-02-04 07:07+0000\n"
-"Last-Translator: Paco <pacoc@pangea.org>\n"
+"PO-Revision-Date: 2020-02-04 14:36+0000\n"
+"Last-Translator: Leandro Navarro <leandro@pangea.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/es/>\n"
 "Language: es\n"
@@ -60,7 +60,7 @@ msgstr "Nueva solicitud de dessuscripción de $mlist.display_name por $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
-msgstr "Solicitud de desuscripción"
+msgstr "Solicitud de baja"
 
 #: src/mailman/app/moderator.py:268
 msgid "Original Message"
@@ -96,8 +96,7 @@ msgstr ""
 #: src/mailman/app/subscriptions.py:444
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
-"Nueva solicitud de desuscripción a $self.mlist.display_name desde "
-"$self.address.email"
+"Nueva solicitud de baja a $self.mlist.display_name desde $self.address.email"
 
 #: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:510 src/mailman/bin/runner.py:96
 msgid ""
@@ -2154,7 +2153,7 @@ msgstr ""
 msgid "list:member:generic:footer.txt"
 msgstr ""
 "\"_______________________________________________Lista de correo $"
-"display_name -- $listnamePara desuscribirse, enviar un email a "
+"display_name -- $listnamePara darse de baja, enviar un email a "
 "${short_listname}-leave@${domain}\""
 
 msgid "list:user:action:unsubscribe.txt"
