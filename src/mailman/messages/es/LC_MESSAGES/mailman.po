@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-02-04 14:36+0000\n"
-"Last-Translator: Leandro Navarro <leandro@pangea.org>\n"
+"PO-Revision-Date: 2020-02-06 10:12+0000\n"
+"Last-Translator: Paco <pacoc@pangea.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/es/>\n"
 "Language: es\n"
@@ -32,7 +32,7 @@ msgstr "[No hay detalles de rebotes disponibles]"
 
 #: src/mailman/app/bounces.py:221
 msgid "$mlist.display_name mailing list probe message"
-msgstr "$mlist.display_name mensaje de sondeo de lista de correo"
+msgstr "$mlist.display_name mensaje de prueba de lista de correo"
 
 #: src/mailman/app/bounces.py:254
 msgid "Uncaught bounce notification"
@@ -40,7 +40,7 @@ msgstr "Notificación de rebote no captado"
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
-msgstr "notificación de dessuscripción de $mlist.display_name"
+msgstr "notificación de baja de $mlist.display_name"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
@@ -56,7 +56,7 @@ msgstr "Reenvío de mensaje moderado"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr "Nueva solicitud de dessuscripción de $mlist.display_name por $email"
+msgstr "Nueva solicitud de baja de $mlist.display_name por $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
@@ -396,7 +396,7 @@ msgstr "Procesar mitigaciones de rechazo o descarte de DMARC"
 
 #: src/mailman/chains/headers.py:120
 msgid "Header \"{}\" matched a header rule"
-msgstr "El encabezado \"{}\" encaja con una regla de encabezado"
+msgstr "La cabecera \"{}\" encaja con una regla de cabecera"
 
 #: src/mailman/chains/headers.py:135
 msgid "The built-in header matching chain"
@@ -1623,7 +1623,7 @@ msgstr "Realizar alguna contabilización tras un envío exitoso."
 #: src/mailman/handlers/arc_sign.py:65
 msgid "Perform ARC auth checks and attach resulting headers"
 msgstr ""
-"Realice comprobaciones de autenticación ARC y adjuntar los encabezados "
+"Realice comprobaciones de autentificación ARC y adjuntar las cabeceras "
 "resultantes"
 
 #: src/mailman/handlers/avoid_duplicates.py:42
@@ -1648,7 +1648,7 @@ msgstr "Decorar un mensaje con cabeceras y pies de página."
 
 #: src/mailman/handlers/dmarc.py:127
 msgid "$realname via $mlist.display_name"
-msgstr "$realname vía $mlist.display_name"
+msgstr "$realname a través de $mlist.display_name"
 
 #: src/mailman/handlers/dmarc.py:222
 msgid "Apply DMARC mitigations."
@@ -1763,7 +1763,7 @@ msgstr "Mover el mensaje a la cola de noticias saliente."
 #: src/mailman/handlers/validate_authenticity.py:113
 msgid "Perform auth checks and attach Authentication-Results header."
 msgstr ""
-"Realice las comprobaciones de autenticación y adjunte el encabezado "
+"Realice las comprobaciones de autentificación y adjunte la cabecera "
 "Authentication-Results."
 
 #: src/mailman/interfaces/pipeline.py:53
@@ -1804,7 +1804,7 @@ msgstr "Buscar cualquier activación de regla previo."
 
 #: src/mailman/rules/approved.py:45
 msgid "The message has a matching Approve or Approved header."
-msgstr "El mensaje tiene un encabezado Aprobar o Aprobado que encaja."
+msgstr "El mensaje tiene una cabecera Aprobar o Aprobado que encaja."
 
 #: src/mailman/rules/banned_address.py:33
 msgid "Match messages sent by banned addresses."
@@ -1936,7 +1936,7 @@ msgstr "El mensaje no tiene asunto"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
-msgstr "Captura mensajes con encabezados sospechosos."
+msgstr "Captura mensajes con cabeceras sospechosas."
 
 #: src/mailman/rules/suspicious.py:97
 msgid "Header \"{}\" matched a bounce_matching_header line"
@@ -2116,13 +2116,13 @@ msgid "invite.txt"
 msgstr ""
 "\"Su dirección \"$email\" ha sido invitada a unirse a la lista de correo $"
 "listnamemailing en $hostname por el propietario de la lista de correo $"
-"listname.Puede aceptar la invitación simplemente respondiendo a este "
-"mensaje, manteniendo intacto el encabezado Asunto: o debe incluir la "
-"siguiente línea -- y sólo la siguiente línea -- en un mensaje a $requestaddr:"
-"    confirm $cookieNote simplemente enviando una \"respuesta\" a este "
-"mensaje debería funcionar para la mayoría de los lectores de correo.Si "
-"quiere declinar esta invitación, por favor simplemente haga caso omiso de "
-"este mensaje.  Si tienen alguna pregunta, por favor envíenla a $listowner.\""
+"listname. Puede aceptar la invitación simplemente respondiendo a este "
+"mensaje, manteniendo intacta la cabecera Asunto: o debe incluir la siguiente "
+"línea -- y sólo la siguiente línea -- en un mensaje a $requestaddr:    "
+"confirm $cookieNote simplemente enviando una \"respuesta\" a este mensaje "
+"debería funcionar para la mayoría de los lectores de correo.Si quiere "
+"declinar esta invitación, por favor simplemente haga caso omiso de este "
+"mensaje.  Si tienen alguna pregunta, por favor envíenla a $listowner.\""
 
 msgid "list:admin:notice:unsubscribe.txt"
 msgstr "\"$member ha sido eliminado de $display_name.\""
@@ -2153,17 +2153,17 @@ msgstr ""
 msgid "list:member:generic:footer.txt"
 msgstr ""
 "\"_______________________________________________Lista de correo $"
-"display_name -- $listnamePara darse de baja, enviar un email a "
+"display_name -- $listnameTo para darse de baja, enviar un correo a "
 "${short_listname}-leave@${domain}\""
 
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
 "\"Confirmación de cancelación de la suscripción de la dirección de correo "
-"Hola, este es el servidor de GNU Mailman en $domain.Hemos recibido una "
+"Hola, este es el servidor de GNU Mailman en $domain. Hemos recibido una "
 "solicitud de cancelación de la suscripción de la dirección de correo.   $"
-"user_emailAntes de que GNU Mailman pueda cancelar su suscripción, debe "
-"confirmar primero su solicitud.Puede hacerlo respondiendo a este mensaje, "
-"manteniendo intacto el encabezado de Asunto.Si no desea cancelar la "
+"user_emailBefore de que GNU Mailman pueda cancelar su suscripción, debe "
+"confirmar primero su solicitud. Puede hacerlo respondiendo a este mensaje, "
+"manteniendo intacta la cabecera de Asunto. Si no desea cancelar la "
 "suscripción de esta dirección de correo, simplemente haga caso omiso a este "
 "mensaje.  Si cree que se le está dando de baja de la lista de forma "
 "maliciosa, o tiene alguna otra pregunta, puede ponerse en contacto con   $"
