@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
 "PO-Revision-Date: 2020-02-05 10:28+0000\n"
-"Last-Translator: Leandro Navarro <leandro@pangea.org>\n"
+"Last-Translator: Paco <pacoc@pangea.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ca/>\n"
 "Language: ca\n"
@@ -845,12 +845,11 @@ msgstr ""
 "    registrat a Mailman. Els noms de llista han de ser en minúscules."
 
 #: src/mailman/commands/cli_lists.py:130
-#, fuzzy
 msgid ""
 "    Set the list's preferred language to CODE, which must be a registered two\n"
 "    letter language code."
 msgstr ""
-"Establir l'idioma preferit de la llista a CODI, que ha de ser un\n"
+"    Establir l'idioma preferit de la llista a CODE, que ha de ser un\n"
 "    codi d'idioma de dues lletres."
 
 #: src/mailman/commands/cli_lists.py:136
@@ -1092,9 +1091,8 @@ msgid ""
 msgstr "Subscripcions retingudes:"
 
 #: src/mailman/commands/cli_notify.py:110 src/mailman/commands/cli_notify.py:114
-#, fuzzy
 msgid "User: {}\n"
-msgstr "Usuari: {}"
+msgstr "Usuari: {}\n"
 
 #: src/mailman/commands/cli_notify.py:112
 msgid ""
@@ -1503,8 +1501,9 @@ msgid "Get help about available email commands."
 msgstr "Obtenir ajuda sobre les comandes de correu disponibles."
 
 #: src/mailman/commands/eml_help.py:51
+#, fuzzy
 msgid "n/a"
-msgstr ""
+msgstr "n/a"
 
 #: src/mailman/commands/eml_help.py:59
 #, fuzzy
@@ -2185,22 +2184,27 @@ msgid "invite.txt"
 msgstr ""
 
 msgid "list:admin:notice:unsubscribe.txt"
-msgstr ""
+msgstr "\"$member s'ha eliminat de $display _name.\""
 
 msgid "list:admin:action:post.txt"
 msgstr ""
 
 msgid "list:admin:action:subscribe.txt"
 msgstr ""
+"\"La vostra autorització és necessària per a una sol·licitud de subscripció "
+"a la llista de correu:    per a:  $member    List: $listname\""
 
 msgid "list:admin:notice:subscribe.txt"
-msgstr ""
+msgstr "\"$member s'ha subscrit amb èxit a $display_name.\""
 
 msgid "list:user:notice:refuse.txt"
 msgstr ""
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
+"\"_______________________________________________Llista de correu $"
+"display_name -- $listnameTo per donar-se de baixa envieu un correu a "
+"${short_listname}-leave@${domain}\""
 
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
@@ -2225,6 +2229,8 @@ msgstr ""
 
 msgid "list:admin:action:unsubscribe.txt"
 msgstr ""
+"\"La vostra autorització és necessària per a l'aprovació d'una sol·licitud "
+"de baixa de llista de correu: Per: $ membre Llista: $ listname\""
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
