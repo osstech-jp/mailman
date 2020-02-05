@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-02-05 10:28+0000\n"
-"Last-Translator: Paco <pacoc@pangea.org>\n"
+"PO-Revision-Date: 2020-02-05 10:32+0000\n"
+"Last-Translator: Leandro Navarro <leandro@pangea.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ca/>\n"
 "Language: ca\n"
@@ -1501,22 +1501,18 @@ msgid "Get help about available email commands."
 msgstr "Obtenir ajuda sobre les comandes de correu disponibles."
 
 #: src/mailman/commands/eml_help.py:51
-#, fuzzy
 msgid "n/a"
-msgstr "n/a"
+msgstr "n/d"
 
 #: src/mailman/commands/eml_help.py:59
-#, fuzzy
 msgid "$self.name: no such command: $command_name"
-msgstr "$Self.name: no hi ha tal ordre: $command_name"
+msgstr "$Self.name: no hi ha tal comanda: $command_name"
 
 #: src/mailman/commands/eml_help.py:70
-#, fuzzy
 msgid "$self.name: too many arguments: $printable_arguments"
-msgstr "$Self.name: massa arguments: $printable_arguments"
+msgstr "$Self.name: masses arguments: $printable_arguments"
 
 #: src/mailman/commands/eml_membership.py:63
-#, fuzzy
 msgid ""
 "You will be asked to confirm your subscription request and you may be issued a\n"
 "provisional password.\n"
@@ -1529,44 +1525,37 @@ msgstr ""
 "que se li emeti un\n"
 "contrasenya provisional.\n"
 "\n"
-"Mitjançant l'opció 'digest', podeu especificar si voleu rebre en forma de "
+"Mitjançant l'opció 'digest', podeu especificar si vol rebre en forma de "
 "resum\n"
 "o no. Si no s'especifica, es farà servir el mode de lliurament per defecte "
 "de la llista\n"
-"de correu."
+"de correu.\n"
 
 #: src/mailman/commands/eml_membership.py:71
-#, fuzzy
 msgid "Join this mailing list."
 msgstr "Unir-se a aquesta llista de correu."
 
 #: src/mailman/commands/eml_membership.py:84
-#, fuzzy
 msgid "$self.name: No valid address found to subscribe"
-msgstr "$Self.name: No es troba cap adreça vàlida per a subscriure"
+msgstr "$self.name: No es troba cap adreça vàlida per a subscriure"
 
 #: src/mailman/commands/eml_membership.py:107
-#, fuzzy
 msgid "$person has a pending subscription for $listname"
-msgstr "$Person té una subscripció pendent per $listname"
+msgstr "$person té una subscripció pendent per $listname"
 
 #: src/mailman/commands/eml_membership.py:110
-#, fuzzy
 msgid "Confirmation email sent to $person"
 msgstr "Correu de confirmació enviat a $person"
 
 #: src/mailman/commands/eml_membership.py:125 src/mailman/commands/eml_membership.py:134
-#, fuzzy
 msgid "bad argument: $argument"
 msgstr "argument incorrecte: $argument"
 
 #: src/mailman/commands/eml_membership.py:145
-#, fuzzy
 msgid "An alias for 'join'."
 msgstr "Un sinònim de 'unir-se'."
 
 #: src/mailman/commands/eml_membership.py:156
-#, fuzzy
 msgid ""
 "Leave this mailing list.\n"
 "\n"
@@ -1577,44 +1566,36 @@ msgstr ""
 "Se li pot demanar confirmar la seva sol·licitud."
 
 #: src/mailman/commands/eml_membership.py:159
-#, fuzzy
 msgid "Leave this mailing list."
 msgstr "Deixar aquesta llista de correu."
 
 #: src/mailman/commands/eml_membership.py:165
-#, fuzzy
 msgid "$self.name: No valid email address found to unsubscribe"
 msgstr ""
-"$Self.name: No es troba una adreça de correu vàlida per a donar-se de baixa"
+"$self.name: No es troba una adreça de correu vàlida per a donar-se de baixa"
 
 #: src/mailman/commands/eml_membership.py:171
-#, fuzzy
 msgid "No registered user for email address: $email"
-msgstr "No hi ha usuari registrat per a la direcció de correu: $email"
+msgstr "No hi ha usuari registrat per a l'adreça de correu: $email"
 
 #: src/mailman/commands/eml_membership.py:178
-#, fuzzy
 msgid "Invalid or unverified email address: $email"
 msgstr "Adreça de correu no vàlida o no verificada: $email"
 
 #: src/mailman/commands/eml_membership.py:197
-#, fuzzy
 msgid "$self.name: $email is not a member of $mlist.fqdn_listname"
-msgstr "$Self.name: $email no és membre de $mlist.fqdn_listname"
+msgstr "$self.name: $email no és membre de $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:208
-#, fuzzy
 msgid "$person left $mlist.fqdn_listname"
-msgstr "$Person deixar $mlist.fqdn_listname"
+msgstr "$person va deixar $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:210
-#, fuzzy
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
 msgstr ""
 "Correu de confirmació enviat a $person per sortir de $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:220
-#, fuzzy
 msgid "An alias for 'leave'."
 msgstr "Un sinònim de 'deixar'."
 
@@ -1624,75 +1605,62 @@ msgid "Send an acknowledgment of a posting."
 msgstr "Envia una confirmació d'un enviament."
 
 #: src/mailman/handlers/acknowledge.py:75
-#, fuzzy
 msgid "$display_name post acknowledgment"
-msgstr "$Display_name confirmació d'enviament"
+msgstr "$display_name confirmació d'enviament"
 
 #: src/mailman/handlers/after_delivery.py:33
-#, fuzzy
 msgid "Perform some bookkeeping after a successful post."
 msgstr "Realitzar alguna comptabilització després d'un enviament reeixit."
 
 #: src/mailman/handlers/arc_sign.py:65
-#, fuzzy
 msgid "Perform ARC auth checks and attach resulting headers"
 msgstr ""
 "Feu comprovacions d'autenticació ARC i adjuntar les capçaleres resultants"
 
 #: src/mailman/handlers/avoid_duplicates.py:42
-#, fuzzy
 msgid "Suppress some duplicates of the same message."
-msgstr "Suprimiu alguns duplicats de el mateix missatge."
+msgstr "Suprimiu alguns duplicats del mateix missatge."
 
 #: src/mailman/handlers/cleanse_dkim.py:42
-#, fuzzy
 msgid "Remove DomainKeys headers."
 msgstr "Treure les capçaleres DomainKeys."
 
 #: src/mailman/handlers/cleanse.py:39
-#, fuzzy
 msgid "Cleanse certain headers from all messages."
 msgstr "Netejar certes capçaleres de tots els missatges."
 
 #: src/mailman/handlers/cook_headers.py:169
-#, fuzzy
 msgid "Modify message headers."
 msgstr "Modificar capçaleres de missatges."
 
 #: src/mailman/handlers/decorate.py:260
-#, fuzzy
 msgid "Decorate a message with headers and footers."
 msgstr "Decorar un missatge amb capçaleres i peus de pàgina."
 
 #: src/mailman/handlers/dmarc.py:127
-#, fuzzy
 msgid "$realname via $mlist.display_name"
-msgstr "$Realname via $mlist.display_name"
+msgstr "$realname via $mlist.display_name"
 
 #: src/mailman/handlers/dmarc.py:222
-#, fuzzy
 msgid "Apply DMARC mitigations."
 msgstr "Aplicar mitigacions DMARC."
 
 #: src/mailman/handlers/file_recipients.py:35
-#, fuzzy
 msgid "Get the normal delivery recipients from an include file."
 msgstr "Obtenir els destinataris de lliurament normals d'un arxiu d'inclusió."
 
 #: src/mailman/handlers/member_recipients.py:42
-#, fuzzy
 msgid "Calculate the regular recipients of the message."
-msgstr "Calcular els destinataris normals de l'missatge."
+msgstr "Calcular els destinataris normals del missatge."
 
 #: src/mailman/handlers/member_recipients.py:77
-#, fuzzy
 msgid ""
 "Your urgent message to the $mlist.display_name mailing list was not authorized\n"
 "for delivery.  The original message as received by Mailman is attached.\n"
 msgstr ""
 "El seu missatge urgent a la llista de correu $mlist.display_name no va ser "
 "autoritzat\n"
-"per al lliurament. S'adjunta el missatge original rebut per Mailman."
+"per al lliurament. S'adjunta el missatge original rebut per Mailman.\n"
 
 #: src/mailman/handlers/mime_delete.py:61
 #, fuzzy
