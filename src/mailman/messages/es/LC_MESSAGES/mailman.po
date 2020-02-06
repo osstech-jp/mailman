@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: Guillermo Hernandez <guillermo@querysoft.es>\n"
+"Last-Translator: Paco <pacoc@pangea.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/es/>\n"
 "Language: es\n"
@@ -2034,7 +2034,9 @@ msgstr "Realizar alguna contabilización tras un envío exitoso."
 
 #: src/mailman/handlers/arc_sign.py:66
 msgid "Perform ARC auth checks and attach resulting headers"
-msgstr "Realice comprobaciones de autentificación ARC y adjuntar las cabeceras resultantes"
+msgstr ""
+"Realice comprobaciones de autentificación ARC y adjuntar las cabeceras "
+"resultantes"
 
 #: src/mailman/handlers/avoid_duplicates.py:44
 msgid "Suppress some duplicates of the same message."
@@ -2199,7 +2201,9 @@ msgstr "Mover el mensaje a la cola de noticias saliente."
 
 #: src/mailman/handlers/validate_authenticity.py:120
 msgid "Perform auth checks and attach Authentication-Results header."
-msgstr "Realice las comprobaciones de autentificación y adjunte la cabecera Authentication-Results."
+msgstr ""
+"Realice las comprobaciones de autentificación y adjunte la cabecera "
+"Authentication-Results."
 
 #: src/mailman/interfaces/pipeline.py:53
 msgid "[No details are available]"
