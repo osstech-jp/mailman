@@ -239,7 +239,7 @@ def index_html():
         os.chdir('build/sphinx/html')
         try:
             os.symlink('README.html', 'index.html')
-            print 'index.html -> README.html'
+            print('index.html -> README.html')
         except OSError as error:
             if error.errno != errno.EEXIST:
                 raise
