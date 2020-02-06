@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-02-06 10:12+0000\n"
+"PO-Revision-Date: 2020-02-06 19:49+0000\n"
 "Last-Translator: Paco <pacoc@pangea.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/es/>\n"
@@ -1948,7 +1948,7 @@ msgstr "Una regla que siempre encaja."
 
 #: src/mailman/runners/command.py:101
 msgid "Ignoring non-text/plain MIME parts"
-msgstr "Ignorando partes MIME que no son text/plain"
+msgstr "Ignorando partes MIME que no son texto sin formato"
 
 #: src/mailman/runners/command.py:139
 msgid "The results of your email command are provided below.\n"
