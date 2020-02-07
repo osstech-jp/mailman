@@ -8,89 +8,95 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2020-02-08 06:15+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 3.11-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
 #: src/mailman/handlers/subject_prefix.py:90 src/mailman/handlers/subject_prefix.py:118
 #: src/mailman/runners/digest.py:86
 msgid "(no subject)"
-msgstr ""
+msgstr "(אין נושא)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
-msgstr ""
+msgstr "[פרטי ההחזרה אינם זמינים]"
 
 #: src/mailman/app/bounces.py:221
 msgid "$mlist.display_name mailing list probe message"
-msgstr ""
+msgstr "הודעת תשאול מול רשימת הדיוור $mlist.display_name"
 
 #: src/mailman/app/bounces.py:254
 msgid "Uncaught bounce notification"
-msgstr ""
+msgstr "הודעת החזרה שלא נתפסה"
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
-msgstr ""
+msgstr "הודעת ביטול מינוי מהרשימה $mlist.display_name"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
-msgstr ""
+msgstr "פרסום ההודעה שלך עם הנושא „$subject”"
 
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228 src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
-msgstr ""
+msgstr "[לא סופקה סיבה]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "העברה של הודעה מפוקחת"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr ""
+msgstr "בקשת ביטול מינוי חדשה מהרשימה $mlist.display_name מאת $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
-msgstr ""
+msgstr "בקשת ביטול מינוי"
 
 #: src/mailman/app/moderator.py:268
 msgid "Original Message"
-msgstr ""
+msgstr "הודעה מקורית"
 
 #: src/mailman/app/moderator.py:271
 msgid "Request to mailing list \"$display_name\" rejected"
-msgstr ""
+msgstr "הבקשה לרשימת הדיוור „$display_name” נדחתה"
 
 #: src/mailman/app/notifications.py:66
 msgid " (Digest mode)"
-msgstr ""
+msgstr " (מצב תקציר)"
 
 #: src/mailman/app/notifications.py:70
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr ""
+msgstr "ברוך בואך אל רשימת הדיוור „$mlist.display_name”${digmode}"
 
 #: src/mailman/app/notifications.py:94
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr ""
+msgstr "המינוי שלך לרשימת הדיוור $mlist.display_name בוטל"
 
 #: src/mailman/app/notifications.py:112
 msgid "$mlist.display_name subscription notification"
-msgstr ""
+msgstr "הודעת מינוי מול $mlist.display_name"
 
 #: src/mailman/app/subscriptions.py:296
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
-msgstr ""
+msgstr "בקשת מינוי חדשה אל $self.mlist.display_name מאת $self.address.email"
 
 #: src/mailman/app/subscriptions.py:444
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
+"בקשת ביטול מינוי חדשה מהרשימה $self.mlist.display_name מאת "
+"$self.address.email"
 
 #: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:510 src/mailman/bin/runner.py:96
 msgid ""
@@ -98,6 +104,9 @@ msgid ""
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
 "    default configuration file is loaded."
 msgstr ""
+"    קובץ הגדרות לשימוש.  אם לא צוין, ההגדרות שמופיעות במשתנה הסביבתי\n"
+"    MAILMAN_CONFIG_FILE תהיינה הפעילות.  אם לא צוינה אף אחת מהן,\n"
+"    יטען קובץ הגדרות כבררת מחדל."
 
 #: src/mailman/bin/master.py:152
 msgid ""
