@@ -45,6 +45,9 @@ from zope.component import getUtility
 @contextmanager
 def dummy_script(arg=''):
     exe = sys.executable
+    non_ascii = ''
+    if arg == 'non-ascii':
+        non_ascii = '‘...’'
     extra = ''
     if arg == 'scripterr':
         extra = 'error'
@@ -59,10 +62,10 @@ def dummy_script(arg=''):
 import sys
 if len(sys.argv) > 2:
     sys.exit(1)
-print('Converted text/html to text/plain')
+print('Converted text/html to text/plain{}')
 print('Filename:', sys.argv[1])
 print(open(sys.argv[1]).readlines()[0])
-""", file=fp)
+""".format(non_ascii), file=fp)
         config.push('dummy script', """\
 [mailman]
 html_to_plain_text_command = {exe} {script} {extra} $filename
@@ -260,6 +263,29 @@ PGh0bWw+PGhlYWQ+PC9oZWFkPgo8Ym9keT48L2JvZHk+PC9odG1sPgo=
         payload_lines = msg.get_payload().splitlines()
         self.assertEqual(payload_lines[0], 'Converted text/html to text/plain')
         self.assertEqual(payload_lines[2], '<html><head></head>')
+
+    def test_convert_html_to_plaintext_encodes_new_payload(self):
+        # Test that the converted payload with non-ascii is encoded.
+        msg = mfs("""\
+From: aperson@example.com
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+Q29udmVydGVkIHRleHQvaHRtbCB0byB0ZXh0L3BsYWlu4oCYLi4u4oCZCg==
+""")
+        process = config.handlers['mime-delete'].process
+        with dummy_script('non-ascii'):
+            process(self._mlist, msg, {})
+        self.assertEqual(msg['content-type'], 'text/plain; charset="utf-8"')
+        self.assertEqual(msg['content-transfer-encoding'], 'base64')
+        self.assertTrue(
+            msg['x-content-filtered-by'].startswith('Mailman/MimeDel'))
+        payload_lines = (
+            msg.get_payload(decode=True).decode('utf-8').splitlines())
+        self.assertEqual(payload_lines[0],
+                         'Converted text/html to text/plain‘...’')
+        self.assertTrue(payload_lines[1].startswith('Filename'))
 
     def test_convert_html_to_plaintext_error_return(self):
         # Calling a script which returns an error status is properly logged.

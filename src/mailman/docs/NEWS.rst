@@ -11,7 +11,7 @@ Here is a history of user visible changes to Mailman.
 3.3.1
 =====
 
-(2019-XX-XX)
+(2020-XX-XX)
 
 Bugs
 ----
@@ -41,6 +41,8 @@ Bugs
   (Closes #665)
 * Residial bounces are now marked as processed.  (Closes #669)
 * Find members API now searches for the Member's display name too. (Closes #667)
+* Content filtering ``convert_html_to_plaintext`` no longer creates messages
+  that can't be flattened as_bytes.  (Closes #677)
 
 REST
 ----

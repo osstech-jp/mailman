@@ -234,8 +234,9 @@ name of the file containing the message payload to filter.
     ...     process(mlist, msg, {})
     >>> print(msg.as_string())
     From: aperson@example.com
+    Content-Transfer-Encoding: 7bit
     MIME-Version: 1.0
-    Content-Type: text/plain
+    Content-Type: text/plain; charset="us-ascii"
     X-Content-Filtered-By: Mailman/MimeDel ...
     <BLANKLINE>
     Converted text/html to text/plain
@@ -301,8 +302,9 @@ so the entire inner ``multipart/mixed`` is discarded.
     X-Content-Filtered-By: Mailman/MimeDel ...
     <BLANKLINE>
     --AAA
+    Content-Transfer-Encoding: 7bit
     MIME-Version: 1.0
-    Content-Type: text/plain
+    Content-Type: text/plain; charset="us-ascii"
     <BLANKLINE>
     Converted text/html to text/plain
     Filename: ...
