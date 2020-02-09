@@ -15,6 +15,7 @@ Here is a history of user visible changes to Mailman.
 
 Bugs
 ----
+* Allow ``action`` for header matches to be None in REST interface. (Closes #671)
 * It is now possible to add the list posting address with nonmember role, e.g.
   to give it a moderaction of discard.  (Closes #633)
 * The issue of posting a message without a To: header to a fully personalized
