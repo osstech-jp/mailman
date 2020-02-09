@@ -119,6 +119,52 @@ class TestHeaderMatches(unittest.TestCase):
              for match in header_matches],
             [('header-1', '^Yes', 'hold', 'tag1')])
 
+    def test_add_header_match_with_no_action(self):
+        _, resp = call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                           '/header-matches', {
+                               'header': 'header-1',
+                               'pattern': '^Yes',
+                               'action': '',
+                               'tag': 'tag1',
+                                },
+                               method='POST')
+        self.assertEqual(resp.status_code, 201)
+        header_matches = IHeaderMatchList(self._mlist)
+        self.assertEqual(
+            [(match.header, match.pattern, match.chain, match.tag)
+             for match in header_matches],
+            [('header-1', '^Yes', None, 'tag1')])
+
+    def test_update_header_match_with_action(self):
+        header_matches = IHeaderMatchList(self._mlist)
+        with transaction():
+            header_matches.append('header-1', '^Yes', 'hold', 'tag1')
+        _, resp = call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                           '/header-matches/0', {
+                               'action': ''
+                               },
+                           method='PATCH')
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(
+            [(match.header, match.pattern, match.chain, match.tag)
+             for match in header_matches],
+            [('header-1', '^Yes', None, 'tag1')])
+
+    def test_update_header_match_with_no_action(self):
+        header_matches = IHeaderMatchList(self._mlist)
+        with transaction():
+            header_matches.append('header-1', '^Yes', 'hold', 'tag1')
+        _, resp = call_api('http://localhost:9001/3.0/lists/ant.example.com'
+                           '/header-matches/0', {
+                               'pattern': '^No'
+                               },
+                           method='PATCH')
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(
+            [(match.header, match.pattern, match.chain, match.tag)
+             for match in header_matches],
+            [('header-1', '^No', 'hold', 'tag1')])
+
     def test_get_header_match_by_tag(self):
         header_matches = IHeaderMatchList(self._mlist)
         with transaction():

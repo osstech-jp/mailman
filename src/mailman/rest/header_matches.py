@@ -96,7 +96,7 @@ class HeaderMatch(_HeaderMatchBase):
             header=lowercase,
             pattern=GetterSetter(regexp_validator),
             position=int,
-            action=enum_validator(Action),
+            action=enum_validator(Action, allow_blank=True),
             tag=lowercase,
             )
         if is_optional:
@@ -109,9 +109,12 @@ class HeaderMatch(_HeaderMatchBase):
         validator = Validator(**kws)
         try:
             arguments = validator(request)
-            action = arguments.pop('action', None)
-            if action is not None:
+            missing = object()
+            action = arguments.pop('action', missing)
+            if action is not missing and action is not None:
                 arguments['chain'] = action.name
+            elif action is not missing and action is None:
+                arguments['chain'] = action
             for key, value in arguments.items():
                 setattr(header_match, key, value)
         except ValueError as error:
@@ -147,7 +150,7 @@ class HeaderMatches(_HeaderMatchBase, CollectionMixin):
         validator = Validator(
             header=str,
             pattern=GetterSetter(regexp_validator),
-            action=enum_validator(Action),
+            action=enum_validator(Action, allow_blank=True),
             tag=str,
             _optional=('action', 'tag')
             )
