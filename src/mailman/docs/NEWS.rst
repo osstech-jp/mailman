@@ -44,6 +44,8 @@ Bugs
 * Find members API now searches for the Member's display name too. (Closes #667)
 * Content filtering ``convert_html_to_plaintext`` no longer creates messages
   that can't be flattened as_bytes.  (Closes #677)
+* Removed an incorrect failing assertion when confirming a confirm_then_moderate
+  unsubscription.  (Closes #553)
 
 REST
 ----

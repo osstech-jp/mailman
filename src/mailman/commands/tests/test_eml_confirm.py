@@ -121,6 +121,25 @@ Subject: Re: confirm {token}
         member = self._mlist.members.get_member('anne@example.com')
         self.assertIsNone(member)
 
+    def test_confirm_leave_moderate(self):
+        msg = mfs("""\
+From: Anne Person <anne@example.com>
+To: test-confirm+{token}@example.com
+Subject: Re: confirm {token}
+
+""".format(token=self._token))
+        self._mlist.unsubscription_policy = (
+            SubscriptionPolicy.confirm_then_moderate)
+        # Clear any previously queued confirmation messages.
+        get_queue_messages('virgin')
+        Confirm().process(self._mlist, msg, {}, (self._token,), Results())
+        # Anne is still a member of the mailing list.
+        member = self._mlist.members.get_member('anne@example.com')
+        self.assertIsNotNone(member)
+        # There should be a notice to the list owners
+        item = get_queue_messages('virgin', expected_count=1)[0]
+        self.assertEqual(item.msg['to'], 'test-owner@example.com')
+
 
 class TestEmailResponses(unittest.TestCase):
     """Test the `confirm` command through the command runner."""
