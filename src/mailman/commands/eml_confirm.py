@@ -55,14 +55,14 @@ class Confirm:
             if new_token is None:
                 assert token_owner is TokenOwner.no_one, token_owner
                 # We can't assert anything about member.  It will be None when
-                # the workflow we're confirming is an unsubscription request,
-                # and non-None when we're confirming a subscription request.
+                # the workflow we're confirming is a subscription request,
+                # and non-None when we're confirming an unsubscription request.
                 # This class doesn't know which is happening.
                 succeeded = True
             elif token_owner is TokenOwner.moderator:
-                # This must have been a confirm-then-moderator subscription.
+                # This must have been a confirm-then-moderate (un)subscription.
                 assert new_token != token
-                assert member is None, member
+                # We can't assert anything about member for the above reason.
                 succeeded = True
             else:
                 assert token_owner is not TokenOwner.no_one, token_owner
