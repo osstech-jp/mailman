@@ -50,6 +50,7 @@ Bugs
   library which causes Templates loading to fail. (Closes #691)
 * Fix a bug due to incompatible API of a new version of ``zope.intefaces``.
   (See !606)
+* Import21 no longer tries to import banned addresses.  (Closes #688)
 
 REST
 ----

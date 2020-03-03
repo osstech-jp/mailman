@@ -1176,6 +1176,15 @@ class TestRosterImport(unittest.TestCase):
         member = self._mlist.nonmembers.get_member('homer@example.com')
         self.assertEqual(member.moderation_action, Action.hold)
 
+    def test_no_import_banned_address(self):
+        # Banned addresses should not be imported with any role.
+        self._pckdict['ban_list'] = [b'^.*example.com']
+        import_config_pck(self._mlist, self._pckdict)
+        self.assertEqual([], list(self._mlist.owners.addresses))
+        self.assertEqual([], list(self._mlist.moderators.addresses))
+        self.assertEqual([], list(self._mlist.members.addresses))
+        self.assertEqual([], list(self._mlist.nonmembers.addresses))
+
 
 class TestRosterVisibilityImport(unittest.TestCase):
     """Test that member_roster_visibility is imported correctly.
