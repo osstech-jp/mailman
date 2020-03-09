@@ -46,6 +46,8 @@ Bugs
   that can't be flattened as_bytes.  (Closes #677)
 * Removed an incorrect failing assertion when confirming a confirm_then_moderate
   unsubscription.  (Closes #553)
+* Fix a bug due to incompatible API of a new version of ``importlib_resources``
+  library which causes Templates loading to fail. (Closes #691)
 
 REST
 ----
