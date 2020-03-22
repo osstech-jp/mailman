@@ -11,17 +11,17 @@ You must specify the mailing list you are importing into, and it must exist.
 
     >>> command('mailman import21')
     Usage: ... [OPTIONS] LISTSPEC PICKLE_FILE
-    Try "import21 --help" for help.
+    Try 'import21 --help' for help.
     <BLANKLINE>
-    Error: Missing argument "LISTSPEC".
+    Error: Missing argument 'LISTSPEC'.
 
 You must also specify a pickle file to import.
 
     >>> command('mailman import21 import@example.com')
     Usage: ... [OPTIONS] LISTSPEC PICKLE_FILE
-    Try "import21 --help" for help.
+    Try 'import21 --help' for help.
     <BLANKLINE>
-    Error: Missing argument "PICKLE_FILE".
+    Error: Missing argument 'PICKLE_FILE'.
 
 Too bad the list doesn't exist.
 
@@ -30,7 +30,7 @@ Too bad the list doesn't exist.
     ...     pickle_file = str(pickle_path)
     ...     command('mailman import21 import@example.com ' + pickle_file)
     Usage: ... [OPTIONS] LISTSPEC PICKLE_FILE
-    Try "import21 --help" for help.
+    Try 'import21 --help' for help.
     <BLANKLINE>
     Error: No such list: import@example.com
 
@@ -42,7 +42,7 @@ from.
     >>> transaction.commit()
     >>> command('mailman import21 import@example.com ' + __file__)
     Usage: ... [OPTIONS] LISTSPEC PICKLE_FILE
-    Try "import21 --help" for help.
+    Try 'import21 --help' for help.
     <BLANKLINE>
     Error: Not a Mailman 2.1 configuration file: .../import.rst'...
 

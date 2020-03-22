@@ -48,6 +48,8 @@ Bugs
   unsubscription.  (Closes #553)
 * Fix a bug due to incompatible API of a new version of ``importlib_resources``
   library which causes Templates loading to fail. (Closes #691)
+* Fix a bug due to incompatible API of a new version of ``zope.intefaces``.
+  (See !606)
 
 REST
 ----

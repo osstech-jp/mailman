@@ -125,7 +125,7 @@ case second 'm'.  Any other spelling is incorrect.""",
         'zope.component',
         'zope.configuration',
         'zope.event',
-        'zope.interface',
+        'zope.interface>=5.0',
         ],
     )
 
