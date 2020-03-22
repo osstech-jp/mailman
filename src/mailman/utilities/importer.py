@@ -587,11 +587,16 @@ def _import_roster(mlist, config_dict, members, role, action=None):
     validator = getUtility(IEmailValidator)
     roster = mlist.get_roster(role)
     skipped = []
+    banned = []
     action_arg = action
     for email in members:
         # For owners and members, the emails can have a mixed case, so
         # lowercase them all.
         email = bytes_to_str(email).lower()
+        # Ignore any banned addresses for all rosters.
+        if IBanManager(mlist).is_banned(email):
+            banned.append((email, role))
+            continue
         if roster.get_member(email) is not None:
             skipped.append((email, role))
             continue
@@ -693,4 +698,7 @@ def _import_roster(mlist, config_dict, members, role, action=None):
             member.preferences.receive_list_copy = not bool(prefs & 256)
     for email, role in skipped:
         print('{} is already imported with role {}'.format(email, role),
+              file=sys.stderr)
+    for email, role in banned:
+        print('{} is banned and not imported with role {}'.format(email, role),
               file=sys.stderr)
