@@ -62,6 +62,9 @@ REST
 * Add a new ``send_welcome_message`` flag when subscribing users to override
   MailingList's default setting. (Closes #362)
 * Expose content filtering settings for MailingList. (Closes #694)
+* Add ``advertised`` attribute to ``MailingList`` object so Postorius doesn't
+  have to make multiple calls for Index Page. (See !608)
+
 
 Features
 --------

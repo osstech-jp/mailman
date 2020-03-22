@@ -98,6 +98,7 @@ class _ListBase(CollectionMixin):
     def _resource_as_dict(self, mlist):
         """See `CollectionMixin`."""
         return dict(
+            advertised=mlist.advertised,
             display_name=mlist.display_name,
             fqdn_listname=mlist.fqdn_listname,
             list_id=mlist.list_id,
