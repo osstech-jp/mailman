@@ -189,6 +189,8 @@ ATTRIBUTES = dict(
     dmarc_moderation_notice=GetterSetter(str),
     dmarc_wrapped_message_text=GetterSetter(str),
     filter_content=GetterSetter(as_boolean),
+    filter_extensions=GetterSetter(list_of_strings_validator),
+    filter_types=GetterSetter(list_of_strings_validator),
     first_strip_reply_to=GetterSetter(as_boolean),
     forward_unrecognized_bounces_to=GetterSetter(
         enum_validator(UnrecognizedBounceDisposition)),
@@ -214,6 +216,8 @@ ATTRIBUTES = dict(
     nntp_prefix_subject_too=GetterSetter(as_boolean),
     no_reply_address=GetterSetter(None),
     owner_address=GetterSetter(None),
+    pass_types=GetterSetter(list_of_strings_validator),
+    pass_extensions=GetterSetter(list_of_strings_validator),
     personalize=GetterSetter(enum_validator(Personalization)),
     post_id=GetterSetter(None),
     posting_address=GetterSetter(None),
