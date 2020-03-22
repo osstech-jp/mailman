@@ -19,7 +19,7 @@
 
 from lazr.config import as_boolean, as_timedelta
 from mailman.config import config
-from mailman.interfaces.action import Action
+from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
@@ -188,6 +188,7 @@ ATTRIBUTES = dict(
     dmarc_mitigate_unconditionally=GetterSetter(as_boolean),
     dmarc_moderation_notice=GetterSetter(str),
     dmarc_wrapped_message_text=GetterSetter(str),
+    filter_action=GetterSetter(enum_validator(FilterAction)),
     filter_content=GetterSetter(as_boolean),
     filter_extensions=GetterSetter(list_of_strings_validator),
     filter_types=GetterSetter(list_of_strings_validator),

@@ -78,6 +78,7 @@ RESOURCE = dict(
     dmarc_mitigate_unconditionally=False,
     dmarc_moderation_notice='Some moderation notice',
     dmarc_wrapped_message_text='some message text',
+    filter_action='discard',
     filter_extensions=['.exe'],
     filter_content=True,
     filter_types=['application/zip'],

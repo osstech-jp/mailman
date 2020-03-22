@@ -64,6 +64,7 @@ REST
 * Expose content filtering settings for MailingList. (Closes #694)
 * Add ``advertised`` attribute to ``MailingList`` object so Postorius doesn't
   have to make multiple calls for Index Page. (See !608)
+* Expose ``filter_action`` attribute of MailingList through API. (See !609)
 
 
 Features
