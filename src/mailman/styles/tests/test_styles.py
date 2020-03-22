@@ -26,8 +26,7 @@ from mailman.interfaces.styles import (
     DuplicateStyleError, IStyle, IStyleManager)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
-from zope.interface import implementer
-from zope.interface.exceptions import DoesNotImplement
+from zope.interface import Invalid, implementer
 
 
 @implementer(IStyle)
@@ -58,8 +57,7 @@ class TestStyle(unittest.TestCase):
     def test_register_a_non_style(self):
         # You can't register something that doesn't implement the IStyle
         # interface.
-        self.assertRaises(DoesNotImplement,
-                          self.manager.register, object())
+        self.assertRaises(Invalid, self.manager.register, object())
 
     def test_unregister_a_non_registered_style(self):
         # You cannot unregister a style that hasn't yet been registered.

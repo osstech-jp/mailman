@@ -142,7 +142,7 @@ Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
         self.assertEqual(
             results.output,
             'Usage: shell [OPTIONS] [RUN_ARGS]...\n'
-            'Try "shell --help" for help.\n\n'
+            'Try \'shell --help\' for help.\n\n'
             'Error: Regular expression requires --run\n')
 
     def test_listspec_without_run(self):
@@ -157,7 +157,7 @@ Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
         posargs, kws = interactive_mock.call_args
         self.assertEqual(
             posargs[1],
-            "The variable 'm' is the ant.example.com mailing list")
+            'The variable \'m\' is the ant.example.com mailing list')
 
     def test_listspec_without_run_no_such_list(self):
         results = self._command.invoke(shell, ('-l', 'ant.example.com'))
@@ -165,7 +165,7 @@ Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
         self.assertEqual(
             results.output,
             'Usage: shell [OPTIONS] [RUN_ARGS]...\n'
-            'Try "shell --help" for help.\n\n'
+            'Try \'shell --help\' for help.\n\n'
             'Error: No such list: ant.example.com\n')
 
     def test_run_without_listspec(self):
@@ -183,5 +183,5 @@ Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
         self.assertEqual(
             results.output,
             'Usage: shell [OPTIONS] [RUN_ARGS]...\n'
-            'Try "shell --help" for help.\n\n'
+            'Try \'shell --help\' for help.\n\n'
             'Error: No such list: bee.example.com\n')

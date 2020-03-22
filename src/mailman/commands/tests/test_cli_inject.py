@@ -63,7 +63,7 @@ class TestInject(unittest.TestCase):
         self.assertEqual(
             result.output,
             'Usage: inject [OPTIONS] LISTSPEC\n'
-            'Try "inject --help" for help.\n\n'
+            'Try \'inject --help\' for help.\n\n'
             'Error: No such list: bee.example.com\n')
 
     def test_inject_no_such_queue(self):
@@ -73,7 +73,7 @@ class TestInject(unittest.TestCase):
         self.assertEqual(
             result.output,
             'Usage: inject [OPTIONS] LISTSPEC\n'
-            'Try "inject --help" for help.\n\n'
+            'Try \'inject --help\' for help.\n\n'
             'Error: No such queue: bogus\n')
 
     def test_inject_no_filename_option(self):

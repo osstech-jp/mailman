@@ -10,7 +10,7 @@ You can prevent creation of a mailing list in an unknown domain.
 
     >>> command('mailman create --no-domain ant@example.xx')
     Usage: create [OPTIONS] LISTNAME
-    Try "create --help" for help.
+    Try 'create --help' for help.
     <BLANKLINE>
     Error: Undefined domain: example.xx
 
@@ -87,7 +87,7 @@ The language must be known to Mailman.
 
     >>> command('mailman create --language xx ewe@example.com')
     Usage: create [OPTIONS] LISTNAME
-    Try "create --help" for help.
+    Try 'create --help' for help.
     <BLANKLINE>
     Error: Invalid language code: xx
 
