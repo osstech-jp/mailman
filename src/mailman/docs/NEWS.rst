@@ -61,7 +61,7 @@ REST
   attributes of a MailingList through API. (See !570)
 * Add a new ``send_welcome_message`` flag when subscribing users to override
   MailingList's default setting. (Closes #362)
-
+* Expose content filtering settings for MailingList. (Closes #694)
 
 Features
 --------

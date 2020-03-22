@@ -57,6 +57,8 @@ All readable attributes for a list are available on a sub-resource.
     dmarc_moderation_notice:
     dmarc_wrapped_message_text:
     filter_content: False
+    filter_extensions: []
+    filter_types: []
     first_strip_reply_to: False
     footer_uri:
     forward_unrecognized_bounces_to: administrators
@@ -85,6 +87,8 @@ All readable attributes for a list are available on a sub-resource.
     nntp_prefix_subject_too: True
     no_reply_address: noreply@example.com
     owner_address: ant-owner@example.com
+    pass_extensions: []
+    pass_types: []
     personalize: none
     post_id: 1
     posting_address: ant@example.com
@@ -140,6 +144,8 @@ When using ``PUT``, all writable attributes must be included.
     ...             bounce_you_are_disabled_warnings=3,
     ...             bounce_you_are_disabled_warnings_interval='1d',
     ...             forward_unrecognized_bounces_to='administrators',
+    ...             filter_extensions=['.mkv'],
+    ...             filter_types=['application/zip'],
     ...             process_bounces=True,
     ...             discard_these_nonmembers=[r'name_*bperson*@example.com'],
     ...             display_name='Fnords',
@@ -184,6 +190,8 @@ When using ``PUT``, all writable attributes must be included.
     ...             respond_to_post_requests=True,
     ...             max_days_to_hold='20',
     ...             max_num_recipients='20',
+    ...             pass_extensions=['.pdf'],
+    ...             pass_types=['image/jpeg'],
     ...             ),
     ...           'PUT')
     date: ...
@@ -235,6 +243,8 @@ These values are changed permanently.
     dmarc_moderation_notice: Some moderation notice
     dmarc_wrapped_message_text: some message text
     filter_content: True
+    filter_extensions: ['.mkv']
+    filter_types: ['application/zip']
     first_strip_reply_to: True
     footer_uri:
     forward_unrecognized_bounces_to: administrators
@@ -251,6 +261,9 @@ These values are changed permanently.
     newsgroup_moderation: moderated
     ...
     nntp_prefix_subject_too: False
+    ...
+    pass_extensions: ['.pdf']
+    pass_types: ['image/jpeg']
     ...
     posting_pipeline: virgin
     preferred_language: ja

@@ -19,9 +19,12 @@
 
 import unittest
 
+from mailman.app.lifecycle import create_list
 from mailman.core.api import API30, API31
+from mailman.database.transaction import transaction
 from mailman.interfaces.action import Action
 from mailman.interfaces.usermanager import IUserManager
+from mailman.rest import helpers
 from mailman.rest.validator import (
     email_or_regexp_validator, email_validator, enum_validator,
     integer_ge_zero_validator, list_of_emails_validator,
@@ -142,3 +145,28 @@ class TestValidators(unittest.TestCase):
         self.assertRaises(ValueError,
                           email_validator, 'foo.example.com')
         self.assertEqual('foo@example.com', email_validator('foo@example.com'))
+
+
+class TestGetterSetter(unittest.TestCase):
+    """Test the GeterSetter class"""
+
+    layer = RESTLayer
+
+    def setUp(self):
+        with transaction():
+            self._mlist = create_list('test@example.com')
+        self.getset = helpers.GetterSetter(list_of_strings_validator)
+
+    def test_get_mailinglist_attribute(self):
+        self.assertEqual(self.getset.get(self._mlist, 'pass_types'), [])
+        self.assertEqual(self.getset.get(self._mlist, 'pass_extensions'), [])
+
+    def test_set_mailinglist_attribute(self):
+        self.getset.put(
+            self._mlist, 'pass_types', ['application/octet-stream'])
+        self.getset.put(
+            self._mlist, 'pass_extensions', ['.pdf'])
+        self.assertEqual(list(self._mlist.pass_types),
+                         ['application/octet-stream'])
+        self.assertEqual(list(self._mlist.pass_extensions),
+                         ['.pdf'])
