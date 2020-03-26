@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-02-22 05:33+0000\n"
+"PO-Revision-Date: 2020-03-24 09:46+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 3.11.1\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -113,6 +113,8 @@ msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
+"לא ניתן להשיג את הנעילה הראשית כיוון שנראה שיש כבר שירות\n"
+"הורה אחר זמין."
 
 #: src/mailman/bin/master.py:158
 msgid ""
@@ -1711,3 +1713,5 @@ msgstr ""
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
+"„הודעתך לרשימת הדיוור $listname נדחתה מהסיבות הבאות:נ$reasons ההודעה המקורית "
+"שהתקבלה על ידי Mailman מצורפת להודעה זו.”"
