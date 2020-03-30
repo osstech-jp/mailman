@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-01-15 20:21+0000\n"
-"Last-Translator: Juri Grabowski <hosted-weblate@jugra.de>\n"
+"PO-Revision-Date: 2020-03-30 15:04+0000\n"
+"Last-Translator: Andrej Shadura <andrew@shadura.me>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
 "4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -660,7 +660,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr ""
+msgstr "Недопустимый код языка: $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
@@ -684,11 +684,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
-msgstr ""
+msgstr "Ваш новый список рассылки: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr ""
+msgstr "Удалить список рассылки."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
@@ -708,23 +708,23 @@ msgstr ""
 
 #: src/mailman/commands/cli_members.py:119 src/mailman/commands/cli_members.py:131
 msgid "Cannot parse as valid email address (skipping): $line"
-msgstr ""
+msgstr "Невозможно обработать адрес электронной почты (пропущен): $line"
 
 #: src/mailman/commands/cli_members.py:137
 msgid "Already subscribed (skipping): $email"
-msgstr ""
+msgstr "Уже подписан (пропущен): $email"
 
 #: src/mailman/commands/cli_members.py:140
 msgid "Already subscribed (skipping): $display_name <$email>"
-msgstr ""
+msgstr "Уже подписан (пропущен): $display_name <$email>"
 
 #: src/mailman/commands/cli_members.py:158
 msgid "Member not subscribed (skipping): $email"
-msgstr ""
+msgstr "Участник не подписан (пропущен): $email"
 
 #: src/mailman/commands/cli_members.py:160
 msgid "Member not subscribed (skipping): $display_name <$email>"
-msgstr ""
+msgstr "Участник не подписан (пропущен): $display_name <$email>"
 
 #: src/mailman/commands/cli_members.py:166
 msgid ""
