@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2019-12-23 17:21+0000\n"
-"Last-Translator: Guillaume Feller <guillaumefeller@gmail.com>\n"
+"PO-Revision-Date: 2020-03-31 20:13+0000\n"
+"Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -41,7 +41,7 @@ msgstr ""
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
-msgstr ""
+msgstr "$mlist.display_name notification de désabonnement"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
@@ -50,7 +50,7 @@ msgstr ""
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228
 #: src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Aucune raison n’est donnée]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
@@ -123,6 +123,8 @@ msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
+"Le verrou maître n’a pas pu être acquis car il semble qu’un autre\n"
+"maître est déjà en cours d’exécution."
 
 #: src/mailman/bin/master.py:158
 msgid ""
@@ -725,6 +727,9 @@ msgid ""
 "    Notify the list owner by email that their mailing list has been\n"
 "    created."
 msgstr ""
+"    Informer le propriétaire de la liste par courrier électronique que sa "
+"liste de diffusion a été\n"
+"    créé."
 
 #: src/mailman/commands/cli_lists.py:151
 msgid "Print less output."
@@ -739,7 +744,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr ""
+msgstr "Code de langue non valide : $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
@@ -747,15 +752,15 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:186
 msgid "Illegal list name: $fqdn_listname"
-msgstr ""
+msgstr "Nom de liste non autorisé : $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:188
 msgid "List already exists: $fqdn_listname"
-msgstr ""
+msgstr "La liste existe déjà : $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:190
 msgid "Undefined domain: $domain"
-msgstr ""
+msgstr "Domaine non défini : $domain"
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
@@ -763,11 +768,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
-msgstr ""
+msgstr "Votre nouvelle liste de diffusion : $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr ""
+msgstr "Supprimer une liste de diffusion."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
@@ -783,7 +788,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_members.py:90
 msgid "$mlist.list_id has no members"
-msgstr ""
+msgstr "$mlist.list_id n’a pas de membres"
 
 #: src/mailman/commands/cli_members.py:119
 #: src/mailman/commands/cli_members.py:131
@@ -872,6 +877,7 @@ msgstr ""
 #: src/mailman/commands/cli_notify.py:37
 msgid "Notify list owners/moderators of pending requests."
 msgstr ""
+"Informer les propriétaires/modérateurs de la liste des demandes en attente."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid ""
@@ -884,7 +890,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:77 src/mailman/commands/cli_notify.py:130
 msgid "The {} list has {} moderation requests waiting."
-msgstr ""
+msgstr "La liste {} comporte {} demandes de modération en attente."
 
 #: src/mailman/commands/cli_notify.py:108
 msgid ""
@@ -895,7 +901,7 @@ msgstr ""
 #: src/mailman/commands/cli_notify.py:110
 #: src/mailman/commands/cli_notify.py:114
 msgid "User: {}\n"
-msgstr ""
+msgstr "Utilisateur : {}\n"
 
 #: src/mailman/commands/cli_notify.py:112
 msgid ""
@@ -911,17 +917,19 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:122
 msgid "Sender: {}\n"
-msgstr ""
+msgstr "Expéditeur : {}\n"
 
 #: src/mailman/commands/cli_notify.py:123
 msgid "Subject: {}\n"
-msgstr ""
+msgstr "Sujet : {}\n"
 
 #: src/mailman/commands/cli_notify.py:124
 msgid ""
 "Reason: {}\n"
 "\n"
 msgstr ""
+"Raison : {}\n"
+"\n"
 
 #: src/mailman/commands/cli_notify.py:133
 msgid ""
@@ -965,19 +973,19 @@ msgstr ""
 
 #: src/mailman/commands/cli_qfile.py:77
 msgid "Number of objects found (see the variable 'm'): $count"
-msgstr ""
+msgstr "Nombre d’objets trouvés (voir la variable « m ») : $count"
 
 #: src/mailman/commands/cli_status.py:34
 msgid "Show the current running status of the Mailman system."
-msgstr ""
+msgstr "Afficher l’état de fonctionnement actuel du système Mailman."
 
 #: src/mailman/commands/cli_status.py:38
 msgid "GNU Mailman is not running"
-msgstr ""
+msgstr "GNU Mailman n’est pas en cours d’exécution"
 
 #: src/mailman/commands/cli_status.py:41
 msgid "GNU Mailman is running (master pid: $pid)"
-msgstr ""
+msgstr "GNU Mailman est en cours d’exécution (master pid : $pid)"
 
 #: src/mailman/commands/cli_status.py:44
 msgid "GNU Mailman is stopped (stale pid: $pid)"
@@ -985,7 +993,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_status.py:50
 msgid "GNU Mailman is in an unexpected state ($hostname != $fqdn_name)"
-msgstr ""
+msgstr "GNU Mailman est dans un état inattendu ($hostname != $fqdn_name)"
 
 #: src/mailman/commands/cli_unshunt.py:33
 msgid "Unshunt messages."
@@ -1006,11 +1014,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_version.py:32
 msgid "Display Mailman's version."
-msgstr ""
+msgstr "Afficher la version du facteur Mailman."
 
 #: src/mailman/commands/cli_withlist.py:76
 msgid "ipython is not available, set use_ipython to no"
-msgstr ""
+msgstr "ipython n’est pas disponible, réglez use_ipython sur no"
 
 #: src/mailman/commands/cli_withlist.py:85
 msgid "readline not available"
@@ -1018,7 +1026,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:133
 msgid "Invalid value for [shell]use_python: {}"
-msgstr ""
+msgstr "Valeur non valide pour [shell]use_python : {}"
 
 #: src/mailman/commands/cli_withlist.py:149
 msgid ""
@@ -1162,7 +1170,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:273
 msgid "Regular expression requires --run"
-msgstr ""
+msgstr "L’expression régulière nécessite --run"
 
 #: src/mailman/commands/cli_withlist.py:300
 msgid "The variable 'm' is the $listspec mailing list"
@@ -1170,15 +1178,15 @@ msgstr ""
 
 #: src/mailman/commands/eml_confirm.py:34
 msgid "Confirm a subscription request."
-msgstr ""
+msgstr "Confirmer une demande d’abonnement."
 
 #: src/mailman/commands/eml_confirm.py:41
 msgid "No confirmation token found"
-msgstr ""
+msgstr "Aucun jeton de confirmation n’a été trouvé"
 
 #: src/mailman/commands/eml_confirm.py:74
 msgid "Confirmed"
-msgstr ""
+msgstr "Confirmé"
 
 #: src/mailman/commands/eml_confirm.py:78
 msgid "Confirmation token did not match"
@@ -1194,23 +1202,24 @@ msgstr ""
 
 #: src/mailman/commands/eml_end.py:47
 msgid "An alias for 'end'."
-msgstr ""
+msgstr "Un alias pour « end »."
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
 msgstr ""
+"Obtenez de l’aide sur les commandes de courrier électronique disponibles."
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
-msgstr ""
+msgstr "n/d"
 
 #: src/mailman/commands/eml_help.py:59
 msgid "$self.name: no such command: $command_name"
-msgstr ""
+msgstr "$self.name : aucune de commande de ce type : $command_name"
 
 #: src/mailman/commands/eml_help.py:70
 msgid "$self.name: too many arguments: $printable_arguments"
-msgstr ""
+msgstr "$self.name : trop d’arguments : $arguments_printables"
 
 #: src/mailman/commands/eml_membership.py:63
 msgid ""
@@ -1226,7 +1235,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:71
 msgid "Join this mailing list."
-msgstr ""
+msgstr "Inscrivez-vous à cette liste de diffusion."
 
 #: src/mailman/commands/eml_membership.py:84
 msgid "$self.name: No valid address found to subscribe"
@@ -1234,20 +1243,20 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:107
 msgid "$person has a pending subscription for $listname"
-msgstr ""
+msgstr "$person possède un abonnement en attente pour $listname"
 
 #: src/mailman/commands/eml_membership.py:110
 msgid "Confirmation email sent to $person"
-msgstr ""
+msgstr "Courriel de confirmation envoyé à $person"
 
 #: src/mailman/commands/eml_membership.py:125
 #: src/mailman/commands/eml_membership.py:134
 msgid "bad argument: $argument"
-msgstr ""
+msgstr "mauvais argument : $argument"
 
 #: src/mailman/commands/eml_membership.py:145
 msgid "An alias for 'join'."
-msgstr ""
+msgstr "Un alias pour « join »."
 
 #: src/mailman/commands/eml_membership.py:156
 msgid ""
@@ -1255,10 +1264,13 @@ msgid ""
 "\n"
 "You may be asked to confirm your request."
 msgstr ""
+"Quitter cette liste de diffusion.\n"
+"\n"
+"Il vous sera peut-être demandé de confirmer votre requête."
 
 #: src/mailman/commands/eml_membership.py:159
 msgid "Leave this mailing list."
-msgstr ""
+msgstr "Quitter cette liste de diffusion."
 
 #: src/mailman/commands/eml_membership.py:165
 msgid "$self.name: No valid email address found to unsubscribe"
@@ -1270,15 +1282,15 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:178
 msgid "Invalid or unverified email address: $email"
-msgstr ""
+msgstr "Adresse électronique non valide ou non vérifiée : $email"
 
 #: src/mailman/commands/eml_membership.py:197
 msgid "$self.name: $email is not a member of $mlist.fqdn_listname"
-msgstr ""
+msgstr "$self.name : $email n’est pas un membre de $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:208
 msgid "$person left $mlist.fqdn_listname"
-msgstr ""
+msgstr "$person a quitté $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:210
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
@@ -1286,11 +1298,11 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:220
 msgid "An alias for 'leave'."
-msgstr ""
+msgstr "Un alias pour « leave »."
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
-msgstr ""
+msgstr "Envoyer un accusé de réception d’une publication."
 
 #: src/mailman/handlers/acknowledge.py:75
 msgid "$display_name post acknowledgment"
