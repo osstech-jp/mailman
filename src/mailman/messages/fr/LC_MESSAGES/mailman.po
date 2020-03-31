@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: Yohann D'ANELLO <yohann.danello@animath.fr>\n"
+"Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -1220,7 +1220,8 @@ msgid ""
 "    Notify the list owner by email that their mailing list has been\n"
 "    created."
 msgstr ""
-"    Informer le propriétaire de la liste par courrier électronique que sa liste de diffusion a été\n"
+"    Informer le propriétaire de la liste par courrier électronique que sa "
+"liste de diffusion a été\n"
 "    créé."
 
 #: src/mailman/commands/cli_lists.py:155
@@ -1376,7 +1377,8 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:40
 msgid "Notify list owners/moderators of pending requests."
-msgstr "Informer les propriétaires/modérateurs de la liste des demandes en attente."
+msgstr ""
+"Informer les propriétaires/modérateurs de la liste des demandes en attente."
 
 #: src/mailman/commands/cli_notify.py:43
 msgid ""
@@ -1896,7 +1898,8 @@ msgstr "Un alias pour « end »."
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
-msgstr "Obtenez de l’aide sur les commandes de courrier électronique disponibles."
+msgstr ""
+"Obtenez de l’aide sur les commandes de courrier électronique disponibles."
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
