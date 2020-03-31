@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
 "PO-Revision-Date: 2020-03-31 20:13+0000\n"
-"Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
+"Last-Translator: Jaxom <jaxom+weblate@tchack.xyz>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -45,7 +45,7 @@ msgstr "$mlist.display_name notification de désabonnement"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
-msgstr ""
+msgstr "Publication de votre message intitulé \"$subject\""
 
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228
 #: src/mailman/rest/sub_moderation.py:113
@@ -54,11 +54,11 @@ msgstr "[Aucune raison n’est donnée]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "Transfert du message modéré"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr ""
+msgstr "Nouvelle demande de désinscription de $mlist.display_name par $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
