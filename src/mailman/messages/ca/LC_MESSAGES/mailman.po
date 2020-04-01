@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-02-06 10:12+0000\n"
-"Last-Translator: Leandro Navarro <leandro@pangea.org>\n"
+"PO-Revision-Date: 2020-03-31 02:17+0000\n"
+"Last-Translator: Joan Montané <joan@montane.cat>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ca/>\n"
 "Language: ca\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -44,7 +44,7 @@ msgstr "notificació de baixa de subscripció de $mlist.display_name"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
-msgstr "Publicació del missatge titulat \"$subject\""
+msgstr "Publicació del missatge titulat «$subject»"
 
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228 src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
@@ -64,11 +64,11 @@ msgstr "Sol·licitud de baixa"
 
 #: src/mailman/app/moderator.py:268
 msgid "Original Message"
-msgstr "Missatge Original"
+msgstr "Missatge original"
 
 #: src/mailman/app/moderator.py:271
 msgid "Request to mailing list \"$display_name\" rejected"
-msgstr "S'ha rebutjat la sol·licitud a la llista de correu \"$display_name\""
+msgstr "S'ha rebutjat la sol·licitud a la llista de correu «$display_name»"
 
 #: src/mailman/app/notifications.py:66
 msgid " (Digest mode)"
@@ -77,11 +77,11 @@ msgstr " (Mode resum)"
 #: src/mailman/app/notifications.py:70
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr "Benvingut a la llista de correu \"$mlist.display_name\" ${digmode}"
+msgstr "Benvingut a la llista de correu «$mlist.display_name» ${digmode}"
 
 #: src/mailman/app/notifications.py:94
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr "Se li ha donat de baixa de la llista de correu $mlist.display_name"
+msgstr "Se us ha donat de baixa de la llista de correu $mlist.display_name"
 
 #: src/mailman/app/notifications.py:112
 msgid "$mlist.display_name subscription notification"
@@ -105,9 +105,10 @@ msgid ""
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
 "    default configuration file is loaded."
 msgstr ""
-"    Arxiu de configuració a utilitzar. Si no es dona, la variable d'entorn\n"
-"    MAILMAN_CONFIG_FILE es consulta i es fa servir si està definida. Si no "
-"es dona,\n"
+"    Fitxer de configuració a utilitzar. Si no es proporciona, es consulta la "
+"variable d'entorn\n"
+"    MAILMAN_CONFIG_FILE i es fa servir si està definida. Si no es "
+"proporciona,\n"
 "    es carrega el fitxer de configuració per defecte."
 
 #: src/mailman/bin/master.py:152
@@ -124,7 +125,7 @@ msgid ""
 "master lock.  Try re-running $program with the --force flag."
 msgstr ""
 "No s'ha pogut adquirir el bloqueig principal. Sembla com si hi hagués un\n"
-"bloqueig principal obsolet. Proveu tornar a executar $program amb la opció "
+"bloqueig principal obsolet. Proveu de tornar a executar $program amb l'opció "
 "--force."
 
 #: src/mailman/bin/master.py:164
