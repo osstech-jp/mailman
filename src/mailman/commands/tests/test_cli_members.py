@@ -183,3 +183,141 @@ class TestCLIMembers(unittest.TestCase):
                 lines = infp.readlines()
         self.assertEqual(len(lines), 1)
         self.assertEqual(lines[0], 'Bart Person <bperson@example.com>\n')
+
+    def test_sync_invalid_email(self):
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Dont Subscribe <not-a-valid-email>', file=infp)
+            print('not-a-valid@email', file=infp)
+            result = self._command.invoke(members, (
+                '--sync', infp.name, 'ant.example.com'))
+        self.assertEqual(
+           result.output,
+           'Cannot parse as valid email address' +
+           ' (skipping): Dont Subscribe <not-a-valid-email>\n' +
+           'Cannot parse as valid email address' +
+           ' (skipping): not-a-valid@email\n' +
+           'Nothing to do\n')
+
+    def test_sync_no_change(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            result = self._command.invoke(members, (
+                '--no-change', '--sync', infp.name, 'ant.example.com'))
+        self.assertEqual(result.output, "[DEL] Bart Person" +
+                                        " <bperson@example.com>\n")
+
+    def test_sync_empty_tuple(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            print('\"\"', file=infp)
+            result = self._command.invoke(members, (
+                '--no-change', '--sync', infp.name, 'ant.example.com'))
+        self.assertEqual(result.output, "Cannot parse as valid email " +
+                                        "address (skipping): \"\"\n" +
+                                        "[DEL] Bart Person " +
+                                        "<bperson@example.com>\n")
+
+    def test_sync_commented_lines(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            print('#Bart Person <bperson@example.com>', file=infp)
+            result = self._command.invoke(members, (
+                '--sync', infp.name, 'ant.example.com'))
+        self.assertEqual(result.output, "[DEL] Bart Person" +
+                                        " <bperson@example.com>\n")
+
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Anne Person <aperson@example.com>\n')
+
+    def test_sync_blank_lines(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            print('', file=infp)
+            print('', file=infp)
+            result = self._command.invoke(members, (
+                '--sync', infp.name, 'ant.example.com'))
+        self.assertEqual(result.output, "[DEL] Bart Person" +
+                                        " <bperson@example.com>\n")
+
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Anne Person <aperson@example.com>\n')
+
+    def test_sync_nothing_to_do(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            print('Bart Person <bperson@example.com>', file=infp)
+            result = self._command.invoke(members, (
+                '--sync', infp.name, 'ant.example.com'))
+        self.assertEqual(result.output, "Nothing to do\n")
+
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 2)
+        self.assertEqual(lines[0], 'Anne Person <aperson@example.com>\n')
+        self.assertEqual(lines[1], 'Bart Person <bperson@example.com>\n')
+
+    def test_sync_no_display_name(self):
+        subscribe(self._mlist, 'Bart')
+        subscribe(self._mlist, 'Cate', role=MemberRole.nonmember)
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('<aperson@example.com>', file=infp)
+            result = self._command.invoke(members, (
+                '--sync', infp.name, 'ant.example.com'))
+        self.assertEqual(
+           result.output,
+           "[ADD] aperson@example.com\n" +
+           "[DEL] Bart Person <bperson@example.com>\n")
+
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'aperson@example.com\n')
+
+    def test_sync_del_no_display_name(self):
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('bperson@example.com', file=infp)
+            result = self._command.invoke(members, (
+                '--add', infp.name, 'ant.example.com'))
+
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('<aperson@example.com>', file=infp)
+            result = self._command.invoke(members, (
+                '--sync', infp.name, 'ant.example.com'))
+        self.assertEqual(
+           result.output,
+           "[ADD] aperson@example.com\n" +
+           "[DEL] bperson@example.com\n")
+
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'aperson@example.com\n')

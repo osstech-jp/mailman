@@ -52,9 +52,14 @@ Bugs
   (See !606)
 * Import21 no longer tries to import banned addresses.  (Closes #688)
 
+Command line
+------------
+* A new ``mailman members --sync`` command has been added to help you
+synchronize subscribed mailing list members against a text list of
+subscription addresses. (see !545)
+
 REST
 ----
-
 * Expose ``max_days_to_hold``, ``accept_these_nonmembers``,
   ``reject_these_nonmembers``, ``discard_these_nonmembers``,
   ``hold_these_nonmembers``, ``personalize``, and ``unsubscription_policy``
@@ -66,10 +71,8 @@ REST
   have to make multiple calls for Index Page. (See !608)
 * Expose ``filter_action`` attribute of MailingList through API. (See !609)
 
-
 Features
 --------
-
 * Add support for processing of email bounce events. Thanks to Aaryan Bhagat for
   working on this as a part of his GSoC project and Thanks to Google for
   sponsoring the project as a part of GSoC.(See !584)
