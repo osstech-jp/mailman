@@ -24,7 +24,8 @@ from email.utils import formataddr, parseaddr
 from mailman.app.membership import add_member, delete_member
 from mailman.core.i18n import _
 from mailman.database.transaction import transactional
-from mailman.interfaces.address import InvalidEmailAddressError
+from mailman.interfaces.address import (
+    IEmailValidator, InvalidEmailAddressError)
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
@@ -162,6 +163,87 @@ def delete_members(mlist, del_infp):
                         '$display_name <$email>'))
 
 
+@transactional
+def sync_members(mlist, sync_infp, no_change):
+    subscribers = mlist.members
+    addresses = list(subscribers.addresses)
+
+    # Variable that shows if something was done to the original mailing list
+    ml_changed = False
+
+    # A list (set) of the members currently subscribed.
+    members_of_list = set([address.original_email.lower()
+                          for address in addresses])
+
+    # A list (set) of all valid email addresses in a file.
+    emails_of_infp = set()
+
+    # A list (dict) of (display name + address) for a members address.
+    formatted_addresses = {}
+
+    for line in sync_infp:
+        # Don't include newlines or whitespaces at the start or end
+        line = line.strip()
+        # Ignore blank lines and lines that start with a '#'.
+        if line.startswith('#') or len(line) == 0:
+            continue
+
+        # Parse the line to a tuple.
+        parsed_addr = parseaddr(line)
+        if parsed_addr == ('', ''):
+            print(_('Cannot parse as valid email address (skipping): $line'),
+                  file=sys.stderr)
+            continue
+        else:
+            new_display_name, new_email = parsed_addr
+            try:
+                getUtility(IEmailValidator).validate(new_email)
+            except InvalidEmailAddressError:
+                print(_('Cannot parse as valid email' +
+                        ' address (skipping): $line'),
+                      file=sys.stderr)
+                continue
+
+        # Address to lowercase
+        new_email = new_email.lower()
+
+        # Format output with display name if available
+        formatted_addr = formataddr((new_display_name, new_email))
+
+        # Add the 'outputable' version to a dict
+        formatted_addresses[new_email] = formatted_addr
+
+        emails_of_infp.add(new_email)
+
+    addresses_to_add = emails_of_infp - members_of_list
+    addresses_to_delete = members_of_list - emails_of_infp
+
+    for email in sorted(addresses_to_add):
+        # Add to mailing list if not dryrun.
+        print(_("[ADD] %s") % formatted_addresses[email])
+        if not no_change:
+            add_members(mlist, [formatted_addresses[email]])
+
+        # Indicate that we done something to the mailing list.
+        ml_changed = True
+        continue
+
+    for email in sorted(addresses_to_delete):
+        # Delete from mailing list if not dryrun.
+        member = str(subscribers.get_member(email).address)
+        print(_("[DEL] %s") % member)
+        if not no_change:
+            delete_members(mlist, [member.lower()])
+
+        # Indicate that we done something to the mailing list.
+        ml_changed = True
+        continue
+
+    # We did nothing to the mailing list -> We had nothing to do.
+    if not ml_changed:
+        print(_("Nothing to do"))
+
+
 @click.command(
     cls=I18nCommand,
     help=_("""\
@@ -185,6 +267,14 @@ def delete_members(mlist, del_infp):
     from the specified list. FILENAME can be '-' to indicate standard input.
     Blank lines and lines that start with a '#' are ignored."""))
 @click.option(
+    '--sync', '-s', 'sync_infp', metavar='FILENAME',
+    type=click.File(encoding='utf-8'),
+    help=_("""\
+    [MODE] Synchronize all member addresses of the specified mailing list
+    with the member addresses found in FILENAME.
+    FILENAME can be '-' to indicate standard input.
+    Blank lines and lines that start with a '#' are ignored."""))
+@click.option(
     '--output', '-o', 'outfp', metavar='FILENAME',
     type=click.File(mode='w', encoding='utf-8', atomic=True),
     help=_("""\
@@ -204,6 +294,12 @@ def delete_members(mlist, del_infp):
     is_flag=True, default=False,
     help=_("""\
     [output filter] Display only regular delivery members."""))
+@click.option(
+    '--no-change', '-N', 'no_change',
+    is_flag=True, default=False,
+    help=_("""\
+    Don't actually make the changes.  Instead, print out what would be
+    done to the list."""))
 @click.option(
     '--digest', '-d', metavar='kind',
     # baw 2010-01-23 summary digests are not really supported yet.
@@ -227,8 +323,8 @@ def delete_members(mlist, del_infp):
     for unknown (legacy) reasons."""))
 @click.argument('listspec')
 @click.pass_context
-def members(ctx, add_infp, del_infp, outfp,
-            role, regular, digest, nomail, listspec):
+def members(ctx, add_infp, del_infp, sync_infp, outfp,
+            role, regular, no_change, digest, nomail, listspec):
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
         ctx.fail(_('No such list: $listspec'))
@@ -236,6 +332,8 @@ def members(ctx, add_infp, del_infp, outfp,
         add_members(mlist, add_infp)
     elif del_infp is not None:
         delete_members(mlist, del_infp)
+    elif sync_infp is not None:
+        sync_members(mlist, sync_infp, no_change)
     else:
         display_members(ctx, mlist, role, regular, digest, nomail, outfp)
 

@@ -336,12 +336,101 @@ printed.
     jperson@example.com
 
 
+Synchronizing members
+=====================
+
+You can synchronize all member addresses of a mailing list with the
+member addresses found in a file from the command line.  To do so, you
+need a file containing email addresses and full names that can be parsed by
+``email.utils.parseaddr()``.  All mail addresses *not contained* in the file
+will be *deleted* from the mailing list. Every address *found* in the specified
+file will be added to the specified mailing list.
+
+Assuming you have populated a mailing list with the code examples from above,
+use these code snippets to synchronize mail addresses with subscriptions of the
+mailing list.  *Note* that only changes of the mailing list will be
+written to output.
+::
+
+    >>> with open(filename, 'w', encoding='utf-8') as fp:
+    ...     print("""\
+    ... aperson@example.com
+    ... cperson@example.com (Cate Person)
+    ... Fred Person <fperson@example.com>
+    ... """, file=fp)
+
+    >>> command('mailman members --sync ' + filename + ' bee.example.com')
+    [ADD] aperson@example.com
+    [ADD] Cate Person <cperson@example.com>
+    [DEL] gperson@example.com
+    [DEL] jperson@example.com
+
+    >>> from operator import attrgetter
+    >>> dump_list(bee.members.addresses, key=attrgetter('email'))
+    aperson@example.com
+    Cate Person <cperson@example.com>
+    Fred Person <fperson@example.com>
+
+You can also specify ``-`` as the filename, in which case the addresses are
+taken from standard input.
+::
+
+    >>> stdin = """\
+    ... dperson@example.com
+    ... Elly Person <eperson@example.com>
+    ... """
+    >>> command('mailman members --sync - bee.example.com', input=stdin)
+    [ADD] dperson@example.com
+    [ADD] Elly Person <eperson@example.com>
+    [DEL] aperson@example.com
+    [DEL] Cate Person <cperson@example.com>
+    [DEL] Fred Person <fperson@example.com>
+
+    >>> dump_list(bee.members.addresses, key=attrgetter('email'))
+    dperson@example.com
+    Elly Person <eperson@example.com>
+
+Blank lines and lines that begin with '#' are ignored.
+::
+
+    >>> with open(filename, 'w', encoding='utf-8') as fp:
+    ...     print("""\
+    ... #cperson@example.com
+    ... eperson@example.com
+    ...
+    ... bperson@example.com
+    ... """, file=fp)
+
+    >>> command('mailman members --sync ' + filename + ' bee.example.com')
+    [ADD] bperson@example.com
+    [DEL] dperson@example.com
+
+    >>> dump_list(bee.members.addresses, key=attrgetter('email'))
+    Bart Person <bperson@example.com>
+    Elly Person <eperson@example.com>
+
+If there is nothing to do, it will output just that.
+::
+
+    >>> with open(filename, 'w', encoding='utf-8') as fp:
+    ...     print("""\
+    ... bperson@example.com
+    ... eperson@example.com
+    ... """, file=fp)
+
+    >>> command('mailman members --sync ' + filename + ' bee.example.com')
+    Nothing to do
+
+    >>> dump_list(bee.members.addresses, key=attrgetter('email'))
+    Bart Person <bperson@example.com>
+    Elly Person <eperson@example.com>
+
+
 Displaying members
 ==================
 
 With no arguments, the command displays all members of the list.
 
     >>> command('mailman members bee.example.com')
-    Fred Person <fperson@example.com>
-    gperson@example.com
-    jperson@example.com
+    Bart Person <bperson@example.com>
+    Elly Person <eperson@example.com>
