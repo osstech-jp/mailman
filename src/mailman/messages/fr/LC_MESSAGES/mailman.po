@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-03-31 22:55+0000\n"
+"PO-Revision-Date: 2020-04-09 07:42+0000\n"
 "Last-Translator: Frédéric Lehobey <weblate@proxience.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
@@ -336,7 +336,7 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
-msgstr "Liste les noms de processus disponibles et se termine."
+msgstr "Liste les noms de processus disponibles et termine."
 
 #: src/mailman/bin/runner.py:107
 msgid ""
@@ -373,15 +373,15 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:157
 msgid "No runner name given."
-msgstr ""
+msgstr "Aucun nom de processus n'a été donné."
 
 #: src/mailman/bin/runner.py:181
 msgid "$name runs $classname"
-msgstr ""
+msgstr "$name exécute $classname"
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
-msgstr ""
+msgstr "Accepte un message."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
