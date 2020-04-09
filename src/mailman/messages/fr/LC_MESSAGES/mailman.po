@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-04-09 07:42+0000\n"
+"PO-Revision-Date: 2020-04-10 05:52+0000\n"
 "Last-Translator: Frédéric Lehobey <weblate@proxience.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
@@ -346,6 +346,10 @@ msgid ""
 "not\n"
 "    compatible with runners that cannot be run once."
 msgstr ""
+"    Exécute exactement une fois le parcours principal du processus nommé.\n"
+"    Sinon, le processus s'exécute infiniment jusqu'à ce qu'il reçoive un "
+"signal.\n"
+"    Incompatible avec les processus qui ne peuvent s'exécuter une seule fois."
 
 #: src/mailman/bin/runner.py:115
 msgid ""
@@ -370,6 +374,25 @@ msgid ""
 "    1:1 is used.\n"
 "    "
 msgstr ""
+"\n"
+"    Lance le processus nommé, qui doit être une des chaînes retournées par\n"
+"    l'option -l.\n"
+"\n"
+"    Pour les processus qui gèrent un répertoire de queue, l'optionnel\n"
+"    « part:intervalle », si utilisé, sert à affecter plusieurs processus à "
+"cette queue.\n"
+"    « intervalle » est le nombre total de processus pour la queue tandis "
+"que\n"
+"    « part » est le numéro de ce processus dans [0..range). Pour les "
+"processus\n"
+"    qui ne gèrent pas une queue, « part » et « intevalle » sont ignorés.\n"
+"\n"
+"    En utilisant la forme « part:intervalle », vous devez vous assurer que "
+"chaque\n"
+"    processus pour la queu reçoit la même valeur d'intervalle. Si « part:"
+"intervalle »\n"
+"    n'est pas fourni, alors 1:1 est utilisé.\n"
+"    "
 
 #: src/mailman/bin/runner.py:157
 msgid "No runner name given."
@@ -385,43 +408,44 @@ msgstr "Accepte un message."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "La chaîne de modération incorporée."
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
-msgstr ""
+msgstr "Éliminer un message et cesser le traitement."
 
 #: src/mailman/chains/dmarc.py:30
 msgid "Process DMARC reject or discard mitigations"
-msgstr ""
+msgstr "Traite les atténuations de rejets / éliminations DMARC"
 
 #: src/mailman/chains/headers.py:120
 msgid "Header \"{}\" matched a header rule"
-msgstr ""
+msgstr "L'entête « {} » a correspondu à une règle d'entête"
 
 #: src/mailman/chains/headers.py:135
 msgid "The built-in header matching chain"
-msgstr ""
+msgstr "La chaîne incorporée de correspondance des entêtes"
 
 #: src/mailman/chains/hold.py:58
 msgid "N/A"
-msgstr ""
+msgstr "Sans objet"
 
 #: src/mailman/chains/hold.py:117
 msgid "Last autoresponse notification for today"
-msgstr ""
+msgstr "Dernière notification de réponse automatique pour aujourd'hui"
 
 #: src/mailman/chains/hold.py:132
 msgid "Hold a message and stop processing."
-msgstr ""
+msgstr "Retenir un message et cesser le traitement."
 
 #: src/mailman/chains/hold.py:198
 msgid "Your message to $mlist.fqdn_listname awaits moderator approval"
 msgstr ""
+"Votre message à $mlist.fqdn_listname attend la validation d'un modérateur"
 
 #: src/mailman/chains/hold.py:226
 msgid "$mlist.fqdn_listname post from $msg.sender requires approval"
-msgstr ""
+msgstr "Le message $mlist.fqdn_listname de $msg.sender nécessite une validation"
 
 #: src/mailman/chains/hold.py:236
 msgid ""
@@ -433,36 +457,48 @@ msgid ""
 "message will be approved for posting to the list.  The Approved: header can\n"
 "also appear in the first line of the body of the reply."
 msgstr ""
+"Si vous répondez à ce message en gardant l'entête Subject: header intacte,\n"
+"Mailman éliminera le message retenu. Faites-le si le message est du pouriel."
+"\n"
+"Si vous répondez à ce message y incluez une entête Approved: avec dedans\n"
+"le mot de passe de la liste, le message sera validé pour publication dans "
+"la\n"
+"liste. L'entête Approved: peut aussi être présente en première ligne du "
+"corps\n"
+"de la réponse."
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
-msgstr ""
+msgstr "Chaîne de modération"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
-msgstr ""
+msgstr "La chaîne incorporée d'envoi à -owner."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
-msgstr ""
+msgstr "Rejeter/refuser un message et cesser le traitement."
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
-msgstr ""
+msgstr "Engendrer à nouveau les alias adéquats pour votre MTA."
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
-msgstr ""
+msgstr "Un répertoire alternatif pour déposer les divers fichiers de MTA."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
-msgstr ""
+msgstr "Imprimer la configuration de Mailman."
 
 #: src/mailman/commands/cli_conf.py:57
 msgid ""
 "    File to send the output to.  If not given, or if '-' is given, standard\n"
 "    output is used."
 msgstr ""
+"    Fichier vers lequel envoyer la sortie. Si absent ou si « - » est fourni,"
+"\n"
+"    la sortie standard est utilisée."
 
 #: src/mailman/commands/cli_conf.py:62
 msgid ""
@@ -480,7 +516,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:41
 msgid "Start the Mailman master and runner processes."
-msgstr ""
+msgstr "Lance les processus de Mailman dont le processus pilote."
 
 #: src/mailman/commands/cli_control.py:45
 msgid ""
@@ -532,48 +568,50 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:83
 msgid "GNU Mailman is already running"
-msgstr ""
+msgstr "GNU Mailman s'exécute déjà"
 
 #: src/mailman/commands/cli_control.py:87
 msgid ""
 "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
 msgstr ""
+"Une précédente exécution de GNU Mailman ne s'est pas terminée proprement ({})"
+". Essayez d'utilisez --force"
 
 #: src/mailman/commands/cli_control.py:95
 msgid "Starting Mailman's master runner"
-msgstr ""
+msgstr "Lance le processus pilote de Mailman"
 
 #: src/mailman/commands/cli_control.py:135
 msgid "PID unreadable in: $config.PID_FILE"
-msgstr ""
+msgstr "PID illisible dans : $config.PID_FILE"
 
 #: src/mailman/commands/cli_control.py:137
 msgid "Is the master even running?"
-msgstr ""
+msgstr "Le pilote est-il même en train de s'exécuter ?"
 
 #: src/mailman/commands/cli_control.py:144
 msgid "No child with pid: $pid"
-msgstr ""
+msgstr "Aucun descendant avec pid : $pid"
 
 #: src/mailman/commands/cli_control.py:146
 msgid "Stale pid file removed."
-msgstr ""
+msgstr "Fichier pid caduc supprimé."
 
 #: src/mailman/commands/cli_control.py:152
 msgid "Stop the Mailman master and runner processes."
-msgstr ""
+msgstr "Arrêter les processus Mailman dont le pilote."
 
 #: src/mailman/commands/cli_control.py:161
 msgid "Shutting down Mailman's master runner"
-msgstr ""
+msgstr "Clôture du processus pilote de Mailman"
 
 #: src/mailman/commands/cli_control.py:174
 msgid "Signal the Mailman processes to re-open their log files."
-msgstr ""
+msgstr "Signifie au processus Mailman de réouvrir leurs fichiers journaux."
 
 #: src/mailman/commands/cli_control.py:183
 msgid "Reopening the Mailman runners"
-msgstr ""
+msgstr "Réouvrir les processus Mailman"
 
 #: src/mailman/commands/cli_control.py:196
 msgid "Stop and restart the Mailman runner subprocesses."
