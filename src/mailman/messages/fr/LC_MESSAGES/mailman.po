@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: Jaxom <jaxom+weblate@tchack.xyz>\n"
+"Last-Translator: Frédéric Lehobey <weblate@proxience.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -287,7 +287,8 @@ msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
 msgstr ""
-"    Ne relance pas les processus quand ils se terminent à cause d'une erreur ou d'un SIGUSR1.\n"
+"    Ne relance pas les processus quand ils se terminent à cause d'une erreur "
+"ou d'un SIGUSR1.\n"
 "    N'utiliser que pour la mise au point du logiciel."
 
 #: src/mailman/bin/master.py:531
@@ -329,7 +330,8 @@ msgstr ""
 
 #: src/mailman/bin/master.py:551 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
-msgstr "Enregistre plus d'informations de mise au point dans le fichier journal."
+msgstr ""
+"Enregistre plus d'informations de mise au point dans le fichier journal."
 
 #: src/mailman/bin/runner.py:50
 #, python-brace-format
@@ -371,7 +373,8 @@ msgid ""
 "    compatible with runners that cannot be run once."
 msgstr ""
 "    Exécute exactement une fois le parcours principal du processus nommé.\n"
-"    Sinon, le processus s'exécute infiniment jusqu'à ce qu'il reçoive un signal.\n"
+"    Sinon, le processus s'exécute infiniment jusqu'à ce qu'il reçoive un "
+"signal.\n"
 "    Incompatible avec les processus qui ne peuvent s'exécuter une seule fois."
 
 #: src/mailman/bin/runner.py:115
@@ -396,13 +399,18 @@ msgstr ""
 "    l'option -l.\n"
 "\n"
 "    Pour les processus qui gèrent un répertoire de queue, l'optionnel\n"
-"    « part:intervalle », si utilisé, sert à affecter plusieurs processus à cette queue.\n"
-"    « intervalle » est le nombre total de processus pour la queue tandis que\n"
-"    « part » est le numéro de ce processus dans [0..range). Pour les processus\n"
+"    « part:intervalle », si utilisé, sert à affecter plusieurs processus à "
+"cette queue.\n"
+"    « intervalle » est le nombre total de processus pour la queue tandis "
+"que\n"
+"    « part » est le numéro de ce processus dans [0..range). Pour les "
+"processus\n"
 "    qui ne gèrent pas une queue, « part » et « intevalle » sont ignorés.\n"
 "\n"
-"    En utilisant la forme « part:intervalle », vous devez vous assurer que chaque\n"
-"    processus pour la queu reçoit la même valeur d'intervalle. Si « part:intervalle »\n"
+"    En utilisant la forme « part:intervalle », vous devez vous assurer que "
+"chaque\n"
+"    processus pour la queu reçoit la même valeur d'intervalle. Si « part:"
+"intervalle »\n"
 "    n'est pas fourni, alors 1:1 est utilisé.\n"
 "    "
 
@@ -613,7 +621,8 @@ msgid ""
 "    File to send the output to.  If not given, or if '-' is given, standard\n"
 "    output is used."
 msgstr ""
-"    Fichier vers lequel envoyer la sortie. Si absent ou si « - » est fourni,\n"
+"    Fichier vers lequel envoyer la sortie. Si absent ou si « - » est fourni,"
+"\n"
 "    la sortie standard est utilisée."
 
 #: src/mailman/commands/cli_conf.py:62
@@ -621,7 +630,8 @@ msgid ""
 "    Section to use for the lookup.  If no key is given, all the key-value pairs\n"
 "    of the given section will be displayed."
 msgstr ""
-"    Section à utiliser pour la consultation. Si aucune clef n'est donnée, toutes\n"
+"    Section à utiliser pour la consultation. Si aucune clef n'est donnée, "
+"toutes\n"
 "    les paires clef-valeur de la section donnée seront affichées."
 
 #: src/mailman/commands/cli_conf.py:67
@@ -735,7 +745,9 @@ msgstr "GNU Mailman s'exécute déjà"
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
-msgstr "Une précédente exécution de GNU Mailman ne s'est pas terminée proprement ({}). Essayez d'utilisez --force"
+msgstr ""
+"Une précédente exécution de GNU Mailman ne s'est pas terminée proprement ({})"
+". Essayez d'utilisez --force"
 
 #: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
@@ -886,7 +898,8 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the digests for all mailing lists."
 msgstr ""
-"    Agit sur cette liste de diffusion. De multiples options --list peuvent être\n"
+"    Agit sur cette liste de diffusion. De multiples options --list peuvent "
+"être\n"
 "    indiquées. L'argument peut soit être une List-ID ou un nom de liste\n"
 "    pleinement qualifié. Sans cette option, agit sur les condensés pour\n"
 "    toutes les listes de diffusion."
@@ -913,7 +926,9 @@ msgstr ""
 msgid ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
-msgstr "    Ne fait rien, mais en conjonction de --verbose, montre ce qui se passerait."
+msgstr ""
+"    Ne fait rien, mais en conjonction de --verbose, montre ce qui se "
+"passerait."
 
 #: src/mailman/commands/cli_digests.py:67 src/mailman/commands/cli_notify.py:56
 msgid "Print some additional status."
@@ -985,7 +1000,9 @@ msgstr "{}"
 
 #: src/mailman/commands/cli_gatenews.py:170
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
-msgstr "Sonder le serveur NNTP pour des messages à transférer vers les listes de diffusion."
+msgstr ""
+"Sonder le serveur NNTP pour des messages à transférer vers les listes de "
+"diffusion."
 
 #: src/mailman/commands/cli_gatenews.py:177
 msgid ""
@@ -1039,7 +1056,9 @@ msgstr "Informations sur cette instance de Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
-msgstr "    Fichier vers lequel envoyer la sortie. Si absent, la sortie standard est utilisée."
+msgstr ""
+"    Fichier vers lequel envoyer la sortie. Si absent, la sortie standard est "
+"utilisée."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
