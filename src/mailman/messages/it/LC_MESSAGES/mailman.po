@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2020-12-16 22:45+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/gnu-mailman/mailman/it/>\n"
+"PO-Revision-Date: 2022-03-23 03:34+0000\n"
+"Last-Translator: Daniele Pizzolli <dan-i18n@toel.it>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 4.12-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -152,7 +153,8 @@ msgid ""
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
 "    default configuration file is loaded."
 msgstr ""
-"    File di configurazione da usare.  Se omesso il valore viene eventualmente\n"
+"    File di configurazione da usare.  Se omesso il valore viene "
+"eventualmente\n"
 "    preso dalla variabile d'ambiente MAILMAN_CONFIG_FILE.  Se niente è\n"
 "    specificato la configurazione predefinita verrà usata."
 
@@ -171,7 +173,8 @@ msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
-"L'uso esclusivo come master non può essere acquisito, sembra ci sia un altro\n"
+"L'uso esclusivo come master non può essere acquisito, sembra ci sia un "
+"altro\n"
 "master già attivo."
 
 #: src/mailman/bin/master.py:163
@@ -247,12 +250,15 @@ msgstr ""
 "\n"
 "    Fa partire e controlla i sottoprocessi configurati, assicurandosi che\n"
 "    stiano vivi e funzionanti. Ogni sottoprocesso è soggetto a fork ed exec\n"
-"    a turno, con il master che aspetta il PID dei figli. Quando un figlio ha\n"
+"    a turno, con il master che aspetta il PID dei figli. Quando un figlio "
+"ha\n"
 "    finito, eventualmente può essere fatto ripartire.\n"
 "\n"
-"    I sottoprocessi rispondo a SIGINT, SIGTERM, SIGUSR1 and SIGHUP.  SIGINT,\n"
+"    I sottoprocessi rispondo a SIGINT, SIGTERM, SIGUSR1 and SIGHUP.  SIGINT,"
+"\n"
 "    SIGTERM and SIGUSR1 fanno finire il processo in maniera pulita.  Il\n"
-"    mater fa ripartire i sottoprocessi che si sono fermati per SIGUSR1 or per\n"
+"    mater fa ripartire i sottoprocessi che si sono fermati per SIGUSR1 or "
+"per\n"
 "    alcune altre condizioni di arresto (per esempio per una eccezione non\n"
 "    intercettata).  SIGHUP ordina al master ed ai sottoprocessi di chiudere\n"
 "    i file di log, che saranno riaperti alla prossima scrittura.\n"
@@ -284,9 +290,11 @@ msgstr ""
 "    Se l'osservatore del master trova un lock del master di norma si ferma\n"
 "    con un messaggio d'errore.  Con questa opzione il master eseguirà\n"
 "    ulteriori verifiche.  Se esiste un processo corrispondente all'host/pid\n"
-"    nel file di lock il master uscirà comunque, chiedendo di pulire manualmente\n"
+"    nel file di lock il master uscirà comunque, chiedendo di pulire "
+"manualmente\n"
 "    il lock.  Se nessun processo è presente, il master rimuoverà il file\n"
-"    di lock apparentemente obsoleto e proverà a ripartire di nuovo prendendo\n"
+"    di lock apparentemente obsoleto e proverà a ripartire di nuovo "
+"prendendo\n"
 "    possesso dell'uso esclusivo con il lock."
 
 #: src/mailman/bin/master.py:544
@@ -578,7 +586,8 @@ msgid ""
 "    Section to use for the lookup.  If no key is given, all the key-value pairs\n"
 "    of the given section will be displayed."
 msgstr ""
-"    Sezione da usare per la ricerca.  In mancanza di chiave, saranno mostrati\n"
+"    Sezione da usare per la ricerca.  In mancanza di chiave, saranno "
+"mostrati\n"
 "    tutte le chiavi e rispettivi valori della sezione scelta."
 
 #: src/mailman/commands/cli_conf.py:67
@@ -670,7 +679,9 @@ msgstr "GNU Mailman sta già funzionando"
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
-msgstr "Una precedente avvio di GNU Mailman non è terminata correttamente ({}).  Prova ad usare --force"
+msgstr ""
+"Una precedente avvio di GNU Mailman non è terminata correttamente ({}).  "
+"Prova ad usare --force"
 
 #: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
@@ -832,7 +843,8 @@ msgid ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 msgstr ""
-"    Incrementa il numero del volume del raggruppamento e reimposta il numero\n"
+"    Incrementa il numero del volume del raggruppamento e reimposta il "
+"numero\n"
 "    di raggruppamento a uno.  Se dato con --send il numero di volume è\n"
 "    aumentato prima di inviare i raggruppamenti."
 
@@ -858,7 +870,8 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:79
 msgid "--send and --periodic flags cannot be used together"
-msgstr "Le opzioni --send e --periodic non possono essere usate contemporaneamente"
+msgstr ""
+"Le opzioni --send e --periodic non possono essere usate contemporaneamente"
 
 #: src/mailman/commands/cli_digests.py:92 src/mailman/commands/cli_notify.py:69
 #, python-brace-format
@@ -954,7 +967,8 @@ msgstr "Informazioni su questa istanza di Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
-msgstr "    File dove salvare l'output.  Se omesso, verrà usato lo standard output."
+msgstr ""
+"    File dove salvare l'output.  Se omesso, verrà usato lo standard output."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
@@ -1055,7 +1069,8 @@ msgstr ""
 "    Create una lista.\n"
 "\n"
 "    L'indirizzo e-mail completo della lista è richiesto.  Deve essere un\n"
-"    indirizzo valido e il dominio deve essere registrato in Mailman. Il nome\n"
+"    indirizzo valido e il dominio deve essere registrato in Mailman. Il "
+"nome\n"
 "    della lista è forzato in minuscolo."
 
 #: src/mailman/commands/cli_lists.py:134
@@ -1239,8 +1254,10 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the requests for all mailing lists."
 msgstr ""
-"    Opera sulla lista.  Multiple opzioni --list sono supportate.  L'argomento\n"
-"    può essere un identificativo della lista (List-ID) o l'indirizzo completo\n"
+"    Opera sulla lista.  Multiple opzioni --list sono supportate.  L'"
+"argomento\n"
+"    può essere un identificativo della lista (List-ID) o l'indirizzo "
+"completo\n"
 "    della lista.  Senza questa opzione si opera su tutte le liste."
 
 #: src/mailman/commands/cli_notify.py:80 src/mailman/commands/cli_notify.py:141
@@ -1427,7 +1444,8 @@ msgid ""
 "    Discard all shunted messages instead of moving them back to their original\n"
 "    queue."
 msgstr ""
-"    Scarta tutti i messaggi deviati invece di muoverli di ritorno alla loro coda\n"
+"    Scarta tutti i messaggi deviati invece di muoverli di ritorno alla loro "
+"coda\n"
 "    originale."
 
 #: src/mailman/commands/cli_unshunt.py:50
@@ -1875,7 +1893,8 @@ msgstr "Dopo un messaggio inoltrato con successo aggiorna i registri."
 
 #: src/mailman/handlers/arc_sign.py:66
 msgid "Perform ARC auth checks and attach resulting headers"
-msgstr "Esegue un controllo di autenticazione ARC e allega le intestazioni risultanti"
+msgstr ""
+"Esegue un controllo di autenticazione ARC e allega le intestazioni risultanti"
 
 #: src/mailman/handlers/avoid_duplicates.py:44
 msgid "Suppress some duplicates of the same message."
