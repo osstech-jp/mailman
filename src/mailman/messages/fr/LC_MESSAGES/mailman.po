@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-04-11 13:31+0000\n"
+"POT-Creation-Date: 2019-09-28 16:20-0700\n"
+"PO-Revision-Date: 2020-04-12 00:48+0000\n"
 "Last-Translator: Frédéric Lehobey <weblate@proxience.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/mailman/fr/"
 ">\n"
@@ -639,70 +639,89 @@ msgid ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 msgstr ""
+"    Incrémente le numéro de volume du condensé et remets le numéro de\n"
+"    condensé à un. Si accompagné de --send, le numéro de volume est\n"
+"    incrémenté avant tout envoi de condensé en cours."
 
 #: src/mailman/commands/cli_digests.py:59 src/mailman/commands/cli_notify.py:47
 msgid ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
 msgstr ""
+"    Ne fait rien, mais en conjonction de --verbose, montre ce qui se "
+"passerait."
 
 #: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:53
 msgid "Print some additional status."
-msgstr ""
+msgstr "Imprime certains états supplémentaires."
 
 #: src/mailman/commands/cli_digests.py:69
 msgid ""
 "    Send any collected digests for the List only if their digest_send_periodic\n"
 "    is set to True."
 msgstr ""
+"    Expédie tout condensat collecté pour la liste seulement si son\n"
+"    digest_send_periodic est positionné à « Vrai »."
 
 #: src/mailman/commands/cli_digests.py:77
 msgid "--send and --periodic flags cannot be used together"
-msgstr ""
+msgstr "les options --send et --periodic ne peuvent être utilisées ensemble"
 
 #: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:66
 msgid "No such list found: $spec"
-msgstr ""
+msgstr "Aucune telle liste de trouvée : $spec"
 
 #: src/mailman/commands/cli_digests.py:98
 #, python-brace-format
 msgid "$mlist.list_id is at volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id est au volume $mlist.volume, numéro "
+"${mlist.next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:104
 #, python-brace-format
 msgid ""
 "$mlist.list_id bumped to volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id porté au volume $mlist.volume, numéro "
+"${mlist.next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:110 src/mailman/commands/cli_digests.py:119
 #, python-brace-format
 msgid "$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id a envoyé le volume $mlist.volume, numéro "
+"${mlist.next_digest_number}"
 
 #: src/mailman/commands/cli_gatenews.py:166
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
 msgstr ""
+"Sonder le serveur NNTP pour des messages à transférer vers les listes de "
+"diffusion."
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr ""
+msgstr "Montrer ce message d'aide et terminer."
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
 "    Import Mailman 2.1 list data'.  Requires the fully-qualified name of the\n"
 "    list to import and the path to the Mailman 2.1 pickle file."
 msgstr ""
+"    Importer les données de liste Mailman 2.1. Nécessite le  nom pleinement\n"
+"    qualifié de la liste à importer et le chemin vers le fichier conserve "
+"de\n"
+"    Mailman 2.1."
 
 #: src/mailman/commands/cli_import.py:62 src/mailman/commands/cli_inject.py:75
 #: src/mailman/commands/cli_members.py:330 src/mailman/commands/cli_withlist.py:292
 #: src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
-msgstr ""
+msgstr "Aucune telle liste : $listspec"
 
 #: src/mailman/commands/cli_import.py:76
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
-msgstr ""
+msgstr "N'est pas un fichier de configuration de Mailman 2.1 : $pickle_file"
 
 #: src/mailman/commands/cli_import.py:79
 msgid "Ignoring non-dictionary: {0!r}"
