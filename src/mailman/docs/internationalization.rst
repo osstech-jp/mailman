@@ -149,9 +149,13 @@ This is a great `gettext tutorial`_ refresh memory on how GNU gettext works.
 We use xgettext_ tool to generate ``mailman.pot``::
 
   # from Mailman's root directory.
-  $ ls src/mailman/*/*.py | xargs xgettext -o src/mailman/messages/mailman.pot -w 110
+  $ ./update-pot.sh
 
-This will generate or update the ``src/mailman/messages/mailman.pot`` file.
+This will generate or update the ``src/mailman/messages/mailman.pot`` file and
+update all the existing ``.po`` files with the new un-translated strings.
+
+Generating po files
+-------------------
 
 To generate ``po`` file for a new language::
 
