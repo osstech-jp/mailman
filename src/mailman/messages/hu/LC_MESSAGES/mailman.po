@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-28 16:20-0700\n"
+"POT-Creation-Date: 2020-04-11 17:34-0700\n"
 "PO-Revision-Date: 2020-02-27 16:50+0000\n"
 "Last-Translator: akoscomp <nagy.akos@libreoffice.ro>\n"
-"Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/"
-"mailman/hu/>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/mailman/"
+"hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,10 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.0-dev\n"
 
-#: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
-#: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
-#: src/mailman/handlers/subject_prefix.py:90 src/mailman/handlers/subject_prefix.py:118
-#: src/mailman/runners/digest.py:86
+#: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
+#: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
+#: src/mailman/handlers/subject_prefix.py:46
+#: src/mailman/handlers/subject_prefix.py:90
+#: src/mailman/handlers/subject_prefix.py:118 src/mailman/runners/digest.py:86
 msgid "(no subject)"
 msgstr "(nincs tárgy)"
 
@@ -30,11 +31,11 @@ msgstr "(nincs tárgy)"
 msgid "[No bounce details are available]"
 msgstr ""
 
-#: src/mailman/app/bounces.py:221
+#: src/mailman/app/bounces.py:226
 msgid "$mlist.display_name mailing list probe message"
 msgstr ""
 
-#: src/mailman/app/bounces.py:254
+#: src/mailman/app/bounces.py:262
 msgid "Uncaught bounce notification"
 msgstr ""
 
@@ -46,7 +47,8 @@ msgstr ""
 msgid "Posting of your message titled \"$subject\""
 msgstr ""
 
-#: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228 src/mailman/rest/sub_moderation.py:113
+#: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228
+#: src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
 msgstr "[indoklás nélkül]"
 
@@ -87,15 +89,32 @@ msgstr ""
 msgid "$mlist.display_name subscription notification"
 msgstr ""
 
-#: src/mailman/app/subscriptions.py:296
+#: src/mailman/app/notifications.py:136
+#, fuzzy
+msgid "$member's subscription disabled on $mlist.display_name"
+msgstr "Új leiratkozási igény: $mlist.display_name, $email"
+
+#: src/mailman/app/notifications.py:157
+#, fuzzy, python-brace-format
+msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
+msgstr "Új leiratkozási igény: $mlist.display_name, $email"
+
+#: src/mailman/app/notifications.py:184
+#, fuzzy, python-brace-format
+msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
+msgstr "Új leiratkozási igény: $mlist.display_name, $email"
+
+#: src/mailman/app/subscriptions.py:299
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
 
-#: src/mailman/app/subscriptions.py:444
-msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
+#: src/mailman/app/subscriptions.py:448
+msgid ""
+"New unsubscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
 
-#: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:510 src/mailman/bin/runner.py:96
+#: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:510
+#: src/mailman/bin/runner.py:96
 msgid ""
 "    Configuration file to use.  If not given, the environment variable\n"
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
@@ -295,8 +314,7 @@ msgstr "A(z) $mlist.fqdn_listname listára küldött levele moderálásra vár"
 
 #: src/mailman/chains/hold.py:226
 msgid "$mlist.fqdn_listname post from $msg.sender requires approval"
-msgstr ""
-"$mlist.fqdn_listname listára, $msg.sender által írt üzenet jóváhagyásra vár"
+msgstr "$mlist.fqdn_listname listára, $msg.sender által írt üzenet jóváhagyásra vár"
 
 #: src/mailman/chains/hold.py:236
 msgid ""
@@ -349,11 +367,11 @@ msgid ""
 "    from any section matching the given key will be displayed."
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:41
+#: src/mailman/commands/cli_control.py:42
 msgid "Start the Mailman master and runner processes."
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:45
+#: src/mailman/commands/cli_control.py:46
 msgid ""
 "    If the master watcher finds an existing master lock, it will normally exit\n"
 "    with an error message.  With this option, the master will perform an extra\n"
@@ -364,7 +382,16 @@ msgid ""
 "    master lock."
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:56
+#: src/mailman/commands/cli_control.py:57
+msgid ""
+"    Generate the MTA alias files upon startup. Some MTA, like postfix, can't\n"
+"    deliver email if alias files mentioned in its configuration are not\n"
+"    present. In some situations, this could lead to a deadlock at the first\n"
+"    start of mailman3 server. Setting this option to true will make this\n"
+"    script create the files and thus allow the MTA to operate smoothly."
+msgstr ""
+
+#: src/mailman/commands/cli_control.py:66
 msgid ""
 "    Normally, this script will refuse to run if the user id and group id are\n"
 "    not set to the 'mailman' user and group (as defined when you configured\n"
@@ -381,62 +408,66 @@ msgid ""
 "    archives through the web.  Tough luck!"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:73 src/mailman/commands/cli_control.py:156
-#: src/mailman/commands/cli_control.py:178 src/mailman/commands/cli_control.py:200
+#: src/mailman/commands/cli_control.py:83 src/mailman/commands/cli_control.py:170
+#: src/mailman/commands/cli_control.py:192 src/mailman/commands/cli_control.py:214
 msgid ""
 "    Don't print status messages.  Error messages are still printed to standard\n"
 "    error."
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:83
+#: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:87
+#: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:95
+#: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:135
+#: src/mailman/commands/cli_control.py:108
+msgid "Generating MTA alias maps"
+msgstr ""
+
+#: src/mailman/commands/cli_control.py:149
 msgid "PID unreadable in: $config.PID_FILE"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:137
+#: src/mailman/commands/cli_control.py:151
 msgid "Is the master even running?"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:144
+#: src/mailman/commands/cli_control.py:158
 msgid "No child with pid: $pid"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:146
+#: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:152
+#: src/mailman/commands/cli_control.py:166
 msgid "Stop the Mailman master and runner processes."
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:161
+#: src/mailman/commands/cli_control.py:175
 msgid "Shutting down Mailman's master runner"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:174
+#: src/mailman/commands/cli_control.py:188
 msgid "Signal the Mailman processes to re-open their log files."
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:183
+#: src/mailman/commands/cli_control.py:197
 msgid "Reopening the Mailman runners"
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:196
+#: src/mailman/commands/cli_control.py:210
 msgid "Stop and restart the Mailman runner subprocesses."
 msgstr ""
 
-#: src/mailman/commands/cli_control.py:205
+#: src/mailman/commands/cli_control.py:219
 msgid "Restarting the Mailman runners"
 msgstr ""
 
@@ -495,7 +526,8 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:104
 #, python-brace-format
-msgid "$mlist.list_id bumped to volume $mlist.volume, number ${mlist.next_digest_number}"
+msgid ""
+"$mlist.list_id bumped to volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
 
 #: src/mailman/commands/cli_digests.py:110 src/mailman/commands/cli_digests.py:119
@@ -518,7 +550,7 @@ msgid ""
 msgstr ""
 
 #: src/mailman/commands/cli_import.py:62 src/mailman/commands/cli_inject.py:75
-#: src/mailman/commands/cli_members.py:233 src/mailman/commands/cli_withlist.py:292
+#: src/mailman/commands/cli_members.py:330 src/mailman/commands/cli_withlist.py:292
 #: src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
 msgstr ""
@@ -552,7 +584,7 @@ msgstr ""
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
 "    The name of the queue to inject the message to.  QUEUE must be one of the\n"
-"    directories inside the qfiles directory.  If omitted, the incoming queue is\n"
+"    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 msgstr ""
 
@@ -697,31 +729,46 @@ msgstr ""
 msgid "Removed list: $listspec"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:90
+#: src/mailman/commands/cli_members.py:91
 msgid "$mlist.list_id has no members"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:119 src/mailman/commands/cli_members.py:131
+#: src/mailman/commands/cli_members.py:120 src/mailman/commands/cli_members.py:133
+#: src/mailman/commands/cli_members.py:194 src/mailman/commands/cli_members.py:202
 msgid "Cannot parse as valid email address (skipping): $line"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:137
+#: src/mailman/commands/cli_members.py:139
 msgid "Already subscribed (skipping): $email"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:140
+#: src/mailman/commands/cli_members.py:142
 msgid "Already subscribed (skipping): $display_name <$email>"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:158
+#: src/mailman/commands/cli_members.py:160
 msgid "Member not subscribed (skipping): $email"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:160
+#: src/mailman/commands/cli_members.py:162
 msgid "Member not subscribed (skipping): $display_name <$email>"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:166
+#: src/mailman/commands/cli_members.py:223
+#, python-format
+msgid "[ADD] %s"
+msgstr ""
+
+#: src/mailman/commands/cli_members.py:234
+#, python-format
+msgid "[DEL] %s"
+msgstr ""
+
+#: src/mailman/commands/cli_members.py:244
+msgid "Nothing to do"
+msgstr ""
+
+#: src/mailman/commands/cli_members.py:249
 msgid ""
 "    Display, add or delete a mailing list's members.\n"
 "    Filtering along various criteria can be done when displaying.\n"
@@ -730,27 +777,35 @@ msgid ""
 "    "
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:175
+#: src/mailman/commands/cli_members.py:258
 msgid ""
 "    [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to\n"
 "    indicate standard input.  Blank lines and lines that start with a\n"
 "    '#' are ignored."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:182
+#: src/mailman/commands/cli_members.py:265
 msgid ""
 "    [MODE] Delete all member addresses found in FILENAME\n"
 "    from the specified list. FILENAME can be '-' to indicate standard input.\n"
 "    Blank lines and lines that start with a '#' are ignored."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:189
+#: src/mailman/commands/cli_members.py:272
+msgid ""
+"    [MODE] Synchronize all member addresses of the specified mailing list\n"
+"    with the member addresses found in FILENAME.\n"
+"    FILENAME can be '-' to indicate standard input.\n"
+"    Blank lines and lines that start with a '#' are ignored."
+msgstr ""
+
+#: src/mailman/commands/cli_members.py:280
 msgid ""
 "    [MODE] Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:196
+#: src/mailman/commands/cli_members.py:287
 msgid ""
 "    [output filter] Display only members with a given ROLE.\n"
 "    The role may be 'any', 'member', 'nonmember', 'owner', 'moderator',\n"
@@ -758,18 +813,24 @@ msgid ""
 "    If not given, then delivery members are used. "
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:204
+#: src/mailman/commands/cli_members.py:295
 msgid "    [output filter] Display only regular delivery members."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:210
+#: src/mailman/commands/cli_members.py:300
+msgid ""
+"    Don't actually make the changes.  Instead, print out what would be\n"
+"    done to the list."
+msgstr ""
+
+#: src/mailman/commands/cli_members.py:307
 msgid ""
 "    [output filter] Display only digest members of kind.\n"
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:218
+#: src/mailman/commands/cli_members.py:315
 msgid ""
 "    [output filter] Display only members with a given delivery status.\n"
 "    'enabled' means all members whose delivery is enabled, 'any' means\n"
@@ -1061,19 +1122,19 @@ msgstr ""
 msgid "The variable 'm' is the $listspec mailing list"
 msgstr ""
 
-#: src/mailman/commands/eml_confirm.py:34
+#: src/mailman/commands/eml_confirm.py:35
 msgid "Confirm a subscription request."
 msgstr ""
 
-#: src/mailman/commands/eml_confirm.py:41
+#: src/mailman/commands/eml_confirm.py:42
 msgid "No confirmation token found"
 msgstr ""
 
-#: src/mailman/commands/eml_confirm.py:74
+#: src/mailman/commands/eml_confirm.py:78
 msgid "Confirmed"
 msgstr ""
 
-#: src/mailman/commands/eml_confirm.py:78
+#: src/mailman/commands/eml_confirm.py:82
 msgid "Confirmation token did not match"
 msgstr ""
 
@@ -1131,7 +1192,8 @@ msgstr ""
 msgid "Confirmation email sent to $person"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:125 src/mailman/commands/eml_membership.py:134
+#: src/mailman/commands/eml_membership.py:125
+#: src/mailman/commands/eml_membership.py:134
 msgid "bad argument: $argument"
 msgstr ""
 
@@ -1380,9 +1442,10 @@ msgstr ""
 #: src/mailman/rules/dmarc.py:331
 #, python-brace-format
 msgid ""
-"You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or "
-"quarantine, and your message has been automatically rejected.  If you think that your messages are being "
-"rejected in error, contact the mailing list owner at ${listowner}."
+"You are not allowed to post to this mailing list From: a domain which publishes a "
+"DMARC policy of reject or quarantine, and your message has been automatically "
+"rejected.  If you think that your messages are being rejected in error, contact "
+"the mailing list owner at ${listowner}."
 msgstr ""
 
 #: src/mailman/rules/emergency.py:34
@@ -1599,31 +1662,13 @@ msgstr ""
 msgid "Bad runner spec: $value"
 msgstr ""
 
-msgid "list:user:action:subscribe.txt"
-msgstr ""
-
-msgid "list:user:notice:goodbye.txt"
-msgstr ""
-
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
 
-msgid "list:member:regular:header.txt"
-msgstr ""
-
-msgid "list:user:notice:no-more-today.txt"
-msgstr ""
-
-msgid "list:member:digest:masthead.txt"
-msgstr ""
-
-msgid "list:member:digest:header.txt"
+msgid "help.txt"
 msgstr ""
 
 msgid "invite.txt"
-msgstr ""
-
-msgid "list:admin:notice:unsubscribe.txt"
 msgstr ""
 
 msgid "list:admin:action:post.txt"
@@ -1632,45 +1677,92 @@ msgstr ""
 msgid "list:admin:action:subscribe.txt"
 msgstr ""
 
+msgid "list:admin:action:unsubscribe.txt"
+msgstr ""
+
+#, fuzzy
+msgid "list:admin:notice:disable.txt"
+msgstr ""
+"\"Üdvözöljük a(z) \"$display_name\" levelezőlistán! Ha írni szeretne a listára, "
+"küldje el az e-mail címét:  $listnameLeiratkozhat vagy beállításokat eszközölhet "
+"üzenetet írva ide:  $request_emaila help szót beírva a tárgyba vagy a levél "
+"szövegébe, és válaszul kap egy levelet az utasításokkal.  A beállítások "
+"módosításához szüksége lesz a jelszavára, de azt biztonsági okokból ide nem "
+"írhatjuk be.  Amennyiben elfelejtette a jelszavát, a weblapon kérhet újat.\""
+
+#, fuzzy
+msgid "list:admin:notice:removal.txt"
+msgstr ""
+"\"Üdvözöljük a(z) \"$display_name\" levelezőlistán! Ha írni szeretne a listára, "
+"küldje el az e-mail címét:  $listnameLeiratkozhat vagy beállításokat eszközölhet "
+"üzenetet írva ide:  $request_emaila help szót beírva a tárgyba vagy a levél "
+"szövegébe, és válaszul kap egy levelet az utasításokkal.  A beállítások "
+"módosításához szüksége lesz a jelszavára, de azt biztonsági okokból ide nem "
+"írhatjuk be.  Amennyiben elfelejtette a jelszavát, a weblapon kérhet újat.\""
+
 msgid "list:admin:notice:subscribe.txt"
-msgstr ""
-
-msgid "list:user:notice:refuse.txt"
-msgstr ""
-
-msgid "list:member:generic:footer.txt"
-msgstr ""
-
-msgid "list:user:action:unsubscribe.txt"
-msgstr ""
-
-msgid "list:user:notice:probe.txt"
 msgstr ""
 
 msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
 
-msgid "help.txt"
+msgid "list:admin:notice:unsubscribe.txt"
+msgstr ""
+
+msgid "list:member:digest:header.txt"
+msgstr ""
+
+msgid "list:member:digest:masthead.txt"
+msgstr ""
+
+msgid "list:member:generic:footer.txt"
+msgstr ""
+
+msgid "list:member:regular:header.txt"
+msgstr ""
+
+msgid "list:user:action:subscribe.txt"
+msgstr ""
+
+msgid "list:user:action:unsubscribe.txt"
+msgstr ""
+
+msgid "list:user:notice:goodbye.txt"
 msgstr ""
 
 msgid "list:user:notice:hold.txt"
 msgstr ""
 
-msgid "list:user:notice:welcome.txt"
+msgid "list:user:notice:no-more-today.txt"
 msgstr ""
-"\"Üdvözöljük a(z) \"$display_name\" levelezőlistán! Ha írni szeretne a "
-"listára, küldje el az e-mail címét:  $listnameLeiratkozhat vagy "
-"beállításokat eszközölhet üzenetet írva ide:  $request_emaila help szót "
-"beírva a tárgyba vagy a levél szövegébe, és válaszul kap egy levelet az "
-"utasításokkal.  A beállítások módosításához szüksége lesz a jelszavára, de "
-"azt biztonsági okokból ide nem írhatjuk be.  Amennyiben elfelejtette a "
-"jelszavát, a weblapon kérhet újat.\""
 
 msgid "list:user:notice:post.txt"
 msgstr ""
 
-msgid "list:admin:action:unsubscribe.txt"
+msgid "list:user:notice:probe.txt"
+msgstr ""
+
+msgid "list:user:notice:refuse.txt"
 msgstr ""
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
+
+#, fuzzy
+msgid "list:user:notice:warning.txt"
+msgstr ""
+"\"Üdvözöljük a(z) \"$display_name\" levelezőlistán! Ha írni szeretne a listára, "
+"küldje el az e-mail címét:  $listnameLeiratkozhat vagy beállításokat eszközölhet "
+"üzenetet írva ide:  $request_emaila help szót beírva a tárgyba vagy a levél "
+"szövegébe, és válaszul kap egy levelet az utasításokkal.  A beállítások "
+"módosításához szüksége lesz a jelszavára, de azt biztonsági okokból ide nem "
+"írhatjuk be.  Amennyiben elfelejtette a jelszavát, a weblapon kérhet újat.\""
+
+msgid "list:user:notice:welcome.txt"
+msgstr ""
+"\"Üdvözöljük a(z) \"$display_name\" levelezőlistán! Ha írni szeretne a listára, "
+"küldje el az e-mail címét:  $listnameLeiratkozhat vagy beállításokat eszközölhet "
+"üzenetet írva ide:  $request_emaila help szót beírva a tárgyba vagy a levél "
+"szövegébe, és válaszul kap egy levelet az utasításokkal.  A beállítások "
+"módosításához szüksége lesz a jelszavára, de azt biztonsági okokból ide nem "
+"írhatjuk be.  Amennyiben elfelejtette a jelszavát, a weblapon kérhet újat.\""
