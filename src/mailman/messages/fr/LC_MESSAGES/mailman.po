@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-04-16 11:08+0000\n"
-"Last-Translator: WhilelM <whilelm@globenet.org>\n"
+"PO-Revision-Date: 2020-04-17 04:35+0000\n"
+"Last-Translator: Frédéric Lehobey <weblate@proxience.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -724,7 +724,7 @@ msgstr "N'est pas un fichier de configuration de Mailman 2.1 : $pickle_file"
 
 #: src/mailman/commands/cli_import.py:79
 msgid "Ignoring non-dictionary: {0!r}"
-msgstr ""
+msgstr "Ignorer, hors du dictionnaire : {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 #, fuzzy
@@ -734,16 +734,20 @@ msgstr "Information au sujet de cette instance Mailman."
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
 msgstr ""
+"    Fichier vers lequel envoyer la sortie. Si absent, la sortie standard est "
+"utilisée."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
 "    A more verbose output including the file system paths that Mailman is\n"
 "    using."
 msgstr ""
+"    Une sortie plus prolixe incluant les chemins système des fichiers que\n"
+"    Mailman utilise."
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
-msgstr ""
+msgstr "Insérer un message d'un fichier dans une file de liste de diffusion."
 
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
@@ -754,7 +758,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
-msgstr ""
+msgstr "Afficher une liste de tous les noms de files et terminer."
 
 #: src/mailman/commands/cli_inject.py:60
 msgid ""
@@ -771,27 +775,27 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:79
 msgid "No such queue: $queue"
-msgstr ""
+msgstr "Aucune telle file : $queue"
 
 #: src/mailman/commands/cli_lists.py:49
 msgid "List all mailing lists."
-msgstr ""
+msgstr "Montrer toutes les listes de diffusion."
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List only those mailing lists that are publicly advertised"
-msgstr ""
+msgstr "Montrer seulement les listes de diffusion dont l'existence est publiée"
 
 #: src/mailman/commands/cli_lists.py:57
 msgid "Show also the list names"
-msgstr ""
+msgstr "Montrer aussi les noms de listes"
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list descriptions"
-msgstr ""
+msgstr "Montrer aussi les descriptions de listes"
 
 #: src/mailman/commands/cli_lists.py:65
 msgid "Less verbosity"
-msgstr ""
+msgstr "Moins prolixe"
 
 #: src/mailman/commands/cli_lists.py:69
 msgid ""
@@ -802,11 +806,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
-msgstr ""
+msgstr "Aucune liste de diffusion correspondante n'a été trouvée"
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "$count matching mailing lists found:"
-msgstr ""
+msgstr "$count listes de diffusion correspondantes de trouvées :"
 
 #: src/mailman/commands/cli_lists.py:122
 msgid ""
@@ -843,7 +847,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:151
 msgid "Print less output."
-msgstr ""
+msgstr "Afficher moins de détails."
 
 #: src/mailman/commands/cli_lists.py:155
 msgid ""
@@ -858,7 +862,7 @@ msgstr "Code de langue non valide : $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
-msgstr ""
+msgstr "Adresses de propriétaires incorrectes : $invalid"
 
 #: src/mailman/commands/cli_lists.py:186
 msgid "Illegal list name: $fqdn_listname"
@@ -874,7 +878,7 @@ msgstr "Domaine non défini : $domain"
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
-msgstr ""
+msgstr "Liste de diffusion créée : $mlist.fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
@@ -886,7 +890,7 @@ msgstr "Supprimer une liste de diffusion."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
-msgstr ""
+msgstr "Effacer les messages d'état"
 
 #: src/mailman/commands/cli_lists.py:237
 msgid "No such list matching spec: $listspec"
@@ -898,7 +902,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_members.py:91
 msgid "$mlist.list_id has no members"
-msgstr "$mlist.list_id n’a pas de membres"
+msgstr "$mlist.list_id n’a pas d'abonnés"
 
 #: src/mailman/commands/cli_members.py:120 src/mailman/commands/cli_members.py:133
 #: src/mailman/commands/cli_members.py:194 src/mailman/commands/cli_members.py:202
