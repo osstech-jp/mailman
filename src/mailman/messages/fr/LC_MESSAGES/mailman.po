@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
 "PO-Revision-Date: 2020-04-17 04:35+0000\n"
-"Last-Translator: Frédéric Lehobey <weblate@proxience.com>\n"
+"Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -727,9 +727,8 @@ msgid "Ignoring non-dictionary: {0!r}"
 msgstr "Ignorer, hors du dictionnaire : {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
-#, fuzzy
 msgid "Information about this Mailman instance."
-msgstr "Information au sujet de cette instance Mailman."
+msgstr "Informations sur cette instance de Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
