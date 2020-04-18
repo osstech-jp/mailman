@@ -16,5 +16,5 @@ done
 
 # Then, update all the po files.
 for each in src/mailman/messages/*/*/*.po; do
-    msgmerge -w 85 --update $each $pot_file
+    msgmerge --update -w 85 --no-fuzzy-matching --no-wrap $each $pot_file
 done
