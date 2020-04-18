@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-04-11 13:31+0000\n"
-"Last-Translator: Frédéric Lehobey <weblate@proxience.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/mailman/fr/"
-">\n"
+"POT-Creation-Date: 2019-09-28 16:20-0700\n"
+"PO-Revision-Date: 2020-04-17 04:35+0000\n"
+"Last-Translator: anonymous <noreply@weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.0.1-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -90,17 +90,16 @@ msgid "$mlist.display_name subscription notification"
 msgstr "Notification d'abonnement à $mlist.display_name"
 
 #: src/mailman/app/notifications.py:136
-#, fuzzy
 msgid "$member's subscription disabled on $mlist.display_name"
 msgstr "Nouvelle demande de désinscription de $mlist.display_name par $email"
 
 #: src/mailman/app/notifications.py:157
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
 msgstr "Vous avez été désinscrits de la liste de diffusion $mlist.display_name"
 
 #: src/mailman/app/notifications.py:184
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
 msgstr "Vous avez été désinscrits de la liste de diffusion $mlist.display_name"
 
@@ -639,92 +638,115 @@ msgid ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 msgstr ""
+"    Incrémente le numéro de volume du condensé et remets le numéro de\n"
+"    condensé à un. Si accompagné de --send, le numéro de volume est\n"
+"    incrémenté avant tout envoi de condensé en cours."
 
 #: src/mailman/commands/cli_digests.py:59 src/mailman/commands/cli_notify.py:47
 msgid ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
 msgstr ""
+"    Ne fait rien, mais en conjonction de --verbose, montre ce qui se "
+"passerait."
 
 #: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:53
 msgid "Print some additional status."
-msgstr ""
+msgstr "Imprime certains états supplémentaires."
 
 #: src/mailman/commands/cli_digests.py:69
 msgid ""
 "    Send any collected digests for the List only if their digest_send_periodic\n"
 "    is set to True."
 msgstr ""
+"    Expédie tout condensat collecté pour la liste seulement si son\n"
+"    digest_send_periodic est positionné à « Vrai »."
 
 #: src/mailman/commands/cli_digests.py:77
 msgid "--send and --periodic flags cannot be used together"
-msgstr ""
+msgstr "les options --send et --periodic ne peuvent être utilisées ensemble"
 
 #: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:66
 msgid "No such list found: $spec"
-msgstr ""
+msgstr "Aucune telle liste de trouvée : $spec"
 
 #: src/mailman/commands/cli_digests.py:98
 #, python-brace-format
 msgid "$mlist.list_id is at volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id est au volume $mlist.volume, numéro "
+"${mlist.next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:104
 #, python-brace-format
 msgid ""
 "$mlist.list_id bumped to volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id porté au volume $mlist.volume, numéro "
+"${mlist.next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:110 src/mailman/commands/cli_digests.py:119
 #, python-brace-format
 msgid "$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id a envoyé le volume $mlist.volume, numéro "
+"${mlist.next_digest_number}"
 
 #: src/mailman/commands/cli_gatenews.py:166
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
 msgstr ""
+"Sonder le serveur NNTP pour des messages à transférer vers les listes de "
+"diffusion."
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr ""
+msgstr "Montrer ce message d'aide et terminer."
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
 "    Import Mailman 2.1 list data'.  Requires the fully-qualified name of the\n"
 "    list to import and the path to the Mailman 2.1 pickle file."
 msgstr ""
+"    Importer les données de liste Mailman 2.1. Nécessite le  nom pleinement\n"
+"    qualifié de la liste à importer et le chemin vers le fichier conserve "
+"de\n"
+"    Mailman 2.1."
 
 #: src/mailman/commands/cli_import.py:62 src/mailman/commands/cli_inject.py:75
 #: src/mailman/commands/cli_members.py:330 src/mailman/commands/cli_withlist.py:292
 #: src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
-msgstr ""
+msgstr "Aucune telle liste : $listspec"
 
 #: src/mailman/commands/cli_import.py:76
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
-msgstr ""
+msgstr "N'est pas un fichier de configuration de Mailman 2.1 : $pickle_file"
 
 #: src/mailman/commands/cli_import.py:79
 msgid "Ignoring non-dictionary: {0!r}"
-msgstr ""
+msgstr "Ignorer, hors du dictionnaire : {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
-msgstr ""
+msgstr "Informations sur cette instance de Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
 msgstr ""
+"    Fichier vers lequel envoyer la sortie. Si absent, la sortie standard est "
+"utilisée."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
 "    A more verbose output including the file system paths that Mailman is\n"
 "    using."
 msgstr ""
+"    Une sortie plus prolixe incluant les chemins système des fichiers que\n"
+"    Mailman utilise."
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
-msgstr ""
+msgstr "Insérer un message d'un fichier dans une file de liste de diffusion."
 
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
@@ -735,7 +757,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
-msgstr ""
+msgstr "Afficher une liste de tous les noms de files et terminer."
 
 #: src/mailman/commands/cli_inject.py:60
 msgid ""
@@ -752,27 +774,27 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:79
 msgid "No such queue: $queue"
-msgstr ""
+msgstr "Aucune telle file : $queue"
 
 #: src/mailman/commands/cli_lists.py:49
 msgid "List all mailing lists."
-msgstr ""
+msgstr "Montrer toutes les listes de diffusion."
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List only those mailing lists that are publicly advertised"
-msgstr ""
+msgstr "Montrer seulement les listes de diffusion dont l'existence est publiée"
 
 #: src/mailman/commands/cli_lists.py:57
 msgid "Show also the list names"
-msgstr ""
+msgstr "Montrer aussi les noms de listes"
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list descriptions"
-msgstr ""
+msgstr "Montrer aussi les descriptions de listes"
 
 #: src/mailman/commands/cli_lists.py:65
 msgid "Less verbosity"
-msgstr ""
+msgstr "Moins prolixe"
 
 #: src/mailman/commands/cli_lists.py:69
 msgid ""
@@ -783,11 +805,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
-msgstr ""
+msgstr "Aucune liste de diffusion correspondante n'a été trouvée"
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "$count matching mailing lists found:"
-msgstr ""
+msgstr "$count listes de diffusion correspondantes de trouvées :"
 
 #: src/mailman/commands/cli_lists.py:122
 msgid ""
@@ -824,7 +846,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:151
 msgid "Print less output."
-msgstr ""
+msgstr "Afficher moins de détails."
 
 #: src/mailman/commands/cli_lists.py:155
 msgid ""
@@ -839,7 +861,7 @@ msgstr "Code de langue non valide : $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
-msgstr ""
+msgstr "Adresses de propriétaires incorrectes : $invalid"
 
 #: src/mailman/commands/cli_lists.py:186
 msgid "Illegal list name: $fqdn_listname"
@@ -855,7 +877,7 @@ msgstr "Domaine non défini : $domain"
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
-msgstr ""
+msgstr "Liste de diffusion créée : $mlist.fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
@@ -867,7 +889,7 @@ msgstr "Supprimer une liste de diffusion."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
-msgstr ""
+msgstr "Effacer les messages d'état"
 
 #: src/mailman/commands/cli_lists.py:237
 msgid "No such list matching spec: $listspec"
@@ -879,7 +901,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_members.py:91
 msgid "$mlist.list_id has no members"
-msgstr "$mlist.list_id n’a pas de membres"
+msgstr "$mlist.list_id n’a pas d'abonnés"
 
 #: src/mailman/commands/cli_members.py:120 src/mailman/commands/cli_members.py:133
 #: src/mailman/commands/cli_members.py:194 src/mailman/commands/cli_members.py:202
