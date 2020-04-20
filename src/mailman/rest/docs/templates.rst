@@ -551,6 +551,11 @@ below.  Here are all the supported template names:
     * ``reason`` - the reason for the rejection, as provided by the list's
       moderators
 
+* ``list:user:notice:rejected``
+    Notice sent to a poster when their message has been automatically rejected.
+
+    * ``reasons`` - some reasons why the post was rejected
+
 * ``list:user:notice:welcome``
     The notice sent to a member when they are subscribed to the mailing list.
 
