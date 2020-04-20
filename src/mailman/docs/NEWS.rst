@@ -61,8 +61,8 @@ Bugs
 Command line
 ------------
 * A new ``mailman members --sync`` command has been added to help you
-synchronize subscribed mailing list members against a text list of
-subscription addresses. (see !545)
+  synchronize subscribed mailing list members against a text list of
+  subscription addresses. (see !545)
 
 REST
 ----
