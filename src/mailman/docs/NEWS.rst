@@ -13,6 +13,11 @@ Here is a history of user visible changes to Mailman.
 
 (XXXX-XX-XX)
 
+Bugs
+----
+* When importing 2.1 lists, ignore CR characters added by browsers in headers
+  and footers.  (Closes #701)
+
 
 3.3.1
 =====
