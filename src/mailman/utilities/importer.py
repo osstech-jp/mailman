@@ -452,6 +452,8 @@ def import_config_pck(mlist, config_dict):
     # order dependent; the longer substitution with the common prefix must
     # show up earlier.
     convert_placeholders = [
+        # First convert \r\n that may have been set by a browser to \n.
+        ('\r\n', '\n'),
         ('%(real_name)s@%(host_name)s',
          'To unsubscribe send an email to ${short_listname}-leave@${domain}'),
         ('%(real_name)s mailing list',
