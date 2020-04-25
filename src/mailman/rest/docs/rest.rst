@@ -56,6 +56,119 @@ You can configure that in ``mailman.cfg`` configuration file.::
     REST root url: http://localhost:9001/3.1/
     REST credentials: restadmin:restpass
 
+Helpers
+=======
+
+There are several :ref:`doc-helpers` which are used throughout the Mailman
+documentation. These include the utilities like :py:func:`.dump_json`,
+:py:func:`.dump_msgdata` and :py:func:`.call_http`.
+
+These helpers methods are simply meant to simplify the documentation and are
+hence included in the namespaces without imports. If you are trying out these
+commands on your local machine, you can replace them with ``curl`` commands
+instead.
+
+.. note:: While the documentation below refers only to ``dump_json`` calls,
+          other utilities mentioned above will also have similar curl
+          equivalents, albeit without the ``| python -m json.tool`` part, which
+          is only meant only to pretty print the json response.
+
+For example, call like::
+
+    >>> dump_json('http://localhost:9001/3.1/domains')
+    entry 0:
+        alias_domain: None
+        description: An example domain.
+        http_etag: "..."
+        mail_host: example.com
+        self_link: http://localhost:9001/3.1/domains/example.com
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
+is a ``GET`` request to the URL specified as the first parameter. An equivalent
+``curl`` command for this would be::
+
+   $ curl --user restadmin:restpass http://localhost:8001/3.1/domains | python -m json.tool
+   {
+   "entries": [
+        {
+            "alias_domain": null,
+            "description": null,
+            "http_etag": "\"75a9858de80b96f525d71157558fff523cb940c3\"",
+            "mail_host": "example.com",
+            "self_link": "http://localhost:8001/3.1/domains/example.com"
+        }
+    ],
+    "http_etag": "\"33480b0f1e9249f6bbcc2c55a1ffaa33c13d424f\"",
+    "start": 0,
+    "total_size": 1
+    }
+  
+
+.. warning:: Note that the port used in the above two commands are intentionally
+             different. Documentation uses 9001 to make sure that the doctests
+             do not run against a running instance of Mailman. By Default the
+             REST API is available at 8001 port on the host where Mailman Core
+             is listening.
+
+.. note:: For authentication, the username & password specified with ``--user``
+          is only the default values. Please change them to the appropriate
+          values.
+
+Similarly, when some data is provided, the requests are actually post requests::
+
+
+   >>> dump_json('http://localhost:9001/3.1/domains', {
+   ...           'mail_host': 'lists.example.com',
+   ...           })
+   content-length: 0
+   content-type: application/json
+   date: ...
+   location: http://localhost:9001/3.1/domains/lists.example.com
+    ...
+
+This is equivalent to::
+
+   $ curl --user restadmin:restpass -X POST http://localhost:8001/3.1/domains \
+       -d mail_host=lists.example.com
+   $ curl --user restadmin:restpass http://localhost:8001/3.1/domains | python -m json.tool
+   {
+    "entries": [
+        {
+            "alias_domain": null,
+            "description": null,
+            "http_etag": "\"75a9858de80b96f525d71157558fff523cb940c3\"",
+            "mail_host": "example.com",
+            "self_link": "http://localhost:8001/3.1/domains/example.com"
+        },
+        {
+            "alias_domain": null,
+            "description": null,
+            "http_etag": "\"a13efb90674956b3ed26363705bf966a954f1121\"",
+            "mail_host": "lists.example.com",
+            "self_link": "http://localhost:8001/3.1/domains/lists.example.com"
+        }
+    ],
+    "http_etag": "\"8c1a1d2664b41673bc61126b99359772ce93cfdb\"",
+    "start": 0,
+    "total_size": 2
+    }
+
+
+
+.. note:: Note that by default, Mailman's REST API accepts both
+          ``application/json`` and ``application/x-www-form-urlencoded`` inputs
+          with ``PATCH`` and ``POST`` requests. We are using the latter in the
+          call above, but you can also use JSON inputs if you prefer that.
+
+Pay careful attention to which request type you are using. As a rule of thumb,
+when you are creating new resources, like a ``Domain`` resource in the above
+call you have to use ``POST``. However, when updating an existing resource,
+you'd want to use ``PATCH`` request. Mailman also support ``PUT`` requests for
+updating a resource, but you need to specify **all** the attributes when
+updating via a ``PUT`` request.
+   
 
 REST API Documentation
 ======================

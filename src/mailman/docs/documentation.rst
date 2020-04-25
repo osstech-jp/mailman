@@ -1,3 +1,5 @@
+.. _doc-helpers:
+
 Documentation Helpers
 =====================
 
