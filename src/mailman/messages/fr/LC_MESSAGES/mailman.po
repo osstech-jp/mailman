@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-28 16:20-0700\n"
-"PO-Revision-Date: 2020-04-17 04:35+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2020-04-25 08:58+0000\n"
+"Last-Translator: Frédéric Lehobey <weblate@proxience.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.0.1-dev\n"
+"X-Generator: Weblate 4.0.2-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -91,17 +91,20 @@ msgstr "Notification d'abonnement à $mlist.display_name"
 
 #: src/mailman/app/notifications.py:136
 msgid "$member's subscription disabled on $mlist.display_name"
-msgstr "Nouvelle demande de désinscription de $mlist.display_name par $email"
+msgstr "Abonnement de $member désactivé pour $mlist.display_name"
 
 #: src/mailman/app/notifications.py:157
 #, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "Vous avez été désinscrits de la liste de diffusion $mlist.display_name"
+msgstr ""
+"$member a été désabonné de la liste de diffusion ${mlist.display_name} en "
+"raison de rejets"
 
 #: src/mailman/app/notifications.py:184
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "Vous avez été désinscrits de la liste de diffusion $mlist.display_name"
+msgstr ""
+"Votre abonnement à la liste de diffusion $mlist.display_name a été désactivé"
 
 #: src/mailman/app/subscriptions.py:299
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
@@ -507,6 +510,15 @@ msgid ""
 "    start of mailman3 server. Setting this option to true will make this\n"
 "    script create the files and thus allow the MTA to operate smoothly."
 msgstr ""
+"    Produit les fichiers d'alias MTA au démarrage. Certains MTA, comme\n"
+"    postfix, ne peuvent distribuer de courriel si les fichiers d'alias "
+"indiqués\n"
+"    dans sa configuration sont  inexistants. Dans certaines situations, "
+"cela\n"
+"    pourrait conduire un blocage au premier démarrage du serveur\n"
+"    mailman3. Positionner cette option à « vrai » fera créer les fichiers "
+"par\n"
+"    cette procédure et ainsi permettre au MTA de fonctionner sans heurts."
 
 #: src/mailman/commands/cli_control.py:66
 msgid ""
@@ -567,7 +579,7 @@ msgstr "Lance le processus pilote de Mailman"
 
 #: src/mailman/commands/cli_control.py:108
 msgid "Generating MTA alias maps"
-msgstr ""
+msgstr "Produire les plans d'alias MTA"
 
 #: src/mailman/commands/cli_control.py:149
 msgid "PID unreadable in: $config.PID_FILE"
@@ -754,6 +766,11 @@ msgid ""
 "    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 msgstr ""
+"    Le nom de la file dans laquelle envoyer le message. « QUEUE » doit être "
+"un\n"
+"    des répertoires dans le répertoire qfiles. Si absent, la file « incoming "
+"» est\n"
+"    utilisée."
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
@@ -764,6 +781,8 @@ msgid ""
 "    Name of file containing the message to inject.  If not given, or\n"
 "    '-' (without the quotes) standard input is used."
 msgstr ""
+"    Nom du fichier contenant le message à envoyer. Si absent ou\n"
+"    « - » (sans guillemets) l'entrée standard est employée."
 
 #: src/mailman/commands/cli_inject.py:66
 msgid ""
@@ -771,6 +790,9 @@ msgid ""
 "    dictionary.  Use the format key=value.  Multiple -m options are\n"
 "    allowed."
 msgstr ""
+"    Couples de métadonnées clef/valeur supplémentaires à ajouter au\n"
+"    dictionnaire de métadonnées du message. Utiliser la forme\n"
+"    clef=valeur. Il est possible de mettre plusieurs options -m."
 
 #: src/mailman/commands/cli_inject.py:79
 msgid "No such queue: $queue"
@@ -802,6 +824,10 @@ msgid ""
 "    must be the email host name.  Multiple -d options may be given.\n"
 "    "
 msgstr ""
+"    Ne lister que les listes de diffusion hébergées sur le domaine\n"
+"    indiqué, qui doit être le nom de courriel du serveur. Plusieurs\n"
+"    options -d peuvent être indiquées.\n"
+"    "
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
@@ -819,6 +845,12 @@ msgid ""
 "    list is required.  It must be a valid email address and the domain must be\n"
 "    registered with Mailman.  List names are forced to lower case."
 msgstr ""
+"    Créer une liste de diffusion.\n"
+"\n"
+"    Le  « nom pleinement qualifié de la liste », c'est à dire, l'adresse\n"
+"    d'expédition de la liste de diffusion est nécessaire. Il doit être une\n"
+"    adresse de courriel correcte et le domaine doit être connu de\n"
+"    Mailman. Les noms de listes sont convertis en minuscules."
 
 #: src/mailman/commands/cli_lists.py:130
 msgid ""
