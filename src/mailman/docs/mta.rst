@@ -160,7 +160,17 @@ Mailman's LMTP server, add the following to Postfix's ``main.cf`` file::
         hash:/path-to-mailman/var/data/postfix_domains
 
 where ``path-to-mailman`` is replaced with the actual path that you're running
-Mailman from.  Setting ``local_recipient_maps`` as well as ``transport_maps``
+Mailman from.
+
+Note that in the above and also below, if your current ``main.cf`` contains
+settings for these items, including the default setting for
+``local_recipient_maps``, you should add the Mailman setting to the existing
+setting rather than replacing it.  For example::
+
+    local_recipient_maps = proxy:unix:passwd.byname $alias_maps
+        hash:/path-to-mailman/var/data/postfix_lmtp
+
+Setting ``local_recipient_maps`` as well as ``transport_maps``
 allows Postfix to properly reject all messages destined for non-existent local
 users.  Setting `relay_domains`_ means Postfix will start to accept mail for
 newly added domains even if they are not part of `mydestination`_.
