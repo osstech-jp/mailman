@@ -104,6 +104,14 @@ testing
         self.assertEqual(self._msg['list-id'], '<test.example.com>')
         self.assertEqual(self._msg['list-post'], '<mailto:test@example.com>')
 
+    def test_rfc2369_headers_virgin(self):
+        # Internally crafted messages should get reduced List-* headers.
+        msgdata = {'reduced_list_headers': True}
+        process(self._mlist, self._msg, msgdata,
+                pipeline_name='virgin')
+        self.assertEqual(self._msg['list-id'], '<test.example.com>')
+        self.assertIsNone(self._msg['list-post'])
+
     def test_discarding_pipeline(self):
         # If a handler in the pipeline raises DiscardMessage, the message will
         # be thrown away, but with a log message.
