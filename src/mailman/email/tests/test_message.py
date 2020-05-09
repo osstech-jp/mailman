@@ -53,6 +53,12 @@ class TestMessage(unittest.TestCase):
         self.assertEqual(items[0].msg.get_all('precedence'),
                          ['omg wtf bbq'])
 
+    def test_reduced_rfc_2369_headers(self):
+        # Notifications should get reduced List-* headers.
+        self._msg.send(self._mlist)
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertTrue(items[0].msgdata.get('reduced_list_headers'))
+
 
 class TestMessageSubclass(unittest.TestCase):
     layer = ConfigLayer

@@ -33,5 +33,6 @@ class VirginPipeline(BasePipeline):
 
     _default_handlers = (
         'cook-headers',
+        'rfc-2369',
         'to-outgoing',
         )
