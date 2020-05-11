@@ -18,6 +18,7 @@ Bugs
 * When importing 2.1 lists, ignore CR characters added by browsers in headers
   and footers.  (Closes #701)
 * RFC 2369 headers are now added to notification messages.  (Closes #710)
+* Bounce probes are now encoded in the correct charset.  (Closes #712)
 
 
 3.3.1
