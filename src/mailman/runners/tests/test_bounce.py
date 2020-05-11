@@ -26,6 +26,7 @@ from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.bounce import (
     BounceContext, IBounceProcessor, UnrecognizedBounceDisposition)
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryStatus, MemberRole
 from mailman.interfaces.styles import IStyle, IStyleManager
 from mailman.interfaces.usermanager import IUserManager
@@ -111,6 +112,21 @@ Original-Recipient: rfc822; somebody@example.com
         get_queue_messages('bounces', expected_count=0)
         events = list(self._processor.events)
         self.assertEqual(len(events), 0)
+
+    def test_send_probe_non_ascii(self):
+        # Send a pobe from an English language list to a user with non-ascii
+        # preferred language.
+        language_manager = getUtility(ILanguageManager)
+        self._mlist.preferred_language = language_manager.get('en')
+        # French charset is utf-8, but testing has it as latin-1
+        french = language_manager.get('fr')
+        french.charset = 'utf-8'
+        self._member.address.preferences.preferred_language = french
+        send_probe(self._member, self._msg)
+        items = get_queue_messages('virgin', expected_count=1)
+        msg = items[0].msg
+        self.assertIn(b'anne@example.com',
+                      msg.get_payload()[0].get_payload(decode=True))
 
     def test_verp_probe_bounce(self):
         # A VERP probe bounced.  The primary difference here is that the
