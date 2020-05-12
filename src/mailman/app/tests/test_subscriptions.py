@@ -51,7 +51,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
     def tearDown(self):
         # There usually should be no pending after all is said and done, but
         # some tests don't complete the workflow.
-        self.assertEqual(getUtility(IPendings).count,
+        self.assertEqual(getUtility(IPendings).count(),
                          self._expected_pendings_count)
 
     def test_start_state(self):

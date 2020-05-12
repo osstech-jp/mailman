@@ -46,12 +46,12 @@ class TestRegistrar(unittest.TestCase):
     def test_initial_conditions(self):
         # Registering a subscription request provides a unique token associated
         # with a pendable, and the owner of the token.
-        self.assertEqual(self._pendings.count, 0)
+        self.assertEqual(self._pendings.count(), 0)
         token, token_owner, member = self._registrar.register(self._anne)
         self.assertIsNotNone(token)
         self.assertEqual(token_owner, TokenOwner.subscriber)
         self.assertIsNone(member)
-        self.assertEqual(self._pendings.count, 1)
+        self.assertEqual(self._pendings.count(), 1)
         record = self._pendings.confirm(token, expunge=False)
         self.assertEqual(record['list_id'], self._mlist.list_id)
         self.assertEqual(record['email'], 'anne@example.com')

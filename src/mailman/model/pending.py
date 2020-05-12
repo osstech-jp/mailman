@@ -153,7 +153,7 @@ class Pendings:
                 store.delete(pending)
 
     @dbconnection
-    def find(self, store, mlist=None, pend_type=None, confirm=True):
+    def _query(self, store, mlist, pend_type, token_owner):
         query = store.query(Pended)
         if mlist is not None:
             pkv_alias_mlist = aliased(PendedKeyValue)
@@ -167,6 +167,16 @@ class Pendings:
                 pkv_alias_type.key == 'type',
                 pkv_alias_type.value == pend_type
                 ))
+        if token_owner is not None:
+            pkv_alias_type = aliased(PendedKeyValue)
+            query = query.join(pkv_alias_type).filter(and_(
+                pkv_alias_type.key == 'token_owner',
+                pkv_alias_type.value == json.dumps(token_owner.name)
+                ))
+        return query
+
+    def find(self, mlist=None, pend_type=None, confirm=True, token_owner=None):
+        query = self._query(mlist, pend_type, token_owner)
         for pending in query:
             pendable = (self.confirm(pending.token, expunge=False)
                         if confirm else None)
@@ -177,7 +187,6 @@ class Pendings:
         for pending in store.query(Pended).all():
             yield pending.token, self.confirm(pending.token, expunge=False)
 
-    @property
-    @dbconnection
-    def count(self, store):
-        return store.query(Pended).count()
+    def count(self, mlist=None, pend_type=None, token_owner=None):
+        query = self._query(mlist, pend_type, token_owner)
+        return query.count()
