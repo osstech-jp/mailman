@@ -141,6 +141,17 @@ class HeldMessage(_HeldMessageBase):
             no_content(response)
 
 
+class _HeldMessageCount:
+
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    def on_get(self, request, response):
+        requests = IListRequests(self._mlist)
+        count = requests.count_of(RequestType.held_message)
+        okay(response, etag(dict(count=count)))
+
+
 @public
 class HeldMessages(_HeldMessageBase, CollectionMixin):
     """Resource for messages held for moderation."""
@@ -162,6 +173,11 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
         """/lists/listname/held"""
         resource = self._make_collection(request)
         okay(response, etag(resource))
+
+    @child()
+    def count(self, context, segments):
+        """/lists/listname/held/count"""
+        return _HeldMessageCount(self._mlist)
 
     @child(r'^(?P<id>[^/]+)')
     def message(self, context, segments, **kw):

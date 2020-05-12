@@ -97,6 +97,26 @@ Something else.
                          'Invalid Parameter "action": Accepted Values are:'
                          ' hold, reject, discard, accept, defer.')
 
+    def test_held_message_count(self):
+        # Initially, the count should be zero.
+        url = 'http://localhost:9001/3.0/lists/ant@example.com/held/count'
+        json, resp = call_api(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(json['count'], 0)
+        # Now, verify that we get the number when a held message is added.
+        with transaction():
+            hold_message(self._mlist, self._msg)
+        json, resp = call_api(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(json['count'], 1)
+        # Hold some more to see if we get the right numbers.
+        with transaction():
+            hold_message(self._mlist, self._msg)
+            hold_message(self._mlist, self._msg)
+        json, resp = call_api(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(json['count'], 3)
+
     def test_discard(self):
         # Discarding a message removes it from the moderation queue.
         with transaction():

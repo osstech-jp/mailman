@@ -60,6 +60,14 @@ When a message gets held for moderator approval, it shows up in this list.
     start: 0
     total_size: 1
 
+A simple count of the held messages is also available:
+::
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/held/count')
+    count: 1
+    http_etag: "..."
+
+
 You can get an individual held message by providing the *request id* for that
 message.  This will include the text of the message.
 ::
