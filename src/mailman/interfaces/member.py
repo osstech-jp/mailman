@@ -50,6 +50,15 @@ class DeliveryStatus(Enum):
 
 
 @public
+class SubscriptionMode(Enum):
+    """The Membership is via an Address or a User (primary address)"""
+    # Subscribed as user via primary address.
+    as_user = 1
+    # Subscribed via specific address.
+    as_address = 2
+
+
+@public
 class MemberRole(Enum):
     member = 1
     owner = 2
@@ -298,6 +307,10 @@ class IMember(Interface):
 
     disabled = Attribute(
         """Has the email delivery been disabled. """)
+
+    subscription_mode = Attribute(
+        """Is the user subscribed via their email address or primary address.
+        """)
 
     def reset_bounce_info():
         """Reset the bounce related information. """

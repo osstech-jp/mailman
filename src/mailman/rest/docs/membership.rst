@@ -53,6 +53,7 @@ the REST interface.
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/1
     http_etag: "..."
     start: 0
@@ -70,6 +71,7 @@ Bart's specific membership can be accessed directly:
     member_id: 1
     role: member
     self_link: http://localhost:9001/3.0/members/1
+		subscription_mode: as_address
     user: http://localhost:9001/3.0/users/1
 
 When Cris also joins the mailing list, her subscription is also available via
@@ -91,6 +93,7 @@ the REST interface.
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/1
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -102,6 +105,7 @@ the REST interface.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -126,6 +130,7 @@ subscribes, she is returned first.
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
@@ -137,6 +142,7 @@ subscribes, she is returned first.
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/1
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -148,6 +154,7 @@ subscribes, she is returned first.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -178,6 +185,7 @@ User ids are different than member ids.
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -189,6 +197,7 @@ User ids are different than member ids.
         member_id: 5
         role: member
         self_link: http://localhost:9001/3.0/members/5
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     entry 2:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
@@ -200,6 +209,7 @@ User ids are different than member ids.
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     entry 3:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
@@ -211,6 +221,7 @@ User ids are different than member ids.
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/1
     entry 4:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -222,6 +233,7 @@ User ids are different than member ids.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -241,6 +253,7 @@ We can also get just the members of a single mailing list.
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -252,6 +265,7 @@ We can also get just the members of a single mailing list.
         member_id: 5
         role: member
         self_link: http://localhost:9001/3.0/members/5
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -279,6 +293,7 @@ page.
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     http_etag: ...
     start: 0
@@ -298,6 +313,7 @@ This works with members of a single list as well as with all members.
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     http_etag: ...
     start: 0
@@ -348,6 +364,7 @@ mailing list.
         moderation_action: accept
         role: moderator
         self_link: http://localhost:9001/3.0/members/6
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/4
     entry 1:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
@@ -359,6 +376,7 @@ mailing list.
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -370,6 +388,7 @@ mailing list.
         member_id: 5
         role: member
         self_link: http://localhost:9001/3.0/members/5
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     entry 3:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -382,6 +401,7 @@ mailing list.
         moderation_action: accept
         role: owner
         self_link: http://localhost:9001/3.0/members/7
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     entry 4:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
@@ -393,6 +413,7 @@ mailing list.
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     entry 5:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
@@ -404,6 +425,7 @@ mailing list.
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/1
     entry 6:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -415,6 +437,7 @@ mailing list.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -435,6 +458,7 @@ We can access all the owners of a list.
         moderation_action: accept
         role: owner
         self_link: http://localhost:9001/3.0/members/7
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -458,6 +482,7 @@ A specific member can always be referenced by their role and address.
     moderation_action: accept
     role: owner
     self_link: http://localhost:9001/3.0/members/7
+		subscription_mode: as_address
     user: http://localhost:9001/3.0/users/2
 
 You can find a specific member based on several different criteria.  For
@@ -476,6 +501,7 @@ example, we can search for all the memberships of a particular address.
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
@@ -487,6 +513,7 @@ example, we can search for all the memberships of a particular address.
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     http_etag: ...
     start: 0
@@ -507,6 +534,7 @@ Or, we can find all the memberships for a particular mailing list.
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
@@ -518,6 +546,7 @@ Or, we can find all the memberships for a particular mailing list.
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/1
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -529,6 +558,7 @@ Or, we can find all the memberships for a particular mailing list.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     entry 3:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -541,6 +571,7 @@ Or, we can find all the memberships for a particular mailing list.
         moderation_action: accept
         role: owner
         self_link: http://localhost:9001/3.0/members/7
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -563,6 +594,7 @@ list.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -575,6 +607,7 @@ list.
         moderation_action: accept
         role: owner
         self_link: http://localhost:9001/3.0/members/7
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -596,6 +629,7 @@ Or, we can find all the memberships for an address with a specific role.
         member_id: 5
         role: member
         self_link: http://localhost:9001/3.0/members/5
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
@@ -607,6 +641,7 @@ Or, we can find all the memberships for an address with a specific role.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -629,6 +664,7 @@ Finally, we can search for a specific member given all three criteria.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -651,6 +687,7 @@ Search can also be performed using HTTP GET queries.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -714,12 +751,15 @@ Elly is now a known user, and a member of the mailing list.
         member_id: 8
         role: member
         self_link: http://localhost:9001/3.0/members/8
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/5
     ...
 
 Gwen is a user with a preferred address.  She subscribes to the `ant` mailing
-list with her preferred address.
-::
+list with her preferred address. A Membership's ``subscription_mode`` reflects
+if it is via a user's preferred address (``as_user``) or via an address
+(``as_address``) so clients can differentiate between two modes of
+subscription::
 
     >>> from mailman.utilities.datetime import now
     >>> gwen = user_manager.create_user('gwen@example.com', 'Gwen Person')
@@ -762,6 +802,7 @@ list with her preferred address.
         member_id: 9
         role: member
         self_link: http://localhost:9001/3.0/members/9
+				subscription_mode: as_user
         user: http://localhost:9001/3.0/users/6
     ...
     total_size: 9
@@ -788,6 +829,7 @@ the new address.
         member_id: 9
         role: member
         self_link: http://localhost:9001/3.0/members/9
+				subscription_mode: as_user
         user: http://localhost:9001/3.0/users/6
     ...
     total_size: 9
@@ -856,6 +898,7 @@ addresses.
         member_id: 10
         role: member
         self_link: http://localhost:9001/3.0/members/10
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/7
     ...
     entry 9:
@@ -868,6 +911,7 @@ addresses.
         member_id: 11
         role: member
         self_link: http://localhost:9001/3.0/members/11
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/7
     http_etag: "..."
     start: 0
@@ -925,6 +969,7 @@ his membership ids have not changed.
         member_id: 10
         role: member
         self_link: http://localhost:9001/3.0/members/10
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/7
     entry 1:
         address: http://localhost:9001/3.0/addresses/hperson@example.com
@@ -936,6 +981,7 @@ his membership ids have not changed.
         member_id: 11
         role: member
         self_link: http://localhost:9001/3.0/members/11
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/7
     http_etag: "..."
     start: 0
@@ -965,6 +1011,7 @@ mode of delivery.
         member_id: 11
         role: member
         self_link: http://localhost:9001/3.0/members/11
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/7
     http_etag: "..."
     start: 0
@@ -988,6 +1035,7 @@ default, there is no such attribute in the resource.
     member_id: 10
     role: member
     self_link: http://localhost:9001/3.0/members/10
+		subscription_mode: as_address
     user: http://localhost:9001/3.0/users/7
 
 Patching the moderation action both changes it for the given user, and adds
@@ -1027,6 +1075,7 @@ It can be reset to the list default by patching an empty value.
     member_id: 10
     role: member
     self_link: http://localhost:9001/3.0/members/10
+		subscription_mode: as_address
     user: http://localhost:9001/3.0/users/7
 
 
@@ -1174,6 +1223,7 @@ And now only Kate is still a member.
         member_id: 14
         role: member
         self_link: http://localhost:9001/3.0/members/14
+				subscription_mode: as_address
         user: http://localhost:9001/3.0/users/10
     ...
     total_size: 1

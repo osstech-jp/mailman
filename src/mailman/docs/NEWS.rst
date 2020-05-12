@@ -19,6 +19,9 @@ Bugs
   and footers.  (Closes #701)
 * RFC 2369 headers are now added to notification messages.  (Closes #710)
 * Bounce probes are now encoded in the correct charset.  (Closes #712)
+* Add ``subscription_mode`` to ``Member`` resource so API clients can
+  differentiate between subscription via address and via primary address of an
+  user. (Closes #707)
 
 
 3.3.1

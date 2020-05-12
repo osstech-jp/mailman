@@ -239,7 +239,7 @@ followed by a POST request, or you can send a PUT request.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user',
     ...           {'display_name': 'Cris Q Person'}, method="PUT")
-		content-length: 0
+    content-length: 0
     content-type: application/json
     date: ...
     location: http://localhost:9001/3.0/users/2
@@ -461,6 +461,7 @@ Elle can get her memberships for each of her email addresses.
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
+        subscription_mode: as_address
         user: http://localhost:9001/3.0/users/5
     entry 1:
         address: http://localhost:9001/3.0/addresses/elle@example.com
@@ -472,6 +473,7 @@ Elle can get her memberships for each of her email addresses.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+        subscription_mode: as_address
         user: http://localhost:9001/3.0/users/5
     http_etag: "..."
     start: 0
@@ -504,6 +506,7 @@ does not show up in the list of memberships for his other address.
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
+        subscription_mode: as_address
         user: http://localhost:9001/3.0/users/5
     entry 1:
         address: http://localhost:9001/3.0/addresses/elle@example.com
@@ -515,6 +518,7 @@ does not show up in the list of memberships for his other address.
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
+        subscription_mode: as_address
         user: http://localhost:9001/3.0/users/5
     http_etag: "..."
     start: 0
@@ -532,6 +536,7 @@ does not show up in the list of memberships for his other address.
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
+        subscription_mode: as_address
         user: http://localhost:9001/3.0/users/5
     http_etag: "..."
     start: 0

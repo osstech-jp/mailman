@@ -28,7 +28,7 @@ from mailman.interfaces.address import IAddress
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     DeliveryStatus, IMember, IMembershipManager, MemberRole, MembershipError,
-    UnsubscriptionEvent)
+    SubscriptionMode, UnsubscriptionEvent)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import now
@@ -116,6 +116,13 @@ class Member(Model):
         return (self._user.preferred_address
                 if self._address is None
                 else self._address)
+
+    @property
+    def subscription_mode(self):
+        """See `IMember`"""
+        return (SubscriptionMode.as_address
+                if self._address
+                else SubscriptionMode.as_user)
 
     @address.setter
     def address(self, new_address):
