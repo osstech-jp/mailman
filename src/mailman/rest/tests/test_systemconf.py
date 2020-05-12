@@ -62,8 +62,7 @@ class TestSystemConfiguration(unittest.TestCase):
         del json['http_etag']
         self.assertEqual(json, dict(
             cache_lifetime='7d',
-            org_domain_data_url=                                  # noqa: E251
-                'https://publicsuffix.org/list/public_suffix_list.dat',
+            org_domain_data_url='https://publicsuffix.org/list/public_suffix_list.dat',  # noqa: E501
             resolver_lifetime='5s',
             resolver_timeout='3s',
             self_link='http://localhost:9001/3.0/system/configuration/dmarc',

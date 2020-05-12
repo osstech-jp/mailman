@@ -149,7 +149,8 @@ class NonmemberModeration:
         for sender in msg.senders:
             nonmember = mlist.nonmembers.get_member(sender)
             assert nonmember is not None, (
-                "sender didn't get subscribed as a nonmember".format(sender))
+                "sender {} didn't get subscribed as a nonmember".format(sender)
+                )
             # Check the '*_these_nonmembers' properties first.  XXX These are
             # legacy attributes from MM2.1; their database type is 'pickle' and
             # they should eventually get replaced.
