@@ -19,9 +19,6 @@ Bugs
   and footers.  (Closes #701)
 * RFC 2369 headers are now added to notification messages.  (Closes #710)
 * Bounce probes are now encoded in the correct charset.  (Closes #712)
-* Add ``subscription_mode`` to ``Member`` resource so API clients can
-  differentiate between subscription via address and via primary address of an
-  user. (Closes #707)
 
 
 REST
@@ -30,6 +27,11 @@ REST
   number of pending requests. (Closes #713)
 * Subscription requests API now allows filtering requests with ``token_owner``
   parameter. (Closes #714)
+* Add ``subscription_mode`` to ``Member`` resource so API clients can
+  differentiate between subscription via address and via primary address of an
+  user. (Closes #707)
+* Add ``/list/<listid>/held/count`` to get a count of total held
+  messages. (Closes #713)
 
 
 3.3.1
