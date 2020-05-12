@@ -236,9 +236,9 @@ class MembershipManager:
         query = store.query(Member).join(
             MailingList, Member.list_id == MailingList._list_id).join(
             Member.preferences).filter(and_(
-            MailingList.process_bounces == True,
-            Member.total_warnings_sent < MailingList.bounce_you_are_disabled_warnings,  # noqa: E501
-            Preferences.delivery_status == DeliveryStatus.by_bounces))
+                MailingList.process_bounces == True,       # noqa: E712
+                Member.total_warnings_sent < MailingList.bounce_you_are_disabled_warnings,  # noqa: E501
+                Preferences.delivery_status == DeliveryStatus.by_bounces))
 
         # XXX(maxking): This is IMO a query that *should* work, but I haven't
         # been able to get it to work in my tests. It could be due to lack of
@@ -254,7 +254,7 @@ class MembershipManager:
 
         for member in query.all():
             if (member.last_warning_sent +
-                member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now():   # noqa: E501
+                    member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now():   # noqa: E501
                 yield member
 
     @dbconnection
@@ -266,12 +266,12 @@ class MembershipManager:
         query = store.query(Member).join(
             MailingList, Member.list_id == MailingList._list_id).join(
             Member.preferences).filter(and_(
-            MailingList.process_bounces == True,
-            Member.total_warnings_sent >= MailingList.bounce_you_are_disabled_warnings,     # noqa: E501
-            Preferences.delivery_status == DeliveryStatus.by_bounces))
+                MailingList.process_bounces == True,    # noqa: E712
+                Member.total_warnings_sent >= MailingList.bounce_you_are_disabled_warnings,     # noqa: E501
+                Preferences.delivery_status == DeliveryStatus.by_bounces))
 
         for member in query.all():
             if ((member.last_warning_sent +
-                member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now() or   # noqa: E501
-                member.mailing_list.bounce_you_are_disabled_warnings == 0):
+                    member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now() or   # noqa: E501
+                    member.mailing_list.bounce_you_are_disabled_warnings == 0):
                 yield member

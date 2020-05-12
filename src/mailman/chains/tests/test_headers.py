@@ -367,8 +367,8 @@ A message body.
         links_2 = get_links()
         # The link rules both have the same name...
         self.assertEqual(
-            [l.rule.name for l in links_1],
-            [l.rule.name for l in links_2],
+            [link.rule.name for link in links_1],
+            [link.rule.name for link in links_2],
             )
         # ...and are actually the identical objects.
         for link1, link2 in zip(links_1, links_2):

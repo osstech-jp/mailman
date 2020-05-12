@@ -50,7 +50,7 @@ def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
     if '\n' in s:
         s = '{} [...]'.format(s.split('\n')[0])
         log.warning('Header {} contains a newline, truncating it.'.format(
-            header_name, s))
+            header_name))
     return Header(s, charset, maxlinelen, header_name, continuation_ws)
 
 
@@ -142,7 +142,7 @@ def process(mlist, msg, msgdata):
         # is already in From and Reply-To in this case.
         if (mlist.personalize is Personalization.full
                 and mlist.reply_goes_to_list is not               # noqa: W503
-                    ReplyToMunging.point_to_list
+                    ReplyToMunging.point_to_list                  # noqa: E127
                 and not mlist.anonymous_list):                    # noqa: W503
             # Watch out for existing Cc headers, merge, and remove dups.  Note
             # that RFC 2822 says only zero or one Cc header is allowed.
