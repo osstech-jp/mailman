@@ -62,6 +62,7 @@ class _MemberBase(CollectionMixin):
             email=member.address.email,
             list_id=member.list_id,
             member_id=member_id,
+            subscription_mode=member.subscription_mode,
             role=role,
             self_link=self.api.path_to('members/{}'.format(member_id)),
             )

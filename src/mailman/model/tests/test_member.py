@@ -23,7 +23,7 @@ from datetime import timedelta
 from mailman.app.lifecycle import create_list
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import (
-    DeliveryStatus, MemberRole, MembershipError)
+    DeliveryStatus, MemberRole, MembershipError, SubscriptionMode)
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member, MembershipManager
@@ -123,6 +123,20 @@ class TestMember(unittest.TestCase):
         self.assertEqual(bart_member.moderation_action, Action.accept)
         self.assertIsNone(cris_member.moderation_action)
         self.assertIsNone(dana_member.moderation_action)
+
+    def test_subscriptin_mode(self):
+        # Test subscription mode reflects if a user is subscribed or an address
+        # is.
+        addr = self._usermanager.create_address('aperson@example.com')
+        addr.verified_on = now()
+        self._mlist.subscribe(addr)
+        member = self._mlist.members.get_member('aperson@example.com')
+        self.assertEqual(member.subscription_mode, SubscriptionMode.as_address)
+
+        auser = self._usermanager.create_user('bperson@example.com')
+        set_preferred(auser)
+        amember = self._mlist.subscribe(auser, MemberRole.member)
+        self.assertEqual(amember.subscription_mode, SubscriptionMode.as_user)
 
 
 class TestMembershipManager(unittest.TestCase):
