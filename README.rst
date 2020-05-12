@@ -27,7 +27,7 @@ interface called Postorius, a web archiver called HyperKitty, and a few other
 components.  If you're looking for instructions on installing the full suite,
 read that documentation.
 
-Mailman is written in Python which is available for all platforms that Mailman
+Mailman is written in Python which is available for all platforms that Python
 is supported on, including GNU/Linux and most other Unix-like operating
 systems (e.g. Solaris, \*BSD, MacOSX, etc.).  Mailman is not supported on
 Windows, although web and mail clients on any platform should be able to
