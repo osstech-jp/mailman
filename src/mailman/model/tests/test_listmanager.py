@@ -234,12 +234,12 @@ Message-ID: <argon>
             type='subscription',
             list_id='bee.example.com')
         pendingdb.add(pendable_2)
-        self.assertEqual(pendingdb.count, 2)
+        self.assertEqual(pendingdb.count(), 2)
         list_manager = getUtility(IListManager)
         list_manager.delete(self._ant)
-        self.assertEqual(pendingdb.count, 1)
+        self.assertEqual(pendingdb.count(), 1)
         list_manager.delete(self._bee)
-        self.assertEqual(pendingdb.count, 0)
+        self.assertEqual(pendingdb.count(), 0)
 
 
 class TestListCreation(unittest.TestCase):

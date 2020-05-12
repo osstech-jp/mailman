@@ -21,6 +21,14 @@ Bugs
 * Bounce probes are now encoded in the correct charset.  (Closes #712)
 
 
+REST
+----
+* Add a new endpoint ``/lists/<listid>/requests/count`` which returns total
+  number of pending requests. (Closes #713)
+* Subscription requests API now allows filtering requests with ``token_owner``
+  parameter. (Closes #714)
+
+
 3.3.1
 =====
 

@@ -22,7 +22,7 @@ from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError
 from mailman.interfaces.pending import IPendings
-from mailman.interfaces.subscriptions import ISubscriptionManager
+from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, child, conflict, etag, no_content,
     not_found, okay)
@@ -113,6 +113,41 @@ class IndividualRequest(_ModerationBase):
                     _('[No reason given]'))
 
 
+class _SubscriptionRequestsFound(_ModerationBase, CollectionMixin):
+    """An abstract class to return a sub-set of subscription requests.
+
+    This is used for filtering subscription requests based on token_owner.
+    """
+    def __init__(self, sub_requests):
+        super().__init__()
+        self._requests = sub_requests
+
+    def _get_collection(self, requests):
+        return self._requests
+
+
+class _SubscriptionRequestCount:
+
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    def on_get(self, request, response):
+        validator = Validator(
+            token_owner=enum_validator(TokenOwner),
+            _optional=['token_owner'])
+        try:
+            data = validator(request)
+        except ValueError as error:
+            bad_request(response, str(error))
+        else:
+            token_owner = data.pop('token_owner', None)
+            count = getUtility(IPendings).count(
+                mlist=self._mlist,
+                pend_type='subscription',
+                token_owner=token_owner)
+            okay(response, etag(dict(count=count)))
+
+
 @public
 class SubscriptionRequests(_ModerationBase, CollectionMixin):
     """Resource for membership change requests."""
@@ -121,15 +156,34 @@ class SubscriptionRequests(_ModerationBase, CollectionMixin):
         super().__init__()
         self._mlist = mlist
 
-    def _get_collection(self, request):
-        pendings = getUtility(IPendings).find(
-            mlist=self._mlist, pend_type='subscription')
-        return [token for token, pendable in pendings]
-
     def on_get(self, request, response):
         """/lists/listname/requests"""
-        resource = self._make_collection(request)
-        okay(response, etag(resource))
+        validator = Validator(
+            token_owner=enum_validator(TokenOwner),
+            page=int,
+            count=int,
+            _optional=['token_owner', 'page', 'count'],
+            )
+
+        try:
+            data = validator(request)
+        except ValueError as error:
+            bad_request(response, str(error))
+        else:
+            data.pop('page', None)
+            data.pop('count', None)
+            token_owner = data.pop('token_owner', None)
+            pendings = getUtility(IPendings).find(
+                mlist=self._mlist,
+                pend_type='subscription',
+                token_owner=token_owner)
+            resource = _SubscriptionRequestsFound(
+                [token for token, pendable in pendings])
+            okay(response, etag(resource._make_collection(request)))
+
+    @child()
+    def count(self, context, segments):
+        return _SubscriptionRequestCount(self._mlist)
 
     @child(r'^(?P<token>[^/]+)')
     def subscription(self, context, segments, **kw):

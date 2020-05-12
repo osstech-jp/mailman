@@ -22,6 +22,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.pending import IPendable, IPendings
+from mailman.interfaces.subscriptions import TokenOwner
 from mailman.model.pending import PendedKeyValue
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
@@ -48,9 +49,9 @@ class TestPendings(unittest.TestCase):
             language='en',
             password='xyz')
         token = pendingdb.add(subscription)
-        self.assertEqual(pendingdb.count, 1)
+        self.assertEqual(pendingdb.count(), 1)
         pendingdb.confirm(token)
-        self.assertEqual(pendingdb.count, 0)
+        self.assertEqual(pendingdb.count(), 0)
         self.assertEqual(config.db.store.query(PendedKeyValue).count(), 0)
 
     def test_find(self):
@@ -59,7 +60,8 @@ class TestPendings(unittest.TestCase):
         pendingdb = getUtility(IPendings)
         subscription_1 = SimplePendable(
             type='subscription',
-            list_id='list1.example.com')
+            list_id='list1.example.com',
+            token_owner='subscriber')
         subscription_2 = SimplePendable(
             type='subscription',
             list_id='list2.example.com')
@@ -69,16 +71,28 @@ class TestPendings(unittest.TestCase):
         subscription_4 = SimplePendable(
             type='hold request',
             list_id='list2.example.com')
+        subscription_5 = SimplePendable(
+            type='subscription',
+            list_id='list2.example.com',
+            token_owner='moderator')
         token_1 = pendingdb.add(subscription_1)
         pendingdb.add(subscription_2)
         token_3 = pendingdb.add(subscription_3)
         token_4 = pendingdb.add(subscription_4)
-        self.assertEqual(pendingdb.count, 4)
+        token_5 = pendingdb.add(subscription_5)
+        self.assertEqual(pendingdb.count(), 5)
         # Find the pending subscription in list1.
         pendings = list(pendingdb.find(mlist=mlist, pend_type='subscription'))
-        self.assertEqual(len(pendings), 1)
+        self.assertEqual(len(pendings), 1, pendings)
         self.assertEqual(pendings[0][0], token_1)
         self.assertEqual(pendings[0][1]['list_id'], 'list1.example.com')
+        self.assertEqual(pendings[0][1]['token_owner'], 'subscriber')
+        # Find the pending subscription using the token_owner.
+        pendings = list(pendingdb.find(token_owner=TokenOwner.moderator))
+        self.assertEqual(len(pendings), 1)
+        self.assertEqual(pendings[0][0], token_5)
+        self.assertEqual(pendings[0][1]['list_id'], 'list2.example.com')
+        self.assertEqual(pendings[0][1]['token_owner'], 'moderator')
         # Find all pending hold requests.
         pendings = list(pendingdb.find(pend_type='hold request'))
         self.assertEqual(len(pendings), 2)
@@ -94,3 +108,13 @@ class TestPendings(unittest.TestCase):
             {(token_1, 'list1.example.com', 'subscription'),
              (token_3, 'list1.example.com', 'hold request')}
             )
+
+        # Run count queries.
+        self.assertEqual(
+            pendingdb.count(mlist=mlist, pend_type='subscription'), 1)
+        self.assertEqual(
+            pendingdb.count(token_owner=TokenOwner.moderator), 1)
+        self.assertEqual(
+            pendingdb.count(token_owner=TokenOwner.subscriber), 1)
+        self.assertEqual(
+            pendingdb.count(mlist=mlist, token_owner=TokenOwner.subscriber), 1)
