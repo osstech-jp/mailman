@@ -56,6 +56,7 @@ All readable attributes for a list are available on a sub-resource.
     dmarc_mitigate_unconditionally: False
     dmarc_moderation_notice:
     dmarc_wrapped_message_text:
+    emergency: False
     filter_action: discard
     filter_content: False
     filter_extensions: []
@@ -194,6 +195,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             pass_extensions=['.pdf'],
     ...             pass_types=['image/jpeg'],
     ...             filter_action='preserve',
+    ...             emergency=False,
     ...             ),
     ...           'PUT')
     date: ...
@@ -244,6 +246,7 @@ These values are changed permanently.
     dmarc_mitigate_unconditionally: False
     dmarc_moderation_notice: Some moderation notice
     dmarc_wrapped_message_text: some message text
+    emergency: False
     filter_action: preserve
     filter_content: True
     filter_extensions: ['.mkv']

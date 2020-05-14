@@ -188,6 +188,7 @@ ATTRIBUTES = dict(
     dmarc_mitigate_unconditionally=GetterSetter(as_boolean),
     dmarc_moderation_notice=GetterSetter(str),
     dmarc_wrapped_message_text=GetterSetter(str),
+    emergency=GetterSetter(as_boolean),
     filter_action=GetterSetter(enum_validator(FilterAction)),
     filter_content=GetterSetter(as_boolean),
     filter_extensions=GetterSetter(list_of_strings_validator),

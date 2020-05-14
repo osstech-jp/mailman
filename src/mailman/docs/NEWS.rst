@@ -34,6 +34,8 @@ REST
   messages. (Closes #713)
 * Add ``fields`` as an optional parameter in all the Member's APIs to customize
   which fields are included in the resource. (Closes #716)
+* Expose ``emergency`` field of MailingList via REST API. (Closes #719)
+
 
 3.3.1
 =====
