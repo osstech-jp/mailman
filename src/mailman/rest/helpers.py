@@ -27,6 +27,7 @@ from datetime import datetime, timedelta
 from email.header import Header
 from email.message import Message
 from enum import Enum
+from functools import partial
 from lazr.config import as_boolean
 from mailman.config import config
 from pprint import pformat
@@ -104,13 +105,15 @@ def etag(resource):
 class CollectionMixin:
     """Mixin class for common collection-ish things."""
 
-    def _resource_as_dict(self, resource):
+    def _resource_as_dict(self, resource, fields=None):
         """Return the dictionary representation of a resource.
 
         This must be implemented by subclasses.
 
         :param resource: The resource object.
         :type resource: object
+        :param fields: The resource fields which should be included.
+        :type fields: List[str]
         :return: The representation of the resource.
         :rtype: dict
         """
@@ -163,18 +166,23 @@ class CollectionMixin:
         list_end = page * count
         return list_start, total_size, collection[list_start:list_end]
 
-    def _make_collection(self, request):
+    def _make_collection(self, request, fields=None):
         """Provide the collection to the REST layer."""
         start, total_size, collection = self._paginate(
             request, self._get_collection(request))
         result = dict(start=start, total_size=total_size)
         if len(collection) != 0:
-            entries = [self._resource_as_dict(resource)
-                       for resource in collection]
+            # XXX(maxking): This is not the nicest way to use the mixin class,
+            # but this is just meant to minimize the code changes since all the
+            # resource endpoints do not support fields API. We pass on the
+            # fields to underlying serialization method conditionally.
+            as_dict = self._resource_as_dict
+            if fields is not None:
+                as_dict = partial(self._resource_as_dict, fields=fields)  # pragma: nocover  # noqa: E501
+            entries = [as_dict(resource) for resource in collection]
             assert None not in entries, entries
-            # Tag the resources but use the dictionaries.
-            [etag(resource) for resource in entries]
             # Create the collection resource
+            [etag(resource) for resource in entries]
             result['entries'] = entries
         return result
 
