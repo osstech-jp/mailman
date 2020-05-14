@@ -793,3 +793,94 @@ class TestAPI31Members(unittest.TestCase):
         self.assertEqual(
             cm.exception.reason,
             'anne@example.com is already an owner of ant@example.com')
+
+
+class TestMemberFields(unittest.TestCase):
+    layer = RESTLayer
+
+    def setUp(self):
+        with transaction():
+            self._mlist = create_list('test@example.com')
+        self._usermanager = getUtility(IUserManager)
+
+    def _test_get_member_roster_with_specific_fields(
+            self, url, total_size, data=None):
+        if data:
+            data['fields'] = ['member_id', 'role', 'address']
+        else:
+            url = url + '?fields=member_id&fields=role&fields=address'
+        json, response = call_api(url, data=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['total_size'], total_size)
+        entries = json['entries']
+        self.assertEqual(len(entries), total_size)
+
+        # Response will always add http_etag.
+        fields = ['address', 'http_etag', 'member_id', 'role']
+        self.assertEqual(sorted(entries[0].keys()), fields)
+
+    def _test_get_member_roster_invalid_fields(self, url, data=None):
+        if data:
+            data['fields'] = ['bogus']
+        else:
+            url = url + '?fields=bogus'
+        with self.assertRaises(HTTPError) as cm:
+            call_api(url, data=data)
+        self.assertEqual(cm.exception.code, 400)
+        self.assertIn(
+            'Unknown field "bogus" for Member resource. Allowed fields are: ',
+            cm.exception.reason
+            )
+
+    def test_get_top_level_members_with_fields(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+            subscribe(self._mlist, 'Bart')
+        self._test_get_member_roster_with_specific_fields(
+            'http://localhost:9001/3.1/members', total_size=2)
+        self._test_get_member_roster_invalid_fields(
+            'http://localhost:9001/3.1/members')
+
+    def test_get_members_roster_with_fields(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+            subscribe(self._mlist, 'Bart')
+        self._test_get_member_roster_with_specific_fields(
+            'http://localhost:9001/3.1/lists/{}/roster/member'.format(
+                self._mlist.list_id), total_size=2)
+        self._test_get_member_roster_invalid_fields(
+            'http://localhost:9001/3.1/lists/{}/roster/member'.format(
+                self._mlist.list_id))
+
+    def test_get_owners_roster_fields(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne', role=MemberRole.owner)
+            subscribe(self._mlist, 'Bart', role=MemberRole.owner)
+        self._test_get_member_roster_with_specific_fields(
+            'http://localhost:9001/3.1/lists/{}/roster/owner'.format(
+                self._mlist.list_id), total_size=2)
+        self._test_get_member_roster_invalid_fields(
+            'http://localhost:9001/3.1/lists/{}/roster/owner'.format(
+                self._mlist.list_id))
+
+    def test_get_moderator_roster_fields(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne', role=MemberRole.moderator)
+            subscribe(self._mlist, 'Bart', role=MemberRole.moderator)
+        self._test_get_member_roster_with_specific_fields(
+            'http://localhost:9001/3.1/lists/{}/roster/moderator'.format(
+                self._mlist.list_id), total_size=2)
+        self._test_get_member_roster_invalid_fields(
+            'http://localhost:9001/3.1/lists/{}/roster/moderator'.format(
+                self._mlist.list_id))
+
+    def test_find_members_with_fields(self):
+        with transaction():
+            subscribe(self._mlist, 'Anne')
+        self._test_get_member_roster_with_specific_fields(
+            'http://localhost:9001/3.1/members/find',
+            data={'list_id': self._mlist.list_id},
+            total_size=1)
+        self._test_get_member_roster_invalid_fields(
+            'http://localhost:9001/3.1/members/find',
+            data={'list_id': self._mlist.list_id})

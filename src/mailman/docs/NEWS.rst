@@ -32,7 +32,8 @@ REST
   user. (Closes #707)
 * Add ``/list/<listid>/held/count`` to get a count of total held
   messages. (Closes #713)
-
+* Add ``fields`` as an optional parameter in all the Member's APIs to customize
+  which fields are included in the resource. (Closes #716)
 
 3.3.1
 =====
