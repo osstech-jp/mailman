@@ -1,0 +1,20 @@
+From: spammer <office@example.com>
+Message-Id: <48646461-A644-4D76-BB99-67FDA49598E7@example.com>
+Date: Sat, 9 May 2020 08:03:07 -0600
+To: "pycon aid" <pycon-aid@python.org>
+Mime-Version: 1.0 (1.0)
+Content-Type: multipart/alternative; boundary="abcdefghi"
+Subject: [pycon-aid] spammer
+
+--abcdefghi
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Body with non-ascii can’t see won’t know
+
+--abcdefghi
+Content-Type: text/html
+Junk html
+
+--abcdefghi--
