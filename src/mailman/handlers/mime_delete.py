@@ -167,15 +167,17 @@ def process(mlist, msg, msgdata):
 def reset_payload(msg, subpart):
     # Reset payload of msg to contents of subpart, and fix up content headers
     payload = subpart.get_payload()
-    msg.set_payload(payload)
+    if subpart.is_multipart():
+        cset = None
+    else:
+        cset = subpart.get_content_charset()
+    msg.set_payload(payload, charset=cset)
+    # Don't restore Content-Transfer-Encoding; set_payload sets it based
+    # on the charset.
     del msg['content-type']
-    del msg['content-transfer-encoding']
     del msg['content-disposition']
     del msg['content-description']
     msg['Content-Type'] = subpart.get('content-type', 'text/plain')
-    cte = subpart.get('content-transfer-encoding')
-    if cte:
-        msg['Content-Transfer-Encoding'] = cte
     cdisp = subpart.get('content-disposition')
     if cdisp:
         msg['Content-Disposition'] = cdisp
