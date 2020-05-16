@@ -33,9 +33,10 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    DMARCMitigateAction, IAcceptableAlias, IAcceptableAliasSet,
-    IHeaderMatch, IHeaderMatchList, IListArchiver, IListArchiverSet,
-    IMailingList, Personalization, ReplyToMunging, SubscriptionPolicy)
+    ArchiveRenderingMode, DMARCMitigateAction, IAcceptableAlias,
+    IAcceptableAliasSet, IHeaderMatch, IHeaderMatchList, IListArchiver,
+    IListArchiverSet, IMailingList, Personalization, ReplyToMunging,
+    SubscriptionPolicy)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MembershipIsBannedError,
     MissingPreferredAddressError, SubscriptionEvent)
@@ -187,6 +188,7 @@ class MailingList(Model):
     topics_enabled = Column(Boolean)
     unsubscription_policy = Column(Enum(SubscriptionPolicy))
     usenet_watermark = Column(Integer)
+    archive_rendering_mode = Column(Enum(ArchiveRenderingMode))
     # ORM relationships.
     header_matches = relationship(
         'HeaderMatch', backref='mailing_list',
