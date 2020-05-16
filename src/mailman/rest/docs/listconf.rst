@@ -23,6 +23,7 @@ All readable attributes for a list are available on a sub-resource.
     allow_list_posts: True
     anonymous_list: False
     archive_policy: public
+    archive_rendering_mode: text
     autorespond_owner: none
     autorespond_postings: none
     autorespond_requests: none
@@ -132,6 +133,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             advertised=False,
     ...             anonymous_list=True,
     ...             archive_policy='never',
+    ...             archive_rendering_mode='text',
     ...             autorespond_owner='respond_and_discard',
     ...             autorespond_postings='respond_and_continue',
     ...             autorespond_requests='respond_and_discard',
@@ -215,6 +217,7 @@ These values are changed permanently.
     allow_list_posts: False
     anonymous_list: True
     archive_policy: never
+    archive_rendering_mode: text
     autorespond_owner: respond_and_discard
     autorespond_postings: respond_and_continue
     autorespond_requests: respond_and_discard

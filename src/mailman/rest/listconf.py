@@ -25,8 +25,8 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    DMARCMitigateAction, IAcceptableAliasSet, IMailingList,  Personalization,
-    ReplyToMunging, SubscriptionPolicy)
+    ArchiveRenderingMode, DMARCMitigateAction, IAcceptableAliasSet,
+    IMailingList,  Personalization, ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.template import ITemplateManager
 from mailman.model.roster import RosterVisibility
@@ -156,6 +156,7 @@ ATTRIBUTES = dict(
     allow_list_posts=GetterSetter(as_boolean),
     anonymous_list=GetterSetter(as_boolean),
     archive_policy=GetterSetter(enum_validator(ArchivePolicy)),
+    archive_rendering_mode=GetterSetter(enum_validator(ArchiveRenderingMode)),
     autorespond_owner=GetterSetter(enum_validator(ResponseAction)),
     autorespond_postings=GetterSetter(enum_validator(ResponseAction)),
     autorespond_requests=GetterSetter(enum_validator(ResponseAction)),

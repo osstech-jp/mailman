@@ -31,7 +31,8 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    DMARCMitigateAction, Personalization, ReplyToMunging, SubscriptionPolicy)
+    ArchiveRenderingMode, DMARCMitigateAction, Personalization,
+    ReplyToMunging, SubscriptionPolicy)
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.model.roster import RosterVisibility
 from public import public
@@ -132,6 +133,8 @@ class BasicOperation:
         mlist.topics_userinterest = {}
         # scrub regular delivery
         mlist.scrub_nondigest = False
+        # Archive rendering mode.
+        mlist.archive_rendering_mode = ArchiveRenderingMode.text
 
 
 @public

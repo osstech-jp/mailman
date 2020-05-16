@@ -91,6 +91,15 @@ class SubscriptionPolicy(Enum):
 
 
 @public
+class ArchiveRenderingMode(Enum):
+    """Email rendering mode in Archiver."""
+    # Default text.
+    text = 1
+    # Render emails as markdown text.
+    markdown = 2
+
+
+@public
 class IMailingList(Interface):
     """A mailing list."""
 
@@ -746,6 +755,18 @@ class IMailingList(Interface):
     usenet_watermark = Attribute(
         """The NNTP server's message number of the last post gated to the
         list.""")
+
+    # Hyperkitty specific settings.
+
+    archive_rendering_mode = Attribute(
+        """How are Emails rendered in archivers?  This is only a suggested mode
+        for Archivers and is not related to actual contents of Emails.
+
+        Primary use of this setting is going to be Hyperkitty, which can render
+        emails as markdown text.
+
+        Values are `ArchiveRenderingMode` Enum.
+        """)
 
 
 @public

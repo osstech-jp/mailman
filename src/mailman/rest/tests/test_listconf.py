@@ -48,6 +48,7 @@ RESOURCE = dict(
     allow_list_posts=False,
     anonymous_list=True,
     archive_policy='never',
+    archive_rendering_mode='text',
     autorespond_owner='respond_and_discard',
     autorespond_postings='respond_and_continue',
     autorespond_requests='respond_and_discard',

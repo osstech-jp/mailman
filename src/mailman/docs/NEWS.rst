@@ -37,6 +37,13 @@ REST
 * Expose ``emergency`` field of MailingList via REST API. (Closes #719)
 
 
+Others
+------
+* Add a new ``archive_rendering_mode`` attribute to ``MailingList`` to
+  configure what kind of rendering should Archivers use to render
+  Emails. (Closes #720)
+
+
 3.3.1
 =====
 
