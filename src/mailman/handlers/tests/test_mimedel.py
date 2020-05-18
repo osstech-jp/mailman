@@ -397,6 +397,37 @@ multipart/signed
         # Ensure we can flatten it.
         dummy = msg.as_bytes()                             # noqa: F841
 
+    def test_collapse_alternatives_non_ascii_encoded(self):
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: Testing mpa with transfer encoded subparts
+Message-ID: <ant>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AAAA"
+
+--AAAA
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Let=E2=80=99s also consider
+
+--AAAA
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Let=E2=80=99s also consider
+
+--AAAA--
+""")
+        process = config.handlers['mime-delete'].process
+        process(self._mlist, msg, {})
+        self.assertFalse(msg.is_multipart())
+        self.assertEqual(msg.get_payload(decode=True),
+                         b'Let\xe2\x80\x99s also consider\n')
+        # Ensure we can flatten it.
+        dummy = msg.as_bytes()                             # noqa: F841
+
     def test_reset_payload_multipart(self):
         msg = mfs("""\
 From: anne@example.com

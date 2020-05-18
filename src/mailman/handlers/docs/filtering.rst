@@ -103,6 +103,7 @@ the ``multipart`` will be replaced by the subpart.
     >>> print(msg.as_string())
     From: aperson@example.com
     MIME-Version: 1.0
+    Content-Transfer-Encoding: 7bit
     Content-Type: image/gif
     X-Content-Filtered-By: Mailman/MimeDel ...
     <BLANKLINE>
@@ -155,6 +156,7 @@ recast as just the subpart.
     >>> print(msg.as_string())
     From: aperson@example.com
     MIME-Version: 1.0
+    Content-Transfer-Encoding: 7bit
     Content-Type: image/gif
     X-Content-Filtered-By: Mailman/MimeDel ...
     <BLANKLINE>
@@ -185,6 +187,8 @@ promoted to being the outer part.
     >>> process(mlist, msg, {})
     >>> print(msg.as_string())
     From: aperson@example.com
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: 7bit
     Content-Type: text/plain
     X-Content-Filtered-By: Mailman/MimeDel ...
     <BLANKLINE>
