@@ -37,6 +37,11 @@ sqlite-38:
   script:
   - tox -e py38-nocov
 
+sqlite-39:
+  script:
+    - tox -e py39-nocov
+  allow_failure: true
+
 pgsql-35:
   services:
   - postgres:latest
