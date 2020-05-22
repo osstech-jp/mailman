@@ -24,9 +24,11 @@ The mail command ``join`` subscribes an email address to the mailing list.
     <BLANKLINE>
     By using the 'digest' option, you can specify whether you want digest
     delivery or not.  If not specified, the mailing list's default
-    delivery mode will be used.
+    delivery mode will be used.  You can use the 'address' option to
+    request subscription of an address other than the sender of the command.
+
     >>> print(join.argument_description)
-    [digest=<no|mime|plain>]
+    [digest=<no|mime|plain>] [address=user@example.com]
 
 
 No address to join
