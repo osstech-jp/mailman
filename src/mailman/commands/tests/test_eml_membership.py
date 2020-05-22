@@ -63,6 +63,67 @@ class TestJoin(unittest.TestCase):
         self._mlist = create_list('ant@example.com')
         self._command = Join()
 
+    def test_join_successful(self):
+        # Subscribe a member via join.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertIn('Confirmation email sent to anne@example.com',
+                      str(results))
+
+    def test_join_digest(self):
+        # Subscribe a member to digest via join.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, ('digest=mime',), results)
+        self.assertIn('Confirmation email sent to anne@example.com',
+                      str(results))
+
+    def test_join_other(self):
+        # Subscribe a different address via join.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {},
+                              ('address=bob@example.com',), results)
+        self.assertIn('Confirmation email sent to bob@example.com',
+                      str(results))
+
+    def test_join_other_bogus(self):
+        # Try to subscribe a bogus different address via join.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {},
+                              ('address=bogus',), results)
+        self.assertIn('Invalid email address: bogus', str(results))
+
+    def test_join_bad_argument(self):
+        # Try to subscribe a member with a bad argument via join.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, ('digest=bogus',), results)
+        self.assertIn('bad argument: digest=bogus', str(results))
+
+    def test_join_bad_argument_name(self):
+        # Try to subscribe a member with a bad argument via join.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, ('reg=bogus',), results)
+        self.assertIn('bad argument: reg=bogus', str(results))
+
+    def test_join_bad_argument_no_equal(self):
+        # Try to subscribe a member with a bad argument via join.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, ('digest',), results)
+        self.assertIn('bad argument: digest', str(results))
+
     def test_join_already_a_member(self):
         # Try to subscribe someone who is already a member.  Anne is a real
         # user, with a validated address, but she is not a member of the

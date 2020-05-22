@@ -42,6 +42,8 @@ Others
 * Add a new ``archive_rendering_mode`` attribute to ``MailingList`` to
   configure what kind of rendering should Archivers use to render
   Emails. (Closes #720)
+* An ``address=`` option has been added to the email ``join`` command to allow
+  requesting subscription of other than the sender of the email.  (Closes #721)
 
 
 3.3.1

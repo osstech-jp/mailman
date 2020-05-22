@@ -59,13 +59,15 @@ Some commands have even more detailed help.
     >>> print(results)
     The results of your email command are provided below.
     <BLANKLINE>
-    join [digest=<no|mime|plain>]
+    join [digest=<no|mime|plain>] [address=user@example.com]
     Join this mailing list.
     <BLANKLINE>
     You will be asked to confirm your subscription request and you may be
     issued a provisional password.
     <BLANKLINE>
     By using the 'digest' option, you can specify whether you want digest
-    delivery or not.  If not specified, the mailing list's default delivery
-    mode will be used.
+    delivery or not.  If not specified, the mailing list's default
+    delivery mode will be used.  You can use the 'address' option to
+    request subscription of an address other than the sender of the
+    command.
     <BLANKLINE>

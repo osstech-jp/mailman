@@ -59,24 +59,29 @@ class Join:
 
     name = 'join'
     # XXX 2012-02-29 BAW: DeliveryMode.summary is not yet supported.
-    argument_description = '[digest=<no|mime|plain>]'
+    argument_description = ('[digest=<no|mime|plain>] '
+                            '[address=user@example.com]')
     description = _("""\
 You will be asked to confirm your subscription request and you may be issued a
 provisional password.
 
 By using the 'digest' option, you can specify whether you want digest delivery
 or not.  If not specified, the mailing list's default delivery mode will be
-used.
+used.  You can use the 'address' option to request subscription of an address
+other than the sender of the command.
 """)
     short_description = _('Join this mailing list.')
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
         # Parse the arguments.
-        delivery_mode = self._parse_arguments(arguments, results)
+        delivery_mode, address = self._parse_arguments(arguments, results)
         if delivery_mode is ContinueProcessing.no:
             return ContinueProcessing.no
-        display_name, email = parseaddr(msg['from'])
+        if not address:
+            display_name, email = parseaddr(msg['from'])
+        else:
+            display_name, email = ('', address)
         # Address could be None or the empty string.
         if not email:
             email = msg.sender
@@ -95,7 +100,11 @@ used.
         joins.add(email)
         results.joins = joins
         person = formataddr((display_name, email))                # noqa: F841
-        subscriber = match_subscriber(email, display_name)
+        try:
+            subscriber = match_subscriber(email, display_name)
+        except InvalidEmailAddressError as e:
+            print('Invalid email address: {}'.format(e), file=results)
+            return ContinueProcessing.yes
         try:
             ISubscriptionManager(mlist).register(subscriber)
         except (AlreadySubscribedError, InvalidEmailAddressError,
@@ -116,25 +125,30 @@ used.
         :param arguments: The sequences of arguments as given to the
             `process()` method.
         :param results: The results object.
-        :return: The delivery mode, None, or ContinueProcessing.no on error.
+        :return: A tuple (delivery mode, address) or
+            (ContinueProcessing.no, None) on error.
         """
         mode = DeliveryMode.regular
+        address = None
         for argument in arguments:
             parts = argument.split('=', 1)
-            if len(parts) != 2 or parts[0] != 'digest':
+            if len(parts) != 2 or parts[0] not in ('digest', 'address'):
                 print(self.name, _('bad argument: $argument'),
                       file=results)
-                return ContinueProcessing.no
-            mode = {
-                'no': DeliveryMode.regular,
-                'plain': DeliveryMode.plaintext_digests,
-                'mime': DeliveryMode.mime_digests,
-                }.get(parts[1])
-            if mode is None:
-                print(self.name, _('bad argument: $argument'),
-                      file=results)
-                return ContinueProcessing.no
-        return mode
+                return (ContinueProcessing.no, None)
+            if parts[0] == 'digest':
+                mode = {
+                    'no': DeliveryMode.regular,
+                    'plain': DeliveryMode.plaintext_digests,
+                    'mime': DeliveryMode.mime_digests,
+                    }.get(parts[1])
+                if mode is None:
+                    print(self.name, _('bad argument: $argument'),
+                          file=results)
+                    return (ContinueProcessing.no, None)
+            if parts[0] == 'address':
+                address = parts[1]
+        return (mode, address)
 
 
 @public
