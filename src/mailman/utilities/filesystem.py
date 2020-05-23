@@ -18,6 +18,7 @@
 """Filesystem utilities."""
 
 import os
+import sys
 
 from contextlib import suppress
 from public import public
@@ -129,11 +130,18 @@ def path(package, module, *args, **kw):
     """
     # Note to packaging teams: This function will handle both standard library
     # and 3rd party importlib_resources package. Please do not patch it.
+    if module:
+        module_package = '{}.{}'.format(package, module)
+    else:
+        module_package = package
+
     try:
-        from importlib.resources import path
-        return path(package, module, *args, **kw)
+        if sys.version_info < (3, 9):
+            from importlib.resources import path
+            return path(package, module, *args, **kw)
+        else:
+            from importlib.resources import files             # pragma: nocover
+            return files(module_package, *args, **kw)         # pragma: nocover
     except ImportError:                                       # pragma: nocover
         from importlib_resources import files                 # pragma: nocover
-        if module:                                            # pragma: nocover
-            package = '{}.{}'.format(package, module)         # pragma: nocover
-        return files(package, *args, **kw)                    # pragma: nocover
+        return files(module_package, *args, **kw)             # pragma: nocover
