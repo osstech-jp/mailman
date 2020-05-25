@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-05-13 19:20+0000\n"
+"PO-Revision-Date: 2020-05-25 16:56+0000\n"
 "Last-Translator: Szylu <chipolade@gmail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/pl/>\n"
@@ -29,7 +29,7 @@ msgstr "(brak tematu)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
-msgstr ""
+msgstr "[Szczegóły odesłania nie są dostępne]"
 
 #: src/mailman/app/bounces.py:226
 msgid "$mlist.display_name mailing list probe message"
@@ -37,11 +37,11 @@ msgstr ""
 
 #: src/mailman/app/bounces.py:262
 msgid "Uncaught bounce notification"
-msgstr ""
+msgstr "Nieprzechwycone powiadomienie o odesłaniu"
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
-msgstr ""
+msgstr "$mlist.display_name powiadomienie o rezygnacji z subskrypcji"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
@@ -57,7 +57,7 @@ msgstr "Przekazywanie moderowanej wiadomości"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr "Nowa prośba o rezygnację z subskrypcji od $mlist.display_name z $email"
+msgstr "Nowa prośba o rezygnację z subskrypcji z $mlist.display_name od $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
@@ -78,15 +78,15 @@ msgstr ""
 #: src/mailman/app/notifications.py:70
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr ""
+msgstr "Witamy na liście dyskusyjnej „$mlist.display_name”${digmode}"
 
 #: src/mailman/app/notifications.py:94
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr ""
+msgstr "Zostałeś wypisany z listy mailingowej $mlist.display_name"
 
 #: src/mailman/app/notifications.py:112
 msgid "$mlist.display_name subscription notification"
-msgstr ""
+msgstr "Powiadomienie o subskrypcji $mlist.display_name"
 
 #: src/mailman/app/notifications.py:136
 msgid "$member's subscription disabled on $mlist.display_name"
