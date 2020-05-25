@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-04-30 21:38+0000\n"
+"PO-Revision-Date: 2020-05-19 05:41+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.0.2\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -97,7 +97,7 @@ msgstr "המינוי של $member על $mlist.display_name בוטל"
 #: src/mailman/app/notifications.py:157
 #, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "המינוי של $member לרשימת הדיוור $mlist.display_name בוטל עקב החזרות"
+msgstr "המינוי של $member לרשימת הדיוור ${mlist.display_name} בוטל עקב החזרות"
 
 #: src/mailman/app/notifications.py:184
 #, python-brace-format
@@ -1730,18 +1730,19 @@ msgstr ""
 
 msgid "list:admin:action:unsubscribe.txt"
 msgstr ""
+"אישורך נדרש כדי לאשר את בקשת ביטול המינוי לרשימת הדיוור:\n"
+"\n"
+"\n"
+"    לטובת:  $member\n"
+"    רשימה: $listname"
 
-#, fuzzy
 msgid "list:admin:notice:disable.txt"
 msgstr ""
-"הודעתך לרשימת הדיוור $listname נדחתה מהסיבות הבאות:$reasons ההודעה המקורית שהתקבלה "
-"על ידי Mailman מצורפת להודעה זו."
+"המינוי של $member לרשימת הדיוור $listname הושבתה כיוון שניקוד ההחזרה חורג מה־"
+"bounce_score_threshold (סף ניקוד החזרה) של הרשימה."
 
-#, fuzzy
 msgid "list:admin:notice:removal.txt"
-msgstr ""
-"הודעתך לרשימת הדיוור $listname נדחתה מהסיבות הבאות:$reasons ההודעה המקורית שהתקבלה "
-"על ידי Mailman מצורפת להודעה זו."
+msgstr "המינוי של $member לרשימת הדיוור $listname בוטל עקב החזרות מוגזמות."
 
 msgid "list:admin:notice:subscribe.txt"
 msgstr ""
@@ -1790,14 +1791,23 @@ msgstr ""
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
-"הודעתך לרשימת הדיוור $listname נדחתה מהסיבות הבאות:$reasons ההודעה המקורית שהתקבלה "
-"על ידי Mailman מצורפת להודעה זו."
+"הודעתך לרשימת הדיוור $listname נדחתה מהסיבות הבאות:\n"
+"\n"
+"$reasons\n"
+"\n"
+"\n"
+"ההודעה המקורית שהתקבלה על ידי Mailman מצורפת להודעה זו."
 
-#, fuzzy
 msgid "list:user:notice:warning.txt"
 msgstr ""
-"הודעתך לרשימת הדיוור $listname נדחתה מהסיבות הבאות:$reasons ההודעה המקורית שהתקבלה "
-"על ידי Mailman מצורפת להודעה זו."
+"המינוי שלך לרשימת הדיוור $listname הושבת כיוון שקיבלת מספר גדול של החזרות\n"
+"מה שמסמן שכנראה היו לך בעיות בהעברת הודעות אל $sender_email. מומלץ לבדוק\n"
+"זאת מול הנהלת ספק הדוא״ל שלך לקבלת סיוע נוסף.\n"
+"\n"
+"\n"
+"אם יש לך שאלות או בעיות, ניתן ליצור קשר עם בעלי רשימת הדיוור דרך\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
