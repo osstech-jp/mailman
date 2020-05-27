@@ -19,6 +19,8 @@ Bugs
   and footers.  (Closes #701)
 * RFC 2369 headers are now added to notification messages.  (Closes #710)
 * Bounce probes are now encoded in the correct charset.  (Closes #712)
+* We now appropriately parse an incorrectly folded Cc: header from MS Outlook.
+  (Closes #725)
 
 
 REST

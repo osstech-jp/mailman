@@ -23,6 +23,8 @@ has already received a copy, we either drop the message, add a duplicate
 warning header, or pass it through, depending on the user's preferences.
 """
 
+import re
+
 from email.utils import getaddresses, formataddr
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -55,8 +57,16 @@ class AvoidDuplicates:
         explicit_recips = listaddrs.copy()
         # Figure out the set of explicit recipients.
         cc_addresses = {}
+        # MS Outlook creates a defective message when composing with several
+        # Cc addresses of the form `real name (dept) <user@example.com>`,
+        # Outlook quotes "real name (dept)" and then folds the header between
+        # `name and (dept)` resulting in a header including the entry
+        # '"real name\r\n (dept)" <user@example.com>' which is non-compliant
+        # and parses incorrectly, so we "unfold" headers here.
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-            addrs = getaddresses(msg.get_all(header, []))
+            hdrs_unfolded = [re.sub('[\r\n]', '', value) for value in
+                             msg.get_all(header, [])]
+            addrs = getaddresses(hdrs_unfolded)
             header_addresses = dict((addr, formataddr((name, addr)))
                                     for name, addr in addrs
                                     if addr)
