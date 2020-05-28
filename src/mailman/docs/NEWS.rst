@@ -21,6 +21,8 @@ Bugs
 * Bounce probes are now encoded in the correct charset.  (Closes #712)
 * We now unfold address containing headers before parsing in avoid_duplicates.
   (Closes #725)
+* The ``dmarc`` rule no longer misses if DNS returns a name containing upper
+  case.  (Closes #726)
 
 
 REST

@@ -50,7 +50,8 @@ def get_dns_resolver(
         rmult=False,
         cmult=False,
         cloop=False,
-        cmiss=False):
+        cmiss=False,
+        ucase=False):
     """Create a dns.resolver.Resolver mock.
 
     This is used to return a predictable response to a _dmarc query.  It
@@ -140,6 +141,8 @@ def get_dns_resolver(
                     ]
             elif rmult:
                 self.answer = [Ans_e(), Ans_e(rdata=b'v=DMARC1; p=none;')]
+            elif ucase:
+                self.answer = [Ans_e(name='_dmarc.EXAMPLE.biz.')]
             else:
                 self.answer = [Ans_e()]
 
@@ -205,6 +208,21 @@ class TestDMARCRules(TestCase):
         self.assertEqual(
             dmarc.get_organizational_domain('ssub.sub.city.kobe.jp'),
             'city.kobe.jp')
+
+    def test_uppercase_in_returned_domain(self):
+        # Test that we can recognize an answer with case mismatch in the
+        # domain.
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        msg = mfs("""\
+From: anne@example.biz
+To: ant@example.com
+
+""")
+        rule = dmarc.DMARCMitigation()
+        with get_dns_resolver(ucase=True):
+            self.assertTrue(rule.check(mlist, msg, {}))
 
     def test_no_at_sign_in_from_address(self):
         # If there's no @ sign in the From: address, the rule can't hit.

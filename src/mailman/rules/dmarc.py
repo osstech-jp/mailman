@@ -216,7 +216,8 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
             str(record, encoding='utf-8')
             for record in txt_rec.items[0].strings)
         name = txt_rec.name.to_text()
-        results_by_name.setdefault(name, []).append(result)
+        # Don't be fooled by an answer with uppercase in the name.
+        results_by_name.setdefault(name.lower(), []).append(result)
     expands = list(want_names)
     seen = set(expands)
     while expands:
