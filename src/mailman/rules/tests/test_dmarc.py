@@ -51,7 +51,9 @@ def get_dns_resolver(
         cmult=False,
         cloop=False,
         cmiss=False,
-        ucase=False):
+        ucase=False,
+        cnmok=False,
+        cnuc=False):
     """Create a dns.resolver.Resolver mock.
 
     This is used to return a predictable response to a _dmarc query.  It
@@ -143,6 +145,32 @@ def get_dns_resolver(
                 self.answer = [Ans_e(), Ans_e(rdata=b'v=DMARC1; p=none;')]
             elif ucase:
                 self.answer = [Ans_e(name='_dmarc.EXAMPLE.biz.')]
+            elif cnmok:
+                self.answer = [
+                    Ans_e(
+                        rtype=CNAME,
+                        name='_dmarc.example.biz.',
+                        cname='_dmarc.example.net.'
+                        ),
+                    Ans_e(
+                        rtype=TXT,
+                        name='_dmarc.example.net.',
+                        rdata=b'v=DMARC1; p=reject;'
+                        ),
+                    ]
+            elif cnuc:
+                self.answer = [
+                    Ans_e(
+                        rtype=CNAME,
+                        name='_dmarc.EXAMPLE.biz.',
+                        cname='_dmarc.example.net.'
+                        ),
+                    Ans_e(
+                        rtype=TXT,
+                        name='_dmarc.example.net.',
+                        rdata=b'v=DMARC1; p=reject;'
+                        ),
+                    ]
             else:
                 self.answer = [Ans_e()]
 
@@ -209,6 +237,21 @@ class TestDMARCRules(TestCase):
             dmarc.get_organizational_domain('ssub.sub.city.kobe.jp'),
             'city.kobe.jp')
 
+    def test_straightforward_cname(self):
+        # Test that we can recognize an answer with case mismatch in the
+        # domain.
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        msg = mfs("""\
+From: anne@example.biz
+To: ant@example.com
+
+""")
+        rule = dmarc.DMARCMitigation()
+        with get_dns_resolver(cnmok=True):
+            self.assertTrue(rule.check(mlist, msg, {}))
+
     def test_uppercase_in_returned_domain(self):
         # Test that we can recognize an answer with case mismatch in the
         # domain.
@@ -222,6 +265,21 @@ To: ant@example.com
 """)
         rule = dmarc.DMARCMitigation()
         with get_dns_resolver(ucase=True):
+            self.assertTrue(rule.check(mlist, msg, {}))
+
+    def test_uppercase_in_returned_cname(self):
+        # Test that we can recognize an answer with case mismatch in the
+        # domain.
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        msg = mfs("""\
+From: anne@example.biz
+To: ant@example.com
+
+""")
+        rule = dmarc.DMARCMitigation()
+        with get_dns_resolver(cnuc=True):
             self.assertTrue(rule.check(mlist, msg, {}))
 
     def test_no_at_sign_in_from_address(self):
