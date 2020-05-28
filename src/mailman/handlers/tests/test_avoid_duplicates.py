@@ -77,13 +77,14 @@ X-Mailman-Version: X.Y
 More things to say.
 """)
 
-    def test_bogus_ms_outlook_header_folding(self):
-        # MS Outlook creates a defective message when composing with several
-        # Cc addresses of the form `real name (dept) <user@example.com>`,
-        # Outlook quotes "real name (dept)" and then folds the header between
-        # `name and (dept)` resulting in a header including the entry
-        # '"real name\r\n (dept)" <user@example.com>' which is non-compliant
-        # and parses incorrectly.  Test our unfolding defense.
+    def test_bogus_header_folding(self):
+        # We've seen messages with Cc: headers folded inside a quoted string.
+        # I.e., a message composed with several Cc addresses of the form
+        # 'real name (dept) <user@example.com>', the MUA quotes
+        # "real name (dept)" and then folds the header between 'name' and
+        # '(dept)' resulting in a header including the entry
+        # '"real name\r\n (dept)" <user@example.com>' which parses incorrectly,
+        # This tests that we unfold properly.
         msg = mfs("""\
 From: anne@example.com
 To: ant@example.com

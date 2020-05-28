@@ -57,12 +57,13 @@ class AvoidDuplicates:
         explicit_recips = listaddrs.copy()
         # Figure out the set of explicit recipients.
         cc_addresses = {}
-        # MS Outlook creates a defective message when composing with several
-        # Cc addresses of the form `real name (dept) <user@example.com>`,
-        # Outlook quotes "real name (dept)" and then folds the header between
-        # `name and (dept)` resulting in a header including the entry
-        # '"real name\r\n (dept)" <user@example.com>' which is non-compliant
-        # and parses incorrectly, so we "unfold" headers here.
+        # We've seen messages with Cc: headers folded inside a quoted string.
+        # I.e., a message composed with several Cc addresses of the form
+        # 'real name (dept) <user@example.com>', the MUA quotes
+        # "real name (dept)" and then folds the header between 'name' and
+        # '(dept)' resulting in a header including the entry
+        # '"real name\r\n (dept)" <user@example.com>' which parses incorrectly,
+        # so we "unfold" headers here.
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
             hdrs_unfolded = [re.sub('[\r\n]', '', value) for value in
                              msg.get_all(header, [])]
