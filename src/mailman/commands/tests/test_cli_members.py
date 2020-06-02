@@ -321,3 +321,11 @@ class TestCLIMembers(unittest.TestCase):
                 lines = infp.readlines()
         self.assertEqual(len(lines), 1)
         self.assertEqual(lines[0], 'aperson@example.com\n')
+
+    def test_email_only(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        result = self._command.invoke(members, (
+            '--email-only', 'ant.example.com'))
+        self.assertEqual(result.output,
+                         'aperson@example.com\nbperson@example.com\n')

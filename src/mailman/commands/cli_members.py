@@ -39,7 +39,8 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 
-def display_members(ctx, mlist, role, regular, digest, nomail, outfp):
+def display_members(ctx, mlist, role, regular, digest,
+                    nomail, outfp, email_only):
     # Which type of digest recipients should we display?
     if digest == 'any':
         digest_types = [
@@ -103,8 +104,11 @@ def display_members(ctx, mlist, role, regular, digest, nomail, outfp):
             member = roster.get_member(address.email)
             if member.delivery_status not in status_types:
                 continue
-        print(formataddr((address.display_name, address.original_email)),
-              file=outfp)
+        if email_only:
+            print(address.original_email, file=outfp)
+        else:
+            print(formataddr((address.display_name, address.original_email)),
+                  file=outfp)
 
 
 @transactional
@@ -295,6 +299,12 @@ def sync_members(mlist, sync_infp, no_change):
     help=_("""\
     [output filter] Display only regular delivery members."""))
 @click.option(
+    '--email-only', '-e', 'email_only',
+    is_flag=True, default=False,
+    help=("""\
+    [output filter] Display member addresses only, without the display name.
+    """))
+@click.option(
     '--no-change', '-N', 'no_change',
     is_flag=True, default=False,
     help=_("""\
@@ -324,7 +334,7 @@ def sync_members(mlist, sync_infp, no_change):
 @click.argument('listspec')
 @click.pass_context
 def members(ctx, add_infp, del_infp, sync_infp, outfp,
-            role, regular, no_change, digest, nomail, listspec):
+            role, regular, no_change, digest, nomail, listspec, email_only):
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
         ctx.fail(_('No such list: $listspec'))
@@ -335,7 +345,8 @@ def members(ctx, add_infp, del_infp, sync_infp, outfp,
     elif sync_infp is not None:
         sync_members(mlist, sync_infp, no_change)
     else:
-        display_members(ctx, mlist, role, regular, digest, nomail, outfp)
+        display_members(ctx, mlist, role, regular,
+                        digest, nomail, outfp, email_only)
 
 
 @public
