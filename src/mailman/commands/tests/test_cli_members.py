@@ -109,6 +109,8 @@ class TestCLIMembers(unittest.TestCase):
                 '--add', infp.name, 'ant.example.com'))
         self.assertEqual(
            result.output,
+           'Warning: The --add option is deprecated. Use '
+           '`mailman addmembers` instead.\n'
            'Already subscribed (skipping): Anne Person <aperson@example.com>\n'
            )
 
@@ -119,6 +121,8 @@ class TestCLIMembers(unittest.TestCase):
                 '--add', infp.name, 'ant.example.com'))
         self.assertEqual(
            result.output,
+           'Warning: The --add option is deprecated. Use '
+           '`mailman addmembers` instead.\n'
            'Cannot parse as valid email address (skipping): foobar@\n'
            )
 
@@ -129,7 +133,9 @@ class TestCLIMembers(unittest.TestCase):
                 '--delete', infp.name, 'ant.example.com'))
         self.assertEqual(
            result.output,
-           'Member not subscribed (skipping): ' +
+           'Warning: The --delete option is deprecated. Use '
+           '`mailman delmembers` instead.\n'
+           'Member not subscribed (skipping): '
            'aperson@example.com\n'
            )
 
@@ -140,7 +146,9 @@ class TestCLIMembers(unittest.TestCase):
                 '--delete', infp.name, 'ant.example.com'))
         self.assertEqual(
            result.output,
-           'Member not subscribed (skipping): ' +
+           'Warning: The --delete option is deprecated. Use '
+           '`mailman delmembers` instead.\n'
+           'Member not subscribed (skipping): '
            'Anne Person <aperson@example.com>\n'
            )
 
@@ -156,8 +164,10 @@ class TestCLIMembers(unittest.TestCase):
             print('Bart Person <bperson@example.com>', file=infp)
             result = self._command.invoke(members, (
                 '--delete', infp.name, 'ant.example.com'))
-        self.assertEqual(result.output, "")
-
+        self.assertEqual(
+            result.output,
+            'Warning: The --delete option is deprecated. Use '
+            '`mailman delmembers` instead.\n')
         with NamedTemporaryFile('w', encoding='utf-8') as outfp:
             self._command.invoke(members, (
                 '-o', outfp.name, 'ant.example.com'))
@@ -174,7 +184,10 @@ class TestCLIMembers(unittest.TestCase):
             print('#Bart Person <bperson@example.com>', file=infp)
             result = self._command.invoke(members, (
                 '--delete', infp.name, 'ant.example.com'))
-        self.assertEqual(result.output, "")
+        self.assertEqual(
+            result.output,
+            'Warning: The --delete option is deprecated. Use '
+            '`mailman delmembers` instead.\n')
 
         with NamedTemporaryFile('w', encoding='utf-8') as outfp:
             self._command.invoke(members, (
@@ -191,12 +204,14 @@ class TestCLIMembers(unittest.TestCase):
             result = self._command.invoke(members, (
                 '--sync', infp.name, 'ant.example.com'))
         self.assertEqual(
-           result.output,
-           'Cannot parse as valid email address' +
-           ' (skipping): Dont Subscribe <not-a-valid-email>\n' +
-           'Cannot parse as valid email address' +
-           ' (skipping): not-a-valid@email\n' +
-           'Nothing to do\n')
+            result.output,
+            'Warning: The --sync option is deprecated. '
+            'Use `mailman syncmembers` instead.\n'
+            'Cannot parse as valid email address'
+            ' (skipping): Dont Subscribe <not-a-valid-email>\n'
+            'Cannot parse as valid email address'
+            ' (skipping): not-a-valid@email\n'
+            'Nothing to do\n')
 
     def test_sync_no_change(self):
         subscribe(self._mlist, 'Anne')
@@ -205,8 +220,11 @@ class TestCLIMembers(unittest.TestCase):
             print('Anne Person <aperson@example.com>', file=infp)
             result = self._command.invoke(members, (
                 '--no-change', '--sync', infp.name, 'ant.example.com'))
-        self.assertEqual(result.output, "[DEL] Bart Person" +
-                                        " <bperson@example.com>\n")
+        self.assertEqual(
+            result.output,
+            'Warning: The --sync option is deprecated. '
+            'Use `mailman syncmembers` instead.\n'
+            '[DEL] Bart Person <bperson@example.com>\n')
 
     def test_sync_empty_tuple(self):
         subscribe(self._mlist, 'Anne')
@@ -216,10 +234,12 @@ class TestCLIMembers(unittest.TestCase):
             print('\"\"', file=infp)
             result = self._command.invoke(members, (
                 '--no-change', '--sync', infp.name, 'ant.example.com'))
-        self.assertEqual(result.output, "Cannot parse as valid email " +
-                                        "address (skipping): \"\"\n" +
-                                        "[DEL] Bart Person " +
-                                        "<bperson@example.com>\n")
+        self.assertEqual(
+            result.output,
+            'Warning: The --sync option is deprecated. '
+            'Use `mailman syncmembers` instead.\n'
+            'Cannot parse as valid email address (skipping): ""\n'
+            '[DEL] Bart Person <bperson@example.com>\n')
 
     def test_sync_commented_lines(self):
         subscribe(self._mlist, 'Anne')
@@ -229,8 +249,11 @@ class TestCLIMembers(unittest.TestCase):
             print('#Bart Person <bperson@example.com>', file=infp)
             result = self._command.invoke(members, (
                 '--sync', infp.name, 'ant.example.com'))
-        self.assertEqual(result.output, "[DEL] Bart Person" +
-                                        " <bperson@example.com>\n")
+        self.assertEqual(
+            result.output,
+            'Warning: The --sync option is deprecated. '
+            'Use `mailman syncmembers` instead.\n'
+            '[DEL] Bart Person <bperson@example.com>\n')
 
         with NamedTemporaryFile('w', encoding='utf-8') as outfp:
             self._command.invoke(members, (
@@ -249,8 +272,11 @@ class TestCLIMembers(unittest.TestCase):
             print('', file=infp)
             result = self._command.invoke(members, (
                 '--sync', infp.name, 'ant.example.com'))
-        self.assertEqual(result.output, "[DEL] Bart Person" +
-                                        " <bperson@example.com>\n")
+        self.assertEqual(
+            result.output,
+            'Warning: The --sync option is deprecated. '
+            'Use `mailman syncmembers` instead.\n'
+            '[DEL] Bart Person <bperson@example.com>\n')
 
         with NamedTemporaryFile('w', encoding='utf-8') as outfp:
             self._command.invoke(members, (
@@ -268,7 +294,11 @@ class TestCLIMembers(unittest.TestCase):
             print('Bart Person <bperson@example.com>', file=infp)
             result = self._command.invoke(members, (
                 '--sync', infp.name, 'ant.example.com'))
-        self.assertEqual(result.output, "Nothing to do\n")
+        self.assertEqual(
+            result.output,
+            'Warning: The --sync option is deprecated. '
+            'Use `mailman syncmembers` instead.\n'
+            'Nothing to do\n')
 
         with NamedTemporaryFile('w', encoding='utf-8') as outfp:
             self._command.invoke(members, (
@@ -287,9 +317,11 @@ class TestCLIMembers(unittest.TestCase):
             result = self._command.invoke(members, (
                 '--sync', infp.name, 'ant.example.com'))
         self.assertEqual(
-           result.output,
-           "[ADD] aperson@example.com\n" +
-           "[DEL] Bart Person <bperson@example.com>\n")
+            result.output,
+            'Warning: The --sync option is deprecated. '
+            'Use `mailman syncmembers` instead.\n'
+            '[ADD] aperson@example.com\n'
+            '[DEL] Bart Person <bperson@example.com>\n')
 
         with NamedTemporaryFile('w', encoding='utf-8') as outfp:
             self._command.invoke(members, (
@@ -310,9 +342,11 @@ class TestCLIMembers(unittest.TestCase):
             result = self._command.invoke(members, (
                 '--sync', infp.name, 'ant.example.com'))
         self.assertEqual(
-           result.output,
-           "[ADD] aperson@example.com\n" +
-           "[DEL] bperson@example.com\n")
+            result.output,
+            'Warning: The --sync option is deprecated. '
+            'Use `mailman syncmembers` instead.\n'
+            '[ADD] aperson@example.com\n'
+            '[DEL] bperson@example.com\n')
 
         with NamedTemporaryFile('w', encoding='utf-8') as outfp:
             self._command.invoke(members, (
@@ -327,5 +361,5 @@ class TestCLIMembers(unittest.TestCase):
         subscribe(self._mlist, 'Bart')
         result = self._command.invoke(members, (
             '--email-only', 'ant.example.com'))
-        self.assertEqual(result.output,
-                         'aperson@example.com\nbperson@example.com\n')
+        self.assertEqual(
+            result.output, 'aperson@example.com\nbperson@example.com\n')
