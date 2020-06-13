@@ -106,7 +106,7 @@ def list_of_strings_validator(values):
     # bug where an empty string ('') would be interpreted as a valid value ['']
     # to create a singleton list, instead of empty list, which in later stages
     # would create other problems.
-    if values is '':  # noqa: F632
+    if values == '':
         return []
     if not isinstance(values, (list, tuple)):
         values = [values]
