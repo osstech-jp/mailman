@@ -24,6 +24,12 @@ Bugs
 * The ``dmarc`` rule no longer misses if DNS returns a name containing upper
   case.  (Closes #726)
 
+Command line
+------------
+* New ``addmembers``, ``delmembers`` and ``syncmembers`` ``mailman``
+  subcommands have been added.  These provide more options and controls than
+  the corresponding ``mailman members`` modes which are now deprecated.
+  (Closes #686)
 
 REST
 ----
