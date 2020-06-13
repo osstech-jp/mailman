@@ -262,14 +262,16 @@ def sync_members(mlist, sync_infp, no_change):
     help=_("""\
     [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to
     indicate standard input.  Blank lines and lines that start with a
-    '#' are ignored."""))
+    '#' are ignored.  This option is deprecated in favor of 'mailman
+    addmembers'."""))
 @click.option(
     '--delete', '-x', 'del_infp', metavar='FILENAME',
     type=click.File(encoding='utf-8'),
     help=_("""\
     [MODE] Delete all member addresses found in FILENAME
     from the specified list. FILENAME can be '-' to indicate standard input.
-    Blank lines and lines that start with a '#' are ignored."""))
+    Blank lines and lines that start with a '#' are ignored.
+    This option is deprecated in favor of 'mailman delmembers'."""))
 @click.option(
     '--sync', '-s', 'sync_infp', metavar='FILENAME',
     type=click.File(encoding='utf-8'),
@@ -277,7 +279,8 @@ def sync_members(mlist, sync_infp, no_change):
     [MODE] Synchronize all member addresses of the specified mailing list
     with the member addresses found in FILENAME.
     FILENAME can be '-' to indicate standard input.
-    Blank lines and lines that start with a '#' are ignored."""))
+    Blank lines and lines that start with a '#' are ignored.
+    This option is deprecated in favor of 'mailman syncmembers'."""))
 @click.option(
     '--output', '-o', 'outfp', metavar='FILENAME',
     type=click.File(mode='w', encoding='utf-8', atomic=True),
@@ -339,10 +342,16 @@ def members(ctx, add_infp, del_infp, sync_infp, outfp,
     if mlist is None:
         ctx.fail(_('No such list: $listspec'))
     if add_infp is not None:
+        print('Warning: The --add option is deprecated. '
+              'Use `mailman addmembers` instead.', file=sys.stderr)
         add_members(mlist, add_infp)
     elif del_infp is not None:
+        print('Warning: The --delete option is deprecated. '
+              'Use `mailman delmembers` instead.', file=sys.stderr)
         delete_members(mlist, del_infp)
     elif sync_infp is not None:
+        print('Warning: The --sync option is deprecated. '
+              'Use `mailman syncmembers` instead.', file=sys.stderr)
         sync_members(mlist, sync_infp, no_change)
     else:
         display_members(ctx, mlist, role, regular,
