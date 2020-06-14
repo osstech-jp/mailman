@@ -1,9 +1,9 @@
 ================
-Managing members
+Deleting members
 ================
 
-The ``mailman members`` command allows a site administrator to display, add,
-and delete members from a mailing list.
+The ``mailman delmembers`` command allows a site administrator to delete members
+from a mailing list.
 
     >>> command = cli('mailman.commands.cli_delmembers.delmembers')
 
