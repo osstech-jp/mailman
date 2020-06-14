@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-05-19 05:41+0000\n"
+"PO-Revision-Date: 2020-06-14 21:49+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
@@ -138,6 +138,8 @@ msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running $program with the --force flag."
 msgstr ""
+"לא ניתן להשיג את הנעילה הרשאית. נראה שיש נעילה ראשית מיושנת. כדאי לנסות\n"
+"להריץ את $program מחדש עם הדגל ‎--force."
 
 #: src/mailman/bin/master.py:164
 msgid ""
@@ -229,7 +231,7 @@ msgstr ""
 
 #: src/mailman/bin/master.py:543 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
-msgstr ""
+msgstr "הצגת פירוט ניפוי שגיאות נוסף בקובץ היומן."
 
 #: src/mailman/bin/runner.py:50
 msgid "Undefined runner name: $name"
@@ -1556,7 +1558,7 @@ msgstr ""
 
 #: src/mailman/rules/moderation.py:125
 msgid "No sender was found in the message."
-msgstr ""
+msgstr "לא נמצאו שולחים בהודעה."
 
 #: src/mailman/rules/moderation.py:169
 msgid "The sender is in the nonmember {} list"
@@ -1564,7 +1566,7 @@ msgstr ""
 
 #: src/mailman/rules/moderation.py:184
 msgid "The message is not from a list member"
-msgstr ""
+msgstr "ההודעה היא מחבר מחוץ לרשימה"
 
 #: src/mailman/rules/news_moderation.py:34
 msgid ""
@@ -1587,103 +1589,111 @@ msgstr ""
 
 #: src/mailman/rules/no_subject.py:32
 msgid "Catch messages with no, or empty, Subject headers."
-msgstr ""
+msgstr "לתפוס הודעות שאין להן כותרות נושא (Subject) או שהן ריקות."
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr ""
+msgstr "להודעה אין נושא"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
-msgstr ""
+msgstr "תפיסת הודעות עם כותרות חשודות."
 
 #: src/mailman/rules/suspicious.py:97
 msgid "Header \"{}\" matched a bounce_matching_header line"
-msgstr ""
+msgstr "הכותרת „{}” תואמת לשורה ב־bounce_matching_header (החזרת כותרת תואמת)"
 
 #: src/mailman/rules/truth.py:32
 msgid "A rule which always matches."
-msgstr ""
+msgstr "כלל שתמיד תואם."
 
 #: src/mailman/runners/command.py:101
 msgid "Ignoring non-text/plain MIME parts"
-msgstr ""
+msgstr "להתעלם מהחלקים שאינם טקסט/MIME פשוט"
 
 #: src/mailman/runners/command.py:139
 msgid "The results of your email command are provided below.\n"
-msgstr ""
+msgstr "תוצאות פקודות הדוא״ל שלך מופיעות להלן.\n"
 
 #: src/mailman/runners/command.py:183
 msgid "- Original message details:"
-msgstr ""
+msgstr "- פרטי ההודעה המקורית:"
 
 #: src/mailman/runners/command.py:187
 msgid "    From: $from_"
-msgstr ""
+msgstr "    מאת: $from_"
 
 #: src/mailman/runners/command.py:188
 msgid "    Subject: $subject"
-msgstr ""
+msgstr "    נושא: $subject"
 
 #: src/mailman/runners/command.py:189
 msgid "    Date: $date"
-msgstr ""
+msgstr "    תאריך: $date"
 
 #: src/mailman/runners/command.py:190
 msgid "    Message-ID: $message_id"
-msgstr ""
+msgstr "    מזהה הודעה: $message_id"
 
 #: src/mailman/runners/command.py:191
 msgid ""
 "\n"
 "- Results:"
 msgstr ""
+"\n"
+"- תוצאות:"
 
 #: src/mailman/runners/command.py:205
 msgid "No such command: $command_name"
-msgstr ""
+msgstr "אין פקודה כזאת: $command_name"
 
 #: src/mailman/runners/command.py:219
 msgid ""
 "\n"
 "- Unprocessed:"
 msgstr ""
+"\n"
+"- ללא עיבוד:"
 
 #: src/mailman/runners/command.py:224
 msgid ""
 "\n"
 "- Ignored:"
 msgstr ""
+"\n"
+"- בהתעלמות:"
 
 #: src/mailman/runners/command.py:227
 msgid ""
 "\n"
 "- Done."
 msgstr ""
+"\n"
+"- הסתיים."
 
 #: src/mailman/runners/command.py:233
 msgid "The results of your email commands"
-msgstr ""
+msgstr "תוצאות פקודות הדוא״ל שלך"
 
 #: src/mailman/runners/digest.py:54
 msgid "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
-msgstr ""
+msgstr "תקציר של $mlist.display_name, כרך $volume, גיליון $digest_number"
 
 #: src/mailman/runners/digest.py:82
 msgid "Today's Topics:\n"
-msgstr ""
+msgstr "נושאי היום:\n"
 
 #: src/mailman/runners/digest.py:151
 msgid "Digest Header"
-msgstr ""
+msgstr "כותרת תקציר עליונה"
 
 #: src/mailman/runners/digest.py:171
 msgid "Today's Topics ($count messages)"
-msgstr ""
+msgstr "נושאי היום ($count הודעות)"
 
 #: src/mailman/runners/digest.py:187 src/mailman/runners/digest.py:269
 msgid "Digest Footer"
-msgstr ""
+msgstr "כותרת תקציר תחתונה"
 
 #: src/mailman/runners/digest.py:194 src/mailman/runners/digest.py:276
 msgid "End of "
@@ -1715,9 +1725,40 @@ msgstr ""
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
+"רשימת הדיוור ‚$listname’ נוצרה הרגע בשבילך. להלן פרטים בסיסיים על\n"
+"רשימת הדיוור שלך.\n"
+"\n"
+"יש מנשק מבוסס דוא״ל למשתמשים (לא להנהלה) ברשימה שלך באמצעותו ניתן\n"
+"לקבל מידע דרך שליחת הודעה עם מילה בודדה כגון ‚help’ (עזרה) כנושא או בגוף\n"
+"ההודעה אל:\n"
+"\n"
+"    $request_email\n"
+"\n"
+"נא להפנות את כל השאלות אל $site_email."
 
 msgid "help.txt"
 msgstr ""
+"עזרה עבור רשימת הדיוור $listname\n"
+"\n"
+"זו פקודת הדוא״ל ‚help’ (עזרה) עבור גרסה $version של מנהל הרשימות GNU "
+"Mailman\n"
+"תחת $domain.  להלן מתוארות פקודות שניתן לשלוח כדי לקבל מידע ולשלוט במינוי\n"
+"שלך לרשימות של Mailman באתר הזה.\n"
+"פקודה יכול להיות בשורת הנושא או בגוף ההודעה.\n"
+"\n"
+"יש לשלוח את הפקודות לכתובת ‎${listname}-request@${domain}.\n"
+"\n"
+"בנוגע לתיאורים - מילים בתוך „<>” מציינות פריטים נחוצים בעוד\n"
+"מילים בתוך „[]” מציינות פרטי רשות.  לא לכלול את „<>” או את\n"
+"„[]” בעת שימוש בפקודות.\n"
+"\n"
+"הפקודות הבאות תקפות:\n"
+"\n"
+"    $commands\n"
+"\n"
+"שאלות וחששות שדורשים מענה אנושי יש לשלוח אל:\n"
+"\n"
+"    $administrator"
 
 msgid "invite.txt"
 msgstr ""
@@ -1727,6 +1768,11 @@ msgstr ""
 
 msgid "list:admin:action:subscribe.txt"
 msgstr ""
+"נדרש אישורך לאישור בקשת הצטרפות לחברות ברשימת הדיוור:\n"
+"\n"
+"\n"
+"    עבור:  $member\n"
+"    רשימה: $listname"
 
 msgid "list:admin:action:unsubscribe.txt"
 msgstr ""
@@ -1761,12 +1807,33 @@ msgstr ""
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
+"_______________________________________________\n"
+"רשימת הדיוור$display_name ‏-- $listname\n"
+"כדי לבטל את המינוי עליך לשלוח הודעת דוא״ל אל "
+"‎${short_listname}-leave@${domain}‎"
 
 msgid "list:member:regular:header.txt"
 msgstr ""
 
 msgid "list:user:action:subscribe.txt"
 msgstr ""
+"אישור רישום כתובת דוא״ל\n"
+"\n"
+"שלום, כאן שרת ה־Mailman מבית GNU בכתובת $domain.\n"
+"\n"
+"קיבלנו את בקשת הרישום עבור כתובת הדוא״ל\n"
+"\n"
+"    $user_email\n"
+"\n"
+"בטרם יתאפשר לך להתחיל לעבוד עם Mailman מבית GNU באתר הזה תחילה\n"
+"עליך לאשר שזאת כתובת הדוא״ל שלך. ניתן לעשות זאת על ידי שליחת תגובה\n"
+"להודעה הזאת מבלי לשנות את שורת הנושא כלל.\n"
+"\n"
+"אם אין ברצונך לרשום את כתובת הדוא״ל הזו, ניתן להתעלם מההודעה.\n"
+"אם לדעתך בקשת הרישום לרשימה בוצעה בניגוד לרצונך באופן זדוני או אם\n"
+"יש לך שאלות כלשהן, ניתן ליצור קשר:\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
@@ -1776,12 +1843,38 @@ msgstr ""
 
 msgid "list:user:notice:hold.txt"
 msgstr ""
+"הודעת הדוא״ל שלך אל ‚$listname’ עם הנושא\n"
+"\n"
+"    $subject\n"
+"\n"
+"מוחזקת עד שגופי הפיקוח על הרשימה יוכלו לסקור ולראות אם ניתן לאשר אותה.\n"
+"\n"
+"ההודעה מוחזקת מהסיבה:\n"
+"\n"
+"$reasons\n"
+"\n"
+"או שההודעה תפורסם לרשימה או שתישלח אליך הודעה עם החלטת\n"
+"המפקחים."
 
 msgid "list:user:notice:no-more-today.txt"
 msgstr ""
+"קיבלנו הודעה מהכתובת שלך <$sender_email> עם בקשה למשוב\n"
+"אוטומטי מרשימת הדיוור $listname.\n"
+"\n"
+"המספר שראינו היום: $count. כדי להימנע מבעיות כמו לולאות דוא״ל בין רובוטים\n"
+"של דוא״ל, לא נשלח עוד תגובות היום. נא לנסות שוב מחר.\n"
+"\n"
+"\n"
+"אם לדעתך מדובר בשגיאה או שיש לך שאלות, נא ליצור קשר עם הנהלת רשימת\n"
+"הדיוור בכתובת $owner_email."
 
 msgid "list:user:notice:post.txt"
 msgstr ""
+"הודעתך עם הכותרת\n"
+"\n"
+"    $subject\n"
+"\n"
+"התקבלה בהצלחה על ידי רשימת הדיוור $display_name."
 
 msgid "list:user:notice:probe.txt"
 msgstr ""
@@ -1811,3 +1904,20 @@ msgstr ""
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
+"ברוך בואך לרשימת הדיוור „$display_name”!\n"
+"\n"
+"כדי לפרסם לרשימה הזו, עליך לשלוח את כתובת הדוא״ל שלך אל:\n"
+"\n"
+"  $listname\n"
+"\n"
+"ניתן לבטל את המינוי או לשנות את אפשרויות שלך דרך דוא״ל על ידי שליחת הודעה\n"
+"אל:\n"
+"\n"
+"  $request_email\n"
+"\n"
+"\n"
+"עם המילה ‚help’ (עזרה) בנושא או בגוף ההודעה (בלי המירכאות) ותישלח אליך "
+"הודעה\n"
+"בחזרה עם הנחיות.  לצורך שינוי ההרשאות תידרש לך ססמה, אך מטעמי אבטחה\n"
+"ססמה זו אינה נכללת כאן.  אם שכחת את הססמה שלך יהיה עליך לאפס אותה דרך\n"
+"מנשק הדפדפן."
