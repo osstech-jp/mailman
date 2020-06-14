@@ -7,6 +7,51 @@ membership of a mailing list with an input file.
 
     >>> command = cli('mailman.commands.cli_syncmembers.syncmembers')
 
+Usage
+-----
+
+Here is the complete usage for the command.
+::
+
+    >>> command('mailman syncmembers --help')
+    Usage: syncmembers [OPTIONS] FILENAME LISTSPEC
+    <BLANKLINE>
+      Add and delete members as necessary to syncronize a list's membership with
+      an input file.  FILENAME is the file containing the new membership, one
+      member per line.  Blank lines and lines that start with a '#' are ignored.
+      Addresses in FILENAME which are not current list members will be added to
+      the list with delivery mode as specified with -d/--delivery.  List members
+      whose addresses are not in FILENAME will be removed from the list.
+      FILENAME can be '-' to indicate standard input.
+    <BLANKLINE>
+    Options:
+      -d, --delivery [regular|mime|plain|summary|disabled]
+                                      Set the added members delivery mode to
+                                      'regular', 'mime', 'plain', 'summary' or
+                                      'disabled'.  I.e., one of regular, three
+                                      modes of digest or no delivery.  If not
+                                      given, the default is regular.
+    <BLANKLINE>
+      -w, --welcome-msg / -W, --no-welcome-msg
+                                      Override the list's setting for
+                                      send_welcome_message to added members.
+    <BLANKLINE>
+      -g, --goodbye-msg / -G, --no-goodbye-msg
+                                      Override the list's setting for
+                                      send_goodbye_message to deleted members.
+    <BLANKLINE>
+      -a, --admin-notify / -A, --no-admin-notify
+                                      Override the list's setting for
+                                      admin_notify_mchanges.
+    <BLANKLINE>
+      -n, --no-change                 Don't actually make the changes.  Instead,
+                                      print out what would be done to the list.
+    <BLANKLINE>
+      --help                          Show this message and exit.
+
+Examples
+--------
+
 You can synchronize all member addresses of a mailing list with the
 member addresses found in a file from the command line.  To do so, you
 need a file containing email addresses and optional display names that can be

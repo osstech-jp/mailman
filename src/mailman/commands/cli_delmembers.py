@@ -36,6 +36,7 @@ from zope.interface import implementer
 @transactional
 def delete_members(mlists, memb_list, goodbye_msg, admin_notify):
     """Delete one or more members from one or more mailing lists."""
+    mlists = list(mlists)
     for mlist in mlists:
         for display_name, email in memb_list:
             try:

@@ -7,6 +7,39 @@ to a mailing list.
 
     >>> command = cli('mailman.commands.cli_addmembers.addmembers')
 
+Usage
+-----
+
+Here is the complete usage for the command.
+::
+
+    >>> command('mailman addmembers --help')
+    Usage: addmembers [OPTIONS] FILENAME LISTSPEC
+    <BLANKLINE>
+      Add all member addresses in FILENAME with delivery mode as specified with
+      -d/--delivery.  FILENAME can be '-' to indicate standard input. Blank lines
+      and lines that start with a '#' are ignored.
+    <BLANKLINE>
+    Options:
+      -d, --delivery [regular|mime|plain|summary|disabled]
+                                      Set the added members delivery mode to
+                                      'regular', 'mime', 'plain', 'summary' or
+                                      'disabled'.  I.e., one of regular, three modes
+                                      of digest or no delivery.  If not given, the
+                                      default is regular.
+    <BLANKLINE>
+      -i, --invite                    Send the added members a confirmation request
+                                      rather than immediately adding them.
+    <BLANKLINE>
+      -w, --welcome-msg / -W, --no-welcome-msg
+                                      Override the list's setting for
+                                      send_welcome_message.
+    <BLANKLINE>
+      --help                          Show this message and exit.
+
+Examples
+--------
+
 You can add members to a mailing list from the command line.  To do so, you
 need a file containing email addresses and optional display names that can be
 parsed by ``email.utils.parseaddr()``.

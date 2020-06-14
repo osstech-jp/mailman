@@ -153,6 +153,25 @@ class TestCLIDelMembers(unittest.TestCase):
         self.assertEqual(str(members2[0].address),
                          'Cate Person <cperson@example.com>')
 
+    def test_deletion_from_all_lists_not_member_of_all(self):
+        self._mlist2 = create_list('bee@example.com')
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist2, 'Bart')
+        subscribe(self._mlist2, 'Cate')
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Bart Person <bperson@example.com>', file=infp)
+            result = self._command.invoke(delmembers, (
+                '--fromall', '-f', infp.name))
+        self.assertEqual(result.output, '')
+        members = list(self._mlist.members.members)
+        self.assertEqual(len(members), 1)
+        self.assertEqual(str(members[0].address),
+                         'Anne Person <aperson@example.com>')
+        members2 = list(self._mlist2.members.members)
+        self.assertEqual(len(members2), 1)
+        self.assertEqual(str(members2[0].address),
+                         'Cate Person <cperson@example.com>')
+
     def test_deletion_dash_member(self):
         subscribe(self._mlist, 'Anne')
         subscribe(self._mlist, 'Bart')
