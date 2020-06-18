@@ -22,6 +22,7 @@ import unittest
 from email import message_from_binary_file
 from email.header import Header
 from email.parser import FeedParser
+from email.utils import _has_surrogates
 from importlib_resources import path
 from mailman.app.lifecycle import create_list
 from mailman.email.message import Message, UserNotification
@@ -120,6 +121,12 @@ Test content
                 fp.seek(0)
                 text = fp.read().decode('ascii', 'replace')
         self.assertEqual(msg.as_string(), text)
+
+    def test_as_string_unicode_surrogates(self):
+        with path('mailman.email.tests.data', 'bad_email_4.eml') as email_path:
+            with open(str(email_path), 'rb') as fp:
+                msg = message_from_binary_file(fp, Message)
+        self.assertFalse(_has_surrogates(msg.as_string()))
 
     def test_bogus_content_charset(self):
         with path('mailman.email.tests.data', 'bad_email_3.eml') as email_path:

@@ -1,0 +1,23 @@
+From: user@example.com
+To: list@example.com
+Subject: Test Message
+Message-ID: <some_id@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="zzz123"
+
+Ce message est au format MIME. Comme votre logiciel de courrier ne comprend
+pas ce format, tout ou partie de ce message pourrait être illisible.
+
+--zzz123
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Plain Text
+
+--zzz123
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Not really HTML
+
+--zzz123--

@@ -23,6 +23,8 @@ Bugs
   (Closes #725)
 * The ``dmarc`` rule no longer misses if DNS returns a name containing upper
   case.  (Closes #726)
+* Fixed ``mailman.email.message.Message.as_string`` to not return unicode
+  surrogates.  (Closes #732)
 
 Command line
 ------------
