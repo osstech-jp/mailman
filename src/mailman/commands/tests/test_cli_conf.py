@@ -21,6 +21,7 @@ import unittest
 
 from click.testing import CliRunner
 from mailman.commands.cli_conf import conf
+from mailman.config import config
 from mailman.testing.layers import ConfigLayer
 from tempfile import NamedTemporaryFile
 
@@ -61,6 +62,15 @@ class TestConf(unittest.TestCase):
             'Usage: conf [OPTIONS]\n'
             'Try \'conf --help\' for help.\n\n'
             'Error: Section mailman: No such key: thiskeydoesnotexist\n')
+
+    def test_pushed_section_is_found(self):
+        config.push('test config', """\
+[archiver.other]
+enable: yes
+""")
+        result = self._command.invoke(conf, ('-k', 'enable'))
+        self.assertIn('[archiver.other] enable: yes', result.output)
+        config.pop('test config')
 
     def test_output_to_explicit_stdout(self):
         result = self._command.invoke(
