@@ -86,7 +86,7 @@ def conf(ctx, output, section, key):
             ctx.fail('No such section: {}'.format(section))
     # Case 3: Section is not given, key is given.
     elif section is None and key is not None:
-        for current_section in sorted(config.schema._section_schemas):
+        for current_section in sorted([section.name for section in config]):
             # We have to ensure that the current section actually exists
             # and that it contains the given key.
             if (_section_exists(current_section) and
@@ -97,7 +97,7 @@ def conf(ctx, output, section, key):
     # Case 4: Neither section nor key are given, just display all the
     # sections and their corresponding key/value pairs.
     elif section is None and key is None:
-        for current_section in sorted(config.schema._section_schemas):
+        for current_section in sorted([section.name for section in config]):
             # However, we have to make sure that the current sections and
             # key which are being looked up actually exist before trying
             # to print them.

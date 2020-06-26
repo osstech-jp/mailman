@@ -32,6 +32,9 @@ Command line
   subcommands have been added.  These provide more options and controls than
   the corresponding ``mailman members`` modes which are now deprecated.
   (Closes #686)
+* The ``mailman conf`` command without a ``-s/--section`` argument will now
+  show sections defined only in mailman.cfg in addition to those from
+  schema.cfg.  (Closes #736)
 
 REST
 ----
