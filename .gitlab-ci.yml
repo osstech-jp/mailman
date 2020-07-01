@@ -21,10 +21,6 @@ docs:
   script:
   - tox -e docs
 
-sqlite-35:
-  script:
-  - tox -e py35-nocov
-
 sqlite-36:
   script:
   - tox -e py36-nocov
@@ -42,11 +38,11 @@ sqlite-39:
     - tox -e py39-nocov
   allow_failure: true
 
-pgsql-35:
+pgsql-38:
   services:
   - postgres:latest
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py35-nocov-pg
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py38-nocov-pg
   tags:
   - postgres
 
@@ -58,11 +54,11 @@ pgsql-37:
   tags:
   - postgres
 
-mysql-35:
+mysql-38:
   services:
   - mysql:5.6
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py35-nocov-mysql
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py38-nocov-mysql
   tags:
   - mysql
 
