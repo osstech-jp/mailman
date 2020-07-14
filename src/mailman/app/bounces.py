@@ -199,7 +199,7 @@ def send_probe(member, msg=None, message_id=None):
         code=member.preferred_language.code,
         )
     text = wrap(expand(template, mlist, dict(
-        sender_email=member.subscriber.email,
+        sender_email=member.address.email,
         # For backward compatibility.
         address=member.address.email,
         email=member.address.email,

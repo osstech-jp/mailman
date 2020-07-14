@@ -25,6 +25,8 @@ Bugs
   case.  (Closes #726)
 * Fixed ``mailman.email.message.Message.as_string`` to not return unicode
   surrogates.  (Closes #732)
+* Bounce probes can now be sent to a member subscribed as a User.
+  (Closes #739)
 
 Command line
 ------------
