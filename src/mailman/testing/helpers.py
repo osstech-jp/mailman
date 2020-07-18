@@ -417,7 +417,8 @@ class chdir:
 
 
 @public
-def subscribe(mlist, first_name, role=MemberRole.member, email=None):
+def subscribe(mlist, first_name, role=MemberRole.member, email=None,
+              as_user=False):
     """Helper for subscribing a sample person to a mailing list.
 
     Returns the newly created member object.
@@ -432,12 +433,27 @@ def subscribe(mlist, first_name, role=MemberRole.member, email=None):
             address = user_manager.get_address(email)
             if address is None:
                 person = user_manager.create_user(email, full_name)
-                subscription_address = list(person.addresses)[0]
+                set_preferred(person)
+                if as_user:
+                    subscription_object = person
+                else:
+                    subscription_object = person.preferred_address
             else:
-                subscription_address = address
+                if not as_user:
+                    subscription_object = address
+                else:
+                    person = user_manager.create_user(display_name=full_name)
+                    person.link(address)
+                    set_preferred(person)
+                    subscription_object = person
         else:
-            subscription_address = list(person.addresses)[0]
-        mlist.subscribe(subscription_address, role)
+            if as_user:
+                if person.preferred_address is None:
+                    set_preferred(person)
+                subscription_object = person
+            else:
+                subscription_object = list(person.addresses)[0]
+        mlist.subscribe(subscription_object, role)
         roster = mlist.get_roster(role)
         return roster.get_member(email)
 
