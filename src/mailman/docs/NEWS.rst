@@ -27,6 +27,7 @@ Bugs
   surrogates.  (Closes #732)
 * Bounce probes can now be sent to a member subscribed as a User.
   (Closes #739)
+* A member subscribed as a User can now be unsubscribed.  (Closes #734)
 
 Command line
 ------------
