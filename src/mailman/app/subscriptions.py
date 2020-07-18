@@ -396,7 +396,9 @@ class UnSubscriptionWorkflow(_SubscriptionWorkflowCommon):
         self.pre_approved = pre_approved
 
     def _step_subscription_checks(self):
-        assert self.mlist.is_subscribed(self.subscriber)
+        # XXX assert self.member is not None is sufficient, but ...
+        assert (self.member is not None and
+                self.mlist.is_subscribed(self.member.subscriber))
         self.push('confirmation_checks')
 
     def _step_confirmation_checks(self):

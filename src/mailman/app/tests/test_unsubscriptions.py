@@ -26,7 +26,8 @@ from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import LogFileMark, get_queue_messages
+from mailman.testing.helpers import (LogFileMark, get_queue_messages,
+                                     set_preferred, subscribe)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from unittest.mock import patch
@@ -94,6 +95,19 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         workflow = UnSubscriptionWorkflow(self._mlist, addr)
         self.assertRaises(AssertionError,
                           workflow.run_thru, 'subscription_checks')
+
+    def test_subscription_checks_for_user(self):
+        # subscription_checks must pass for IUser subscribed as IAddress.
+        member = subscribe(self._mlist, 'Bart')
+        set_preferred(member.user)
+        workflow = UnSubscriptionWorkflow(self._mlist, member.user)
+        workflow.run_thru('subscription_checks')
+
+    def test_subscription_checks_for_address(self):
+        # subscription_checks must pass for IAddress subscribed as IUser.
+        workflow = UnSubscriptionWorkflow(self._mlist,
+                                          self.anne.preferred_address)
+        workflow.run_thru('subscription_checks')
 
     def test_confirmation_checks_open_list(self):
         # An unsubscription from an open list does not need to be confirmed or
