@@ -36,7 +36,6 @@ from mailman.testing.helpers import (
     LogFileMark, get_queue_messages, specialized_message_from_string as mfs,
     subscribe)
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.datetime import now
 from zope.component import getUtility
 
 
@@ -277,18 +276,14 @@ list owner at
 
     def test_send_probe_to_user(self):
         # Can we send probe to member subscribed as a user.
-        user_manager = getUtility(IUserManager)
-        anne = user_manager.get_user('anne@example.com')
-        anne_address = user_manager.get_address('anne@example.com')
-        anne_address.verified_on = now()
-        anne.preferred_address = anne_address
-        self._member = self._mlist.subscribe(anne, send_welcome_message=False)
+        self._member = subscribe(self._mlist, 'Bart', email='bart@example.com',
+                                 as_user=True)
         token = send_probe(self._member, self._msg)
         items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         self.assertEqual(message['from'],
                          'test-bounces+{0}@example.com'.format(token))
-        self.assertEqual(message['to'], 'anne@example.com')
+        self.assertEqual(message['to'], 'bart@example.com')
         self.assertEqual(message['subject'], 'Test mailing list probe message')
 
     def test_no_precedence_header(self):
