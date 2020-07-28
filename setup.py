@@ -83,6 +83,11 @@ case second 'm'.  Any other spelling is incorrect.""",
     author_email    = 'mailman-developers@python.org',
     license         = 'GPLv3',
     url             = 'https://www.list.org',
+    project_urls={
+        'Documentation': 'https://docs.mailman3.org/projects/mailman/en/latest/README.html',
+        'Source': 'https://gitlab.com/mailman/mailman.git',
+        'Tracker': 'https://gitlab.com/mailman/mailman/-/issues',
+        },
     keywords        = 'email',
     classifiers = [
         'Development Status :: 5 - Production/Stable',
