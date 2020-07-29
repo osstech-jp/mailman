@@ -54,6 +54,9 @@ REST
   which fields are included in the resource. (Closes #716)
 * Expose ``emergency`` field of MailingList via REST API. (Closes #719)
 
+Localization
+------------
+* Italian translations of the templates have been added.
 
 Others
 ------
