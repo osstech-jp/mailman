@@ -1,0 +1,13 @@
+Come amministratore della lista è richiesta la tua autorizzazione per 
+la seguente pubblicazione di questo messaggio per la mailing list:
+
+    Lista:    $listname
+    Da:    $sender_email
+    Oggetto: $subject
+
+Il messaggio è in attesa a causa di:
+
+$reasons
+
+Per comodità, visita la tua dashboard per approvare o negare la
+richiesta.

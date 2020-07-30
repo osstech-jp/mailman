@@ -1,0 +1,20 @@
+Help per la mailing list $listname
+
+Questo è il comando e-mail 'help' per la versione $version di GNU Mailman list
+manager presso il dominio $domain.  Di seguito vengono descritti i comandi che è possibile inviare per ottenere 
+informazioni a riguardo e gestire la propria iscrizione alle liste di Mailman per questo sito.
+Un comando può essere scritto o nell'oggetto oppure nel corpo del messaggio dell'e-mail.
+
+Questi comandi dovrebbero essere inviati al seguente indirizzo ${listname}-request@${domain} .
+
+Riguardo le descrizioni - le parole in "<>"s indicano elementi NECESSARI mentre 
+le parole in "[]" indicano elementi OPZIONALI.  Non includere gli "<>"s oppure
+"[]"s quando utilizzi dei comandi.
+
+I seguenti comandi sono validi:
+
+    $commands
+
+Per quanto concerne dubbi e domande, contattare:
+
+    $administrator

@@ -1,0 +1,3 @@
+Il messaggio in allegato è stato ricevuto come un rimbalzo, ma il tipo di rimbalzo non è stato riconosciuto 
+oppure non è stato possibile individuare gli indirizzi e-mail dei membri da esso.  Questa mailing list è stata configurata
+per inviare tutti i messaggi di rimbalzo non riconosciuti agli amministratori della mailing list.

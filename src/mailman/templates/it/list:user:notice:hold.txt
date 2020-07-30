@@ -1,0 +1,12 @@
+La tua posta a '$listname' con l'oggetto
+
+    $subject
+
+Rimane in stato di attesa fino a quando il moderatore della lista non può ad esaminarla per l'approvazione.
+
+Il messaggio è in stato di attesa poiché:
+
+$reasons
+
+Il messaggio o verrà pubblicato nella lista oppure riceverai
+una notifica della decisione del moderatore.

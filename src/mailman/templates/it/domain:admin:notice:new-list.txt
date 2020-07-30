@@ -1,0 +1,10 @@
+La tua mailing list '$listname' è stata appena creata.  Di seguito sono riportate alcune informazioni 
+basilari riguardanti la nuova mailing list.
+
+Esiste un'interfaccia basata sulle e-mail per gli utenti (non amministratori) della tua lista;
+puoi ottenere delle informazioni sull'uso semplicemente inviando un messaggio con la sola parola "help"
+nell'oggetto oppure nel corpo del seguente indirizzo:
+
+    $request_email
+
+Per qualsiasi domanda, si prega di rivolgersi a $site_email.

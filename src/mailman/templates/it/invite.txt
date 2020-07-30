@@ -1,0 +1,15 @@
+Il tuo indirizzo "$email" è stato invitato ad unirsi alla seguente mailing list
+$listname col seguente indirizzo $hostname del proprietario della mailing list $listname .
+Puoi accettare l'invito semplicemente rispondendo a questo messaggio,
+mantenendo l'oggetto: intestazione intatta.
+
+Altrimenti dovresti includere SOLO la seguente riga in un messaggio indirizzato a $requestaddr:
+
+    conferma $cookie
+
+Si noti che il semplice invio di una risposta a questo messaggio dovrebbe funzionare 
+per la maggior parte dei client e-mail.
+
+Se desideri rifiutare questo invito, ti preghiamo semplicemente di ignorare questo messaggio.  
+Nel caso in cui si avessero domande, si prega di inviarle a
+$listowner.
