@@ -92,6 +92,19 @@ class SubscriptionConfirmationNeededEvent:
 
 
 @public
+class SubscriptionInvitationNeededEvent:
+    """Triggered when a subscription invitation needs confirmation.
+
+    Invitations must be accepted before the subscriber is subscribed.  The
+    invitation message is sent to the user when this event is triggered.
+    """
+    def __init__(self, mlist, token, email):
+        self.mlist = mlist
+        self.token = token
+        self.email = email
+
+
+@public
 class UnsubscriptionConfirmationNeededEvent:
     """Triggered when an unsubscription request needs confirmation.
 
@@ -220,7 +233,7 @@ class ISubscriptionManager(Interface):
     """
     def register(subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False,
-                 send_welcome_message=None):
+                 invitation=False, send_welcome_message=None):
         """Subscribe an address or user according to subscription policies.
 
         The mailing list's subscription policy is used to subscribe
@@ -260,6 +273,13 @@ class ISubscriptionManager(Interface):
             acknowledged in some manner.  Setting this flag to True
             automatically approves the subscription request.
         :type pre_approved: bool
+        :param invitation: A flag indicating whether or not this should result
+            in an invitation to join the list rather than a normal subscription
+            request.  Setting this flag to True overides pre_verified,
+            pre_confirmed and pre_approved and sends an invitation message to
+            the subscriber and holds the subscription.  The subscription is
+            completed if and when the invitation is confirmed.
+        :type invitation: bool
         :param send_welcome_message: A flag indicating whether the new member
             should receive a welcome message. This overrides the list's
             configuration of send_welcome_message if it is specified.

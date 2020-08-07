@@ -19,6 +19,7 @@
 """Test notifications."""
 
 import os
+import re
 import unittest
 
 from contextlib import ExitStack
@@ -187,7 +188,8 @@ Welcome to the Test List mailing list.
         # Now there's one message in the virgin queue.
         items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
-        self.assertTrue(str(message['subject']).startswith('confirm'))
+        self.assertTrue(str(message['subject']).startswith('Your confirm'))
+        token = re.sub(r'^.*\+([^+@]*)@.*$', r'\1', str(message['from']))
         self.assertMultiLineEqual(
             message.get_payload(), """\
 Email Address Registration Confirmation
@@ -199,15 +201,22 @@ We have received a registration request for the email address
     anne@example.com
 
 Before you can start using GNU Mailman at this site, you must first confirm
-that this is your email address.  You can do this by replying to this message,
-keeping the Subject header intact.
+that this is your email address.  You can do this by replying to this message.
+
+Or you should include the following line -- and only the following
+line -- in a message to test-request@example.com:
+
+    confirm {}
+
+Note that simply sending a `reply' to this message should work from
+most mail readers.
 
 If you do not wish to register this email address, simply disregard this
 message.  If you think you are being maliciously subscribed to the list, or
 have any other questions, you may contact
 
     test-owner@example.com
-""")
+""".format(token))
 
     def test_nonascii_confirmation_message(self):
         # Add the 'yy' language and set it
@@ -221,7 +230,7 @@ have any other questions, you may contact
         # Now there's one message in the virgin queue.
         items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
-        self.assertTrue(str(message['subject']).startswith('confirm'))
+        self.assertTrue(str(message['subject']).startswith('Your confirm'))
         self.assertMultiLineEqual(
             message.get_payload(decode=True).decode('utf-8'),
             'Wé need your confirmation\n')

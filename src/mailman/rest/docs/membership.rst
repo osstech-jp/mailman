@@ -1067,6 +1067,36 @@ mode of delivery.
     total_size: 1
 
 
+Sending an invitation
+=====================
+
+Instead of subscribing a user, we can send an invitation to join a list to
+a user.  When the invitation is accepted, the user will be subscribed without
+any additional steps.
+
+    >>> dump_json('http://localhost:9001/3.0/members', {
+    ...           'list_id': 'ant.example.com',
+    ...           'subscriber': 'fperson@example.com',
+    ...           'display_name': 'Fred Person',
+    ...           'invitation': True,
+    ...           })
+    http_etag: ...
+    token: ...
+    token_owner: subscriber
+
+Fred has been sent an invitation.  The token and token_owner for confirmation
+of his acceptance are returned.
+
+Fred is now a known user, but is not yet a member of any lists.
+
+    >>> fred = user_manager.get_user('fperson@example.com')
+    >>> fred
+    <User "Fred Person" (...) at ...>
+
+    >>> set(member.list_id for member in fred.memberships.members)
+    set()
+
+
 Moderating a member
 ===================
 
@@ -1273,6 +1303,6 @@ And now only Kate is still a member.
         role: member
         self_link: http://localhost:9001/3.0/members/14
         subscription_mode: as_address
-        user: http://localhost:9001/3.0/users/10
+        user: http://localhost:9001/3.0/users/11
     ...
     total_size: 1

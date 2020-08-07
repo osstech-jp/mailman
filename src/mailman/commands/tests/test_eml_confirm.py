@@ -17,6 +17,7 @@
 
 """Test the `confirm` command."""
 
+import re
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -165,7 +166,8 @@ class TestEmailResponses(unittest.TestCase):
         msg = items[0].msg
         # Confirmations come first, so this one goes to the subscriber.
         self.assertEqual(msg['to'], 'bart@example.com')
-        confirm, token = str(msg['subject']).split()
+        confirm, token = re.sub(r'^.*(confirm)\+([^+@]*)@.*$', r'\1 \2',
+                                str(msg['from'])).split()
         self.assertEqual(confirm, 'confirm')
         self.assertEqual(token, self._token)
         # Craft a confirmation response with the expected tokens.

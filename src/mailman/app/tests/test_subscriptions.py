@@ -503,7 +503,7 @@ approval:
         items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         token = workflow.token
-        self.assertEqual(message['Subject'], 'confirm {}'.format(token))
+        self.assertTrue(str(message['Subject']).startswith('Your confirm'))
         self.assertEqual(
             message['From'], 'test-confirm+{}@example.com'.format(token))
         # The confirmation message is not `Precedence: bulk`.
@@ -511,6 +511,27 @@ approval:
         # The confirmation message is `Auto-Submitted: auto-generated`.
         self.assertEqual(message['auto-submitted'], 'auto-generated')
         # The state machine stopped at the moderator approval so there will be
+        # one token still in the database.
+        self._expected_pendings_count = 1
+
+    def test_send_invitation(self):
+        # Test that an invitation is sent when requested.
+        anne = self._user_manager.create_address(self._anne)
+        self.assertIsNone(anne.verified_on)
+        # Run the workflow to model the confirmation step.
+        workflow = SubscriptionWorkflow(self._mlist, anne, invitation=True)
+        list(workflow)
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
+        token = workflow.token
+        self.assertIn('You have been invited to join', str(message['Subject']))
+        self.assertEqual(
+            message['From'], 'test-confirm+{}@example.com'.format(token))
+        # The confirmation message is not `Precedence: bulk`.
+        self.assertIsNone(message['precedence'])
+        # The confirmation message is `Auto-Submitted: auto-generated`.
+        self.assertEqual(message['auto-submitted'], 'auto-generated')
+        # The state machine stopped at sending the invitation so there will be
         # one token still in the database.
         self._expected_pendings_count = 1
 
@@ -525,8 +546,9 @@ approval:
         items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         token = workflow.token
-        self.assertEqual(
-            message['Subject'], 'confirm {}'.format(workflow.token))
+        self.assertTrue(
+            str(message['Subject']).startswith('Your confirmation is '
+                                               'needed to join the '))
         self.assertEqual(
             message['From'], 'test-confirm+{}@example.com'.format(token))
         # The state machine stopped at the moderator approval so there will be
@@ -545,8 +567,9 @@ approval:
         items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         token = workflow.token
-        self.assertEqual(
-            message['Subject'], 'confirm {}'.format(workflow.token))
+        self.assertTrue(
+            str(message['Subject']).startswith('Your confirmation is '
+                                               'needed to join the '))
         self.assertEqual(
             message['From'], 'test-confirm+{}@example.com'.format(token))
         # The state machine stopped at the moderator approval so there will be
@@ -594,6 +617,35 @@ approval:
         # done, the user's address (which is not initially verified) gets
         # subscribed to the mailing list.
         self._mlist.subscription_policy = SubscriptionPolicy.confirm
+        anne = self._user_manager.create_address(self._anne)
+        self.assertIsNone(anne.verified_on)
+        workflow = SubscriptionWorkflow(self._mlist, anne)
+        list(workflow)
+        # Anne is not yet a member.
+        member = self._mlist.regular_members.get_member(self._anne)
+        self.assertIsNone(member)
+        self.assertIsNone(workflow.member)
+        # The token is owned by the subscriber.
+        self.assertIsNotNone(workflow.token)
+        self.assertEqual(workflow.token_owner, TokenOwner.subscriber)
+        # Confirm.
+        confirm_workflow = SubscriptionWorkflow(self._mlist)
+        confirm_workflow.token = workflow.token
+        confirm_workflow.restore()
+        list(confirm_workflow)
+        self.assertIsNotNone(anne.verified_on)
+        # Anne is now a member.
+        member = self._mlist.regular_members.get_member(self._anne)
+        self.assertEqual(member.address, anne)
+        self.assertEqual(confirm_workflow.member, member)
+        # No further token is needed.
+        self.assertIsNone(confirm_workflow.token)
+        self.assertEqual(confirm_workflow.token_owner, TokenOwner.no_one)
+
+    def test_do_confirmation_subscribes_invited_user(self):
+        # Invitations to the mailing list must be confirmed.  Once that's
+        # done, the user's address (which is not initially verified) gets
+        # subscribed to the mailing list.
         anne = self._user_manager.create_address(self._anne)
         self.assertIsNone(anne.verified_on)
         workflow = SubscriptionWorkflow(self._mlist, anne)

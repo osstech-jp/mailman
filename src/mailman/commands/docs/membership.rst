@@ -102,7 +102,7 @@ Mailman has sent her the confirmation message.
     >>> print(items[0].msg.as_string())
     MIME-Version: 1.0
     ...
-    Subject: confirm ...
+    Subject: Your confirmation ...
     From: alpha-confirm+...@example.com
     To: anne@example.com
     ...
@@ -117,7 +117,14 @@ Mailman has sent her the confirmation message.
     <BLANKLINE>
     Before you can start using GNU Mailman at this site, you must first confirm
     that this is your email address.  You can do this by replying to this me...
-    keeping the Subject header intact.
+    <BLANKLINE>
+    Or you should include the following line -- and only the following
+    line -- in a message to alpha-request@example.com:
+    <BLANKLINE>
+        confirm ...
+    <BLANKLINE>
+    Note that simply sending a `reply' to this message should work from
+    most mail readers.
     <BLANKLINE>
     If you do not wish to register this email address, simply disregard this
     message.  If you think you are being maliciously subscribed to the list, or
@@ -129,8 +136,10 @@ Mailman has sent her the confirmation message.
 Anne confirms her registration.
 ::
 
+    >>> import re
     >>> def extract_token(message):
-    ...     return str(message['subject']).split()[1].strip()
+    ...     return re.sub(r'^.*\+([^+@]*)@.*$', r'\1', 
+    ...                   str(message['from']))
     >>> token = extract_token(items[0].msg)
 
     >>> from mailman.commands.eml_confirm import Confirm
@@ -317,7 +326,7 @@ There are two messages in the virgin queue, one of which is the confirmation
 message.
 
     >>> for item in get_queue_messages('virgin'):
-    ...     if str(item.msg['subject']).startswith('confirm'):
+    ...     if str(item.msg['subject']).startswith('Your confirmation is '):
     ...         break
     ... else:
     ...     raise AssertionError('No confirmation message')
