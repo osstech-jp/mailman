@@ -26,10 +26,11 @@ Here is the complete usage for the command.
                                       'regular', 'mime', 'plain', 'summary' or
                                       'disabled'.  I.e., one of regular, three modes
                                       of digest or no delivery.  If not given, the
-                                      default is regular.
+                                      default is regular.  Ignored for invited
+                                      members.
     <BLANKLINE>
-      -i, --invite                    Send the added members a confirmation request
-                                      rather than immediately adding them.
+      -i, --invite                    Send the added members an invitation rather
+                                      than immediately adding them.
     <BLANKLINE>
       -w, --welcome-msg / -W, --no-welcome-msg
                                       Override the list's setting for

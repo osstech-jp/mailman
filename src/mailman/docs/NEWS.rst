@@ -65,6 +65,9 @@ Others
   Emails. (Closes #720)
 * An ``address=`` option has been added to the email ``join`` command to allow
   requesting subscription of other than the sender of the email.  (Closes #721)
+* Added the ability to invite members to a list.  (Closes #510 and #730)
+* Made (un)subscription confirmation email subjects user friendly and
+  translatable.  (Closes #541)
 
 
 3.3.1

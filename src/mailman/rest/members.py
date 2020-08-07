@@ -263,10 +263,11 @@ class AllMembers(_MemberBase):
                 pre_verified=as_boolean,
                 pre_confirmed=as_boolean,
                 pre_approved=as_boolean,
+                invitation=as_boolean,
                 send_welcome_message=as_boolean,
                 _optional=('delivery_mode', 'display_name', 'role',
                            'pre_verified', 'pre_confirmed', 'pre_approved',
-                           'send_welcome_message',))
+                           'invitation', 'send_welcome_message',))
             arguments = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
@@ -308,6 +309,7 @@ class AllMembers(_MemberBase):
             pre_verified = arguments.pop('pre_verified', False)
             pre_confirmed = arguments.pop('pre_confirmed', False)
             pre_approved = arguments.pop('pre_approved', False)
+            invitation = arguments.pop('invitation', False)
             send_welcome_message = arguments.pop('send_welcome_message', None)
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
@@ -319,6 +321,7 @@ class AllMembers(_MemberBase):
                     pre_verified=pre_verified,
                     pre_confirmed=pre_confirmed,
                     pre_approved=pre_approved,
+                    invitation=invitation,
                     send_welcome_message=send_welcome_message)
             except AlreadySubscribedError:
                 conflict(response, b'Member already subscribed')

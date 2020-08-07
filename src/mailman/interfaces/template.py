@@ -180,6 +180,7 @@ ALL_TEMPLATES = {
         'list:member:digest:masthead',
         'list:member:regular:footer',
         'list:member:regular:header',
+        'list:user:action:invite',
         'list:user:action:subscribe',
         'list:user:action:unsubscribe',
         'list:user:notice:goodbye',

@@ -38,7 +38,8 @@ from mailman.interfaces.member import (
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.subscriptions import (
     ISubscriptionManager, ISubscriptionService,
-    SubscriptionConfirmationNeededEvent, SubscriptionPendingError, TokenOwner,
+    SubscriptionConfirmationNeededEvent, SubscriptionInvitationNeededEvent,
+    SubscriptionPendingError, TokenOwner,
     UnsubscriptionConfirmationNeededEvent)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
@@ -167,6 +168,7 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         'pre_approved',
         'pre_confirmed',
         'pre_verified',
+        'invitation',
         'address_key',
         'subscriber_key',
         'user_key',
@@ -176,11 +178,16 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
 
     def __init__(self, mlist, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False,
-                 send_welcome_message=None):
+                 invitation=False, send_welcome_message=None):
         super().__init__(mlist, subscriber)
-        self.pre_verified = pre_verified
-        self.pre_confirmed = pre_confirmed
-        self.pre_approved = pre_approved
+        # An invitation is already supposed to be "pre_approved" and by
+        # confirming the invite a user will "confirm" and "verify" their
+        # subscription, hence these values are set to `True` if this is
+        # an invitation.
+        self.pre_verified = invitation or pre_verified
+        self.pre_confirmed = invitation or pre_confirmed
+        self.pre_approved = invitation or pre_approved
+        self.invitation = invitation
         self.send_welcome_message = send_welcome_message
 
     def _step_sanity_checks(self):
@@ -235,6 +242,10 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         self.push('verification_checks')
 
     def _step_verification_checks(self):
+        # If this is an invitation, send it now.
+        if self.invitation:
+            self.push('send_invitation')
+            return
         # Is the address already verified, or is the pre-verified flag set?
         if self.address.verified_on is None:
             if self.pre_verified:
@@ -344,6 +355,16 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         # Now we wait for the confirmation.
         raise StopIteration
 
+    def _step_send_invitation(self):
+        self._set_token(TokenOwner.subscriber)
+        self.push('do_confirm_verify')
+        self.save()
+        # Triggering this event causes the confirmation message to be sent.
+        notify(SubscriptionInvitationNeededEvent(
+            self.mlist, self.token, self.address.email))
+        # Now we wait for the confirmation.
+        raise StopIteration
+
     def _step_do_confirm_verify(self):
         # Restore a little extra state that can't be stored in the database
         # (because the order of setattr() on restore is indeterminate), then
@@ -366,7 +387,7 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
                      if self.mlist.subscription_policy in (
                          SubscriptionPolicy.moderate,
                          SubscriptionPolicy.confirm_then_moderate,
-                         )
+                         ) and not self.invitation
                      else 'do_subscription')
         self.push(next_step)
 
@@ -520,13 +541,14 @@ class SubscriptionManager:
 
     def register(self, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False,
-                 send_welcome_message=None):
+                 invitation=False, send_welcome_message=None):
         """See `ISubscriptionManager`."""
         workflow = SubscriptionWorkflow(
             self._mlist, subscriber,
             pre_verified=pre_verified,
             pre_confirmed=pre_confirmed,
             pre_approved=pre_approved,
+            invitation=invitation,
             send_welcome_message=send_welcome_message)
         list(workflow)
         return workflow.token, workflow.token_owner, workflow.member
@@ -568,7 +590,19 @@ class SubscriptionManager:
 
 
 def _handle_confirmation_needed_events(event, template_name):
-    subject = 'confirm {}'.format(event.token)
+    # This function handles sending the confirmation email to the user
+    # for both subscriptions requiring confirmation and invitations
+    # requiring acceptance.
+    if template_name.endswith(':invite'):
+        subject = _('You have been invited to join the '
+                    '$event.mlist.fqdn_listname mailing list.')
+    elif template_name.endswith(':unsubscribe'):
+        subject = _('Your confirmation is needed to leave the '
+                    '$event.mlist.fqdn_listname mailing list.')
+    else:
+        assert(template_name.endswith(':subscribe'))
+        subject = _('Your confirmation is needed to join the '
+                    '$event.mlist.fqdn_listname mailing list.')
     confirm_address = event.mlist.confirm_address(event.token)
     email_address = event.email
     # Send a verification email to the address.
@@ -597,6 +631,13 @@ def handle_SubscriptionConfirmationNeededEvent(event):
     if not isinstance(event, SubscriptionConfirmationNeededEvent):
         return
     _handle_confirmation_needed_events(event, 'list:user:action:subscribe')
+
+
+@public
+def handle_SubscriptionInvitationNeededEvent(event):
+    if not isinstance(event, SubscriptionInvitationNeededEvent):
+        return
+    _handle_confirmation_needed_events(event, 'list:user:action:invite')
 
 
 @public

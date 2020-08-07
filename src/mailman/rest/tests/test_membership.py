@@ -113,6 +113,37 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(cm.exception.code, 409)
         self.assertEqual(cm.exception.reason, 'Member already subscribed')
 
+    def test_invite_new_member(self):
+        # Invite an email address to join a list.
+        json, response = call_api('http://localhost:9001/3.0/members', {
+            'list_id': 'test.example.com',
+            'subscriber': 'anne@example.com',
+            'display_name': 'Anne Person',
+            'invitation': True,
+            })
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(len(json), 3)
+
+        # Response will always add http_etag.
+        fields = ['http_etag', 'token', 'token_owner']
+        self.assertEqual(sorted(json.keys()), fields)
+        self.assertEqual(json['token_owner'], 'subscriber')
+
+    def test_invite_existing_member(self):
+        # Invite an existing member's email address to join a list.
+        with transaction():
+            anne = self._usermanager.create_address('anne@example.com')
+            self._mlist.subscribe(anne)
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': 'anne@example.com',
+                'display_name': 'Anne Person',
+                'invitation': True,
+                })
+        self.assertEqual(cm.exception.code, 409)
+        self.assertEqual(cm.exception.reason, 'Member already subscribed')
+
     def test_subscribe_user_without_preferred_address(self):
         with transaction():
             getUtility(IUserManager).create_user('anne@example.com')

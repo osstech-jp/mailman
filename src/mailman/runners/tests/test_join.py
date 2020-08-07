@@ -17,6 +17,7 @@
 
 """Test mailing list joins."""
 
+import re
 import unittest
 
 from email.iterators import body_line_iterator
@@ -66,7 +67,7 @@ subscribe
         items = get_queue_messages('virgin', sort_on='subject',
                                    expected_count=1)
 
-        self.assertTrue(str(items[0].msg['subject']).startswith('confirm'))
+        self.assertTrue(str(items[0].msg['subject']).startswith('Your conf'))
 
     def test_join_when_already_a_member(self):
         anne = getUtility(IUserManager).create_user('anne@example.org')
@@ -124,8 +125,8 @@ class TestJoinWithDigests(unittest.TestCase):
         items = get_queue_messages('virgin', sort_on='subject',
                                    expected_count=2)
         subject_words = str(items[1].msg['subject']).split()
-        self.assertEqual(subject_words[0], 'confirm')
-        token = subject_words[1]
+        self.assertEqual(subject_words[0], 'Your')
+        token = re.sub(r'^.*\+([^+@]*)@.*$', r'\1', str(items[1].msg['from']))
         token, token_owner, rmember = ISubscriptionManager(
             self._mlist).confirm(token)
         self.assertIsNone(token)
