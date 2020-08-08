@@ -30,7 +30,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.testing.helpers import (
-    LogFileMark, specialized_message_from_string as mfs)
+    LogFileMark, configuration, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from tempfile import TemporaryDirectory
 from zope.component import getUtility
@@ -271,7 +271,9 @@ This is a test message.
             'list:member:regular:footer', self._mlist.list_id,
             'mailman:///${list_id}/${language}/myfooter.txt')
         self._mlist.preferred_language = 'it'
-        decorate.process(self._mlist, self._msg, {})
+        with configuration('language.it', charset='iso-8859-1'):
+            # Default charset='utf-8' base64 encodes the message body.
+            decorate.process(self._mlist, self._msg, {})
         self.assertIn('http://example.com/link_to_message',
                       self._msg.as_string())
 
