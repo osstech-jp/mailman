@@ -57,6 +57,7 @@ REST
 Localization
 ------------
 * Italian translations of the templates have been added.
+* The default charset for many languages is changed to utf-8.  (Closes #747)
 
 Others
 ------
