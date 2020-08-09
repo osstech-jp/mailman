@@ -28,6 +28,8 @@ Bugs
 * Bounce probes can now be sent to a member subscribed as a User.
   (Closes #739)
 * A member subscribed as a User can now be unsubscribed.  (Closes #734)
+* Handle TOCTOU conditions when there are two simultaneous subscription
+  requests for the same email address. (Closes #748)
 
 Command line
 ------------
