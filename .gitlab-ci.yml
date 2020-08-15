@@ -1,4 +1,9 @@
 # This is core test runner
+.only-default: &only-default
+  only:
+    - master
+    - merge_requests
+    - tags
 
 image: maxking/mailman-ci-runner
 
@@ -14,31 +19,38 @@ variables:
 
 
 qa:
+  <<: *only-default
   script:
   - tox -e qa
 
 docs:
+  <<: *only-default
   script:
   - tox -e docs
 
 sqlite-36:
+  <<: *only-default
   script:
   - tox -e py36-nocov
 
 sqlite-37:
+  <<: *only-default
   script:
   - tox -e py37-nocov
 
 sqlite-38:
+  <<: *only-default
   script:
   - tox -e py38-nocov
 
 sqlite-39:
+  <<: *only-default
   script:
     - tox -e py39-nocov
   allow_failure: true
 
 pgsql-38:
+  <<: *only-default
   services:
   - postgres:latest
   script:
@@ -47,6 +59,7 @@ pgsql-38:
   - postgres
 
 pgsql-37:
+  <<: *only-default
   services:
   - postgres:latest
   script:
@@ -55,6 +68,7 @@ pgsql-37:
   - postgres
 
 mysql-38:
+  <<: *only-default
   services:
   - mysql:5.6
   script:
@@ -63,6 +77,7 @@ mysql-38:
   - mysql
 
 mysql-37:
+  <<: *only-default
   services:
   - mysql:5.6
   script:
@@ -74,5 +89,5 @@ mysql-37:
 diffcov:
   script:
   - tox -e py37-diffcov
-  except:
-  - master
+  only:
+  - merge_requests

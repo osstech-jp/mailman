@@ -86,10 +86,12 @@ def add_members(mlist, in_fp, delivery, invite, welcome_msg):
                 subscriber,
                 pre_verified=True,
                 pre_approved=True,
-                pre_confirmed=(not invite),
+                pre_confirmed=True,
+                invitation=invite,
                 send_welcome_message=welcome_msg)[2]
-            member.preferences.delivery_status = delivery_status
-            member.preferences.delivery_mode = delivery_mode
+            if member is not None:
+                member.preferences.delivery_status = delivery_status
+                member.preferences.delivery_mode = delivery_mode
         except AlreadySubscribedError:
             # It's okay if the address is already subscribed, just print a
             # warning and continue.
@@ -112,13 +114,14 @@ def add_members(mlist, in_fp, delivery, invite, welcome_msg):
     help=_("""\
     Set the added members delivery mode to 'regular', 'mime', 'plain',
     'summary' or 'disabled'.  I.e., one of regular, three modes of digest
-    or no delivery.  If not given, the default is regular."""))
+    or no delivery.  If not given, the default is regular.  Ignored for invited
+    members."""))
 @click.option(
     '--invite', '-i',
     is_flag=True, default=False,
     help=_("""\
-    Send the added members a confirmation request rather than immediately
-    adding them."""))
+    Send the added members an invitation rather than immediately adding them.
+    """))
 @click.option(
     '--welcome-msg/--no-welcome-msg', '-w/-W', 'welcome_msg', default=None,
     help=_("""\

@@ -143,14 +143,16 @@ address, and the other is the results of his email command.
     >>> from mailman.interfaces.subscriptions import ISubscriptionManager
 
     >>> manager = ISubscriptionManager(mlist)
+    >>> import re
     >>> for item in messages:
     ...     subject = item.msg['subject']
     ...     print('Subject:', subject)
     ...     if 'confirm' in str(subject):
-    ...         token = str(subject).split()[1].strip()
+    ...         token = re.sub(r'^.*\+([^+@]*)@.*$', r'\1', 
+    ...                        str(item.msg['from']))
     ...         new_token, token_owner, member = manager.confirm(token)
     ...         assert new_token is None, 'Confirmation failed'
-    Subject: confirm ...
+    Subject: Your confirmation ...
 
 .. Clear the queue
     >>> ignore = get_queue_messages('virgin')

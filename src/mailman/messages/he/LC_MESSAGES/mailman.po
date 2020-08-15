@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-06-14 21:49+0000\n"
+"PO-Revision-Date: 2020-07-27 03:23+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.2-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -205,6 +205,9 @@ msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
 msgstr ""
+"    לא להפעיל את האצנים מחדש כשהם מסתיימים עקב שגיאה או SIGUSR1 (אות משתמש "
+"1).\n"
+"    יש להשתמש בזה לניפוי שגיאות בלבד."
 
 #: src/mailman/bin/master.py:523
 msgid ""
@@ -228,6 +231,9 @@ msgid ""
 "    typically defined in the configuration file.  Multiple -r options may be\n"
 "    given.  The values for -r are passed straight through to bin/runner."
 msgstr ""
+"    דריסת ערכת האצנים כבררת מחדל שהראשי מפעיל, שהיא בדרך כלל מוגדרת\n"
+"    בקובץ ההגדרות.  ניתן לספק מגוון אפשרויות ‎-r.  הערכים עבור ‎-r מועברים\n"
+"    ישירות אל הבינרי/אצן."
 
 #: src/mailman/bin/master.py:543 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
@@ -235,11 +241,11 @@ msgstr "הצגת פירוט ניפוי שגיאות נוסף בקובץ היומ
 
 #: src/mailman/bin/runner.py:50
 msgid "Undefined runner name: $name"
-msgstr ""
+msgstr "שם האצן לא מוגדר: $name"
 
 #: src/mailman/bin/runner.py:58
 msgid "Cannot import runner module: $class_path"
-msgstr ""
+msgstr "לא ניתן לייבא את מודול האצן: $class_path"
 
 #: src/mailman/bin/runner.py:76
 msgid ""
@@ -262,7 +268,7 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
-msgstr ""
+msgstr "להציג את שמות האצנים הזמינים ולצאת."
 
 #: src/mailman/bin/runner.py:107
 msgid ""
@@ -295,15 +301,15 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:181
 msgid "$name runs $classname"
-msgstr ""
+msgstr "$name מפעיל את $classname"
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
-msgstr ""
+msgstr "לקבל הודעה."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "שרשרת הפיקוח המובנית."
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
@@ -319,15 +325,15 @@ msgstr "הכותרת „{}” תואמת לכלל כותרת"
 
 #: src/mailman/chains/headers.py:135
 msgid "The built-in header matching chain"
-msgstr ""
+msgstr "שרשרת התאמת הכותרות המובנית"
 
 #: src/mailman/chains/hold.py:58
 msgid "N/A"
-msgstr ""
+msgstr "לא זמין"
 
 #: src/mailman/chains/hold.py:117
 msgid "Last autoresponse notification for today"
-msgstr ""
+msgstr "התראת תגובה אוטומטית אחרונה להיום"
 
 #: src/mailman/chains/hold.py:132
 msgid "Hold a message and stop processing."

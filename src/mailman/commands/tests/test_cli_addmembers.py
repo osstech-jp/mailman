@@ -17,6 +17,7 @@
 
 """Test the `mailman addmembers` command."""
 
+import re
 import unittest
 
 from click.testing import CliRunner
@@ -253,20 +254,31 @@ class TestCLIAddMembers(unittest.TestCase):
             result = self._command.invoke(addmembers, (
                 '-i', infp.name, 'ant.example.com'))
         self.assertEqual(result.output, '')
-        self.assertEqual(result.exit_code, 1)
+        self.assertEqual(result.exit_code, 0)
         members = list(self._mlist.members.members)
         # Anne is not subscribed.
         self.assertEqual(len(members), 0)
         # But there is an invitation.
         items = get_queue_messages('virgin', expected_count=1)
-        self.assertIn('confirm', str(items[0].msg['subject']))
+        self.assertIn('invited', str(items[0].msg['subject']))
         self.assertIn('aperson@example.com', str(items[0].msg['to']))
+        token = re.sub(r'^.*\+([^+@]*)@.*$', r'\1', str(items[0].msg['from']))
         self.assertIn("""\
-We have received a registration request for the email address
+Your address "aperson@example.com" has been invited to join the ant
+mailing list at example.com by the ant mailing list owner.
+You may accept the invitation by simply replying to this message.
 
-    aperson@example.com
+Or you should include the following line -- and only the following
+line -- in a message to ant-request@example.com:
 
-Before you can start using GNU Mailman at this site,""",
+    confirm {}
+
+Note that simply sending a `reply' to this message should work from
+most mail readers.
+
+If you want to decline this invitation, please simply disregard this
+message.  If you have any questions, please send them to
+ant-owner@example.com.""".format(token),
                       str(items[0].msg))
 
     def test_override_no_welcome(self):

@@ -339,8 +339,9 @@ request approval:
         items = get_queue_messages('virgin', expected_count=1)
         message = items[0].msg
         token = workflow.token
-        self.assertEqual(
-            message['Subject'], 'confirm {}'.format(workflow.token))
+        self.assertTrue(
+            str(message['Subject']).startswith('Your confirmation is '
+                                               'needed to leave the '))
         self.assertEqual(
             message['From'], 'test-confirm+{}@example.com'.format(token))
         # The confirmation message is not `Precedence: bulk`.

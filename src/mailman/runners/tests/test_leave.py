@@ -82,7 +82,7 @@ leave
         # sent.
         items = get_queue_messages('virgin', expected_count=1)
         confirmation = items[0].msg
-        self.assertTrue(str(confirmation['subject']).startswith('confirm'))
+        self.assertTrue(str(confirmation['subject']).startswith('Your conf'))
 
     def test_double_leave(self):
         # In this case, the user can be unsubscribed immediately because the

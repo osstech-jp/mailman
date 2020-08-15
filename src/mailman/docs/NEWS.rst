@@ -28,6 +28,8 @@ Bugs
 * Bounce probes can now be sent to a member subscribed as a User.
   (Closes #739)
 * A member subscribed as a User can now be unsubscribed.  (Closes #734)
+* When a handler rejects or discards a message, it won't be delivered or
+  archived anyway.  (Closes #752)
 * Handle TOCTOU conditions when there are two simultaneous subscription
   requests for the same email address. (Closes #748)
 
@@ -59,6 +61,7 @@ REST
 Localization
 ------------
 * Italian translations of the templates have been added.
+* The default charset for many languages is changed to utf-8.  (Closes #747)
 
 Others
 ------
@@ -67,6 +70,9 @@ Others
   Emails. (Closes #720)
 * An ``address=`` option has been added to the email ``join`` command to allow
   requesting subscription of other than the sender of the email.  (Closes #721)
+* Added the ability to invite members to a list.  (Closes #510 and #730)
+* Made (un)subscription confirmation email subjects user friendly and
+  translatable.  (Closes #541)
 
 
 3.3.1

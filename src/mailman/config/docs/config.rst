@@ -133,6 +133,25 @@ variables.  In order to get more information about what a particular variable
 controls, read the ``schema.cfg`` and built-in base ``mailman.cfg`` file.
 
 
+Configuration Options
+=====================
+
+.. configsection::
+     mailman
+     shell
+     database
+     webservice
+     mta
+     devmode
+     bounces
+     ARC
+     antispam
+     styles
+     digests
+     nntp
+     dmarc
+
+
 schema.cfg
 ==========
 
