@@ -52,11 +52,15 @@ def process(mlist, msg, msgdata, pipeline_name='built-in'):
             vlog.info(
                 '{} discarded by "{}" pipeline handler "{}": {}'.format(
                     message_id, pipeline_name, handler.name, error.message))
+            # Stop processing the pipeline.
+            break
         except RejectMessage as error:
             vlog.info(
                 '{} rejected by "{}" pipeline handler "{}": {}'.format(
                     message_id, pipeline_name, handler.name, str(error)))
             bounce_message(mlist, msg, error)
+            # Stop processing the pipeline.
+            break
 
 
 @public

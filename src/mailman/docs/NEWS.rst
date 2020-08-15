@@ -28,6 +28,8 @@ Bugs
 * Bounce probes can now be sent to a member subscribed as a User.
   (Closes #739)
 * A member subscribed as a User can now be unsubscribed.  (Closes #734)
+* When a handler rejects or discards a message, it won't be delivered or
+  archived anyway.  (Closes #752)
 
 Command line
 ------------
