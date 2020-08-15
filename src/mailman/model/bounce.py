@@ -20,6 +20,7 @@
 import logging
 import datetime
 
+from lazr.config import as_boolean
 from mailman.app.bounces import send_probe
 from mailman.app.membership import delete_member
 from mailman.app.notifications import (
@@ -186,7 +187,7 @@ class BounceProcessor:
         if member.bounce_score >= mlist.bounce_score_threshold:
             # Save bounce_score because sending probe resets it.
             saved_bounce_score = member.bounce_score
-            if config.mta.verp_probes == 'yes':
+            if as_boolean(config.mta.verp_probes):
                 send_probe(member, message_id=event.message_id)
                 action = 'sending probe'
             else:
