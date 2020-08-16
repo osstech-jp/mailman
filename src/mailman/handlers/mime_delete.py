@@ -66,7 +66,7 @@ message.
 
 """)
         subject = _('Content filter message notification')
-        notice = OwnerNotification(mlist, subject, roster=mlist.moderators)
+        notice = OwnerNotification(mlist, subject, roster=mlist.administrators)
         notice.set_type('multipart/mixed')
         notice.attach(MIMEText(text))
         notice.attach(MIMEMessage(msg))

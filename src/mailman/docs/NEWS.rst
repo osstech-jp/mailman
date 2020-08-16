@@ -30,6 +30,9 @@ Bugs
 * A member subscribed as a User can now be unsubscribed.  (Closes #734)
 * When a handler rejects or discards a message, it won't be delivered or
   archived anyway.  (Closes #752)
+* Messages forwarded when content filtering removes the entire message and
+  ``filter_action`` is forward now go to owners as well as moderators.
+  (Closes #753)
 
 Command line
 ------------
