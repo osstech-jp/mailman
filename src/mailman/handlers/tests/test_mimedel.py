@@ -123,12 +123,12 @@ Message-ID: <ant>
         get_queue_messages('bad', expected_count=0)
 
     def test_dispose_forward(self):
-        # The disposed message gets forwarded to the list moderators.  So
-        # first add some moderators.
+        # The disposed message gets forwarded to the list administrators.  So
+        # first add an owner and a moderator.
         user_manager = getUtility(IUserManager)
         anne = user_manager.create_address('anne@example.com')
         bart = user_manager.create_address('bart@example.com')
-        self._mlist.subscribe(anne, MemberRole.moderator)
+        self._mlist.subscribe(anne, MemberRole.owner)
         self._mlist.subscribe(bart, MemberRole.moderator)
         # Now set the filter action and dispose the message.
         self._mlist.filter_action = FilterAction.forward
