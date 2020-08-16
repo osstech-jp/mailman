@@ -33,6 +33,8 @@ Bugs
 * Messages forwarded when content filtering removes the entire message and
   ``filter_action`` is forward now go to owners as well as moderators.
   (Closes #753)
+* Handle TOCTOU conditions when there are two simultaneous subscription
+  requests for the same email address. (Closes #748)
 
 Command line
 ------------

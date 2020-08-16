@@ -338,6 +338,9 @@ class AllMembers(_MemberBase):
             except SubscriptionPendingError:
                 conflict(response, b'Subscription request already pending')
                 return
+            except Exception as e:
+                bad_request(response, str(e))
+                return
             if token is None:
                 assert token_owner is TokenOwner.no_one, token_owner
                 # The subscription completed.  Let's get the resulting member
