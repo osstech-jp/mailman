@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-04-10 20:01+0000\n"
-"Last-Translator: Daniele Pizzolli <dan-i18n@toel.it>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/gnu-mailman/mailman/it/"
-">\n"
+"PO-Revision-Date: 2020-08-16 22:03+0000\n"
+"Last-Translator: Massimo Zappalà <maszap@tin.it>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.2-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -92,21 +92,20 @@ msgid "$mlist.display_name subscription notification"
 msgstr "$mlist.display_name notifica di iscrizione"
 
 #: src/mailman/app/notifications.py:136
-#, fuzzy
 msgid "$member's subscription disabled on $mlist.display_name"
-msgstr ""
-"Nuova richiesta di disiscrizione per la lista $mlist.display_name da parte di "
-"$email"
+msgstr "Iscrizione di $member disabilitata per la lista $mlist.display_name"
 
 #: src/mailman/app/notifications.py:157
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "Sei stato disiscritto dalla lista $mlist.display_name"
+msgstr "Sei stato disiscritto dalla lista ${mlist.display_name}"
 
 #: src/mailman/app/notifications.py:184
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "Sei stato disiscritto dalla lista $mlist.display_name"
+msgstr ""
+"La tua iscrizione alla mailing list ${mlist.display_name} è stata "
+"disabilitata"
 
 #: src/mailman/app/subscriptions.py:299
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
@@ -144,9 +143,8 @@ msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running $program with the --force flag."
 msgstr ""
-"L'uso esclusivo come master non può essere ottenuto.  Sembra che si sia un\n"
-"lock obsoleto.  Prova a far ripartire il programma con con l'opzione\n"
-"--force."
+"L'uso esclusivo come master non può essere ottenuto.  Sembra che ci sia un\n"
+"blocco obsoleto.  Prova a far ripartire il $program con l'opzione --force."
 
 #: src/mailman/bin/master.py:164
 msgid ""
@@ -159,9 +157,11 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
-"L'uso esclusivo come master non può essere ottenuto perché sembra che un'altro "
-"processo in un altro host lo abbia già ottenuto.  Non è possibile controllare "
-"l'uso esclusivo in host diversi, quindi devi procedere manualmente.\n"
+"L'uso esclusivo come master non può essere ottenuto perché sembra che "
+"un'altro processo\n"
+"in un altro host lo abbia già ottenuto.  Non è possibile controllare l'uso "
+"esclusivo in host diversi,\n"
+"quindi devi procedere manualmente.\n"
 "\n"
 "File di lock: $config.LOCK_FILE\n"
 "Host che detiene il lock: $hostname\n"
@@ -231,8 +231,8 @@ msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
 msgstr ""
-"    Non fa ripartire i sottoprocessi quanto sono usciti per un errore o per\n"
-"    SIGUSR1.\n"
+"    Non fa ripartire i sottoprocessi quanto sono usciti per un errore o per "
+"SIGUSR1.\n"
 "    Da usare solo per debug."
 
 #: src/mailman/bin/master.py:523
@@ -261,8 +261,8 @@ msgid ""
 msgstr ""
 "    Scavalca l'insieme dei sottoprocessi che tipicamente è definita\n"
 "    nei file di configurazione.  Multiple opzioni -r sono supportate.\n"
-"    I valori di -r sono passati direttamente ai sottoprocessi\n"
-"    attraverso bin/runner."
+"    I valori di -r sono passati direttamente ai sottoprocessi attraverso bin/"
+"runner."
 
 #: src/mailman/bin/master.py:543 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
@@ -297,20 +297,19 @@ msgstr ""
 "    Fa partire un sottoprocesso.\n"
 "\n"
 "    Il sottoprocesso nominato nella linea di comando sarà fatto partire\n"
-"    una volta o multiple volte. In maniera predefinita i sottoprocessi\n"
-"    sono fatti ripartire multiple volte.\n"
+"    una volta o più volte. In maniera predefinita i sottoprocessi\n"
+"    sono fatti ripartire più volte.\n"
 "\n"
-"    L'argomento -r è richiesto, a meno che non siano presenti anche gli\n"
-"    argomenti -l o -h.\n"
-"\n"
-"    L'argomento di -r deve essere un nome presente nell'output di -l.\n"
-"\n"
+"    L'argomento -r è richiesto a meno che non venga fornito -l o -h e il suo "
+"argomento deve essere uno tra\n"
+"    i nomi visualizzati dall'opzione -l.\n"
+"    \n"
 "    Di norma questo script è fatto partire da `mailman start`\n"
-"\n"
 "    Per il debug si può eseguirlo a mano o con l'opzione -o. Quando\n"
 "    eseguito in questo modo la variabile d'ambiente\n"
 "    $MAILMAN_UNDER_MASTER_CONTROL verrà impostata in modo da\n"
-"    modificare la gestione degli errori."
+"    modificare la gestione degli errori.\n"
+"    "
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
@@ -322,10 +321,12 @@ msgid ""
 "    runner runs indefinitely until the process receives a signal.  This is not\n"
 "    compatible with runners that cannot be run once."
 msgstr ""
-"    Esegue il sottoprocesso una volta attraverso il suo ciclo\n"
-"    principale. Altrimenti il sottoprocesso continuerà indefinitamente\n"
-"    fino alla ricezione di un segnale.  Questo non è compatibile con i\n"
-"    sottoprocessi che non possono essere eseguiti una volta sola."
+"    Esegue il sottoprocesso una volta attraverso il suo ciclo principale.  "
+"Altrimenti il\n"
+"    sottoprocesso continuerà indefinitamente fino alla ricezione di un "
+"segnale.  Questo non è\n"
+"    compatibile con i sottoprocessi che non possono essere eseguiti una "
+"volta sola."
 
 #: src/mailman/bin/runner.py:115
 msgid ""
@@ -350,10 +351,10 @@ msgstr ""
 "\n"
 "    Per i sottoprocessi che gestiscono una directory con code è\n"
 "    possibile specificare `slice:range` per assegnare multipli\n"
-"    sottoprocessi alla coda.  range è il numero totale di\n"
-"    sottoprocessi e slice è il numero dei sottoprocessi da\n"
-"    [0..range). Per i sottoprocessi che non gestiscono una coda, slice\n"
-"    e range sono ignorati.\n"
+"    sottoprocessi alla coda.  range è il numero totale di sottoprocessi\n"
+"    e slice è il numero dei sottoprocessi da [0..range).\n"
+"    Per i sottoprocessi che non gestiscono una coda, slice e range sono "
+"ignorati.\n"
 "\n"
 "    Se usi `slice:range` devi assicurarti che ogni sottoprocesso\n"
 "    ottenga lo stesso valore di range.  Se omesso, il valore\n"
@@ -424,9 +425,9 @@ msgstr ""
 "Se rispondi a questo messaggio senza modificare l'oggetto Mailman scarterà\n"
 "il messaggio trattenuto.  Fai così se il messaggio è spam.  Se rispondi al\n"
 "messaggio e includi l'intestazione Approved con valore la password della\n"
-"lista, il messaggio sarà approvato per l'inoltro alla lista.  Puoi\n"
-"scrivere anche Approved: seguito da password nella prima linea del corpo del\n"
-"messaggio."
+"lista, il messaggio sarà approvato per l'inoltro alla lista.  Puoi scrivere "
+"anche\n"
+"Approved: seguito da password nella prima linea del corpo del messaggio."
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
@@ -434,7 +435,7 @@ msgstr "Catena di moderazione"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
-msgstr "La catena predefinita per -owner"
+msgstr "La catena predefinita per -owner."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
@@ -446,7 +447,7 @@ msgstr "Rigenera gli alias per il tuo MTA."
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
-msgstr "Una directory alternativa dove scrivere i file per l'MTA"
+msgstr "Una directory alternativa dove scrivere i file per l'MTA."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
@@ -490,12 +491,13 @@ msgid ""
 "    remove the apparently stale lock and make another attempt to claim the\n"
 "    master lock."
 msgstr ""
-"    Se l'osservatore del master trova un lock del master di norma si\n"
-"    ferma con un messaggio d'errore.  Con questa opzione il master\n"
-"    eseguirà ulteriori verifiche.  Se esiste un processo\n"
-"    corrispondente all'host/pid nel file di lock il master uscirà\n"
-"    comunque, chiedendo di pulire manualmente il lock.  Se nessun\n"
-"    processo è presente, il master rimuoverà il file di lock\n"
+"    Se l'osservatore del master trova un lock del master di norma si ferma\n"
+"    con un messaggio d'errore.  Con questa opzione il master eseguirà\n"
+"    ulteriori verifiche.  Se esiste un processo corrispondente all'host/pid\n"
+"    nel file di lock il master uscirà comunque, chiedendo di pulire "
+"manualmente\n"
+"    il lock.  Se nessun processo è presente, il master rimuoverà il file di "
+"lock\n"
 "    apparentemente obsoleto e proverà a ripartire di nuovo prendendo\n"
 "    possesso dell'uso esclusivo con il lock."
 
@@ -507,6 +509,15 @@ msgid ""
 "    start of mailman3 server. Setting this option to true will make this\n"
 "    script create the files and thus allow the MTA to operate smoothly."
 msgstr ""
+"    Genera i file alias MTA all'avvio. Alcuni MTA, come postfix, non "
+"possono\n"
+"    consegna la posta elettronica se i file alias menzionati nella sua "
+"configurazione non sono\n"
+"    presenti. In alcune situazioni, questo potrebbe portare a una situazione "
+"di stallo al primo\n"
+"    avvio del server mailman3. Impostando questa opzione su true, questo "
+"script creerà i file\n"
+"    e consentirà quindi all'MTA di funzionare senza problemi."
 
 #: src/mailman/commands/cli_control.py:66
 msgid ""
@@ -534,9 +545,9 @@ msgstr ""
 "    lanciato con utente e gruppo corrente.  Questa opzione non è\n"
 "    raccomandata in produzione.\n"
 "\n"
-"    Nota che con l'opzione -u potresti avere problemi ad avere accesso\n"
-"    in lettura o scrittura ad altri file gestiti da Mailman come altro\n"
-"    utente."
+"    Nota però, che se esegui con -u e non sei nel gruppo mailman,\n"
+"    potresti avere problemi di autorizzazione e non essere in grado di\n"
+"    eliminare un archivio della lista attraverso il web. Buona fortuna!"
 
 #: src/mailman/commands/cli_control.py:83 src/mailman/commands/cli_control.py:170
 #: src/mailman/commands/cli_control.py:192 src/mailman/commands/cli_control.py:214
@@ -563,7 +574,7 @@ msgstr "Partenza di Mailman master"
 
 #: src/mailman/commands/cli_control.py:108
 msgid "Generating MTA alias maps"
-msgstr ""
+msgstr "Generazione di mappe alias MTA"
 
 #: src/mailman/commands/cli_control.py:149
 msgid "PID unreadable in: $config.PID_FILE"
@@ -935,16 +946,16 @@ msgstr "Membro non iscritto (salto): $display_name <$email>"
 #: src/mailman/commands/cli_members.py:223
 #, python-format
 msgid "[ADD] %s"
-msgstr ""
+msgstr "[AGGIUNGI] %s"
 
 #: src/mailman/commands/cli_members.py:234
 #, python-format
 msgid "[DEL] %s"
-msgstr ""
+msgstr "[ELIMINA] %s"
 
 #: src/mailman/commands/cli_members.py:244
 msgid "Nothing to do"
-msgstr ""
+msgstr "Niente da fare"
 
 #: src/mailman/commands/cli_members.py:249
 msgid ""
@@ -955,10 +966,9 @@ msgid ""
 "    "
 msgstr ""
 "    Mostra, iscrivi o disiscrivi membri alla lista.\n"
-"\n"
 "    La visualizzazione può essere personalizzata con filtri.\n"
-"\n"
-"    Senza opzioni, mostra i membri.\n"
+"    Senza opzioni fornite, mostra i membri della mailing list\n"
+"     to stdout è la modalità predefinita.\n"
 "    "
 
 #: src/mailman/commands/cli_members.py:258
@@ -982,22 +992,25 @@ msgstr ""
 "    input.  Linee vuote e line che iniziano con '#' sono ignorate."
 
 #: src/mailman/commands/cli_members.py:272
-#, fuzzy
 msgid ""
 "    [MODE] Synchronize all member addresses of the specified mailing list\n"
 "    with the member addresses found in FILENAME.\n"
 "    FILENAME can be '-' to indicate standard input.\n"
 "    Blank lines and lines that start with a '#' are ignored."
 msgstr ""
-"    [MODE] Disiscrive tutti i membri con l'indirizzo in FILENAME dalla\n"
-"    lista speficicata.  FILENAME espresso come '-' indica lo standard\n"
-"    input.  Linee vuote e line che iniziano con '#' sono ignorate."
+"    [MODE] Disiscrive tutti i membri con l'indirizzo in FILENAME\n"
+"    dalla lista speficicata. FILENAME espresso come '-' indica lo standard "
+"input.\n"
+"    Le linee vuote e quelle che iniziano con '#' sono ignorate."
 
 #: src/mailman/commands/cli_members.py:280
 msgid ""
 "    [MODE] Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
-msgstr "    [MODE] Scrive l'output in FILENAME al posto dello standard output."
+msgstr ""
+"    [MODE] Scrive l'output in FILENAME al posto dello standard output.  "
+"FILENAME\n"
+"    può essere '-' per indicare lo standard output."
 
 #: src/mailman/commands/cli_members.py:287
 msgid ""
@@ -1006,10 +1019,10 @@ msgid ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then delivery members are used. "
 msgstr ""
-"    [output filter] Mostra solo i membri con un dato RUOLO.  Il ruolo\n"
-"    può essere 'any', 'member', 'nonmember', 'owner', 'moderator', or\n"
-"    'administrator' (comprende owners e moderators).  Se non\n"
-"    specificato, seleziona i membri delivery."
+"    [output filter] Mostra solo i membri con un dato RUOLO.\n"
+"    Il ruolo può essere 'any', 'member', 'nonmember', 'owner', 'moderator',\n"
+"    o 'administrator' (comprende proprietari e moderatori).\n"
+"    Se non specificato, seleziona i membri delivery. "
 
 #: src/mailman/commands/cli_members.py:295
 msgid "    [output filter] Display only regular delivery members."
@@ -1020,6 +1033,9 @@ msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
 msgstr ""
+"    In realtà non apportare le modifiche.  Invece, stampa quello che "
+"sarebbe\n"
+"    fatto alla lista."
 
 #: src/mailman/commands/cli_members.py:307
 msgid ""
@@ -1028,9 +1044,8 @@ msgid ""
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
 "    [output filter] Mostra solo i membri di raggruppamento a seconda\n"
-"    del tipo.  'any' significa di ogni tipo di raggruppamento,\n"
-"    'plaintext' per i membri cha hanno scelto plain text (rfc 1153) e\n"
-"    'mime' per MIME."
+"    del tipo.  'any' significa di ogni tipo di raggruppamento, 'plaintext'\n"
+"    per i membri cha hanno scelto plain text (rfc 1153) e 'mime' per MIME."
 
 #: src/mailman/commands/cli_members.py:315
 msgid ""
@@ -1121,7 +1136,7 @@ msgid ""
 "{}\n"
 "Please attend to this at your earliest convenience.\n"
 msgstr ""
-"La lista {}  has {} richieste di moderazione in attesa.\n"
+"La lista {} has {} richieste di moderazione in attesa.\n"
 "\n"
 "{}\n"
 "Dai un'occhiata appena possibile.\n"
@@ -1152,15 +1167,15 @@ msgstr ""
 
 #: src/mailman/commands/cli_qfile.py:67
 msgid "[----- start pickle -----]"
-msgstr "[----- start pickle -----]"
+msgstr "[----- inizio pickle -----]"
 
 #: src/mailman/commands/cli_qfile.py:70
 msgid "<----- start object $count ----->"
-msgstr "<----- start object $count ----->"
+msgstr "<----- oggetto iniziale $count ----->"
 
 #: src/mailman/commands/cli_qfile.py:75
 msgid "[----- end pickle -----]"
-msgstr "[----- end pickle -----]"
+msgstr "[----- fine pickle -----]"
 
 #: src/mailman/commands/cli_qfile.py:77
 msgid "Number of objects found (see the variable 'm'): $count"
@@ -1208,7 +1223,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_version.py:32
 msgid "Display Mailman's version."
-msgstr "Mostra la versione di Mailman"
+msgstr "Mostra la versione di Mailman."
 
 #: src/mailman/commands/cli_withlist.py:76
 msgid "ipython is not available, set use_ipython to no"
@@ -1226,7 +1241,9 @@ msgstr "Valore invalido per [shell]use_python: {}"
 msgid ""
 "This script provides you with a general framework for interacting with a\n"
 "mailing list."
-msgstr "Questo script permette di interagire con una lista."
+msgstr ""
+"Questo script permette di interagire con una\n"
+"mailing list."
 
 #: src/mailman/commands/cli_withlist.py:153
 msgid ""
@@ -1236,9 +1253,15 @@ msgid ""
 "variable 'm' will be available in the global namespace.  It will reference the\n"
 "mailing list object."
 msgstr ""
-"Ci sono due modi di usare questo script: interattivamente o programmaticamente.\n"
-"In modo interattivo in una shell Python nella variabile 'm' si trova\n"
-"l'oggetto lista.  "
+"Ci sono due modi di usare questo script: interattivamente o "
+"programmaticamente.\n"
+"Usarlo in modo interattivo ti permette di giocare con, esaminare e "
+"modificare una mailing list\n"
+"dall'interprete interattivo di Python.  Quando si esegue in modo "
+"interattivo, la\n"
+"variabile 'm' sarà disponibile nello spazio dei nomi globale.  Farà "
+"riferimento\n"
+"all'oggetto della mailing list."
 
 #: src/mailman/commands/cli_withlist.py:160
 msgid ""
