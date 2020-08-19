@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
 "PO-Revision-Date: 2020-08-16 22:03+0000\n"
-"Last-Translator: Massimo Zappalà <maszap@tin.it>\n"
+"Last-Translator: Claudio Maradonna <claudio@unitoo.pw>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/it/>\n"
 "Language: it\n"
@@ -29,11 +29,11 @@ msgstr "(oggetto mancante)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
-msgstr "[Non ci sono dettagli riguardo al respingimento (bounce)]"
+msgstr "[Nessun dettaglio del rimbalzo è disponibile]"
 
 #: src/mailman/app/bounces.py:226
 msgid "$mlist.display_name mailing list probe message"
-msgstr "lista $mlist.display_name messaggio di test"
+msgstr "$mlist.display_name mailing list probe message"
 
 #: src/mailman/app/bounces.py:262
 msgid "Uncaught bounce notification"
