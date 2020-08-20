@@ -76,6 +76,7 @@ Others
 * Added the ability to invite members to a list.  (Closes #510 and #730)
 * Made (un)subscription confirmation email subjects user friendly and
   translatable.  (Closes #541)
+* Implemented a new email ``who`` command to obtain list membership.
 
 
 3.3.1
