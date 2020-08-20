@@ -37,6 +37,7 @@ short description of each of them.
     stop        - An alias for 'end'.
     subscribe   - An alias for 'join'.
     unsubscribe - An alias for 'leave'.
+    who         - Get a list of the list members.
     <BLANKLINE>
 
 With an argument, you can get more detailed help about a specific command.
