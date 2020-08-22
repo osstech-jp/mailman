@@ -101,7 +101,7 @@ The default set of rules looks something like this:
         subgraph in { IN [shape=box, color=lightblue, style=filled]; }
         subgraph rules {
           rankdir=TB;
-          node [shape=record];
+          node [shape=box, style=rounded];
           approved [label="<in> approved | { <no> no | <yes> }"];
           emergency [label="<in> emergency | { <no> no | <yes> }"];
           loop [label="<in> loop | { <no> no | <yes> }"];
