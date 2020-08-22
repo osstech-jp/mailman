@@ -101,16 +101,70 @@ The default set of rules looks something like this:
         subgraph in { IN [shape=box, color=lightblue, style=filled]; }
         subgraph rules {
           rankdir=TB;
-          node [shape=box, style=rounded];
-          approved [label="<in> approved | { <no> no | <yes> }"];
-          emergency [label="<in> emergency | { <no> no | <yes> }"];
-          loop [label="<in> loop | { <no> no | <yes> }"];
-          modmember [label="<in> member\nmoderated | { <no> no | <yes> }"];
+          node [shape=none];
+          approved [label=<
+            <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0">
+              <TR>
+                <TD PORT="in">approved</TD>
+              </TR><TR>
+                <TD PORT="no">no</TD>
+              </TR>
+            </TABLE>>];
+          emergency [label=<
+            <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0">
+              <TR>
+                <TD PORT="in">emergency</TD>
+              </TR><TR>
+                <TD PORT="no">no</TD>
+              </TR>
+            </TABLE>>];
+          loop [label=<
+            <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0">
+              <TR>
+                <TD PORT="in">loop</TD>
+              </TR><TR>
+                <TD PORT="no">no</TD>
+              </TR>
+            </TABLE>>];
+          modmember [label=<
+            <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0">
+              <TR>
+                <TD PORT="in">member moderated</TD>
+              </TR><TR>
+                <TD PORT="no">no</TD>
+              </TR>
+            </TABLE>>];
           administrivia [group="0",
-                        label="<in> administrivia | { <no> no | <yes> }"];
-          maxsize [label="<in> max\ size | {<no> no | <yes>}"];
-          any [label="<in> any | {<no> | <yes>}"];
-          truth [label="<in> truth | <always>"];
+                        label=<
+            <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0">
+              <TR>
+                <TD PORT="in">administrivia</TD>
+              </TR><TR>
+                <TD PORT="no">no</TD>
+              </TR>
+            </TABLE>>];
+          maxsize [label=<
+            <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0">
+              <TR>
+                <TD PORT="in">max size</TD>
+              </TR><TR>
+                <TD PORT="no">no</TD>
+              </TR>
+            </TABLE>>];
+          any [label=<
+            <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0">
+              <TR>
+                <TD PORT="in">any</TD>
+              </TR><TR>
+                <TD PORT="no">no</TD>
+              </TR>
+            </TABLE>>];
+          truth [label=<
+            <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0">
+              <TR>
+                <TD PORT="in">truth</TD>
+              </TR>
+            </TABLE>>];
 
         }
 
@@ -126,25 +180,25 @@ The default set of rules looks something like this:
 
         IN -> approved:in;
         approved:no -> emergency:in [weight="100"];
-        approved:yes -> PIPELINE [minlen=2];
+        approved:in -> PIPELINE [minlen=2];
 
         emergency:no -> loop:in;
-        emergency:yes -> HOLD;
+        emergency:in -> HOLD;
 
         loop:no -> modmember:in;
-        loop:yes -> DISCARD;
+        loop:in -> DISCARD;
 
         modmember:no -> administrivia:in;
-        modmember:yes -> MODERATION;
+        modmember:in -> MODERATION;
 
         administrivia:no -> maxsize:in;
-        administrivia:yes -> action;
+        administrivia:in -> action;
 
         maxsize:no -> any:in;
-        maxsize:yes -> MODERATION;
+        maxsize:in -> MODERATION;
 
         any:no -> truth:in;
-        any:yes -> MODERATION;
+        any:in -> MODERATION;
 
         truth:always -> PIPELINE [minlen=2];
    }
