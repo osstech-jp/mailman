@@ -13,11 +13,14 @@ Domains
 
     >>> domain_manager.remove('example.com')
     <Domain example.com...>
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
 The REST API can be queried for the set of known domains, of which there are
 initially none.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/domains')
     http_etag: "..."
     start: 0

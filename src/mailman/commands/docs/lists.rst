@@ -6,6 +6,7 @@ A system administrator can display all the mailing lists via the command
 line.  When there are no mailing lists, a helpful message is displayed.
 ::
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_lists.lists')
     >>> command('mailman lists')
     No matching mailing lists found
@@ -19,6 +20,7 @@ their fully qualified list names, with a description.
     >>> getUtility(IDomainManager).add('example.net')
     <Domain example.net...>
 
+    >>> from mailman.app.lifecycle import create_list    
     >>> mlist_1 = create_list('list-one@example.com')
     >>> mlist_1.description = 'List One'
 

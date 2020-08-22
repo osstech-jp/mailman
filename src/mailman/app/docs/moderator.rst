@@ -10,6 +10,7 @@ changes for moderator approval.  This utilizes the :ref:`lower level interface
 
 Moderation is always mailing list-centric.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
     >>> mlist.preferred_language = 'en'
     >>> mlist.display_name = 'A Test List'
@@ -30,6 +31,8 @@ Holding messages
 Anne posts a message to the mailing list, but she is not a member of the list,
 so the message is held for moderator approval.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: anne@example.org
     ... To: ant@example.com
@@ -163,7 +166,7 @@ however the message metadata indicates that the message has been approved.
     To: ant@example.com
     Subject: Something important
     ...
-
+    >>> from mailman.testing.documentation import dump_msgdata
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg         : False
     approved          : True

@@ -6,6 +6,7 @@ Posts by members and nonmembers are subject to moderation checks during
 incoming processing.  Different situations can cause such posts to be held for
 moderator approval.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 Members and nonmembers have a *moderation action* which can shortcut the
@@ -70,6 +71,8 @@ Anne's post to the mailing list runs through the incoming runner's default
 built-in chain.  No rules hit and so the message is accepted.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)   
     >>> msg = message_from_string("""\
     ... From: anne@example.com
     ... To: test@example.com

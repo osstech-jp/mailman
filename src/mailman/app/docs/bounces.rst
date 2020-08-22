@@ -11,10 +11,13 @@ Mailman can bounce messages back to the original sender.  This is essentially
 equivalent to rejecting the message with notification.  Mailing lists can
 bounce a message with an optional error message.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
 
 Any message can be bounced.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... To: ant@example.com
     ... From: aperson@example.com

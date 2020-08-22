@@ -5,6 +5,7 @@ Syncing members
 The ``mailman syncmembers`` command allows a site administrator to sync the
 membership of a mailing list with an input file.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_syncmembers.syncmembers')
 
 Usage
@@ -62,6 +63,7 @@ specified file will be added to the specified mailing list.
 First we create a list and add a few members.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> bee = create_list('bee@example.com')
     >>> from mailman.testing.helpers import subscribe
     >>> subscribe(bee, 'Fred')
@@ -94,6 +96,7 @@ the first example, Fred is a member who remains on the list and isn't reported.
     [DEL] Jeff Person <jperson@example.com>
 
     >>> from operator import attrgetter
+    >>> from mailman.testing.documentation import dump_list        
     >>> dump_list(bee.members.addresses, key=attrgetter('email'))
     aperson@example.com
     Cate Person <cperson@example.com>

@@ -7,6 +7,7 @@ receives on its posting address, owner address, or robot address.  Automatic
 responses are subject to various conditions, such as headers in the original
 message or the amount of time since the last auto-response.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> mlist.display_name = 'XTest'
 
@@ -28,6 +29,8 @@ a second response will be sent, with 0 meaning "there is no grace period".
     >>> mlist.autoresponse_grace_period = timedelta()
     >>> mlist.autoresponse_owner_text = 'owner autoresponse text'
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest-owner@example.com
@@ -39,6 +42,7 @@ The preceding message to the mailing list's owner will trigger an automatic
 response.
 ::
 
+    >>> from mailman.config import config
     >>> from mailman.testing.helpers import get_queue_messages
 
     >>> handler = config.handlers['replybot']
@@ -47,6 +51,7 @@ response.
     >>> len(messages)
     1
 
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listid              : _xtest.example.com

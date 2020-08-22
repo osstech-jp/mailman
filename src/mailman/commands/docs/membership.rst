@@ -34,6 +34,7 @@ The mail command ``join`` subscribes an email address to the mailing list.
 No address to join
 ------------------
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('alpha@example.com')
     >>> mlist.send_welcome_message = False
 
@@ -74,6 +75,8 @@ Joining the sender
 
 When the message has a ``From`` field, that address will be subscribed.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: Anne Person <anne@example.com>
     ...

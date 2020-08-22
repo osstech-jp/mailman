@@ -4,7 +4,10 @@ Mailing list configuration
 
 Mailing lists can be configured via the REST API.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
 
@@ -13,6 +16,7 @@ Reading a configuration
 
 All readable attributes for a list are available on a sub-resource.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/config')
     accept_these_nonmembers: []
     acceptable_aliases: []
@@ -391,6 +395,7 @@ dictionary are ignored.
 
 You can get all the mailing list's acceptable aliases through the REST API.
 
+    >>> from mailman.testing.documentation import call_http
     >>> response = call_http(
     ...     'http://localhost:9001/3.0/lists/'
     ...     'ant@example.com/config/acceptable_aliases')

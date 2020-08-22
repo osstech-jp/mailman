@@ -13,6 +13,7 @@ When Mailman needs to send a message to a user, it creates a
 ``UserNotification`` instance, and then calls the ``.send()`` method on this
 object.  This method requires a mailing list instance.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 The ``UserNotification`` constructor takes the recipient address, the sender

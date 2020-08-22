@@ -36,6 +36,7 @@ and port number of the SMTP server, as well as the maximum number of
 sessions to be performed in a connection must be specified.  An
 unlimited number of sessions per connection is specified as 0.
 
+    >>> from mailman.config import config
     >>> connection = Connection(
     ...     config.mta.smtp_host, int(config.mta.smtp_port), 0)
 

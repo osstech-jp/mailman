@@ -6,6 +6,7 @@ Mailman can calculate the recipients for a message from a Sendmail-style
 include file.  This file must be called ``members.txt`` and it must live in
 the list's data directory.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 
@@ -16,6 +17,8 @@ If the message's metadata already has recipients, this handler immediately
 returns.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
@@ -23,6 +26,7 @@ returns.
     ... """)
     >>> msgdata = {'recipients': 7}
 
+    >>> from mailman.config import config
     >>> handler = config.handlers['file-recipients']
     >>> handler.process(mlist, msg, msgdata)
     >>> print(msg.as_string())
@@ -30,6 +34,7 @@ returns.
     <BLANKLINE>
     A message.
     <BLANKLINE>
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(msgdata)
     recipients: 7
 
@@ -53,6 +58,7 @@ addresses are returned as the set of recipients.
 
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
+    >>> from mailman.testing.documentation import dump_list    
     >>> dump_list(msgdata['recipients'])
     bperson@example.com
     cperson@example.com

@@ -18,6 +18,8 @@ store mailing list data in a different database than user data.
 When we create a mailing list, it starts out with no members, owners,
 moderators, administrators, or nonmembers.
 
+    >>> from mailman.app.lifecycle import create_list
+    >>> from mailman.testing.documentation import dump_list    
     >>> mlist = create_list('ant@example.com')
     >>> dump_list(mlist.members.members)
     *Empty*

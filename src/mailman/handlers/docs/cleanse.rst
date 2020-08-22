@@ -6,6 +6,7 @@ All messages posted to a list get their headers cleansed.  Some headers are
 related to additional permissions that can be granted to the message and other
 headers can be used to fish for membership.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 Headers such as ``Approved``, ``Approve``, (as well as their ``X-`` variants)
@@ -16,6 +17,8 @@ header is used to send a regular message to all members, regardless of whether
 they get digests or not.  Because all three headers contain passwords, they
 must be removed from any posted message.  ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Approved: foobar
@@ -28,6 +31,7 @@ must be removed from any posted message.  ::
     ... Blah blah blah
     ... """)
 
+    >>> from mailman.config import config    
     >>> handler = config.handlers['cleanse']
     >>> handler.process(mlist, msg, {})
     >>> print(msg.as_string())

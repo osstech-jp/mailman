@@ -27,6 +27,7 @@ dictionary after tagging, since that's almost always what you want.
     >>> data = json.loads(json_data)
 
     # This is pretty close to what we want, so it's convenient to use.
+    >>> from mailman.testing.documentation import dump_msgdata
     >>> dump_msgdata(data)
     alex     : guitar
     geddy    : bass

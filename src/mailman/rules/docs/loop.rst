@@ -5,13 +5,17 @@ Posting loops
 To avoid a posting loop, Mailman has a rule to check for the existence of an
 RFC 2369 ``List-Post:`` header with the value of the list's posting address.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
+    >>> from mailman.config import config    
     >>> rule = config.rules['loop']
     >>> print(rule.name)
     loop
 
 The header could be missing, in which case the rule does not match.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

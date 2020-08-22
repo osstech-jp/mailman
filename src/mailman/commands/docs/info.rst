@@ -6,6 +6,7 @@ You can get information about Mailman's environment by using the command line
 script ``mailman info``.  By default, the info is printed to standard output.
 ::
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_info.info')
 
     >>> command('mailman info')

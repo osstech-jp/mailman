@@ -17,6 +17,7 @@ The basic architecture of runner is implemented in the base class that all
 runners inherit from.  This base class implements a ``.run()`` method that
 runs continuously in a loop until the ``.stop()`` method is called.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 Here is a very simple derived runner class.  Runners use a configuration
@@ -25,6 +26,7 @@ the queue directory to use.  Here we push a configuration section for the test
 runner.
 ::
 
+    >>> from mailman.config import config   
     >>> config.push('test-runner', """
     ... [runner.test]
     ... max_restarts: 1
@@ -48,6 +50,8 @@ runner.
 This runner doesn't do much except run once, storing the message and metadata
 on instance variables.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -64,6 +68,7 @@ on instance variables.
     <BLANKLINE>
     A test message.
     <BLANKLINE>
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(runner.msgdata)
     _parsemsg: False
     bar      : no

@@ -6,6 +6,7 @@ Mailman crafts and sends digests by a separate digest runner process.  This
 starts by a number of messages being posted to the mailing list.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('test@example.com')
     >>> mlist.digest_size_threshold = 0.6
     >>> mlist.volume = 1
@@ -13,6 +14,9 @@ starts by a number of messages being posted to the mailing list.
     >>> mlist.send_welcome_message = False
 
     >>> from string import Template
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
+    >>> from mailman.config import config
     >>> process = config.handlers['to-digest'].process
 
     >>> def fill_digest():
@@ -53,6 +57,7 @@ The marker message is empty.
 But the message metadata has a reference to the digest file.
 ::
 
+    >>> from mailman.testing.documentation import dump_msgdata
     >>> dump_msgdata(entry.msgdata)
     _parsemsg    : False
     digest_number: 1

@@ -11,6 +11,7 @@ sending the notices.  Complete information about command options may be
 obtained by running ``mailman notify --help``.
 ::
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_notify.notify')
 
     >>> command('mailman notify --help')

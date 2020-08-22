@@ -6,6 +6,7 @@ The REST API can be queried for the set of known mailing lists.  There is a
 top level collection that can return all the mailing lists.  There aren't any
 yet though.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/lists')
     http_etag: "..."
     start: 0
@@ -14,7 +15,10 @@ yet though.
 Create a mailing list in a domain and it's accessible via the API.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('ant@example.com')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/lists')
@@ -265,6 +269,7 @@ Apply a style at list creation time
 of a particular type, e.g. discussion lists.  We can see which styles are
 available, and which is the default style.
 
+    >>> from mailman.testing.documentation import call_http
     >>> json = call_http('http://localhost:9001/3.0/lists/styles')
     >>> json['default']
     'legacy-default'
@@ -415,12 +420,15 @@ We send a message through the mailing list to start collecting for a digest.
 
     >>> from mailman.runners.digest import DigestRunner
     >>> from mailman.testing.helpers import make_testable_runner
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: anne@example.com
     ... To: emu@example.com
     ... Subject: Message #1
     ...
     ... """)
+    >>> from mailman.config import config    
     >>> config.handlers['to-digest'].process(emu, msg, {})
     >>> runner = make_testable_runner(DigestRunner, 'digest')
     >>> runner.run()

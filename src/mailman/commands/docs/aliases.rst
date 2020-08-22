@@ -8,6 +8,7 @@ server.  Generally these files are automatically kept up-to-date when mailing
 lists are created or removed, but you might occasionally need to manually
 regenerate the file.  The ``mailman aliases`` command does this.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_aliases.aliases')
 
 For example, connecting Mailman to Postfix is generally done through the LMTP
@@ -18,6 +19,7 @@ maps.
 Selecting Postfix as the source of incoming messages enables transport map
 generation.
 
+    >>> from mailman.config import config
     >>> config.push('postfix', """
     ... [mta]
     ... incoming: mailman.mta.postfix.LMTP
@@ -33,6 +35,7 @@ Let's create a mailing list and then display the transport map for it.  We'll
 write the appropriate files to a temporary directory.
 ::
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
 
     >>> import os, shutil, tempfile

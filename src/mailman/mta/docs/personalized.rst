@@ -26,7 +26,10 @@ No personalization
 By default, the ``To:`` header is not personalized.
 ::
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: test@example.com
@@ -93,6 +96,8 @@ with the recipient's address and name.
 
     >>> from mailman.interfaces.mailinglist import Personalization
     >>> mlist.personalize = Personalization.full
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
     >>> personalized.deliver(mlist, msg, dict(recipients=recipients))

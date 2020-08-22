@@ -10,10 +10,13 @@ Addresses have preferences.
     >>> user_manager = getUtility(IUserManager)
 
     >>> anne = user_manager.create_address('anne@example.com')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
 Although to start with, an address has no preferences.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/addresses/anne@example.com'
     ...           '/preferences')
     http_etag: "..."
@@ -72,6 +75,7 @@ the preference on the member.
 ::
 
     >>> from mailman.interfaces.member import MemberRole
+    >>> from mailman.app.lifecycle import create_list    
     >>> mlist = create_list('test@example.com')
     >>> bart_member = mlist.subscribe(list(bart.addresses)[0])
     >>> bart_member.preferences.receive_list_copy = False

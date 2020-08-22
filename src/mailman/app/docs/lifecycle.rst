@@ -32,7 +32,9 @@ not yet known, they will be registered, and new users will be linked to them.
     ...     'dperson@example.com',
     ...     ]
 
+    >>> from mailman.app.lifecycle import create_list
     >>> ant = create_list('ant@example.com', owners)
+    >>> from mailman.testing.documentation import dump_list
     >>> dump_list(address.email for address in ant.owners.addresses)
     aperson@example.com
     bperson@example.com

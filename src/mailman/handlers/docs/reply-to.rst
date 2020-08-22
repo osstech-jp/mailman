@@ -8,6 +8,7 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 *Reply-to munging* refers to the behavior where a mailing list can be
@@ -41,6 +42,8 @@ original message, the list's posting address simply gets inserted.
     >>> mlist.reply_goes_to_list = ReplyToMunging.point_to_list
     >>> mlist.preferred_language = 'en'
     >>> mlist.description = ''
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

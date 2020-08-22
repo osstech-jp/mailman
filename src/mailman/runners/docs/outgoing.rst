@@ -13,6 +13,7 @@ VERP'd, etc.  The outgoing runner doesn't itself support retrying but it can
 move messages to the 'retry queue' for handling delivery failures.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('test@example.com')
 
     >>> from mailman.testing.helpers import subscribe
@@ -35,6 +36,8 @@ call the ``member-recipients`` handler so that the message metadata will be
 populated with the list of addresses to deliver the message to.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)   
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -45,6 +48,7 @@ populated with the list of addresses to deliver the message to.
     ... """)
 
     >>> msgdata = {}
+    >>> from mailman.config import config    
     >>> handler = config.handlers['member-recipients']
     >>> handler.process(mlist, msg, msgdata)
     >>> outgoing_queue = config.switchboards['out']
@@ -102,6 +106,8 @@ recipient.
 
     >>> from mailman.interfaces.mailinglist import Personalization
     >>> mlist.personalize = Personalization.individual
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
 Now when we send the message, our mail server will get three copies instead of

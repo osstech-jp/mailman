@@ -5,7 +5,9 @@ Implicit destination
 The ``implicit-dest`` rule matches when the mailing list's posting address is
 not explicitly mentioned in the set of message recipients.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
+    >>> from mailman.config import config    
     >>> rule = config.rules['implicit-dest']
     >>> print(rule.name)
     implicit-dest
@@ -23,6 +25,8 @@ mailing list's posting address isn't included in the explicit recipients.
     >>> mlist.require_explicit_destination = True
     >>> alias_set.clear()
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Subject: An implicit message

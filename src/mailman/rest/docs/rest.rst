@@ -45,6 +45,8 @@ The ``hostname`` and ``port`` where Mailman's REST API will be
 listening can be found by running `mailman info`_ command. 
 You can configure that in ``mailman.cfg`` configuration file.::
 
+
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_info.info')
 
     >>> command('mailman info')
@@ -75,6 +77,7 @@ instead.
 
 For example, call like::
 
+    >>> from mailman.testing.documentation import dump_json  
     >>> dump_json('http://localhost:9001/3.1/domains')
     entry 0:
         alias_domain: None

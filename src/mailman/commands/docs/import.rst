@@ -5,6 +5,7 @@ Importing list data
 If you have the ``config.pck`` file for a version 2.1 mailing list, you can
 import that into an existing mailing list in Mailman 3.0.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_import.import21')
 
 You must specify the mailing list you are importing into, and it must exist.
@@ -38,7 +39,10 @@ When the mailing list exists, you must specify a real pickle file to import
 from.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('import@example.com')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
     >>> command('mailman import21 import@example.com ' + __file__)
     Usage: ... [OPTIONS] LISTSPEC PICKLE_FILE

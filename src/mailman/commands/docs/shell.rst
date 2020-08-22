@@ -14,6 +14,7 @@ Getting detailed help
 Because ``shell`` is so complex, you might want to read the detailed help.
 ::
 
+    >>> from mailman.testing.documentation import cli   
     >>> command = cli('mailman.commands.cli_withlist.shell')
 
     >>> command('mailman shell --details')
@@ -28,6 +29,7 @@ Running a function
 By putting a Python function somewhere on your ``sys.path``, you can have
 ``shell`` call that function on a given mailing list.
 
+    >>> from mailman.config import config
     >>> import os, sys
     >>> old_path = sys.path[:]
     >>> sys.path.insert(0, config.VAR_DIR)
@@ -53,6 +55,7 @@ The function takes at least a single argument, the mailing list.
 If the name of the function is the same as the module, then you only need to
 name the function once.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
     >>> command('mailman shell -l ant@example.com --run showme')
     The list's name is ant@example.com

@@ -5,6 +5,7 @@ The 'end' command
 The mail command processor recognized an 'end' command which tells it to stop
 processing email messages.
 
+    >>> from mailman.config import config
     >>> command = config.commands['end']
     >>> print(command.name)
     end
@@ -19,6 +20,7 @@ The 'end' command takes no arguments.
 The command itself is fairly simple; it just stops command processing, and the
 message isn't even looked at.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> from mailman.email.message import Message
     >>> print(command.process(mlist, Message(), {}, (), None))

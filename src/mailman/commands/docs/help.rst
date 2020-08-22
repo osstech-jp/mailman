@@ -5,6 +5,7 @@ Email command help
 You can get some help about the various email commands that are available by
 sending the word `help` to a mailing list's -request address.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> from mailman.commands.eml_help import Help
     >>> help = Help()

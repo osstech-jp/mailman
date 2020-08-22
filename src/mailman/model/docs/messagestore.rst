@@ -14,6 +14,8 @@ message object in the internet facing interface of the message store.  The
 
 A message with a ``Message-ID`` header can be stored.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... Subject: An important message
     ... Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>

@@ -15,11 +15,13 @@ have Python's `smtplib module` automatically choose the more secure mechanism.
 When the user name and password match what's expected by the server,
 everything is a-okay.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 By default there is no user name and password, but this matches what's
 expected by the test server.
 
+    >>> from mailman.config import config
     >>> config.push('auth', """
     ... [mta]
     ... smtp_user: testuser
@@ -32,6 +34,8 @@ Attempting delivery first must authorize with the mail server.
     >>> from mailman.mta.bulk import BulkDelivery
     >>> bulk = BulkDelivery()
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -59,6 +63,7 @@ But if the user name and password does not match, the connection will fail.
     >>> bulk = BulkDelivery()
     >>> response = bulk.deliver(
     ...     mlist, msg, dict(recipients=['bperson@example.com']))
+    >>> from mailman.testing.documentation import dump_msgdata
     >>> dump_msgdata(response)
     bperson@example.com: (571, b'Bad authentication')
 

@@ -5,6 +5,7 @@ The 'echo' command
 The mail command 'echo' simply replies with the original command and arguments
 to the sender.
 
+    >>> from mailman.config import config
     >>> command = config.commands['echo']
     >>> print(command.name)
     echo
@@ -16,6 +17,7 @@ to the sender.
 The original message is ignored, but the results receive the echoed command.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('test@example.com')
 
     >>> from mailman.runners.command import Results

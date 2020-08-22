@@ -5,6 +5,7 @@ NNTP Gateway
 Mailman has an NNTP gateway, whereby messages posted to the mailing list can
 be forwarded onto an NNTP newsgroup.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 Gatewaying from the mailing list to the newsgroup happens through a separate
@@ -17,12 +18,15 @@ the newsgroup.  The feature could be disabled, as is the default.
 ::
 
     >>> mlist.gateway_to_news = False
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... Subject: An important message
     ...
     ... Something of great import.
     ... """)
 
+    >>> from mailman.config import config    
     >>> handler = config.handlers['to-usenet']
     >>> handler.process(mlist, msg, {})
     >>> from mailman.testing.helpers import get_queue_messages
@@ -60,6 +64,7 @@ gated to is a global configuration.
     Something of great import.
     <BLANKLINE>
 
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg: False
     listid   : test.example.com

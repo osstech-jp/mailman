@@ -9,7 +9,9 @@ and if it is other than ``no_mitigation``, it checks the domain of the
 or discard the message, or just flag it for the dmarc handler to apply DMARC
 mitigations to the message.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
+    >>> from mailman.config import config    
     >>> rule = config.rules['dmarc-mitigation']
     >>> print(rule.name)
     dmarc-mitigation
@@ -29,6 +31,8 @@ A message ``From:`` a domain without a DMARC policy does not set any flags.
 
     >>> from mailman.interfaces.mailinglist import DMARCMitigateAction
     >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: ant@example.com
@@ -100,6 +104,7 @@ message.
     >>> msgdata = {}
     >>> rule.check(mlist, msg, msgdata)
     True
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(msgdata)
     dmarc             : True
     dmarc_action      : discard

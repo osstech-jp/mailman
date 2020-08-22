@@ -13,11 +13,14 @@ By default, the ``qfile`` command pretty prints the contents of a queue pickle
 file to standard output.
 ::
 
+    >>> from mailman.testing.documentation import cli   
     >>> command = cli('mailman.commands.cli_qfile.qfile')
 
 Let's say Mailman shunted a message file.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)   
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: ant@example.com
@@ -26,6 +29,7 @@ Let's say Mailman shunted a message file.
     ... I borkeded Mailman.
     ... """)
 
+    >>> from mailman.config import config
     >>> shuntq = config.switchboards['shunt']
     >>> basename = shuntq.enqueue(msg, foo=7, bar='baz', bad='yes')
 

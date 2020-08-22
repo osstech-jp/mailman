@@ -56,6 +56,7 @@ If the token isn't in the database, None is returned.
     >>> print(pendable)
     None
     >>> pendable = pendingdb.confirm(token)
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(pendable)
     address     : aperson@example.com
     display_name: Anne Person

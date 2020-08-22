@@ -6,6 +6,7 @@ When a message is posted to a mailing list's `-owners` address, all of the
 list's administrators will receive a copy.  The administrators are defined as
 the set of owners and moderators.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist_1 = create_list('alpha@example.com')
 
 Anne is the owner of the list and Bart is a moderator of the list.
@@ -21,14 +22,18 @@ Anne is the owner of the list and Bart is a moderator of the list.
 
 The recipients list for the `-owners` address includes both Anne and Bart.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: Xavier Person <xperson@example.com>
     ... To: alpha@example.com
     ...
     ... """)
     >>> msgdata = {}
+    >>> from mailman.config import config
     >>> handler = config.handlers['owner-recipients']
     >>> handler.process(mlist_1, msg, msgdata)
+    >>> from mailman.testing.documentation import dump_list
     >>> dump_list(msgdata['recipients'])
     anne@example.com
     bart@example.com

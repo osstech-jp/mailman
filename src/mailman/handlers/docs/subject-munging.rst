@@ -6,6 +6,7 @@ Mailing lists can define a *subject prefix* which gets added to the front of
 any ``Subject`` text.  This can be used to quickly identify which mailing list
 the message was posted to.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 The default list style gives the mailing list a default prefix.
@@ -16,6 +17,7 @@ The default list style gives the mailing list a default prefix.
 This can be changed to anything, but typically ends with a trailing space.
 
     >>> mlist.subject_prefix = '[XTest] '
+    >>> from mailman.config import config    
     >>> process = config.handlers['subject-prefix'].process
 
 
@@ -24,6 +26,8 @@ No Subject
 
 If the original message has no ``Subject``, then a canned one is used.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

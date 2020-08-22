@@ -27,10 +27,7 @@ import sys
 from click.testing import CliRunner
 from contextlib import ExitStack
 from importlib import import_module
-from mailman.app.lifecycle import create_list
-from mailman.config import config
-from mailman.testing.helpers import (
-    call_api, get_queue_messages, specialized_message_from_string, subscribe)
+from mailman.testing.helpers import call_api
 from mailman.testing.layers import SMTPLayer
 from public import public
 from subprocess import PIPE, STDOUT, run
@@ -207,20 +204,8 @@ def setup(testobj):
     # doctests should do the imports themselves.  It makes for better
     # documentation that way.  However, a few are really useful, or help to
     # hide some icky test implementation details.
-    testobj.globs['call_http'] = call_http
-    testobj.globs['cli'] = cli
-    testobj.globs['config'] = config
-    testobj.globs['create_list'] = create_list
-    testobj.globs['dump_json'] = dump_json
-    testobj.globs['dump_list'] = dump_list
-    testobj.globs['dump_msgdata'] = dump_msgdata
-    testobj.globs['get_queue_messages'] = get_queue_messages
-    testobj.globs['message_from_string'] = specialized_message_from_string
-    testobj.globs['run'] = run_mailman
     testobj.globs['smtpd'] = SMTPLayer.smtpd
     testobj.globs['stop'] = stop
-    testobj.globs['subscribe'] = subscribe
-    testobj.globs['transaction'] = config.db
     # Add this so that cleanups can be automatically added by the doctest.
     testobj.globs['cleanups'] = ExitStack()
 

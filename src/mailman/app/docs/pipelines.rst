@@ -8,6 +8,7 @@ NNTP, and outgoing queues.  Pipelines are named and consist of a sequence of
 handlers, each of which is applied in turn.  Unlike rules and chains, there is
 no way to stop a pipeline from processing the message once it's started.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> print(mlist.posting_pipeline)
     default-posting-pipeline
@@ -25,6 +26,8 @@ Processing a message
 
 Messages hit the pipeline after they've been accepted for posting.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -62,6 +65,7 @@ come later during delivery).
 The message metadata has information about recipients and other stuff.
 However there are currently no recipients for this message.
 
+    >>> from mailman.testing.documentation import dump_msgdata
     >>> dump_msgdata(msgdata)
     original_sender : aperson@example.com
     original_subject: My first post

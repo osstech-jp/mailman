@@ -6,6 +6,7 @@ The REST API can be used to manage addresses.
 
 There are no addresses yet.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/addresses')
     http_etag: "..."
     start: 0
@@ -19,6 +20,8 @@ API.
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> user_manager = getUtility(IUserManager)
     >>> anne = user_manager.create_address('anne@example.com')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/addresses')
@@ -436,6 +439,7 @@ Elle registers several email addresses.
 Elle subscribes to two mailing lists with one of her addresses.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> ant = create_list('ant@example.com')
     >>> bee = create_list('bee@example.com')
     >>> ant.subscribe(subscriber)

@@ -25,6 +25,7 @@ We start by writing the site-global header and footer template.
 ::
 
     >>> import os, tempfile
+    >>> from mailman.config import config    
     >>> template_dir = tempfile.mkdtemp()
     >>> site_dir = os.path.join(template_dir, 'site', 'en')
     >>> os.makedirs(site_dir)
@@ -49,9 +50,12 @@ We start by writing the site-global header and footer template.
 Then create a mailing list which will use this header and footer.  Because
 these are site-global templates, we can use a shorted URL.
 
+>>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> from mailman.interfaces.template import ITemplateManager
     >>> from zope.component import getUtility
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> manager = getUtility(ITemplateManager)
     >>> manager.set('list:member:regular:header', mlist.list_id,
     ...             'mailman:///myheader.txt')
@@ -59,6 +63,8 @@ these are site-global templates, we can use a shorted URL.
     ...             'mailman:///myfooter.txt')
     >>> transaction.commit()
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: test@example.com

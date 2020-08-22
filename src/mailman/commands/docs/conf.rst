@@ -10,6 +10,7 @@ Mailman's configuration is divided in multiple sections which contain multiple
 key-value pairs.  The ``mailman conf`` command allows you to display a
 specific key-value pair, or several key-value pairs.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_conf.conf')
 
 To get a list of all key-value pairs of any section, you need to call the

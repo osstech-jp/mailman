@@ -21,6 +21,7 @@ mailing list to get its requests.
 
     >>> from mailman.interfaces.requests import IListRequests
     >>> from zope.interface.verify import verifyObject
+    >>> from mailman.app.lifecycle import create_list
 
     >>> mlist = create_list('test@example.com')
     >>> requests = IListRequests(mlist)
@@ -37,6 +38,7 @@ The list's requests database starts out empty.
 
     >>> print(requests.count)
     0
+    >>> from mailman.testing.documentation import dump_list    
     >>> dump_list(requests.held_requests)
     *Empty*
 
@@ -120,6 +122,7 @@ an additional key which holds the name of the request type.
     >>> key, data = requests.get_request(5)
     >>> print(key)
     hold_5
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(data)
     _request_type: held_message
     bar          : no

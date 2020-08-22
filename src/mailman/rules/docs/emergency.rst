@@ -5,8 +5,12 @@ Emergency
 When the mailing list has its emergency flag set, all messages posted to the
 list are held for moderator approval.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
+    >>> from mailman.config import config    
     >>> rule = config.rules['emergency']
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com

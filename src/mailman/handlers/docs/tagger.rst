@@ -9,6 +9,7 @@ double duty as the *topic tag*.  Each message that flows the mailing list has
 its ``Subject:`` and ``Keywords:`` headers compared against these regular
 expressions.  The message then gets tagged with the topic names of each hit.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 Topics must be enabled for Mailman to do any topic matching, even if topics
@@ -19,6 +20,8 @@ are defined.
     >>> mlist.topics_enabled = False
     >>> mlist.topics_bodylines_limit = 0
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... Subject: foobar
     ... Keywords: barbaz

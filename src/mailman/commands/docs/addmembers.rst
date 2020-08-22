@@ -5,6 +5,7 @@ Adding members
 The ``mailman addmembers`` command allows a site administrator to add members
 to a mailing list.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_addmembers.addmembers')
 
 Usage
@@ -48,6 +49,7 @@ parsed by ``email.utils.parseaddr()``.
 
     >>> from tempfile import NamedTemporaryFile
     >>> filename = cleanups.enter_context(NamedTemporaryFile()).name
+    >>> from mailman.app.lifecycle import create_list    
     >>> bee = create_list('bee@example.com')
     >>> with open(filename, 'w', encoding='utf-8') as fp:
     ...     print("""\
@@ -58,6 +60,7 @@ parsed by ``email.utils.parseaddr()``.
 
     >>> command('mailman addmembers ' + filename + ' bee.example.com')
 
+    >>> from mailman.testing.documentation import dump_list
     >>> from operator import attrgetter
     >>> dump_list(bee.members.addresses, key=attrgetter('email'))
     aperson@example.com

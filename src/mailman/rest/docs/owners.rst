@@ -9,6 +9,7 @@ owners to create new domains.
 
 Initially, there are no server owners.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/owners')
     http_etag: "..."
     start: 0
@@ -21,6 +22,8 @@ default.
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> user_manager = getUtility(IUserManager)
     >>> anne = user_manager.create_user('anne@example.com', 'Anne Person')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
     >>> dump_json('http://localhost:9001/3.0/owners')
     http_etag: "..."
