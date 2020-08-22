@@ -378,6 +378,7 @@ address is unset.
 
 Setting Ram's preferred addresses requires that it first be verified:
 ::
+
     >>> dump_json('http://localhost:9001/3.1/users/ram@example.com/preferred_address',
     ...     {'email': 'ram@example.com'})
     Traceback (most recent call last):
@@ -386,6 +387,7 @@ Setting Ram's preferred addresses requires that it first be verified:
 
 Verify Ram's address first:
 ::
+
     >>> addr = ram.addresses[0]
     >>> addr.verified_on = now()
     >>> transaction.commit()
