@@ -8,6 +8,7 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> mlist.subject_prefix = ''
 
@@ -19,6 +20,8 @@ Because the original sender headers may get deleted or changed, this handler
 will place the sender in the message metadata for safe keeping.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)   
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

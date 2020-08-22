@@ -26,6 +26,7 @@ and email addresses sorted by email addresss.
 
 Create a list with some members.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('alpha@example.com')
     >>> mlist.send_welcome_message = False
     >>> from mailman.testing.helpers import subscribe

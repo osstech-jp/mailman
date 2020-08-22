@@ -9,7 +9,9 @@ posted to the newsgroup, and from there, gated to the mailing list.  It's a
 circuitous route, but it works nonetheless by holding all messages posted
 directly to the mailing list.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
+    >>> from mailman.config import config    
     >>> rule = config.rules['news-moderation']
     >>> print(rule.name)
     news-moderation
@@ -21,6 +23,8 @@ Set the list configuration variable to enable newsgroup moderation.
 
 And now all messages will match the rule.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Subject: An announcement

@@ -5,6 +5,7 @@ Managing members
 The ``mailman members`` command allows a site administrator to display, add,
 and delete members from a mailing list.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_members.members')
 
 
@@ -14,6 +15,7 @@ Listing members
 You can list all the members of a mailing list by calling the command with no
 options.  To start with, there are no members of the mailing list.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> ant = create_list('ant@example.com')
     >>> command('mailman members ant.example.com')
     ant.example.com has no members
@@ -179,6 +181,7 @@ need a file containing email addresses and full names that can be parsed by
     Warning: The --add option is deprecated. Use `mailman addmembers` instead.
 
     >>> from operator import attrgetter
+    >>> from mailman.testing.documentation import dump_list    
     >>> dump_list(bee.members.addresses, key=attrgetter('email'))
     aperson@example.com
     Bart Person <bperson@example.com>

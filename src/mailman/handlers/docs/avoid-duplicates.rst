@@ -6,6 +6,7 @@ This handler implements several strategies to reduce the reception of
 duplicate messages.  It does this by removing certain recipients from the list
 of recipients calculated earlier.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 Create some members we're going to use.
@@ -33,6 +34,8 @@ Short circuiting
 The module short-circuits if there are no recipients.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: A message of great import
@@ -40,7 +43,7 @@ The module short-circuits if there are no recipients.
     ... Something
     ... """)
     >>> msgdata = {}
-
+    >>> from mailman.config import config
     >>> handler = config.handlers['avoid-duplicates']
     >>> handler.process(mlist, msg, msgdata)
     >>> msgdata

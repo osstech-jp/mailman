@@ -6,12 +6,15 @@ Message decoration is the process of adding headers and footers to the
 original message.  A handler module takes care of this based on the settings
 of the mailing list and the type of message being processed.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
     >>> msg_text = """\
     ... From: aperson@example.org
     ...
     ... Here is a message.
     ... """
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string(msg_text)
 
 
@@ -46,6 +49,7 @@ footer for all mailing lists in our site.
 ::
 
     >>> import os, tempfile
+    >>> from mailman.config import config    
     >>> template_dir = tempfile.mkdtemp()
     >>> site_dir = os.path.join(template_dir, 'site', 'en')
     >>> os.makedirs(site_dir)
@@ -359,6 +363,7 @@ so that the header and footer can be added as attachments.
 
 .. Clean up
 
+    >>> from mailman.config import config
     >>> config.pop('templates')
     >>> import shutil
     >>> shutil.rmtree(template_dir)

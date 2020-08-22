@@ -8,6 +8,7 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> mlist.subject_prefix = ''
 
@@ -15,6 +16,8 @@ When the message's metadata has a `noack` key set, an ``X-Ack: no`` header is
 added.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)   
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

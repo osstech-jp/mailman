@@ -13,6 +13,7 @@ To begin, adapt a mailing list to an ``ISubscriptionManager``.  This is a
 named interface because the same interface manages both subscriptions and
 unsubscriptions.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
     >>> manager = ISubscriptionManager(mlist)
 
@@ -404,6 +405,7 @@ though Anne is subscribed several times, only her ant membership with role
 
 There were some successes...
 
+    >>> from mailman.testing.documentation import dump_list
     >>> dump_list(success)
     aperson@example.com
     cperson@example.com

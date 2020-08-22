@@ -11,10 +11,13 @@ For example, let's say we have 50 mailing lists.
     >>> from mailman.app.lifecycle import create_list
     >>> for i in range(50):
     ...     mlist = create_list('list{:02d}@example.com'.format(i))
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
 We can get the first 10 lists by asking for the first page of items.
 
+    >>> from mailman.testing.documentation import call_http
     >>> json = call_http('http://localhost:9001/3.0/lists?count=10&page=1')
     >>> for entry in json['entries']:
     ...     print(entry['list_id'])
@@ -64,6 +67,7 @@ The size of a collection
 This same idiom allows you to get just the size of the collection.  You do
 this by asking for a page of size zero.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/lists?count=0&page=1')
     http_etag: ...
     start: 0

@@ -11,6 +11,7 @@ context of a mailing list.  Each mailing list has a default chain for messages
 posted to the mailing list.  This chain is processed with the message
 eventually ending up in one of the four disposition states described above.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> print(mlist.posting_chain)
     default-posting-chain
@@ -30,6 +31,8 @@ While configurable, the *sender addresses* by default are those named in the
 (though we won't worry about the latter).
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: zperson@example.com
     ... Reply-To: yperson@example.com
@@ -135,6 +138,7 @@ Now the message is in the pipeline queue.
     <BLANKLINE>
     First post!
     <BLANKLINE>
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg    : False
     envsender    : noreply@example.com
@@ -183,6 +187,7 @@ new chain and set it as the mailing list's start chain.
 
     >>> from mailman.chains.base import Chain, Link
     >>> from mailman.interfaces.chain import LinkAction
+    >>> from mailman.config import config
     >>> def make_chain(name, target_chain):
     ...     test_chain = Chain(name, 'Testing {}'.format(target_chain))
     ...     config.chains[test_chain.name] = test_chain

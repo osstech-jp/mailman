@@ -15,6 +15,7 @@ names to rule objects.
 
     >>> from zope.interface.verify import verifyObject
     >>> from mailman.interfaces.rules import IRule
+    >>> from mailman.config import config
     >>> for rule_name in sorted(config.rules):
     ...     rule = config.rules[rule_name]
     ...     print(rule_name, verifyObject(IRule, rule))
@@ -50,7 +51,10 @@ Individual rules can be checked to see if they match, by running the rule's
 ``check()`` method.  This returns a boolean indicating whether the rule was
 matched or not.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

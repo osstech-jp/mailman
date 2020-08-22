@@ -10,6 +10,7 @@ party spam, the sender will only get a certain number of responses per day.
 First, given a mailing list you need to adapt it to an ``IAutoResponseSet``.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('test@example.com')
     >>> from mailman.interfaces.autorespond import IAutoResponseSet
     >>> response_set = IAutoResponseSet(mlist)

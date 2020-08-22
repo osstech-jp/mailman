@@ -8,6 +8,7 @@ returns all the members of all known mailing lists.
 
 There are no mailing lists and no members yet.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/members')
     http_etag: "..."
     start: 0
@@ -16,7 +17,10 @@ There are no mailing lists and no members yet.
 We create a mailing list, which starts out with no members.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> bee = create_list('bee@example.com')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/members')

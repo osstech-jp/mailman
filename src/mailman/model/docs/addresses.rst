@@ -18,6 +18,7 @@ Creating addresses
 Addresses are created directly through the user manager, which starts out with
 no addresses.
 
+    >>> from mailman.testing.documentation import dump_list
     >>> dump_list(address.email for address in user_manager.addresses)
     *Empty*
 

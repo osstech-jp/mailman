@@ -5,12 +5,12 @@ RFC 2919 and 2369 headers
 `RFC 2919`_ and `RFC 2369`_ define headers for mailing list actions.  These
 headers generally start with the `List-` prefix.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> mlist.preferred_language = 'en'
     >>> from mailman.interfaces.archiver import ArchivePolicy
     >>> mlist.archive_policy = ArchivePolicy.never
 
-..
     This is a helper function for the following section.
     >>> def list_headers(msg, only=None):
     ...     if isinstance(only, str):
@@ -30,6 +30,8 @@ headers generally start with the `List-` prefix.
 The `rfc-2369` handler adds the `List-` headers.  `List-Id` is always added.
 
     >>> from mailman.handlers.rfc_2369 import process
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

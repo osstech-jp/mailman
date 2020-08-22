@@ -7,7 +7,9 @@ specified maximum.  Generally this is used to prevent huge attachments from
 getting posted to the list.  This value is calculated in terms of KB (1024
 bytes).
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
+    >>> from mailman.config import config    
     >>> rule = config.rules['max-size']
     >>> print(rule.name)
     max-size
@@ -18,6 +20,8 @@ bigger than that will match the rule.
     >>> mlist.max_message_size = 1 # 1024 bytes
     >>> one_line = 'x' * 79
     >>> big_body = '\n'.join([one_line] * 15)
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com

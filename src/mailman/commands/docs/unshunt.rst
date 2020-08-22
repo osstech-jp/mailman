@@ -7,11 +7,14 @@ the ``shunt`` queue.  The ``unshunt`` command allows system administrators to
 manage the shunt queue.
 ::
 
+    >>> from mailman.testing.documentation import cli   
     >>> command = cli('mailman.commands.cli_unshunt.unshunt')
 
 Let's say there is a message in the shunt queue.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)   
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -20,6 +23,7 @@ Let's say there is a message in the shunt queue.
     ...
     ... """)
 
+    >>> from mailman.config import config    
     >>> shuntq = config.switchboards['shunt']
     >>> len(list(shuntq.files))
     0

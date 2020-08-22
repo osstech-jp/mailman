@@ -16,13 +16,17 @@ The Discard chain
 The `discard` chain simply throws the message away.
 ::
 
+    >>> from mailman.config import config   
     >>> chain = config.chains['discard']
     >>> print(chain.name)
     discard
     >>> print(chain.description)
     Discard a message and stop processing.
 
+    >>> from mailman.app.lifecycle import create_list    
     >>> mlist = create_list('test@example.com')
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -279,6 +283,7 @@ This message will end up in the `pipeline` queue.
 In addition, the message metadata now contains lists of all rules that have
 hit and all rules that have missed.
 
+    >>> from mailman.testing.documentation import dump_list
     >>> dump_list(qfiles[0].msgdata['rule_hits'])
     *Empty*
     >>> dump_list(qfiles[0].msgdata['rule_misses'])

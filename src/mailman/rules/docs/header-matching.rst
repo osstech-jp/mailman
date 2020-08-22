@@ -6,6 +6,7 @@ Mailman can do pattern based header matching during its normal rule
 processing.  There is a set of site-wide default header matches specified in
 the configuration file under the `[antispam]` section.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 In this section, the variable `header_checks` contains a list of the headers
@@ -15,12 +16,15 @@ empty.
 It is also possible to programmatically extend these header checks.  Here,
 we'll extend the checks with a pattern that matches 4 or more stars.
 
+    >>> from mailman.config import config
     >>> chain = config.chains['header-match']
     >>> chain.extend('x-spam-score', '[*]{4,}')
 
 First, if the message has no ``X-Spam-Score:`` header, the message passes
 through the chain with no matches.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -30,7 +34,8 @@ through the chain with no matches.
     ... This is a message.
     ... """)
 
-.. Function to help with printing rule hits and misses.
+Helper Function to help with printing rule hits and misses.
+
     >>> def hits_and_misses(msgdata):
     ...     hits = msgdata.get('rule_hits', [])
     ...     if len(hits) == 0:

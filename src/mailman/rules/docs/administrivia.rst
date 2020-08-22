@@ -7,8 +7,10 @@ commands in the ``Subject:`` header or first few lines of the payload.  This
 is used to catch messages posted to the list which should have been sent to
 the ``-request`` robot address.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> mlist.administrivia = True
+    >>> from mailman.config import config    
     >>> rule = config.rules['administrivia']
     >>> print(rule.name)
     administrivia
@@ -16,6 +18,8 @@ the ``-request`` robot address.
 For example, if the ``Subject:`` header contains the word ``unsubscribe``, the
 rule matches.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg_1 = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: unsubscribe

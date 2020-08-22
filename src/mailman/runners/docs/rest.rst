@@ -10,6 +10,7 @@ Mailman is controllable through an administrative `REST`_ HTTP server.
 
 The RESTful server can be used to access basic version information.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.1/system')
     api_version: 3.1
     http_etag: "..."

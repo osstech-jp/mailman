@@ -4,6 +4,7 @@ The NNTP runner
 
 The NNTP runner gateways mailing list messages to an NNTP newsgroup.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> mlist.linked_newsgroup = 'comp.lang.python'
 
@@ -16,6 +17,8 @@ messages.
 A message gets posted to the mailing list.  It may contain some headers which
 are prohibited by NNTP servers such as INN.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -36,6 +39,7 @@ are prohibited by NNTP servers such as INN.
 
 The message gets copied to the NNTP queue for preparation and posting.
 
+    >>> from mailman.config import config
     >>> filebase = config.switchboards['nntp'].enqueue(
     ...     msg, listid='test.example.com')
     >>> from mailman.testing.helpers import make_testable_runner

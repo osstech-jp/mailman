@@ -11,12 +11,14 @@ Two separate rules check for member and nonmember moderation.  Member
 moderation happens early in the built-in chain, while nonmember moderation
 happens later in the chain, after normal moderation checks.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 
 Member moderation
 =================
 
+    >>> from mailman.config import config
     >>> member_rule = config.rules['member-moderation']
     >>> print(member_rule.name)
     member-moderation
@@ -40,6 +42,8 @@ not moderated.
 
 Because Anne is not moderated, the member moderation rule does not match.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> member_msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -59,6 +63,7 @@ the eventual moderation chain.
     >>> msgdata = {}
     >>> member_rule.check(mlist, member_msg, msgdata)
     True
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(msgdata)
     member_moderation_action: hold
     moderation_reasons      : ['The message comes from a moderated member']
@@ -147,6 +152,7 @@ cperson is neither a member, nor a nonmember of the mailing list.
     >>> def memberkey(member):
     ...     return member.mailing_list, member.address.email, member.role.value
 
+    >>> from mailman.testing.documentation import dump_list
     >>> dump_list(mlist.members.members, key=memberkey)
     <Member: Anne Person <aperson@example.com>
              on test@example.com as MemberRole.member>

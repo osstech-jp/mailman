@@ -7,6 +7,7 @@ as individual messages when immediately posted.  There are several forms of
 digests, although only two are currently supported: MIME digests and RFC 1153
 (a.k.a. plain text) digests.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('xtest@example.com')
 
 This is a helper function used to iterate through all the accumulated digest
@@ -17,6 +18,8 @@ update the tests when we switch to a different mailbox format.
     >>> from mailman.testing.helpers import digest_mbox
     >>> from itertools import count
     >>> from string import Template
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
 
     >>> def message_factory():
     ...     for i in count(1):
@@ -39,6 +42,7 @@ mailbox, unless the mailing list does not allow digests.
 
     >>> mlist.digests_enabled = False
     >>> msg = next(message_factory)
+    >>> from mailman.config import config    
     >>> process = config.handlers['to-digest'].process
     >>> process(mlist, msg, {})
     >>> sum(1 for msg in digest_mbox(mlist))

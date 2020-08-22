@@ -19,6 +19,7 @@ Registration
 When a bounce occurs, it's always within the context of a specific mailing
 list.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> mlist.send_welcome_message = False
 
@@ -26,6 +27,8 @@ The bouncing email contains useful information that will be registered as
 well.  In particular, the Message-ID is a key piece of data that needs to be
 recorded.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: mail-daemon@example.org
     ... To: test-bounces@example.com

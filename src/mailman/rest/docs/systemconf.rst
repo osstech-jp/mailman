@@ -5,6 +5,7 @@ System configuration
 The entire system configuration is available through the REST API.  You can
 get a list of all defined sections.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/system/configuration')
     http_etag: ...
     sections: ['ARC', 'antispam', 'archiver.mail_archive', 'archiver.master', ...

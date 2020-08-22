@@ -6,6 +6,7 @@ Mailman can filter the content of messages posted to a mailing list by
 stripping MIME subparts, and possibly reorganizing the MIME structure of a
 message.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 Several mailing list options control content filtering.  First, the feature
@@ -34,7 +35,8 @@ short-circuits.
 
     >>> mlist.filter_types = ['image/jpeg']
     >>> mlist.filter_action = FilterAction.discard
-
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Content-Type: image/jpeg
@@ -43,6 +45,7 @@ short-circuits.
     ... xxxxx
     ... """)
 
+    >>> from mailman.config import config    
     >>> process = config.handlers['mime-delete'].process
     >>> mlist.filter_content = False
     >>> msgdata = {}
@@ -68,6 +71,7 @@ crafted internally by Mailman.
     MIME-Version: 1.0
     <BLANKLINE>
     xxxxx
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(msgdata)
     isdigest: True
 

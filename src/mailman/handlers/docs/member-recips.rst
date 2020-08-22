@@ -6,6 +6,7 @@ Every message that makes it through to the list membership gets sent to a set
 of recipient addresses.  These addresses are calculated by one of the handler
 modules and depends on a host of factors.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 Recipients are calculate from the list membership, so first some people
@@ -47,14 +48,18 @@ Regular delivery recipients
 Regular delivery recipients are those people who get messages from the list as
 soon as they are posted.  In other words, these folks are not digest members.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: Xavier Person <xperson@example.com>
     ...
     ... Something of great import.
     ... """)
     >>> msgdata = {}
+    >>> from mailman.config import config    
     >>> handler = config.handlers['member-recipients']
     >>> handler.process(mlist, msg, msgdata)
+    >>> from mailman.testing.documentation import dump_list    
     >>> dump_list(msgdata['recipients'])
     aperson@example.com
     bperson@example.com

@@ -5,6 +5,7 @@ Deleting members
 The ``mailman delmembers`` command allows a site administrator to delete members
 from a mailing list.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_delmembers.delmembers')
 
 Usage
@@ -64,6 +65,7 @@ options on the command line.
 First we need a list with some members.
 ::
 
+    >>> from mailman.app.lifecycle import create_list
     >>> bee = create_list('bee@example.com')
     >>> from mailman.testing.helpers import subscribe
     >>> subscribe(bee, 'Anne')
@@ -108,6 +110,7 @@ Now we can delete some members.
     >>> command('mailman delmembers -f ' + filename + ' -l  bee.example.com')
 
     >>> from operator import attrgetter
+    >>> from mailman.testing.documentation import dump_list    
     >>> dump_list(bee.members.addresses, key=attrgetter('email'))
     Bart Person <bperson@example.com>
     Doug Person <dperson@example.com>
@@ -127,6 +130,7 @@ taken from standard input.
     ... """
     >>> command('mailman delmembers -f - -l bee.example.com', input=stdin)
 
+    >>> from mailman.testing.documentation import dump_list    
     >>> dump_list(bee.members.addresses, key=attrgetter('email'))
     Bart Person <bperson@example.com>
     Fred Person <fperson@example.com>

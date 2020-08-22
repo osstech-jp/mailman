@@ -32,9 +32,12 @@ Once the mailing list is created, the posting address is valid, and messages
 can be sent to the list.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> create_list('mylist@example.com')
     <mailing list "mylist@example.com" at ...>
 
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
     >>> lmtp.sendmail(
     ...     'anne.person@example.com',
@@ -65,6 +68,7 @@ queue.
     X-MailFrom: anne.person@example.com
     <BLANKLINE>
     This is an interesting message.
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg    : False
     listid       : mylist.example.com

@@ -64,10 +64,13 @@ Here's what happens when we munge the ``From:``.
     >>> from mailman.interfaces.mailinglist import (
     ...     DMARCMitigateAction, ReplyToMunging)
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
     >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
     >>> mlist.reply_goes_to_list = ReplyToMunging.no_munging
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: Anne Person <aperson@example.com>
     ... To: ant@example.com

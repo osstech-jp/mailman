@@ -148,7 +148,10 @@ The set of recipients for bulk delivery comes from the message metadata.  If
 there are no calculated recipients, nothing gets sent.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('test@example.com')
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: test@example.com
@@ -288,6 +291,7 @@ message metadata...
 message.
 ::
 
+    >>> from mailman.config import config
     >>> config.push('site-owner', """\
     ... [mailman]
     ... site_owner: site-owner@example.com

@@ -8,7 +8,9 @@ delivery processes while messages are archived.  This also allows external
 archivers to work in a separate process from the main Mailman delivery
 processes.
 
-    >>> handler = config.handlers['to-archive']
+    >>> from mailman.config import config
+    >>> handler = config.handlers['to-archive'] 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('_xtest@example.com')
     >>> switchboard = config.switchboards['archive']
 
@@ -28,6 +30,8 @@ For example, no digests should ever get archived.
 
     >>> from mailman.interfaces.archiver import ArchivePolicy
     >>> mlist.archive_policy = ArchivePolicy.public
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... Subject: A sample message
     ...
@@ -106,6 +110,7 @@ But if the value is ``yes``, then the message will be archived.
     <BLANKLINE>
     A message of great import.
     <BLANKLINE>
+    >>> from mailman.testing.documentation import dump_msgdata
     >>> dump_msgdata(qdata)
     _parsemsg: False
     version  : 3

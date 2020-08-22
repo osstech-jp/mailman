@@ -12,8 +12,12 @@ Viewing the list of held messages
 Held messages can be moderated through the REST API.  A mailing list starts
 with no held messages.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> ant = create_list('ant@example.com')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
+    >>> from mailman.testing.documentation import dump_json    
     >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/held')
     http_etag: "..."
     start: 0
@@ -22,6 +26,8 @@ with no held messages.
 When a message gets held for moderator approval, it shows up in this list.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: anne@example.com
     ... To: ant@example.com
@@ -160,6 +166,7 @@ moderation.
     >>> request_id = hold_message(ant, msg)
     >>> transaction.commit()
 
+    >>> from mailman.testing.documentation import call_http    
     >>> results = call_http(url(request_id))
     >>> print(results['message_id'])
     <bravo>
@@ -208,6 +215,7 @@ to the original author.
 The subject of the message is decoded and the original subject is accessible
 under ``original_subject``.
 ::
+
 
     >>> msg = message_from_string("""\
     ... From: anne@example.com

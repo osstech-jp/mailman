@@ -22,6 +22,7 @@ Complete information about command options may be obtained by running
 ``mailman digests --help``.
 ::
 
+    >>> from mailman.testing.documentation import cli   
     >>> command = cli('mailman.commands.cli_digests.digests')
 
     >>> command('mailman digests --help')

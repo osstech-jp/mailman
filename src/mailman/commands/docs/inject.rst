@@ -5,6 +5,7 @@ Command line message injection
 You can inject a message directly into a queue directory via the command
 line.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_inject.inject')
 
 It's easy to find out which queues are available.
@@ -40,7 +41,10 @@ Usually, the text of the message to inject is in a file.
 
 Create a mailing list to inject this message into.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('ant@example.com')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
 
 The mailing list's incoming queue is empty.
@@ -68,6 +72,7 @@ By default, messages are injected into the incoming queue.
 
 And the message is destined for ant@example.com.
 
+    >>> from mailman.testing.documentation import dump_msgdata
     >>> dump_msgdata(items[0].msgdata)
     _parsemsg    : False
     listid       : ant.example.com

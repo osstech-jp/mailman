@@ -5,6 +5,7 @@ Mailing list addresses
 Every mailing list has a number of addresses which are publicly available.
 These are defined in the ``IMailingListAddresses`` interface.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 The posting address is where people send messages to be posted to the mailing
@@ -69,6 +70,7 @@ dependent on the ``verp_confirm_format`` configuration variable.
     >>> print(mlist.confirm_address('wookie'))
     _xtest-confirm+wookie@example.com
 
+    >>> from mailman.config import config    
     >>> config.push('test config', """
     ... [mta]
     ... verp_confirm_format: $address---$cookie

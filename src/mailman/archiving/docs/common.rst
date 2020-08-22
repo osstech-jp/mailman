@@ -5,7 +5,10 @@ Archivers
 Mailman supports pluggable archivers, and it comes with several default
 archivers.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)    
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: test@example.com
@@ -29,6 +32,7 @@ interoperate.
 
     >>> archivers = {}
     >>> from operator import attrgetter
+    >>> from mailman.config import config    
     >>> for archiver in sorted(config.archivers, key=attrgetter('name')):
     ...     print(archiver.name)
     ...     print('   ', archiver.list_url(mlist))

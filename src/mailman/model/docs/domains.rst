@@ -2,11 +2,12 @@
 Domains
 =======
 
-..  # The test framework starts out with an example domain, so let's delete
-    # that first.
     >>> from mailman.interfaces.domain import IDomainManager
     >>> from zope.component import getUtility
     >>> manager = getUtility(IDomainManager)
+
+..  # The test framework starts out with an example domain, so let's delete
+    # that first.
     >>> manager.remove('example.com')
     <Domain example.com...>
 
@@ -92,8 +93,11 @@ Domains can list all associated mailing lists with the mailing_lists property.
     >>> show_lists(net_domain)
     no lists
 
+    >>> from mailman.app.lifecycle import create_list    
     >>> create_list('test@example.net')
     <mailing list "test@example.net" at ...>
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
     >>> show_lists(net_domain)
     <mailing list "test@example.net" at ...>

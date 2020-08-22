@@ -12,6 +12,7 @@ knows about.
 
 There are no users yet.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/users')
     http_etag: "..."
     start: 0
@@ -23,6 +24,8 @@ Anne is added, with an email address.  Her user record gets a `user_id`.
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> user_manager = getUtility(IUserManager)
     >>> anne = user_manager.create_user('anne@example.com', 'Anne Person')
+    >>> from mailman.config import config
+    >>> transaction = config.db    
     >>> transaction.commit()
     >>> int(anne.user_id.int)
     1

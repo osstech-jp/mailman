@@ -24,6 +24,7 @@ have a password.
     >>> verifyObject(IUser, user)
     True
 
+    >>> from mailman.testing.documentation import dump_list    
     >>> dump_list(address.email for address in user.addresses)
     *Empty*
     >>> print(user.display_name)
@@ -153,6 +154,7 @@ Finding all members
 
 The user manager can return all the members known to the system.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> mlist.subscribe(list(user_2.addresses)[0])
     <Member: bperson@example.com on test@example.com as MemberRole.member>

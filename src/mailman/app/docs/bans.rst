@@ -20,6 +20,7 @@ At first, no email addresses are banned globally.
 
 To get a list-specific ban manager, adapt the mailing list object.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> test_bans = IBanManager(mlist)
 

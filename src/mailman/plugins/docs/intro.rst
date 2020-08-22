@@ -46,6 +46,7 @@ To illustrate how the hooks work, we'll invoke a simple Mailman command to be
 run in a subprocess.  The plugin itself supports debugging hooking invocation
 when an environment variable is set.
 
+    >>> from mailman.testing.documentation import run_mailman as run
     >>> proc = run(['-C', config_file, 'info'],
     ...            DEBUG_HOOKS='1',
     ...            PYTHONPATH=plugin_path)
@@ -141,6 +142,7 @@ plugin's resource tree.  The plugin will show up when we navigate to the
 ``plugin`` resource.
 ::
 
+    >>> from mailman.testing.documentation import dump_json   
     >>> dump_json('http://localhost:9001/3.1/plugins')
     entry 0:
         class: example.rest.ExamplePlugin

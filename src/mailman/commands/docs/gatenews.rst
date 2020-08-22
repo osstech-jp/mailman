@@ -9,6 +9,7 @@ be posted to lists that are configured to gateway messages from a usenet group.
 There are no options other than ``--help``.
 ::
 
+    >>> from mailman.testing.documentation import cli   
     >>> command = cli('mailman.commands.cli_gatenews.gatenews')
 
     >>> command('mailman gatenews --help')

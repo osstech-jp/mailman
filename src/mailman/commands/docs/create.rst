@@ -4,6 +4,7 @@ Command line list creation
 
 A system administrator can create mailing lists by the command line.
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_lists.create')
 
 You can prevent creation of a mailing list in an unknown domain.
@@ -46,6 +47,7 @@ Setting the owner
 
 By default, no list owners are specified.
 
+    >>> from mailman.testing.documentation import dump_list
     >>> dump_list(mlist.owners.addresses)
     *Empty*
 

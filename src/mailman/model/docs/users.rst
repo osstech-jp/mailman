@@ -22,6 +22,7 @@ Users may have a real name and a password.
     >>> user_1 = user_manager.create_user()
     >>> user_1.password = 'my password'
     >>> user_1.display_name = 'Zoe Person'
+    >>> from mailman.testing.documentation import dump_list    
     >>> dump_list(user.display_name for user in user_manager.users)
     Zoe Person
     >>> dump_list(user.password for user in user_manager.users)
@@ -255,6 +256,7 @@ membership role.
     >>> org = user_manager.get_address('zperson@example.org')
     >>> net = user_manager.get_address('zperson@example.net')
 
+    >>> from mailman.app.lifecycle import create_list    
     >>> mlist_1 = create_list('xtest_1@example.com')
     >>> mlist_2 = create_list('xtest_2@example.com')
     >>> mlist_3 = create_list('xtest_3@example.com')

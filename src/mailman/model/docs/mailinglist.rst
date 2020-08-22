@@ -9,6 +9,7 @@ the system by its *list-id* which is derived from its posting address,
 i.e. the email address you would send a message to in order to post a message
 to the mailing list.  The list id is defined in `RFC 2369`_.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('aardvark@example.com')
     >>> print(mlist.list_id)
     aardvark.example.com

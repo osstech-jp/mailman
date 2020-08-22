@@ -10,6 +10,7 @@ possible.
 
 You can get the list of all queue names.
 
+    >>> from mailman.testing.documentation import dump_json
     >>> dump_json('http://localhost:9001/3.0/queues')
     entry 0:
         count: 0
@@ -154,6 +155,7 @@ And now the ``bad`` queue has at least one message in it.
 
 We can delete the injected message.
 
+    >>> from mailman.testing.documentation import call_http
     >>> json = call_http('http://localhost:9001/3.0/queues/bad')
     >>> len(json['files'])
     1

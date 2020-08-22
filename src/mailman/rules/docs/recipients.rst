@@ -5,7 +5,9 @@ Maximum number of recipients
 This rule matches when there are more than the maximum allowed number of
 explicit recipients addressed by the message.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
+    >>> from mailman.config import config    
     >>> rule = config.rules['max-recipients']
     >>> print(rule.name)
     max-recipients
@@ -13,6 +15,8 @@ explicit recipients addressed by the message.
 In this case, we'll create a message with five recipients.  These include all
 addresses in the ``To:`` and ``CC:`` headers.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com, bperson@example.com

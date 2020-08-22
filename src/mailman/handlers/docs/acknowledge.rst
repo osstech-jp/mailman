@@ -7,6 +7,7 @@ receive acknowledgments of their postings, Mailman will sent them such an
 acknowledgment.
 ::
 
+    >>> from mailman.app.lifecycle import create_list   
     >>> mlist = create_list('test@example.com')
     >>> mlist.display_name = 'Test'
     >>> mlist.preferred_language = 'en'
@@ -40,11 +41,14 @@ Non-member posts
 Non-members can't get acknowledgments of their posts to the mailing list.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)   
     >>> msg = message_from_string("""\
     ... From: bperson@example.com
     ...
     ... """)
 
+    >>> from mailman.config import config
     >>> handler = config.handlers['acknowledge']
     >>> handler.process(mlist, msg, {})
     >>> get_queue_messages('virgin')
@@ -111,6 +115,7 @@ The receipt will include the original message's subject in the response body,
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
     1
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listid              : test.example.com

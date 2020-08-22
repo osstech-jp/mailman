@@ -15,17 +15,20 @@ message approval queue.  This has several use cases:
 In order to support this, a mailing list can be given a *moderator password*
 which is shared among all the administrators.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
 This password will not be stored in clear text, so it must be hashed using the
 configured hash protocol.
 
+    >>> from mailman.config import config
     >>> mlist.moderator_password = config.password_context.encrypt(
     ...     'super secret')
 
 The ``approved`` rule determines whether the message contains the proper
 approval or not.
 
+    >>> from mailman.config import config
     >>> rule = config.rules['approved']
     >>> print(rule.name)
     approved
@@ -37,6 +40,8 @@ No approval
 The preferred header to check for approval is ``Approved:``.  If the message
 does not have this header, the rule will not match.
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

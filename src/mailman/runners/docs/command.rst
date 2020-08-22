@@ -7,6 +7,7 @@ are extensible using the Mailman plug-in system, but Mailman comes with a
 number of email commands out of the box.  These are processed when a message
 is sent to the list's ``-request`` address.
 
+    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> mlist.send_welcome_messages = False
 
@@ -18,6 +19,8 @@ For example, the ``echo`` command simply echoes the original command back to
 the sender.  The command can be in the ``Subject`` header.
 ::
 
+    >>> from mailman.testing.helpers import (specialized_message_from_string
+    ...   as message_from_string)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test-request@example.com
@@ -61,6 +64,7 @@ And now the response is in the ``virgin`` queue.
     - Done.
     <BLANKLINE>
 
+    >>> from mailman.testing.documentation import dump_msgdata    
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listid              : test.example.com

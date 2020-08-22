@@ -20,6 +20,7 @@ file for the master that disables all the runners.
 Starting
 ========
 
+    >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_control.start')
 
 Starting the daemons prints a useful message and starts the master watcher
