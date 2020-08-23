@@ -47,7 +47,6 @@ sqlite-39:
   <<: *only-default
   script:
     - tox -e py39-nocov
-  allow_failure: true
 
 pgsql-38:
   <<: *only-default
