@@ -128,9 +128,14 @@ def acquire_lock_1(force, lock_file=None):
         if not force:
             raise
         # Force removal of lock first.
-        lock.disown()
         hostname, pid, tempfile = lock.details
         os.unlink(lock_file)
+        # Also remove any stale claim files.
+        dname = os.path.dirname(lock_file)
+        for fname in os.listdir(dname):
+            fpath = os.path.join(dname, fname)
+            if fpath.startswith(lock_file):
+                os.unlink(fpath)
         return acquire_lock_1(force=False)
 
 

@@ -61,6 +61,15 @@ class TestMaster(unittest.TestCase):
         lock.unlock()
         self.assertTrue(is_locked)
 
+    def test_acquire_lock_1_force(self):
+        # Create the lock and lock it.
+        my_lock = Lock(self.lock_file)
+        my_lock.lock(timedelta(seconds=60))
+        # Try to aquire it again with force.
+        lock = master.acquire_lock_1(True, self.lock_file)
+        self.assertTrue(lock.is_locked)
+        lock.unlock()
+
     def test_master_state(self):
         my_lock = Lock(self.lock_file)
         # Mailman is not running.
