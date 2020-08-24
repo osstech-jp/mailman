@@ -35,6 +35,8 @@ Bugs
   (Closes #753)
 * Handle TOCTOU conditions when there are two simultaneous subscription
   requests for the same email address. (Closes #748)
+* Removed unnecessary call to ``Lock().disown()`` from ``bin/master.py``.
+  (Closes #754)
 
 Command line
 ------------
