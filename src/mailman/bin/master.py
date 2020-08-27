@@ -448,8 +448,8 @@ Master detected subprocess exit
             # See if we've reached the maximum number of allowable restarts.
             if restarts > max_restarts:
                 log.info("""\
-Runner {0} reached maximum restart limit of {1:d}, not restarting.""",
-                         rname, max_restarts)
+Runner {0} reached maximum restart limit of {1:d}, not restarting.""".format(
+                         rname, max_restarts))
             # Now perhaps restart the process unless it exited with a
             # SIGTERM or we aren't restarting.
             if restart:

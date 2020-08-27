@@ -37,6 +37,7 @@ Bugs
   requests for the same email address. (Closes #748)
 * Removed unnecessary call to ``Lock().disown()`` from ``bin/master.py``.
   (Closes #754)
+* Fixed an invalid logging call in bin/master.py.  (Closes #756)
 
 Command line
 ------------
