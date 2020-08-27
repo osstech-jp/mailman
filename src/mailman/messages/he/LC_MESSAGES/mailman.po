@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-07-27 03:23+0000\n"
+"PO-Revision-Date: 2020-08-27 03:34+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.2-dev\n"
+"X-Generator: Weblate 4.2.1-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -674,19 +674,19 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List only those mailing lists that are publicly advertised"
-msgstr ""
+msgstr "להציג רק את רשימות הדיוור הגלויות לציבור"
 
 #: src/mailman/commands/cli_lists.py:57
 msgid "Show also the list names"
-msgstr ""
+msgstr "להציג גם את שמות הרשימות"
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list descriptions"
-msgstr ""
+msgstr "להציג גם את תיאורי הרשימות"
 
 #: src/mailman/commands/cli_lists.py:65
 msgid "Less verbosity"
-msgstr ""
+msgstr "פחות פירוט"
 
 #: src/mailman/commands/cli_lists.py:69
 msgid ""
@@ -697,11 +697,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
-msgstr ""
+msgstr "לא נמצאו רשימות דיוור מתאימות"
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "$count matching mailing lists found:"
-msgstr ""
+msgstr "נמצאו $count רשימות דיוור מתאימות:"
 
 #: src/mailman/commands/cli_lists.py:122
 msgid ""
@@ -731,11 +731,11 @@ msgstr ""
 msgid ""
 "    Notify the list owner by email that their mailing list has been\n"
 "    created."
-msgstr ""
+msgstr "    להודיע לבעלי הרשימה בדוא״ל שרשימת הדיוור שלהם נוצרה."
 
 #: src/mailman/commands/cli_lists.py:151
 msgid "Print less output."
-msgstr ""
+msgstr "להדפיס פחות פלט."
 
 #: src/mailman/commands/cli_lists.py:155
 msgid ""
@@ -746,86 +746,86 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr ""
+msgstr "קוד שפה שגוי: $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
-msgstr ""
+msgstr "כתובת בעלים בלתי תקפה: $invalid"
 
 #: src/mailman/commands/cli_lists.py:186
 msgid "Illegal list name: $fqdn_listname"
-msgstr ""
+msgstr "שם הרשימה אינו תקף: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:188
 msgid "List already exists: $fqdn_listname"
-msgstr ""
+msgstr "הרשימה כבר קיימת: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:190
 msgid "Undefined domain: $domain"
-msgstr ""
+msgstr "שם תחום לא מוגדר: $domain"
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
-msgstr ""
+msgstr "נוצרה רשימת דיוור: $mlist.fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
-msgstr ""
+msgstr "רשימת הדיוור החדשה שלך: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr ""
+msgstr "הסרת רשימת דיוור."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
-msgstr ""
+msgstr "התעלמות מהודעות מצב"
 
 #: src/mailman/commands/cli_lists.py:237
 msgid "No such list matching spec: $listspec"
-msgstr ""
+msgstr "אין מפרט כזה לרשימת דיוור: $listspec"
 
 #: src/mailman/commands/cli_lists.py:242
 msgid "Removed list: $listspec"
-msgstr ""
+msgstr "רשימה הוסרה: $listspec"
 
 #: src/mailman/commands/cli_members.py:91
 msgid "$mlist.list_id has no members"
-msgstr ""
+msgstr "ברשימה $mlist.list_id אין חברים"
 
 #: src/mailman/commands/cli_members.py:120 src/mailman/commands/cli_members.py:133
 #: src/mailman/commands/cli_members.py:194 src/mailman/commands/cli_members.py:202
 msgid "Cannot parse as valid email address (skipping): $line"
-msgstr ""
+msgstr "לא ניתן לפענח ככתובת דוא״ל תקנית (מדלג): $line"
 
 #: src/mailman/commands/cli_members.py:139
 msgid "Already subscribed (skipping): $email"
-msgstr ""
+msgstr "כבר בוצע רישום (מדלג): $email"
 
 #: src/mailman/commands/cli_members.py:142
 msgid "Already subscribed (skipping): $display_name <$email>"
-msgstr ""
+msgstr "כבר בוצע רישום (מדלג): $display_name‏ <$email>"
 
 #: src/mailman/commands/cli_members.py:160
 msgid "Member not subscribed (skipping): $email"
-msgstr ""
+msgstr "החבר לא רשום (מדלג): $email"
 
 #: src/mailman/commands/cli_members.py:162
 msgid "Member not subscribed (skipping): $display_name <$email>"
-msgstr ""
+msgstr "החבר לא רשום (מדלג): $display_name‏ <$email>"
 
 #: src/mailman/commands/cli_members.py:223
 #, python-format
 msgid "[ADD] %s"
-msgstr ""
+msgstr "[הוספה] %s"
 
 #: src/mailman/commands/cli_members.py:234
 #, python-format
 msgid "[DEL] %s"
-msgstr ""
+msgstr "[מחיקה] %s"
 
 #: src/mailman/commands/cli_members.py:244
 msgid "Nothing to do"
-msgstr ""
+msgstr "אין פעולות לביצוע"
 
 #: src/mailman/commands/cli_members.py:249
 msgid ""
@@ -914,43 +914,51 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:77 src/mailman/commands/cli_notify.py:130
 msgid "The {} list has {} moderation requests waiting."
-msgstr ""
+msgstr "לרשימה {} יש {} בקשות פיקוח ממתינות."
 
 #: src/mailman/commands/cli_notify.py:108
 msgid ""
 "\n"
 "Held Subscriptions:\n"
 msgstr ""
+"\n"
+"מינויים מוחזקים:\n"
 
 #: src/mailman/commands/cli_notify.py:110 src/mailman/commands/cli_notify.py:114
 msgid "User: {}\n"
-msgstr ""
+msgstr "משתמש: {}\n"
 
 #: src/mailman/commands/cli_notify.py:112
 msgid ""
 "\n"
 "Held Unsubscriptions:\n"
 msgstr ""
+"\n"
+"מינויים מוחזקים:\n"
 
 #: src/mailman/commands/cli_notify.py:116
 msgid ""
 "\n"
 "Held Messages:\n"
 msgstr ""
+"\n"
+"הודעות מוחזקות:\n"
 
 #: src/mailman/commands/cli_notify.py:122
 msgid "Sender: {}\n"
-msgstr ""
+msgstr "מוען: {}\n"
 
 #: src/mailman/commands/cli_notify.py:123
 msgid "Subject: {}\n"
-msgstr ""
+msgstr "נושא: {}\n"
 
 #: src/mailman/commands/cli_notify.py:124
 msgid ""
 "Reason: {}\n"
 "\n"
 msgstr ""
+"סיבה: {}\n"
+"\n"
 
 #: src/mailman/commands/cli_notify.py:133
 msgid ""
@@ -959,10 +967,14 @@ msgid ""
 "{}\n"
 "Please attend to this at your earliest convenience.\n"
 msgstr ""
+"לרשימה {} יש {} בקשות פיקוח ממתינות.\n"
+"\n"
+"{}\n"
+"נא לטפל בהן בהזדמנות הראשונה שמתאפשרת לך.\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
-msgstr ""
+msgstr "קבלת מידע מקובץ תור."
 
 #: src/mailman/commands/cli_qfile.py:42
 msgid ""
@@ -1281,39 +1293,39 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:178
 msgid "Invalid or unverified email address: $email"
-msgstr ""
+msgstr "כתובת דוא״ל שגויה או בלתי מאומתת: $email"
 
 #: src/mailman/commands/eml_membership.py:197
 msgid "$self.name: $email is not a member of $mlist.fqdn_listname"
-msgstr ""
+msgstr "$self.name:‏ $email מחוץ לרשימה $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:208
 msgid "$person left $mlist.fqdn_listname"
-msgstr ""
+msgstr "$person מחוץ לרשימה $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:210
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
-msgstr ""
+msgstr "נשלחה הודעת דוא״ל לאישור העזיבה של $person מהרשימה $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:220
 msgid "An alias for 'leave'."
-msgstr ""
+msgstr "כינוי ל־‚leave’ (עזיבה)."
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
-msgstr ""
+msgstr "שליחת הכרה על פרסום."
 
 #: src/mailman/handlers/acknowledge.py:75
 msgid "$display_name post acknowledgment"
-msgstr ""
+msgstr "הכרה בפרסומים של $display_name"
 
 #: src/mailman/handlers/after_delivery.py:33
 msgid "Perform some bookkeeping after a successful post."
-msgstr ""
+msgstr "עריכת פעילויות מנהלתיות לאחר פרסום מוצלח."
 
 #: src/mailman/handlers/arc_sign.py:65
 msgid "Perform ARC auth checks and attach resulting headers"
-msgstr ""
+msgstr "ביצוע בדיקות אימות ARC (שרשרת מיעון מהימנה) ולצרף את הכותרות המתקבלות"
 
 #: src/mailman/handlers/avoid_duplicates.py:42
 msgid "Suppress some duplicates of the same message."
@@ -1887,6 +1899,19 @@ msgstr ""
 
 msgid "list:user:notice:refuse.txt"
 msgstr ""
+"בקשתך לרשימת הדיוור $listname\n"
+"\n"
+"    $request\n"
+"\n"
+"נדחתה על ידי אחד ממפקחי הרשימה.  בקשתך נדחתה\n"
+"עם ההערה הבאה מצד הפיקוח:\n"
+"\n"
+"„$reason”\n"
+"\n"
+"ניתן להפנות שאלות או הערות ישירות אל הנהלת הרשימה\n"
+"בכתובת:\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
