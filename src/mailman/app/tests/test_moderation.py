@@ -125,7 +125,7 @@ Message-ID: <alpha>
         items = get_queue_messages('virgin', expected_count=1)
         self.assertEqual(str(items[0].msg['subject']),
                          'Forward of moderated message')
-        self.assertEqual(items[0].msgdata['recipients'],
+        self.assertEqual(list(items[0].msgdata['recipients']),
                          ['zack@example.com'])
 
     def test_survive_a_deleted_message(self):

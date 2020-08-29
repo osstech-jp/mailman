@@ -144,10 +144,11 @@ class UserNotification(Message):
         self['From'] = sender
         if isinstance(recipients, (list, set, tuple)):
             self['To'] = COMMASPACE.join(recipients)
-            self.recipients = recipients
+            self.recipients = {email.utils.parseaddr(recipient)[1] for
+                               recipient in recipients}
         else:
             self['To'] = recipients
-            self.recipients = set([recipients])
+            self.recipients = set([email.utils.parseaddr(recipients)[1]])
 
     def send(self, mlist, *, add_precedence=True, **_kws):
         """Sends the message by enqueuing it to the 'virgin' queue.

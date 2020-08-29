@@ -38,6 +38,8 @@ Bugs
 * Removed unnecessary call to ``Lock().disown()`` from ``bin/master.py``.
   (Closes #754)
 * Fixed an invalid logging call in bin/master.py.  (Closes #756)
+* VERPed list welcome messages now have a correct envelope sender.
+  (Closes #757)
 
 Command line
 ------------
