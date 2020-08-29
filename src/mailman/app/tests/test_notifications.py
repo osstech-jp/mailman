@@ -264,6 +264,17 @@ have any other questions, you may contact
         message = items[0].msg
         self.assertEqual(message['to'], 'Anne Person <anne@example.com>')
 
+    def test_member_susbcribed_address_has_display_name_not_msgdata(self):
+        address = getUtility(IUserManager).create_address(
+            'anne@example.com', 'Anne Person')
+        address.verified_on = now()
+        self._mlist.subscribe(address)
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
+        msgdata = items[0].msgdata
+        self.assertEqual(message['to'], 'Anne Person <anne@example.com>')
+        self.assertEqual(list(msgdata['recipients']), ['anne@example.com'])
+
     def test_member_subscribed_address_has_no_display_name(self):
         address = getUtility(IUserManager).create_address('anne@example.com')
         address.verified_on = now()
