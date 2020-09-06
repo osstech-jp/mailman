@@ -211,12 +211,12 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
         name = txt_rec.name.to_text().lower()
         if txt_rec.rdtype == dns.rdatatype.CNAME:
             cnames[name] = (
-                txt_rec.items[0].target.to_text())
+                next(iter(txt_rec.items)).target.to_text())
         if txt_rec.rdtype != dns.rdatatype.TXT:
             continue
         result = EMPTYSTRING.join(
             str(record, encoding='utf-8')
-            for record in txt_rec.items[0].strings)
+            for record in next(iter(txt_rec.items)).strings)
         results_by_name.setdefault(name, []).append(result)
     expands = list(want_names)
     seen = set(expands)

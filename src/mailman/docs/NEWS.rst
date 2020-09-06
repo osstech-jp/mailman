@@ -82,7 +82,7 @@ Others
 * Made (un)subscription confirmation email subjects user friendly and
   translatable.  (Closes #541)
 * Implemented a new email ``who`` command to obtain list membership.
-
+* Add support  for dnspython>=2.0. (Closes #743)
 
 3.3.1
 =====
