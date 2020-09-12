@@ -175,7 +175,10 @@ class MIMEDigester(Digester):
         """Add the message to the digest."""
         # Make a copy of the message object, since the RFC 1153 processing
         # scrubs out attachments.
-        self._digest_part.attach(MIMEMessage(deepcopy(msg)))
+        digest_msg = MIMEMessage(deepcopy(msg))
+        digest_msg_content = digest_msg.get_payload(0)
+        digest_msg_content['Message'] = str(count)
+        self._digest_part.attach(digest_msg)
 
     def finish(self):
         """Finish up the digest, producing the email-ready copy."""
@@ -238,6 +241,8 @@ class RFC1153Digester(Digester):
                 value = wrap('{}: {}'.format(header, value))
                 value = '\n\t'.join(value.split('\n'))
                 print(value, file=self._text)
+        # add the Message: header.
+        print('Message: {}'.format(count), file=self._text)
         print(file=self._text)
         # Add the payload.  If the decoded payload is empty, this may be a
         # multipart message.  In that case, just stringify it.
