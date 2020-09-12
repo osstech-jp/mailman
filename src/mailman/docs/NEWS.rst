@@ -40,6 +40,7 @@ Bugs
 * Fixed an invalid logging call in bin/master.py.  (Closes #756)
 * VERPed list welcome messages now have a correct envelope sender.
   (Closes #757)
+* Messages in digests now contain a ``Message: N`` header.  (Closes #764)
 
 Command line
 ------------

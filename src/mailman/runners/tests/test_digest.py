@@ -18,6 +18,7 @@
 """Test the digest runner."""
 
 import os
+import re
 import unittest
 
 from email.iterators import _structure as structure
@@ -156,6 +157,60 @@ multipart/mixed
             text/plain
     text/plain
 """)
+        # Verify the Message: headers
+        for i in range(1, 5):
+            body = mime_digest.get_payload(2).get_payload(i-1).get_payload(0)
+            self.assertEqual(body['message'], str(i))
+
+    def test_plain_digest_format(self):
+        # Make sure that the format of the MIME digest is as expected.
+        self._mlist.digest_size_threshold = 0.6
+        self._mlist.volume = 1
+        self._mlist.next_digest_number = 1
+        self._mlist.send_welcome_message = False
+        # Subscribe some users receiving digests.
+        anne = subscribe(self._mlist, 'Anne')
+        anne.preferences.delivery_mode = DeliveryMode.mime_digests
+        bart = subscribe(self._mlist, 'Bart')
+        bart.preferences.delivery_mode = DeliveryMode.plaintext_digests
+        # Fill the digest.
+        process = config.handlers['to-digest'].process
+        size = 0
+        for i in range(1, 5):
+            text = Template("""\
+From: aperson@example.com
+To: xtest@example.com
+Subject: Test message $i
+List-Post: <test@example.com>
+
+Here is message $i
+""").substitute(i=i)
+            msg = message_from_string(text)
+            process(self._mlist, msg, {})
+            size += len(text)
+            if size >= self._mlist.digest_size_threshold * 1024:
+                break
+        # Run the digest runner to create the MIME and RFC 1153 digests.
+        runner = make_testable_runner(DigestRunner)
+        runner.run()
+        items = get_queue_messages('virgin', expected_count=2)
+        # Find the plain one.
+        plain_digest = None
+        for item in items:
+            if not item.msg.is_multipart():
+                assert plain_digest is None, 'We got two plain digests'
+                plain_digest = item.msg
+        fp = StringIO()
+        # Verify the structure is what we expect.
+        structure(plain_digest, fp)
+        self.assertMultiLineEqual(fp.getvalue(), """\
+text/plain
+""")
+        # Verify the Message: headers
+        body = plain_digest.get_payload(decode=True).decode('us-ascii')
+        for i in range(1, 5):
+            mo = re.search('^Message: {}$'.format(i), body, re.MULTILINE)
+            self.assertIsNotNone(mo)
 
     def test_issue141(self):
         # Currently DigestMode.summary_digests are equivalent to mime_digests.
