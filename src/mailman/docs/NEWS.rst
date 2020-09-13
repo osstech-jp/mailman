@@ -41,6 +41,8 @@ Bugs
 * VERPed list welcome messages now have a correct envelope sender.
   (Closes #757)
 * Messages in digests now contain a ``Message: N`` header.  (Closes #764)
+* The LMTP runner will now add a ``Message-ID:`` header if missing.
+  (Closes #448 and #490)
 
 Command line
 ------------
