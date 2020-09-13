@@ -240,3 +240,11 @@ class Test_gatenews(TestCase):
                                           'my.group:2'))
         self.assertEqual(lines[3], 'Bad message')
         self.assertTrue(lines[4].endswith('mylist@example.com watermark: 3'))
+
+    def test_original_size_in_msgdata(self):
+        with get_nntplib_nntp():
+            self._command.invoke(gatenews)
+        items = get_queue_messages('in', expected_count=1)
+        msgdata = items[0].msgdata
+        self.assertTrue(msgdata.get('original_size', False))
+        self.assertEqual(msgdata['original_size'], 184)

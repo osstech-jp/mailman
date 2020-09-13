@@ -107,6 +107,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 inq = config.switchboards['in']
                 inq.enqueue(msg,
                             listid=mlist.list_id,
+                            original_size=len(msg.as_bytes()),
                             fromusenet=True)
                 log.info('posted to list %s: %7d', listname, num)
         except nntplib.NNTPError as e:
