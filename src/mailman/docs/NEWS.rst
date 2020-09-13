@@ -43,6 +43,8 @@ Bugs
 * Messages in digests now contain a ``Message: N`` header.  (Closes #764)
 * The LMTP runner will now add a ``Message-ID:`` header if missing.
   (Closes #448 and #490)
+* The ``mailman gatenews`` command now adds ``original_size`` to the msgdata.
+  (Closes #762)
 
 Command line
 ------------
