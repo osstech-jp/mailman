@@ -85,7 +85,7 @@ request's resource.  The POST data requires an action of one of the following:
 
  * discard - throw the request away.
  * reject - the request is denied and a notification is sent to the email
-            address requesting the membership change.
+   address requesting the membership change.
  * defer - defer any action on this membership change (continue to hold it).
  * accept - accept the membership change.
 
