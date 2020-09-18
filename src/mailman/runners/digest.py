@@ -177,6 +177,9 @@ class MIMEDigester(Digester):
         # scrubs out attachments.
         digest_msg = MIMEMessage(deepcopy(msg))
         digest_msg_content = digest_msg.get_payload(0)
+        # It would be nice to add Message: n near the beginning, but there's no
+        # method for that.  MUAs mostly don't display it anyway, so it doesn't
+        # really matter.
         digest_msg_content['Message'] = str(count)
         self._digest_part.attach(digest_msg)
 
@@ -235,14 +238,15 @@ class RFC1153Digester(Digester):
             print(self._separator30, file=self._text)
             print(file=self._text)
         # Each message section contains a few headers.
+        # add the Message: n header first.
+        print('Message: {}'.format(count), file=self._text)
+        # Then the others.
         for header in config.digests.plain_digest_keep_headers.split():
             if header in msg:
                 value = oneline(msg[header], in_unicode=True)
                 value = wrap('{}: {}'.format(header, value))
                 value = '\n\t'.join(value.split('\n'))
                 print(value, file=self._text)
-        # add the Message: header.
-        print('Message: {}'.format(count), file=self._text)
         print(file=self._text)
         # Add the payload.  If the decoded payload is empty, this may be a
         # multipart message.  In that case, just stringify it.

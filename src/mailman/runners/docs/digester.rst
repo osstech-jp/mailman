@@ -269,37 +269,37 @@ The RFC 1153 contains the digest in a single plain text message.
     <BLANKLINE>
     ----------------------------------------------------------------------
     <BLANKLINE>
+    Message: 1
     From: aperson@example.com
     Subject: Test message 1
     To: xtest@example.com
-    Message: 1
     <BLANKLINE>
     Here is message 1
     <BLANKLINE>
     ------------------------------
     <BLANKLINE>
+    Message: 2
     From: aperson@example.com
     Subject: Test message 2
     To: xtest@example.com
-    Message: 2
     <BLANKLINE>
     Here is message 2
     <BLANKLINE>
     ------------------------------
     <BLANKLINE>
+    Message: 3
     From: aperson@example.com
     Subject: Test message 3
     To: xtest@example.com
-    Message: 3
     <BLANKLINE>
     Here is message 3
     <BLANKLINE>
     ------------------------------
     <BLANKLINE>
+    Message: 4
     From: aperson@example.com
     Subject: Test message 4
     To: xtest@example.com
-    Message: 4
     <BLANKLINE>
     Here is message 4
     <BLANKLINE>
