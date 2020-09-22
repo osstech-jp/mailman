@@ -55,6 +55,7 @@ Command line
 * The ``mailman conf`` command without a ``-s/--section`` argument will now
   show sections defined only in mailman.cfg in addition to those from
   schema.cfg.  (Closes #736)
+* Added a ``charset`` option to the ``import21`` subcommand.  (Closes #769)
 
 REST
 ----

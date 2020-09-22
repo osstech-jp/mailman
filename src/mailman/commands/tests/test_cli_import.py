@@ -79,3 +79,10 @@ class TestImport(unittest.TestCase):
             result = self._command.invoke(
                 import21, ('ant.example.com', pckfile))
             self.assertIn('Fake bad language code', result.output)
+
+    def test_pickle_with_non_utf8_string(self):
+        with path('mailman.testing', 'config-greek.pck') as pckpath:
+            pckfile = str(pckpath)
+            self._command.invoke(
+                import21, ('--charset=iso-8859-7', 'ant.example.com', pckfile))
+        self.assertEqual('Αυτή είναι μια λίστα.', self.mlist.info)

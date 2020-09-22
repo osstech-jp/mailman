@@ -51,12 +51,18 @@ class _Bouncer:
     help=_("""\
     Import Mailman 2.1 list data'.  Requires the fully-qualified name of the
     list to import and the path to the Mailman 2.1 pickle file."""))
+@click.option(
+    '--charset', '-c', default='utf-8',
+    help=_("""\
+    Specify the encoding of strings in PICKLE_FILE if not utf-8 or a subset
+    thereof. This will normally be the Mailman 2.1 charset of the list's
+    preferred_language."""))
 @click.argument('listspec')
 @click.argument(
     'pickle_file', metavar='PICKLE_FILE',
     type=click.File(mode='rb'))
 @click.pass_context
-def import21(ctx, listspec, pickle_file):
+def import21(ctx, charset, listspec, pickle_file):
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
         ctx.fail(_('No such list: $listspec'))
@@ -68,7 +74,7 @@ def import21(ctx, listspec, pickle_file):
         while True:
             try:
                 config_dict = pickle.load(
-                    pickle_file, encoding='utf-8', errors='ignore')
+                    pickle_file, encoding=charset, errors='ignore')
             except EOFError:
                 break
             except pickle.UnpicklingError:
