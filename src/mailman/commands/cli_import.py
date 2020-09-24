@@ -49,7 +49,7 @@ class _Bouncer:
 @click.command(
     cls=I18nCommand,
     help=_("""\
-    Import Mailman 2.1 list data'.  Requires the fully-qualified name of the
+    Import Mailman 2.1 list data.  Requires the fully-qualified name of the
     list to import and the path to the Mailman 2.1 pickle file."""))
 @click.option(
     '--charset', '-c', default='utf-8',
