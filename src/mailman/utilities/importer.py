@@ -265,9 +265,13 @@ DATETIME_COLUMNS = [
     ]
 
 EXCLUDES = set((
+    'accept_these_nonmembers',
     'delivery_status',
     'digest_members',
+    'discard_these_nonmembers',
+    'hold_these_nonmembers',
     'members',
+    'reject_these_nonmembers',
     'user_options',
     ))
 
@@ -566,10 +570,11 @@ def import_config_pck(mlist, config_dict):
                 action_name = 'defer'
             import_roster(mlist, config_dict, emails, MemberRole.nonmember,
                           Action[action_name])
-            # Only keep the regexes in the legacy list property.
+            # Now add the regexes in the legacy list property.
             list_prop = getattr(mlist, prop_name)
-            for email in emails:
-                list_prop.remove(email)
+            for addr in config_dict.get(prop_name, []):
+                if addr.startswith('^'):
+                    list_prop.append(addr)
     finally:
         mlist.send_welcome_message = send_welcome_message
         mlist.admin_notify_mchanges = admin_notify_mchanges
