@@ -58,6 +58,9 @@ Command line
 * Added a ``charset`` option to the ``import21`` subcommand.  (Closes #769)
 * The ``import21`` subcommand will now truncate long SAUnicode values if the
   database is MySQL.  (Closes #772)
+* The ``import21`` subcommand no longer adds the entire legacy
+  ``*_these_nonmembers`` list and then removes the non-regexps.  It now just
+  adds the regexps.  (Closes #773)
 
 REST
 ----
