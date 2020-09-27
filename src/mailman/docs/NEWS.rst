@@ -56,6 +56,8 @@ Command line
   show sections defined only in mailman.cfg in addition to those from
   schema.cfg.  (Closes #736)
 * Added a ``charset`` option to the ``import21`` subcommand.  (Closes #769)
+* The ``import21`` subcommand will now truncate long SAUnicode values if the
+  database is MySQL.  (Closes #772)
 
 REST
 ----

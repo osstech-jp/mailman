@@ -25,6 +25,9 @@ import logging
 import datetime
 
 from contextlib import ExitStack
+from mailman.config import config
+from mailman.database.helpers import is_mysql
+from mailman.database.types import SAUnicode
 from mailman.handlers.decorate import decorate_template
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IEmailValidator
@@ -192,6 +195,19 @@ enabled: yes
     return code
 
 
+def maybe_truncate_mysql(value):
+    # For MySQL, column type SAUnicode is VARCHAR(255).  In many MySQL
+    # configurations, attempts to store longer values are fatal.
+    if is_mysql(config.db.engine) and len(value) > 255:
+        # This actually is covered but only if db is MySQL.
+        print(                                # pragma: nocover
+              """Length of value for {} is {} which is too long for MySQL.
+Truncated from {}
+to {}""".format(key, len(value), value, value[:255]), file=sys.stderr)
+        return value[:255]                    # pragma: nocover
+    return value
+
+
 # Attributes in Mailman 2 which have a different type in Mailman 3.  Some
 # types (e.g. bools) are autodetected from their SA column types.
 TYPES = dict(
@@ -265,6 +281,7 @@ def import_config_pck(mlist, config_dict):
     :param config_dict: The Mailman 2.1 configuration dictionary.
     :type config_dict: dict
     """
+    global key
     for key, value in config_dict.items():
         # Some attributes must not be directly imported.
         if key in EXCLUDES:
@@ -290,6 +307,8 @@ def import_config_pck(mlist, config_dict):
                 column = getattr(mlist.__class__, key, None)
                 if column is not None and isinstance(column.type, Boolean):
                     converter = bool
+                if column is not None and isinstance(column.type, SAUnicode):
+                    converter = maybe_truncate_mysql
             try:
                 if converter is not None:
                     value = converter(value)

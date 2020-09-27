@@ -26,6 +26,7 @@ from enum import Enum
 from importlib_resources import open_binary
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.database.helpers import is_mysql
 from mailman.handlers.decorate import decorate
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import InvalidEmailAddressError
@@ -605,6 +606,22 @@ class TestBasicImport(unittest.TestCase):
             )
         self.assertIn('Skipping duplicate header_filter rule',
                       error_log.readline())
+
+    def test_long_saunicode(self):
+        # Long SAUnicode fields should truncate for MySql with warning only.
+        long_desc = (
+            'A very long description exceeding 255 ckaracters to test '
+            'truncation of SAUnicode field data for MySQL. just add some '
+            'dots .......................................................'
+            '............................................................'
+            '... and a bit more Thats 255 ending at more')
+        self._pckdict['description'] = long_desc
+        self._import()
+        if is_mysql(config.db.engine):
+            self.assertEqual(long_desc[:255], self._mlist.description)
+            self.assertTrue(self._mlist.description.endswith('a bit more'))
+        else:
+            self.assertEqual(long_desc, self._mlist.description)
 
 
 class TestArchiveImport(unittest.TestCase):
