@@ -94,6 +94,8 @@ Others
   translatable.  (Closes #541)
 * Implemented a new email ``who`` command to obtain list membership.
 * Add support  for dnspython>=2.0. (Closes #743)
+* Added information about ``pass_types``, ``filter_extensions`` and
+  ``pass_extensions`` to the content filtering doc.  (Closes #775)
 
 3.3.1
 =====
