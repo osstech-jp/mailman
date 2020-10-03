@@ -512,7 +512,8 @@ Passing and filtering extensions
 ``pass_extensions`` and ``filter_extensions`` work in exactly the same way.
 These filters are applied following ``filter_types`` and ``pass_types`` and
 filter based on the filename extension of any part that has an associated
-file name.  Here's a symple example.
+filename with extension.  Parts that don't have an associated filename with
+an extension are not affected.  Here's a simple example.
 ::
 
     >>> mlist.filter_types = []
