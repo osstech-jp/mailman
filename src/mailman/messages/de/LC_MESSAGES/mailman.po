@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2020-06-09 00:41+0000\n"
-"Last-Translator: Mark Sapiro <mark@msapiro.net>\n"
+"PO-Revision-Date: 2020-09-13 22:01+0000\n"
+"Last-Translator: Claas Augner <github@caugner.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/de/>\n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -29,19 +29,19 @@ msgstr "(kein Betreff)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
-msgstr "[Keine Bounce-Details verfügbar]"
+msgstr "[Keine Unzustellbarkeit-Details verfügbar]"
 
 #: src/mailman/app/bounces.py:226
 msgid "$mlist.display_name mailing list probe message"
-msgstr "$mlist.display_name Mailinglisten-Testnachricht"
+msgstr "Mailinglisten-Testnachricht für $mlist.display_name"
 
 #: src/mailman/app/bounces.py:262
 msgid "Uncaught bounce notification"
-msgstr "Unbehandelte Bounce-Nachricht"
+msgstr "Unbehandelte Unzustellbarkeit-Benachrichtigung"
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
-msgstr "$mlist.display_name Abmeldebenachrichtigung"
+msgstr "Abmeldebenachrichtigung für $mlist.display_name"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
@@ -87,7 +87,7 @@ msgstr "Sie wurden von der Mailingliste $mlist.display_name abgemeldet"
 
 #: src/mailman/app/notifications.py:112
 msgid "$mlist.display_name subscription notification"
-msgstr "$mlist.display_name-Abonnementbenachrichtigung"
+msgstr "Abonnementbenachrichtigung für $mlist.display_name"
 
 #: src/mailman/app/notifications.py:136
 msgid "$member's subscription disabled on $mlist.display_name"
@@ -96,7 +96,8 @@ msgstr "Abonnement von $member deaktiviert auf $mlist.display_name"
 #: src/mailman/app/notifications.py:157
 #, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "Sie wurden von der Mailingliste ${mlist.display_name} abgemeldet"
+msgstr ""
+"$member wurde von ${mlist.display_name} abgemeldet wegen Unzustellbarkeit"
 
 #: src/mailman/app/notifications.py:184
 #, python-brace-format
@@ -1105,11 +1106,12 @@ msgid ""
 "    for unknown (legacy) reasons."
 msgstr ""
 "    [Ausgabefilter] Nur Mitglieder mit einem bestimmten Zustellungs-Zustand\n"
-"    anzeigen. 'enabled' bedeutet alle Mitglieder, deren Zustellung aktiviert\n"
+"    anzeigen. 'enabled' bedeutet alle Mitglieder, deren Zustellung "
+"aktiviert\n"
 "    ist, 'any' bedeutet Mitglieder, deren Zustellung aus irgendeinem Grund\n"
 "    deaktiviert ist, 'byuser' bedeutet, dass das Mitglied seine eigene\n"
 "    Zustellung deaktiviert hat, 'bybounces' bedeutet, dass die Zustellung\n"
-"     durch den automatischen Bounce-Verarbeiter deaktiviert wurde,\n"
+"     automatisch wegen zu hoher Unzustellbarkeit deaktiviert wurde,\n"
 "    'byadmin' bedeutet, dass die Zustellung durch den Listenadministrator\n"
 "    oder Moderator deaktiviert wurde und 'unknown' bedeutet, dass die\n"
 "    Zustellung aus unbekannten (historischen) Gründen deaktiviert wurde."
