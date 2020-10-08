@@ -18,7 +18,7 @@
 """REST for members."""
 
 from lazr.config import as_boolean
-from mailman.app.membership import add_member, delete_member
+from mailman.app.membership import add_member
 from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
@@ -206,10 +206,39 @@ class AMember(_MemberBase):
             return
         mlist = getUtility(IListManager).get_by_list_id(self._member.list_id)
         if self._member.role is MemberRole.member:
-            delete_member(mlist, self._member.address.email, False, False)
+            try:
+                values = Validator(
+                    pre_confirmed=as_boolean,
+                    pre_approved=as_boolean,
+                    _optional=('pre_confirmed', 'pre_approved'),
+                    )(request)
+            except ValueError as error:
+                bad_request(response, str(error))
+                return
+            manager = ISubscriptionManager(mlist)
+            # XXX(maxking): For backwards compat, we are going to keep
+            # pre-confirmed to be "True" by defualt instead of "False", that it
+            # should be. Any, un-authenticated requests should manually specify
+            # that it is *not* confirmed by the user.
+            if 'pre_confirmed' in values:
+                pre_confirmed = values.get('pre_confirmed')
+            else:
+                pre_confirmed = True
+            token, token_owner, member = manager.unregister(
+                self._member.address,
+                pre_approved=values.get('pre_approved'),
+                pre_confirmed=pre_confirmed)
+            if member is None:
+                assert token is None
+                assert token_owner is TokenOwner.no_one
+                no_content(response)
+            else:
+                assert token is not None
+                content = dict(token=token, token_owner=token_owner.name)
+                accepted(response, etag(content))
         else:
             self._member.unsubscribe()
-        no_content(response)
+            no_content(response)
 
     def on_patch(self, request, response):
         """Patch the membership.
