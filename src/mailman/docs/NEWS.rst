@@ -159,6 +159,9 @@ REST
 * Add ``advertised`` attribute to ``MailingList`` object so Postorius doesn't
   have to make multiple calls for Index Page. (See !608)
 * Expose ``filter_action`` attribute of MailingList through API. (See !609)
+* Unsubscribing a user by calling ``DELETE`` on a Member resources now honors
+  Lists's ``unsubscription_policy`` and also sends out notifications to user
+  and admins if list is configured to do so. (Closes #759)
 
 Features
 --------
