@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-11 17:34-0700\n"
-"PO-Revision-Date: 2019-10-08 14:24+0000\n"
-"Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
-"Language-Team: Portuguese <https://hosted.weblate.org/projects/gnu-mailman/mailman/"
-"pt/>\n"
+"PO-Revision-Date: 2020-09-12 23:43+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -94,14 +94,18 @@ msgid "$member's subscription disabled on $mlist.display_name"
 msgstr ""
 
 #: src/mailman/app/notifications.py:157
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "Cancelou a subscrição da lista de endereços $mlist.display_name"
+msgstr ""
+"$member desubscrevido da lista de discussão de ${mlist.display_name} devido "
+"a saltos"
 
 #: src/mailman/app/notifications.py:184
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "Cancelou a subscrição da lista de endereços $mlist.display_name"
+msgstr ""
+"A sua subscrição para a lista de discussão ${mlist.display_name} foi "
+"desativada"
 
 #: src/mailman/app/subscriptions.py:299
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
