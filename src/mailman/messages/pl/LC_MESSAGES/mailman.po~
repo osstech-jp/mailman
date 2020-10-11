@@ -7,26 +7,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: eo\n"
+"POT-Creation-Date: 2020-04-11 17:34-0700\n"
+"PO-Revision-Date: 2020-05-25 16:56+0000\n"
+"Last-Translator: Szylu <chipolade@gmail.com>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/pl/>\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.1-dev\n"
 
-#: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
-#: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
-#: src/mailman/handlers/subject_prefix.py:46
-#: src/mailman/handlers/subject_prefix.py:90
-#: src/mailman/handlers/subject_prefix.py:118 src/mailman/runners/digest.py:86
+#: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
+#: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
+#: src/mailman/handlers/subject_prefix.py:90 src/mailman/handlers/subject_prefix.py:118
+#: src/mailman/runners/digest.py:86
 msgid "(no subject)"
-msgstr ""
+msgstr "(brak tematu)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
-msgstr ""
+msgstr "[Szczegóły odesłania nie są dostępne]"
 
 #: src/mailman/app/bounces.py:226
 msgid "$mlist.display_name mailing list probe message"
@@ -34,40 +37,39 @@ msgstr ""
 
 #: src/mailman/app/bounces.py:262
 msgid "Uncaught bounce notification"
-msgstr ""
+msgstr "Nieprzechwycone powiadomienie o odesłaniu"
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
-msgstr ""
+msgstr "$mlist.display_name powiadomienie o rezygnacji z subskrypcji"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
-msgstr ""
+msgstr "Publikowanie wiadomości zatytułowanej „$subject”"
 
-#: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228
-#: src/mailman/rest/sub_moderation.py:113
+#: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228 src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
 msgstr ""
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "Przekazywanie moderowanej wiadomości"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr ""
+msgstr "Nowa prośba o rezygnację z subskrypcji z $mlist.display_name od $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
-msgstr ""
+msgstr "Prośba o rezygnację z subskrypcji"
 
 #: src/mailman/app/moderator.py:268
 msgid "Original Message"
-msgstr ""
+msgstr "Oryginalna wiadomość"
 
 #: src/mailman/app/moderator.py:271
 msgid "Request to mailing list \"$display_name\" rejected"
-msgstr ""
+msgstr "Żądanie na listę mailingową „$display_name” odrzucone"
 
 #: src/mailman/app/notifications.py:66
 msgid " (Digest mode)"
@@ -76,15 +78,15 @@ msgstr ""
 #: src/mailman/app/notifications.py:70
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr ""
+msgstr "Witamy na liście dyskusyjnej „$mlist.display_name”${digmode}"
 
 #: src/mailman/app/notifications.py:94
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr ""
+msgstr "Zostałeś wypisany z listy mailingowej $mlist.display_name"
 
 #: src/mailman/app/notifications.py:112
 msgid "$mlist.display_name subscription notification"
-msgstr ""
+msgstr "Powiadomienie o subskrypcji $mlist.display_name"
 
 #: src/mailman/app/notifications.py:136
 msgid "$member's subscription disabled on $mlist.display_name"
@@ -100,47 +102,34 @@ msgstr ""
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
 msgstr ""
 
-#: src/mailman/app/subscriptions.py:310
+#: src/mailman/app/subscriptions.py:299
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
 
-#: src/mailman/app/subscriptions.py:471
+#: src/mailman/app/subscriptions.py:448
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
 
-#: src/mailman/app/subscriptions.py:597
-msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
-msgstr ""
-
-#: src/mailman/app/subscriptions.py:600
-msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
-msgstr ""
-
-#: src/mailman/app/subscriptions.py:604
-msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
-msgstr ""
-
-#: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:515
-#: src/mailman/bin/runner.py:96
+#: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:510 src/mailman/bin/runner.py:96
 msgid ""
 "    Configuration file to use.  If not given, the environment variable\n"
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
 "    default configuration file is loaded."
 msgstr ""
 
-#: src/mailman/bin/master.py:157
+#: src/mailman/bin/master.py:152
 msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
 
-#: src/mailman/bin/master.py:163
+#: src/mailman/bin/master.py:158
 msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running $program with the --force flag."
 msgstr ""
 
-#: src/mailman/bin/master.py:169
+#: src/mailman/bin/master.py:164
 msgid ""
 "The master lock could not be acquired, because it appears as if some process\n"
 "on some other host may have acquired it.  We can't test for stale locks across\n"
@@ -152,7 +141,7 @@ msgid ""
 "Exiting."
 msgstr ""
 
-#: src/mailman/bin/master.py:182
+#: src/mailman/bin/master.py:177
 msgid ""
 "For unknown reasons, the master lock could not be acquired.\n"
 "\n"
@@ -162,7 +151,7 @@ msgid ""
 "Exiting."
 msgstr ""
 
-#: src/mailman/bin/master.py:491
+#: src/mailman/bin/master.py:486
 msgid ""
 "    Master subprocess watcher.\n"
 "\n"
@@ -185,13 +174,13 @@ msgid ""
 "    normally don't need to use this PID directly."
 msgstr ""
 
-#: src/mailman/bin/master.py:522
+#: src/mailman/bin/master.py:517
 msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
 msgstr ""
 
-#: src/mailman/bin/master.py:528
+#: src/mailman/bin/master.py:523
 msgid ""
 "    If the master watcher finds an existing master lock, it will normally exit\n"
 "    with an error message.  With this option,the master will perform an extra\n"
@@ -202,14 +191,14 @@ msgid ""
 "    master lock."
 msgstr ""
 
-#: src/mailman/bin/master.py:541
+#: src/mailman/bin/master.py:536
 msgid ""
 "    Override the default set of runners that the master will invoke, which is\n"
 "    typically defined in the configuration file.  Multiple -r options may be\n"
 "    given.  The values for -r are passed straight through to bin/runner."
 msgstr ""
 
-#: src/mailman/bin/master.py:548 src/mailman/bin/runner.py:133
+#: src/mailman/bin/master.py:543 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
 msgstr ""
 
@@ -340,55 +329,6 @@ msgstr ""
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
-msgstr ""
-
-#: src/mailman/commands/cli_addmembers.py:67 src/mailman/commands/cli_members.py:124
-#: src/mailman/commands/cli_members.py:137 src/mailman/commands/cli_members.py:198
-#: src/mailman/commands/cli_members.py:206
-#: src/mailman/commands/cli_syncmembers.py:112
-msgid "Cannot parse as valid email address (skipping): $line"
-msgstr ""
-
-#: src/mailman/commands/cli_addmembers.py:98 src/mailman/commands/cli_members.py:143
-msgid "Already subscribed (skipping): $email"
-msgstr ""
-
-#: src/mailman/commands/cli_addmembers.py:100
-#: src/mailman/commands/cli_syncmembers.py:81
-msgid "Membership is banned (skipping): $email"
-msgstr ""
-
-#: src/mailman/commands/cli_addmembers.py:106
-msgid ""
-"    Add all member addresses in FILENAME with delivery mode as specified\n"
-"    with -d/--delivery.  FILENAME can be '-' to indicate standard input.\n"
-"    Blank lines and lines that start with a '#' are ignored.\n"
-"    "
-msgstr ""
-
-#: src/mailman/commands/cli_addmembers.py:114
-msgid ""
-"    Set the added members delivery mode to 'regular', 'mime', 'plain',\n"
-"    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
-"    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
-"    members."
-msgstr ""
-
-#: src/mailman/commands/cli_addmembers.py:122
-msgid ""
-"    Send the added members an invitation rather than immediately adding them.\n"
-"    "
-msgstr ""
-
-#: src/mailman/commands/cli_addmembers.py:127
-msgid "    Override the list's setting for send_welcome_message."
-msgstr ""
-
-#: src/mailman/commands/cli_addmembers.py:136 src/mailman/commands/cli_import.py:68
-#: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:343
-#: src/mailman/commands/cli_syncmembers.py:195
-#: src/mailman/commands/cli_withlist.py:292 src/mailman/commands/cli_withlist.py:299
-msgid "No such list: $listspec"
 msgstr ""
 
 #: src/mailman/commands/cli_aliases.py:33
@@ -525,67 +465,6 @@ msgstr ""
 msgid "Restarting the Mailman runners"
 msgstr ""
 
-#: src/mailman/commands/cli_delmembers.py:48 src/mailman/commands/cli_members.py:164
-msgid "Member not subscribed (skipping): $email"
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:54
-msgid "    Delete members from a mailing list."
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:58
-msgid ""
-"    The list to operate on.  Required unless --fromall is specified.\n"
-"    "
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:64
-msgid ""
-"    Delete list members whose addresses are in FILENAME in addition to those\n"
-"    specified with -m/--member if any.  FILENAME can be '-' to indicate\n"
-"    standard input.  Blank lines and lines that start with a '#' are ignored.\n"
-"    "
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:71
-msgid ""
-"    Delete the list member whose address is ADDRESS in addition to those\n"
-"    specified with -f/--file if any.  This option may be repeated for\n"
-"    multiple addresses.\n"
-"    "
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:79
-msgid ""
-"    Delete all the members of the list.  If specified, none of -f/--file,\n"
-"    -m/--member or --fromall may be specified.\n"
-"    "
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:86
-msgid ""
-"    Delete the member(s) specified by -m/--member and/or -f/--file from all\n"
-"    lists in the installation.  This may not be specified together with\n"
-"    -a/--all or -l/--list.\n"
-"    "
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:93
-#: src/mailman/commands/cli_syncmembers.py:173
-msgid ""
-"    Override the list's setting for send_goodbye_message to\n"
-"    deleted members."
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:98
-#: src/mailman/commands/cli_syncmembers.py:178
-msgid "    Override the list's setting for admin_notify_mchanges."
-msgstr ""
-
-#: src/mailman/commands/cli_delmembers.py:123
-msgid "No such list: $_list"
-msgstr ""
-
 #: src/mailman/commands/cli_digests.py:36
 msgid "Operate on digests."
 msgstr ""
@@ -649,7 +528,7 @@ msgstr ""
 msgid "$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
 
-#: src/mailman/commands/cli_gatenews.py:167
+#: src/mailman/commands/cli_gatenews.py:166
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
 msgstr ""
 
@@ -659,22 +538,21 @@ msgstr ""
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
-"    Import Mailman 2.1 list data.  Requires the fully-qualified name of the\n"
+"    Import Mailman 2.1 list data'.  Requires the fully-qualified name of the\n"
 "    list to import and the path to the Mailman 2.1 pickle file."
 msgstr ""
 
-#: src/mailman/commands/cli_import.py:56
-msgid ""
-"    Specify the encoding of strings in PICKLE_FILE if not utf-8 or a subset\n"
-"    thereof. This will normally be the Mailman 2.1 charset of the list's\n"
-"    preferred_language."
+#: src/mailman/commands/cli_import.py:62 src/mailman/commands/cli_inject.py:75
+#: src/mailman/commands/cli_members.py:330 src/mailman/commands/cli_withlist.py:292
+#: src/mailman/commands/cli_withlist.py:299
+msgid "No such list: $listspec"
 msgstr ""
 
-#: src/mailman/commands/cli_import.py:82
+#: src/mailman/commands/cli_import.py:76
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
 msgstr ""
 
-#: src/mailman/commands/cli_import.py:85
+#: src/mailman/commands/cli_import.py:79
 msgid "Ignoring non-dictionary: {0!r}"
 msgstr ""
 
@@ -844,36 +722,46 @@ msgstr ""
 msgid "Removed list: $listspec"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:92
+#: src/mailman/commands/cli_members.py:91
 msgid "$mlist.list_id has no members"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:146
+#: src/mailman/commands/cli_members.py:120 src/mailman/commands/cli_members.py:133
+#: src/mailman/commands/cli_members.py:194 src/mailman/commands/cli_members.py:202
+msgid "Cannot parse as valid email address (skipping): $line"
+msgstr ""
+
+#: src/mailman/commands/cli_members.py:139
+msgid "Already subscribed (skipping): $email"
+msgstr ""
+
+#: src/mailman/commands/cli_members.py:142
 msgid "Already subscribed (skipping): $display_name <$email>"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:166
+#: src/mailman/commands/cli_members.py:160
+msgid "Member not subscribed (skipping): $email"
+msgstr ""
+
+#: src/mailman/commands/cli_members.py:162
 msgid "Member not subscribed (skipping): $display_name <$email>"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:227
-#: src/mailman/commands/cli_syncmembers.py:127
+#: src/mailman/commands/cli_members.py:223
 #, python-format
 msgid "[ADD] %s"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:238
-#: src/mailman/commands/cli_syncmembers.py:137
+#: src/mailman/commands/cli_members.py:234
 #, python-format
 msgid "[DEL] %s"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:248
-#: src/mailman/commands/cli_syncmembers.py:146
+#: src/mailman/commands/cli_members.py:244
 msgid "Nothing to do"
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:253
+#: src/mailman/commands/cli_members.py:249
 msgid ""
 "    Display, add or delete a mailing list's members.\n"
 "    Filtering along various criteria can be done when displaying.\n"
@@ -882,38 +770,35 @@ msgid ""
 "    "
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:262
+#: src/mailman/commands/cli_members.py:258
 msgid ""
 "    [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to\n"
 "    indicate standard input.  Blank lines and lines that start with a\n"
-"    '#' are ignored.  This option is deprecated in favor of 'mailman\n"
-"    addmembers'."
+"    '#' are ignored."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:270
+#: src/mailman/commands/cli_members.py:265
 msgid ""
 "    [MODE] Delete all member addresses found in FILENAME\n"
 "    from the specified list. FILENAME can be '-' to indicate standard input.\n"
-"    Blank lines and lines that start with a '#' are ignored.\n"
-"    This option is deprecated in favor of 'mailman delmembers'."
+"    Blank lines and lines that start with a '#' are ignored."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:278
+#: src/mailman/commands/cli_members.py:272
 msgid ""
 "    [MODE] Synchronize all member addresses of the specified mailing list\n"
 "    with the member addresses found in FILENAME.\n"
 "    FILENAME can be '-' to indicate standard input.\n"
-"    Blank lines and lines that start with a '#' are ignored.\n"
-"    This option is deprecated in favor of 'mailman syncmembers'."
+"    Blank lines and lines that start with a '#' are ignored."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:287
+#: src/mailman/commands/cli_members.py:280
 msgid ""
 "    [MODE] Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:294
+#: src/mailman/commands/cli_members.py:287
 msgid ""
 "    [output filter] Display only members with a given ROLE.\n"
 "    The role may be 'any', 'member', 'nonmember', 'owner', 'moderator',\n"
@@ -921,25 +806,24 @@ msgid ""
 "    If not given, then delivery members are used. "
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:302
+#: src/mailman/commands/cli_members.py:295
 msgid "    [output filter] Display only regular delivery members."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:313
-#: src/mailman/commands/cli_syncmembers.py:183
+#: src/mailman/commands/cli_members.py:300
 msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:320
+#: src/mailman/commands/cli_members.py:307
 msgid ""
 "    [output filter] Display only digest members of kind.\n"
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:328
+#: src/mailman/commands/cli_members.py:315
 msgid ""
 "    [output filter] Display only members with a given delivery status.\n"
 "    'enabled' means all members whose delivery is enabled, 'any' means\n"
@@ -1062,29 +946,6 @@ msgstr ""
 
 #: src/mailman/commands/cli_status.py:50
 msgid "GNU Mailman is in an unexpected state ($hostname != $fqdn_name)"
-msgstr ""
-
-#: src/mailman/commands/cli_syncmembers.py:151
-msgid ""
-"    Add and delete members as necessary to syncronize a list's membership\n"
-"    with an input file.  FILENAME is the file containing the new membership,\n"
-"    one member per line.  Blank lines and lines that start with a '#' are\n"
-"    ignored.  Addresses in FILENAME which are not current list members\n"
-"    will be added to the list with delivery mode as specified with\n"
-"    -d/--delivery.  List members whose addresses are not in FILENAME will\n"
-"    be removed from the list.  FILENAME can be '-' to indicate standard input.\n"
-"    "
-msgstr ""
-
-#: src/mailman/commands/cli_syncmembers.py:163
-msgid ""
-"    Set the added members delivery mode to 'regular', 'mime', 'plain',\n"
-"    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
-"    or no delivery.  If not given, the default is regular."
-msgstr ""
-
-#: src/mailman/commands/cli_syncmembers.py:169
-msgid "    Override the list's setting for send_welcome_message to added members."
 msgstr ""
 
 #: src/mailman/commands/cli_unshunt.py:33
@@ -1298,109 +1159,77 @@ msgstr ""
 msgid "$self.name: too many arguments: $printable_arguments"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:64
+#: src/mailman/commands/eml_membership.py:63
 msgid ""
 "You will be asked to confirm your subscription request and you may be issued a\n"
 "provisional password.\n"
 "\n"
 "By using the 'digest' option, you can specify whether you want digest delivery\n"
 "or not.  If not specified, the mailing list's default delivery mode will be\n"
-"used.  You can use the 'address' option to request subscription of an address\n"
-"other than the sender of the command.\n"
+"used.\n"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:73
+#: src/mailman/commands/eml_membership.py:71
 msgid "Join this mailing list."
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:89
+#: src/mailman/commands/eml_membership.py:84
 msgid "$self.name: No valid address found to subscribe"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:116
+#: src/mailman/commands/eml_membership.py:107
 msgid "$person has a pending subscription for $listname"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:119
+#: src/mailman/commands/eml_membership.py:110
 msgid "Confirmation email sent to $person"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:136
-#: src/mailman/commands/eml_membership.py:146
+#: src/mailman/commands/eml_membership.py:125 src/mailman/commands/eml_membership.py:134
 msgid "bad argument: $argument"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:159
+#: src/mailman/commands/eml_membership.py:145
 msgid "An alias for 'join'."
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:170
+#: src/mailman/commands/eml_membership.py:156
 msgid ""
 "Leave this mailing list.\n"
 "\n"
 "You may be asked to confirm your request."
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:173
+#: src/mailman/commands/eml_membership.py:159
 msgid "Leave this mailing list."
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:179
+#: src/mailman/commands/eml_membership.py:165
 msgid "$self.name: No valid email address found to unsubscribe"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:185
+#: src/mailman/commands/eml_membership.py:171
 msgid "No registered user for email address: $email"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:192
+#: src/mailman/commands/eml_membership.py:178
 msgid "Invalid or unverified email address: $email"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:211
+#: src/mailman/commands/eml_membership.py:197
 msgid "$self.name: $email is not a member of $mlist.fqdn_listname"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:222
+#: src/mailman/commands/eml_membership.py:208
 msgid "$person left $mlist.fqdn_listname"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:224
+#: src/mailman/commands/eml_membership.py:210
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
 msgstr ""
 
-#: src/mailman/commands/eml_membership.py:234
+#: src/mailman/commands/eml_membership.py:220
 msgid "An alias for 'leave'."
-msgstr ""
-
-#: src/mailman/commands/eml_who.py:42
-msgid ""
-"Produces a list of member names and email addresses.\n"
-"\n"
-"The optional delivery= and mode= arguments can be used to limit the report\n"
-"to those members with matching delivery status and/or delivery mode.  If\n"
-"either delivery= or mode= is specified more than once, only the last occurrence\n"
-"is used.\n"
-msgstr ""
-
-#: src/mailman/commands/eml_who.py:50
-msgid "Get a list of the list members."
-msgstr ""
-
-#: src/mailman/commands/eml_who.py:63
-msgid "You are not authorized to see the membership list."
-msgstr ""
-
-#: src/mailman/commands/eml_who.py:78
-msgid ""
-"Unrecognized or invalid argument(s):\n"
-"{}"
-msgstr ""
-
-#: src/mailman/commands/eml_who.py:101
-msgid ""
-"Members of the {} mailing list:\n"
-"{}"
 msgstr ""
 
 #: src/mailman/handlers/acknowledge.py:40
@@ -1419,7 +1248,7 @@ msgstr ""
 msgid "Perform ARC auth checks and attach resulting headers"
 msgstr ""
 
-#: src/mailman/handlers/avoid_duplicates.py:44
+#: src/mailman/handlers/avoid_duplicates.py:42
 msgid "Suppress some duplicates of the same message."
 msgstr ""
 
@@ -1494,7 +1323,7 @@ msgstr ""
 msgid "After content filtering, the message was empty"
 msgstr ""
 
-#: src/mailman/handlers/mime_delete.py:322
+#: src/mailman/handlers/mime_delete.py:319
 msgid "Filter the MIME content of messages."
 msgstr ""
 
@@ -1594,17 +1423,20 @@ msgstr ""
 msgid "Message sender {} is banned from this list"
 msgstr ""
 
-#: src/mailman/rules/dmarc.py:306
+#: src/mailman/rules/dmarc.py:305
 msgid "Find DMARC policy of From: domain."
 msgstr ""
 
-#: src/mailman/rules/dmarc.py:326
+#: src/mailman/rules/dmarc.py:325
 msgid "DMARC moderation"
 msgstr ""
 
-#: src/mailman/rules/dmarc.py:332
+#: src/mailman/rules/dmarc.py:331
 #, python-brace-format
-msgid "You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or quarantine, and your message has been automatically rejected.  If you think that your messages are being rejected in error, contact the mailing list owner at ${listowner}."
+msgid ""
+"You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or "
+"quarantine, and your message has been automatically rejected.  If you think that your messages are being "
+"rejected in error, contact the mailing list owner at ${listowner}."
 msgstr ""
 
 #: src/mailman/rules/emergency.py:34
@@ -1666,11 +1498,11 @@ msgstr ""
 msgid "No sender was found in the message."
 msgstr ""
 
-#: src/mailman/rules/moderation.py:170
+#: src/mailman/rules/moderation.py:169
 msgid "The sender is in the nonmember {} list"
 msgstr ""
 
-#: src/mailman/rules/moderation.py:185
+#: src/mailman/rules/moderation.py:184
 msgid "The message is not from a list member"
 msgstr ""
 
@@ -1789,15 +1621,15 @@ msgstr ""
 msgid "Today's Topics ($count messages)"
 msgstr ""
 
-#: src/mailman/runners/digest.py:193 src/mailman/runners/digest.py:278
+#: src/mailman/runners/digest.py:187 src/mailman/runners/digest.py:269
 msgid "Digest Footer"
 msgstr ""
 
-#: src/mailman/runners/digest.py:200 src/mailman/runners/digest.py:285
+#: src/mailman/runners/digest.py:194 src/mailman/runners/digest.py:276
 msgid "End of "
 msgstr ""
 
-#: src/mailman/styles/base.py:55
+#: src/mailman/styles/base.py:54
 msgid "[$mlist.display_name] "
 msgstr ""
 
@@ -1825,6 +1657,9 @@ msgid "domain:admin:notice:new-list.txt"
 msgstr ""
 
 msgid "help.txt"
+msgstr ""
+
+msgid "invite.txt"
 msgstr ""
 
 msgid "list:admin:action:post.txt"
@@ -1861,9 +1696,6 @@ msgid "list:member:generic:footer.txt"
 msgstr ""
 
 msgid "list:member:regular:header.txt"
-msgstr ""
-
-msgid "list:user:action:invite.txt"
 msgstr ""
 
 msgid "list:user:action:subscribe.txt"
