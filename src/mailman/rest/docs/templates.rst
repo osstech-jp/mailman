@@ -45,7 +45,7 @@ subscribed to the mailing list, she sees this plain welcome message.
     <BLANKLINE>
     Welcome to the "Ant" mailing list!
     <BLANKLINE>
-    To post to this list, send your email to:
+    To post to this list, send your message to:
     <BLANKLINE>
       ant@example.com
     <BLANKLINE>
