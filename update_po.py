@@ -42,7 +42,7 @@ def get_template(name):
     template_path = TEMPLATE_BASE_PATH / name
     if not template_path.exists():
         return ''
-    return template_path.read_text()
+    template_path.read_text().rstrip('\n')
 
 
 def main():
