@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-10-14 19:30+0000\n"
+"PO-Revision-Date: 2020-10-15 21:04+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
@@ -364,6 +364,11 @@ msgid ""
 "message will be approved for posting to the list.  The Approved: header can\n"
 "also appear in the first line of the body of the reply."
 msgstr ""
+"עצם התגובה להודעה זו תוך שמירה על כותרת ה־Subject:‎ (נושא) כפי שהיא,\n"
+"תגרום ל־Mailman להתעלם מההודעה המוחזקת. מומלץ לעשות זאת אם זאת\n"
+"הודעת ספאם. שליחת תגובה להודעה זו תוך הכללת הכותרת Approved:‎ (מאושר)\n"
+"עם ססמת הרשימה בתוכה, ההודעה תאושר לפרסום ברשימה. הכותרת Approved:‎\n"
+"יכולה גם להופיע בשורה הראשונה של גוף התגובה."
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
@@ -1111,6 +1116,8 @@ msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
 msgstr ""
+"    Don't actually make the changes.  Instead, print out what would be\n"
+"    done to the list."
 
 #: src/mailman/commands/cli_members.py:320
 msgid ""
@@ -1118,6 +1125,10 @@ msgid ""
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
+"    [output filter] Display only digest members of kind.\n"
+"    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)"
+"\n"
+"    type digests, 'mime' means MIME type digests."
 
 #: src/mailman/commands/cli_members.py:328
 msgid ""
@@ -1130,10 +1141,19 @@ msgid ""
 "    administrator or moderator, and 'unknown' means that delivery was disabled\n"
 "    for unknown (legacy) reasons."
 msgstr ""
+"    [output filter] Display only members with a given delivery status.\n"
+"    'enabled' means all members whose delivery is enabled, 'any' means\n"
+"    members whose delivery is disabled for any reason, 'byuser' means\n"
+"    that the member disabled their own delivery, 'bybounces' means that\n"
+"    delivery was disabled by the automated bounce processor,\n"
+"    'byadmin' means delivery was disabled by the list\n"
+"    administrator or moderator, and 'unknown' means that delivery was "
+"disabled\n"
+"    for unknown (legacy) reasons."
 
 #: src/mailman/commands/cli_notify.py:37
 msgid "Notify list owners/moderators of pending requests."
-msgstr ""
+msgstr "Notify list owners/moderators of pending requests."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid ""
@@ -1141,6 +1161,11 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the requests for all mailing lists."
 msgstr ""
+"    Operate on this mailing list.  Multiple --list options can be given.  "
+"The\n"
+"    argument can either be a List-ID or a fully qualified list name.  "
+"Without\n"
+"    this option, operate on the requests for all mailing lists."
 
 #: src/mailman/commands/cli_notify.py:77 src/mailman/commands/cli_notify.py:130
 msgid "The {} list has {} moderation requests waiting."
@@ -1213,12 +1238,20 @@ msgid ""
 "    representation.  Useful with 'mailman qfile -i <file>'.  In that case, the\n"
 "    list of unpickled objects will be left in a variable called 'm'."
 msgstr ""
+"    Don't attempt to pretty print the object.  This is useful if there is "
+"some\n"
+"    problem with the object and you just want to get an unpickled\n"
+"    representation.  Useful with 'mailman qfile -i <file>'.  In that case, "
+"the\n"
+"    list of unpickled objects will be left in a variable called 'm'."
 
 #: src/mailman/commands/cli_qfile.py:50
 msgid ""
 "    Start an interactive Python session, with a variable called 'm'\n"
 "    containing the list of unpickled objects."
 msgstr ""
+"    Start an interactive Python session, with a variable called 'm'\n"
+"    containing the list of unpickled objects."
 
 #: src/mailman/commands/cli_qfile.py:67
 msgid "[----- start pickle -----]"
@@ -1684,23 +1717,27 @@ msgstr ""
 
 #: src/mailman/commands/eml_who.py:50
 msgid "Get a list of the list members."
-msgstr ""
+msgstr "קבלת רשימת חברי הרשימה."
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
-msgstr ""
+msgstr "אסור לך לראות את רשימת החברים."
 
 #: src/mailman/commands/eml_who.py:78
 msgid ""
 "Unrecognized or invalid argument(s):\n"
 "{}"
 msgstr ""
+"משתנים שגויים או לא מוכרים:\n"
+"{}"
 
 #: src/mailman/commands/eml_who.py:101
 msgid ""
 "Members of the {} mailing list:\n"
 "{}"
 msgstr ""
+"חברי רשימת הדיוור {}:\n"
+"{}"
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
