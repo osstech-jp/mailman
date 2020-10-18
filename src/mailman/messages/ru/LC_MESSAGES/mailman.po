@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
 "PO-Revision-Date: 2020-10-15 21:04+0000\n"
-"Last-Translator: Саша Кальченко <magic@overseer.org.ua>\n"
+"Last-Translator: Mark Sapiro <mark@msapiro.net>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ru/>\n"
 "Language: ru\n"
@@ -34,7 +34,7 @@ msgstr "[Детали отказов не доступны]"
 
 #: src/mailman/app/bounces.py:226
 msgid "$mlist.display_name mailing list probe message"
-msgstr "тестовое сообщение списка рассылки $ mlist.display_name"
+msgstr "тестовое сообщение списка рассылки $mlist.display_name"
 
 #: src/mailman/app/bounces.py:262
 msgid "Uncaught bounce notification"
@@ -59,7 +59,7 @@ msgstr "Пересылка модерируемого сообщения"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr "Новый запрос на отписку от $ mlist.display_name от $ email"
+msgstr "Новый запрос на отписку от $mlist.display_name от $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
@@ -71,7 +71,7 @@ msgstr "Оригинальное Сообщение"
 
 #: src/mailman/app/moderator.py:271
 msgid "Request to mailing list \"$display_name\" rejected"
-msgstr "Запрос на список рассылки \"$ display_name\" отклонен"
+msgstr "Запрос на список рассылки \"$display_name\" отклонен"
 
 #: src/mailman/app/notifications.py:66
 msgid " (Digest mode)"
@@ -80,11 +80,11 @@ msgstr " (Дайджест)"
 #: src/mailman/app/notifications.py:70
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr "Добро пожаловать в список рассылки \"$ mlist.display_name\" $ {digmode}"
+msgstr "Добро пожаловать в список рассылки \"$mlist.display_name\" ${digmode}"
 
 #: src/mailman/app/notifications.py:94
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr "Вы были отписаны от списка рассылки $ mlist.display_name"
+msgstr "Вы были отписаны от списка рассылки $mlist.display_name"
 
 #: src/mailman/app/notifications.py:112
 msgid "$mlist.display_name subscription notification"
@@ -111,7 +111,8 @@ msgstr "Новый запрос на подписку на $self.mlist.display_n
 
 #: src/mailman/app/subscriptions.py:471
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
-msgstr "Новый запрос на отписку от $ mlist.display_name от $ email"
+msgstr ""
+"Новый запрос на отписку от $self.mlist.display_name от $self.address.email"
 
 #: src/mailman/app/subscriptions.py:597
 msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
@@ -232,7 +233,7 @@ msgstr "Неизвестное название программы: $name"
 
 #: src/mailman/bin/runner.py:58
 msgid "Cannot import runner module: $class_path"
-msgstr "Невозможно импортировать модуль запуска: $class \\ u path"
+msgstr "Невозможно импортировать модуль запуска: $class_path"
 
 #: src/mailman/bin/runner.py:76
 msgid ""
@@ -288,7 +289,7 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:181
 msgid "$name runs $classname"
-msgstr "$ name запускает $ classname"
+msgstr "$name запускает $classname"
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
@@ -328,7 +329,7 @@ msgstr "Удержать сообщение и прекратить обрабо
 
 #: src/mailman/chains/hold.py:198
 msgid "Your message to $mlist.fqdn_listname awaits moderator approval"
-msgstr "Ваше сообщение для $ mlist.fqdn_listname ожидает одобрения модератора"
+msgstr "Ваше сообщение для $mlist.fqdn_listname ожидает одобрения модератора"
 
 #: src/mailman/chains/hold.py:226
 msgid "$mlist.fqdn_listname post from $msg.sender requires approval"
@@ -697,7 +698,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_import.py:82
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
-msgstr "Не файл конфигурации Mailman 2.1: $ pickle_file"
+msgstr "Не файл конфигурации Mailman 2.1: $pickle_file"
 
 #: src/mailman/commands/cli_import.py:85
 msgid "Ignoring non-dictionary: {0!r}"
