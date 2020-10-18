@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-02-11 11:50+0000\n"
-"Last-Translator: Paco <pacoc@pangea.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/mailman/es/>\n"
+"PO-Revision-Date: 2020-10-18 03:20+0000\n"
+"Last-Translator: Victoriano Giralt <victoriano@uma.es>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.3.1-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -89,19 +90,21 @@ msgid "$mlist.display_name subscription notification"
 msgstr "Notificación de suscripción a $mlist.display_name"
 
 #: src/mailman/app/notifications.py:136
-#, fuzzy
 msgid "$member's subscription disabled on $mlist.display_name"
-msgstr "Nueva solicitud de baja de $mlist.display_name por $email"
+msgstr "La suscripción de $member a $mlist.display_name está desactivada"
 
 #: src/mailman/app/notifications.py:157
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "Se le ha dado de baja de la lista de correo $mlist.display_name"
+msgstr ""
+"Se le ha dado de baja de la lista de correo ${mlist.display_name} debido a "
+"rechazos de mensajes"
 
 #: src/mailman/app/notifications.py:184
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "Se le ha dado de baja de la lista de correo $mlist.display_name"
+msgstr ""
+"Se ha desactivado su suscripción a la lista de correo ${mlist.display_name}"
 
 #: src/mailman/app/subscriptions.py:310
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
@@ -114,14 +117,20 @@ msgstr "Nueva solicitud de baja a $self.mlist.display_name desde $self.address.e
 #: src/mailman/app/subscriptions.py:597
 msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"Le han invitado a participar en la lista de correo $event.mlist."
+"fqdn_listname."
 
 #: src/mailman/app/subscriptions.py:600
 msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"Es necesario confirmar que quiere abandonar la lista de correo $event.mlist."
+"fqdn_listname."
 
 #: src/mailman/app/subscriptions.py:604
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"Se requiere confirmación de su intención de unirse a la lista de correo "
+"$event.mlist.fqdn_listname."
 
 #: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:515
 #: src/mailman/bin/runner.py:96
@@ -449,7 +458,7 @@ msgstr "Ya suscrito (omitiendo): $email"
 #: src/mailman/commands/cli_addmembers.py:100
 #: src/mailman/commands/cli_syncmembers.py:81
 msgid "Membership is banned (skipping): $email"
-msgstr ""
+msgstr "La dirección $email no tiene permitido suscribirse (omitiendo)"
 
 #: src/mailman/commands/cli_addmembers.py:106
 msgid ""
@@ -458,6 +467,12 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    Añadir todas las direcciones incluidas en FILENAME con el modo de "
+"entrega especificado\n"
+"    con -d/--delivery.  FILENAME puede ser '-' para indicar al entrada "
+"estándar.\n"
+"    Se ignoran las líneas vacías y aquellas que comienzan con '#'.\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:114
 msgid ""
@@ -466,12 +481,22 @@ msgid ""
 "    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 msgstr ""
+"    Pone el modo de entrega de los miembros que se añaden a 'regular', "
+"'mime', 'simple',\n"
+"    'resumen' o 'desactivado'.  I.e., uno de los siguientes: regular, tres "
+"modos de resumen\n"
+"    o sin entregas. Si no se indica, la opción por defecto es regular. Se "
+"ignora para los\n"
+"    miembros invitados."
 
 #: src/mailman/commands/cli_addmembers.py:122
 msgid ""
 "    Send the added members an invitation rather than immediately adding them.\n"
 "    "
 msgstr ""
+"    Enviar una invitación a los miembros que se añaden en lugar de "
+"incluirlos inmediatamente.\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:127
 msgid "    Override the list's setting for send_welcome_message."
@@ -2135,13 +2160,38 @@ msgid "Bad runner spec: $value"
 msgstr "Especificación de corredor incorrecta: $value"
 
 msgid "domain:admin:notice:new-list.txt"
-msgstr "\"La lista de correo '$listname' acaba de ser creada para usted.  A continuación se ofrece información básica sobre su lista de correo. Hay una interfaz basada en el correo para usuarios (no administradores) de su lista; puede obtener información sobre su uso enviando un mensaje con sólo la palabra 'help' como asunto o en el cuerpo, a:    $request_emailPor favor, dirija todas las preguntas a $site_email.\""
+msgstr ""
+"La lista de correo '$listname' acaba de ser creada para usted.\n"
+"A continuación se ofrece información básica sobre su lista de correo.\n"
+"\n"
+"Hay una interfaz basada en el correo para usuarios (no administradores) de "
+"su lista;\n"
+"puede obtener información sobre su uso enviando un mensaje con sólo la "
+"palabra 'help'\n"
+"como asunto o en el cuerpo, a:\n"
+"\n"
+"    $request_email\n"
+"\n"
+"Por favor, dirija todas las preguntas a $site_email."
 
 msgid "help.txt"
 msgstr "\"Ayuda para la lista de correo $listnameEste es el comando de correo 'help' para la versión $version del gestor de listas de correo GNU Mailman en $domain.  A continuación se describen los comandos que puedes enviar para obtener información y controlar tu suscripción a las listas de correo de este sitio. Un comando puede estar en la línea de Asunto o en el cuerpo del mensaje. Los comandos deben enviarse a la dirección ${listname}-request@${domain}. Acerca de las descripciones - las palabras entre \"<>\"s significan elementos REQUERIDOS y las palabras en \"[]\" denotan elementos OPCIONALES.  No incluya las \"<>\"s o\"[]\"s cuando use los comandos.Los siguientes comandos son válidos:   $commandsQuestions y cuestiones a la atención de una persona deben enviarse a:    $administrator\""
 
 msgid "list:admin:action:post.txt"
-msgstr "\"Como administrador de la lista, se solicita su autorización para la siguiente publicación en la lista de correo:    List:    $listname    From:    $sender_email    Subject: $subjectEl mensaje se ha retenido porque:$reasonsCuando pueda, visite su panel de control para aprobar o denegar la solicitud.\""
+msgstr ""
+"Como administrador de la lista, se solicita su autorización para\n"
+"la siguiente publicación en la lista de correo:\n"
+"\n"
+"    List:    $listname\n"
+"    From:    $sender_email \n"
+"   Subject: $subject\n"
+"\n"
+"El mensaje se ha retenido porque:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Cuando pueda, visite su panel de control para aprobar o\n"
+"denegar la solicitud."
 
 msgid "list:admin:action:subscribe.txt"
 msgstr "\"Se requiere su autorización para aprobar una suscripción a una lista de correo:  Para:  $member   Lista: $listname\""
@@ -2149,22 +2199,30 @@ msgstr "\"Se requiere su autorización para aprobar una suscripción a una lista
 msgid "list:admin:action:unsubscribe.txt"
 msgstr "\"Se requiere su autorización para aprobar una solicitud de baja de una lista de correo:\tPara:\t$member\tLista: $listname\""
 
-#, fuzzy
 msgid "list:admin:notice:disable.txt"
-msgstr "\"$member se ha suscrito correctamente a $display_name.\""
+msgstr ""
+"La suscripción de $member a $listanme se ha desactivado porque su puntuación "
+"de rebotes\n"
+"excede el límite bounce_score_threshold de la lista."
 
-#, fuzzy
 msgid "list:admin:notice:removal.txt"
-msgstr "\"$member se ha suscrito correctamente a $display_name.\""
+msgstr ""
+"Se ha cancelado la suscripción de $member a $display_name por tener "
+"demasiados rebotes."
 
 msgid "list:admin:notice:subscribe.txt"
-msgstr "\"$member se ha suscrito correctamente a $display_name.\""
+msgstr "$member se ha suscrito correctamente a $display_name."
 
 msgid "list:admin:notice:unrecognized.txt"
-msgstr "\"El mensaje adjunto se recibió como un rebote, pero o bien no se reconoció el formato de rebote, o bien no se pudo extraer de él ninguna dirección de miembro.  Esta lista de correo se ha configurado para enviar todos los mensajes rebotados no reconocidos a los administradores de la lista.\""
+msgstr ""
+"El mensaje adjunto se recibió como un rebote, pero o bien no se reconoció\n"
+"el formato de rebote, o bien no se pudo extraer de él ninguna suscrita.\n"
+"Esta lista de correo se ha configurado para enviar todos los mensajes "
+"rebotados\n"
+"no reconocidos a los administradores de la lista."
 
 msgid "list:admin:notice:unsubscribe.txt"
-msgstr "\"$member ha sido eliminado de $display_name.\""
+msgstr "$member ha sido eliminado de $display_name."
 
 msgid "list:member:digest:header.txt"
 msgstr " "
@@ -2191,13 +2249,42 @@ msgid "list:user:notice:goodbye.txt"
 msgstr " "
 
 msgid "list:user:notice:hold.txt"
-msgstr "\"Su correo a '$listname' con el asunto    $subject Está siendo retenido hasta que el moderador de la lista pueda revisarlo para su aprobación. El mensaje está siendo retenido porque:$reasons O bien el mensaje se publicará en la lista, o bien recibirá una notificación de la decisión del moderador.\""
+msgstr ""
+"Su correo a '$listname' con el asunto\n"
+"\n"
+"    $subject\n"
+"\n"
+"Está retenido hasta que el moderador de la lista pueda revisarlo para su "
+"aprobación.\n"
+"\n"
+"El mensaje está retenido porque:\n"
+"\n"
+"$reasons\n"
+"\n"
+"El mensaje se publicará en la lista, o, si no se publica,\n"
+" recibirá una notificación de la decisión del moderador."
 
 msgid "list:user:notice:no-more-today.txt"
-msgstr "\"Hemos recibido un mensaje de su dirección <$sender_email> solicitando una respuesta automática de la lista de correo $listname. El número que hemos visto hoy: $count.  Para evitar problemas como bucles de correo entre los robots de correo, no le enviaremos más respuestas hoy.  Por favor, inténtelo de nuevo mañana. Si cree que este mensaje es un error, o si tiene alguna pregunta, por favor, póngase en contacto con el propietario de la lista en $owner_email.\""
+msgstr ""
+"Hemos recibido un mensaje de su dirección <$sender_email> solicitando una\n"
+"respuesta automática de la lista de correo $listname.\n"
+"\n"
+"Hoy hemos visto $count de ellos.\n"
+"\n"
+"Para evitar problemas como bucles de correo entre los robots de correo,\n"
+"no le enviaremos más respuestas hoy.  Por favor, inténtelo de nuevo mañana\n"
+"\n"
+"Si cree que este mensaje es un error, o si tiene alguna pregunta, por favor,"
+"\n"
+"póngase en contacto con el propietario de la lista en $owner_email."
 
 msgid "list:user:notice:post.txt"
-msgstr "\"Su mensaje titulado $subject se recibió con éxito por la lista de correo $display_name .\""
+msgstr ""
+"Su mensaje titulado\n"
+"\n"
+"    $subject\n"
+"\n"
+"se recibió con éxito por la lista de correo $display_name ."
 
 msgid "list:user:notice:probe.txt"
 msgstr "\"Este es un mensaje de detección.  Puede ignorar este mensaje. La lista de correo $listname ha recibido varios rebotes suyos, lo que indica que puede haber un problema en la entrega de mensajes a $sender_email.  Se adjunta un ejemplo a continuación.  Por favor, examine este mensaje para asegurarse de que no hay problemas con su dirección de correo.  Puede comprobar con su administrador de correo para más ayuda. No es necesario que haga nada para seguir siendo un miembro habilitado de la lista de correo. Si tiene alguna pregunta o problema, puede ponerse en contacto con el propietario de la lista de correo en $owner_email\""
@@ -2206,14 +2293,39 @@ msgid "list:user:notice:refuse.txt"
 msgstr "\"Su solicitud a la lista de correo de $listname   $solicitudes ha sido rechazada por el moderador de la lista.   El moderador dio la siguiente razón para rechazar su solicitud:\"$reason\" Cualquier pregunta o comentario debe dirigirse al administrador de la lista en:   $owner_email\""
 
 msgid "list:user:notice:rejected.txt"
-msgstr "\"Su mensaje a la lista de correo de $listname fué rechazado por las siguientes razones:$reasons El mensaje original tal como fué recibido por Mailman está adjunto.\""
+msgstr ""
+"Su mensaje a la lista de correo de $listname fue rechazado por\n"
+"las siguientes razones:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Se adjunta el mensaje original tal como fue recibido por Mailman."
 
 #, fuzzy
 msgid "list:user:notice:warning.txt"
 msgstr "\"Este es un mensaje de detección.  Puede ignorar este mensaje. La lista de correo $listname ha recibido varios rebotes suyos, lo que indica que puede haber un problema en la entrega de mensajes a $sender_email.  Se adjunta un ejemplo a continuación.  Por favor, examine este mensaje para asegurarse de que no hay problemas con su dirección de correo.  Puede comprobar con su administrador de correo para más ayuda. No es necesario que haga nada para seguir siendo un miembro habilitado de la lista de correo. Si tiene alguna pregunta o problema, puede ponerse en contacto con el propietario de la lista de correo en $owner_email\""
 
 msgid "list:user:notice:welcome.txt"
-msgstr "\"¡Bienvenido a la lista de correo de \"$display_name\"! Para enviar a esta lista, envíe su mensaje a:    $nombre_de_la_lista Puede cancelar la suscripción o hacer ajustes a tus opciones por correo enviando un mensaje a:   $request_email con la palabra 'help' en el asunto o en el cuerpo (no incluya las comillas), y recibirá un mensaje con instrucciones.  Necesitará su contraseña para cambiar sus opciones, pero por motivos de seguridad, esta contraseña no está incluida aquí.   Si ha olvidado su contraseña, tendrá que restablecerla a través de la interfaz de usuario de la web.\""
+msgstr ""
+"¡Bienvenido a la lista de correo de \"$display_name\"!\n"
+"\n"
+"Para enviar a esta lista, envíe su mensaje a:\n"
+"\n"
+"    $listname\n"
+"\n"
+"Puede cancelar la suscripción o hacer ajustes a sus opciones por correo\n"
+"enviando un mensaje a:\n"
+"\n"
+"   $request_email\n"
+"\n"
+"con la palabra 'help' en el asunto o en el cuerpo (no incluya las comillas),"
+"\n"
+"y recibirá un mensaje con instrucciones.\n"
+"Necesitará su contraseña para cambiar sus opciones, pero por motivos de "
+"seguridad,\n"
+"esta contraseña no está incluida aquí.\n"
+"Si ha olvidado su contraseña, tendrá que restablecerla a través de la "
+"interfaz de usuario de la web."
 
 #~ msgid ""
 #~ "    Import Mailman 2.1 list data'.  Requires the fully-qualified name of the\n"
