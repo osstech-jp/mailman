@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-10-18 03:20+0000\n"
+"PO-Revision-Date: 2020-10-25 22:24+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3.1-dev\n"
+"X-Generator: Weblate 4.3.2-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -292,7 +292,7 @@ msgid ""
 "    given.  The values for -r are passed straight through to bin/runner."
 msgstr ""
 "    Genellikle yapılandırma dosyasında tanımlanan, ana işlemin başlatacağı\n"
-"    öntanımlı çalıştırıcı kümesini geçersiz kılın.  Birden çok -r seçeneği "
+"    öntanımlı çalıştırıcı kümesini geçersiz kıl.  Birden çok -r seçeneği "
 "belirtilebilir.\n"
 "    -r için belirtilen değerler doğrudan bin/runner işlemine iletilir."
 
@@ -464,32 +464,40 @@ msgid ""
 "message will be approved for posting to the list.  The Approved: header can\n"
 "also appear in the first line of the body of the reply."
 msgstr ""
+"Bu mesajı Konu: başlığını olduğu gibi bırakarak yanıtlarsanız, Mailman\n"
+"bekletilen mesajı atacaktır.  Mesaj spam ise bunu yapın.  Bu mesajı "
+"yanıtlarsanız\n"
+"ve içinde liste parolasının olduğu bir Onaylandı: başlığı eklerseniz, "
+"mesajın\n"
+"listeye gönderilmesi onaylanacaktır.  Onaylandı: başlığı, yanıt metninin "
+"ilk\n"
+"satırında da görünebilir."
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
-msgstr ""
+msgstr "Denetim zinciri"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
-msgstr ""
+msgstr "Yerleşik -owner (sahip) gönderme zinciri."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
-msgstr ""
+msgstr "Bir mesajı reddet/geri döndür ve işlemeyi durdur."
 
 #: src/mailman/commands/cli_addmembers.py:67 src/mailman/commands/cli_members.py:124
 #: src/mailman/commands/cli_members.py:137 src/mailman/commands/cli_members.py:198
 #: src/mailman/commands/cli_members.py:206 src/mailman/commands/cli_syncmembers.py:112
 msgid "Cannot parse as valid email address (skipping): $line"
-msgstr ""
+msgstr "Geçerli e-posta adresi olarak ayrıştırılamıyor (atlanıyor): $line"
 
 #: src/mailman/commands/cli_addmembers.py:98 src/mailman/commands/cli_members.py:143
 msgid "Already subscribed (skipping): $email"
-msgstr ""
+msgstr "Zaten abone oldu (atlanıyor): $email"
 
 #: src/mailman/commands/cli_addmembers.py:100 src/mailman/commands/cli_syncmembers.py:81
 msgid "Membership is banned (skipping): $email"
-msgstr ""
+msgstr "Üyelik yasaklanmış (atlanıyor): $email"
 
 #: src/mailman/commands/cli_addmembers.py:106
 msgid ""
@@ -498,6 +506,12 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    FILENAME içindeki tüm üye adreslerini -d/--delivery seçeneğiyle "
+"belirtilen\n"
+"    teslimat modu ile ekle.  FILENAME standart girişi belirtmek için '-' "
+"olabilir.\n"
+"    Boş satırlar ve '#' ile başlayan satırlar yok sayılır.\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:114
 msgid ""
@@ -506,57 +520,72 @@ msgid ""
 "    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 msgstr ""
+"    Eklenen üyelerin teslimat modunu 'regular', 'mime', 'plain', 'summary'\n"
+"    veya 'disabled' olarak ayarla.  Yani, bir tane normal, üç tane özet "
+"modu\n"
+"    veya teslimat yok. Belirtilmezse, öntanımlı olan normaldir.  Davet "
+"edilen\n"
+"    üyeler için yok sayılır."
 
 #: src/mailman/commands/cli_addmembers.py:122
 msgid ""
 "    Send the added members an invitation rather than immediately adding them.\n"
 "    "
 msgstr ""
+"    Eklenen üyelere onları hemen eklemek yerine bir davet gönder.\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:127
 msgid "    Override the list's setting for send_welcome_message."
-msgstr ""
+msgstr "    Listenin send_welcome_message ayarını geçersiz kıl."
 
 #: src/mailman/commands/cli_addmembers.py:136 src/mailman/commands/cli_import.py:68
 #: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:343
 #: src/mailman/commands/cli_syncmembers.py:195 src/mailman/commands/cli_withlist.py:292
 #: src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
-msgstr ""
+msgstr "Böyle bir liste yok: $listspec"
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
-msgstr ""
+msgstr "MTA'nız için uygun takma adları yeniden oluşturun."
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
-msgstr ""
+msgstr "Çeşitli MTA dosyalarının çıktısı için alternatif bir dizin."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
-msgstr ""
+msgstr "Mailman yapılandırmasını yazdır."
 
 #: src/mailman/commands/cli_conf.py:57
 msgid ""
 "    File to send the output to.  If not given, or if '-' is given, standard\n"
 "    output is used."
 msgstr ""
+"    Çıktının gönderileceği dosya.  Belirtilmezse veya '-' belirtilirse,\n"
+"    standart çıkış kullanılır."
 
 #: src/mailman/commands/cli_conf.py:62
 msgid ""
 "    Section to use for the lookup.  If no key is given, all the key-value pairs\n"
 "    of the given section will be displayed."
 msgstr ""
+"    Arama için kullanılacak bölüm.  Anahtar belirtilmezse, belirtilen\n"
+"    bölümün tüm anahtar/değer çiftleri görüntülenecek."
 
 #: src/mailman/commands/cli_conf.py:67
 msgid ""
 "    Key to use for the lookup.  If no section is given, all the key-values pair\n"
 "    from any section matching the given key will be displayed."
 msgstr ""
+"    Arama için kullanılacak anahtar.  Bölüm belirtilmezse, belirtilen "
+"anahtarla\n"
+"    eşleşen herhangi bir bölümdeki tüm anahtar/değer çiftleri görüntülenecek."
 
 #: src/mailman/commands/cli_control.py:42
 msgid "Start the Mailman master and runner processes."
-msgstr ""
+msgstr "Mailman ana ve çalıştırıcı işlemlerini başlat."
 
 #: src/mailman/commands/cli_control.py:46
 msgid ""
@@ -568,6 +597,17 @@ msgid ""
 "    remove the apparently stale lock and make another attempt to claim the\n"
 "    master lock."
 msgstr ""
+"    Ana izleyici mevcut bir ana kilit bulması durumunda, normalde bir hata\n"
+"    mesajı ile çıkacaktır.  Bu seçenekle birlikte, ana işlem ek bir denetim\n"
+"    gerçekleştirecektir.  Kilit dosyasında belirtilen ana makine/PID ile "
+"eşleşen\n"
+"    bir işlem çalışıyorsa, ana işlem yine de kilidi elle temizlemenizi "
+"gerektirecek\n"
+"    şekilde çıkacaktır.  Ancak eşleşen bir işlem bulunmazsa, ana işlem eski "
+"olarak\n"
+"    görünen kilidi kaldıracak ve ana kilidi elde etmek için başka bir "
+"girişimde\n"
+"    bulunacaktır."
 
 #: src/mailman/commands/cli_control.py:57
 msgid ""
@@ -577,6 +617,14 @@ msgid ""
 "    start of mailman3 server. Setting this option to true will make this\n"
 "    script create the files and thus allow the MTA to operate smoothly."
 msgstr ""
+"    Başlangıçta MTA takma ad dosyalarını oluştur. Postfix gibi bazı MTA'lar,"
+"\n"
+"    yapılandırmasında belirtilen takma ad dosyaları yoksa e-posta gönderemez."
+"\n"
+"    Bu, bazı durumlarda mailman3 sunucusunun ilk başlangıçta kilitlenmesine\n"
+"    neden olabilir. Bu seçeneğin doğru olarak ayarlanması, bu betiğin "
+"dosyaları\n"
+"    oluşturmasını ve dolayısıyla MTA'nın sorunsuz çalışmasını sağlar."
 
 #: src/mailman/commands/cli_control.py:66
 msgid ""
@@ -594,6 +642,27 @@ msgid ""
 "    may have permission problems, such as being unable to delete a list's\n"
 "    archives through the web.  Tough luck!"
 msgstr ""
+"    Normalde bu betik, kullanıcı ve grup kimliği 'mailman' kullanıcı ve "
+"grubuna\n"
+"    ayarlanmadıysa (Mailman'i yapılandırdığınızda tanımlandığı gibi) "
+"çalışmayı\n"
+"    reddedecektir.  Bu betik root olarak çalıştırılırsa, denetim yapılmadan "
+"önce\n"
+"    bu kullanıcı ve gruba geçiş yapacaktır.\n"
+"\n"
+"    Bu, test etme ve hata ayıklama amaçları için uygun olmayabilir, bu "
+"nedenle -u\n"
+"    seçeneği, UID/GID'yi ayarlayan ve denetleyen adımın atlandığı ve "
+"programın\n"
+"    geçerli kullanıcı ve grup olarak çalıştırıldığı anlamına gelir.  Bu "
+"seçenek, normal\n"
+"    çalışma ortamları için tavsiye edilmez.\n"
+"\n"
+"    Yine de -u ile çalıştırırsanız ve mailman grubunda değilseniz, web "
+"üzerinden bir\n"
+"    listenin arşivlerini silememek gibi izin sorunlarınız olabileceğini "
+"unutmayın.\n"
+"    Şansınıza küsün!"
 
 #: src/mailman/commands/cli_control.py:83 src/mailman/commands/cli_control.py:170
 #: src/mailman/commands/cli_control.py:192 src/mailman/commands/cli_control.py:214
@@ -601,76 +670,84 @@ msgid ""
 "    Don't print status messages.  Error messages are still printed to standard\n"
 "    error."
 msgstr ""
+"    Durum mesajlarını yazdırma.  Hata mesajları yine de standart hata "
+"çıkışına\n"
+"    yazdırılır."
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
-msgstr ""
+msgstr "GNU Mailman zaten çalışıyor"
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
 msgstr ""
+"Önceki bir GNU Mailman çalıştırması temiz bir şekilde çıkmadı ({}).  --force "
+"seçeneğini kullanmayı deneyin"
 
 #: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
-msgstr ""
+msgstr "Mailman ana çalıştırıcısı başlatılıyor"
 
 #: src/mailman/commands/cli_control.py:108
 msgid "Generating MTA alias maps"
-msgstr ""
+msgstr "MTA takma ad eşleştirmeleri oluşturuluyor"
 
 #: src/mailman/commands/cli_control.py:149
 msgid "PID unreadable in: $config.PID_FILE"
-msgstr ""
+msgstr "$config.PID_FILE dosyasında PID okunamıyor"
 
 #: src/mailman/commands/cli_control.py:151
 msgid "Is the master even running?"
-msgstr ""
+msgstr "Ana işlem çalışıyor mu?"
 
 #: src/mailman/commands/cli_control.py:158
 msgid "No child with pid: $pid"
-msgstr ""
+msgstr "$pid kimliğine sahip alt işlem yok"
 
 #: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
-msgstr ""
+msgstr "Eski PID dosyası kaldırıldı."
 
 #: src/mailman/commands/cli_control.py:166
 msgid "Stop the Mailman master and runner processes."
-msgstr ""
+msgstr "Mailman ana ve çalıştırıcı işlemlerini durdur."
 
 #: src/mailman/commands/cli_control.py:175
 msgid "Shutting down Mailman's master runner"
-msgstr ""
+msgstr "Mailman ana çalıştırıcısı kapatılıyor"
 
 #: src/mailman/commands/cli_control.py:188
 msgid "Signal the Mailman processes to re-open their log files."
 msgstr ""
+"Mailman işlemlerine günlük dosyalarını yeniden açmaları için sinyal gönder."
 
 #: src/mailman/commands/cli_control.py:197
 msgid "Reopening the Mailman runners"
-msgstr ""
+msgstr "Mailman çalıştırıcıları yeniden açılıyor"
 
 #: src/mailman/commands/cli_control.py:210
 msgid "Stop and restart the Mailman runner subprocesses."
-msgstr ""
+msgstr "Mailman çalıştırıcı alt işlemlerini durdur ve yeniden başlat."
 
 #: src/mailman/commands/cli_control.py:219
 msgid "Restarting the Mailman runners"
-msgstr ""
+msgstr "Mailman çalıştırıcıları yeniden başlatılıyor"
 
 #: src/mailman/commands/cli_delmembers.py:48 src/mailman/commands/cli_members.py:164
 msgid "Member not subscribed (skipping): $email"
-msgstr ""
+msgstr "Üye abone değil (atlanıyor): $email"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
-msgstr ""
+msgstr "    Üyeleri posta listesinden sil."
 
 #: src/mailman/commands/cli_delmembers.py:58
 msgid ""
 "    The list to operate on.  Required unless --fromall is specified.\n"
 "    "
 msgstr ""
+"    Üzerinde işlem yapılacak liste.  --fromall belirtilmezse gereklidir.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:64
 msgid ""
@@ -679,6 +756,12 @@ msgid ""
 "    standard input.  Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    Varsa -m/--member ile belirtilenlere ek olarak adresleri FILENAME "
+"içinde\n"
+"    olan liste üyelerini sil.  FILENAME standart girişi belirtmek için '-' "
+"olabilir.\n"
+"    Boş satırlar ve '#' ile başlayan satırlar yok sayılır.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:71
 msgid ""
@@ -687,6 +770,10 @@ msgid ""
 "    multiple addresses.\n"
 "    "
 msgstr ""
+"    Varsa -f/--file ile belirtilenlere ek olarak adresi ADDRESS olan liste "
+"üyesini sil.\n"
+"    Bu seçenek birden çok adres için tekrar edilebilir.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:79
 msgid ""
@@ -694,6 +781,9 @@ msgid ""
 "    -m/--member or --fromall may be specified.\n"
 "    "
 msgstr ""
+"    Listenin tüm üyelerini sil.  Bu belirtilirse, -f/--file, -m/--member\n"
+"    veya --fromall seçeneklerinden hiçbiri belirtilemez.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:86
 msgid ""
@@ -702,20 +792,27 @@ msgid ""
 "    -a/--all or -l/--list.\n"
 "    "
 msgstr ""
+"    -m/--member ve/veya -f/--file ile belirtilen üye(ler)i kurulumdaki tüm\n"
+"    listelerden sil.  Bu seçenek, -a/--all veya -l/--list seçenekleriyle "
+"birlikte\n"
+"    belirtilemez.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:93 src/mailman/commands/cli_syncmembers.py:173
 msgid ""
 "    Override the list's setting for send_goodbye_message to\n"
 "    deleted members."
 msgstr ""
+"    Listenin, silinen üyeler için send_goodbye_message ayarını\n"
+"    geçersiz kıl."
 
 #: src/mailman/commands/cli_delmembers.py:98 src/mailman/commands/cli_syncmembers.py:178
 msgid "    Override the list's setting for admin_notify_mchanges."
-msgstr ""
+msgstr "    admin_notify_mchanges için listenin ayarını geçersiz kıl."
 
 #: src/mailman/commands/cli_delmembers.py:123
 msgid "No such list: $_list"
-msgstr ""
+msgstr "Böyle bir liste yok: $_list"
 
 #: src/mailman/commands/cli_digests.py:36
 msgid "Operate on digests."
@@ -857,23 +954,23 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:49
 msgid "List all mailing lists."
-msgstr ""
+msgstr "Tüm posta listelerini listele."
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List only those mailing lists that are publicly advertised"
-msgstr ""
+msgstr "Yalnızca herkese açık olarak tanıtılan posta listelerini listele"
 
 #: src/mailman/commands/cli_lists.py:57
 msgid "Show also the list names"
-msgstr ""
+msgstr "Liste adlarını da göster"
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list descriptions"
-msgstr ""
+msgstr "Liste açıklamalarını da göster"
 
 #: src/mailman/commands/cli_lists.py:65
 msgid "Less verbosity"
-msgstr ""
+msgstr "Daha az ayrıntı"
 
 #: src/mailman/commands/cli_lists.py:69
 msgid ""
