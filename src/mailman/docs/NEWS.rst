@@ -8,10 +8,10 @@ Copyright (C) 1998-2018 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
-3.3.2rc2
-========
+3.3.2
+=====
 
-(2020-10-14)
+(2020-11-6)
 
 Bugs
 ----
