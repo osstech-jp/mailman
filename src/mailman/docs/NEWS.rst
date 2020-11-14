@@ -8,6 +8,15 @@ Copyright (C) 1998-2018 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
+3.3.3
+=====
+
+(202x-xx-xx)
+
+Bugs
+----
+* Handle some UnicodeEncodeErrors in creating digests.  (Closes #560)
+
 3.3.2
 =====
 
