@@ -252,7 +252,9 @@ class RFC1153Digester(Digester):
         # multipart message.  In that case, just stringify it.
         payload = msg.get_payload(decode=True)
         if not payload:
-            payload = msg.as_string().split('\n\n', 1)[1]
+            # Get the message as bytes to avoid UnicodeEncodeError from
+            # as_string() when charset is incorrectly declared.
+            payload = msg.as_bytes().split(b'\n\n', 1)[1]
         if isinstance(payload, bytes):
             try:
                 # Do the decoding inside the try/except so that if the charset
@@ -286,13 +288,14 @@ class RFC1153Digester(Digester):
         print(sign_off, file=self._text)
         print('*' * len(sign_off), file=self._text)
         # If the digest message can't be encoded by the list character set,
-        # fall back to utf-8.
+        # fall back to utf-8 with error replacement.
         text = self._text.getvalue()
         try:
             self._message.set_payload(text.encode(self._charset),
                                       charset=self._charset)
         except UnicodeError:
-            self._message.set_payload(text.encode('utf-8'), charset='utf-8')
+            self._message.set_payload(text.encode('utf-8', errors='replace'),
+                                      charset='utf-8')
         return self._message
 
 
