@@ -16,6 +16,8 @@ Here is a history of user visible changes to Mailman.
 Bugs
 ----
 * Handle some UnicodeEncodeErrors in creating digests.  (Closes #560)
+* Increased the size of the data column in the workflowstate table.
+  (Closes #793)
 
 3.3.2
 =====
