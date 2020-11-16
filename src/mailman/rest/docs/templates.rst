@@ -517,6 +517,12 @@ below.  Here are all the supported template names:
       to; this corresponds to the ``Reply-To`` header
     * ``user_email`` - the email address being confirmed
 
+* ``list:user:action:invite``
+    The message sent to subscribers when they are invited to join a List.
+
+    * ``user_email`` - the email address being invited.
+    * ``token`` - the unique confirmation token
+
 * ``list:user:notice:goodbye``
     The notice sent to a member when they unsubscribe from a mailing list.
 
