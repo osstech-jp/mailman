@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-10-25 22:24+0000\n"
+"PO-Revision-Date: 2020-11-08 22:21+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3.2-dev\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -816,7 +816,7 @@ msgstr "Böyle bir liste yok: $_list"
 
 #: src/mailman/commands/cli_digests.py:36
 msgid "Operate on digests."
-msgstr ""
+msgstr "Özetler üzerinde işlem yap."
 
 #: src/mailman/commands/cli_digests.py:39
 msgid ""
@@ -824,12 +824,20 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the digests for all mailing lists."
 msgstr ""
+"    Bu posta listesi üzerinde işlem yap.  Birden çok --list seçeneği "
+"belirtilebilir.\n"
+"    Argüman, bir liste kimliği veya tam nitelikli bir liste adı olabilir.  "
+"Bu seçenek\n"
+"    olmadan, tüm posta listeleri için özetler üzerinde çalış."
 
 #: src/mailman/commands/cli_digests.py:46
 msgid ""
 "    Send any collected digests right now, even if the size threshold has not\n"
 "    yet been met."
 msgstr ""
+"    Henüz boyut eşiğine ulaşılmamış olsa bile, toplanan özetleri hemen "
+"şimdi\n"
+"    gönder."
 
 #: src/mailman/commands/cli_digests.py:52
 msgid ""
@@ -837,59 +845,77 @@ msgid ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 msgstr ""
+"    Özet cilt numarasını artır ve özet numarasını bir olarak sıfırla.  --"
+"send seçeneği\n"
+"    ile birlikte belirtilirse, geçerli özetlerden herhangi biri  "
+"gönderilmeden önce\n"
+"    cilt numarası artırılır."
 
 #: src/mailman/commands/cli_digests.py:59 src/mailman/commands/cli_notify.py:47
 msgid ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
 msgstr ""
+"    Gerçekte hiçbir şey yapma, bunun yerine --verbose seçeneği ile birlikte "
+"ne\n"
+"    olacağını göster."
 
 #: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:53
 msgid "Print some additional status."
-msgstr ""
+msgstr "Bazı ek durumları yazdır."
 
 #: src/mailman/commands/cli_digests.py:69
 msgid ""
 "    Send any collected digests for the List only if their digest_send_periodic\n"
 "    is set to True."
 msgstr ""
+"    Liste için toplanan özetleri yalnızca digest_send_periodic değeri True "
+"olarak\n"
+"    ayarlanmışsa gönder."
 
 #: src/mailman/commands/cli_digests.py:77
 msgid "--send and --periodic flags cannot be used together"
-msgstr ""
+msgstr "--send ve --periodic seçenekleri birlikte kullanılamaz"
 
 #: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:66
 msgid "No such list found: $spec"
-msgstr ""
+msgstr "Böyle bir liste bulunamadı: $spec"
 
 #: src/mailman/commands/cli_digests.py:98
 #, python-brace-format
 msgid "$mlist.list_id is at volume $mlist.volume, number ${mlist.next_digest_number}"
-msgstr ""
+msgstr "$mlist.list_id cilt $mlist.volume, ${mlist.next_digest_number}. sayıda"
 
 #: src/mailman/commands/cli_digests.py:104
 #, python-brace-format
 msgid "$mlist.list_id bumped to volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id cilt $mlist.volume, ${mlist.next_digest_number}. sayıya "
+"yükseltildi"
 
 #: src/mailman/commands/cli_digests.py:110 src/mailman/commands/cli_digests.py:119
 #, python-brace-format
 msgid "$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id cilt $mlist.volume, ${mlist.next_digest_number}. sayıyı "
+"gönderdi"
 
 #: src/mailman/commands/cli_gatenews.py:167
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
-msgstr ""
+msgstr "Posta listelerine aktarılacak mesajlar için NNTP sunucusunu yokla."
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr ""
+msgstr "Bu yardım mesajını göster ve çık."
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
 "    Import Mailman 2.1 list data.  Requires the fully-qualified name of the\n"
 "    list to import and the path to the Mailman 2.1 pickle file."
 msgstr ""
+"    Mailman 2.1 liste verilerini içe aktar.  İçe aktarılacak listenin tam "
+"nitelikli\n"
+"    adını ve Mailman 2.1 pickle dosyasının yolunu gerektirir."
 
 #: src/mailman/commands/cli_import.py:56
 msgid ""
@@ -897,28 +923,34 @@ msgid ""
 "    thereof. This will normally be the Mailman 2.1 charset of the list's\n"
 "    preferred_language."
 msgstr ""
+"    UTF-8 veya bir alt kümesi değilse PICKLE_FILE dosyasındaki dizgelerin\n"
+"    kodlamasını belirt. Bu normalde listenin preferred_language değerinin\n"
+"    Mailman 2.1 karakter kümesi olacaktır."
 
 #: src/mailman/commands/cli_import.py:82
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
-msgstr ""
+msgstr "Mailman 2.1 yapılandırma dosyası değil: $pickle_file"
 
 #: src/mailman/commands/cli_import.py:85
 msgid "Ignoring non-dictionary: {0!r}"
-msgstr ""
+msgstr "Sözlük olmayan yok sayılıyor: {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
-msgstr ""
+msgstr "Bu Mailman örneği hakkındaki bilgiler."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
 msgstr ""
+"    Çıktının gönderileceği dosya.  Belirtilmezse standart çıkış kullanılır."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
 "    A more verbose output including the file system paths that Mailman is\n"
 "    using."
 msgstr ""
+"    Mailman'in kullandığı dosya sistemi yollarını içeren daha ayrıntılı bir\n"
+"    çıktı."
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
@@ -981,11 +1013,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
-msgstr ""
+msgstr "Eşleşen posta listesi bulunamadı"
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "$count matching mailing lists found:"
-msgstr ""
+msgstr "$count eşleşen posta listesi bulundu:"
 
 #: src/mailman/commands/cli_lists.py:122
 msgid ""
@@ -1030,73 +1062,73 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr ""
+msgstr "Geçersiz dil kodu: $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
-msgstr ""
+msgstr "Geçersiz sahip adresleri: $invalid"
 
 #: src/mailman/commands/cli_lists.py:186
 msgid "Illegal list name: $fqdn_listname"
-msgstr ""
+msgstr "Geçersiz liste adı: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:188
 msgid "List already exists: $fqdn_listname"
-msgstr ""
+msgstr "Liste zaten var: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:190
 msgid "Undefined domain: $domain"
-msgstr ""
+msgstr "Tanımsız etki alanı: $domain"
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
-msgstr ""
+msgstr "Posta listesi oluşturuldu: $mlist.fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
-msgstr ""
+msgstr "Yeni posta listeniz: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr ""
+msgstr "Bir posta listesini kaldır."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
-msgstr ""
+msgstr "Durum mesajlarını gösterme"
 
 #: src/mailman/commands/cli_lists.py:237
 msgid "No such list matching spec: $listspec"
-msgstr ""
+msgstr "$listspec ile eşleşen liste yok"
 
 #: src/mailman/commands/cli_lists.py:242
 msgid "Removed list: $listspec"
-msgstr ""
+msgstr "Liste kaldırıldı: $listspec"
 
 #: src/mailman/commands/cli_members.py:92
 msgid "$mlist.list_id has no members"
-msgstr ""
+msgstr "$mlist.list_id'nin üyesi yok"
 
 #: src/mailman/commands/cli_members.py:146
 msgid "Already subscribed (skipping): $display_name <$email>"
-msgstr ""
+msgstr "Zaten abone oldu (atlanıyor): $display_name <$email>"
 
 #: src/mailman/commands/cli_members.py:166
 msgid "Member not subscribed (skipping): $display_name <$email>"
-msgstr ""
+msgstr "Üye abone değil (atlanıyor): $display_name <$email>"
 
 #: src/mailman/commands/cli_members.py:227 src/mailman/commands/cli_syncmembers.py:127
 #, python-format
 msgid "[ADD] %s"
-msgstr ""
+msgstr "[EKLE] %s"
 
 #: src/mailman/commands/cli_members.py:238 src/mailman/commands/cli_syncmembers.py:137
 #, python-format
 msgid "[DEL] %s"
-msgstr ""
+msgstr "[SİL] %s"
 
 #: src/mailman/commands/cli_members.py:248 src/mailman/commands/cli_syncmembers.py:146
 msgid "Nothing to do"
-msgstr ""
+msgstr "Yapacak bir şey yok"
 
 #: src/mailman/commands/cli_members.py:253
 msgid ""
