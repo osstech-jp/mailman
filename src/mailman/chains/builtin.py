@@ -62,6 +62,7 @@ class BuiltInChain:
         ('max-size', LinkAction.defer, None),
         ('news-moderation', LinkAction.defer, None),
         ('no-subject', LinkAction.defer, None),
+        ('digests', LinkAction.defer, None),
         ('suspicious-header', LinkAction.defer, None),
         # Now if any of the above hit, jump to the hold chain.
         ('any', LinkAction.jump, 'hold'),

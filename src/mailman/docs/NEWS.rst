@@ -19,6 +19,12 @@ Bugs
 * Increased the size of the data column in the workflowstate table.
   (Closes #793)
 
+New Features
+------------
+* There is a new setting ``hold_digest`` in the ``[mailman]`` section of
+  mailman.cfg.  If this is set to ``yes``, posts with a digest like Subject:
+  header or which quote the digest masthead will be held for moderation.
+
 3.3.2
 =====
 

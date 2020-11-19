@@ -134,7 +134,7 @@ Now the message is in the pipeline queue.
     X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
         loop; banned-address; member-moderation; nonmember-moderation;
         administrivia; implicit-dest; max-recipients; max-size;
-        news-moderation; no-subject; suspicious-header
+        news-moderation; no-subject; digests; suspicious-header
     <BLANKLINE>
     First post!
     <BLANKLINE>
