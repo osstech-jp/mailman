@@ -23,6 +23,7 @@ names to rule objects.
     any True
     approved True
     banned-address True
+    digests True
     dmarc-mitigation True
     emergency True
     implicit-dest True
