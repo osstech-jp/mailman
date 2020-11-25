@@ -69,6 +69,13 @@ class TestDigest(unittest.TestCase):
         for item in items:
             self.assertEqual(item.msg['subject'],
                              'Test Digest, Vol 1, Issue 1')
+        return items
+
+    def _get_plain_body(self, items):
+        # Need to run after _check_virgin_queue which gets the items.
+        for item in items:
+            if item.msg.get_content_type() == 'text/plain':
+                return item.msg.get_payload(decode=True)
 
     def test_simple_message(self):
         # Subscribe some users receiving digests.
@@ -147,7 +154,50 @@ Don\xe2\x80\x99t try this at home.
         make_digest_messages(self._mlist, msg)
         # The runner will send the file to the shunt queue on exception.
         self.assertEqual(len(self._shuntq.files), 0, error_log.read())
-        self._check_virgin_queue()
+        items = self._check_virgin_queue()
+        self.assertEqual(self._get_plain_body(items), b"""\
+Send Test mailing list submissions to
+\ttest@example.com
+
+To subscribe or unsubscribe via email, send a message with subject or
+body 'help' to
+\ttest-request@example.com
+
+You can reach the person managing the list at
+\ttest-owner@example.com
+
+When replying, please edit your Subject line so it is more specific
+than "Re: Contents of Test digest..."
+
+Today\'s Topics:
+
+   1. Non-ascii in ascii message (anne@example.org)
+
+
+----------------------------------------------------------------------
+
+Message: 1
+From: anne@example.org
+Subject: Non-ascii in ascii message
+To: test@example.com
+Content-Type: multipart/mixed; boundary="abcxyz"
+
+Don\xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbdt try this at home.
+
+------------------------------
+
+Subject: Digest Footer
+
+_______________________________________________
+Test mailing list -- test@example.com
+To unsubscribe send an email to test-leave@example.com
+
+
+------------------------------
+
+End of Test Digest, Vol 1, Issue 1
+**********************************
+""")
 
     def test_mime_digest_format(self):
         # Make sure that the format of the MIME digest is as expected.
