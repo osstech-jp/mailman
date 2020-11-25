@@ -1,0 +1,49 @@
+From: user@example.com
+To: list@example.com
+Subject: A message with lots of parts
+MIME-Verrsion: 1.0
+Content-Type: multipart/mixed; boundary="aaa1"
+
+--aaa1
+Content-Type:multipart/alternative; boundary="aaa2"
+
+--aaa2
+Content-Type: text/plain
+
+This is the first text/plain part
+
+--aaa2
+Content-Type: text/html
+
+An html part to be scrubbed
+--aaa2--
+
+--aaa1
+Content-Type: message/rfc822
+
+From: user@example.com
+To: other@example.com
+Subject: Embedded Message
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="bbb1"
+
+--bbb1
+Content-Type: text/plain; charset="utf-8"
+
+Plain text with “fancy quotes” from embedded message.
+
+--bbb1
+Content-Type: text/html; charset="utf-8"
+
+HTML with “fancy quotes” from embedded message.
+
+--bbb1--
+
+--aaa1
+Content-Type: image/jpeg; name="Image"
+Content-Disposition: attachment; filename="Image"
+Content-Description: A JPEG image
+
+bogus jpeg data
+
+--aaa1--

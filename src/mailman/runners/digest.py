@@ -35,6 +35,7 @@ from mailman.handlers.decorate import decorate
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.mailbox import Mailbox
+from mailman.utilities.scrubber import scrub
 from mailman.utilities.string import expand, oneline, wrap
 from public import public
 from zope.component import getUtility
@@ -248,22 +249,10 @@ class RFC1153Digester(Digester):
                 value = '\n\t'.join(value.split('\n'))
                 print(value, file=self._text)
         print(file=self._text)
-        # Add the payload.  If the decoded payload is empty, this may be a
-        # multipart message.  In that case, just stringify it.
-        payload = msg.get_payload(decode=True)
-        if not payload:
-            # Get the message as bytes to avoid UnicodeEncodeError from
-            # as_string() when charset is incorrectly declared.
-            payload = msg.as_bytes().split(b'\n\n', 1)[1]
-        if isinstance(payload, bytes):
-            try:
-                # Do the decoding inside the try/except so that if the charset
-                # conversion fails, we'll just drop back to ascii.
-                charset = msg.get_content_charset('us-ascii')
-                payload = payload.decode(charset, 'replace')
-            except (LookupError, TypeError):
-                # Unknown or empty charset.
-                payload = payload.decode('us-ascii', 'replace')
+        # Get the scrubbed payload.  This is the original payload with all
+        # non text/plain parts replaced by notes that they've been removed.
+        payload = scrub(msg)
+        # Add the payload.
         print(payload, file=self._text)
         if not payload.endswith('\n'):
             print(file=self._text)

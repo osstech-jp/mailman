@@ -20,6 +20,7 @@ Bugs
 * Handle some UnicodeEncodeErrors in creating digests.  (Closes #560)
 * Increased the size of the data column in the workflowstate table.
   (Closes #793)
+* Implemented a ``scrubber`` for plain text digests.  (Closes #473)
 
 New Features
 ------------
