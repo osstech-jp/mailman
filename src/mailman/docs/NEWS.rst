@@ -21,6 +21,8 @@ Bugs
 * Increased the size of the data column in the workflowstate table.
   (Closes #793)
 * Implemented a ``scrubber`` for plain text digests.  (Closes #473)
+* The ``mailman gatenews`` command now adds ``original_size`` as a message
+  attribute.  (Extends fix for #762)
 
 New Features
 ------------
