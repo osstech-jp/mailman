@@ -28,6 +28,11 @@ New Features
   mailman.cfg.  If this is set to ``yes``, posts with a digest like Subject:
   header or which quote the digest masthead will be held for moderation.
 
+REST
+----
+* List configuration option ``send_goodbye_message`` is now exposed through
+  the REST API. (See !737)
+
 3.3.2
 =====
 
