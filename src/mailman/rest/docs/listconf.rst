@@ -108,6 +108,7 @@ All readable attributes for a list are available on a sub-resource.
     request_address: ant-request@example.com
     require_explicit_destination: True
     respond_to_post_requests: True
+    send_goodbye_message: True
     send_welcome_message: True
     subject_prefix: [Ant]
     subscription_policy: confirm
@@ -187,6 +188,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             reply_to_address='bee@example.com',
     ...             require_explicit_destination=False,
     ...             member_roster_visibility='members',
+    ...             send_goodbye_message=False,
     ...             send_welcome_message=False,
     ...             subject_prefix='[ant]',
     ...             subscription_policy='moderate',
@@ -287,6 +289,7 @@ These values are changed permanently.
     ...
     require_explicit_destination: False
     respond_to_post_requests: True
+    send_goodbye_message: False
     send_welcome_message: False
     subject_prefix: [ant]
     subscription_policy: moderate

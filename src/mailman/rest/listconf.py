@@ -233,6 +233,7 @@ ATTRIBUTES = dict(
     request_address=GetterSetter(None),
     require_explicit_destination=GetterSetter(as_boolean),
     respond_to_post_requests=GetterSetter(as_boolean),
+    send_goodbye_message=GetterSetter(as_boolean),
     send_welcome_message=GetterSetter(as_boolean),
     subject_prefix=GetterSetter(str),
     subscription_policy=GetterSetter(enum_validator(SubscriptionPolicy)),
