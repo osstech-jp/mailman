@@ -105,9 +105,12 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 msg['To'] = mlist.posting_address
                 # Post the message to the list
                 inq = config.switchboards['in']
+                # original_size is both a message attribute and a key in
+                # msgdata.
+                msg.original_size = len(msg.as_bytes())
                 inq.enqueue(msg,
                             listid=mlist.list_id,
-                            original_size=len(msg.as_bytes()),
+                            original_size=msg.original_size,
                             fromusenet=True)
                 log.info('posted to list %s: %7d', listname, num)
         except nntplib.NNTPError as e:
