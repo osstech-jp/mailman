@@ -634,6 +634,7 @@ class TestListDigests(unittest.TestCase):
     def setUp(self):
         with transaction():
             self._mlist = create_list('ant@example.com')
+            self._mlist.send_goodbye_message = False
             self._mlist.send_welcome_message = False
             anne = getUtility(IUserManager).create_address('anne@example.com')
             self._mlist.subscribe(anne)

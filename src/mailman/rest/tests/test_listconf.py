@@ -112,6 +112,7 @@ RESOURCE = dict(
     reply_to_address='bee@example.com',
     require_explicit_destination=True,
     member_roster_visibility='public',
+    send_goodbye_message=False,
     send_welcome_message=False,
     subject_prefix='[ant]',
     subscription_policy='confirm_then_moderate',
@@ -517,6 +518,28 @@ class TestConfiguration(unittest.TestCase):
                 dict(info=''),
                 'PATCH')
             self.assertEqual(self._mlist.info, '')
+
+    def test_patch_send_welcome_message(self):
+        with transaction():
+            self._mlist.send_welcome_message = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/send_welcome_message',
+            dict(send_welcome_message=True),
+            'PATCH')
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(self._mlist.send_welcome_message)
+
+    def test_patch_send_goodbye_message(self):
+        with transaction():
+            self._mlist.send_goodbye_message = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/send_goodbye_message',
+            dict(send_goodbye_message=True),
+            'PATCH')
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(self._mlist.send_goodbye_message)
 
     def test_delete_top_level_listconf(self):
         with self.assertRaises(HTTPError) as cm:
