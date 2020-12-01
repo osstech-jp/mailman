@@ -1,0 +1,19 @@
+Pomoc pre konferenciu $listname
+
+Toto je e-mailový príkaz 'help' pre verziu $version správcu konferencie
+GNU Mailman v $domain. Nasledujúci text popisuje príkazy, ktoré môžete odoslať,
+aby ste získali informácie a mohli ovládať váš odber konferencie Mailman na
+tejto stránke. Príkaz môže byť v riadku Predmet alebo v tele správy.
+
+Príkazy by sa mali posielať na adresu ${listname}-request@${domain} .
+
+O popisoch - slová v "<>" znamenajú POVINNÉ položky a slová v "[]" znamenajú
+VOLITEĽNÉ položky. Pri použití príkazov nekopírujte znaky "<>" alebo "[]".
+
+Nasledujúce príkazy sú platné:
+
+    $commands
+
+Otázky a dotazy, ktoré si vyžadujú pozornosť osoby by sa mali zasielať na adresu:
+
+    $administrator
