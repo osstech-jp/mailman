@@ -1,0 +1,2 @@
+Odber bol deaktivovaný pre $member na $listname z dôvodu, že skóre nedoručenia
+prekročilo bounce_score_threshold konferencie.

@@ -1,0 +1,14 @@
+Toto je skúšobná správa. Túto správu môžete ignorovať.
+
+Konferencia $listname od vás dostala niekoľko oznámení o nedoručení,
+čo naznačuje, že môže byť problém pri doručovaní správ pre $sender_email.
+Nižšie je priložená vzorka. Prosím preskúmajte túto správu a uistite sa,
+že nie sú žiadne problémy s vašou emailovou adresou. Možno sa budete
+chcieť spojiť s vašim emailovým správcom.
+
+Nemusíte robiť nič, aby ste ostali povoleným členom konferencie.
+
+V prípade akýchkoľvek otázok alebo problémov môžete kontaktovať vlastníka
+konferencie
+
+    $owner_email

@@ -1,0 +1,24 @@
+Potvrdenie odhlásenia e-mailovej adresy z odberu
+
+Dobrý deň, toto je server GNU Mailman v $domain.
+
+Dostali sme žiadosť o odhlásenie z e-mailovej adresy
+
+    $user_email
+
+Skôr ako vás GNU Mailman môže odhlásiť z odberu, musíte najskôr potvrdiť svoju
+žiadosť. Môžete to urobiť jednoduchou odpoveďou na túto správu.
+
+Alebo by ste mali zahrnúť nasledujúci riadok - a iba nasledujúci
+riadok - v správe pre $request_email:
+
+    confirm $token
+
+Poznámka, jednoduché odoslanie `Odpovedať' na túto správu by malo fungovať vo
+väčšine emailových programov.
+
+Ak si neželáte zrušiť odber tejto e-mailovej adresy, jednoducho ignorujte túto
+správu. Ak sa domnievate, že ste boli falošne odhlásený z konferencie,
+alebo máte ďalšie otázky, môžete sa obrátiť
+
+    $owner_email

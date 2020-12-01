@@ -1,0 +1,5 @@
+Vaša správa pre konferenciu $listname bola odmietnutá z nasledujúcich dôvodov:
+
+$reasons
+
+Originálna správa, ktorú prijal Mailman, je priložená.

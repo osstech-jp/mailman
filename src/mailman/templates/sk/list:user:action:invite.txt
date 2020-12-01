@@ -1,0 +1,15 @@
+Vaša adresa "$user_email" bola pozvaná, aby sa pripojila k odberu
+$short_listname v $domain vlastníkom konferencie $short_listname.
+Pozvanie môžete prijať jednoduchým odpovedaním na túto správu.
+
+Alebo by ste mali zahrnúť nasledujúci riadok - a iba nasledujúci
+riadok - v správe pre $request_email:
+
+    confirm $token
+
+Poznámka, jednoduché odoslanie `Odpovedať' na túto správu by malo fungovať vo
+väčšine emailových programov.
+
+Ak chcete toto pozvanie odmietnuť, jednoducho to ignorujte túto správu. Ak máte
+akékoľvek otázky, pošlite ich na adresu
+$owner_email.
