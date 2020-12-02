@@ -23,6 +23,8 @@ Bugs
 * Implemented a ``scrubber`` for plain text digests.  (Closes #473)
 * The ``mailman gatenews`` command now adds ``original_size`` as a message
   attribute.  (Extends fix for #762)
+* Handle FileNotFoundError when creating digest.mmdf file without
+  parent directory present (Closes #699)
 
 New Features
 ------------
