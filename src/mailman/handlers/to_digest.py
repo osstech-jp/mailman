@@ -43,6 +43,9 @@ class ToDigest:
             return
         # Open the mailbox that will be used to collect the current digest.
         mailbox_path = os.path.join(mlist.data_path, 'digest.mmdf')
+        # Create parent directory of 'digest.mmdf' if not present
+        if not os.path.exists(mlist.data_path):
+            os.mkdir(mlist.data_path)
         # Lock the mailbox and append the message.
         with Mailbox(mailbox_path, create=True) as mbox:
             mbox.add(msg)
