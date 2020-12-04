@@ -43,7 +43,7 @@ def scrub(msg):
                 # Unknown or empty charset.
                 payload = payload.decode('us-ascii', 'replace')
         else:
-            size = len(payload)                                 # noqa: F841
+            size = len(part.get_payload(decode=True))           # noqa: F841
             desc = part.get('content-description',              # noqa: F841
                             _('not available'))
             filename = part.get_filename(_('not available'))    # noqa: F841

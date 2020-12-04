@@ -56,7 +56,7 @@ This is the first text/plain part
 A message part incompatible with plain text digests has been removed ...
 Name: not available
 Type: text/html
-Size: 34 bytes
+Size: 27 bytes
 Desc: not available
 -------------- next part --------------
 Plain text with \\u201cfancy quotes\\u201d from embedded message.
@@ -64,12 +64,12 @@ Plain text with \\u201cfancy quotes\\u201d from embedded message.
 A message part incompatible with plain text digests has been removed ...
 Name: not available
 Type: text/html
-Size: 64 bytes
+Size: 58 bytes
 Desc: not available
 -------------- next part --------------
 A message part incompatible with plain text digests has been removed ...
 Name: Image
 Type: image/jpeg
-Size: 144 bytes
+Size: 16 bytes
 Desc: A JPEG image
 """)
