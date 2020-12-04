@@ -1,0 +1,25 @@
+To: list@example.com
+From: user@example.com
+Subject: Test Message
+Message-ID: <msg@example.com>
+Date: Thu, 3 Dec 2020 15:18:27 +0100
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------04218E0A720FDBFA6DB11AF1"
+
+--------------04218E0A720FDBFA6DB11AF1
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+This is a plain text body
+
+--------------04218E0A720FDBFA6DB11AF1
+Content-Type: text/html; charset=UTF-8;
+ name="junk.html"
+Content-Disposition: attachment;
+ filename="junk.html"
+Content-Transfer-Encoding: base64
+
+VW0gZnLDvGhlcmUgTmFjaHJpY2h0ZW4K
+
+--------------04218E0A720FDBFA6DB11AF1--

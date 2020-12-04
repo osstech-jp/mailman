@@ -23,8 +23,10 @@ Bugs
 * Implemented a ``scrubber`` for plain text digests.  (Closes #473)
 * The ``mailman gatenews`` command now adds ``original_size`` as a message
   attribute.  (Extends fix for #762)
-* Handle FileNotFoundError when creating digest.mmdf file without
-  parent directory present (Closes #699)
+* Handle FileNotFoundError when creating digest.mmdf file without a
+  parent directory present.  (Closes #699)
+* Fixed an issue where content filtering can throw UnicodeEncodeError when
+  converting HTML to plain text.  (Closes #798)
 
 New Features
 ------------
