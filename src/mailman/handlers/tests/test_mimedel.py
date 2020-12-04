@@ -351,6 +351,22 @@ MIME-Version: 1.0
         payload_lines = msg.get_payload().splitlines()
         self.assertEqual(payload_lines[0], '<html><head></head>')
 
+    def test_html_part_with_non_ascii(self):
+        # Ensure we can convert HTML to plain text in an HTML sub-part which
+        # contains non-ascii.
+        with resource_open(
+                'mailman.handlers.tests.data',
+                'html_to_plain.eml') as fp:
+            msg = email.message_from_binary_file(fp)
+        process = config.handlers['mime-delete'].process
+        with dummy_script():
+            process(self._mlist, msg, {})
+        part = msg.get_payload(1)
+        cset = part.get_content_charset('us-ascii')
+        text = part.get_payload(decode=True).decode(cset).splitlines()
+        self.assertEqual(text[0], 'Converted text/html to text/plain')
+        self.assertEqual(text[2], 'Um frühere Nachrichten')
+
 
 class TestMiscellaneous(unittest.TestCase):
     """Test various miscellaneous filtering actions."""
