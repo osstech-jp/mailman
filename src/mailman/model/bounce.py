@@ -124,6 +124,13 @@ class BounceProcessor:
         """See `IBounceProcessor`."""
         list_manager = getUtility(IListManager)
         mlist = list_manager.get(event.list_id)
+        if mlist is None:
+            # List was removed before the bounce is processed.
+            event.processed = True
+            # This needs an explicit commit because of the raise.
+            config.db.commit()
+            raise InvalidBounceEvent(
+                'Bounce for non-existent list {}'.format(event.list_id))
         member = mlist.members.get_member(event.email)
         if member is None:
             event.processed = True
