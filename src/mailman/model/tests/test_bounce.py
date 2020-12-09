@@ -20,7 +20,7 @@
 import unittest
 
 from datetime import datetime, timedelta
-from mailman.app.lifecycle import create_list
+from mailman.app.lifecycle import create_list, remove_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.bounce import (
     BounceContext, IBounceProcessor, InvalidBounceEvent)
@@ -137,6 +137,18 @@ Message-Id: <first>
         self.assertIsNotNone(member.last_bounce_received)
         # Also, the delivery should be unset, the default.
         self.assertIsNone(member.preferences.delivery_status)
+
+        # Now create another event for Anne.
+        self._subscribe_and_add_bounce_event('anne@example.com', create=False,
+                                             subscribe=False)
+        # Now delete the list and process the bounce for the non-existent list.
+        remove_list(self._mlist)
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 1)
+        # If the MailingList has been deleted, an InvalidBounceEvent exception
+        # is raised.
+        with self.assertRaises(InvalidBounceEvent):
+            self._processor.process_event(events[0])
 
     def test_bounce_score_increases_once_everyday(self):
         # Test only the bounce events more than a day apart can increase the

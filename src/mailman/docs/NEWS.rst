@@ -27,6 +27,7 @@ Bugs
   parent directory present.  (Closes #699)
 * Fixed an issue where content filtering can throw UnicodeEncodeError when
   converting HTML to plain text.  (Closes #798)
+* A bounce for a non-existent list is now handled.  (Closes #799)
 
 New Features
 ------------
