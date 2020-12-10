@@ -78,7 +78,7 @@ You would then need to set both the `class` and `url` variables in
 
     [database]
     class: mailman.database.mysql.MySQLDatabase
-    url: mysql+pymysql://myuser:mypassword@mymysqlhost/mailman?charset=utf8&use_unicode=1
+    url: mysql+pymysql://myuser:mypassword@mymysqlhost/mailman?charset=utf8mb4&use_unicode=1
 
 The last part of the url specifies the charset that client expects from the
 server and to use Unicode via the flag `use_unicode`.  You can find more about
