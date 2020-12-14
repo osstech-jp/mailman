@@ -17,6 +17,7 @@
 
 """The email commands 'join' and 'subscribe'."""
 
+from email.header import decode_header, make_header
 from email.utils import formataddr, parseaddr
 from mailman.core.i18n import _
 from mailman.interfaces.address import InvalidEmailAddressError
@@ -79,7 +80,12 @@ other than the sender of the command.
         if delivery_mode is ContinueProcessing.no:
             return ContinueProcessing.no
         if not address:
-            display_name, email = parseaddr(msg['from'])
+            # RFC 2047 decode the From: header.
+            if msg['from'] is None:
+                display_name, email = ('', '')
+            else:
+                decoded_from = str(make_header(decode_header(msg['from'])))
+                display_name, email = parseaddr(decoded_from)
         else:
             display_name, email = ('', address)
         # Address could be None or the empty string.

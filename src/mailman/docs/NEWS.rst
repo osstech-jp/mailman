@@ -28,6 +28,8 @@ Bugs
 * Fixed an issue where content filtering can throw UnicodeEncodeError when
   converting HTML to plain text.  (Closes #798)
 * A bounce for a non-existent list is now handled.  (Closes #799)
+* RFC 2047 From: headers in emailed ``join`` commands are now decoded.
+  (Closes #802)
 
 New Features
 ------------
