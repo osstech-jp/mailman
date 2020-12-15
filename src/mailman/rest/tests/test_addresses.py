@@ -498,6 +498,34 @@ class TestAddresses(unittest.TestCase):
                      'nobody@example.com/addresses')
         self.assertEqual(cm.exception.code, 404)
 
+    def test_update_display_name(self):
+        verified_on = now()
+        with transaction():
+            anne = getUtility(IUserManager).create_address('anne@example.com')
+            anne.verified_on = verified_on
+        json, response = call_api(
+            'http://localhost:9001/3.0/addresses/anne@example.com')
+        # By default, there won't be any display_name since we didn't specify
+        # any above when creating the address.
+        self.assertFalse('display_name' in json)
+        json, response = call_api(
+            'http://localhost:9001/3.0/addresses/anne@example.com',
+            method='PATCH', data={'display_name': 'Anne Person'})
+        self.assertEqual(response.status_code, 204)
+        # Now the address should have a display_name set.
+        json, response = call_api(
+            'http://localhost:9001/3.0/addresses/anne@example.com')
+        self.assertEqual(json['display_name'], 'Anne Person')
+        # This name can also be updated.
+        json, response = call_api(
+            'http://localhost:9001/3.0/addresses/anne@example.com',
+            method='PATCH', data={'display_name': 'Anne P. Person'})
+        self.assertEqual(response.status_code, 204)
+        # Now the address should have a display_name updated to new one.
+        json, response = call_api(
+            'http://localhost:9001/3.0/addresses/anne@example.com')
+        self.assertEqual(json['display_name'], 'Anne P. Person')
+
 
 class TestAPI31Addresses(unittest.TestCase):
     """UUIDs are represented as hex instead of int in API 3.1

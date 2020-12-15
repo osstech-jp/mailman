@@ -138,6 +138,29 @@ Now Cris's address is unverified.
     self_link: http://localhost:9001/3.0/addresses/cris@example.com
 
 
+Updating
+========
+
+Each address has a ``display_name`` associated with it. This name can be
+updated by PATCH'ing the address resource::
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com',
+    ...           method='PATCH', data={'display_name': 'Cris P. Person'})
+    date: ...
+    server: ...
+    status: 204
+
+This should update the display_name associated::
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com')
+    display_name: Cris P. Person
+    email: cris@example.com
+    http_etag: "..."
+    original_email: cris@example.com
+    registered_on: 2005-08-01T07:49:23
+    self_link: http://localhost:9001/3.0/addresses/cris@example.com
+
+
 The user
 ========
 
@@ -168,7 +191,7 @@ The user is now created and the address is linked to it:
 A link to the user resource is now available as a sub-resource.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com')
-    display_name: Cris Person
+    display_name: Cris P. Person
     email: cris@example.com
     http_etag: "..."
     original_email: cris@example.com

@@ -155,6 +155,24 @@ class AnAddress(_AddressBase):
         else:
             okay(response, self._resource_as_json(self._address))
 
+    def on_patch(self, request, response):
+        """Patch an existing Address."""
+        if self._address is None:
+            not_found(response)
+        else:
+            # The only attribute of a address that can be PATCH'd is the
+            # display_name. To change the verified_on, use the /verify
+            # endpoint.
+            validator = Validator(display_name=str)
+            try:
+                data = validator(request)
+            except ValueError as error:
+                bad_request(response, str(error))
+                return
+            display_name = data.pop('display_name')
+            self._address.display_name = display_name
+            no_content(response)
+
     def on_delete(self, request, response):
         if self._address is None:
             not_found(response)
