@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-11-08 22:21+0000\n"
+"PO-Revision-Date: 2020-12-06 22:34+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3.2\n"
+"X-Generator: Weblate 4.4-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -954,7 +954,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
-msgstr ""
+msgstr "Bir dosyadaki bir mesajı posta listesinin kuyruğuna ekle."
 
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
@@ -962,16 +962,20 @@ msgid ""
 "    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 msgstr ""
+"    Mesajın ekleneceği kuyruğun adı.  QUEUE, kuyruk dizini içindeki\n"
+"    dizinlerden biri olmalıdır.  Belirtilmezse, gelen kuyruğu kullanılır."
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
-msgstr ""
+msgstr "Kullanılabilir tüm kuyruk adlarının bir listesini göster ve çık."
 
 #: src/mailman/commands/cli_inject.py:60
 msgid ""
 "    Name of file containing the message to inject.  If not given, or\n"
 "    '-' (without the quotes) standard input is used."
 msgstr ""
+"    Eklenecek mesajı içeren dosyanın adı.  Belirtilmezse, veya '-'\n"
+"    (tırnak işaretleri olmadan) belirtilirse standart giriş kullanılır."
 
 #: src/mailman/commands/cli_inject.py:66
 msgid ""
@@ -979,10 +983,13 @@ msgid ""
 "    dictionary.  Use the format key=value.  Multiple -m options are\n"
 "    allowed."
 msgstr ""
+"    Mesaj üst veri sözlüğüne eklenecek ek üst veri anahtar/değer çiftleri.\n"
+"    anahtar=değer biçimini kullanın.  Birden fazla -m seçeneğine izin\n"
+"    verilmektedir."
 
 #: src/mailman/commands/cli_inject.py:79
 msgid "No such queue: $queue"
-msgstr ""
+msgstr "Böyle bir kuyruk yok: $queue"
 
 #: src/mailman/commands/cli_lists.py:49
 msgid "List all mailing lists."
@@ -1010,6 +1017,10 @@ msgid ""
 "    must be the email host name.  Multiple -d options may be given.\n"
 "    "
 msgstr ""
+"    Yalnızca, e-posta makine adı olması gereken, belirtilen etki alanında\n"
+"    barındırılan posta listelerini listele.  Birden fazla -d seçeneği "
+"belirtilebilir.\n"
+"    "
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
@@ -1027,12 +1038,21 @@ msgid ""
 "    list is required.  It must be a valid email address and the domain must be\n"
 "    registered with Mailman.  List names are forced to lower case."
 msgstr ""
+"    Bir posta listesi oluştur.\n"
+"\n"
+"    'Tam nitelikli liste adı', yani posta listesinin gönderme adresi\n"
+"    gereklidir.  Geçerli bir e-posta adresi olmalıdır ve etki alanı Mailman'"
+"e\n"
+"    kaydedilmelidir.  Liste adları küçük harfe zorlanır."
 
 #: src/mailman/commands/cli_lists.py:130
 msgid ""
 "    Set the list's preferred language to CODE, which must be a registered two\n"
 "    letter language code."
 msgstr ""
+"    Listenin tercih edilen dilini CODE olarak ayarla, kayıtlı bir iki harfli "
+"dil kodu\n"
+"    olması gereklidir."
 
 #: src/mailman/commands/cli_lists.py:136
 msgid ""
@@ -1042,16 +1062,23 @@ msgid ""
 "    send a list creation notice to the address.  More than one owner can be\n"
 "    specified."
 msgstr ""
+"    Bir liste sahibi e-posta adresi belirt.  Adres zaten Mailman'e kayıtlı\n"
+"    değilse kaydedilir ve bir kullanıcıya bağlanır.  Mailman adrese bir "
+"onay\n"
+"    mesajı ile birlikte, aynı zamanda bir liste oluşturma bildirimi de\n"
+"    gönderecektir. Birden fazla sahip belirtilebilir."
 
 #: src/mailman/commands/cli_lists.py:145
 msgid ""
 "    Notify the list owner by email that their mailing list has been\n"
 "    created."
 msgstr ""
+"    Posta listesinin oluşturulduğunu liste sahibine e-posta ile\n"
+"    bildir."
 
 #: src/mailman/commands/cli_lists.py:151
 msgid "Print less output."
-msgstr ""
+msgstr "Daha az çıktı yazdır."
 
 #: src/mailman/commands/cli_lists.py:155
 msgid ""
@@ -1059,6 +1086,9 @@ msgid ""
 "    the default behavior, but these options are provided for backward\n"
 "    compatibility.  With -D do not register the mailing list's domain."
 msgstr ""
+"    Henüz kaydedilmediyse, posta listesinin etki alanını kaydet.  Bu\n"
+"    öntanımlı davranıştır ancak bu seçenekler geriye dönük uyumluluk için\n"
+"    sağlanmıştır.  -D seçeneği ile, posta listesinin etki alanını kaydetme."
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
@@ -1871,10 +1901,13 @@ msgid ""
 "        pre-approved by the list administrator.\n"
 "        "
 msgstr ""
+"Posta listesi acil durum beklemesinde ve bu mesaj liste yöneticisi\n"
+"        tarafından önceden onaylanmadı.\n"
+"        "
 
 #: src/mailman/rules/emergency.py:47
 msgid "Emergency moderation is in effect for this list"
-msgstr ""
+msgstr "Bu liste için acil durum denetimi etkin"
 
 #: src/mailman/rules/implicit_dest.py:37
 msgid "Catch messages with implicit destination."
