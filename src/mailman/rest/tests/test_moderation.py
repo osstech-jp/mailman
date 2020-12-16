@@ -502,6 +502,33 @@ class TestSubscriptionModeration(unittest.TestCase):
                      dict(action='reject'))
         self.assertEqual(cm.exception.code, 404)
 
+    def test_reject_with_reason(self):
+        # Try to reject a request with an additional comment/reason.
+        # POST to the request to reject it.  This leaves a bounce message in
+        # the virgin queue.
+        with transaction():
+            token, token_owner, member = self._registrar.register(self._anne)
+        # Anne's subscription request got held.
+        self.assertIsNone(member)
+        # Clear out the virgin queue, which currently contains the
+        # confirmation message sent to Anne.
+        get_queue_messages('virgin')
+        url = 'http://localhost:9001/3.0/lists/ant@example.com/requests/{}'
+        reason = 'You are not authorized!'
+        json, response = call_api(url.format(token), dict(
+            action='reject',
+            reason=reason))
+        self.assertEqual(response.status_code, 204)
+        # And the rejection message to Anne is now in the virgin queue.
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        message = items[0].msg
+        self.assertEqual(message['From'], 'ant-bounces@example.com')
+        self.assertEqual(message['To'], 'anne@example.com')
+        self.assertEqual(message['Subject'],
+                         'Request to mailing list "Ant" rejected')
+        self.assertTrue(reason in message.as_string())
+
     def test_hold_keeps_holding(self):
         # POST to the request to continue holding it.
         with transaction():

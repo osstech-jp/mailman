@@ -42,6 +42,8 @@ REST
 * List configuration option ``send_goodbye_message`` is now exposed through
   the REST API. (See !737)
 * Allow updating an Addresses' display_name attribute. (Closes #786)
+* Allow specifying a reason when rejecting a subscription request. (Closes
+  #767)
 
 3.3.2
 =====
