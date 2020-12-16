@@ -908,6 +908,12 @@ Elly is no longer a member of the mailing list.
     >>> set(member.mailing_list for member in elly.memberships.members)
     set()
 
+DELETE request on Memberships also optionally accept ``pre_approved`` (defaults
+to False) and ``pre_confirmed`` (defaults to ``True``, for backwards behavioural
+compatability with older versions of Mailman 3) boolean parameters. Depending
+on the Mailinglist's ``unsubscription_policy``, Mailman can optionally send a
+confirmation email to User or ask the moderator to approve the request.
+
 
 Changing delivery address
 =========================
