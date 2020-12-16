@@ -44,6 +44,8 @@ REST
 * Allow updating an Addresses' display_name attribute. (Closes #786)
 * Allow specifying a reason when rejecting a subscription request. (Closes
   #767)
+* REST API now exposes unsubscription requests that can be handled by
+  Moderator. (Closes #768)
 
 3.3.2
 =====
