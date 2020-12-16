@@ -70,7 +70,9 @@ class IndividualRequest(_ModerationBase):
 
     def on_post(self, request, response):
         try:
-            validator = Validator(action=enum_validator(Action))
+            validator = Validator(action=enum_validator(Action),
+                                  reason=str,
+                                  _optional=('reason',))
             arguments = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
@@ -107,10 +109,10 @@ class IndividualRequest(_ModerationBase):
                 not_found(response)
             else:
                 no_content(response)
+                reason = arguments.get('reason', _('[No reason given]'))
                 send_rejection(
                     self._mlist, _('Subscription request'),
-                    pendable['email'],
-                    _('[No reason given]'))
+                    pendable['email'], reason)
 
 
 class _SubscriptionRequestsFound(_ModerationBase, CollectionMixin):
