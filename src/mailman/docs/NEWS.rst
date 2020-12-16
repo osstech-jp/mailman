@@ -41,6 +41,7 @@ REST
 ----
 * List configuration option ``send_goodbye_message`` is now exposed through
   the REST API. (See !737)
+* Allow updating an Addresses' display_name attribute. (Closes #786)
 
 3.3.2
 =====
