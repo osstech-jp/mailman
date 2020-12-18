@@ -24,7 +24,9 @@ from click.testing import CliRunner
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_addmembers import addmembers
 from mailman.interfaces.bans import IBanManager
+from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import get_queue_messages, subscribe
 from mailman.testing.layers import ConfigLayer
@@ -78,6 +80,24 @@ class TestCLIAddMembers(unittest.TestCase):
         self.assertEqual(
            result.output,
            'Membership is banned (skipping): '
+           'Anne Person <aperson@example.com>\n'
+           )
+        self.assertEqual(len(list(self._mlist.members.members)), 0)
+
+    def test_subscription_pending(self):
+        # Create an address.
+        address = getUtility(IUserManager).create_address(
+            'aperson@example.com', 'Anne Person')
+        # Pend a subscription.
+        self._mlist.subscription_policy = SubscriptionPolicy.confirm
+        ISubscriptionManager(self._mlist).register(address)
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            result = self._command.invoke(addmembers, (
+                infp.name, 'ant.example.com'))
+        self.assertEqual(
+           result.output,
+           'Subscription already pending (skipping): '
            'Anne Person <aperson@example.com>\n'
            )
         self.assertEqual(len(list(self._mlist.members.members)), 0)
