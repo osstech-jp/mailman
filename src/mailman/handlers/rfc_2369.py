@@ -64,6 +64,7 @@ def process(mlist, msg, msgdata):
     # suppressed).
     headers.extend((
         ('List-Help', '<mailto:{}?subject=help>'.format(requestaddr)),
+        ('List-Owner', '<mailto:{}>'.format(mlist.owner_address)),
         ('List-Unsubscribe', '<mailto:{}>'.format(mlist.leave_address)),
         ('List-Subscribe', '<mailto:{}>'.format(mlist.join_address)),
         ))
