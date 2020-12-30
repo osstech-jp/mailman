@@ -32,6 +32,8 @@ Bugs
   (Closes #802)
 * The ``mailman addmembers`` command now catches and reports a
   ``SubscriptionPendingError``.  (Closes #805)
+* RFC 2369 ``List-Owner`` header is now added when these headers are included.
+  (Closes #809)
 
 New Features
 ------------
