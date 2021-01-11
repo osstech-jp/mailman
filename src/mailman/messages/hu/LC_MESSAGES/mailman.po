@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: akoscomp <nagy.akos@libreoffice.ro>\n"
+"Last-Translator: Peter Donka <peter.donka@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/hu/>\n"
 "Language: hu\n"
@@ -123,7 +123,9 @@ msgstr ""
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "A(z) {mlist.display_name} levelezési listára szóló feliratkozása le van tiltva"
+msgstr ""
+"A(z) {mlist.display_name} levelezési listára szóló feliratkozása le van "
+"tiltva"
 
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
@@ -165,7 +167,8 @@ msgid ""
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
 "    default configuration file is loaded."
 msgstr ""
-"    Használandó konfigurációs fájl. Ha nincs megadva, akkor a környezeti változó \n"
+"    Használandó konfigurációs fájl. Ha nincs megadva, akkor a környezeti "
+"változó \n"
 "a MAILMAN_CONFIG_FILE felhasználásra kerül, ha be van állítva.\n"
 "Ha egyiket sem adják meg, a az alapértelmezett konfigurációs fájl betöltődik."
 
@@ -174,12 +177,15 @@ msgid ""
 "    Running mailman commands as root is not recommended and mailman will\n"
 "    refuse to run as root unless this option is specified."
 msgstr ""
-"    A mailman parancsok root felhasználóként történő futtatása nem ajánlott, és a mailman\n"
+"    A mailman parancsok root felhasználóként történő futtatása nem ajánlott, "
+"és a mailman\n"
 "    nem hajlandó root-ként futtatni, hacsak ez az opció nincs megadva."
 
 #: src/mailman/bin/mailman.py:129
 msgid "    If you are sure you want to run as root, specify --run-as-root."
-msgstr "    Ha biztos vagy benne, hogy root-ként akarod futtatni, add meg a --run-as-root értéket."
+msgstr ""
+"    Ha biztos vagy benne, hogy root-ként akarod futtatni, add meg a --run-as-"
+"root értéket."
 
 #: src/mailman/bin/master.py:157
 msgid ""
@@ -2087,7 +2093,8 @@ msgstr ""
 
 msgid "list:admin:notice:disable.txt"
 msgstr ""
-"${member} előfizetése le van tiltva ${listname} a visszafordulási pontszámuk miatt\n"
+"${member} előfizetése le van tiltva ${listname} a visszafordulási pontszámuk "
+"miatt\n"
 "amely meghaladja a levelezési lista bounce_score_threshold.\n"
 "\n"
 "Az aktiváló DSN, ha rendelkezésre áll, csatlakoztatva van."
