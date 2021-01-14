@@ -1,6 +1,7 @@
 include *.py
 include COPYING MANIFEST.in
 recursive-include .buildout *
+recursive-include _ext *
 recursive-include contrib *
 recursive-include cron *
 recursive-include data *
