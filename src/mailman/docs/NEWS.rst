@@ -35,6 +35,11 @@ Bugs
 * RFC 2369 ``List-Owner`` header is now added when these headers are included.
   (Closes #809)
 
+Command line
+------------
+* A new ``findmember`` ``mailman`` subcommand has been added to find to which
+  lists and with which roles an address matching a given pattern belongs.
+
 New Features
 ------------
 * There is a new setting ``hold_digest`` in the ``[mailman]`` section of
