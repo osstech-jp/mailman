@@ -20,7 +20,7 @@
 import re
 import logging
 
-from email.header import Header
+from email.header import Header, decode_header, make_header
 from itertools import count
 from mailman.chains.base import Chain, Link
 from mailman.config import config
@@ -104,8 +104,10 @@ class HeaderMatchRule:
         for value in headers:
             if isinstance(value, Header):
                 value = value.encode()
+            # RFC2047 decode, but don't change value as it affects the msg.
+            new_value = str(make_header(decode_header(value)))
             try:
-                mo = re.search(self.pattern, value, re.IGNORECASE)
+                mo = re.search(self.pattern, new_value, re.IGNORECASE)
             except re.error as error:
                 log.error(
                     "Invalid regexp '{}' in header_matches for {}: {}".format(
