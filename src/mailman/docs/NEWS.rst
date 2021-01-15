@@ -34,6 +34,8 @@ Bugs
   ``SubscriptionPendingError``.  (Closes #805)
 * RFC 2369 ``List-Owner`` header is now added when these headers are included.
   (Closes #809)
+* Header filters will now properly match RFC 2047 encoded headers.
+  (Closes #815)
 
 Command line
 ------------
