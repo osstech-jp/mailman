@@ -81,7 +81,8 @@ with various roles.
     <Member: Jeff Person <jperson@example.com> on bee@example.com
              as MemberRole.member>
 
-First, use a pattern of ``person`` and no --role to get all members and roles.
+First, use a pattern of ``person`` and no ``--role`` option to get all members
+and roles.
 ::
 
     >>> command('mailman findmember person')
