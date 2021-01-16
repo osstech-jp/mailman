@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-12-06 22:34+0000\n"
+"PO-Revision-Date: 2021-01-02 14:22+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 4.4.1-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -126,13 +126,14 @@ msgstr "$event.mlist.fqdn_listname posta listesine katılmaya davet edildiniz."
 #: src/mailman/app/subscriptions.py:600
 msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
 msgstr ""
-"$event.mlist.fqdn_listname posta listesinden ayrılmak için onayınız "
+"$event.mlist.fqdn_listname posta listesinden ayrılmak için doğrulamanız "
 "gerekiyor."
 
 #: src/mailman/app/subscriptions.py:604
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
 msgstr ""
-"$event.mlist.fqdn_listname posta listesine katılmak için onayınız gerekiyor."
+"$event.mlist.fqdn_listname posta listesine katılmak için doğrulamanız "
+"gerekiyor."
 
 #: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:515 src/mailman/bin/runner.py:96
 msgid ""
@@ -508,7 +509,7 @@ msgid ""
 msgstr ""
 "    FILENAME içindeki tüm üye adreslerini -d/--delivery seçeneğiyle "
 "belirtilen\n"
-"    teslimat modu ile ekle.  FILENAME standart girişi belirtmek için '-' "
+"    teslimat modu ile ekle.  FILENAME, standart girişi belirtmek için '-' "
 "olabilir.\n"
 "    Boş satırlar ve '#' ile başlayan satırlar yok sayılır.\n"
 "    "
@@ -758,7 +759,7 @@ msgid ""
 msgstr ""
 "    Varsa -m/--member ile belirtilenlere ek olarak adresleri FILENAME "
 "içinde\n"
-"    olan liste üyelerini sil.  FILENAME standart girişi belirtmek için '-' "
+"    olan liste üyelerini sil.  FILENAME, standart girişi belirtmek için '-' "
 "olabilir.\n"
 "    Boş satırlar ve '#' ile başlayan satırlar yok sayılır.\n"
 "    "
@@ -1168,6 +1169,11 @@ msgid ""
 "    to stdout is the default mode.\n"
 "    "
 msgstr ""
+"    Bir posta listesinin üyelerini görüntüle, ekle veya sil.\n"
+"    Görüntüleme sırasında çeşitli ölçütlere göre filtreleme yapılabilir.\n"
+"    Hiçbir seçenek belirtilmezse, öntanımlı davranış olarak posta\n"
+"    listesi üyeleri standart çıkışta görüntülenir.\n"
+"    "
 
 #: src/mailman/commands/cli_members.py:262
 msgid ""
@@ -1176,6 +1182,11 @@ msgid ""
 "    '#' are ignored.  This option is deprecated in favor of 'mailman\n"
 "    addmembers'."
 msgstr ""
+"    [MOD] FILENAME içindeki tüm üye adreslerini ekle.  FILENAME, standart\n"
+"    girişi belirtmek için '-' olabilir.  Boş satırlar ve '#' ile başlayan "
+"satırlar yok\n"
+"    sayılır.  Bu seçenek kullanımdan kaldırılmıştır, bunun yerine 'mailman\n"
+"    addmembers' kullanılmalıdır."
 
 #: src/mailman/commands/cli_members.py:270
 msgid ""
@@ -1184,6 +1195,11 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    This option is deprecated in favor of 'mailman delmembers'."
 msgstr ""
+"    [MOD] FILENAME içindeki tüm üye adreslerini belirtilen listeden sil.\n"
+"    FILENAME, standart girişi belirtmek için '-' olabilir.  Boş satırlar ve\n"
+"    '#' ile başlayan satırlar yok sayılır.  Bu seçenek kullanımdan "
+"kaldırılmıştır,\n"
+"    bunun yerine 'mailman delmembers' kullanılmalıdır."
 
 #: src/mailman/commands/cli_members.py:278
 msgid ""
@@ -1193,12 +1209,21 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    This option is deprecated in favor of 'mailman syncmembers'."
 msgstr ""
+"    [MOD] Belirtilen posta listesinin tüm üye adreslerini FILENAME içindeki\n"
+"    üye adresleriyle eşzamanla.  FILENAME, standart girişi belirtmek için '-'"
+"\n"
+"    olabilir.  Boş satırlar ve '#' ile başlayan satırlar yok sayılır.  Bu "
+"seçenek\n"
+"    kullanımdan kaldırılmıştır, bunun yerine 'mailman syncmembers'\n"
+"    kullanılmalıdır."
 
 #: src/mailman/commands/cli_members.py:287
 msgid ""
 "    [MODE] Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
+"    [MOD] Çıktıyı standart çıkış yerine FILENAME dosyasında göster.\n"
+"    FILENAME, standart çıkışı belirtmek için '-' olabilir."
 
 #: src/mailman/commands/cli_members.py:294
 msgid ""
@@ -1207,16 +1232,24 @@ msgid ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then delivery members are used. "
 msgstr ""
+"    [çıktı filtresi] Yalnızca belirtilen ROLE sahip üyeleri görüntüle. Rol '"
+"any\n"
+"    (herhangi biri)', 'member (üye)', 'nonmember (üye olmayan)', 'owner\n"
+"    (sahip)', 'moderator (moderatör)' veya 'administrator (yönetici)' (yani\n"
+"    sahipler ve moderatörler) olabilir. Belirtilmezse teslimat üyeleri "
+"kullanılır. "
 
 #: src/mailman/commands/cli_members.py:302
 msgid "    [output filter] Display only regular delivery members."
-msgstr ""
+msgstr "    [çıktı filtresi] Yalnızca normal teslimat üyelerini görüntüle."
 
 #: src/mailman/commands/cli_members.py:313 src/mailman/commands/cli_syncmembers.py:183
 msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
 msgstr ""
+"    Herhangi bir değişiklik yapma.  Bunun yerine listeye ne yapılacağını\n"
+"    yazdır."
 
 #: src/mailman/commands/cli_members.py:320
 msgid ""
@@ -1224,6 +1257,11 @@ msgid ""
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
+"    [çıktı filtresi] Yalnızca belirtilen türdeki özet üyelerini görüntüle.\n"
+"    'any' herhangi bir özet türü anlamına gelir, 'plaintext' yalnızca düz "
+"metin (rfc\n"
+"    1153) türü özetler anlamına gelir, 'mime' MIME türü özetler anlamına "
+"gelir."
 
 #: src/mailman/commands/cli_members.py:328
 msgid ""
@@ -1236,10 +1274,26 @@ msgid ""
 "    administrator or moderator, and 'unknown' means that delivery was disabled\n"
 "    for unknown (legacy) reasons."
 msgstr ""
+"    [çıktı filtresi] Yalnızca belirtilen teslimat durumuna sahip üyeleri "
+"görüntüle.\n"
+"    'enabled' teslimatı etkin olan tüm üyeler anlamına gelir, 'any' herhangi "
+"bir\n"
+"    nedenle teslimatı devre dışı olan üyeler anlamına gelir, 'byuser' üyenin "
+"kendi\n"
+"    teslimatını devre dışı bıraktığı anlamına gelir, 'bybounces' teslimatın "
+"otomatik\n"
+"    geri dönme işleyicisi tarafından devre dışı bırakıldığı anlamına gelir, "
+"'byadmin'\n"
+"    teslimatın liste yöneticisi veya moderatör tarafından devre dışı "
+"bırakıldığı anlamına\n"
+"    gelir ve 'unknown' teslimatın bilinmeyen (eski) nedenlerle devre dışı "
+"bırakıldığı\n"
+"    anlamına gelir."
 
 #: src/mailman/commands/cli_notify.py:37
 msgid "Notify list owners/moderators of pending requests."
 msgstr ""
+"Liste sahiplerini/moderatörlerini bekleyen istekler konusunda bilgilendir."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid ""
@@ -1247,46 +1301,59 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the requests for all mailing lists."
 msgstr ""
+"    Bu posta listesi üzerinde işlem yap.  Birden çok --list seçeneği "
+"belirtilebilir.\n"
+"    Argüman, bir liste kimliği veya tam nitelikli bir liste adı olabilir.  "
+"Bu seçenek\n"
+"    olmadan, tüm posta listeleri için istekler üzerinde çalış."
 
 #: src/mailman/commands/cli_notify.py:77 src/mailman/commands/cli_notify.py:130
 msgid "The {} list has {} moderation requests waiting."
-msgstr ""
+msgstr "{} listesinin bekleyen {} denetim isteği var."
 
 #: src/mailman/commands/cli_notify.py:108
 msgid ""
 "\n"
 "Held Subscriptions:\n"
 msgstr ""
+"\n"
+"Bekletilen Abonelikler:\n"
 
 #: src/mailman/commands/cli_notify.py:110 src/mailman/commands/cli_notify.py:114
 msgid "User: {}\n"
-msgstr ""
+msgstr "Kullanıcı: {}\n"
 
 #: src/mailman/commands/cli_notify.py:112
 msgid ""
 "\n"
 "Held Unsubscriptions:\n"
 msgstr ""
+"\n"
+"Bekletilen Abonelikten Çıkmalar:\n"
 
 #: src/mailman/commands/cli_notify.py:116
 msgid ""
 "\n"
 "Held Messages:\n"
 msgstr ""
+"\n"
+"Bekletilen Mesajlar:\n"
 
 #: src/mailman/commands/cli_notify.py:122
 msgid "Sender: {}\n"
-msgstr ""
+msgstr "Gönderen: {}\n"
 
 #: src/mailman/commands/cli_notify.py:123
 msgid "Subject: {}\n"
-msgstr ""
+msgstr "Konu: {}\n"
 
 #: src/mailman/commands/cli_notify.py:124
 msgid ""
 "Reason: {}\n"
 "\n"
 msgstr ""
+"Neden: {}\n"
+"\n"
 
 #: src/mailman/commands/cli_notify.py:133
 msgid ""
@@ -1295,10 +1362,14 @@ msgid ""
 "{}\n"
 "Please attend to this at your earliest convenience.\n"
 msgstr ""
+"{} listesinin bekleyen {} denetim isteği var.\n"
+"\n"
+"{}\n"
+"Lütfen bu konuyla en kısa zamanda ilgilenin.\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
-msgstr ""
+msgstr "Bir kuyruk dosyasından bilgi al."
 
 #: src/mailman/commands/cli_qfile.py:42
 msgid ""
@@ -1307,48 +1378,58 @@ msgid ""
 "    representation.  Useful with 'mailman qfile -i <file>'.  In that case, the\n"
 "    list of unpickled objects will be left in a variable called 'm'."
 msgstr ""
+"    Nesneyi güzel bir şekilde yazdırmaya çalışma.  Bu, nesnede bir sorun "
+"varsa\n"
+"    ve sadece biçimlendirilmemiş (unpickled) bir gösterim elde etmek "
+"istiyorsanız\n"
+"    faydalıdır.  'mailman qfile -i <dosya>' komutuyla kullanışlıdır.  Bu "
+"durumda,\n"
+"    biçimlendirilmemiş nesnelerin listesi 'm' adlı bir değişkende "
+"bırakılacaktır."
 
 #: src/mailman/commands/cli_qfile.py:50
 msgid ""
 "    Start an interactive Python session, with a variable called 'm'\n"
 "    containing the list of unpickled objects."
 msgstr ""
+"    Biçimlendirilmemiş (unpickled) nesnelerin listesini içeren 'm' adlı\n"
+"    bir değişkenle birlikte etkileşimli bir Python oturumu başlat."
 
 #: src/mailman/commands/cli_qfile.py:67
 msgid "[----- start pickle -----]"
-msgstr ""
+msgstr "[----- biçimlendirme (pickle) başlangıcı -----]"
 
 #: src/mailman/commands/cli_qfile.py:70
 msgid "<----- start object $count ----->"
-msgstr ""
+msgstr "<----- $count. nesne başlangıcı ----->"
 
 #: src/mailman/commands/cli_qfile.py:75
 msgid "[----- end pickle -----]"
-msgstr ""
+msgstr "[----- biçimlendirme (pickle) sonu -----]"
 
 #: src/mailman/commands/cli_qfile.py:77
 msgid "Number of objects found (see the variable 'm'): $count"
-msgstr ""
+msgstr "Bulunan nesnelerin sayısı ('m' değişkenine bakın): $count"
 
 #: src/mailman/commands/cli_status.py:34
 msgid "Show the current running status of the Mailman system."
-msgstr ""
+msgstr "Mailman sisteminin geçerli çalışma durumunu göster."
 
 #: src/mailman/commands/cli_status.py:38
 msgid "GNU Mailman is not running"
-msgstr ""
+msgstr "GNU Mailman çalışmıyor"
 
 #: src/mailman/commands/cli_status.py:41
 msgid "GNU Mailman is running (master pid: $pid)"
-msgstr ""
+msgstr "GNU Mailman çalışıyor (ana PID: $pid)"
 
 #: src/mailman/commands/cli_status.py:44
 msgid "GNU Mailman is stopped (stale pid: $pid)"
-msgstr ""
+msgstr "GNU Mailman durduruldu (eski PID: $pid)"
 
 #: src/mailman/commands/cli_status.py:50
 msgid "GNU Mailman is in an unexpected state ($hostname != $fqdn_name)"
-msgstr ""
+msgstr "GNU Mailman beklenmeyen bir durumda ($hostname != $fqdn_name)"
 
 #: src/mailman/commands/cli_syncmembers.py:151
 msgid ""
@@ -1361,6 +1442,17 @@ msgid ""
 "    be removed from the list.  FILENAME can be '-' to indicate standard input.\n"
 "    "
 msgstr ""
+"    Bir listenin üyeliğini bir girdi dosyasıyla eşzamanlamak için gerektiği\n"
+"    şekilde üye ekle ve sil.  FILENAME, satır başına bir üye olacak şekilde\n"
+"    yeni üyeliği içeren dosyadır.  Boş satırlar ve '#' ile başlayan satırlar "
+"yok\n"
+"    sayılır. FILENAME içindeki listeye zaten üye olmayan adresler, -d/--"
+"delivery\n"
+"    seçeneğiyle belirtildiği şekilde teslimat moduyla listeye eklenecektir.\n"
+"    Adresleri FILENAME içinde olmayan liste üyeleri listeden kaldırılacaktır."
+"\n"
+"    FILENAME, standart girişi belirtmek için '-' olabilir.\n"
+"    "
 
 #: src/mailman/commands/cli_syncmembers.py:163
 msgid ""
@@ -1368,14 +1460,19 @@ msgid ""
 "    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
 "    or no delivery.  If not given, the default is regular."
 msgstr ""
+"    Eklenen üyelerin teslimat modunu 'regular', 'mime', 'plain', 'summary'\n"
+"    veya 'disabled' olarak ayarla.  Yani, bir tane normal, üç tane özet "
+"modu\n"
+"    veya teslimat yok. Belirtilmezse, öntanımlı olan normaldir."
 
 #: src/mailman/commands/cli_syncmembers.py:169
 msgid "    Override the list's setting for send_welcome_message to added members."
 msgstr ""
+"    Listenin, eklenen üyeler için send_welcome_message ayarını geçersiz kıl."
 
 #: src/mailman/commands/cli_unshunt.py:33
 msgid "Unshunt messages."
-msgstr ""
+msgstr "Mesajların yönlendirilmesini kaldır."
 
 #: src/mailman/commands/cli_unshunt.py:37
 msgid ""
@@ -1388,28 +1485,33 @@ msgid ""
 "Cannot unshunt message $filebase, skipping:\n"
 "$error"
 msgstr ""
+"$filebase mesajının yönlendirilmesi kaldırılamıyor, atlanıyor:\n"
+"$error"
 
 #: src/mailman/commands/cli_version.py:32
 msgid "Display Mailman's version."
-msgstr ""
+msgstr "Mailman sürümünü görüntüle."
 
 #: src/mailman/commands/cli_withlist.py:76
 msgid "ipython is not available, set use_ipython to no"
 msgstr ""
+"ipython kullanılabilir değil, use_ipython seçeneğini no olarak ayarlayın"
 
 #: src/mailman/commands/cli_withlist.py:85
 msgid "readline not available"
-msgstr ""
+msgstr "readline kullanılabilir değil"
 
 #: src/mailman/commands/cli_withlist.py:133
 msgid "Invalid value for [shell]use_python: {}"
-msgstr ""
+msgstr "[shell]use_python için geçersiz değer: {}"
 
 #: src/mailman/commands/cli_withlist.py:149
 msgid ""
 "This script provides you with a general framework for interacting with a\n"
 "mailing list."
 msgstr ""
+"Bu betik size bir posta listesiyle etkileşime geçmek için genel bir çerçeve\n"
+"sağlar."
 
 #: src/mailman/commands/cli_withlist.py:153
 msgid ""
@@ -1419,6 +1521,13 @@ msgid ""
 "variable 'm' will be available in the global namespace.  It will reference the\n"
 "mailing list object."
 msgstr ""
+"Bu betiği kullanmanın iki yolu vardır: etkileşimli veya programlı olarak.\n"
+"Etkileşimli olarak kullanmak, Python'un etkileşimli komut çalıştırıcısından\n"
+"bir posta listesi ile oynamanızı, onu incelemenizi ve değiştirmenizi sağlar."
+"\n"
+"Etkileşimli olarak çalışırken, 'm' değişkeni genel ad uzayında "
+"kullanılabilir\n"
+"olacak ve posta listesi nesnesini ifade edecektir."
 
 #: src/mailman/commands/cli_withlist.py:160
 msgid ""
@@ -1431,6 +1540,16 @@ msgid ""
 "where `listspec` is either the posting address of the mailing list\n"
 "(e.g. ant@example.com), or the List-ID (e.g. ant.example.com)."
 msgstr ""
+"Programlı olarak, bir posta listesi üzerinde çalışması için bir fonksiyon "
+"yazabilirsiniz\n"
+"ve bu betik temizlik işlerini halledecektir (örnekler için aşağıya bakın). "
+"Bu durumda,\n"
+"genel kullanım söz dizimi aşağıdaki gibidir:\n"
+"\n"
+"% mailman withlist [seçenekler] -l liste [argümanlar ...]\n"
+"\n"
+"`liste` ya posta listesinin gönderme adresidir (örn. ant@example.com),\n"
+"ya da liste kimliğidir (örn. ant.example.com)."
 
 #: src/mailman/commands/cli_withlist.py:170
 msgid ""
@@ -1461,6 +1580,13 @@ msgid ""
 "Running listaddr.listaddr() ...\n"
 "ant@example.com"
 msgstr ""
+"Komut satırından aşağıdaki komutu çalıştırarak listenin gönderme adresini\n"
+"yazdırabilirsiniz:\n"
+"\n"
+"% mailman withlist -r listaddr -l ant@example.com\n"
+"listaddr içe aktarılıyor ...\n"
+"listaddr.listaddr() çalıştırılıyor ...\n"
+"ant@example.com"
 
 #: src/mailman/commands/cli_withlist.py:197
 msgid ""
@@ -1471,6 +1597,12 @@ msgid ""
 "Running listaddr.requestaddr() ...\n"
 "ant-request@example.com"
 msgstr ""
+"Ve aşağıdakini çalıştırarak listenin istek adresini yazdırabilirsiniz:\n"
+"\n"
+"% mailman withlist -r listaddr.requestaddr -l ant@example.com\n"
+"listaddr içe aktarılıyor ...\n"
+"listaddr.requestaddr() çalıştırılıyor ...\n"
+"ant-request@example.com"
 
 #: src/mailman/commands/cli_withlist.py:205
 msgid ""
@@ -1488,6 +1620,22 @@ msgid ""
 "Note that you do not have to explicitly commit any database transactions, as\n"
 "Mailman will do this for you (assuming no errors occured)."
 msgstr ""
+"Başka bir örnek olarak, belirli bir posta listesinin görünen adını "
+"değiştirmek\n"
+"istediğinizi varsayalım.  Aşağıdaki fonksiyonu, `change.py` adlı bir "
+"dosyaya\n"
+"koyabilirsiniz:\n"
+"\n"
+"def change(mlist, display_name):\n"
+"    mlist.display_name = display_name\n"
+"\n"
+"ve komut satırından şunu çalıştırabilirsiniz:\n"
+"\n"
+"% mailman withlist -r change -l ant@example.com 'Benim Listem'\n"
+"\n"
+"Mailman bunu sizin için yapacağından (herhangi bir hata oluşmadığı "
+"varsayılarak)\n"
+"sizin herhangi bir veri tabanı işlemi yapmanıza gerek olmadığını unutmayın."
 
 #: src/mailman/commands/cli_withlist.py:224
 msgid ""
@@ -1520,7 +1668,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:253
 msgid "Print detailed instructions and exit."
-msgstr ""
+msgstr "Ayrıntılı talimatları yazdır ve çık."
 
 #: src/mailman/commands/cli_withlist.py:257
 msgid ""
@@ -1534,55 +1682,55 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:273
 msgid "Regular expression requires --run"
-msgstr ""
+msgstr "Düzenli ifade --run gerektirir"
 
 #: src/mailman/commands/cli_withlist.py:300
 msgid "The variable 'm' is the $listspec mailing list"
-msgstr ""
+msgstr "'m' değişkeni $listspec posta listesidir"
 
 #: src/mailman/commands/eml_confirm.py:35
 msgid "Confirm a subscription request."
-msgstr ""
+msgstr "Bir abonelik isteğini doğrula."
 
 #: src/mailman/commands/eml_confirm.py:42
 msgid "No confirmation token found"
-msgstr ""
+msgstr "Doğrulama belirteci bulunamadı"
 
 #: src/mailman/commands/eml_confirm.py:78
 msgid "Confirmed"
-msgstr ""
+msgstr "Doğrulandı"
 
 #: src/mailman/commands/eml_confirm.py:82
 msgid "Confirmation token did not match"
-msgstr ""
+msgstr "Doğrulama belirteci eşleşmedi"
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
-msgstr ""
+msgstr "Argümanlarınızı tekrarlar."
 
 #: src/mailman/commands/eml_end.py:33
 msgid "Stop processing commands."
-msgstr ""
+msgstr "Komutları işlemeyi durdur."
 
 #: src/mailman/commands/eml_end.py:47
 msgid "An alias for 'end'."
-msgstr ""
+msgstr "'end' için takma ad."
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
-msgstr ""
+msgstr "Kullanılabilir e-posta komutları hakkında yardım al."
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
-msgstr ""
+msgstr "yok"
 
 #: src/mailman/commands/eml_help.py:59
 msgid "$self.name: no such command: $command_name"
-msgstr ""
+msgstr "$self.name: böyle bir komut yok: $command_name"
 
 #: src/mailman/commands/eml_help.py:70
 msgid "$self.name: too many arguments: $printable_arguments"
-msgstr ""
+msgstr "$self.name: çok fazla argüman: $printable_arguments"
 
 #: src/mailman/commands/eml_membership.py:64
 msgid ""
@@ -1597,27 +1745,27 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:73
 msgid "Join this mailing list."
-msgstr ""
+msgstr "Bu posta listesine katıl."
 
 #: src/mailman/commands/eml_membership.py:89
 msgid "$self.name: No valid address found to subscribe"
-msgstr ""
+msgstr "$self.name: Abone olmak için geçerli adres bulunamadı"
 
 #: src/mailman/commands/eml_membership.py:116
 msgid "$person has a pending subscription for $listname"
-msgstr ""
+msgstr "$person, $listname için bekleyen bir aboneliğe sahip"
 
 #: src/mailman/commands/eml_membership.py:119
 msgid "Confirmation email sent to $person"
-msgstr ""
+msgstr "Doğrulama e-postası $person kişisine gönderildi"
 
 #: src/mailman/commands/eml_membership.py:136 src/mailman/commands/eml_membership.py:146
 msgid "bad argument: $argument"
-msgstr ""
+msgstr "hatalı argüman: $argument"
 
 #: src/mailman/commands/eml_membership.py:159
 msgid "An alias for 'join'."
-msgstr ""
+msgstr "'join' için takma ad."
 
 #: src/mailman/commands/eml_membership.py:170
 msgid ""
@@ -1625,38 +1773,43 @@ msgid ""
 "\n"
 "You may be asked to confirm your request."
 msgstr ""
+"Bu posta listesinden ayrıl.\n"
+"\n"
+"İsteğinizi doğrulamanız istenebilir."
 
 #: src/mailman/commands/eml_membership.py:173
 msgid "Leave this mailing list."
-msgstr ""
+msgstr "Bu posta listesinden ayrıl."
 
 #: src/mailman/commands/eml_membership.py:179
 msgid "$self.name: No valid email address found to unsubscribe"
-msgstr ""
+msgstr "$self.name: Abonelikten çıkarmak için geçerli adres bulunamadı"
 
 #: src/mailman/commands/eml_membership.py:185
 msgid "No registered user for email address: $email"
-msgstr ""
+msgstr "E-posta adresi için kayıtlı kullanıcı yok: $email"
 
 #: src/mailman/commands/eml_membership.py:192
 msgid "Invalid or unverified email address: $email"
-msgstr ""
+msgstr "Geçersiz veya doğrulanmamış e-posta adresi: $email"
 
 #: src/mailman/commands/eml_membership.py:211
 msgid "$self.name: $email is not a member of $mlist.fqdn_listname"
-msgstr ""
+msgstr "$self.name: $email, $mlist.fqdn_listname listesinin üyesi değil"
 
 #: src/mailman/commands/eml_membership.py:222
 msgid "$person left $mlist.fqdn_listname"
-msgstr ""
+msgstr "$person, $mlist.fqdn_listname listesinden ayrıldı"
 
 #: src/mailman/commands/eml_membership.py:224
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
 msgstr ""
+"$mlist.fqdn_listname listesinden ayrılmak için $person kişisine doğrulama e-"
+"postası gönderildi"
 
 #: src/mailman/commands/eml_membership.py:234
 msgid "An alias for 'leave'."
-msgstr ""
+msgstr "'leave' için takma ad."
 
 #: src/mailman/commands/eml_who.py:42
 msgid ""
@@ -1670,75 +1823,80 @@ msgstr ""
 
 #: src/mailman/commands/eml_who.py:50
 msgid "Get a list of the list members."
-msgstr ""
+msgstr "Liste üyelerinin bir listesini al."
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
-msgstr ""
+msgstr "Üyelik listesini görme yetkiniz yok."
 
 #: src/mailman/commands/eml_who.py:78
 msgid ""
 "Unrecognized or invalid argument(s):\n"
 "{}"
 msgstr ""
+"Tanınmayan veya geçersiz argüman(lar):\n"
+"{}"
 
 #: src/mailman/commands/eml_who.py:101
 msgid ""
 "Members of the {} mailing list:\n"
 "{}"
 msgstr ""
+"{} posta listesinin üyeleri:\n"
+"{}"
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
-msgstr ""
+msgstr "Gönderinin alındığına dair bir bildirim gönder."
 
 #: src/mailman/handlers/acknowledge.py:75
 msgid "$display_name post acknowledgment"
-msgstr ""
+msgstr "$display_name için gönderi alındı bildirimi"
 
 #: src/mailman/handlers/after_delivery.py:33
 msgid "Perform some bookkeeping after a successful post."
-msgstr ""
+msgstr "Başarılı bir gönderiden sonra birtakım kayıt işlemlerini yap."
 
 #: src/mailman/handlers/arc_sign.py:65
 msgid "Perform ARC auth checks and attach resulting headers"
 msgstr ""
+"ARC kimlik doğrulama denetimleri gerçekleştir ve ortaya çıkan başlıkları ekle"
 
 #: src/mailman/handlers/avoid_duplicates.py:44
 msgid "Suppress some duplicates of the same message."
-msgstr ""
+msgstr "Aynı mesajın bazı kopyalarını gösterme."
 
 #: src/mailman/handlers/cleanse_dkim.py:42
 msgid "Remove DomainKeys headers."
-msgstr ""
+msgstr "DomainKeys başlıklarını kaldır."
 
 #: src/mailman/handlers/cleanse.py:39
 msgid "Cleanse certain headers from all messages."
-msgstr ""
+msgstr "Tüm mesajlardan belirli başlıkları temizle."
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
-msgstr ""
+msgstr "Mesaj başlıklarını değiştir."
 
 #: src/mailman/handlers/decorate.py:260
 msgid "Decorate a message with headers and footers."
-msgstr ""
+msgstr "Bir mesaja başlıklar ve alt bilgiler ekle."
 
 #: src/mailman/handlers/dmarc.py:127
 msgid "$realname via $mlist.display_name"
-msgstr ""
+msgstr "$mlist.display_name aracılığıyla $realname"
 
 #: src/mailman/handlers/dmarc.py:222
 msgid "Apply DMARC mitigations."
-msgstr ""
+msgstr "DMARC azaltmalarını uygula."
 
 #: src/mailman/handlers/file_recipients.py:35
 msgid "Get the normal delivery recipients from an include file."
-msgstr ""
+msgstr "Normal teslimat alıcılarını dahil edilen bir dosyadan al."
 
 #: src/mailman/handlers/member_recipients.py:42
 msgid "Calculate the regular recipients of the message."
-msgstr ""
+msgstr "Mesajın normal alıcılarını hesapla."
 
 #: src/mailman/handlers/member_recipients.py:77
 msgid ""
@@ -1757,135 +1915,138 @@ msgstr ""
 
 #: src/mailman/handlers/mime_delete.py:68
 msgid "Content filter message notification"
-msgstr ""
+msgstr "İçerik filtresi mesajı bildirimi"
 
 #: src/mailman/handlers/mime_delete.py:102
 msgid "The message's content type was explicitly disallowed"
-msgstr ""
+msgstr "Mesajın içerik türü açıkça yasaklandı"
 
 #: src/mailman/handlers/mime_delete.py:107
 msgid "The message's content type was not explicitly allowed"
-msgstr ""
+msgstr "Mesajın içerik türüne açıkça izin verilmedi"
 
 #: src/mailman/handlers/mime_delete.py:116
 msgid "The message's file extension was explicitly disallowed"
-msgstr ""
+msgstr "Mesajın dosya uzantısına açıkça yasaklandı"
 
 #: src/mailman/handlers/mime_delete.py:120
 msgid "The message's file extension was not explicitly allowed"
-msgstr ""
+msgstr "Mesajın dosya uzantısına açıkça izin verilmedi"
 
 #: src/mailman/handlers/mime_delete.py:132
 msgid "After content filtering, the message was empty"
-msgstr ""
+msgstr "İçerik filtrelemeden sonra mesaj boştu"
 
 #: src/mailman/handlers/mime_delete.py:322
 msgid "Filter the MIME content of messages."
-msgstr ""
+msgstr "Mesajların MIME içeriğini filtrele."
 
 #: src/mailman/handlers/owner_recipients.py:34
 msgid "Calculate the owner and moderator recipients."
-msgstr ""
+msgstr "Sahip ve moderatör alıcılarını hesapla."
 
 #: src/mailman/handlers/replybot.py:44
 msgid "Send automatic responses."
-msgstr ""
+msgstr "Otomatik yanıtlar gönder."
 
 #: src/mailman/handlers/replybot.py:97
 msgid "Auto-response for your message to the \"$display_name\" mailing list"
-msgstr ""
+msgstr "\"$display_name\" posta listesine mesajınız için otomatik yanıt"
 
 #: src/mailman/handlers/replybot.py:110
 msgid "The Mailman Replybot"
-msgstr ""
+msgstr "Mailman Yanıt Botu"
 
 #: src/mailman/handlers/rfc_2369.py:127
 msgid "Add the RFC 2369 List-* headers."
-msgstr ""
+msgstr "RFC 2369 List-* başlıkları ekle."
 
 #: src/mailman/handlers/subject_prefix.py:153
 msgid "Add a list-specific prefix to the Subject header value."
-msgstr ""
+msgstr "Konu başlığı değerine listeye özgü bir ön ek ekle."
 
 #: src/mailman/handlers/tagger.py:173
 msgid "Tag messages with topic matches."
-msgstr ""
+msgstr "Mesajları konu eşleşmeleriyle etiketle."
 
 #: src/mailman/handlers/to_archive.py:34
 msgid "Add the message to the archives."
-msgstr ""
+msgstr "Mesajı arşivlere ekle."
 
 #: src/mailman/handlers/to_digest.py:36
 msgid "Add the message to the digest, possibly sending it."
-msgstr ""
+msgstr "Mesajı muhtemelen göndererek özete ekle."
 
 #: src/mailman/handlers/to_outgoing.py:38
 msgid "Send the message to the outgoing queue."
-msgstr ""
+msgstr "Mesajı giden kuyruğa gönder."
 
 #: src/mailman/handlers/to_usenet.py:39
 msgid "Move the message to the outgoing news queue."
-msgstr ""
+msgstr "Mesajı giden haber kuyruğuna taşı."
 
 #: src/mailman/handlers/validate_authenticity.py:113
 msgid "Perform auth checks and attach Authentication-Results header."
 msgstr ""
+"Kimlik doğrulama denetimleri gerçekleştir ve Authentication-Results başlığı "
+"ekle."
 
 #: src/mailman/interfaces/pipeline.py:53
 msgid "[No details are available]"
-msgstr ""
+msgstr "[Ayrıntı yok]"
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr ""
+msgstr "[Neden belirtilmedi]"
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
-msgstr ""
+msgstr "Yerleşik sahip iş hattı."
 
 #: src/mailman/pipelines/builtin.py:43
 msgid "The built-in posting pipeline."
-msgstr ""
+msgstr "Yerleşik gönderme iş hattı."
 
 #: src/mailman/pipelines/virgin.py:32
 msgid "The virgin queue pipeline."
-msgstr ""
+msgstr "Dahili kuyruk iş hattı."
 
 #: src/mailman/rest/sub_moderation.py:111
 msgid "Subscription request"
-msgstr ""
+msgstr "Abonelik isteği"
 
 #: src/mailman/rules/administrivia.py:52
 msgid "Catch mis-addressed email commands."
-msgstr ""
+msgstr "Yanlış adreslenen e-posta komutlarını yakala."
 
 #: src/mailman/rules/administrivia.py:96
 msgid "Message contains administrivia"
-msgstr ""
+msgstr "Mesaj, yönetici işleri içeriyor"
 
 #: src/mailman/rules/any.py:32
 msgid "Look for any previous rule hit."
-msgstr ""
+msgstr "Önceki kural eşleşmelerini ara."
 
 #: src/mailman/rules/approved.py:45
 msgid "The message has a matching Approve or Approved header."
 msgstr ""
+"Mesajın eşleşen bir Onayla (Approve) veya Onaylandı (Approved) başlığı var."
 
 #: src/mailman/rules/banned_address.py:33
 msgid "Match messages sent by banned addresses."
-msgstr ""
+msgstr "Yasaklı adresler tarafından gönderilen mesajları eşleştir."
 
 #: src/mailman/rules/banned_address.py:45
 msgid "Message sender {} is banned from this list"
-msgstr ""
+msgstr "Mesajı gönderen {} bu listeden yasaklandı"
 
 #: src/mailman/rules/dmarc.py:306
 msgid "Find DMARC policy of From: domain."
-msgstr ""
+msgstr "Kimden: etki alanının DMARC politikasını bul."
 
 #: src/mailman/rules/dmarc.py:326
 msgid "DMARC moderation"
-msgstr ""
+msgstr "DMARC denetimi"
 
 #: src/mailman/rules/dmarc.py:332
 #, python-brace-format
@@ -1894,6 +2055,11 @@ msgid ""
 "quarantine, and your message has been automatically rejected.  If you think that your messages are being "
 "rejected in error, contact the mailing list owner at ${listowner}."
 msgstr ""
+"Bu posta listesine DMARC reddet veya karantinaya al politikası yayınlayan "
+"bir Kimden: etki alanından mesaj göndermenize izin verilmiyor ve mesajınız "
+"otomatik olarak reddedildi.  Mesajlarınızın yanlışlıkla reddedildiğini "
+"düşünüyorsanız, ${listowner} adresinden posta listesi sahibiyle iletişime "
+"geçin."
 
 #: src/mailman/rules/emergency.py:34
 msgid ""
@@ -1911,59 +2077,59 @@ msgstr "Bu liste için acil durum denetimi etkin"
 
 #: src/mailman/rules/implicit_dest.py:37
 msgid "Catch messages with implicit destination."
-msgstr ""
+msgstr "Dolaylı hedefe sahip mesajları yakala."
 
 #: src/mailman/rules/implicit_dest.py:95
 msgid "Message has implicit destination"
-msgstr ""
+msgstr "Mesajın dolaylı bir hedefi var"
 
 #: src/mailman/rules/loop.py:32
 msgid "Look for a posting loop."
-msgstr ""
+msgstr "Gönderi döngüsü ara."
 
 #: src/mailman/rules/loop.py:45
 msgid "Message has already been posted to this list"
-msgstr ""
+msgstr "Mesaj bu listeye zaten gönderildi"
 
 #: src/mailman/rules/max_recipients.py:33
 msgid "Catch messages with too many explicit recipients."
-msgstr ""
+msgstr "Çok fazla açık alıcıya sahip mesajları yakala."
 
 #: src/mailman/rules/max_recipients.py:49
 msgid "Message has more than {} recipients"
-msgstr ""
+msgstr "Mesajın {} adetten fazla alıcısı var"
 
 #: src/mailman/rules/max_size.py:32
 msgid "Catch messages that are bigger than a specified maximum."
-msgstr ""
+msgstr "Belirtilen azami değerden daha büyük olan mesajları yakala."
 
 #: src/mailman/rules/max_size.py:47
 msgid "The message is larger than the {} KB maximum size"
-msgstr ""
+msgstr "Mesaj, azami {} KB boyutundan daha büyük"
 
 #: src/mailman/rules/moderation.py:64
 msgid "Match messages sent by moderated members."
-msgstr ""
+msgstr "Denetlenen üyeler tarafından gönderilen mesajları eşleştir."
 
 #: src/mailman/rules/moderation.py:92
 msgid "The message comes from a moderated member"
-msgstr ""
+msgstr "Mesaj, denetlenen bir üyeden geliyor"
 
 #: src/mailman/rules/moderation.py:110
 msgid "Match messages sent by nonmembers."
-msgstr ""
+msgstr "Üye olmayanlar tarafından gönderilen mesajları eşleştir."
 
 #: src/mailman/rules/moderation.py:125
 msgid "No sender was found in the message."
-msgstr ""
+msgstr "Mesajda gönderen bulunamadı."
 
 #: src/mailman/rules/moderation.py:170
 msgid "The sender is in the nonmember {} list"
-msgstr ""
+msgstr "Gönderen üye olmayan {} listesinde"
 
 #: src/mailman/rules/moderation.py:185
 msgid "The message is not from a list member"
-msgstr ""
+msgstr "Mesaj bir liste üyesinden değil"
 
 #: src/mailman/rules/news_moderation.py:34
 msgid ""
@@ -1974,39 +2140,39 @@ msgstr ""
 
 #: src/mailman/rules/news_moderation.py:46
 msgid "Post to a moderated newsgroup gateway"
-msgstr ""
+msgstr "Denetlenen bir haber grubu aktarımına gönderi"
 
 #: src/mailman/rules/no_senders.py:32
 msgid "Match messages with no valid senders."
-msgstr ""
+msgstr "Geçerli göndereni olmayan mesajları eşleştir."
 
 #: src/mailman/rules/no_senders.py:44
 msgid "The message has no valid senders"
-msgstr ""
+msgstr "Mesajın geçerli bir göndereni yok"
 
 #: src/mailman/rules/no_subject.py:32
 msgid "Catch messages with no, or empty, Subject headers."
-msgstr ""
+msgstr "Konu başlıkları olmayan veya boş olan mesajları yakala."
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr ""
+msgstr "Mesajın konusu yok"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
-msgstr ""
+msgstr "Şüpheli başlıklara sahip mesajları yakala."
 
 #: src/mailman/rules/suspicious.py:97
 msgid "Header \"{}\" matched a bounce_matching_header line"
-msgstr ""
+msgstr "\"{}\" başlığı bounce_matching_header satırıyla eşleşti"
 
 #: src/mailman/rules/truth.py:32
 msgid "A rule which always matches."
-msgstr ""
+msgstr "Her zaman eşleşen bir kural."
 
 #: src/mailman/runners/command.py:101
 msgid "Ignoring non-text/plain MIME parts"
-msgstr ""
+msgstr "text/plain olmayan MIME parçaları yok sayılıyor"
 
 #: src/mailman/runners/command.py:139
 msgid "The results of your email command are provided below.\n"
@@ -2014,7 +2180,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:183
 msgid "- Original message details:"
-msgstr ""
+msgstr "- Orijinal mesaj ayrıntıları:"
 
 #: src/mailman/runners/command.py:187
 msgid "    From: $from_"
@@ -2040,7 +2206,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:205
 msgid "No such command: $command_name"
-msgstr ""
+msgstr "Böyle bir komut yok: $command_name"
 
 #: src/mailman/runners/command.py:219
 msgid ""
@@ -2062,11 +2228,11 @@ msgstr ""
 
 #: src/mailman/runners/command.py:233
 msgid "The results of your email commands"
-msgstr ""
+msgstr "E-posta komutlarınızın sonuçları"
 
 #: src/mailman/runners/digest.py:54
 msgid "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
-msgstr ""
+msgstr "$mlist.display_name Özeti, Cilt $volume, Sayı $digest_number"
 
 #: src/mailman/runners/digest.py:82
 msgid "Today's Topics:\n"
@@ -2074,15 +2240,15 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:151
 msgid "Digest Header"
-msgstr ""
+msgstr "Özet Başlığı"
 
 #: src/mailman/runners/digest.py:171
 msgid "Today's Topics ($count messages)"
-msgstr ""
+msgstr "Bugünün Konuları ($count mesaj)"
 
 #: src/mailman/runners/digest.py:193 src/mailman/runners/digest.py:278
 msgid "Digest Footer"
-msgstr ""
+msgstr "Özet Alt Bilgisi"
 
 #: src/mailman/runners/digest.py:200 src/mailman/runners/digest.py:285
 msgid "End of "
@@ -2094,98 +2260,353 @@ msgstr ""
 
 #: src/mailman/styles/default.py:37
 msgid "Ordinary discussion mailing list style."
-msgstr ""
+msgstr "Sıradan tartışma posta listesi tarzı."
 
 #: src/mailman/styles/default.py:57
 msgid "Announce only mailing list style."
-msgstr ""
+msgstr "Yalnızca duyuru posta listesi tarzı."
 
 #: src/mailman/styles/default.py:77
 msgid "Discussion mailing list style with private archives."
-msgstr ""
+msgstr "Özel arşivlere sahip tartışma posta listesi tarzı."
 
 #: src/mailman/utilities/options.py:47
 msgid "slice and range must be integers: $value"
-msgstr ""
+msgstr "dilim ve aralık tam sayı olmalıdır: $value"
 
 #: src/mailman/utilities/options.py:50
 msgid "Bad runner spec: $value"
-msgstr ""
+msgstr "Hatalı çalıştırıcı belirtimi: $value"
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
+"'$listname' sizin için oluşturuldu.  Posta listeniz hakkında bazı\n"
+"temel bilgiler aşağıdadır.\n"
+"\n"
+"Listenizin kullanıcıları (yöneticileri değil) için e-posta tabanlı bir "
+"arayüz vardır;\n"
+"aşağıdaki adrese konusunda veya gövdesinde sadece 'help' kelimesini içeren\n"
+"bir mesaj göndererek kullanımı hakkında bilgi alabilirsiniz:\n"
+"\n"
+"    $request_email\n"
+"\n"
+"Lütfen tüm soruları $site_email adresine iletin."
 
 msgid "help.txt"
 msgstr ""
+"$listname posta listesi için yardım\n"
+"\n"
+"Bu, $domain etki alanındaki GNU Mailman liste yöneticisinin $version sürümü "
+"için\n"
+"'help' e-posta komutudur.  Aşağıda, bu sitedeki Mailman listelerine "
+"aboneliğiniz\n"
+"hakkında bilgi almak ve onu denetlemek için gönderebileceğiniz komutlar\n"
+"açıklanmaktadır.  Bir komut, Konu satırında veya mesajın gövdesinde olabilir."
+"\n"
+"\n"
+"Komutlar ${listname}-request@${domain} adresine gönderilmelidir.\n"
+"\n"
+"Açıklamalar hakkında - \"<>\" karakterleri arasındaki sözcükler GEREKLİ "
+"ögeleri ve\n"
+"\"[]\" arasındaki sözcükler İSTEĞE BAĞLI ögeleri gösterir.  Komutları "
+"kullanırken \"<>\"\n"
+"veya \"[]\" karakterlerini dahil etmeyin.\n"
+"\n"
+"Aşağıdaki komutlar geçerlidir:\n"
+"\n"
+"    $commands\n"
+"\n"
+"Bir kişinin görmesi gereken sorular ve sorunlar aşağıdaki adrese "
+"gönderilmelidir:\n"
+"\n"
+"    $administrator"
 
 msgid "list:admin:action:post.txt"
 msgstr ""
+"Liste yöneticisi olarak, aşağıdaki posta listesi gönderisi için\n"
+"yetkilendirmeniz isteniyor:\n"
+"\n"
+"    Liste:    $listname\n"
+"    Kimden:    $sender_email\n"
+"    Konu: $subject\n"
+"\n"
+"Mesaj aşağıdaki nedenden dolayı bekletiliyor:\n"
+"\n"
+"$reasons\n"
+"\n"
+"İstediğiniz zaman, isteği onaylamak veya reddetmek için denetim\n"
+"panelinizi ziyaret edin."
 
 msgid "list:admin:action:subscribe.txt"
 msgstr ""
+"Bir posta listesi abonelik isteği onayı için yetkilendirmeniz\n"
+"gerekiyor:\n"
+"\n"
+"    Kim için:  $member\n"
+"    Liste: $listname"
 
 msgid "list:admin:action:unsubscribe.txt"
 msgstr ""
+"Bir posta listesi aboneliğinden çıkma isteği onayı için\n"
+"yetkilendirmeniz gerekiyor:\n"
+"\n"
+"    Kim için:  $member\n"
+"    Liste: $listname"
 
 msgid "list:admin:notice:disable.txt"
 msgstr ""
+"Geri dönme puanları posta listesinin bounce_score_threshold değerini aştığı "
+"için\n"
+"$member kişisinin $listname listesindeki aboneliği devre dışı bırakıldı."
 
 msgid "list:admin:notice:removal.txt"
 msgstr ""
+"$member, çok fazla geri dönme nedeniyle $listname listesi aboneliğinden "
+"çıkarıldı."
 
 msgid "list:admin:notice:subscribe.txt"
-msgstr ""
+msgstr "$member, $display_name listesine başarıyla abone oldu."
 
 msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
+"Ekteki mesaj bir geri dönme olarak alındı, ancak ya geri dönme biçimi\n"
+"tanınmadı ya da ondan hiçbir üye adresi çıkarılamadı.  Bu posta listesi, "
+"geri\n"
+"dönen tüm tanınmayan mesajları liste yönetici(ler)ine gönderecek şekilde\n"
+"yapılandırıldı."
 
 msgid "list:admin:notice:unsubscribe.txt"
-msgstr ""
+msgstr "$member, $display_name listesinden kaldırıldı."
 
 msgid "list:member:digest:header.txt"
 msgstr ""
 
 msgid "list:member:digest:masthead.txt"
 msgstr ""
+"$display_name posta listesi gönderilerini aşağıdaki adrese gönder:\n"
+"\t$listname\n"
+"\n"
+"Abone olmak veya abonelikten çıkmak için aşağıdaki adrese konusu veya\n"
+"gövdesi 'help' olan bir mesaj gönderin:\n"
+"\t$request_email\n"
+"\n"
+"Listeyi yöneten kişiye aşağıdaki adresten ulaşabilirsiniz:\n"
+"\t$owner_email\n"
+"\n"
+"Yanıtlarken, lütfen Konu satırınızı \"Re: $display_name özeti içeriği...\"\n"
+"değil de daha açıklayıcı olacak şekilde düzenleyin"
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
+"_______________________________________________\n"
+"$display_name posta listesi -- $listname\n"
+"Abonelikten çıkmak için ${short_listname}-leave@${domain} adresine bir e-"
+"posta gönderin"
 
 msgid "list:member:regular:header.txt"
 msgstr ""
 
 msgid "list:user:action:invite.txt"
 msgstr ""
+"\"$user_email\" adresiniz, $short_listname posta listesinin sahibi "
+"tarafından\n"
+"$domain etki alanındaki $short_listname posta listesine katılmaya davet "
+"edildi.\n"
+"Bu mesajı yanıtlayarak daveti kabul edebilirsiniz.\n"
+"\n"
+"Veya $request_email adresine aşağıdaki satırı -- ve yalnızca aşağıdaki\n"
+"satırı -- içeren bir mesaj gönderebilirsiniz:\n"
+"\n"
+"    confirm $token\n"
+"\n"
+"Bu mesaja basit bir şekilde bir 'yanıt' göndermenin çoğu e-posta\n"
+"okuyucusunda işe yarayacağını unutmayın.\n"
+"\n"
+"Bu daveti reddetmek istiyorsanız, lütfen bu mesajı dikkate almayın.\n"
+"Herhangi bir sorunuz varsa, lütfen bunları $owner_email adresine\n"
+"gönderin."
 
 msgid "list:user:action:subscribe.txt"
 msgstr ""
+"E-posta Adresi Kaydı Doğrulaması\n"
+"\n"
+"Merhaba, ben $domain etki alanındaki GNU Mailman sunucusuyum.\n"
+"\n"
+"Aşağıdaki e-posta adresi için bir kayıt isteği aldık:\n"
+"\n"
+"    $user_email\n"
+"\n"
+"Bu sitede GNU Mailman kullanmaya başlamadan önce, bunun sizin e-posta "
+"adresiniz\n"
+"olduğunu doğrulamalısınız.  Bunu bu mesajı yanıtlayarak yapabilirsiniz.\n"
+"\n"
+"Veya $request_email adresine aşağıdaki satırı -- ve yalnızca aşağıdaki\n"
+"satırı -- içeren bir mesaj gönderebilirsiniz:\n"
+"\n"
+"    confirm $token\n"
+"\n"
+"Bu mesaja basit bir şekilde bir 'yanıt' göndermenin çoğu e-posta\n"
+"okuyucusunda işe yarayacağını unutmayın.\n"
+"\n"
+"Bu e-posta adresini kaydetmek istemiyorsanız, bu mesajı dikkate almayın.\n"
+"Listeye kötü niyetli bir şekilde abone yapıldığınızı düşünüyorsanız veya "
+"başka\n"
+"sorularınız varsa, aşağıdaki adresle iletişime geçebilirsiniz:\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
+"E-posta Adresini Abonelikten Çıkarma Doğrulaması\n"
+"\n"
+"Merhaba, ben $domain etki alanındaki GNU Mailman sunucusuyum.\n"
+"\n"
+"Aşağıdaki e-posta adresi için bir abonelikten çıkma isteği aldık:\n"
+"\n"
+"    $user_email\n"
+"\n"
+"GNU Mailman sizi abonelikten çıkarmadan önce, isteğinizi doğrulamalısınız.\n"
+"Bunu basit bir şekilde bu mesajı yanıtlayarak yapabilirsiniz.\n"
+"\n"
+"Veya $request_email adresine aşağıdaki satırı -- ve yalnızca aşağıdaki\n"
+"satırı -- içeren bir mesaj gönderebilirsiniz:\n"
+"\n"
+"    confirm $token\n"
+"\n"
+"Bu mesaja basit bir şekilde bir 'yanıt' göndermenin çoğu e-posta\n"
+"okuyucusunda işe yarayacağını unutmayın.\n"
+"\n"
+"Bu e-posta adresini abonelikten çıkarmak istemiyorsanız, bu mesajı dikkate\n"
+"almayın.  Liste aboneliğinden kötü niyetli bir şekilde çıkarıldığınızı "
+"düşünüyorsanız\n"
+"veya başka sorularınız varsa, aşağıdaki adresle iletişime geçebilirsiniz:\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:goodbye.txt"
 msgstr ""
 
 msgid "list:user:notice:hold.txt"
 msgstr ""
+"'$listname' posta listesine gönderdiğiniz\n"
+"\n"
+"    $subject\n"
+"\n"
+"konusundaki e-postanız liste moderatörü onay için gözden\n"
+"geçirene kadar bekletiliyor.\n"
+"\n"
+"Mesajın bekletilme nedeni:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Mesaj ya listeye gönderilecek ya da moderatörün kararı ile ilgili\n"
+"bir bildirim alacaksınız."
 
 msgid "list:user:notice:no-more-today.txt"
 msgstr ""
+"<$sender_email> adresinizden, $listname posta listesinden otomatik bir "
+"yanıt\n"
+"isteyen bir mesaj aldık.\n"
+"\n"
+"Bugün gördüğümüz sayı: $count.  E-posta robotları arasındaki posta "
+"döngüleri\n"
+"gibi sorunlardan kaçınmak için, bugün size başka yanıt göndermeyeceğiz. \n"
+"Lütfen yarın tekrar deneyin.\n"
+"\n"
+"Bu mesajın bir hata olduğunu düşünüyorsanız, veya herhangi bir sorunuz varsa,"
+"\n"
+"lütfen $owner_email adresinden liste sahibiyle iletişime geçin."
 
 msgid "list:user:notice:post.txt"
 msgstr ""
+"$display_name posta listesi tarafından\n"
+"\n"
+"    $subject\n"
+"\n"
+"konulu mesajınız başarıyla alındı."
 
 msgid "list:user:notice:probe.txt"
 msgstr ""
+"Bu bir sorgu mesajıdır.  Bu mesajı yok sayabilirsiniz.\n"
+"\n"
+"$listname posta listesi, sizden mesajları bu adrese teslim ederken bir "
+"sorun\n"
+"olabileceğini belirten bir dizi geri dönme mesajı aldı.  Aşağıda bir örneği "
+"eklenmiştir.\n"
+"E-posta adresinizle ilgili herhangi bir sorun olmadığından emin olmak için "
+"lütfen bu\n"
+"mesajı inceleyin.  Daha fazla yardım için e-posta yöneticinize danışmak\n"
+"isteyebilirsiniz.\n"
+"\n"
+"Posta listesinin etkin bir üyesi olarak kalmak için hiçbir şey yapmanıza "
+"gerek yoktur.\n"
+"\n"
+"Herhangi bir sorunuz veya sorununuz varsa, aşağıdaki adresten posta listesi "
+"sahibiyle\n"
+"iletişime geçebilirsiniz:\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:refuse.txt"
 msgstr ""
+"$listname posta listesine isteğiniz\n"
+"\n"
+"    $request\n"
+"\n"
+"liste moderatörü tarafından reddedildi.  Moderatör, isteğinizi reddetmek\n"
+"için aşağıdaki nedeni belirtti:\n"
+"\n"
+"\"$reason\"\n"
+"\n"
+"Herhangi bir soru veya yorum aşağıdaki adresten liste yöneticisine\n"
+"iletilmelidir:\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
+"$listname posta listesine mesajınız aşağıdaki nedenlerden dolayı\n"
+"reddedildi:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Orijinal mesaj Mailman tarafından alındığı şekilde ektedir."
 
 msgid "list:user:notice:warning.txt"
 msgstr ""
+"Aboneliğiniz, mesajların $sender_email adresine teslim edilmesinde bir "
+"sorun\n"
+"olabileceğini gösteren bir dizi geri dönme aldığından, $listname posta "
+"listesinde devre\n"
+"dışı bırakıldı. Daha fazla yardım için e-posta yöneticinize danışmak "
+"isteyebilirsiniz.\n"
+"\n"
+"Herhangi bir sorunuz veya sorununuz varsa, aşağıdaki adresten posta listesi "
+"sahibiyle\n"
+"iletişime geçebilirsiniz:\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
+"\"$display_name\" posta listesine hoş geldiniz!\n"
+"\n"
+"Bu listeye mesaj göndermek için e-postalarınızı aşağıdaki adrese gönderin:\n"
+"\n"
+"  $listname\n"
+"\n"
+"Aşağıdaki adrese konusu veya gövdesi 'help' olan (tırnak işaretlerini dahil "
+"etmeyin)\n"
+"bir mesaj göndererek e-posta yoluyla abonelikten çıkabilir veya "
+"seçeneklerinizde\n"
+"ayarlamalar yapabilirsiniz:\n"
+"\n"
+"  $request_email\n"
+"\n"
+"Ardından talimatları içeren bir mesaj alacaksınız.  Seçeneklerinizi "
+"değiştirmek için\n"
+"parolanıza ihtiyacınız olacak, ancak güvenlik nedeniyle bu parola buraya "
+"dahil\n"
+"edilmedi. Parolanızı unuttuysanız, web kullanıcı arayüzü üzerinden "
+"sıfırlamanız\n"
+"gerekecektir."
