@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-11-26 04:14+0000\n"
-"Last-Translator: balping <balping314@gmail.com>\n"
+"PO-Revision-Date: 2021-01-16 01:19+0000\n"
+"Last-Translator: Peter Donka <peter.donka@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/hu/>\n"
 "Language: hu\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 4.5-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -29,15 +29,15 @@ msgstr "(nincs tárgy)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
-msgstr ""
+msgstr "[A visszapattanás részletei nem állnak rendelkezésre]"
 
 #: src/mailman/app/bounces.py:226
 msgid "$mlist.display_name mailing list probe message"
-msgstr ""
+msgstr "$mlist.display_name levelezőlista próbaüzenet"
 
 #: src/mailman/app/bounces.py:262
 msgid "Uncaught bounce notification"
-msgstr ""
+msgstr "Észrevétlen visszafordulási értesítés"
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
@@ -91,7 +91,7 @@ msgstr "$mlist.display_name értesítés feliratkozásról"
 
 #: src/mailman/app/notifications.py:136
 msgid "$member's subscription disabled on $mlist.display_name"
-msgstr ""
+msgstr "A $member's előfizetése le van tiltva a $mlist.display_name oldalon"
 
 #: src/mailman/app/notifications.py:157
 #, python-brace-format
@@ -103,6 +103,8 @@ msgstr ""
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
 msgstr ""
+"A(z) {mlist.display_name} levelezési listára szóló feliratkozása le van "
+"tiltva"
 
 #: src/mailman/app/subscriptions.py:310
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
@@ -145,6 +147,8 @@ msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
+"A mesterzárat nem lehet kinyerni, mert úgy tűnik, hogy\n"
+"egy másik masterzár már fut."
 
 #: src/mailman/bin/master.py:163
 msgid ""
