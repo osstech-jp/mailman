@@ -95,14 +95,14 @@ def findmember(ctx, role, pattern):
         email = _get_member_email(member)
         if email != last_email:
             last_list_id = last_role = ''
-            print('Email: {}'.format(email))
+            print(_('Email: {}').format(email))
             last_email = email
         if member.list_id != last_list_id:
             last_role = ''
-            print('    List: {}'.format(member.list_id))
+            print(' '*4 + _('List: {}').format(member.list_id))
             last_list_id = member.list_id
         if member.role != last_role:
-            print('        {}'.format(str(member.role)))
+            print(' '*8 + _('{}').format(str(member.role)))
             last_role = member.role
 
 

@@ -2,8 +2,8 @@
 Finding members
 ===============
 
-The ``mailman findmember`` reports all members with email address matching a
-case-insensitive supplied pattern by address, list and role.
+The ``mailman findmember`` command reports all members with email address
+matching a case-insensitive supplied pattern by address, list and role.
 
     >>> from mailman.testing.documentation import cli
     >>> command = cli('mailman.commands.cli_findmember.findmember')

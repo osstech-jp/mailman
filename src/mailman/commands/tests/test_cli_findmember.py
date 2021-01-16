@@ -40,11 +40,11 @@ class TestCLIFindMember(unittest.TestCase):
         subscribe(self._mlist, 'Anne')
         result = self._command.invoke(findmember, ('.',))
         self.assertEqual(result.exit_code, 0)
-        self.assertEqual(
-            result.output,
-            'Email: aperson@example.com\n'
-            '    List: ant.example.com\n'
-            '        MemberRole.member\n')
+        self.assertEqual(result.output, """\
+Email: aperson@example.com
+    List: ant.example.com
+        MemberRole.member
+""")
 
     def test_no_role(self):
         # Test for no matching roles.
@@ -65,11 +65,11 @@ class TestCLIFindMember(unittest.TestCase):
         subscribe(self._mlist, 'Anne')
         result = self._command.invoke(findmember, ('APerson',))
         self.assertEqual(result.exit_code, 0)
-        self.assertEqual(
-            result.output,
-            'Email: aperson@example.com\n'
-            '    List: ant.example.com\n'
-            '        MemberRole.member\n')
+        self.assertEqual(result.output, """\
+Email: aperson@example.com
+    List: ant.example.com
+        MemberRole.member
+""")
 
     def test_user_and_address(self):
         # Test finding members subscribed as user and as address.
@@ -77,14 +77,14 @@ class TestCLIFindMember(unittest.TestCase):
         subscribe(self._mlistb, 'Bart', as_user=False)
         result = self._command.invoke(findmember, ('.'))
         self.assertEqual(result.exit_code, 0)
-        self.assertEqual(
-            result.output,
-            'Email: aperson@example.com\n'
-            '    List: ant.example.com\n'
-            '        MemberRole.member\n'
-            'Email: bperson@example.com\n'
-            '    List: bee.example.com\n'
-            '        MemberRole.member\n')
+        self.assertEqual(result.output, """\
+Email: aperson@example.com
+    List: ant.example.com
+        MemberRole.member
+Email: bperson@example.com
+    List: bee.example.com
+        MemberRole.member
+""")
 
     def test_only_role(self):
         # Test only finding requested role.
@@ -92,11 +92,11 @@ class TestCLIFindMember(unittest.TestCase):
         subscribe(self._mlistb, 'Bart', role=MemberRole.owner)
         result = self._command.invoke(findmember, ('--role', 'owner', '.'))
         self.assertEqual(result.exit_code, 0)
-        self.assertEqual(
-            result.output,
-            'Email: bperson@example.com\n'
-            '    List: bee.example.com\n'
-            '        MemberRole.owner\n')
+        self.assertEqual(result.output, """\
+Email: bperson@example.com
+    List: bee.example.com
+        MemberRole.owner
+""")
 
     def test_find_only_admins(self):
         # Test the administrators role.
@@ -108,11 +108,11 @@ class TestCLIFindMember(unittest.TestCase):
                                                    'administrator',
                                                    '.'))
         self.assertEqual(result.exit_code, 0)
-        self.assertEqual(
-            result.output,
-            'Email: bperson@example.com\n'
-            '    List: bee.example.com\n'
-            '        MemberRole.owner\n'
-            'Email: cperson@example.com\n'
-            '    List: ant.example.com\n'
-            '        MemberRole.moderator\n')
+        self.assertEqual(result.output, """\
+Email: bperson@example.com
+    List: bee.example.com
+        MemberRole.owner
+Email: cperson@example.com
+    List: ant.example.com
+        MemberRole.moderator
+""")
