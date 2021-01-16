@@ -41,6 +41,8 @@ Command line
 ------------
 * A new ``findmember`` ``mailman`` subcommand has been added to find to which
   lists and with which roles an address matching a given pattern belongs.
+* A new ``changeaddress`` ``mailman`` subcommand has been added to enable site
+  admins to change a user's address.
 
 New Features
 ------------
