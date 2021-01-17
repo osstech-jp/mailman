@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-10-18 22:20+0000\n"
-"Last-Translator: Guinness <guinness@crans.org>\n"
+"PO-Revision-Date: 2020-12-16 22:45+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.3.1-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -101,7 +101,9 @@ msgstr "$member a été désabonné de la liste de diffusion ${mlist.display_nam
 #: src/mailman/app/notifications.py:184
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "Votre abonnement à la liste de diffusion $mlist.display_name a été désactivé"
+msgstr ""
+"Votre abonnement à la liste de diffusion ${mlist.display_name} a été "
+"désactivé"
 
 #: src/mailman/app/subscriptions.py:310
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
@@ -2042,7 +2044,13 @@ msgid "list:member:digest:header.txt"
 msgstr ""
 
 msgid "list:member:digest:masthead.txt"
-msgstr "Envoyez vos postes pour la liste de diffusion $display_name à\t$listnamePour vous inscrire ou désinscrire par courriel, envoyez un message avec 'help'dans  l’objet ou le corps à\t$request_emailVous pouvez contacter la personne gérant la liste en écrivant à\t$owner_emailQuand vous répondez, veuillez éditer l’objet pour qu’il soit plus précis queRe: Contenu du résumé de $display_name ..."
+msgstr ""
+"Envoyez vos postes pour la liste de diffusion $display_name à\t$listnamePour "
+"vous inscrire ou désinscrire par courriel, envoyez un message avec "
+"'help'dans l’objet ou le corps à\t$request_emailVous pouvez contacter la "
+"personne gérant la liste en écrivant à\t$owner_emailQuand vous répondez, "
+"veuillez éditer l’objet pour qu’il soit plus précis queRe: Contenu du résumé "
+"de $display_name."
 
 msgid "list:member:generic:footer.txt"
 msgstr "_______________________________________________Liste de diffusion $display_name -- $listnamePour vous désinscrire, envoyez un courriel à ${short_listname}-leave@${domain}"
