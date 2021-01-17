@@ -10,10 +10,10 @@ Here is a history of user visible changes to Mailman.
 
 .. _news-3.3.3:
 
-3.3.3
-=====
+3.3.3rc1
+========
 
-(202x-xx-xx)
+(2021-01-17)
 
 Bugs
 ----
