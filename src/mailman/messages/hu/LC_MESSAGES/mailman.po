@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2021-01-16 01:19+0000\n"
-"Last-Translator: Peter Donka <peter.donka@gmail.com>\n"
+"PO-Revision-Date: 2021-01-18 11:48+0000\n"
+"Last-Translator: balping <balping314@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/hu/>\n"
 "Language: hu\n"
@@ -131,8 +131,8 @@ msgstr ""
 #: src/mailman/app/subscriptions.py:604
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
 msgstr ""
-"Az ön hozzájárulása szükséges a(z) $event.mlist.fqdn_listname lista "
-"elhagyásához."
+"Az ön hozzájárulása szükséges a(z) $event.mlist.fqdn_listname listához való "
+"csatlakozáshoz."
 
 #: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:515
 #: src/mailman/bin/runner.py:96
