@@ -36,6 +36,8 @@ Bugs
   (Closes #809)
 * Header filters will now properly match RFC 2047 encoded headers.
   (Closes #815)
+* Mailman's ``vette`` log discard messages now include the reasons.
+  (Closes #816)
 
 Command line
 ------------
