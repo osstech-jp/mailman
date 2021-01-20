@@ -271,7 +271,7 @@ class ChildError:
         self._status = status
 
     def _oops(self, request, response):
-        raise falcon.HTTPError(self._status, None)
+        raise falcon.HTTPError(self._status, title=None)  # pragma: nocover
 
     on_get = _oops
     on_post = _oops
