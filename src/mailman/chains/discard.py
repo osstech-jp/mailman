@@ -42,6 +42,7 @@ class DiscardChain(TerminalChainBase):
         This writes a log message, fires a Zope event and then throws the
         message away.
         """
-        log.info('DISCARD: %s', msg.get('message-id', 'n/a'))
+        log.info('DISCARD: %s; %s', msg.get('message-id', 'n/a'),
+                 msgdata.get('moderation_reasons', '[n/a]'))
         notify(DiscardEvent(mlist, msg, msgdata, self))
         # Nothing more needs to happen.
