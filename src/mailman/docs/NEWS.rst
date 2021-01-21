@@ -38,6 +38,8 @@ Bugs
   (Closes #815)
 * Mailman's ``vette`` log discard messages now include the reasons.
   (Closes #816)
+* Increase the default REST API (gunicorn) timeout to 360 seconds from 30 as
+  several API endpoinds can be very slow. (Closes #770)
 
 Command line
 ------------
