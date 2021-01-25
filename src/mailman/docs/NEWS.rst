@@ -40,6 +40,8 @@ Bugs
   (Closes #816)
 * Increase the default REST API (gunicorn) timeout to 360 seconds from 30 as
   several API endpoinds can be very slow. (Closes #770)
+* Header filter rules are now properly processed after deletions and/or
+  reordering.  (Closes #818)
 
 Command line
 ------------

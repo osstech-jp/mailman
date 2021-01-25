@@ -65,9 +65,8 @@ def make_link(header, pattern, chain=None, suffix=None):
     """
     rule_name = _make_rule_name(suffix)
     if rule_name in config.rules:
-        rule = config.rules[rule_name]
-    else:
-        rule = HeaderMatchRule(header, pattern, suffix)
+        del config.rules[rule_name]
+    rule = HeaderMatchRule(header, pattern, suffix)
     if chain is None:
         return Link(rule)
     return Link(rule, LinkAction.jump, chain)

@@ -200,6 +200,70 @@ A message body.
              ('baz', 'z+', LinkAction.jump, 'accept'),
             ])                                      # noqa: E124
 
+    def test_list_complex_rule_deletion(self):
+        # Test that the mailing-list header-match complex rules are read
+        # properly after deletion.
+        chain = config.chains['header-match']
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('Foo', 'a+', 'reject')
+        header_matches.append('Bar', 'b+', 'discard')
+        header_matches.append('Baz', 'z+', 'accept')
+        links = [link for link in chain.get_links(self._mlist, Message(), {})
+                 if link.rule.name != 'any']
+        self.assertEqual(len(links), 3)
+        self.assertEqual([
+            (link.rule.header, link.rule.pattern, link.action, link.chain.name)
+            for link in links
+            ],
+            [('foo', 'a+', LinkAction.jump, 'reject'),
+             ('bar', 'b+', LinkAction.jump, 'discard'),
+             ('baz', 'z+', LinkAction.jump, 'accept'),
+            ])                                      # noqa: E124
+        del header_matches[0]
+        links = [link for link in chain.get_links(self._mlist, Message(), {})
+                 if link.rule.name != 'any']
+        self.assertEqual(len(links), 2)
+        self.assertEqual([
+            (link.rule.header, link.rule.pattern, link.action, link.chain.name)
+            for link in links
+            ],
+            [('bar', 'b+', LinkAction.jump, 'discard'),
+             ('baz', 'z+', LinkAction.jump, 'accept'),
+            ])                                      # noqa: E124
+
+    def test_list_complex_rule_reorder(self):
+        # Test that the mailing-list header-match complex rules are read
+        # properly after reordering.
+        chain = config.chains['header-match']
+        header_matches = IHeaderMatchList(self._mlist)
+        header_matches.append('Foo', 'a+', 'reject')
+        header_matches.append('Bar', 'b+', 'discard')
+        header_matches.append('Baz', 'z+', 'accept')
+        links = [link for link in chain.get_links(self._mlist, Message(), {})
+                 if link.rule.name != 'any']
+        self.assertEqual(len(links), 3)
+        self.assertEqual([
+            (link.rule.header, link.rule.pattern, link.action, link.chain.name)
+            for link in links
+            ],
+            [('foo', 'a+', LinkAction.jump, 'reject'),
+             ('bar', 'b+', LinkAction.jump, 'discard'),
+             ('baz', 'z+', LinkAction.jump, 'accept'),
+            ])                                      # noqa: E124
+        del header_matches[0]
+        header_matches.append('Foo', 'a+', 'reject')
+        links = [link for link in chain.get_links(self._mlist, Message(), {})
+                 if link.rule.name != 'any']
+        self.assertEqual(len(links), 3)
+        self.assertEqual([
+            (link.rule.header, link.rule.pattern, link.action, link.chain.name)
+            for link in links
+            ],
+            [('bar', 'b+', LinkAction.jump, 'discard'),
+             ('baz', 'z+', LinkAction.jump, 'accept'),
+             ('foo', 'a+', LinkAction.jump, 'reject'),
+            ])                                      # noqa: E124
+
     def test_header_in_subpart(self):
         # Test that headers in sub-parts are also matched.
         msg = mfs("""\
@@ -371,12 +435,18 @@ A message body.
             self.assertEqual(event.mlist, self._mlist)
             self.assertEqual(event.msg, msg)
 
+    @unittest.expectedFailure
     @configuration('antispam', header_checks="""
     Header1: a+
     """, jump_chain='hold')
     def test_reuse_rules(self):
         # Test that existing header-match rules are used instead of creating
         # new ones.
+        # MAS Reusing existing rules is problematic. If the rule with say
+        # position = 0 is deleted the following rule should become
+        # header-match-<list-id>-0 but that rule has the old values for
+        # header and pattern.
+        # See https://gitlab.com/mailman/mailman/-/issues/818
         chain = config.chains['header-match']
         header_matches = IHeaderMatchList(self._mlist)
         header_matches.append('Header2', 'b+')
