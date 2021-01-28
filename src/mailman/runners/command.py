@@ -69,7 +69,9 @@ class CommandFinder:
             is_address_command = True
             self.send_response = False
         elif subaddress == 'confirm':
-            mo = re.match(config.mta.verp_confirm_regexp, msg.get('to', ''))
+            # match with re.DOTALL in case header is folded.
+            mo = re.match(config.mta.verp_confirm_regexp,
+                          msg.get('to', ''), re.DOTALL)
             if mo:
                 self.command_lines.append('confirm ' + mo.group('cookie'))
                 is_address_command = True

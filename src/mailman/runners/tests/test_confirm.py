@@ -89,6 +89,28 @@ To: test-confirm@example.com
         address = manager.get_address('anne@example.org')
         self.assertEqual(address.email, 'anne@example.org')
 
+    def test_confirm_with_folded_to_header(self):
+        # Test that a folded To: header is properly parsed.
+        msg = mfs("""\
+From: anne@example.org
+To: "test-confirm+{0}@example.com"
+ <test-confirm+{0}@example.com>
+Subject: Your confirmation is required ...
+
+""".format(self._token))
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='confirm'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        address = list(user.addresses)[0]
+        self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
+        address = manager.get_address('anne@example.org')
+        self.assertEqual(address.email, 'anne@example.org')
+
     def test_confirm_with_utf8_body(self):
         # Clear out the virgin queue so that the test below only sees the
         # reply to the confirmation message.
