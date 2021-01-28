@@ -42,6 +42,8 @@ Bugs
   several API endpoinds can be very slow. (Closes #770)
 * Header filter rules are now properly processed after deletions and/or
   reordering.  (Closes #818)
+* Folded ``To: list-confirm+token@...`` headers are now parsed correctly.
+  (Closes: #819)
 
 Command line
 ------------
