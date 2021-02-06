@@ -109,14 +109,25 @@ Test content
 
     def test_as_string_python_bug_27321(self):
         # Bug 27321 is fixed in Python 3.8.7rc1, 3.9.1rc1 and later.
-        if (sys.version_info.minor == 8 and sys.hexversion >= 0x030807C1 or
-                sys.hexversion >= 0x030901C1):
-            raise unittest.SkipTest
         with path('mailman.email.tests.data', 'bad_email.eml') as email_path:
             with open(str(email_path), 'rb') as fp:
                 msg = message_from_binary_file(fp, Message)
                 fp.seek(0)
                 text = fp.read().decode('ascii', 'replace')
+        if (sys.version_info.minor == 8 and sys.hexversion >= 0x030807C1 or
+                sys.hexversion >= 0x030901C1):
+            self.assertEqual(msg.as_string(), """\
+To: <test@example.com>
+Subject: =?koi8-r?B?UF9AX/NfQ1/5X+xfS1/p?=
+From: =?koi8-r?B?8sXL0sXB1MnXzs/FIMHHxc7U09TXzw==?=
+Content-Type: text/plain; charset="koi8-r"
+Message-Id: <20160614102505.9OFQ19L1C>
+Content-Transfer-Encoding: base64
+
+/vTvIPTh6+/lIPLl6+zh7e7h8SDy4fPz+ezr4T8K68HLz8ogz9TLzMnLINbEwdTYIM/UINzUz8fP
+IM3F1M/EwSDQz8nTy8Egy8zJxc7Uz9c/Cg==
+""")
+        else:
             self.assertEqual(msg.as_string(), text)
 
     def test_as_string_python_bug_32330(self):
