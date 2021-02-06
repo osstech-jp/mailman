@@ -17,6 +17,7 @@
 
 """Test the message API."""
 
+import sys
 import unittest
 
 from email import message_from_binary_file
@@ -107,6 +108,10 @@ Test content
         self.assertEqual(msg.get_payload(), 'Non-ascii text ?.')
 
     def test_as_string_python_bug_27321(self):
+        # Bug 27321 is fixed in Python 3.8.7rc1, 3.9.1rc1 and later.
+        if (sys.version_info.minor == 8 and sys.hexversion >= 0x030807C1 or
+                sys.hexversion >= 0x030901C1):
+            raise unittest.SkipTest
         with path('mailman.email.tests.data', 'bad_email.eml') as email_path:
             with open(str(email_path), 'rb') as fp:
                 msg = message_from_binary_file(fp, Message)
