@@ -15,7 +15,9 @@ Here is a history of user visible changes to Mailman.
 
 (2021-XX-XX)
 
-
+REST
+----
+* Improve the speed of Members lookup via REST API. (Related to #700)
 
 .. _news-3.3.3:
 
