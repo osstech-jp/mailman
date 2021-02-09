@@ -146,7 +146,7 @@ class Member(Model):
         """See `IMember`."""
         return (self._user
                 if self._address is None
-                else getUtility(IUserManager).get_user(self._address.email))
+                else self._address.user)
 
     @property
     def subscriber(self):
