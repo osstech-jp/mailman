@@ -82,10 +82,10 @@ class UserManager:
     @dbconnection
     def get_user(self, store, email):
         """See `IUserManager`."""
-        addresses = store.query(Address).filter_by(email=email.lower())
-        if addresses.count() == 0:
+        address = self.get_address(email)
+        if address is None:
             return None
-        return addresses.one().user
+        return address.user
 
     @dbconnection
     def get_user_by_id(self, store, user_id):
@@ -138,10 +138,8 @@ class UserManager:
     @dbconnection
     def get_address(self, store, email):
         """See `IUserManager`."""
-        addresses = store.query(Address).filter_by(email=email.lower())
-        if addresses.count() == 0:
-            return None
-        return addresses.one()
+        return store.query(
+            Address).filter_by(email=email.lower()).one_or_none()
 
     @property
     @dbconnection

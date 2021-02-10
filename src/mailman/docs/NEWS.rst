@@ -19,6 +19,11 @@ REST
 ----
 * Improve the speed of Members lookup via REST API. (Related to #700)
 
+
+Other
+-----
+* Reduce the number of database calls in UserManager. (Closes #700)
+
 .. _news-3.3.3:
 
 3.3.3
