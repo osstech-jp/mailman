@@ -1,0 +1,2 @@
+$member ha sido borrado de $display_name.
+
