@@ -1,0 +1,2 @@
+$member ha sido suscrito satisfactoriamente a display_name.
+

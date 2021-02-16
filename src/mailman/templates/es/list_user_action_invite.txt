@@ -1,0 +1,15 @@
+Su dirección "$user_email" ha sido invitada a unirse a la lista de correo 
+$short_listname en $domain por el propietario de la lista $short_listname.
+Puede aceptar dicha invitación sencillamente respondiendo a este mensaje.
+
+O incluyendo la siguiente línea -- y solo la siguiente línea -- en
+un mensaje a $request_email:
+
+    confirm $token
+
+Tome nota de que respondiendo a este mensaje debería funcionar en la
+mayoría de lectores de correo.
+
+Si prefiere declinar esta invitación, basta con descartar este mensaje.
+Si tiene dudas, hágaselas llegar a
+$owner_email.
