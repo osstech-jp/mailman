@@ -1,2 +1,2 @@
-$member ha sido suscrito satisfactoriamente a display_name.
+$member ha sido suscrito satisfactoriamente a $display_name.
 
