@@ -20,6 +20,7 @@
 import sys
 import click
 
+from email.header import decode_header, make_header
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.interfaces.command import ICLISubCommand
@@ -120,7 +121,8 @@ def _build_detail(requestdb, subs, unsubs):
             subject = data['_mod_subject']
             reason = data['_mod_reason']
             detail += '    ' + _('Sender: {}\n').format(sender)
-            detail += '    ' + _('Subject: {}\n').format(subject)
+            detail += '    ' + _('Subject: {}\n').format(
+                str(make_header(decode_header(subject))))
             detail += '    ' + _('Reason: {}\n\n').format(reason)
     return detail
 

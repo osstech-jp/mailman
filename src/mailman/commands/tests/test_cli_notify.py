@@ -52,7 +52,7 @@ Subject: message 1
         msg2 = mfs("""\
 To: ant@example.com
 From: bob@example.com
-Subject: message 2
+Subject: =?utf-8?q?message_2?=
 
 """)
         hold_message(self._mlist, msg2, {}, 'Some other reason')
