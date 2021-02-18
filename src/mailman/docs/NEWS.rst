@@ -15,10 +15,14 @@ Here is a history of user visible changes to Mailman.
 
 (2021-XX-XX)
 
+Command line
+------------
+* The ``notify`` subcommand will now decode an RFC 2047 encoded Subject: for
+  the report of held messages.  (Closes #831)
+
 REST
 ----
 * Improve the speed of Members lookup via REST API. (Related to #700)
-
 
 Other
 -----
