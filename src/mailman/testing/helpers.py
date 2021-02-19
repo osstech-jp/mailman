@@ -36,7 +36,8 @@ from mailman.bin.master import Loop as Master
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.email.message import Message
-from mailman.interfaces.member import MemberRole
+from mailman.interfaces.action import Action
+from mailman.interfaces.member import DeliveryStatus, MemberRole
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
@@ -600,3 +601,15 @@ def nose2_start_test_run_callback(plugin):
     if (plugin.stderr or
             len(os.environ.get('MM_VERBOSE_TESTLOG', '').strip()) > 0):
         ConfigLayer.stderr = True
+
+
+def set_moderation(mlist, subscriber, action):
+    """Set moderation action for the subscriber of mailing list."""
+    member = mlist.members.get_member(subscriber)
+    member.moderation_action = Action[action]
+
+
+def set_delivery(mlist, subscriber, delivery_status):
+    """Set delivery_status to DeliveryStatus"""
+    member = mlist.members.get_member(subscriber)
+    member.preferences.delivery_status = DeliveryStatus[delivery_status]
