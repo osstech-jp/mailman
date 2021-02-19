@@ -24,7 +24,7 @@ from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import DeliveryMode, MemberRole
+from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.incoming import IncomingRunner
@@ -624,6 +624,37 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(str(items[0].msg['to']), 'anne@example.com')
         self.assertEqual(
             str(items[0].msg['subject']), 'Welcome to the "Test" mailing list')
+
+    def test_subscribe_with_digests_nomail(self):
+        content, response = call_api('http://localhost:9001/3.1/members', {
+            'list_id': 'test.example.com',
+            'subscriber': 'ANNE@example.com',
+            'pre_verified': True,
+            'pre_confirmed': True,
+            'delivery_status': 'by_user',
+            'delivery_mode': 'plaintext_digests',
+            })
+        self.assertEqual(response.status_code, 201)
+        member = self._mlist.members.get_member('anne@example.com')
+        self.assertIsNotNone(member)
+        self.assertEqual(member.delivery_mode, DeliveryMode.plaintext_digests)
+        self.assertEqual(member.delivery_status, DeliveryStatus.by_user)
+
+    def test_add_owner_with_options(self):
+        content, response = call_api('http://localhost:9001/3.1/members', {
+            'list_id': 'test.example.com',
+            'subscriber': 'ANNE@example.com',
+            'role': 'owner',
+            'pre_verified': True,
+            'pre_confirmed': True,
+            'delivery_status': 'by_user',
+            'delivery_mode': 'plaintext_digests',
+            })
+        self.assertEqual(response.status_code, 201)
+        member = self._mlist.owners.get_member('anne@example.com')
+        self.assertIsNotNone(member)
+        self.assertEqual(member.delivery_mode, DeliveryMode.plaintext_digests)
+        self.assertEqual(member.delivery_status, DeliveryStatus.by_user)
 
 
 class CustomLayer(ConfigLayer):

@@ -765,6 +765,10 @@ approve her subscription request. ``send_welcome_message`` controls whether a
 welcome message will be sent to the user. This option overrides the
 Mailinglist's ``send_welcome_message`` setting.
 
+Additionally, a user can set their ``delivery_mode``, for example to
+``plaintext_digests`` to susbcribe to email digests. Also, they can disable
+delivery on the subscription by setting ``delivery_status`` to ``by_user``.
+
     >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'list_id': 'ant.example.com',
     ...           'subscriber': 'eperson@example.com',
@@ -773,6 +777,8 @@ Mailinglist's ``send_welcome_message`` setting.
     ...           'pre_confirmed': True,
     ...           'pre_approved': True,
     ...           'send_welcome_message': True,
+    ...           'delivery_mode': 'plaintext_digests',
+    ...           'delivery_status': 'by_user',
     ...           })
     content-length: 0
     content-type: application/json
@@ -780,6 +786,15 @@ Mailinglist's ``send_welcome_message`` setting.
     location: http://localhost:9001/3.0/members/8
     server: ...
     status: 201
+
+We can check the preferences for the new subscriber are set correctly:
+
+    >>> dump_json('http://localhost:9001/3.0/members/8/preferences')
+    delivery_mode: plaintext_digests
+    delivery_status: by_user
+    http_etag: "..."
+    self_link: http://localhost:9001/3.0/members/8/preferences
+
 
 Elly is now a known user, and a member of the mailing list.
 ::
@@ -796,7 +811,7 @@ Elly is now a known user, and a member of the mailing list.
     ...
     entry 3:
         address: http://localhost:9001/3.0/addresses/eperson@example.com
-        delivery_mode: regular
+        delivery_mode: plaintext_digests
         display_name: Elly Person
         email: eperson@example.com
         http_etag: ...

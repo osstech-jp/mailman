@@ -96,6 +96,7 @@ def add_member(mlist, record, role=MemberRole.member):
             error.fqdn_listname, record.email, error.role)
     member.preferences.preferred_language = record.language
     member.preferences.delivery_mode = record.delivery_mode
+    member.preferences.delivery_status = record.delivery_status
     # Check for and remove nonmember subscriptions of the user to this list.
     if role is MemberRole.member:
         for address in user.addresses:

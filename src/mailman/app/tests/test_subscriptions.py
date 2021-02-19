@@ -25,7 +25,8 @@ from mailman.app.subscriptions import SubscriptionWorkflow
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import MemberRole, MembershipIsBannedError
+from mailman.interfaces.member import (
+    DeliveryMode, DeliveryStatus, MemberRole, MembershipIsBannedError)
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
@@ -779,3 +780,24 @@ approval:
         self.assertEqual(approved_workflow.user, bill)
         # Run the workflow through.
         list(approved_workflow)
+
+    def test_set_member_prefs_and_subscribe(self):
+        # Test that we can set member's delivery_mode and delivery_status
+        # after subscribing them.
+        anne = self._user_manager.create_user(self._anne)
+        anne_address = anne.addresses[0]
+        workflow = SubscriptionWorkflow(
+            self._mlist, anne_address,
+            pre_verified=True, delivery_mode=DeliveryMode.plaintext_digests,
+            delivery_status=DeliveryStatus.by_user)
+        list(workflow)
+        # Anne's subcription is pending confirmation.
+        confirm_workflow = SubscriptionWorkflow(self._mlist)
+        confirm_workflow.token = workflow.token
+        confirm_workflow.restore()
+        list(confirm_workflow)
+        # Anne should be subscribed with the desired membership preferences.
+        anne_member = self._mlist.members.get_member(anne_address.email)
+        self.assertEqual(
+            anne_member.delivery_mode, DeliveryMode.plaintext_digests)
+        self.assertEqual(anne_member.delivery_status, DeliveryStatus.by_user)

@@ -56,17 +56,18 @@ class TooManyMembersError(MembershipError):
 
 _RequestRecord = namedtuple(
     'RequestRecord',
-    'email display_name delivery_mode, language')
+    'email display_name delivery_mode language delivery_status')
 
 
 @public
 def RequestRecord(email, display_name='',
                   delivery_mode=DeliveryMode.regular,
-                  language=None):
+                  language=None, delivery_status=None):
     if language is None:
         from mailman.core.constants import system_preferences
         language = system_preferences.preferred_language
-    return _RequestRecord(email, display_name, delivery_mode, language)
+    return _RequestRecord(
+        email, display_name, delivery_mode, language, delivery_status)
 
 
 @public
