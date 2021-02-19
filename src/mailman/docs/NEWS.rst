@@ -23,6 +23,8 @@ Command line
 REST
 ----
 * Improve the speed of Members lookup via REST API. (Related to #700)
+* Allow specifying ``delivery_mode`` and ``delivery_status`` when creating a
+  new Member. (Closes #828)
 
 Other
 -----

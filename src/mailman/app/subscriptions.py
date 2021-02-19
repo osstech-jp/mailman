@@ -33,8 +33,8 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
-    NotAMemberError)
+    AlreadySubscribedError, DeliveryMode, DeliveryStatus, MemberRole,
+    MembershipIsBannedError, NotAMemberError)
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.subscriptions import (
     ISubscriptionManager, ISubscriptionService,
@@ -174,11 +174,14 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         'user_key',
         'token_owner_key',
         'send_welcome_message',
+        'delivery_mode',
+        'delivery_status',
         )
 
     def __init__(self, mlist, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False,
-                 invitation=False, send_welcome_message=None):
+                 invitation=False, send_welcome_message=None,
+                 delivery_mode=None, delivery_status=None):
         super().__init__(mlist, subscriber)
         # An invitation is already supposed to be "pre_approved" and by
         # confirming the invite a user will "confirm" and "verify" their
@@ -189,6 +192,18 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         self.pre_approved = invitation or pre_approved
         self.invitation = invitation
         self.send_welcome_message = send_welcome_message
+        # For enum types, we use the string values here instead of the enum
+        # objects because they are easier to serialize when the workflow is
+        # saved in the database. When setting the values, we restore back to
+        # Enum types.
+        if delivery_status is not None:
+            self.delivery_status = delivery_status.name
+        else:
+            self.delivery_status = None
+        if delivery_mode is not None:
+            self.delivery_mode = delivery_mode.name
+        else:
+            self.delivery_mode = None
 
     def _step_sanity_checks(self):
         # Ensure that we have both an address and a user, even if the address
@@ -342,6 +357,13 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         # We can immediately subscribe the user to the mailing list.
         self.member = self.mlist.subscribe(
             self.subscriber, send_welcome_message=self.send_welcome_message)
+        # Set member attributes.
+        if self.delivery_mode:
+            self.member.preferences.delivery_mode = DeliveryMode[
+                self.delivery_mode]
+        if self.delivery_status:
+            self.member.preferences.delivery_status = DeliveryStatus[
+                self.delivery_status]
         assert self.token is None and self.token_owner is TokenOwner.no_one, (
             'Unexpected active token at end of subscription workflow')
 
@@ -541,7 +563,8 @@ class SubscriptionManager:
 
     def register(self, subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False,
-                 invitation=False, send_welcome_message=None):
+                 invitation=False, send_welcome_message=None,
+                 delivery_mode=None, delivery_status=None):
         """See `ISubscriptionManager`."""
         workflow = SubscriptionWorkflow(
             self._mlist, subscriber,
@@ -549,7 +572,10 @@ class SubscriptionManager:
             pre_confirmed=pre_confirmed,
             pre_approved=pre_approved,
             invitation=invitation,
-            send_welcome_message=send_welcome_message)
+            send_welcome_message=send_welcome_message,
+            delivery_mode=delivery_mode,
+            delivery_status=delivery_status,
+            )
         list(workflow)
         return workflow.token, workflow.token_owner, workflow.member
 

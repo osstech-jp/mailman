@@ -23,8 +23,8 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
-    MembershipIsBannedError, MissingPreferredAddressError)
+    AlreadySubscribedError, DeliveryMode, DeliveryStatus, MemberRole,
+    MembershipError, MembershipIsBannedError, MissingPreferredAddressError)
 from mailman.interfaces.subscriptions import (
     ISubscriptionManager, ISubscriptionService, RequestRecord,
     SubscriptionPendingError, TokenOwner)
@@ -288,6 +288,7 @@ class AllMembers(_MemberBase):
                 subscriber=subscriber_validator(self.api),
                 display_name=str,
                 delivery_mode=enum_validator(DeliveryMode),
+                delivery_status=enum_validator(DeliveryStatus),
                 role=enum_validator(MemberRole),
                 pre_verified=as_boolean,
                 pre_confirmed=as_boolean,
@@ -296,7 +297,8 @@ class AllMembers(_MemberBase):
                 send_welcome_message=as_boolean,
                 _optional=('delivery_mode', 'display_name', 'role',
                            'pre_verified', 'pre_confirmed', 'pre_approved',
-                           'invitation', 'send_welcome_message',))
+                           'invitation', 'send_welcome_message',
+                           'delivery_status'))
             arguments = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
@@ -340,6 +342,8 @@ class AllMembers(_MemberBase):
             pre_approved = arguments.pop('pre_approved', False)
             invitation = arguments.pop('invitation', False)
             send_welcome_message = arguments.pop('send_welcome_message', None)
+            delivery_status = arguments.pop('delivery_status', None)
+            delivery_mode = arguments.pop('delivery_mode', None)
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
             # verification, confirmation, or approval.
@@ -351,7 +355,9 @@ class AllMembers(_MemberBase):
                     pre_confirmed=pre_confirmed,
                     pre_approved=pre_approved,
                     invitation=invitation,
-                    send_welcome_message=send_welcome_message)
+                    send_welcome_message=send_welcome_message,
+                    delivery_mode=delivery_mode,
+                    delivery_status=delivery_status)
             except AlreadySubscribedError:
                 conflict(response, b'Member already subscribed')
                 return
@@ -413,7 +419,10 @@ class AllMembers(_MemberBase):
             assert IAddress.providedBy(subscriber)
             email = subscriber.email
         delivery_mode = arguments.pop('delivery_mode', DeliveryMode.regular)
-        record = RequestRecord(email, display_name, delivery_mode)
+        delivery_status = arguments.pop('delivery_status', None)
+        record = RequestRecord(
+            email, display_name, delivery_mode,
+            delivery_status=delivery_status)
         try:
             member = add_member(mlist, record, role)
         except MembershipIsBannedError:
