@@ -475,12 +475,18 @@ class FindMembers(_MemberBase):
             list_id=str,
             subscriber=str,
             role=enum_validator(MemberRole),
+            moderation_action=enum_validator(Action, allow_blank=True),
+            # preferences.
+            delivery_mode=enum_validator(DeliveryMode),
+            delivery_status=enum_validator(DeliveryStatus),
             # Allow pagination.
             page=int,
             count=int,
             fields=list_of_strings_validator,
             _optional=(
-                'list_id', 'subscriber', 'role', 'page', 'count', 'fields'))
+                'list_id', 'subscriber', 'role', 'moderation_action',
+                'delivery_mode', 'delivery_status',
+                'page', 'count', 'fields'))
         try:
             data = validator(request)
         except ValueError as error:

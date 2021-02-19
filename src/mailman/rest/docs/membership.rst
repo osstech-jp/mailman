@@ -17,10 +17,10 @@ There are no mailing lists and no members yet.
 We create a mailing list, which starts out with no members.
 ::
 
-    >>> from mailman.app.lifecycle import create_list   
+    >>> from mailman.app.lifecycle import create_list
     >>> bee = create_list('bee@example.com')
     >>> from mailman.config import config
-    >>> transaction = config.db    
+    >>> transaction = config.db
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/members')
@@ -700,6 +700,58 @@ Or, we can find all the memberships for an address with a specific role.
     start: 0
     total_size: 2
 
+Or, we can search for all members with a specific moderation action on a list.
+
+    >>> from mailman.testing.helpers import set_moderation
+    >>> set_moderation(bee, 'cperson@example.com', 'hold')
+    >>> transaction.commit()
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'moderation_action': 'hold',
+    ...           'list_id': 'bee.example.com',
+    ...           })
+    entry 0:
+        address: http://localhost:9001/3.0/addresses/cperson@example.com
+        delivery_mode: regular
+        display_name: Cris Person
+        email: cperson@example.com
+        http_etag: ...
+        list_id: bee.example.com
+        member_id: 2
+        moderation_action: hold
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        subscription_mode: as_address
+        user: http://localhost:9001/3.0/users/2
+    http_etag: ...
+    start: 0
+    total_size: 1
+
+Or, we can search for all members with a specific ``delivery_status`` or
+``delivery_mode``:
+
+    >>> from mailman.testing.helpers import set_delivery
+    >>> set_delivery(bee, 'bperson@example.com', 'by_bounces')
+    >>> transaction.commit()
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'delivery_status': 'by_bounces',
+    ...           'list_id': 'bee.example.com',
+    ...           })
+    entry 0:
+        address: http://localhost:9001/3.0/addresses/bperson@example.com
+        delivery_mode: regular
+        display_name: Bart Person
+        email: bperson@example.com
+        http_etag: ...
+        list_id: bee.example.com
+        member_id: 1
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        subscription_mode: as_address
+        user: http://localhost:9001/3.0/users/1
+    http_etag: ...
+    start: 0
+    total_size: 1
+
 Finally, we can search for a specific member given all three criteria.
 
     >>> dump_json('http://localhost:9001/3.0/members/find', {
@@ -715,6 +767,7 @@ Finally, we can search for a specific member given all three criteria.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
+        moderation_action: hold
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
@@ -738,6 +791,7 @@ Search can also be performed using HTTP GET queries.
         http_etag: ...
         list_id: bee.example.com
         member_id: 2
+        moderation_action: hold
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address

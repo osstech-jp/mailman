@@ -25,6 +25,8 @@ REST
 * Improve the speed of Members lookup via REST API. (Related to #700)
 * Allow specifying ``delivery_mode`` and ``delivery_status`` when creating a
   new Member. (Closes #828)
+* Allow filtering members in ``/members/find`` API using ``delivery_status``,
+  ``delivery_mode`` and ``moderation_action``. (See #827)
 
 Other
 -----
