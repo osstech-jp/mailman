@@ -28,6 +28,12 @@ REST
 * Allow filtering members in ``/members/find`` API using ``delivery_status``,
   ``delivery_mode`` and ``moderation_action``. (See #827)
 
+New Features
+------------
+* There is a new setting ``filter_report`` in the ``[mailman]`` section of
+  mailman.cfg.  If this is set to ``yes``, a report of changes by content
+  filtering will be added to the outgoing message.  (Closes #833)
+
 Other
 -----
 * Reduce the number of database calls in UserManager. (Closes #700)

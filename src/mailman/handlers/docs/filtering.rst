@@ -546,3 +546,142 @@ an extension are not affected.  Here's a simple example.
     X-Content-Filtered-By: Mailman/MimeDel ...
     <BLANKLINE>
     plain text
+
+Reporting Option
+================
+
+Finally, there is a global mailman.cfg setting to append a report of what was
+filtered to the message.  Here's a simple example.
+::
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... Content-Type: multipart/mixed; boundary=AAA
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --AAA
+    ... Content-Type: application/pdf; name="file.pdf"
+    ... Content-Disposition: attachment; filename="file.pdf"
+    ...
+    ... pdf to remove
+    ... --AAA--
+    ... """)
+
+    >>> with dummy_script('report'):
+    ...     process(mlist, msg, {})
+
+    >>> print(msg.as_string())
+    From: aperson@example.com
+    MIME-Version: 1.0
+    X-Content-Filtered-By: Mailman/MimeDel ...
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    <BLANKLINE>
+    plain text
+    <BLANKLINE>
+    ___________________________________________
+    Mailman's content filtering has removed the
+    following MIME parts from this message.
+    <BLANKLINE>
+    Content-Type: application/pdf
+        Name: file.pdf
+    <BLANKLINE>
+
+And here's a more complex one.  Note that if the filterd message in multipart,
+the report is attached as a separate MIME part.
+::
+
+
+    >>> mlist.filter_types = ['text/rtf']
+    >>> mlist.pass_types = ['multipart/mixed', 'text']
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... Content-Type: multipart/mixed; boundary=AAA
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --AAA
+    ... Content-Type: text/html
+    ...
+    ...
+    ... <h2>A header</h2>
+    ...
+    ... --AAA
+    ... Content-Type: text/rtf
+    ...
+    ... will be removed
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... another plain text
+    ... --AAA
+    ... Content-Type: image/gif
+    ...
+    ... image will be removed
+    ... --AAA
+    ... Content-Type: multipart/alternative; boundary="BBB"
+    ...
+    ... --BBB
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --BBB
+    ... Content-Type: text/html
+    ...
+    ...  <h2>Another header</h2>
+    ...
+    ... --BBB--
+    ... --AAA--
+    ...
+    ... """)
+
+    >>> with dummy_script('report'):
+    ...     process(mlist, msg, {})
+
+    >>> print(msg.as_string())
+    From: aperson@example.com
+    Content-Type: multipart/mixed; boundary=AAA
+    X-Content-Filtered-By: Mailman/MimeDel ...
+    <BLANKLINE>
+    --AAA
+    Content-Type: text/plain
+    <BLANKLINE>
+    plain text
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    Converted text/html to text/plain
+    Filename: ...
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    --AAA
+    Content-Type: text/plain
+    <BLANKLINE>
+    another plain text
+    --AAA
+    Content-Type: text/plain; charset="us-ascii"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: 7bit
+    <BLANKLINE>
+    <BLANKLINE>
+    ___________________________________________
+    Mailman's content filtering has removed the
+    following MIME parts from this message.
+    <BLANKLINE>
+    Content-Type: text/rtf
+    <BLANKLINE>
+    Content-Type: image/gif
+    <BLANKLINE>
+    Content-Type: multipart/alternative
+    <BLANKLINE>
+    --AAA--
+    <BLANKLINE>
+    <BLANKLINE>
