@@ -16,6 +16,7 @@ You can also get all the values for a particular section, such as the
 
     >>> dump_json('http://localhost:9001/3.0/system/configuration/mailman')
     cache_life: 7d
+    check_max_size_on_filtered_message: no
     default_language: en
     email_commands_max_lines: 10
     filter_report: no

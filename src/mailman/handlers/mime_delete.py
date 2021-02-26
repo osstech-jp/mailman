@@ -56,7 +56,8 @@ def dispose(mlist, msg, msgdata, why):
     if mlist.filter_action is FilterAction.reject:
         # Bounce the message to the original author.
         raise RejectMessage(why)
-    elif mlist.filter_action is FilterAction.forward:
+    elif (mlist.filter_action is FilterAction.forward and
+            msgdata.get('fwd_preserve', True)):
         # Forward it on to the list moderators.
         text = _("""\
 The attached message matched the $mlist.display_name mailing list's content
@@ -72,7 +73,8 @@ message.
         notice.attach(MIMEMessage(msg))
         notice.send(mlist)
         # Let this fall through so the original message gets discarded.
-    elif mlist.filter_action is FilterAction.preserve:
+    elif (mlist.filter_action is FilterAction.preserve and
+            msgdata.get('fwd_preserve', True)):
         if as_boolean(config.mailman.filtered_messages_are_preservable):
             # This is just like discarding the message except that a copy is
             # placed in the 'bad' queue should the site administrator want to
@@ -82,7 +84,7 @@ message.
                 msg.get('message-id', 'n/a'), filebase))
     elif mlist.filter_action is FilterAction.discard:
         pass
-    else:
+    elif msgdata.get('fwd_preserve', True):
         log.error(
             '{} invalid FilterAction: {}.  Treating as discard'.format(
                 mlist.fqdn_listname, mlist.filter_action.name))

@@ -33,6 +33,10 @@ New Features
 * There is a new setting ``filter_report`` in the ``[mailman]`` section of
   mailman.cfg.  If this is set to ``yes``, a report of changes by content
   filtering will be added to the outgoing message.  (Closes #833)
+* There is a new setting ``check_max_size_on_filtered_message`` in the
+  ``[mailman]`` section of mailman.cfg.  If this is set to ``yes`` and the
+  list does content filtering, the ``max_message_size`` hold will be based
+  on the size of the content filtered message.  (Closes #377)
 
 Other
 -----
