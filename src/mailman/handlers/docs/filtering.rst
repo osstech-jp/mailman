@@ -590,7 +590,7 @@ filtered to the message.  Here's a simple example.
         Name: file.pdf
     <BLANKLINE>
 
-And here's a more complex one.  Note that if the filterd message in multipart,
+And here's a more complex one.  Note that if the filtered message is multipart,
 the report is attached as a separate MIME part.
 ::
 
