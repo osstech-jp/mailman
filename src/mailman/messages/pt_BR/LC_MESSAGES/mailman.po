@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2021-08-18 23:32+0000\n"
-"Last-Translator: Luiz Angelo Daros de Luca <luizluca@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/gnu-mailman/mailman/pt_BR/>\n"
+"PO-Revision-Date: 2022-03-23 03:35+0000\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"gnu-mailman/mailman/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.8-dev\n"
+"X-Generator: Weblate 4.12-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -118,7 +119,8 @@ msgstr "${member} teve sua inscrição cancelada da lista de discussão ${mlist.
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "Sua inscrição da lista de discussão ${mlist.display_name} foi desabilitada"
+msgstr ""
+"Sua inscrição da lista de discussão ${mlist.display_name} foi desabilitada"
 
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
@@ -446,9 +448,12 @@ msgid ""
 "also appear in the first line of the body of the reply."
 msgstr ""
 "Se você responder a esta mensagem, mantendo o cabeçalho Assunto: intacto, o\n"
-"Mailman irá descartar a mensagem retida. Faça isso se a mensagem for spam. Se\n"
-"você responder a esta mensagem e incluir um cabeçalho Approved: com a senha da\n"
-"lista, a mensagem será aprovada para postagem na lista. O cabeçalho Approved:\n"
+"Mailman irá descartar a mensagem retida. Faça isso se a mensagem for spam. "
+"Se\n"
+"você responder a esta mensagem e incluir um cabeçalho Approved: com a senha "
+"da\n"
+"lista, a mensagem será aprovada para postagem na lista. O cabeçalho Approved:"
+"\n"
 "também pode aparecer na primeira linha do corpo da resposta."
 
 #: src/mailman/chains/moderation.py:51
@@ -678,7 +683,9 @@ msgstr "GNU Mailman já está em execução"
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
-msgstr "Uma execução anterior do GNU Mailman não foi encerrada normalmente ({}). Tente usar --force"
+msgstr ""
+"Uma execução anterior do GNU Mailman não foi encerrada normalmente ({}). "
+"Tente usar --force"
 
 #: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
@@ -916,7 +923,9 @@ msgstr ""
 
 #: src/mailman/commands/cli_gatenews.py:170
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
-msgstr "Consulta o servidor NNTP por mensagens a serem direcionadas para listas de discussão."
+msgstr ""
+"Consulta o servidor NNTP por mensagens a serem direcionadas para listas de "
+"discussão."
 
 #: src/mailman/commands/cli_gatenews.py:177
 msgid ""
@@ -1495,7 +1504,8 @@ msgstr ""
 "Existem duas maneiras de usar este script: interativa ou programaticamente.\n"
 "Usá-lo interativamente permite que você brinque, examine e modifique uma\n"
 "lista de discussão do interpretador interativo do Python. Quando executado\n"
-"interativamente, a variável \"m\" estará disponível no espaço de nomes global.\n"
+"interativamente, a variável \"m\" estará disponível no espaço de nomes "
+"global.\n"
 "Ele fará referência ao objeto da lista de discussão."
 
 #: src/mailman/commands/cli_withlist.py:161
@@ -1900,7 +1910,8 @@ msgstr "Executa uma contabilidade após uma postagem bem-sucedida."
 
 #: src/mailman/handlers/arc_sign.py:66
 msgid "Perform ARC auth checks and attach resulting headers"
-msgstr "Realiza verificações de autenticação ARC e anexa os cabeçalhos resultantes"
+msgstr ""
+"Realiza verificações de autenticação ARC e anexa os cabeçalhos resultantes"
 
 #: src/mailman/handlers/avoid_duplicates.py:44
 msgid "Suppress some duplicates of the same message."
@@ -1933,7 +1944,8 @@ msgstr "Aplica mitigações DMARC."
 
 #: src/mailman/handlers/file_recipients.py:35
 msgid "Get the normal delivery recipients from an include file."
-msgstr "Obtém os destinatários normais da entrega a partir o arquivo de inclusão."
+msgstr ""
+"Obtém os destinatários normais da entrega a partir o arquivo de inclusão."
 
 #: src/mailman/handlers/member_recipients.py:42
 msgid "Calculate the regular recipients of the message."
@@ -2057,7 +2069,9 @@ msgstr "Move a mensagem para a fila de saída de notícias."
 
 #: src/mailman/handlers/validate_authenticity.py:120
 msgid "Perform auth checks and attach Authentication-Results header."
-msgstr "Executa verificações de autenticação e anexa o cabeçalho Authentication-Results."
+msgstr ""
+"Executa verificações de autenticação e anexa o cabeçalho Authentication-"
+"Results."
 
 #: src/mailman/interfaces/pipeline.py:53
 msgid "[No details are available]"
@@ -2130,7 +2144,12 @@ msgstr "Moderação DMARC"
 #: src/mailman/rules/dmarc.py:333
 #, python-brace-format
 msgid "You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or quarantine, and your message has been automatically rejected.  If you think that your messages are being rejected in error, contact the mailing list owner at ${listowner}."
-msgstr "Você não está autorizado a postar nesta lista de discussão De: um domínio que publica uma política DMARC de rejeição ou quarentena, e sua mensagem foi automaticamente rejeitada. Se você acha que suas mensagens estão sendo rejeitadas por engano, entre em contato com o dono da lista de discussão em ${listowner}."
+msgstr ""
+"Você não está autorizado a postar nesta lista de discussão De: um domínio "
+"que publica uma política DMARC de rejeição ou quarentena, e sua mensagem foi "
+"automaticamente rejeitada. Se você acha que suas mensagens estão sendo "
+"rejeitadas por engano, entre em contato com o dono da lista de discussão em "
+"${listowner}."
 
 #: src/mailman/rules/emergency.py:34
 msgid ""
@@ -2405,7 +2424,8 @@ msgid "help.txt"
 msgstr ""
 "Ajuda para a lista de discussão ${listname}\n"
 "\n"
-"Este é o comando de e-mail \"help\" para a versão ${version} do gerenciador de\n"
+"Este é o comando de e-mail \"help\" para a versão ${version} do gerenciador "
+"de\n"
 "listas do GNU Mailman em ${domain}. Abaixo são descritos comandos descrevem\n"
 "o que você pode enviar para obter informações sobre e para controlar sua\n"
 "inscrição a listas do Mailman neste site. Um comando pode ser a linha de\n"
@@ -2470,7 +2490,9 @@ msgid "list:admin:notice:pending.txt"
 msgstr ""
 
 msgid "list:admin:notice:removal.txt"
-msgstr "${member} teve a inscrição de ${listname} cancelada por excesso de devoluções."
+msgstr ""
+"${member} teve a inscrição de ${listname} cancelada por excesso de "
+"devoluções."
 
 msgid "list:admin:notice:subscribe.txt"
 msgstr "${member} se inscreveu com sucesso a ${display_name}."
