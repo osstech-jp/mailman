@@ -15,6 +15,11 @@ Here is a history of user visible changes to Mailman.
 
 (2021-XX-XX)
 
+Bugs
+----
+* Require aiosmtpd >= 1.4.1 to allow address local parts longer than 64 bytes
+  in the lmtp runner.  (Closes #836)
+
 Command line
 ------------
 * The ``notify`` subcommand will now decode an RFC 2047 encoded Subject: for
