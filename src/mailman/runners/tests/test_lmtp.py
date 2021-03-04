@@ -290,3 +290,19 @@ Message-ID: <alpha>
 """)
         items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msg['message-id'], '<alpha>')
+
+    def test_issue_836(self):
+        # Local parts > 64 bytes should be accepted.
+        with transaction():
+            create_list('longer_than_15_bytes@example.com')
+        recip = 'longer_than_15_bytes-confirm+{}@example.com'.format(40*'x')
+        self._lmtp.sendmail('anne@example.com', [recip], """\
+From: anne@example.com
+To: {}
+Subject: confirm
+Message-ID: <alpha>
+
+""".format(recip))
+        items = get_queue_messages('command', expected_count=1)
+        self.assertEqual(items[0].msgdata['listid'],
+                         'longer_than_15_bytes.example.com')

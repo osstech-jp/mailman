@@ -110,7 +110,7 @@ case second 'm'.  Any other spelling is incorrect.""",
         'console_scripts' : list(scripts),
         },
     install_requires = [
-        'aiosmtpd>=1.1',
+        'aiosmtpd>=1.4.1',
         'alembic',
         'atpublic',
         'authheaders>=0.9.2',
