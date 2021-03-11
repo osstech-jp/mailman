@@ -99,9 +99,10 @@ something in the models, what steps are needed to reflect that change in the
 database schema?  You need to create and enter a virtual environment, install
 Mailman into that, and then run the ``alembic`` command.  For example::
 
+    $ cd /directory/containing/mailman
     $ python3 -m venv /tmp/mm3
     $ source /tmp/mm3/bin/activate
-    $ python setup.py develop
+    $ pip install -e .
     $ mailman info
     $ alembic -c src/mailman/config/alembic.cfg revision --autogenerate -m
       "<migration_name>"
