@@ -127,10 +127,12 @@ into ``/tmp/mm3``::
 
     $ python3 -m venv /tmp/mm3
 
-Now, activate the virtual environment and set it up for development::
+Now, in the directory containing Mailman, activate the virtual environment
+and set it up for development::
 
-    % source /tmp/mm3/bin/activate
-    % python setup.py develop
+    $ cd directory/containing/mailman
+    $ source /tmp/mm3/bin/activate
+    $ pip install -e .
 
 Sit back and have some Kombucha while you wait for everything to download and
 install.
