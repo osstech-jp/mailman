@@ -64,7 +64,7 @@ Many thanks to Stephen A. Goss for his contribution of PostgreSQL support.
 MySQL
 =====
 
-First you need to configure MySQL itself.  Lets say you create the `mailman`
+First you need to configure MySQL itself.  Let's say you create the `mailman`
 database in MySQL via::
 
     mysql> CREATE DATABASE mailman;
