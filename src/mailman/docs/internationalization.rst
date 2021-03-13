@@ -22,7 +22,7 @@ repertoire.
 Introduction to Unicode Concepts
 ================================
 
-The Unicode Standard is intended to provide an universal set of
+The Unicode Standard is intended to provide a universal set of
 characters with a single, standard encoding providing an invertible
 mapping of characters to integers (called *code points* in this
 context).
@@ -32,7 +32,7 @@ Repertoires
 -----------
 
 A set of characters is called a *repertoire*.  Unicode itself is
-intended to provide an universal repertoire sufficient to represent
+intended to provide a universal repertoire sufficient to represent
 all words in all written languages, but a system may handle a
 restricted repertoire and still be considered conformant, as long as
 it does not corrupt characters it does not handle, and does not emit
