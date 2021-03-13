@@ -34,7 +34,7 @@ Users and addresses are managed by the *user manager*.
 A *member* is created by linking a *subscriber* to a mailing list.
 Subscribers can be:
 
-* A user, which becomes members through their *preferred address*.
+* A user, which becomes a member through their *preferred address*.
 * An address, which can be linked or unlinked to a user, but must be verified.
 
 Members also have a *role*, representing regular members, digest members, list
