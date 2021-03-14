@@ -24,6 +24,7 @@ from mailman.commands.eml_membership import Join, Leave
 from mailman.email.message import Message
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
+from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
@@ -99,6 +100,24 @@ class TestJoin(unittest.TestCase):
         self._command.process(self._mlist, msg, {}, ('digest=mime',), results)
         self.assertIn('Confirmation email sent to anne@example.com',
                       str(results))
+
+    def test_join_digest_works(self):
+        # Subscribe a member to digest via join and verify it works.
+        # Set things so the subscribe works now.
+        self._mlist.subscription_policy = SubscriptionPolicy.open
+        # Create a verified address for Anne.
+        user = getUtility(IUserManager).make_user('anne@example.com', 'Anne')
+        address = user.addresses[0]
+        address.verified_on = address.registered_on
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, ('digest=mime',), results)
+        # Anne is a member.
+        members = list(self._mlist.members.members)
+        self.assertEqual(1, len(members))
+        self.assertEqual('anne@example.com', members[0].address.email)
+        self.assertEqual(DeliveryMode.mime_digests, members[0].delivery_mode)
 
     def test_join_other(self):
         # Subscribe a different address via join.
