@@ -19,6 +19,8 @@ Bugs
 ----
 * Require aiosmtpd >= 1.4.1 to allow address local parts longer than 64 bytes
   in the lmtp runner.  (Closes #836)
+* The email join command now honors the digest=<no|mime|plain> option.
+  (Closes #19)
 
 Command line
 ------------

@@ -112,7 +112,8 @@ other than the sender of the command.
             print('Invalid email address: {}'.format(e), file=results)
             return ContinueProcessing.yes
         try:
-            ISubscriptionManager(mlist).register(subscriber)
+            ISubscriptionManager(mlist).register(subscriber,
+                                                 delivery_mode=delivery_mode)
         except (AlreadySubscribedError, InvalidEmailAddressError,
                 MembershipIsBannedError) as e:
             print(str(e), file=results)
