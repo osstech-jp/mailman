@@ -234,7 +234,8 @@ class ISubscriptionManager(Interface):
     """
     def register(subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False,
-                 invitation=False, send_welcome_message=None):
+                 invitation=False, send_welcome_message=None,
+                 delivery_mode=None, delivery_status=None):
         """Subscribe an address or user according to subscription policies.
 
         The mailing list's subscription policy is used to subscribe
@@ -251,7 +252,7 @@ class ISubscriptionManager(Interface):
         resume the workflow.
 
         :param subscriber: The user or address to subscribe.
-        :type email: ``IUser`` or ``IAddress``
+        :type subscriber: ``IUser`` or ``IAddress``
         :param pre_verified: A flag indicating whether the subscriber's email
             address should be considered pre-verified.  Normally a never
             before seen email address must be verified by mail-back
@@ -285,6 +286,12 @@ class ISubscriptionManager(Interface):
             should receive a welcome message. This overrides the list's
             configuration of send_welcome_message if it is specified.
         :type send_welcome_message: bool
+        :param delivery_mode: A ``DeliveryMode`` enum which if specified sets
+            delivery_mode for the subscription.
+        :type delivery_mode: ``DeliveryMode`` enum or None:
+        :param delivery_status: A ``DeliveryStatus`` enum which if specified
+            sets delivery_status for the subscription.
+        :type delivery_status: ``DeliveryStatus`` enum or None:
         :return: A 3-tuple is returned where the first element is the token
             hash, the second element is a ``TokenOwner`, and the third element
             is the subscribed member.  If the subscriber got subscribed
@@ -315,7 +322,7 @@ class ISubscriptionManager(Interface):
         resume the workflow.
 
         :param subscriber: The user or address to unsubscribe.
-        :type email: ``IUser`` or ``IAddress``
+        :type subscriber: ``IUser`` or ``IAddress``
         :param pre_confirmed: A flag indicating whether, when required by the
             unsubscription policy, an unsubscription request should be
             considered pre-confirmed.  Normally in such cases, a mail-back
