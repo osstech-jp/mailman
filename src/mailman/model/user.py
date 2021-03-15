@@ -132,7 +132,9 @@ class User(Model):
     def preferred_address(self, address):
         """See `IUser`."""
         if address.verified_on is None:
-            raise UnverifiedAddressError(address)
+            raise UnverifiedAddressError(
+                "{} must be verified before setting as primary".format(address)
+                    )
         if self.controls(address.email):
             # This user already controls the email address.
             pass

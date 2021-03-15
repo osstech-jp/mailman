@@ -105,7 +105,9 @@ class TestUser(unittest.TestCase):
             'anne.person@example.com')
         with self.assertRaises(UnverifiedAddressError) as cm:
             self._anne.preferred_address = new_preferred
-        self.assertEqual(cm.exception.address, new_preferred)
+        self.assertEqual(cm.exception.address,
+                         "{} must be verified before setting as primary"
+                         .format(new_preferred))
 
     def test_preferences_deletion_on_user_deletion(self):
         # LP: #1418276 - deleting a user did not delete their preferences.

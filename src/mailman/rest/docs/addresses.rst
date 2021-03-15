@@ -406,7 +406,7 @@ Setting Ram's preferred addresses requires that it first be verified:
     ...     {'email': 'ram@example.com'})
     Traceback (most recent call last):
     ...
-    urllib.error.HTTPError: HTTP Error 400: Ram Person <ram@example.com>
+    urllib.error.HTTPError: HTTP Error 400: Ram Person <ram@example.com> must be verified before setting as primary
 
 Verify Ram's address first:
 ::

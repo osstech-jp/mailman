@@ -49,6 +49,7 @@ New Features
 
 Other
 -----
+* Add better error message for preferred email edit when not verified. (Closes #706)
 * Reduce the number of database calls in UserManager. (Closes #700)
 
 .. _news-3.3.3:
