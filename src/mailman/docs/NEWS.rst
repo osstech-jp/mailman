@@ -21,6 +21,8 @@ Bugs
   in the lmtp runner.  (Closes #836)
 * The email join command now honors the digest=<no|mime|plain> option.
   (Closes #19)
+* Folded ``Message-ID`` headers no longer cause folded smtp.log messages.
+  (Closes #844)
 
 Command line
 ------------
