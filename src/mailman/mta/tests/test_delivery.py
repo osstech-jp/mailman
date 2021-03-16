@@ -29,7 +29,7 @@ from mailman.interfaces.template import ITemplateManager
 from mailman.mta.bulk import BulkDelivery
 from mailman.mta.deliver import Deliver
 from mailman.testing.helpers import (
-    specialized_message_from_string as mfs, subscribe)
+    LogFileMark, specialized_message_from_string as mfs, subscribe)
 from mailman.testing.layers import ConfigLayer, SMTPLayer
 from mailman.utilities.modules import find_name
 from zope.component import getUtility
@@ -357,3 +357,32 @@ Subject: test
         # Since max_sessions_per_connection is 3, sending 4 personalized
         # messages creates 2 connections.
         self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 2)
+
+
+class TestDeliveryLogging(unittest.TestCase):
+    """Test that logging doesn't split on folded Message-IDs."""
+
+    layer = SMTPLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        # Make Anne a member of this mailing list.
+        self._anne = subscribe(self._mlist, 'Anne', email='anne@example.org')
+        self._msg = mfs("""\
+From: anne@example.org
+To: test@example.com
+Subject: test
+Message-ID:
+ <AM6PR09MB347488BB9A684F6A23A1D375966C9@AM6PR09MB34.eurprd09.prod.outlook.com>
+
+""")
+        self._deliverer = find_name(config.mta.outgoing)
+
+    def test_logging_with_folded_messageid(self):
+        # Test that folded Message-ID header doesn't fold the log messages.
+        mark = LogFileMark('mailman.smtp')
+        msgdata = dict(recipients=['anne@example.org'], tolist=True)
+        self._deliverer(self._mlist, self._msg, msgdata)
+        logs = mark.read()
+        self.assertRegex(logs, r' \(\d+\) <AM6PR09MB347488.*smtp')
+        self.assertRegex(logs, r' \(\d+\) <AM6PR09MB347488.*post')

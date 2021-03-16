@@ -99,7 +99,8 @@ def deliver(mlist, msg, msgdata):
     if size is None:
         size = len(msg.as_string())
     substitutions = dict(
-        msgid       = msg.get('message-id', 'n/a'),   # noqa: E221,E251
+        msgid       = msg.get('message-id',           # noqa: E221,E251
+                              'n/a').strip(),
         listname    = mlist.fqdn_listname,            # noqa: E221,E251
         sender      = original_sender,                # noqa: E221,E251
         recip       = len(original_recipients),       # noqa: E221,E251
