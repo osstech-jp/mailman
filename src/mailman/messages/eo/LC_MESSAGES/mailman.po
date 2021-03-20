@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2021-03-14 22:13+0000\n"
+"Last-Translator: phlostically <phlostically@mailinator.com>\n"
+"Language-Team: Esperanto <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.5.2-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -22,7 +25,7 @@ msgstr ""
 #: src/mailman/handlers/subject_prefix.py:90
 #: src/mailman/handlers/subject_prefix.py:118 src/mailman/runners/digest.py:86
 msgid "(no subject)"
-msgstr ""
+msgstr "(neniu temo)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
@@ -47,7 +50,7 @@ msgstr ""
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228
 #: src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Neniu kialo donita]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
@@ -59,11 +62,11 @@ msgstr ""
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
-msgstr ""
+msgstr "Peto pri malabono"
 
 #: src/mailman/app/moderator.py:268
 msgid "Original Message"
-msgstr ""
+msgstr "Originala Mesaĝo"
 
 #: src/mailman/app/moderator.py:271
 msgid "Request to mailing list \"$display_name\" rejected"
@@ -279,7 +282,7 @@ msgstr ""
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
-msgstr ""
+msgstr "Akcepti mesaĝon."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
@@ -303,7 +306,7 @@ msgstr ""
 
 #: src/mailman/chains/hold.py:58
 msgid "N/A"
-msgstr ""
+msgstr "Neaplikebla"
 
 #: src/mailman/chains/hold.py:117
 msgid "Last autoresponse notification for today"
@@ -802,7 +805,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr ""
+msgstr "Ne valida lingvokodo: $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
@@ -814,7 +817,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:188
 msgid "List already exists: $fqdn_listname"
-msgstr ""
+msgstr "Dissendolisto jam ekzistas: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:190
 msgid "Undefined domain: $domain"
@@ -822,11 +825,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
-msgstr ""
+msgstr "Kreis dissendoliston: $mlist.fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
-msgstr ""
+msgstr "Via nova dissendolisto: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
@@ -1113,7 +1116,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:85
 msgid "readline not available"
-msgstr ""
+msgstr "readline ne estas havebla"
 
 #: src/mailman/commands/cli_withlist.py:133
 msgid "Invalid value for [shell]use_python: {}"
@@ -1699,7 +1702,7 @@ msgstr ""
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr ""
+msgstr "Mankas temo en mesaĝo"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
@@ -1715,7 +1718,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:101
 msgid "Ignoring non-text/plain MIME parts"
-msgstr ""
+msgstr "Ignorante MIME-partojn aliajn ol text/plain"
 
 #: src/mailman/runners/command.py:139
 msgid "The results of your email command are provided below.\n"
@@ -1723,7 +1726,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:183
 msgid "- Original message details:"
-msgstr ""
+msgstr "- Detaloj pri originala mesaĝo:"
 
 #: src/mailman/runners/command.py:187
 msgid "    From: $from_"
@@ -1749,7 +1752,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:205
 msgid "No such command: $command_name"
-msgstr ""
+msgstr "Ne ekzistas komando: $command_name"
 
 #: src/mailman/runners/command.py:219
 msgid ""
@@ -1787,7 +1790,7 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:171
 msgid "Today's Topics ($count messages)"
-msgstr ""
+msgstr "Hodiaŭaj Temoj ($count mesaĝoj)"
 
 #: src/mailman/runners/digest.py:193 src/mailman/runners/digest.py:278
 msgid "Digest Footer"
@@ -1843,7 +1846,7 @@ msgid "list:admin:notice:removal.txt"
 msgstr ""
 
 msgid "list:admin:notice:subscribe.txt"
-msgstr ""
+msgstr "$member sukcese abonas la dissendoliston $display_name."
 
 msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
@@ -1859,6 +1862,9 @@ msgstr ""
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
+"_______________________________________________\n"
+"Dissendolisto $display_name -- $listname\n"
+"Por malaboni, sendu retmesaĝon al ${short_listname}-leave@${domain}"
 
 msgid "list:member:regular:header.txt"
 msgstr ""
@@ -1883,6 +1889,11 @@ msgstr ""
 
 msgid "list:user:notice:post.txt"
 msgstr ""
+"Via mesaĝo titolita\n"
+"\n"
+" $subject\n"
+"\n"
+"estis sukcese ricevita de la dissendolisto $display_name."
 
 msgid "list:user:notice:probe.txt"
 msgstr ""
@@ -1892,9 +1903,31 @@ msgstr ""
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
+"Via mesaĝo al la dissendolisto $listname estis malakceptita pro la jeno:\n"
+"\n"
+"$reasons\n"
+"\n"
+"La originala mesaĝo ricevita de Mailman estas kunsendita."
 
 msgid "list:user:notice:warning.txt"
 msgstr ""
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
+"Bonvenon al la dissendolisto \"$display_name\"!\n"
+"\n"
+"Por afiŝi al ĉi tiu listo, sendu vian mesaĝon al:\n"
+"\n"
+"  $listname\n"
+"\n"
+" Vi povas retpoŝte malaboni aŭ agordi per sendo de mesaĝo al:\n"
+"\n"
+"  $request_email\n"
+"\n"
+"kun la vorto 'help' en la temo aŭ korpo (sen citiloj), kaj vi ricevos "
+"mesaĝon\n"
+"kun instrukcioj. Vi bezonos vian pasvorton por ŝanĝi viajn elektojn, sed "
+"pro\n"
+"sekureco, la pasvorto ne inkluziviĝas ĉi tie. Se vi forgesis vian pasvorton, "
+"vi\n"
+"devos reagordi ĝin ĉe la retejo."

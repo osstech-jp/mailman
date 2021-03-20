@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2021-03-09 12:03+0000\n"
+"PO-Revision-Date: 2021-03-13 13:02+0000\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "gnu-mailman/mailman/pt_BR/>\n"
@@ -60,7 +60,7 @@ msgstr "Nova solicitação de cancelamento de $mlist.display_name por $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
-msgstr "Solicitação de cancelamento de assinatura"
+msgstr "Solicitação de cancelamento de inscrição"
 
 #: src/mailman/app/moderator.py:268
 msgid "Original Message"
@@ -85,11 +85,11 @@ msgstr "Você cancelou sua inscrição da lista de discussão $mlist.display_nam
 
 #: src/mailman/app/notifications.py:112
 msgid "$mlist.display_name subscription notification"
-msgstr "Notificação de assinatura de $mlist.display_name"
+msgstr "Notificação de inscrição de $mlist.display_name"
 
 #: src/mailman/app/notifications.py:136
 msgid "$member's subscription disabled on $mlist.display_name"
-msgstr "Assinatura de $member desativada em $mlist.display_name"
+msgstr "Inscrição de $member desabilitada em $mlist.display_name"
 
 #: src/mailman/app/notifications.py:157
 #, python-brace-format
@@ -102,19 +102,19 @@ msgstr ""
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
 msgstr ""
-"Sua assinatura da lista de discussão ${mlist.display_name} foi desativada"
+"Sua inscrição da lista de discussão ${mlist.display_name} foi desabilitada"
 
 #: src/mailman/app/subscriptions.py:310
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
-"Nova solicitação de assinatura para $self.mlist.display_name de $self.address"
-".e-mail"
+"Nova solicitação de inscrição para $self.mlist.display_name de $self.address."
+"e-mail"
 
 #: src/mailman/app/subscriptions.py:471
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
-"Novo pedido de cancelamento de assinatura para $self.mlist.display_name de "
-"$self.address.email"
+"Nova solicitação de cancelamento de inscrição para $self.mlist.display_name "
+"de $self.address.email"
 
 #: src/mailman/app/subscriptions.py:597
 msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
@@ -2519,7 +2519,7 @@ msgstr ""
 "Observe que o simples envio de uma \"resposta\" a esta mensagem pode\n"
 "funcionar da maioria dos leitores de e-mail.\n"
 "\n"
-"Se você não deseja cancelar a assinatura deste endereço de e-mail,\n"
+"Se você não deseja cancelar a inscrição deste endereço de e-mail,\n"
 "simplesmente desconsidere esta mensagem. Se você acha que está sendo\n"
 "mal-intencionadamente cancelado a inscrição da lista, ou tem alguma\n"
 "outra dúvida, entre em contato com\n"
