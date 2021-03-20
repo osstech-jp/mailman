@@ -28,6 +28,8 @@ Command line
 ------------
 * The ``notify`` subcommand will now decode an RFC 2047 encoded Subject: for
   the report of held messages.  (Closes #831)
+* The deprecated options ``--add``, ``--del`` and ``--sync`` are now disabled
+  on the ``mailman members`` command.
 
 REST
 ----

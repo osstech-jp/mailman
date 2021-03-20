@@ -17,21 +17,13 @@
 
 """The 'members' subcommand."""
 
-import sys
 import click
 
-from email.utils import formataddr, parseaddr
-from mailman.app.membership import add_member, delete_member
+from email.utils import formataddr
 from mailman.core.i18n import _
-from mailman.database.transaction import transactional
-from mailman.interfaces.address import (
-    IEmailValidator, InvalidEmailAddressError)
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, DeliveryStatus,
-    MemberRole, NotAMemberError)
-from mailman.interfaces.subscriptions import RequestRecord
+from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.utilities.options import I18nCommand
 from operator import attrgetter
 from public import public
@@ -111,143 +103,6 @@ def display_members(ctx, mlist, role, regular, digest,
                   file=outfp)
 
 
-@transactional
-def add_members(mlist, add_infp):
-    for line in add_infp:
-        # Ignore blank lines and lines that start with a '#'.
-        if line.startswith('#') or len(line.strip()) == 0:
-            continue
-        # Parse the line and ensure that the values are unicodes.
-        display_name, email = parseaddr(line)
-        if email == '':
-            line = line.strip()
-            print(_('Cannot parse as valid email address (skipping): $line'),
-                  file=sys.stderr)
-            continue
-        try:
-            add_member(mlist,
-                       RequestRecord(email, display_name,
-                                     DeliveryMode.regular,
-                                     mlist.preferred_language.code))
-        except InvalidEmailAddressError:                    # pragma: nocover
-            # There is a test for this, but it hits the if email == '' above.
-            # It's okay if the address is invalid, we print a warning and
-            # continue.
-            line = line.strip()
-            print(_('Cannot parse as valid email address (skipping): $line'),
-                  file=sys.stderr)
-        except AlreadySubscribedError:
-            # It's okay if the address is already subscribed, just print a
-            # warning and continue.
-            if not display_name:
-                print(_('Already subscribed (skipping): $email'),
-                      file=sys.stderr)
-            else:
-                print(_('Already subscribed (skipping): $display_name <$email>'
-                        ), file=sys.stderr)
-
-
-@transactional
-def delete_members(mlist, del_infp):
-    for line in del_infp:
-        # Ignore blank lines and lines that start with a '#'.
-        if line.startswith('#') or len(line.strip()) == 0:
-            continue
-        # Parse the line and ensure that the values are unicodes.
-        display_name, email = parseaddr(line)
-        try:
-            delete_member(mlist, email)
-        except NotAMemberError:
-            # It's okay if the address is not subscribed, just print a
-            # warning and continue.
-            if not display_name:
-                print(_('Member not subscribed (skipping): $email'))
-            else:
-                print(_('Member not subscribed (skipping): '
-                        '$display_name <$email>'))
-
-
-@transactional
-def sync_members(mlist, sync_infp, no_change):
-    subscribers = mlist.members
-    addresses = list(subscribers.addresses)
-
-    # Variable that shows if something was done to the original mailing list
-    ml_changed = False
-
-    # A list (set) of the members currently subscribed.
-    members_of_list = set([address.original_email.lower()
-                          for address in addresses])
-
-    # A list (set) of all valid email addresses in a file.
-    emails_of_infp = set()
-
-    # A list (dict) of (display name + address) for a members address.
-    formatted_addresses = {}
-
-    for line in sync_infp:
-        # Don't include newlines or whitespaces at the start or end
-        line = line.strip()
-        # Ignore blank lines and lines that start with a '#'.
-        if line.startswith('#') or len(line) == 0:
-            continue
-
-        # Parse the line to a tuple.
-        parsed_addr = parseaddr(line)
-        if parsed_addr == ('', ''):
-            print(_('Cannot parse as valid email address (skipping): $line'),
-                  file=sys.stderr)
-            continue
-        else:
-            new_display_name, new_email = parsed_addr
-            try:
-                getUtility(IEmailValidator).validate(new_email)
-            except InvalidEmailAddressError:
-                print(_('Cannot parse as valid email' +
-                        ' address (skipping): $line'),
-                      file=sys.stderr)
-                continue
-
-        # Address to lowercase
-        new_email = new_email.lower()
-
-        # Format output with display name if available
-        formatted_addr = formataddr((new_display_name, new_email))
-
-        # Add the 'outputable' version to a dict
-        formatted_addresses[new_email] = formatted_addr
-
-        emails_of_infp.add(new_email)
-
-    addresses_to_add = emails_of_infp - members_of_list
-    addresses_to_delete = members_of_list - emails_of_infp
-
-    for email in sorted(addresses_to_add):
-        # Add to mailing list if not dryrun.
-        print(_("[ADD] %s") % formatted_addresses[email])
-        if not no_change:
-            add_members(mlist, [formatted_addresses[email]])
-
-        # Indicate that we done something to the mailing list.
-        ml_changed = True
-        continue
-
-    for email in sorted(addresses_to_delete):
-        # Delete from mailing list if not dryrun.
-        member = str(subscribers.get_member(email).address)
-        print(_("[DEL] %s") % member)
-        if not no_change:
-            delete_members(mlist, [member.lower()])
-
-        # Indicate that we done something to the mailing list.
-        ml_changed = True
-        continue
-
-    # We did nothing to the mailing list -> We had nothing to do.
-    if not ml_changed:
-        print(_("Nothing to do"))
-
-
 @click.command(
     cls=I18nCommand,
     help=_("""\
@@ -260,27 +115,21 @@ def sync_members(mlist, sync_infp, no_change):
     '--add', '-a', 'add_infp', metavar='FILENAME',
     type=click.File(encoding='utf-8'),
     help=_("""\
-    [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to
-    indicate standard input.  Blank lines and lines that start with a
-    '#' are ignored.  This option is deprecated in favor of 'mailman
-    addmembers'."""))
+    [MODE] Add all member addresses in FILENAME.  This option is removed.
+    Use 'mailman addmembers' instead."""))
 @click.option(
     '--delete', '-x', 'del_infp', metavar='FILENAME',
     type=click.File(encoding='utf-8'),
     help=_("""\
-    [MODE] Delete all member addresses found in FILENAME
-    from the specified list. FILENAME can be '-' to indicate standard input.
-    Blank lines and lines that start with a '#' are ignored.
-    This option is deprecated in favor of 'mailman delmembers'."""))
+    [MODE] Delete all member addresses found in FILENAME.
+    This option is removed. Use 'mailman delmembers' instead."""))
 @click.option(
     '--sync', '-s', 'sync_infp', metavar='FILENAME',
     type=click.File(encoding='utf-8'),
     help=_("""\
     [MODE] Synchronize all member addresses of the specified mailing list
     with the member addresses found in FILENAME.
-    FILENAME can be '-' to indicate standard input.
-    Blank lines and lines that start with a '#' are ignored.
-    This option is deprecated in favor of 'mailman syncmembers'."""))
+    This option is removed. Use 'mailman syncmembers' instead."""))
 @click.option(
     '--output', '-o', 'outfp', metavar='FILENAME',
     type=click.File(mode='w', encoding='utf-8', atomic=True),
@@ -342,17 +191,14 @@ def members(ctx, add_infp, del_infp, sync_infp, outfp,
     if mlist is None:
         ctx.fail(_('No such list: $listspec'))
     if add_infp is not None:
-        print('Warning: The --add option is deprecated. '
-              'Use `mailman addmembers` instead.', file=sys.stderr)
-        add_members(mlist, add_infp)
+        ctx.fail('The --add option is removed. '
+                 'Use `mailman addmembers` instead.')
     elif del_infp is not None:
-        print('Warning: The --delete option is deprecated. '
-              'Use `mailman delmembers` instead.', file=sys.stderr)
-        delete_members(mlist, del_infp)
+        ctx.fail('The --delete option is removed. '
+                 'Use `mailman delmembers` instead.')
     elif sync_infp is not None:
-        print('Warning: The --sync option is deprecated. '
-              'Use `mailman syncmembers` instead.', file=sys.stderr)
-        sync_members(mlist, sync_infp, no_change)
+        ctx.fail('The --sync option is removed. '
+                 'Use `mailman syncmembers` instead.')
     else:
         display_members(ctx, mlist, role, regular,
                         digest, nomail, outfp, email_only)
