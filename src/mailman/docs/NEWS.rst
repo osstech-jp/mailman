@@ -23,6 +23,8 @@ Bugs
   (Closes #19)
 * Folded ``Message-ID`` headers no longer cause folded smtp.log messages.
   (Closes #844)
+* Removal of headers from posts to anonymous lists that can reveal the poster
+  or the poster's domain has been improved.  (Closes #848)
 
 Command line
 ------------
@@ -48,6 +50,14 @@ New Features
   ``[mailman]`` section of mailman.cfg.  If this is set to ``yes`` and the
   list does content filtering, the ``max_message_size`` hold will be based
   on the size of the content filtered message.  (Closes #377)
+* There is a new setting ``anonymous_list_keep_headers`` in the ``[mailman]``
+  section of mailman.cfg.  This is part of improved removal of headers from
+  posts to anonymous lists.  This setting is a space separated list of regexp
+  patterns.  After anonomyzing removes the headers which are known to reveal
+  the poster or poster's domain, it then removes all headers whose names do
+  not match (case-insensitively) one of these patterns.  The default setting
+  keeps non X- headers, those X- headers added by Mailman and any X-Spam-
+  headers.
 
 Other
 -----
