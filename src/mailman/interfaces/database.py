@@ -55,7 +55,7 @@ class IDatabase(Interface):
 
 @public
 class IDatabaseFactory(Interface):
-    "Interface for creating new databases."""
+    """Interface for creating new databases."""
 
     def create():
         """Return a new `IDatabase`.

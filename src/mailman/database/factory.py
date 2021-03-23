@@ -59,7 +59,7 @@ class DatabaseFactory:
 
 @public
 class SchemaManager:
-    "Manage schema migrations."""
+    """Manage schema migrations."""
 
     def __init__(self, database):
         self._database = database
