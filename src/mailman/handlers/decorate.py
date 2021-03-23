@@ -260,5 +260,5 @@ class Decorate:
     description = _('Decorate a message with headers and footers.')
 
     def process(self, mlist, msg, msgdata):
-        "See `IHandler`."""
+        """See `IHandler`."""
         process(mlist, msg, msgdata)
