@@ -152,7 +152,7 @@ change a mailing list's pipelines.
 Integration and control
 =======================
 
-Humans and external programs can interact with a running Core system in may
+Humans and external programs can interact with a running Core system in many
 different ways.  There's an extensive command line interface that provides
 useful options to a system administrator.  For external applications such as
 the Postorius web user interface, and the HyperKitty archiver, the
