@@ -8,6 +8,17 @@ Copyright (C) 1998-2018 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
+.. _news-3.3.5
+
+3.3.5
+=====
+
+(2021-xx-xx)
+
+Bugs
+----
+* Bounce runner now properly commits database transactions.  (Closes #850)
+
 .. _news-3.3.4:
 
 3.3.4
