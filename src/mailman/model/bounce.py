@@ -206,6 +206,7 @@ class BounceProcessor:
                 mlist.bounce_score_threshold, action)
         event.processed = True
 
+    @transactional
     @dbconnection
     def send_warnings_and_remove(self, store):
         """Send a warning email to the users who are disabled, if needed.
