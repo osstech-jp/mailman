@@ -20,7 +20,6 @@
 import uuid
 import logging
 
-from datetime import timedelta
 from email.utils import formataddr
 from enum import Enum
 from mailman.app.membership import delete_member
@@ -155,7 +154,8 @@ class _SubscriptionWorkflowCommon(Workflow):
             when=now().replace(microsecond=0).isoformat(),
             token_owner=token_owner.name,
             )
-        self.token = pendings.add(pendable, timedelta(days=3650))
+        # MAS This did specify a 3650 day lifetime, but go with the default.
+        self.token = pendings.add(pendable)
 
 
 @public

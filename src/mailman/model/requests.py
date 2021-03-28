@@ -17,7 +17,6 @@
 
 """Implementations of the pending requests interfaces."""
 
-from datetime import timedelta
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum, SAUnicode
@@ -102,7 +101,8 @@ class ListRequests:
         else:
             pendable = DataPendable()
             pendable.update(data)
-            token = getUtility(IPendings).add(pendable, timedelta(days=5000))
+            # MAS This did specify a 5000 day life, but go with the default.
+            token = getUtility(IPendings).add(pendable)
             data_hash = token
         request = _Request(key, request_type, self.mailing_list, data_hash)
         store.add(request)

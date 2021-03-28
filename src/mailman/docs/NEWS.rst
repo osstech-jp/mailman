@@ -18,6 +18,8 @@ Here is a history of user visible changes to Mailman.
 Bugs
 ----
 * Bounce runner now properly commits database transactions.  (Closes #850)
+* Pending subscriptions now have a lifetime equal to the configured
+  ``pending_request_life`` rather than 3650 days.  (Closes #729)
 
 .. _news-3.3.4:
 
