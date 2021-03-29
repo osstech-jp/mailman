@@ -168,9 +168,10 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         fmsg.set_type('message/rfc822')
         fmsg.attach(msg)
         fmsg.send(mlist)
-    # Delete the request if it's not being kept.
+    # Delete the request and message if it's not being kept.
     if not keep:
         requestdb.delete_request(id)
+        message_store.delete_message(message_id)
     # Log the rejection
     if rejection:
         note = """%s: %s posting:

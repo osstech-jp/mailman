@@ -25,6 +25,7 @@ from mailman.app.moderator import (
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
+from mailman.interfaces.pending import IPendings
 from mailman.interfaces.requests import IListRequests
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
@@ -137,14 +138,17 @@ Message-ID: <alpha>
         handle_message(self._mlist, request_id, Action.discard)
         self.assertEqual(self._request_db.count, 0)
 
-    def test_handled_message_stays_in_store(self):
-        # The message is still available in the store, even when it's been
-        # disposed of.
+    def test_handled_message_removed_from_store(self):
+        # The message is removed from the store and the pendings db when it's
+        # been disposed of.
         request_id = hold_message(self._mlist, self._msg)
+        # Get the hash for this pending request.
+        hash = list(self._request_db.held_requests)[0].data_hash
         handle_message(self._mlist, request_id, Action.discard)
         self.assertEqual(self._request_db.count, 0)
         message = getUtility(IMessageStore).get_message_by_id('<alpha>')
-        self.assertEqual(message['subject'], 'hold me')
+        self.assertIsNone(message)
+        self.assertIsNone(getUtility(IPendings).confirm(hash))
 
 
 class TestUnsubscription(unittest.TestCase):
