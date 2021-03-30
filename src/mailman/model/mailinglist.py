@@ -122,6 +122,7 @@ class MailingList(Model):
     # Bounces.
     bounce_info_stale_after = Column(Interval)
     bounce_matching_headers = Column(SAUnicode)                  # XXX
+    bounce_notify_owner_on_bounce_increment = Column(Boolean)
     bounce_notify_owner_on_disable = Column(Boolean)
     bounce_notify_owner_on_removal = Column(Boolean)
     bounce_score_threshold = Column(Integer)

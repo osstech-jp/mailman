@@ -859,6 +859,7 @@ class TestListTemplates(unittest.TestCase):
                 'list:admin:notice:subscribe': '',
                 'list:admin:notice:unrecognized': '',
                 'list:admin:notice:unsubscribe': '',
+                'list:admin:notice:increment': '',
                 'list:admin:notice:disable': '',
                 'list:admin:notice:removal': '',
                 'list:member:digest:footer': '',

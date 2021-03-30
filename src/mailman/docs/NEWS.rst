@@ -22,6 +22,16 @@ Bugs
   ``pending_request_life`` rather than 3650 days.  (Closes #729)
 * Held messages which are handled are now removed from the message store and
   the pending db.  (Closes #257)
+* Admin notices sent when a list member's delivery is disabled by bounce or
+  when a member's bounce score is incremented, now contain a copy of the
+  triggering DSN.  (Closes #737)
+
+New Features
+------------
+* There is a new ``bounce_notify_admin_on_bounce_increment`` list setting and
+  a corresponding ``list:admin:notice:increment`` template for the notice.
+  This setting, if True, will cause a notice to be sent to the list admins
+  when a member's bounce score is incremented, but doesn't disable delivery.
 
 .. _news-3.3.4:
 

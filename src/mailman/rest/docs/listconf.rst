@@ -36,6 +36,7 @@ All readable attributes for a list are available on a sub-resource.
     autoresponse_postings_text:
     autoresponse_request_text:
     bounce_info_stale_after: 7d
+    bounce_notify_owner_on_bounce_increment: False
     bounce_notify_owner_on_disable: True
     bounce_notify_owner_on_removal: True
     bounce_score_threshold: 5
@@ -147,6 +148,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
     ...             bounce_info_stale_after='5d',
+    ...             bounce_notify_owner_on_bounce_increment=False,
     ...             bounce_notify_owner_on_disable=True,
     ...             bounce_notify_owner_on_removal=True,
     ...             bounce_score_threshold=5,
@@ -232,6 +234,7 @@ These values are changed permanently.
     autoresponse_postings_text: the mailing list
     autoresponse_request_text: the robot
     bounce_info_stale_after: 5d
+    bounce_notify_owner_on_bounce_increment: False
     bounce_notify_owner_on_disable: True
     bounce_notify_owner_on_removal: True
     bounce_score_threshold: 5

@@ -166,6 +166,7 @@ ATTRIBUTES = dict(
     autoresponse_request_text=GetterSetter(str),
     bounces_address=GetterSetter(None),
     bounce_info_stale_after=GetterSetter(as_timedelta),
+    bounce_notify_owner_on_bounce_increment=GetterSetter(as_boolean),
     bounce_notify_owner_on_disable=GetterSetter(as_boolean),
     bounce_notify_owner_on_removal=GetterSetter(as_boolean),
     bounce_score_threshold=GetterSetter(integer_ge_zero_validator),
