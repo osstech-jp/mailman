@@ -152,6 +152,7 @@ class Bounces:
         mlist.bounce_info_stale_after = timedelta(days=7)
         mlist.bounce_you_are_disabled_warnings = 3
         mlist.bounce_you_are_disabled_warnings_interval = timedelta(days=7)
+        mlist.bounce_notify_owner_on_bounce_increment = False
         mlist.bounce_notify_owner_on_disable = True
         mlist.bounce_notify_owner_on_removal = True
         # Autoresponder

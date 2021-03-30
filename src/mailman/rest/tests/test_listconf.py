@@ -57,6 +57,7 @@ RESOURCE = dict(
     autoresponse_postings_text='the mailing list',
     autoresponse_request_text='the robot',
     bounce_info_stale_after='7d',
+    bounce_notify_owner_on_bounce_increment=False,
     bounce_notify_owner_on_disable=False,
     bounce_notify_owner_on_removal=True,
     bounce_score_threshold=5,

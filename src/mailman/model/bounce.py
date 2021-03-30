@@ -24,8 +24,8 @@ from lazr.config import as_boolean
 from mailman.app.bounces import send_probe
 from mailman.app.membership import delete_member
 from mailman.app.notifications import (
-    send_admin_disable_notice, send_admin_removal_notice,
-    send_user_disable_warning)
+    send_admin_disable_notice, send_admin_increment_notice,
+    send_admin_removal_notice, send_user_disable_warning)
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection, transactional
@@ -116,7 +116,7 @@ class BounceProcessor:
                  event.email, mlist.list_id)
         if mlist.bounce_notify_owner_on_disable:
             send_admin_disable_notice(
-                mlist, event.email, display_name=member.display_name)
+                mlist, event, display_name=member.display_name)
 
     @transactional
     @dbconnection
@@ -190,7 +190,13 @@ class BounceProcessor:
         log.info('Member %s on list %s, bounce score = %d.', event.email,
                  mlist.list_id, member.bounce_score)
         # Now, we are done updating. Let's see if the threshold is reached and
-        # disable based on that.
+        # disable based on that, but first if we're not going to disable we
+        # need to send the bounce score incremented notice if requested.
+        if mlist.bounce_notify_owner_on_bounce_increment and (
+                member.bounce_score < mlist.bounce_score_threshold or
+                not as_boolean(config.mta.verp_probes)):
+            send_admin_increment_notice(
+                mlist, event, display_name=member.display_name)
         if member.bounce_score >= mlist.bounce_score_threshold:
             # Save bounce_score because sending probe resets it.
             saved_bounce_score = member.bounce_score

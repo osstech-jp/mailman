@@ -19,12 +19,15 @@
 
 import logging
 
+from email.mime.message import MIMEMessage
+from email.mime.text import MIMEText
 from email.utils import formataddr
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.string import expand, wrap
 from public import public
@@ -32,6 +35,31 @@ from zope.component import getUtility
 
 
 log = logging.getLogger('mailman.error')
+
+
+def _get_dsn(message_id):
+    # Get the DSN from the message store and delete it from the message store.
+    messagestore = getUtility(IMessageStore)
+    dsn = messagestore.get_message_by_id(message_id)
+    if dsn:
+        messagestore.delete_message(message_id)
+    return dsn
+
+
+def _make_multipart(msg):
+    """Turn an OwnerNotification into a multipart/mixed with a text/plain
+    payload. This is all a Kludge due to messages being email.Message objects
+    and not email.EmailMessage objects. If they were the latter we could just
+    use the message's add_content method in a straight forward way.
+    """
+    text = MIMEText(msg.get_payload(decode=True).decode(
+                    msg.get_content_charset('utf-8')))
+    del msg['content-type']
+    del msg['content-transfer-encoding']
+    msg['Content-Type'] = 'multipart/mixed'
+    msg.set_payload(None)
+    msg.attach(text)
+    return msg
 
 
 @public
@@ -120,17 +148,17 @@ def send_admin_subscription_notice(mlist, address, display_name):
 
 
 @public
-def send_admin_disable_notice(mlist, address, display_name):
+def send_admin_disable_notice(mlist, event, display_name):
     """Send the list administrators a membership disabled by-bounce notice.
 
     :param mlist: The mailing list
     :type mlist: IMailingList
-    :param address: The address of the member
-    :type address: string
+    :param event: The BounceEvent that triggered this notice.
+    :type event: A mailman.model.bounce.BounceEvent instance.
     :param display_name: The name of the subscriber
     :type display_name: string
     """
-    member = formataddr((display_name, address))
+    member = formataddr((display_name, event.email))
     data = {'member': member}
     with _.using(mlist.preferred_language.code):
         subject = _('$member\'s subscription disabled on $mlist.display_name')
@@ -138,6 +166,39 @@ def send_admin_disable_notice(mlist, address, display_name):
         getUtility(ITemplateLoader).get('list:admin:notice:disable', mlist),
         mlist, data)
     msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
+    dsn = _get_dsn(event.message_id)
+    if dsn:
+        msg = _make_multipart(msg)
+        att = MIMEMessage(dsn)
+        msg.attach(att)
+    msg.send(mlist)
+
+
+@public
+def send_admin_increment_notice(mlist, event, display_name):
+    """Send the list administrators a bounce score incremented notice.
+
+    :param mlist: The mailing list
+    :type mlist: IMailingList
+    :param event: The BounceEvent that triggered this notice.
+    :type event: A mailman.model.bounce.BounceEvent instance.
+    :param display_name: The name of the subscriber
+    :type display_name: string
+    """
+    member = formataddr((display_name, event.email))
+    data = {'member': member}
+    with _.using(mlist.preferred_language.code):
+        subject = _(
+            '$member\'s bounce score incremented on $mlist.display_name')
+    text = expand(
+        getUtility(ITemplateLoader).get('list:admin:notice:increment', mlist),
+        mlist, data)
+    msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
+    dsn = _get_dsn(event.message_id)
+    if dsn:
+        msg = _make_multipart(msg)
+        att = MIMEMessage(dsn)
+        msg.attach(att)
     msg.send(mlist)
 
 

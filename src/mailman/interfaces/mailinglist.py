@@ -667,6 +667,11 @@ class IMailingList(Interface):
         the bounce score is reset to zero. This value must be an integer.
         """)
 
+    bounce_notify_owner_on_bounce_increment = Attribute(
+        """This option controls whether or not the list owner
+        is notified when a member's bounce score is incremented.
+        """)
+
     bounce_notify_owner_on_disable = Attribute(
         """This option controls whether or not the list owner
         is notified when a member's subscription is automatically
