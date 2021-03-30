@@ -41,6 +41,14 @@ def upgrade():
             'mailinglist',
             sa.Column('bounce_notify_owner_on_bounce_increment', sa.BOOLEAN(),
                       nullable=True))
+        # Set the default data.
+        mlist = sa.sql.table(                                 # pragma: nocover
+            'mailinglist',
+            sa.sql.column('bounce_notify_owner_on_bounce_increment',
+                          sa.BOOLEAN())
+            )
+        op.execute(mlist.update().values(                     # pragma: nocover
+            {'bounce_notify_owner_on_bounce_increment': False}))
 
 
 def downgrade():
