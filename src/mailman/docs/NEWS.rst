@@ -26,6 +26,11 @@ Bugs
   when a member's bounce score is incremented, now contain a copy of the
   triggering DSN.  (Closes #737)
 
+REST
+----
+* Fixed an exception on retreiving held messages if the held request exists,
+  but the message is missing.  (Closes #856)
+
 New Features
 ------------
 * There is a new ``bounce_notify_admin_on_bounce_increment`` list setting and

@@ -21,9 +21,11 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
+from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
@@ -76,6 +78,54 @@ Something else.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/ant@example.com/held/99')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_held_message_is_missing(self):
+        # Missing message returns appropriately.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+        url = 'http://localhost:9001/3.0/lists/ant@example.com/held'
+        json, response = call_api(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['total_size'], 1)
+        self.assertEqual(json['entries'][0]['request_id'], held_id)
+        self.assertEqual(json['entries'][0]['msg'], """\
+From: anne@example.com
+To: ant@example.com
+Subject: Something
+Message-ID: <alpha>
+Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
+X-Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
+
+Something else.
+""")
+        # Now delete the message from the message store and try again.
+        getUtility(IMessageStore).delete_message('<alpha>')
+        config.db.commit()
+        json, response = call_api(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['total_size'], 1)
+        self.assertEqual(json['entries'][0]['request_id'], held_id)
+        self.assertEqual(json['entries'][0]['msg'], """\
+Subject: Message content lost
+Message-ID: <alpha>
+
+This held message has been lost.
+""")
+
+    def test_delete_missing_message(self):
+        # Ensure we can delete a held message request with a missing message.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+        # Now delete the message from the message store.
+        getUtility(IMessageStore).delete_message('<alpha>')
+        config.db.commit()
+        # There is still a request.
+        requests = IListRequests(self._mlist)
+        key, data = requests.get_request(held_id)
+        self.assertEqual(key, '<alpha>')
+        # Now delete the request.
+        requests.delete_request(held_id)
+        self.assertIsNone(requests.get_request(held_id))
 
     def test_request_is_not_held_message(self):
         requests = IListRequests(self._mlist)
