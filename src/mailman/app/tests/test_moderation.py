@@ -22,6 +22,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import (
     handle_message, handle_unsubscription, hold_message, hold_unsubscription)
+from mailman.chains.hold import HeldMessagePendable
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
@@ -149,6 +150,20 @@ Message-ID: <alpha>
         message = getUtility(IMessageStore).get_message_by_id('<alpha>')
         self.assertIsNone(message)
         self.assertIsNone(getUtility(IPendings).confirm(hash))
+
+    def test_all_pendings_removed(self):
+        # A held message pends two tokens, One for the moderator and one for
+        # the user.  Ensure both are removed when meddage is handled.
+        request_id = hold_message(self._mlist, self._msg)
+        # The hold chain does more.
+        pendings = getUtility(IPendings)
+        user_hash = pendings.add(HeldMessagePendable(id=request_id))
+        # Get the hash for this pending request.
+        hash = list(self._request_db.held_requests)[0].data_hash
+        handle_message(self._mlist, request_id, Action.discard)
+        self.assertEqual(self._request_db.count, 0)
+        self.assertIsNone(pendings.confirm(hash))
+        self.assertIsNone(pendings.confirm(user_hash))
 
 
 class TestUnsubscription(unittest.TestCase):
