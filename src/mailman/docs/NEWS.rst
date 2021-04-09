@@ -25,6 +25,8 @@ Bugs
 * Admin notices sent when a list member's delivery is disabled by bounce or
   when a member's bounce score is incremented, now contain a copy of the
   triggering DSN.  (Closes #737)
+* Handling a held message now also removes the poster's pending
+  ``held message`` from the pending db.  (Closes #257)
 
 REST
 ----

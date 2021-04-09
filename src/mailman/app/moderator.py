@@ -30,6 +30,7 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.member import NotAMemberError
 from mailman.interfaces.messages import IMessageStore
+from mailman.interfaces.pending import IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.datetime import now
@@ -170,6 +171,16 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         fmsg.send(mlist)
     # Delete the request and message if it's not being kept.
     if not keep:
+        # There are two pended tokens.  The request id has the moderator
+        # token, but wee need to delete the user token too.
+        user_token = None
+        pendings = getUtility(IPendings)
+        for token, data in pendings.find(pend_type='held message'):
+            if data['id'] == id:
+                user_token = token
+                break
+        if user_token is not None:
+            pendings.confirm(user_token, expunge=True)
         requestdb.delete_request(id)
         message_store.delete_message(message_id)
     # Log the rejection
