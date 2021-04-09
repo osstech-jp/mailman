@@ -176,7 +176,8 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         user_token = None
         pendings = getUtility(IPendings)
         for token, data in pendings.find(pend_type='held message'):
-            if data['id'] == id:
+            # This can return None if there is a concurrent deletion.
+            if data and data['id'] == id:
                 user_token = token
                 break
         if user_token is not None:
