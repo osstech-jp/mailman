@@ -86,7 +86,10 @@ class Pendings:
         verifyObject(IPendable, pendable)
         # Calculate the token and the lifetime.
         if lifetime is None:
-            lifetime = as_timedelta(config.mailman.pending_request_life)
+            if pendable.get('token_owner', None) == 'moderator':
+                lifetime = as_timedelta(config.mailman.moderator_request_life)
+            else:
+                lifetime = as_timedelta(config.mailman.pending_request_life)
         for attempts in range(3):
             token = token_factory.new()
             # In practice, we'll never get a duplicate, but we'll be anal

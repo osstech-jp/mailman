@@ -39,6 +39,9 @@ New Features
   a corresponding ``list:admin:notice:increment`` template for the notice.
   This setting, if True, will cause a notice to be sent to the list admins
   when a member's bounce score is incremented, but doesn't disable delivery.
+* There is a new ``moderator_request_life`` setting in the ``[mailman]``
+  section of mailman.cfg that controls the lifetime of pending moderator
+  requests as opposed to pending user confirmations.
 
 .. _news-3.3.4:
 
