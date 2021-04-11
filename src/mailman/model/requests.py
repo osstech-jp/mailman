@@ -17,6 +17,8 @@
 
 """Implementations of the pending requests interfaces."""
 
+from lazr.config import as_timedelta
+from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum, SAUnicode
@@ -101,8 +103,9 @@ class ListRequests:
         else:
             pendable = DataPendable()
             pendable.update(data)
-            # MAS This did specify a 5000 day life, but go with the default.
-            token = getUtility(IPendings).add(pendable)
+            # MAS Use the moderator default lifetime.
+            lifetime = as_timedelta(config.mailman.moderator_request_life)
+            token = getUtility(IPendings).add(pendable, lifetime=lifetime)
             data_hash = token
         request = _Request(key, request_type, self.mailing_list, data_hash)
         store.add(request)

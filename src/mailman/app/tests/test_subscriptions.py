@@ -17,11 +17,15 @@
 
 """Tests for the subscription service."""
 
+import sys
 import unittest
 
 from contextlib import suppress
+from datetime import datetime
+from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
 from mailman.app.subscriptions import SubscriptionWorkflow
+from mailman.config import config
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
@@ -76,6 +80,55 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(pendable['display_name'], '')
         self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
         self.assertEqual(pendable['token_owner'], 'subscriber')
+        # The token is still in the database.
+        self._expected_pendings_count = 1
+
+    @unittest.skipIf(sys.hexversion < 0x30700a0, 'No datetime.fromisoformat')
+    def test_pended_expiration_user(self):
+        # As test_pended_data, but here we're interested in the expiration
+        # which we need to get at a low level.
+        anne = self._user_manager.create_address(self._anne)
+        workflow = SubscriptionWorkflow(self._mlist, anne)
+        with suppress(StopIteration):
+            workflow.run_thru('send_confirmation')
+        self.assertIsNotNone(workflow.token)
+        pendable = getUtility(IPendings).confirm(workflow.token, expunge=False)
+        self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
+        self.assertEqual(pendable['token_owner'], 'subscriber')
+        # Get the expiration datetime and verify.
+        expiration = config.db.store.execute(
+            "select expiration_date from pended where token = '{}';".format(
+                workflow.token)).fetchone()[0]
+        if isinstance(expiration, str):
+            expiration = datetime.fromisoformat(expiration)
+        expected = datetime.fromisoformat(pendable['when']) + as_timedelta(
+            config.mailman.pending_request_life)
+        self.assertEqual(expiration, expected)
+        # The token is still in the database.
+        self._expected_pendings_count = 1
+
+    @unittest.skipIf(sys.hexversion < 0x30700a0, 'No datetime.fromisoformat')
+    def test_pended_expiration_moderator(self):
+        # Test that a Pendable for the moderator has the right expiration.
+        self._mlist.subscription_policy = SubscriptionPolicy.moderate
+        anne = self._user_manager.create_address(self._anne)
+        anne.verified_on = datetime.now()
+        workflow = SubscriptionWorkflow(self._mlist, anne)
+        with suppress(StopIteration):
+            workflow.run_thru('get_moderator_approval')
+        self.assertIsNotNone(workflow.token)
+        pendable = getUtility(IPendings).confirm(workflow.token, expunge=False)
+        self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
+        self.assertEqual(pendable['token_owner'], 'moderator')
+        # Get the expiration datetime and verify.
+        expiration = config.db.store.execute(
+            "select expiration_date from pended where token = '{}';".format(
+                workflow.token)).fetchone()[0]
+        if isinstance(expiration, str):
+            expiration = datetime.fromisoformat(expiration)
+        expected = datetime.fromisoformat(pendable['when']) + as_timedelta(
+            config.mailman.moderator_request_life)
+        self.assertEqual(expiration, expected)
         # The token is still in the database.
         self._expected_pendings_count = 1
 

@@ -154,7 +154,7 @@ class _SubscriptionWorkflowCommon(Workflow):
             when=now().replace(microsecond=0).isoformat(),
             token_owner=token_owner.name,
             )
-        # MAS This did specify a 3650 day lifetime, but go with the default.
+        # MAS pendings.add will set lifetime based on token_owner.
         self.token = pendings.add(pendable)
 
 

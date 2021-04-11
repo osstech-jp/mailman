@@ -29,6 +29,7 @@ You can also get all the values for a particular section, such as the
     layout: testing
     listname_chars: [-_.0-9a-z]
     masthead_threshold: 4
+    moderator_request_life: 180d
     noreply_address: noreply
     pending_request_life: 3d
     post_hook:
