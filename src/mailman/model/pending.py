@@ -26,11 +26,13 @@ from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode, SAUnicodeXL
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
+from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.utilities.datetime import now
 from mailman.utilities.uid import TokenFactory
 from public import public
 from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, and_
 from sqlalchemy.orm import aliased, relationship
+from zope.component import getUtility
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
 
@@ -146,6 +148,8 @@ class Pendings:
             pendable[keyvalue.key] = value
         if expunge:
             store.delete(pending)
+            # Discard associated workflow if any.
+            getUtility(IWorkflowStateManager).discard(token)
         return pendable
 
     @dbconnection

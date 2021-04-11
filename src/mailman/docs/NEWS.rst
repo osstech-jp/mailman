@@ -27,6 +27,8 @@ Bugs
   triggering DSN.  (Closes #737)
 * Handling a held message now also removes the poster's pending
   ``held message`` from the pending db.  (Closes #257)
+* Deleting a pending request now also deletes any associated workflow.
+  (See #853)
 
 Command line
 ------------
