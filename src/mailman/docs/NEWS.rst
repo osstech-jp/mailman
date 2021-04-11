@@ -28,6 +28,11 @@ Bugs
 * Handling a held message now also removes the poster's pending
   ``held message`` from the pending db.  (Closes #257)
 
+Command line
+------------
+* The ``notify`` subcommand is no more tolerant of certain database anomalies.
+  (Closes #861)
+
 REST
 ----
 * Fixed an exception on retreiving held messages if the held request exists,

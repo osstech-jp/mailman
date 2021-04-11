@@ -116,14 +116,18 @@ def _build_detail(requestdb, subs, unsubs):
     if requestdb.count_of(RequestType.held_message) > 0:
         detail += _('\nHeld Messages:\n')
         for rq in requestdb.of_type(RequestType.held_message):
-            key, data = requestdb.get_request(rq.id)
-            sender = data['_mod_sender']
-            subject = data['_mod_subject']
-            reason = data['_mod_reason']
-            detail += '    ' + _('Sender: {}\n').format(sender)
-            detail += '    ' + _('Subject: {}\n').format(
-                str(make_header(decode_header(subject))))
-            detail += '    ' + _('Reason: {}\n\n').format(reason)
+            if requestdb.get_request(rq.id):
+                key, data = requestdb.get_request(rq.id)
+                sender = data['_mod_sender']
+                subject = data['_mod_subject']
+                reason = data['_mod_reason']
+                detail += '    ' + _('Sender: {}\n').format(sender)
+                detail += '    ' + _('Subject: {}\n').format(
+                    str(make_header(decode_header(subject))))
+                detail += '    ' + _('Reason: {}\n\n').format(reason)
+            else:
+                detail += '    ' + _(                    # pragma: nocover
+                    'Missing data for request {}\n\n').format(rq.id)
     return detail
 
 
