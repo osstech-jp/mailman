@@ -21,7 +21,7 @@ import re
 import logging
 
 from base64 import b64decode
-from falcon import API, HTTPUnauthorized
+from falcon import App, HTTPUnauthorized
 from falcon.routing import map_http_methods, set_default_responders
 from mailman.config import config
 from mailman.database.transaction import transactional
@@ -171,7 +171,7 @@ class ObjectRouter:
                 return None, None, None
 
 
-class RootedAPI(API):
+class RootedAPI(App):
     def __init__(self, root, *args, **kws):
         super().__init__(
             *args,
