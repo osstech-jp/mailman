@@ -149,7 +149,10 @@ class Runner:
         dlog.debug('[%s] starting oneloop', me)
         # List all the files in our queue directory.  The switchboard is
         # guaranteed to hand us the files in FIFO order.
-        files = self.switchboard.files
+        if self.switchboard is None:
+            files = []
+        else:
+            files = self.switchboard.files
         for filebase in files:
             dlog.debug('[%s] processing filebase: %s', me, filebase)
             try:

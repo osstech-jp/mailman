@@ -86,7 +86,10 @@ def make_testable_runner(runner_class, name=None, predicate=None):
             """Stop when the queue is empty."""
             super()._do_periodic()
             if predicate is None:
-                self._stop = (len(self.switchboard.files) == 0)
+                if self.switchboard is None:
+                    self._stop = True
+                else:
+                    self._stop = (len(self.switchboard.files) == 0)
             else:
                 self._stop = predicate(self)
 

@@ -64,6 +64,10 @@ class WorkflowStateManager:
         if state is not None:
             store.delete(state)
 
+    @dbconnection
+    def get_all_tokens(self, store):
+        yield from [x[0] for x in store.query(WorkflowState.token).all()]
+
     @property
     @dbconnection
     def count(self, store):
