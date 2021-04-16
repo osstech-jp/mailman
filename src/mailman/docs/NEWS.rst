@@ -29,6 +29,10 @@ Bugs
   ``held message`` from the pending db.  (Closes #257)
 * Deleting a pending request now also deletes any associated workflow.
   (See #853)
+* A new runner which is not a queue runner and which doesn't override its
+  ``run`` or ``_one_itiration`` methods can now be implemented.  (Closes #866)
+* The ``FileNotFound`` exception thrown in CacheManager on attempt to delete
+  an entry for a missing file is now caught.  (Closes #867)
 
 Command line
 ------------
@@ -48,7 +52,12 @@ New Features
   when a member's bounce score is incremented, but doesn't disable delivery.
 * There is a new ``moderator_request_life`` setting in the ``[mailman]``
   section of mailman.cfg that controls the lifetime of pending moderator
-  requests as opposed to pending user confirmations.
+  requests as opposed to pending user confirmations.  Default is 180 days.
+* There is a new ``task`` runner to do periodic tasks.  The current
+  implementation evicts expired pendings and cache entries and removes
+  orphaned workflows.  It does these tasks at intervals defined by the new
+  ``run_tasks_every`` setting in the ``[mailman]`` section of mailman.cfg.
+  Default is 1 hour.  (Closes #467 and #853)
 
 .. _news-3.3.4:
 

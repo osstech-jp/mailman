@@ -117,3 +117,13 @@ class TestWorkflow(unittest.TestCase):
     def test_discard_missing_workflow(self):
         self._manager.discard('bogus-token')
         self.assertEqual(self._manager.count, 0)
+
+    def test_get_all_tokens(self):
+        # Test that we can get all tokens.
+        self._manager.save('token1', 'one')
+        self._manager.save('token2', 'two')
+        self._manager.save('token3', 'three')
+        self._manager.save('token4', 'four')
+        self.assertEqual(self._manager.count, 4)
+        self.assertEqual(['token1', 'token2', 'token3', 'token4'],
+                         list(self._manager.get_all_tokens()))

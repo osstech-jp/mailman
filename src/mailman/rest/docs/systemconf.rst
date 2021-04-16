@@ -34,6 +34,7 @@ You can also get all the values for a particular section, such as the
     pending_request_life: 3d
     post_hook:
     pre_hook:
+    run_tasks_every: 1h
     self_link: http://localhost:9001/3.0/system/configuration/mailman
     sender_headers: from from_ reply-to sender
     site_owner: noreply@example.com

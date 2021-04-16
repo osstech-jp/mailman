@@ -38,6 +38,10 @@ class CrashingRunner(Runner):
         raise RuntimeError('borked')
 
 
+class NonQueueRunner(Runner):
+    is_queue_runner = False
+
+
 class TestRunner(unittest.TestCase):
     """Test the Runner base class behavior."""
 
@@ -118,3 +122,11 @@ Message-ID: <ant>
         # The list's -request address is the original sender.
         self.assertEqual(item.msgdata['original_sender'],
                          'test-request@example.com')
+
+    @configuration('runner.nonqueue',
+                   **{'class': 'mailman.core.tests.NonQueueRunner'})
+    def test_non_queue_runner(self):
+        # Test that a runner with no queue can run _one_iteration.
+        runner = make_testable_runner(NonQueueRunner)
+        # This will throw AttributeError on failure.
+        runner.run()

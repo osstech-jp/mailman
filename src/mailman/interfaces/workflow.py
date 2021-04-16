@@ -64,4 +64,11 @@ class IWorkflowStateManager(Interface):
         :type token: str
         """
 
+    def get_all_tokens():
+        """Get a generator yielding all saved workflow tokens.
+
+        :return: A generator yielding all saved workflow tokens.
+        :rtype: string
+        """
+
     count = Attribute('The number of saved workflows in the database.')
