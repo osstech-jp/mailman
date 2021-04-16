@@ -24,6 +24,7 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import parseaddr
+from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
@@ -46,6 +47,8 @@ blog = logging.getLogger('mailman.bounce')
 
 DOT = '.'
 NL = '\n'
+# Lifetime for pended probe tokens
+PENDABLE_LIFETIME = '10d'
 
 
 @public
@@ -214,7 +217,8 @@ def send_probe(member, msg=None, message_id=None):
         member_id=member.member_id.hex,
         message_id=message_id,
         )
-    token = getUtility(IPendings).add(pendable)
+    token = getUtility(IPendings).add(
+        pendable, lifetime=as_timedelta(PENDABLE_LIFETIME))
     mailbox, domain_parts = split_email(mlist.bounces_address)
     probe_sender = Template(config.mta.verp_probe_format).safe_substitute(
         bounces=mailbox,
