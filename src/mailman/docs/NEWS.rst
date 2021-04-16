@@ -33,6 +33,7 @@ Bugs
   ``run`` or ``_one_itiration`` methods can now be implemented.  (Closes #866)
 * The ``FileNotFound`` exception thrown in CacheManager on attempt to delete
   an entry for a missing file is now caught.  (Closes #867)
+* Pending probe bounce tokens now have a lifetime of 10 days.  (Closes #869)
 
 Command line
 ------------
