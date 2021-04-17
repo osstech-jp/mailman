@@ -304,6 +304,20 @@ class TestUsers(unittest.TestCase):
             json['self_link'],
             'http://localhost:9001/3.0/users/1/preferences')
 
+    def test_find_users(self):
+        usermanager = getUtility(IUserManager)
+        with transaction():
+            user = usermanager.create_user(
+                'aperson@example.com', 'Anne Person')
+            user2 = usermanager.create_user('bperson@example.com', 'Bart')
+        json, response = call_api(
+            'http://localhost:9001/3.0/users/find?q=person')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json.get('entries')), 2)
+        # both matched since one has person in name and other has in email.
+        user_ids = [each.get('user_id') for each in json.get('entries')]
+        self.assertEqual(user_ids, [(user.id), user2.id])
+
 
 class TestLogin(unittest.TestCase):
     """Test user 'login' (really just password verification)."""

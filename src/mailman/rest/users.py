@@ -167,6 +167,41 @@ class AllUsers(_UserBase):
             return
 
 
+class _FoundUsers(_UserBase):
+    def __init__(self, users, api):
+        super().__init__()
+        self._users = users
+        self.api = api
+
+    def _get_collection(self, request):
+        return self._users
+
+
+class FindUsers(_UserBase):
+
+    def on_get(self, request, response):
+        validator = Validator(q=str,
+                              # Allow pagination.
+                              page=int,
+                              count=int,
+                              _optional=('page', 'count'))
+        try:
+            data = validator(request)
+        except ValueError as error:
+            bad_request(response, str(error))
+            return
+
+        user_manager = getUtility(IUserManager)
+        users = list(user_manager.find_users(data.get('q')))
+        resource = _FoundUsers(users, self.api)
+        try:
+            collection = resource._make_collection(request)
+        except ValueError as ex:
+            bad_request(response, str(ex))
+        else:
+            okay(response, etag(collection))
+
+
 @public
 class AUser(_UserBase):
     """A user."""
