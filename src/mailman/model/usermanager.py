@@ -27,6 +27,7 @@ from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.model.user import User
 from public import public
+from sqlalchemy import or_
 from zope.interface import implementer
 
 
@@ -159,3 +160,13 @@ class UserManager:
         """ See `IUserManager."""
         yield from store.query(User).filter_by(
             is_server_owner=True).order_by(User.id)
+
+    @dbconnection
+    def find_users(self, store, query):
+        """ See `IUserManager."""
+        q = '%{}%'.format(query)
+        yield from store.query(User).join(
+            Address, Address.user_id == User.id).filter(
+                or_(User.display_name.ilike(q),
+                    Address.display_name.ilike(q),
+                    Address.email.ilike(q)))

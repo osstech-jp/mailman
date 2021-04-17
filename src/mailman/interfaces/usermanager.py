@@ -117,6 +117,18 @@ class IUserManager(Interface):
         :rtype: `IAddress` or None
         """
 
+    def find_users(query):
+        """Find a user using the query string.
+
+        Search for a user using the query string for partial search of the
+        User's display_name and address or addresses' display_name.
+
+        :param query: The search string
+        :type query: str
+        :return: The matching `IUser` object or empty list.
+        :rtype: `IUser`.
+        """
+
     addresses = Attribute(
         """An iterator over all the `IAddresses` managed by this manager.""")
 

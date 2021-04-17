@@ -35,7 +35,7 @@ from mailman.rest.preferences import ReadOnlyPreferences
 from mailman.rest.queues import AQueue, AQueueFile, AllQueues
 from mailman.rest.templates import TemplateFinder
 from mailman.rest.uris import ASiteURI, AllSiteURIs
-from mailman.rest.users import AUser, AllUsers, ServerOwners
+from mailman.rest.users import AUser, AllUsers, FindUsers, ServerOwners
 from public import public
 from zope.component import getUtility
 
@@ -249,9 +249,13 @@ class TopLevel:
         """/<api>/users"""
         if len(segments) == 0:
             return AllUsers()
+
+        segment = segments.pop(0)
+        if segment == 'find':
+            resource = FindUsers()
         else:
-            user_identifier = segments.pop(0)
-            return AUser(user_identifier), segments
+            resource = AUser(segment)
+        return resource, segments
 
     @child()
     def owners(self, context, segments):

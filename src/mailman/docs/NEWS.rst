@@ -44,6 +44,8 @@ REST
 ----
 * Fixed an exception on retreiving held messages if the held request exists,
   but the message is missing.  (Closes #856)
+* Add a new ``/users/find`` endpoint to allow searching for users by matching
+  display_name and user's email address. (Closes #874)
 
 New Features
 ------------
