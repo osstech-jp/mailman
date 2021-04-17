@@ -22,10 +22,12 @@ import unittest
 from datetime import timedelta
 from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
+from mailman.app.moderator import hold_message
 from mailman.config import config
 from mailman.interfaces.cache import ICacheManager
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.pending import IPendable, IPendings
-from mailman.interfaces.requests import IListRequests, RequestType
+from mailman.interfaces.requests import IListRequests
 from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.runners.task import TaskRunner
 from mailman.testing.helpers import (
@@ -50,14 +52,23 @@ class TestTask(unittest.TestCase):
         self._pendings = getUtility(IPendings)
         self._wfmanager = getUtility(IWorkflowStateManager)
         self._cachemanager = getUtility(ICacheManager)
+        self._messages = getUtility(IMessageStore)
         self._mlist = create_list('ant@example.com')
-        self._msg = mfs("""\
+        self._msg1 = mfs("""\
 To: ant@example.com
 From: anne@example.com
 Subject: A message
-Message-ID: <msg>
+Message-ID: <msg1>
 
-body
+first message
+""")
+        self._msg2 = mfs("""\
+To: ant@example.com
+From: anne@example.com
+Subject: A message
+Message-ID: <msg2>
+
+second message
 """)
         self._listrequests = IListRequests(self._mlist)
         self._runner = make_testable_runner(TaskRunner)
@@ -68,22 +79,24 @@ body
         self._token2 = self._pendings.add(pendable, lifetime=timedelta(days=3))
         self._wfmanager.save(self._token1)
         self._wfmanager.save(self._token2)
-        self._requestid = self._listrequests.hold_request(
-            RequestType.held_message, '<msg>', data=self._msg)
+        self._requestid1 = hold_message(
+            self._mlist, self._msg1, reason='Testing')
+        self._requestid2 = hold_message(
+            self._mlist, self._msg2, reason='Testing')
 
     def test_task_runner(self):
         # Test that the task runner deletes expired cache, pendings and
         # associated workflows.
         self.assertEqual(self._cachemanager.get('cache1'), 'xxx1')
         self.assertEqual(self._cachemanager.get('cache2'), 'xxx2')
-        self.assertEqual(self._pendings.count(), 3)
+        self.assertEqual(self._pendings.count(), 4)
         self.assertEqual(self._wfmanager.count, 2)
         mark = LogFileMark('mailman.task')
         factory.fast_forward(days=2)
         self._runner.run()
         self.assertIsNone(self._cachemanager.get('cache1'))
         self.assertEqual(self._cachemanager.get('cache2'), 'xxx2')
-        self.assertEqual(self._pendings.count(), 2)
+        self.assertEqual(self._pendings.count(), 3)
         pended = self._pendings.confirm(self._token2, expunge=False)
         self.assertEqual(pended['type'], 'my pended')
         self.assertEqual(list(self._wfmanager.get_all_tokens()),
@@ -96,8 +109,8 @@ body
 
     def test_task_runner_request(self):
         # Test that the task runner deletes orphaned requests.
-        self.assertEqual(self._pendings.count(), 3)
-        self.assertEqual(self._listrequests.count, 1)
+        self.assertEqual(self._pendings.count(), 4)
+        self.assertEqual(self._listrequests.count, 2)
         life = as_timedelta(config.mailman.moderator_request_life)
         mark = LogFileMark('mailman.task')
         factory.fast_forward(days=life.days+1)
@@ -105,4 +118,22 @@ body
         self.assertEqual(self._pendings.count(), 0)
         self.assertEqual(self._listrequests.count, 0)
         log = mark.read()
-        self.assertIn('Task runner deleted 1 orphaned requests', log)
+        self.assertIn('Task runner deleted 2 orphaned requests', log)
+
+    def test_task_runner_messages(self):
+        # Test that the task runner deletes orphaned messages from the
+        # message store.
+        # Initially, there are 2 messages in the store and 4 pendings.
+        self.assertEqual(len(list(self._messages.messages)), 2)
+        self.assertEqual(self._pendings.count(), 4)
+        # Deleting the first request removes the pending but not the message.
+        self._listrequests.delete_request(self._requestid1)
+        self.assertEqual(self._pendings.count(), 3)
+        self.assertEqual(len(list(self._messages.messages)), 2)
+        mark = LogFileMark('mailman.task')
+        self._runner.run()
+        # Now there's only msg2.
+        self.assertEqual(len(list(self._messages.messages)), 1)
+        self.assertIsNotNone(self._messages.get_message_by_id('<msg2>'))
+        log = mark.read()
+        self.assertIn('Task runner deleted 1 orphaned messages', log)

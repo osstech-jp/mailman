@@ -58,9 +58,10 @@ New Features
   requests as opposed to pending user confirmations.  Default is 180 days.
 * There is a new ``task`` runner to do periodic tasks.  The current
   implementation evicts expired pendings and cache entries and removes
-  orphaned workflows.  It does these tasks at intervals defined by the new
-  ``run_tasks_every`` setting in the ``[mailman]`` section of mailman.cfg.
-  Default is 1 hour.  (Closes #467 and #853)
+  orphaned workflows and orphaned message store messages.  It does these tasks
+  at intervals defined by the new ``run_tasks_every`` setting in the
+  ``[mailman]`` section of mailman.cfg. Default is 1 hour.  (Closes #467 and
+  #853)
 
 .. _news-3.3.4:
 
