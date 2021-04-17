@@ -20,7 +20,7 @@
 import os
 import hashlib
 
-from contextlib import ExitStack, suppress
+from contextlib import ExitStack
 from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.database.model import Model
@@ -28,6 +28,7 @@ from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode
 from mailman.interfaces.cache import ICacheManager
 from mailman.utilities.datetime import now
+from mailman.utilities.filesystem import safe_remove
 from public import public
 from sqlalchemy import Boolean, Column, DateTime, Integer
 from zope.interface import implementer
@@ -142,8 +143,7 @@ class CacheManager:
         # Do we expunge the cache file?
         if expunge:
             store.delete(entry)
-            with suppress(FileNotFoundError):
-                os.remove(file_path)
+            safe_remove(file_path)
         return contents
 
     @dbconnection
@@ -154,8 +154,7 @@ class CacheManager:
         if entry is None:
             return
         file_path, dir_path = self._id_to_path(entry.file_id)
-        with suppress(FileNotFoundError):
-            os.remove(file_path)
+        safe_remove(file_path)
         store.delete(entry)
 
     @dbconnection
@@ -169,8 +168,7 @@ class CacheManager:
                            .all())
         for entry in expired_entries:
             file_path, _ = self._id_to_path(entry.file_id)
-            with suppress(FileNotFoundError):
-                os.remove(file_path)
+            safe_remove(file_path)
             store.delete(entry)
 
     @dbconnection
@@ -179,6 +177,5 @@ class CacheManager:
         # but for now there probably aren't that many cached files.
         for entry in store.query(CacheEntry):
             file_path, dir_path = self._id_to_path(entry.file_id)
-            with suppress(FileNotFoundError):
-                os.remove(file_path)
+            safe_remove(file_path)
             store.delete(entry)
