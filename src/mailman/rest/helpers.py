@@ -296,7 +296,7 @@ class NotFound(ChildError):
 def okay(response, body=None):
     response.status = falcon.HTTP_200
     if body is not None:
-        response.body = body
+        response.text = body
 
 
 @public
@@ -311,14 +311,14 @@ def not_found(response, body='404 Not Found'):
     if isinstance(body, bytes):
         body = body.decode()
     if body is not None:
-        response.body = falcon.HTTPNotFound(description=body).to_json()
+        response.text = falcon.HTTPNotFound(description=body).to_json()
 
 
 @public
 def accepted(response, body=None):
     response.status = falcon.HTTP_202
     if body is not None:
-        response.body = body
+        response.text = body
 
 
 @public
@@ -328,7 +328,7 @@ def bad_request(response, body='400 Bad Request'):
     if isinstance(body, bytes):
         body = body.decode()
     if body is not None:
-        response.body = falcon.HTTPBadRequest(description=body).to_json()
+        response.text = falcon.HTTPBadRequest(description=body).to_json()
 
 
 @public
@@ -344,7 +344,7 @@ def conflict(response, body='409 Conflict'):
     if isinstance(body, bytes):
         body = body.decode()
     if body is not None:
-        response.body = falcon.HTTPConflict(description=body).to_json()
+        response.text = falcon.HTTPConflict(description=body).to_json()
 
 
 @public
@@ -354,7 +354,7 @@ def forbidden(response, body='403 Forbidden'):
     if isinstance(body, bytes):
         body = body.decode()
     if body is not None:
-        response.body = falcon.HTTPForbidden(description=body).to_json()
+        response.text = falcon.HTTPForbidden(description=body).to_json()
 
 
 @public
