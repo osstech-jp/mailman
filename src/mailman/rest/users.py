@@ -144,7 +144,7 @@ class _UserBase(CollectionMixin):
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        return list(getUtility(IUserManager).users)
+        return getUtility(IUserManager).users
 
 
 @public

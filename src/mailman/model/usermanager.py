@@ -26,6 +26,7 @@ from mailman.model.digests import OneLastDigest
 from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.model.user import User
+from mailman.utilities.queries import QuerySequence
 from public import public
 from sqlalchemy import or_
 from zope.interface import implementer
@@ -100,7 +101,7 @@ class UserManager:
     @dbconnection
     def users(self, store):
         """See `IUserManager`."""
-        yield from store.query(User).order_by(User.id).all()
+        return QuerySequence(store.query(User).order_by(User.id))
 
     @dbconnection
     def create_address(self, store, email, display_name=None):
