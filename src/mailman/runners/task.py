@@ -25,6 +25,7 @@ from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.database.transaction import dbconnection, transactional
 from mailman.interfaces.cache import ICacheManager
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.model.requests import _Request
@@ -90,6 +91,20 @@ class TaskRunner(Runner):
                 self._delete_request(id)
                 count += 1
         tlog.info('Task runner deleted %d orphaned requests', count)
+        # Also, delete any orphaned messages from the message store.
+        mids = dict()
+        for token, pendable in pendings:
+            mid = pendable.get('_mod_message_id')
+            if mid:
+                mids[mid] = True
+        count = 0
+        messages = getUtility(IMessageStore)
+        for msg in messages.messages:
+            mid = msg.get('message-id')
+            if mid not in mids:
+                messages.delete_message(mid)
+                count += 1
+        tlog.info('Task runner deleted %d orphaned messages', count)
 
     def _evict_cache(self):
         getUtility(ICacheManager).evict_expired()
