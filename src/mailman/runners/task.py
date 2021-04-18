@@ -100,10 +100,12 @@ class TaskRunner(Runner):
         count = 0
         messages = getUtility(IMessageStore)
         for msg in messages.messages:
-            mid = msg.get('message-id')
-            if mid not in mids:
-                messages.delete_message(mid)
-                count += 1
+            # msg can be None if file is already removed.
+            if msg is not None:
+                mid = msg.get('message-id')
+                if mid not in mids:
+                    messages.delete_message(mid)
+                    count += 1
         tlog.info('Task runner deleted %d orphaned messages', count)
 
     def _evict_cache(self):
