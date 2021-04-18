@@ -36,6 +36,8 @@ Bugs
 * Pending probe bounce tokens now have a lifetime of 10 days.  (Closes #869)
 * Improve the performance of ``/users`` API when paginating by doing the
   pagination in database layer. (Closes #876)
+* Attempts to get a message from the message store with a missing file are
+  now handled.  (Closes #877)
 
 Command line
 ------------
