@@ -21,11 +21,14 @@ import logging
 
 from email.utils import make_msgid
 from flufl.bounce import all_failures
-from mailman.app.bounces import ProbeVERP, StandardVERP, maybe_forward
+from lazr.config import as_timedelta
+from mailman.app.bounces import (
+    PENDABLE_LIFETIME, ProbeVERP, StandardVERP, _ProbePendable, maybe_forward)
 from mailman.core.runner import Runner
 from mailman.interfaces.bounce import (
     BounceContext, IBounceProcessor, InvalidBounceEvent)
 from mailman.interfaces.messages import IMessageStore
+from mailman.interfaces.pending import IPendings
 from public import public
 from zope.component import getUtility
 
@@ -94,6 +97,14 @@ class BounceRunner(Runner):
                 if msg.get('message-id') is None:
                     msg['Message-ID'] = make_msgid          # pragma: nocover
                 getUtility(IMessageStore).add(msg)
+                # We also need to pend a token for this or the message will be
+                # removed as an orphan by the task runner.  We don't need much
+                # from this.  We pend the msgid as _mod_message_id for the
+                # task runner.
+                pendable = _ProbePendable(
+                    _mod_message_id=msg.get('message-id'))
+                getUtility(IPendings).add(
+                    pendable, lifetime=as_timedelta(PENDABLE_LIFETIME))
                 self._processor.register(mlist, address, msg, context)
         else:
             log.info('Bounce message w/no discernable addresses: %s',

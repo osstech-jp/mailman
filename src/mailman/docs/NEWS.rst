@@ -38,6 +38,7 @@ Bugs
   pagination in database layer. (Closes #876)
 * Attempts to get a message from the message store with a missing file are
   now handled.  (Closes #877)
+* The task runner no longer prematurely deletes saved DSNs.  (Closes #878)
 
 Command line
 ------------

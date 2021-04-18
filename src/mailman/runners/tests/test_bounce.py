@@ -28,6 +28,7 @@ from mailman.interfaces.bounce import (
     BounceContext, IBounceProcessor, UnrecognizedBounceDisposition)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryStatus, MemberRole
+from mailman.interfaces.pending import IPendings
 from mailman.interfaces.styles import IStyle, IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.bounce import BounceRunner
@@ -61,6 +62,7 @@ Message-Id: <first>
 """)
         self._msgdata = dict(listid='test.example.com')
         self._processor = getUtility(IBounceProcessor)
+        self._pendings = getUtility(IPendings)
         config.push('site owner', """
         [mailman]
         site_owner: postmaster@example.com
@@ -244,6 +246,24 @@ Message-Id: <third>
         # Here's the forwarded message to the site owners.
         items = get_queue_messages('virgin', expected_count=1)
         self.assertEqual(items[0].msg['to'], 'postmaster@example.com')
+
+    def test_saving_dsn_pends_msgid(self):
+        # When we save a DSN for notices, we have to pend its msgid so task
+        # Runner won't remove it as an orphan.
+        self._bounceq.enqueue(self._msg, self._msgdata)
+        self._runner.run()
+        get_queue_messages('bounces', expected_count=0)
+        events = list(self._processor.events)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].email, 'anne@example.com')
+        self.assertEqual(events[0].list_id, 'test.example.com')
+        self.assertEqual(events[0].message_id, '<first>')
+        self.assertEqual(events[0].context, BounceContext.normal)
+        self.assertEqual(events[0].processed, True)
+        # Check for a pended item with the msgid.
+        self.assertEqual(self._pendings.count(), 1)
+        token, pended = list(self._pendings)[0]
+        self.assertEqual(pended['_mod_message_id'], '<first>')
 
     def test_bounce_increment_notice_sent_with_dsn(self):
         # Test that bounce_notify_owner_on_bounce_increment sends a notice
