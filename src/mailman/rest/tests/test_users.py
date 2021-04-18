@@ -316,7 +316,7 @@ class TestUsers(unittest.TestCase):
         self.assertEqual(len(json.get('entries')), 2)
         # both matched since one has person in name and other has in email.
         user_ids = [each.get('user_id') for each in json.get('entries')]
-        self.assertEqual(user_ids, [(user.id), user2.id])
+        self.assertEqual(sorted(user_ids), [(user.id), user2.id])
 
 
 class TestLogin(unittest.TestCase):
