@@ -34,6 +34,8 @@ Bugs
 * The ``FileNotFound`` exception thrown in CacheManager on attempt to delete
   an entry for a missing file is now caught.  (Closes #867)
 * Pending probe bounce tokens now have a lifetime of 10 days.  (Closes #869)
+* Improve the performance of ``/users`` API when paginating by doing the
+  pagination in database layer. (Closes #876)
 
 Command line
 ------------
