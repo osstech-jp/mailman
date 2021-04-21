@@ -22,6 +22,7 @@ import shutil
 import tempfile
 import unittest
 
+from email.header import make_header
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
@@ -381,8 +382,24 @@ Message-ID:
     def test_logging_with_folded_messageid(self):
         # Test that folded Message-ID header doesn't fold the log messages.
         mark = LogFileMark('mailman.smtp')
-        msgdata = dict(recipients=['anne@example.org'], tolist=True)
+        msgdata = dict(recipients=['anne@example.org'], to_list=True)
         self._deliverer(self._mlist, self._msg, msgdata)
         logs = mark.read()
         self.assertRegex(logs, r' \(\d+\) <AM6PR09MB347488.*smtp')
         self.assertRegex(logs, r' \(\d+\) <AM6PR09MB347488.*post')
+
+    def test_logging_with_header_instance(self):
+        msgdata = dict(recipients=['test@example.com', 'bart@example.org'])
+        self._mlist.personalize = Personalization.none
+        msgdata['recipients'] = ['test@example.com', 'bart@example.org']
+        self._msg['CC'] = make_header([('bart@example.org', None)])
+        config.push('logging', """
+        [logging.smtp]
+        success: post for $recip recips
+        """)
+        self.addCleanup(config.pop, 'logging')
+        mark = LogFileMark('mailman.smtp')
+        self._deliverer(self._mlist, self._msg, msgdata)
+        self.assertIn(
+            'post for test@example.com,bart@example.org recips',
+            mark.read())

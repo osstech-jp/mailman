@@ -73,7 +73,7 @@ Message-Id: <first>
         deliver_after = now() + timedelta(days=10)
         self._msgdata['deliver_after'] = deliver_after
         self._outq.enqueue(self._msg, self._msgdata,
-                           tolist=True, listid='test.example.com')
+                           to_list=True, listid='test.example.com')
         self._runner.run()
         items = get_queue_messages('out', expected_count=1)
         self.assertEqual(items[0].msgdata['deliver_after'], deliver_after)

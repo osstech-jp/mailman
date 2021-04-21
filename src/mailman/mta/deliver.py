@@ -121,10 +121,14 @@ def deliver(mlist, msg, msgdata):
         # Log the successful post, but if it was not destined to the mailing
         # list (e.g. to the owner or admin), print the actual recipients
         # instead of just the number.
-        if not msgdata.get('tolist', False):
+        if not msgdata.get('to_list', False):
+            # XXX This is meaningless as the config.logging.smtp.success
+            # template doesn't contain a recip substitution, but do it anyway
+            # in case the template is changed.
             recips = msg.get_all('to', [])
             recips.extend(msg.get_all('cc', []))
-            substitutions['recips'] = COMMA.join(recips)
+            # recips can contain a Header() instance.  Stringify it.
+            substitutions['recip'] = COMMA.join(map(str, recips))
         template = config.logging.smtp.success
         if template.lower() != 'no':
             log.info('%s', expand(template, mlist, substitutions))

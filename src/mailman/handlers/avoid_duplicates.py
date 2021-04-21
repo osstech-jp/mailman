@@ -65,7 +65,8 @@ class AvoidDuplicates:
         # '"real name\r\n (dept)" <user@example.com>' which parses incorrectly,
         # so we "unfold" headers here.
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-            hdrs_unfolded = [re.sub('[\r\n]', '', value) for value in
+            # The value can contain a Header instance so stringify it.
+            hdrs_unfolded = [re.sub('[\r\n]', '', str(value)) for value in
                              msg.get_all(header, [])]
             addrs = getaddresses(hdrs_unfolded)
             header_addresses = dict((addr, formataddr((name, addr)))
