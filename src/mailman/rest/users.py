@@ -163,7 +163,8 @@ class AllUsers(_UserBase):
             arguments = validator(request)
             create_user(self.api, arguments, response)
         except (ValueError, InvalidEmailAddressError) as error:
-            bad_request(response, str(error))
+            error_message = 'Invalid email address {}'.format(error)
+            bad_request(response, error_message)
             return
 
 
