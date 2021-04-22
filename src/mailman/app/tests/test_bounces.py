@@ -216,6 +216,9 @@ Message-ID: <first>
         self.assertEqual(message.get_content_type(), 'multipart/mixed')
         self.assertTrue(message.is_multipart())
         self.assertEqual(len(message.get_payload()), 2)
+        # Check that the second part is the DSN
+        part_content = message.get_payload(1).get_payload(0).as_string()
+        self.assertEqual(part_content, self._msg.as_string())
 
     def test_probe_sends_one_message(self):
         # send_probe() places one message in the virgin queue.  We start out

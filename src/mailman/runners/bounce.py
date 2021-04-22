@@ -19,16 +19,11 @@
 
 import logging
 
-from email.utils import make_msgid
 from flufl.bounce import all_failures
-from lazr.config import as_timedelta
-from mailman.app.bounces import (
-    PENDABLE_LIFETIME, ProbeVERP, StandardVERP, _ProbePendable, maybe_forward)
+from mailman.app.bounces import ProbeVERP, StandardVERP, maybe_forward
 from mailman.core.runner import Runner
 from mailman.interfaces.bounce import (
     BounceContext, IBounceProcessor, InvalidBounceEvent)
-from mailman.interfaces.messages import IMessageStore
-from mailman.interfaces.pending import IPendings
 from public import public
 from zope.component import getUtility
 
@@ -91,20 +86,6 @@ class BounceRunner(Runner):
                         log.exception('Ignoring non-UTF-8 encoded '
                                       'address: {}'.format(address))
                         continue
-                # Save the DSN in the message store for notices.  It doesn't
-                # matter if we save it more than once.  Only one copy will be
-                # saved, but ensure it has a Message-ID so we can retreive it.
-                if msg.get('message-id') is None:
-                    msg['Message-ID'] = make_msgid          # pragma: nocover
-                getUtility(IMessageStore).add(msg)
-                # We also need to pend a token for this or the message will be
-                # removed as an orphan by the task runner.  We don't need much
-                # from this.  We pend the msgid as _mod_message_id for the
-                # task runner.
-                pendable = _ProbePendable(
-                    _mod_message_id=msg.get('message-id'))
-                getUtility(IPendings).add(
-                    pendable, lifetime=as_timedelta(PENDABLE_LIFETIME))
                 self._processor.register(mlist, address, msg, context)
         else:
             log.info('Bounce message w/no discernable addresses: %s',

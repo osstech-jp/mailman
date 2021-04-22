@@ -39,6 +39,7 @@ Bugs
 * Attempts to get a message from the message store with a missing file are
   now handled.  (Closes #877)
 * The task runner no longer prematurely deletes saved DSNs.  (Closes #878)
+* Bounce probe messages now contain the DSN as advertised.  (Closes #880)
 * The avoid_duplicates handler properly handles headers that are returned as
   email.header.Header instances rather than strings.  (Closeds #881)
 * The mta.deliver module properly handles headers that are returned as
