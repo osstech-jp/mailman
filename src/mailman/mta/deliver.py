@@ -146,8 +146,9 @@ def deliver(mlist, msg, msgdata):
         #   so the logic below works.
         #
         if code >= 500 and code != 552:
-            # A permanent failure
-            permanent_failures.append(recipient)
+            # A permanent failure.  Keep the code and message for a fake DSN.
+            permanent_failures.append(
+                (recipient, code, smtp_message))    # pragma: nocover
         else:
             # Deal with persistent transient failures by queuing them up for
             # future delivery.  TBD: this could generate lots of log entries!
