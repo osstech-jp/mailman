@@ -48,7 +48,7 @@ Bugs
 
 Command line
 ------------
-* The ``notify`` subcommand is no more tolerant of certain database anomalies.
+* The ``notify`` subcommand is now more tolerant of certain database anomalies.
   (Closes #861)
 
 REST
