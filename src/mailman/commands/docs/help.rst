@@ -29,7 +29,7 @@ short description of each of them.
     >>> print(results)
     The results of your email command are provided below.
     <BLANKLINE>
-    confirm     - Confirm a subscription request.
+    confirm     - Confirm a subscription or held message request.
     echo        - Echo back your arguments.
     end         - Stop processing commands.
     help        - Get help about available email commands.
