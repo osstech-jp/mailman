@@ -46,6 +46,8 @@ Bugs
   email.header.Header instances rather than strings.  (Closeds #882)
 * Places where  ``to_list`` in the message metadata were increctly referenced
   as ``tolist`` have been corrected.  (Closes #883)
+* It is now possible to confirm held messages by email as the admin notice
+  says.  (Closes #169)
 
 Command line
 ------------
