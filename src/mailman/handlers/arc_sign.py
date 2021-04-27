@@ -50,7 +50,7 @@ def sign(msg, msgdata):
                            standardize=('ARC-Standardize' in msgdata))
     except DKIMException:
         log.exception('Failed to sign message: %s', msg['Message-ID'])
-        raise
+        return
 
     headers = [x.decode('utf-8').split(': ', 1) for x in sig]
     prepend_headers(msg, headers)
