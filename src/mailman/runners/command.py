@@ -84,7 +84,9 @@ class CommandFinder:
         try:
             subject = str(make_header(decode_header(raw_subject)))
             # Mail commands must be ASCII.
-            self.command_lines.append(subject.encode('us-ascii'))
+            # NOTE(tommylikehu): remove all none ascii characters via encoding
+            # with ignore option.
+            self.command_lines.append(subject.encode('us-ascii', 'ignore'))
         except (HeaderParseError, UnicodeError, LookupError):
             # The Subject header was unparseable or not ASCII.  If the raw
             # subject is a unicode object, convert it to ASCII ignoring all
@@ -104,9 +106,11 @@ class CommandFinder:
         if part is None:
             # There was no text/plain part to be found.
             return
-        body = part.get_payload()
+        body = part.get_payload(decode=True)
         # text/plain parts better have string payloads.
-        assert isinstance(body, (bytes, str)), 'Non-string decoded payload'
+        assert body is not None, 'Non-text payload'
+        body = body.decode(part.get_content_charset('us-ascii'),
+                           errors='replace')
         lines = body.splitlines()
         # Use no more lines than specified
         max_lines = int(config.mailman.email_commands_max_lines)
