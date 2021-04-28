@@ -48,6 +48,8 @@ Bugs
   as ``tolist`` have been corrected.  (Closes #883)
 * It is now possible to confirm held messages by email as the admin notice
   says.  (Closes #169)
+* Some exceptions in ARC signing of some posts from HyperKitty and some from
+  prod.outlook.com are now handled without shunting the message.  (Closes #885)
 
 Command line
 ------------
