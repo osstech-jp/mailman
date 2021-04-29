@@ -23,7 +23,7 @@ from public import public
 from sqlalchemy import Integer
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.types import CHAR, TypeDecorator, Unicode
+from sqlalchemy.types import CHAR, Text, TypeDecorator, Unicode
 
 
 @public
@@ -150,3 +150,24 @@ def compile_sa_unicode_xl(element, compiler, **kw):
 @compiles(SAUnicodeXL)
 def default_sa_unicode_xl(element, compiler, **kw):
     return compiler.visit_unicode(element, **kw)
+
+
+@public
+class SAText(TypeDecorator):
+    """Text datatype to support large text content in MySQL.
+
+    This type compiles to TEXT COLLATE utf8_bin in case of MySQL, and in
+    case of other dialects defaults to the Text type.
+    """
+    impl = Text
+
+
+@compiles(SAText)
+def default_sa_text(element, compiler, **kw):
+    return compiler.visit_text(element, **kw)
+
+
+@compiles(SAText, 'mysql')
+def compile_sa_text(element, compiler, **kw):
+    # We hardcode the collate here to make string comparison case sensitive.
+    return 'TEXT COLLATE utf8_bin'                        # pragma: nocover
