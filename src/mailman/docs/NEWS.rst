@@ -54,6 +54,8 @@ Bugs
   subject before processing it.（Closes #858)
 * Command runner now will decode the message body before processing it.
  （Closes #859)
+* The ``mailinglist`` table ``info`` column is changed to Text.  (Closes #840
+  and #886)
 
 Command line
 ------------

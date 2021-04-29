@@ -22,7 +22,7 @@ import os
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import Enum, SAUnicode, SAUnicodeLarge
+from mailman.database.types import Enum, SAText, SAUnicode, SAUnicodeLarge
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.archiver import ArchivePolicy
@@ -153,7 +153,7 @@ class MailingList(Model):
     gateway_to_mail = Column(Boolean)
     gateway_to_news = Column(Boolean)
     hold_these_nonmembers = Column(MutableList.as_mutable(PickleType))
-    info = Column(SAUnicode)
+    info = Column(SAText)
     linked_newsgroup = Column(SAUnicode)
     max_days_to_hold = Column(Integer)
     max_message_size = Column(Integer)
