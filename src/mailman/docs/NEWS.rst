@@ -50,8 +50,6 @@ Bugs
   says.  (Closes #169)
 * Some exceptions in ARC signing of some posts from HyperKitty and some from
   prod.outlook.com are now handled without shunting the message.  (Closes #885)
-* Command runner now will remove all non-ascii characters in the message
-  subject before processing it.（Closes #858)
 * Command runner now will decode the message body before processing it.
  （Closes #859)
 * The ``mailinglist`` table ``info`` column is changed to Text.  (Closes #840
