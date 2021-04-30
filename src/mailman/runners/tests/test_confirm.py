@@ -91,9 +91,7 @@ To: test-confirm@example.com
         self.assertEqual(address.email, 'anne@example.org')
 
     def test_confirm_with_non_ascii_prefix(self):
-        confirm_subject = str("confirm {}".format(self._token))
-        subject = '=?utf-8?b?5Zue5aSN?= =?utf-8?b?{0}?='.format(
-            base64.encodebytes(confirm_subject.encode()).decode().rstrip())
+        subject = '=?utf-8?b?5Zue5aSN?=confirm {}'.format(self._token)
         msg = mfs("""\
 From: anne@example.org
 To: test-confirm@example.com
@@ -115,8 +113,8 @@ To: test-confirm@example.com
     def test_confirm_with_base64_encoded_body(self):
         # Clear out the virgin queue so that the test below only sees the
         # reply to the confirmation message.
-        mail_content = "hello from mailman fake user"
         get_queue_messages('virgin')
+        mail_content = "hello from mailman fake user"
         subject = 'Re: confirm {}'.format(self._token)
         to = 'test-confirm+{}@example.com'.format(self._token)
         msg = mfs("""\
