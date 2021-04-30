@@ -91,12 +91,11 @@ To: test-confirm@example.com
         self.assertEqual(address.email, 'anne@example.org')
 
     def test_confirm_with_non_ascii_prefix(self):
-        subject = '=?utf-8?b?5Zue5aSN?=confirm {}'.format(self._token)
         msg = mfs("""\
 From: anne@example.org
 To: test-confirm@example.com
 """)
-        msg['Subject'] = subject
+        msg['Subject'] = '=?utf-8?b?5Zue5aSN?= confirm {}'.format(self._token)
         self._commandq.enqueue(msg, dict(listid='test.example.com'))
         self._runner.run()
         # Anne is now a confirmed member so her user record and email address
@@ -110,15 +109,15 @@ To: test-confirm@example.com
         address = manager.get_address('anne@example.org')
         self.assertEqual(address.email, 'anne@example.org')
 
-    def test_confirm_with_base64_encoded_body(self):
+    def test_confirm_with_command_in_base64_encoded_body(self):
         # Clear out the virgin queue so that the test below only sees the
         # reply to the confirmation message.
         get_queue_messages('virgin')
-        mail_content = "hello from mailman fake user"
-        subject = 'Re: confirm {}'.format(self._token)
-        to = 'test-confirm+{}@example.com'.format(self._token)
+        mail_content = 'confirm {}'.format(self._token)
         msg = mfs("""\
 From: Anne Person <anne@example.org>
+To: test-confirm@example.com
+Subject: 'Re: Your confirmation ...'
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: base64
@@ -126,8 +125,6 @@ Content-Disposition: inline
 
 {}
 """.format(base64.encodebytes(mail_content.encode()).decode()))
-        msg['Subject'] = subject
-        msg['To'] = to
         self._commandq.enqueue(msg, dict(listid='test.example.com'))
         self._runner.run()
         # Anne is now a confirmed member so her user record and email address
@@ -136,12 +133,12 @@ Content-Disposition: inline
         user = manager.get_user('anne@example.org')
         address = list(user.addresses)[0]
         self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
         address = manager.get_address('anne@example.org')
         self.assertEqual(address.email, 'anne@example.org')
         items = get_queue_messages('virgin', expected_count=1)
         self.assertEqual(items[0].msgdata['recipients'],
                          set(['anne@example.org']))
-        self.assertIn(mail_content, str(items[0].msg))
 
     def test_confirm_with_folded_to_header(self):
         # Test that a folded To: header is properly parsed.
