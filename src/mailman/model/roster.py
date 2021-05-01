@@ -166,7 +166,7 @@ class OwnerRoster(AbstractRoster):
 
 @public
 class ModeratorRoster(AbstractRoster):
-    """Return all the owners of a list."""
+    """Return all the moderators of a list."""
 
     name = 'moderator'
     role = MemberRole.moderator
@@ -188,12 +188,19 @@ class AdministratorRoster(AbstractRoster):
     @dbconnection
     def get_member(self, store, email):
         """See `IRoster`."""
-        return store.query(Member).filter(
+        members = store.query(Member).filter(
             Member.list_id == self._mlist.list_id,
             or_(Member.role == MemberRole.moderator,
                 Member.role == MemberRole.owner),
             Address.email == email,
-            Member.address_id == Address.id).one_or_none()
+            Member.address_id == Address.id).all()
+        if len(members) == 0:
+            return None
+        for member in members:
+            if member.role == MemberRole.owner:
+                return member
+        assert len(members) == 1, 'mlist.administrators has too many members'
+        return members[0]
 
 
 @public
