@@ -54,6 +54,8 @@ Bugs
  （Closes #859)
 * The ``mailinglist`` table ``info`` column is changed to Text.  (Closes #840
   and #886)
+* The mailing list administrators roster ``get_member()`` method now returns
+  the owner if the target is both an owner and moderator.  (Closes #888)
 
 Command line
 ------------
