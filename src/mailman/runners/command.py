@@ -83,8 +83,8 @@ class CommandFinder:
         raw_subject = msg.get('subject', '')
         try:
             subject = str(make_header(decode_header(raw_subject)))
-            # Mail commands must be ASCII.
-            self.command_lines.append(subject.encode('us-ascii'))
+            # Mail commands must be ASCII, so strip non-ascii.
+            self.command_lines.append(subject.encode('us-ascii', 'ignore'))
         except (HeaderParseError, UnicodeError, LookupError):
             # The Subject header was unparseable or not ASCII.  If the raw
             # subject is a unicode object, convert it to ASCII ignoring all
