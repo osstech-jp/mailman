@@ -56,6 +56,8 @@ Bugs
   and #886)
 * The mailing list administrators roster ``get_member()`` method now returns
   the owner if the target is both an owner and moderator.  (Closes #888)
+* Command runner now handles RFC 2047 encoded command with non-ascii prefix.
+  (Closes #858)
 
 Command line
 ------------

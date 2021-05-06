@@ -109,6 +109,28 @@ To: test-confirm@example.com
         address = manager.get_address('anne@example.org')
         self.assertEqual(address.email, 'anne@example.org')
 
+    def test_confirm_with_non_ascii_prefix_and_encoded_command(self):
+        msg = mfs("""\
+From: anne@example.org
+To: test-confirm@example.com
+""")
+        conf = 'confirm {}'.format(self._token)
+        rfc2047_conf = base64.encodebytes(conf.encode()).strip().decode()
+        msg['Subject'] = '=?utf-8?b?5Zue5aSNOiA?= =?us-ascii?b?{}?='.format(
+            rfc2047_conf)
+        self._commandq.enqueue(msg, dict(listid='test.example.com'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        address = list(user.addresses)[0]
+        self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on,
+                         datetime(2005, 8, 1, 7, 49, 23))
+        address = manager.get_address('anne@example.org')
+        self.assertEqual(address.email, 'anne@example.org')
+
     def test_confirm_with_command_in_base64_encoded_body(self):
         # Clear out the virgin queue so that the test below only sees the
         # reply to the confirmation message.
