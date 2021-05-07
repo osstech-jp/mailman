@@ -164,6 +164,15 @@ used.  IOW, a missing template does not cause an error, it simply causes the
 named template to be blank.
 
 
+Line wrapping
+=============
+
+Many, but not all, templates have their text wrapped at column 70. This can
+result in a nicer looking result but can also break long URLs. To avoid this,
+you can indent any lines you don't want wrapped by one or more spaces which
+will inhibit wrapping of those lines.
+
+
 URL placeholders
 ================
 
