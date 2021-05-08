@@ -170,7 +170,43 @@ Line wrapping
 Many, but not all, templates have their text wrapped at column 70. This can
 result in a nicer looking result but can also break long URLs. To avoid this,
 you can indent any lines you don't want wrapped by one or more spaces which
-will inhibit wrapping of those lines.
+will inhibit wrapping of those lines. Here are some examples.
+
+    >>> text = """Here's some sample text
+    ... that should be wrapped and filled to make a pretty looking paragraph of text with no excessively short
+    ... or long lines, but it also contains a long url.
+    ...
+    ... https://www.example.com/mailman3/lists/mailman-users.mailman3.org/members/options/user@example.org?role=member
+    ...
+    ... which shouldn't be wrapped.
+    ... """
+
+The normal template wrapping process produces
+
+    >>> from mailman.utilities.string import wrap
+    >>> print(wrap(text))
+    Here's some sample text that should be wrapped and filled to make a
+    pretty looking paragraph of text with no excessively short or long
+    lines, but it also contains a long url.
+    <BLANKLINE>
+    https://www.example.com/mailman3/lists/mailman-users.mailman3.org/memb
+    ers/options/user@example.org?role=member
+    <BLANKLINE>
+    which shouldn't be wrapped.
+
+We see the URL is wrapped and we don't want that so we insert a leading
+blank.
+
+    >>> import re
+    >>> text = re.sub('\nhttps', '\n https', text)
+    >>> print(wrap(text))
+    Here's some sample text that should be wrapped and filled to make a 
+    pretty looking paragraph of text with no excessively short or long
+    lines, but it also contains a long url.
+    <BLANKLINE>
+     https://www.example.com/mailman3/lists/mailman-users.mailman3.org/members/options/user@example.org?role=member
+    <BLANKLINE>
+    which shouldn't be wrapped.
 
 
 URL placeholders
