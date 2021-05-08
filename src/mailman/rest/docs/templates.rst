@@ -470,6 +470,24 @@ below.  Here are all the supported template names:
 
     * ``member`` - display name and email address of the subscriber
 
+* ``list:admin:notice:disable``
+    Sent to the list administrators to notify them when a member's delivery
+    is disabled due to excessive bounces.
+
+    * ``member`` - display name and email address of the subscriber
+
+* ``list:admin:notice:increment``
+    When configured, sent to the list administrators to notify them when a
+    member's bounce score is incremented.
+
+    * ``member`` - display name and email address of the subscriber
+
+* ``list:admin:notice:removal``
+   Sent to the list administrators to notify them when a member is unsubscribed
+   from am mailing list due to excessive bounces.
+
+   * ``member`` - display name and email address of the subscriber
+
 * ``list:admin:notice:subscribe``
     Sent to the list administrators to notify them when a new member has
     been subscribed.
@@ -485,18 +503,6 @@ below.  Here are all the supported template names:
     unsubscribed.
 
     * ``member`` - display name and email address of the subscriber
-
-* ``list:admin:notice:disable``
-    Sent to the list administrators to notify them when a member's delivery
-    is disabled due to excessive bounces.
-
-    * ``member`` - display name and email address of the subscriber
-
-* ``list:admin:notice:removal``
-   Sent to the list administrators to notify them when a member is unsubscribed
-   from am mailing list due to excessive bounces.
-
-   * ``member`` - display name and email address of the subscriber
 
 * ``list:member:digest:footer``
     The footer for a digest message.
@@ -540,6 +546,12 @@ below.  Here are all the supported template names:
       or their email address if no display name
       (e.g. "Anne Person", "Bart", or "fperson@example.com")
 
+* ``list:user:action:invite``
+    The message sent to subscribers when they are invited to join a List.
+
+    * ``user_email`` - the email address being invited.
+    * ``token`` - the unique confirmation token
+
 * ``list:user:action:subscribe``
     The message sent to subscribers when a subscription confirmation is
     required.
@@ -561,12 +573,6 @@ below.  Here are all the supported template names:
     * ``confirm_email`` - the email address to send the confirmation response
       to; this corresponds to the ``Reply-To`` header
     * ``user_email`` - the email address being confirmed
-
-* ``list:user:action:invite``
-    The message sent to subscribers when they are invited to join a List.
-
-    * ``user_email`` - the email address being invited.
-    * ``token`` - the unique confirmation token
 
 * ``list:user:notice:goodbye``
     The notice sent to a member when they unsubscribe from a mailing list.
@@ -611,17 +617,17 @@ below.  Here are all the supported template names:
 
     * ``reasons`` - some reasons why the post was rejected
 
+* ``list:user:notice:warning``
+    The notice sent to a member when their membership has been disabled due to
+    excessive bounces.
+
+    * ``user_email`` - the email address of the bouncing member.
+
 * ``list:user:notice:welcome``
     The notice sent to a member when they are subscribed to the mailing list.
 
     * ``user_name`` - the display name of the new member
     * ``user_email`` - the email address of the new member
-
-* ``list:user:notice:warning``
-   The notice sent to a member when their membership has been disabled due to
-   excessive bounces.
-
-    * ``user_email`` - the email address of the bouncing member.
 
 
 .. _requests: http://docs.python-requests.org/en/master/
