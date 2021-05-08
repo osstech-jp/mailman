@@ -354,8 +354,10 @@ class TestSubscriptionService(unittest.TestCase):
         # Now obtain various rosters and ensure that they have the
         # memberships we expect, after the mass unsubscribe.
         ant_members = ant.get_roster(MemberRole.member)
+        ant_addresses = [address.email for address in ant_members.addresses]
+        ant_addresses.sort()
         self.assertEqual(
-            [address.email for address in ant_members.addresses],
+            ant_addresses,
             ['anne_2@example.com',
              'dave@example.com',
              ])
@@ -377,16 +379,20 @@ class TestSubscriptionService(unittest.TestCase):
              'gwen@example.com',
              ])
         ant_moderators = ant.get_roster(MemberRole.moderator)
+        ant_addresses = [address.email for address in ant_moderators.addresses]
+        ant_addresses.sort()
         self.assertEqual(
-            [address.email for address in ant_moderators.addresses],
+            ant_addresses,
             ['anne_0@example.com',
              'anne_1@example.com',
              'cris@example.com',
              ])
         bee_moderators = bee.get_roster(MemberRole.moderator)
         # As above, anne_0 shows up the moderators twice.
+        bee_addresses = [address.email for address in bee_moderators.addresses]
+        bee_addresses.sort()
         self.assertEqual(
-            [address.email for address in bee_moderators.addresses],
+            bee_addresses,
             ['anne_0@example.com',
              'anne_0@example.com',
              'dave@example.com',
