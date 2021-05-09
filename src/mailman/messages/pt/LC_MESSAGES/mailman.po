@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-09-12 23:43+0000\n"
+"PO-Revision-Date: 2021-05-08 22:44+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
-"Language-Team: Portuguese <https://hosted.weblate.org/projects/gnu-mailman/mailman/pt/>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.7-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -28,36 +29,36 @@ msgstr "(sem assunto)"
 
 #: src/mailman/app/bounces.py:75
 msgid "[No bounce details are available]"
-msgstr ""
+msgstr "[Não há detalhes de devolução disponíveis]"
 
 #: src/mailman/app/bounces.py:226
 msgid "$mlist.display_name mailing list probe message"
-msgstr ""
+msgstr "mensagem de sonda da lista de discussão $mlist.display_name"
 
 #: src/mailman/app/bounces.py:262
 msgid "Uncaught bounce notification"
-msgstr ""
+msgstr "Notificação de devolução não capturada"
 
 #: src/mailman/app/membership.py:140
 msgid "$mlist.display_name unsubscription notification"
-msgstr ""
+msgstr "notificação de cancelamento da inscrição de $mlist.display_name"
 
 #: src/mailman/app/moderator.py:118
 msgid "Posting of your message titled \"$subject\""
-msgstr ""
+msgstr "Publicação da sua mensagem com o título \"$subject\""
 
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228
 #: src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Nenhuma razão dada]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "Encaminhamento de mensagem moderada"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr ""
+msgstr "Nova solicitação de cancelamento de $mlist.display_name por $email"
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
@@ -69,7 +70,7 @@ msgstr "Mensagem Original"
 
 #: src/mailman/app/moderator.py:271
 msgid "Request to mailing list \"$display_name\" rejected"
-msgstr ""
+msgstr "Solicitação para a lista de discussão \"$display_name\" rejeitada"
 
 #: src/mailman/app/notifications.py:66
 msgid " (Digest mode)"
@@ -90,7 +91,7 @@ msgstr "Notificação da subscrição de $mlist.display_name"
 
 #: src/mailman/app/notifications.py:136
 msgid "$member's subscription disabled on $mlist.display_name"
-msgstr ""
+msgstr "Inscrição de $member desativada em $mlist.display_name"
 
 #: src/mailman/app/notifications.py:157
 #, python-brace-format
@@ -105,22 +106,32 @@ msgstr "A sua subscrição para a lista de discussão ${mlist.display_name} foi 
 #: src/mailman/app/subscriptions.py:310
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
+"Nova solicitação de inscrição para $self.mlist.display_name de $self.address."
+"e-mail"
 
 #: src/mailman/app/subscriptions.py:471
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
+"Nova solicitação de cancelamento de inscrição para $self.mlist.display_name "
+"de $self.address.email"
 
 #: src/mailman/app/subscriptions.py:597
 msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"Foi convidado para participar da lista de discussão $event.mlist."
+"fqdn_listname."
 
 #: src/mailman/app/subscriptions.py:600
 msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"A sua confirmação é necessária para deixar a lista de discussão $event.mlist."
+"fqdn_listname."
 
 #: src/mailman/app/subscriptions.py:604
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"A sua confirmação é necessária para se entrar à lista de discussão $event."
+"mlist.fqdn_listname."
 
 #: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:515
 #: src/mailman/bin/runner.py:96
@@ -135,12 +146,17 @@ msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
+"Não foi possível adquirir o bloqueio mestre porque parece que outro mestre\n"
+"já está em execução."
 
 #: src/mailman/bin/master.py:163
 msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running $program with the --force flag."
 msgstr ""
+"Não foi possível adquirir o bloqueio mestre. Parece que há um bloqueio "
+"mestre\n"
+"obsoleto. Tente executar novamente $program com o sinalizador --force."
 
 #: src/mailman/bin/master.py:169
 msgid ""
@@ -153,6 +169,16 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
+"O bloqueio mestre não pôde ser adquirido, porque parece que algum processo "
+"em\n"
+"algum outro host pode tê-lo adquirido. Não podemos testar bloqueios "
+"obsoletos\n"
+"nos limites do host, então terá que limpar isso manualmente.\n"
+"\n"
+"Ficheiro de bloqueio: $config.LOCK_FILE\n"
+"Host do bloqueio:    $hostname\n"
+"\n"
+"Saindo."
 
 #: src/mailman/bin/master.py:182
 msgid ""
@@ -163,6 +189,12 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
+"Por razões desconhecidas, o bloqueio mestre não pôde ser adquirido.\n"
+"\n"
+"Ficheiro de bloqueio: $config.LOCK_FILE\n"
+"Host do bloqueio: $hostname\n"
+"\n"
+"Saindo."
 
 #: src/mailman/bin/master.py:491
 msgid ""
@@ -217,11 +249,11 @@ msgstr "Exibir mais informação de depuração para o ficheiros de registo de e
 
 #: src/mailman/bin/runner.py:50
 msgid "Undefined runner name: $name"
-msgstr ""
+msgstr "Nome de runner indefinido: $name"
 
 #: src/mailman/bin/runner.py:58
 msgid "Cannot import runner module: $class_path"
-msgstr ""
+msgstr "Não foi possível importar o módulo de runner: $class_path"
 
 #: src/mailman/bin/runner.py:76
 msgid ""
@@ -244,7 +276,7 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
-msgstr ""
+msgstr "Lista os nomes de runners disponíveis e sai."
 
 #: src/mailman/bin/runner.py:107
 msgid ""
@@ -273,11 +305,11 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:157
 msgid "No runner name given."
-msgstr ""
+msgstr "Nenhum nome de runner fornecido."
 
 #: src/mailman/bin/runner.py:181
 msgid "$name runs $classname"
-msgstr ""
+msgstr "$name executa $classname"
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
@@ -285,23 +317,23 @@ msgstr "Aceitar uma mensagem."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "A cadeia de moderação incorporada."
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
-msgstr ""
+msgstr "Descarta uma mensagem e interrompe o processamento."
 
 #: src/mailman/chains/dmarc.py:30
 msgid "Process DMARC reject or discard mitigations"
-msgstr ""
+msgstr "Processa mitigações de rejeição ou descarte de DMARC"
 
 #: src/mailman/chains/headers.py:120
 msgid "Header \"{}\" matched a header rule"
-msgstr ""
+msgstr "O cabeçalho \"{}\" correspondeu a uma regra de cabeçalho"
 
 #: src/mailman/chains/headers.py:135
 msgid "The built-in header matching chain"
-msgstr ""
+msgstr "O cabeçalho incorporado correspondendo à cadeia"
 
 #: src/mailman/chains/hold.py:58
 msgid "N/A"
@@ -309,19 +341,19 @@ msgstr "N/D"
 
 #: src/mailman/chains/hold.py:117
 msgid "Last autoresponse notification for today"
-msgstr ""
+msgstr "Última notificação de autorresposta para hoje"
 
 #: src/mailman/chains/hold.py:132
 msgid "Hold a message and stop processing."
-msgstr ""
+msgstr "Retém uma mensagem e interrompe o processamento."
 
 #: src/mailman/chains/hold.py:198
 msgid "Your message to $mlist.fqdn_listname awaits moderator approval"
-msgstr ""
+msgstr "A sua mensagem para $mlist.fqdn_listname aguarda aprovação do moderador"
 
 #: src/mailman/chains/hold.py:226
 msgid "$mlist.fqdn_listname post from $msg.sender requires approval"
-msgstr ""
+msgstr "O envio a $mlist.fqdn_listname de $msg.sender requer aprovação"
 
 #: src/mailman/chains/hold.py:236
 msgid ""
@@ -331,6 +363,14 @@ msgid ""
 "message will be approved for posting to the list.  The Approved: header can\n"
 "also appear in the first line of the body of the reply."
 msgstr ""
+"Se responder a esta mensagem, mantendo o cabeçalho Assunto: intacto, o\n"
+"Mailman irá descartar a mensagem retida. Faça isso se a mensagem for spam. "
+"Se\n"
+"responder a esta mensagem e incluir um cabeçalho Approved: com a palavra-"
+"passe da\n"
+"lista, a mensagem será aprovada para postagem na lista. O cabeçalho Approved:"
+"\n"
+"também pode aparecer na primeira linha do corpo da resposta."
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
@@ -338,11 +378,11 @@ msgstr "Cadeia de moderação"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
-msgstr ""
+msgstr "A cadeia incorporada de envio de -owner."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
-msgstr ""
+msgstr "Rejeita/Devolve uma mensagem e interrompe o processamento."
 
 #: src/mailman/commands/cli_addmembers.py:67 src/mailman/commands/cli_members.py:124
 #: src/mailman/commands/cli_members.py:137 src/mailman/commands/cli_members.py:198
@@ -350,15 +390,16 @@ msgstr ""
 #: src/mailman/commands/cli_syncmembers.py:112
 msgid "Cannot parse as valid email address (skipping): $line"
 msgstr ""
+"Não é possível analisar como endereço de e-mail válido (ignorando): $line"
 
 #: src/mailman/commands/cli_addmembers.py:98 src/mailman/commands/cli_members.py:143
 msgid "Already subscribed (skipping): $email"
-msgstr ""
+msgstr "Já inscrito (ignorando): $email"
 
 #: src/mailman/commands/cli_addmembers.py:100
 #: src/mailman/commands/cli_syncmembers.py:81
 msgid "Membership is banned (skipping): $email"
-msgstr ""
+msgstr "A associação não permitida (ignorando): $email"
 
 #: src/mailman/commands/cli_addmembers.py:106
 msgid ""
@@ -391,19 +432,19 @@ msgstr ""
 #: src/mailman/commands/cli_syncmembers.py:195
 #: src/mailman/commands/cli_withlist.py:292 src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
-msgstr ""
+msgstr "Lista inexistente: $listspec"
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
-msgstr ""
+msgstr "Gera novamente os aliases apropriados para o seu MTA."
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
-msgstr ""
+msgstr "Um diretório alternativo para enviar os vários ficheiros MTA."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
-msgstr ""
+msgstr "Imprime a configuração do Mailman."
 
 #: src/mailman/commands/cli_conf.py:57
 msgid ""
@@ -425,7 +466,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:42
 msgid "Start the Mailman master and runner processes."
-msgstr ""
+msgstr "Inicia os processos mestre e runner do Mailman."
 
 #: src/mailman/commands/cli_control.py:46
 msgid ""
@@ -473,63 +514,66 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
-msgstr ""
+msgstr "GNU Mailman já está em execução"
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
 msgstr ""
+"Uma execução anterior do GNU Mailman não foi encerrada normalmente ({}). "
+"Tente usar --force"
 
 #: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
-msgstr ""
+msgstr "Iniciando o runner do master do Mailman"
 
 #: src/mailman/commands/cli_control.py:108
 msgid "Generating MTA alias maps"
-msgstr ""
+msgstr "Gerando mapas de alias MTA"
 
 #: src/mailman/commands/cli_control.py:149
 msgid "PID unreadable in: $config.PID_FILE"
-msgstr ""
+msgstr "PID ilegível em: $config.PID_FILE"
 
 #: src/mailman/commands/cli_control.py:151
 msgid "Is the master even running?"
-msgstr ""
+msgstr "O mestre está mesmo em execução?"
 
 #: src/mailman/commands/cli_control.py:158
 msgid "No child with pid: $pid"
-msgstr ""
+msgstr "Nenhum filho com pid: $pid"
 
 #: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
-msgstr ""
+msgstr "Ficheiro pid velho removido."
 
 #: src/mailman/commands/cli_control.py:166
 msgid "Stop the Mailman master and runner processes."
-msgstr ""
+msgstr "Interrompe os processos runner e mestre."
 
 #: src/mailman/commands/cli_control.py:175
 msgid "Shutting down Mailman's master runner"
-msgstr ""
+msgstr "Desligando o runner mestre do Mailman"
 
 #: src/mailman/commands/cli_control.py:188
 msgid "Signal the Mailman processes to re-open their log files."
 msgstr ""
+"Sinaliza aos processos do Mailman para reabrir os ficheiros de log dele."
 
 #: src/mailman/commands/cli_control.py:197
 msgid "Reopening the Mailman runners"
-msgstr ""
+msgstr "Reabrindo os runners do Mailman"
 
 #: src/mailman/commands/cli_control.py:210
 msgid "Stop and restart the Mailman runner subprocesses."
-msgstr ""
+msgstr "Para e reinicia os subprocessos do runner do Mailman."
 
 #: src/mailman/commands/cli_control.py:219
 msgid "Restarting the Mailman runners"
-msgstr ""
+msgstr "Reiniciando os runners do Mailman"
 
 #: src/mailman/commands/cli_delmembers.py:48 src/mailman/commands/cli_members.py:164
 msgid "Member not subscribed (skipping): $email"
-msgstr ""
+msgstr "Membro não inscrito (ignorando): $email"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
@@ -586,11 +630,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_delmembers.py:123
 msgid "No such list: $_list"
-msgstr ""
+msgstr "Lista inexistente: $_list"
 
 #: src/mailman/commands/cli_digests.py:36
 msgid "Operate on digests."
-msgstr ""
+msgstr "Opera em digests."
 
 #: src/mailman/commands/cli_digests.py:39
 msgid ""
@@ -620,7 +664,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:53
 msgid "Print some additional status."
-msgstr ""
+msgstr "Imprime alguns estado adicionais."
 
 #: src/mailman/commands/cli_digests.py:69
 msgid ""
@@ -630,34 +674,42 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:77
 msgid "--send and --periodic flags cannot be used together"
-msgstr ""
+msgstr "os sinalizadores --send e --periodic não podem ser usados em conjunto"
 
 #: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:66
 msgid "No such list found: $spec"
-msgstr ""
+msgstr "Lista não encontrada: $spec"
 
 #: src/mailman/commands/cli_digests.py:98
 #, python-brace-format
 msgid "$mlist.list_id is at volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id está no volume $mlist.volume, número ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:104
 #, python-brace-format
 msgid "$mlist.list_id bumped to volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id aumentado para o volume $mlist.volume, número ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:110 src/mailman/commands/cli_digests.py:119
 #, python-brace-format
 msgid "$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr ""
+"$mlist.list_id enviou o volume $mlist.volume, número ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_gatenews.py:167
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
 msgstr ""
+"Consulta o servidor NNTP por mensagens a serem direcionadas para listas de "
+"discussão."
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr ""
+msgstr "Mostra esta mensagem de ajuda e sai."
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
@@ -674,15 +726,15 @@ msgstr ""
 
 #: src/mailman/commands/cli_import.py:82
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
-msgstr ""
+msgstr "Não é um ficheiro de configuração do Mailman 2.1: $pickle_file"
 
 #: src/mailman/commands/cli_import.py:85
 msgid "Ignoring non-dictionary: {0!r}"
-msgstr ""
+msgstr "Ignorando algo não dicionário: {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
-msgstr ""
+msgstr "Informações sobre esta instância de Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
@@ -696,7 +748,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
-msgstr ""
+msgstr "Injeta uma mensagem de um ficheiro na fila de uma lista de discussão."
 
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
@@ -707,7 +759,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
-msgstr ""
+msgstr "Mostra uma lista de todos os nomes de filas disponíveis e sai."
 
 #: src/mailman/commands/cli_inject.py:60
 msgid ""
@@ -724,27 +776,27 @@ msgstr ""
 
 #: src/mailman/commands/cli_inject.py:79
 msgid "No such queue: $queue"
-msgstr ""
+msgstr "Fila inexistente: $queue"
 
 #: src/mailman/commands/cli_lists.py:49
 msgid "List all mailing lists."
-msgstr ""
+msgstr "Lista todas as listas de discussão."
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List only those mailing lists that are publicly advertised"
-msgstr ""
+msgstr "Lista apenas as listas de e-mail que são anunciadas publicamente"
 
 #: src/mailman/commands/cli_lists.py:57
 msgid "Show also the list names"
-msgstr ""
+msgstr "Mostra também os nomes das listas"
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list descriptions"
-msgstr ""
+msgstr "Mostra também as descrições das listas"
 
 #: src/mailman/commands/cli_lists.py:65
 msgid "Less verbosity"
-msgstr ""
+msgstr "Menos detalhes"
 
 #: src/mailman/commands/cli_lists.py:69
 msgid ""
@@ -755,11 +807,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
-msgstr ""
+msgstr "Nenhuma lista de discussão correspondente encontrada"
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "$count matching mailing lists found:"
-msgstr ""
+msgstr "$count listas de discussão correspondentes encontradas:"
 
 #: src/mailman/commands/cli_lists.py:122
 msgid ""
@@ -793,7 +845,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:151
 msgid "Print less output."
-msgstr ""
+msgstr "Mostra menos saída."
 
 #: src/mailman/commands/cli_lists.py:155
 msgid ""
@@ -804,76 +856,76 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr ""
+msgstr "Código de idioma inválido: $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
-msgstr ""
+msgstr "Endereços de dono inválidos: $invalid"
 
 #: src/mailman/commands/cli_lists.py:186
 msgid "Illegal list name: $fqdn_listname"
-msgstr ""
+msgstr "Nome de lista inválido: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:188
 msgid "List already exists: $fqdn_listname"
-msgstr ""
+msgstr "A lista já existe: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:190
 msgid "Undefined domain: $domain"
-msgstr ""
+msgstr "Nome indefinido: $domain"
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
-msgstr ""
+msgstr "Lista de discussão criada: $mlist.fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
-msgstr ""
+msgstr "A sua nova lista de discussão: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr ""
+msgstr "Remove uma lista de discussão."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
-msgstr ""
+msgstr "Suprime mensagens de estado"
 
 #: src/mailman/commands/cli_lists.py:237
 msgid "No such list matching spec: $listspec"
-msgstr ""
+msgstr "Nenhuma lista correspondendo à especificação: $listspec"
 
 #: src/mailman/commands/cli_lists.py:242
 msgid "Removed list: $listspec"
-msgstr ""
+msgstr "Removida a lista: $listspec"
 
 #: src/mailman/commands/cli_members.py:92
 msgid "$mlist.list_id has no members"
-msgstr ""
+msgstr "$mlist.list_id tem nenhum membro"
 
 #: src/mailman/commands/cli_members.py:146
 msgid "Already subscribed (skipping): $display_name <$email>"
-msgstr ""
+msgstr "Já inscrito (ignorando): $display_name <$email>"
 
 #: src/mailman/commands/cli_members.py:166
 msgid "Member not subscribed (skipping): $display_name <$email>"
-msgstr ""
+msgstr "Membro não inscrito (ignorando): $display_name <$email>"
 
 #: src/mailman/commands/cli_members.py:227
 #: src/mailman/commands/cli_syncmembers.py:127
 #, python-format
 msgid "[ADD] %s"
-msgstr ""
+msgstr "[ADICIONAR] %s"
 
 #: src/mailman/commands/cli_members.py:238
 #: src/mailman/commands/cli_syncmembers.py:137
 #, python-format
 msgid "[DEL] %s"
-msgstr ""
+msgstr "[EXCLUIR] %s"
 
 #: src/mailman/commands/cli_members.py:248
 #: src/mailman/commands/cli_syncmembers.py:146
 msgid "Nothing to do"
-msgstr ""
+msgstr "Nada para fazer"
 
 #: src/mailman/commands/cli_members.py:253
 msgid ""
@@ -955,7 +1007,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:37
 msgid "Notify list owners/moderators of pending requests."
-msgstr ""
+msgstr "Notifica donos/moderadores da lista de solicitações pendentes."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid ""
@@ -966,7 +1018,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:77 src/mailman/commands/cli_notify.py:130
 msgid "The {} list has {} moderation requests waiting."
-msgstr ""
+msgstr "A lista {} tem {} solicitações de moderação aguardando."
 
 #: src/mailman/commands/cli_notify.py:108
 msgid ""
@@ -1014,7 +1066,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
-msgstr ""
+msgstr "Obtém informações de um ficheiro de fila."
 
 #: src/mailman/commands/cli_qfile.py:42
 msgid ""
@@ -1032,39 +1084,39 @@ msgstr ""
 
 #: src/mailman/commands/cli_qfile.py:67
 msgid "[----- start pickle -----]"
-msgstr ""
+msgstr "[----- início da serialização com pickle ------]"
 
 #: src/mailman/commands/cli_qfile.py:70
 msgid "<----- start object $count ----->"
-msgstr ""
+msgstr "<----- início do objeto $count ----->"
 
 #: src/mailman/commands/cli_qfile.py:75
 msgid "[----- end pickle -----]"
-msgstr ""
+msgstr "[----- término da serialização com pickle -----]"
 
 #: src/mailman/commands/cli_qfile.py:77
 msgid "Number of objects found (see the variable 'm'): $count"
-msgstr ""
+msgstr "Quantidade de objetos encontrados (veja a variável \"m\"): $count"
 
 #: src/mailman/commands/cli_status.py:34
 msgid "Show the current running status of the Mailman system."
-msgstr ""
+msgstr "Mostra o estado atual da execução do sistema Mailman."
 
 #: src/mailman/commands/cli_status.py:38
 msgid "GNU Mailman is not running"
-msgstr ""
+msgstr "GNU Mailman não está em execução"
 
 #: src/mailman/commands/cli_status.py:41
 msgid "GNU Mailman is running (master pid: $pid)"
-msgstr ""
+msgstr "GNU Mailman está em execução (pid mestre: $pid)"
 
 #: src/mailman/commands/cli_status.py:44
 msgid "GNU Mailman is stopped (stale pid: $pid)"
-msgstr ""
+msgstr "GNU Mailman está parado (pid obsoleto: $pid)"
 
 #: src/mailman/commands/cli_status.py:50
 msgid "GNU Mailman is in an unexpected state ($hostname != $fqdn_name)"
-msgstr ""
+msgstr "GNU Mailman está num estado inesperado ($hostname != $fqdn_name)"
 
 #: src/mailman/commands/cli_syncmembers.py:151
 msgid ""
@@ -1091,7 +1143,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_unshunt.py:33
 msgid "Unshunt messages."
-msgstr ""
+msgstr "Retira estado de desvio das mensagens."
 
 #: src/mailman/commands/cli_unshunt.py:37
 msgid ""
@@ -1104,28 +1156,32 @@ msgid ""
 "Cannot unshunt message $filebase, skipping:\n"
 "$error"
 msgstr ""
+"Não foi possível executar \"unshunt\" na mensagem $filebase, ignorando:\n"
+"$error"
 
 #: src/mailman/commands/cli_version.py:32
 msgid "Display Mailman's version."
-msgstr ""
+msgstr "Exibe a versão do Mailman."
 
 #: src/mailman/commands/cli_withlist.py:76
 msgid "ipython is not available, set use_ipython to no"
-msgstr ""
+msgstr "ipython não está disponível, define use_ipython como não"
 
 #: src/mailman/commands/cli_withlist.py:85
 msgid "readline not available"
-msgstr ""
+msgstr "readline não disponível"
 
 #: src/mailman/commands/cli_withlist.py:133
 msgid "Invalid value for [shell]use_python: {}"
-msgstr ""
+msgstr "Valor inválido para [shell]use_python: {}"
 
 #: src/mailman/commands/cli_withlist.py:149
 msgid ""
 "This script provides you with a general framework for interacting with a\n"
 "mailing list."
 msgstr ""
+"Este script fornece uma estrutura geral para interagir com uma\n"
+"lista de discussão."
 
 #: src/mailman/commands/cli_withlist.py:153
 msgid ""
@@ -1135,6 +1191,12 @@ msgid ""
 "variable 'm' will be available in the global namespace.  It will reference the\n"
 "mailing list object."
 msgstr ""
+"Existem duas maneiras de usar este script: interativa ou programaticamente.\n"
+"Usá-lo interativamente permite que brinque, examine e modifique uma\n"
+"lista de discussão do interpretador interativo do Python. Quando executado\n"
+"interativamente, a variável \"m\" estará disponível no espaço de nomes "
+"global.\n"
+"Ele fará referência ao objeto da lista de discussão."
 
 #: src/mailman/commands/cli_withlist.py:160
 msgid ""
@@ -1147,6 +1209,14 @@ msgid ""
 "where `listspec` is either the posting address of the mailing list\n"
 "(e.g. ant@example.com), or the List-ID (e.g. ant.example.com)."
 msgstr ""
+"Programaticamente, pode escrever uma função para operar numa\n"
+"lista de discussão e este script cuidará da manutenção (veja exemplos\n"
+"abaixo). Nesse caso, a sintaxe de uso geral é:\n"
+"\n"
+"% mailman withlist [opções] -l listspec [argumentos ...]\n"
+"\n"
+"onde `listspec` é o endereço de postagem da lista de distribuição\n"
+"(p.ex., ant@example.com) ou o List-ID (p.ex., ant.example.com)."
 
 #: src/mailman/commands/cli_withlist.py:170
 msgid ""
@@ -1177,6 +1247,13 @@ msgid ""
 "Running listaddr.listaddr() ...\n"
 "ant@example.com"
 msgstr ""
+"Pode imprimir o endereço de postagem da lista executando o seguinte\n"
+"a partir da linha de comando:\n"
+"\n"
+"% mailman withlist -r listaddr -l ant@example.com\n"
+"Importing listaddr ...\n"
+"Running listaddr.listaddr() ...\n"
+"ant@example.com"
 
 #: src/mailman/commands/cli_withlist.py:197
 msgid ""
@@ -1187,6 +1264,12 @@ msgid ""
 "Running listaddr.requestaddr() ...\n"
 "ant-request@example.com"
 msgstr ""
+"E pode imprimir o endereço de solicitação da lista executando:\n"
+"\n"
+"% mailman withlist -r listaddr.requestaddr -l ant@example.com\n"
+"Importing listaddr ...\n"
+"Running listaddr.requestaddr() ...\n"
+"ant-request@example.com"
 
 #: src/mailman/commands/cli_withlist.py:205
 msgid ""
@@ -1204,6 +1287,20 @@ msgid ""
 "Note that you do not have to explicitly commit any database transactions, as\n"
 "Mailman will do this for you (assuming no errors occured)."
 msgstr ""
+"Como outro exemplo, digamos que queira alterar o nome de exibição\n"
+"de uma lista de mala direta específica. Pode pôr a seguinte\n"
+"função num ficheiro chamado `change.py`:\n"
+"\n"
+"def change(mlist, display_name):\n"
+"    mlist.display_name = display_name\n"
+"\n"
+"e executá-lo na linha de comando:\n"
+"\n"
+"% mailman withlist -r change -l ant@example.com 'My List'\n"
+"\n"
+"Note que não tem que submeter explicitamente nenhuma transação do\n"
+"banco de dados, já que o Mailman fará isso para (presumindo que\n"
+"nenhum erro ocorreu)."
 
 #: src/mailman/commands/cli_withlist.py:224
 msgid ""
@@ -1236,7 +1333,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:253
 msgid "Print detailed instructions and exit."
-msgstr ""
+msgstr "Imprime instruções detalhadas e sai."
 
 #: src/mailman/commands/cli_withlist.py:257
 msgid ""
@@ -1250,55 +1347,55 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:273
 msgid "Regular expression requires --run"
-msgstr ""
+msgstr "A expressão regular requer --run"
 
 #: src/mailman/commands/cli_withlist.py:300
 msgid "The variable 'm' is the $listspec mailing list"
-msgstr ""
+msgstr "A variável \"m\" é a lista de discussão $listspec"
 
 #: src/mailman/commands/eml_confirm.py:35
 msgid "Confirm a subscription request."
-msgstr ""
+msgstr "Confirma uma solicitação de inscrição."
 
 #: src/mailman/commands/eml_confirm.py:42
 msgid "No confirmation token found"
-msgstr ""
+msgstr "Nenhum token de confirmação encontrado"
 
 #: src/mailman/commands/eml_confirm.py:78
 msgid "Confirmed"
-msgstr ""
+msgstr "Confirmado"
 
 #: src/mailman/commands/eml_confirm.py:82
 msgid "Confirmation token did not match"
-msgstr ""
+msgstr "O token de confirmação não correspondeu"
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
-msgstr ""
+msgstr "Ecoa de volta os seus argumentos."
 
 #: src/mailman/commands/eml_end.py:33
 msgid "Stop processing commands."
-msgstr ""
+msgstr "Pára os comandos de processamento."
 
 #: src/mailman/commands/eml_end.py:47
 msgid "An alias for 'end'."
-msgstr ""
+msgstr "Um apelido para \"end\"."
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
-msgstr ""
+msgstr "Obtém ajuda sobre os comandos de e-mail disponíveis."
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
-msgstr ""
+msgstr "n/d"
 
 #: src/mailman/commands/eml_help.py:59
 msgid "$self.name: no such command: $command_name"
-msgstr ""
+msgstr "$self.name: comando inexistente: $command_name"
 
 #: src/mailman/commands/eml_help.py:70
 msgid "$self.name: too many arguments: $printable_arguments"
-msgstr ""
+msgstr "$self.name: muitos argumentos: $printable_arguments"
 
 #: src/mailman/commands/eml_membership.py:64
 msgid ""
@@ -1313,28 +1410,28 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:73
 msgid "Join this mailing list."
-msgstr ""
+msgstr "Entra nesta lista de discussão."
 
 #: src/mailman/commands/eml_membership.py:89
 msgid "$self.name: No valid address found to subscribe"
-msgstr ""
+msgstr "$self.name: Nenhum endereço válido encontrado para se inscrever"
 
 #: src/mailman/commands/eml_membership.py:116
 msgid "$person has a pending subscription for $listname"
-msgstr ""
+msgstr "$person tem uma inscrição pendente para $listname"
 
 #: src/mailman/commands/eml_membership.py:119
 msgid "Confirmation email sent to $person"
-msgstr ""
+msgstr "E-mail de confirmação enviado para $person"
 
 #: src/mailman/commands/eml_membership.py:136
 #: src/mailman/commands/eml_membership.py:146
 msgid "bad argument: $argument"
-msgstr ""
+msgstr "argumento inválido: $argument"
 
 #: src/mailman/commands/eml_membership.py:159
 msgid "An alias for 'join'."
-msgstr ""
+msgstr "Um apelido para \"join\"."
 
 #: src/mailman/commands/eml_membership.py:170
 msgid ""
@@ -1342,38 +1439,44 @@ msgid ""
 "\n"
 "You may be asked to confirm your request."
 msgstr ""
+"Sai de uma lista de discussão.\n"
+"\n"
+"Pode ser solicitado a confirmar esta solicitação."
 
 #: src/mailman/commands/eml_membership.py:173
 msgid "Leave this mailing list."
-msgstr ""
+msgstr "Sai desta lista de discussão."
 
 #: src/mailman/commands/eml_membership.py:179
 msgid "$self.name: No valid email address found to unsubscribe"
 msgstr ""
+"$self.name: Nenhum endereço de e-mail válido encontrado para cancelar a "
+"inscrição"
 
 #: src/mailman/commands/eml_membership.py:185
 msgid "No registered user for email address: $email"
-msgstr ""
+msgstr "Nenhum utilizador registado para o endereço de e-mail: $email"
 
 #: src/mailman/commands/eml_membership.py:192
 msgid "Invalid or unverified email address: $email"
-msgstr ""
+msgstr "Endereço de e-mail inválido ou não verificado: $email"
 
 #: src/mailman/commands/eml_membership.py:211
 msgid "$self.name: $email is not a member of $mlist.fqdn_listname"
-msgstr ""
+msgstr "$self.name: $email não é um membro de $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:222
 msgid "$person left $mlist.fqdn_listname"
-msgstr ""
+msgstr "$person deixou $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:224
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
 msgstr ""
+"E-mail de confirmação enviado para $person para deixar $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:234
 msgid "An alias for 'leave'."
-msgstr ""
+msgstr "Um apelido para \"leave\"."
 
 #: src/mailman/commands/eml_who.py:42
 msgid ""
@@ -1387,75 +1490,81 @@ msgstr ""
 
 #: src/mailman/commands/eml_who.py:50
 msgid "Get a list of the list members."
-msgstr ""
+msgstr "Obtém uma lista de membros da lista."
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
-msgstr ""
+msgstr "Não está autorizado a ver a lista de membros."
 
 #: src/mailman/commands/eml_who.py:78
 msgid ""
 "Unrecognized or invalid argument(s):\n"
 "{}"
 msgstr ""
+"Argumento(s) não reconhecido(s) ou inválido(s):\n"
+"{}"
 
 #: src/mailman/commands/eml_who.py:101
 msgid ""
 "Members of the {} mailing list:\n"
 "{}"
 msgstr ""
+"Membros da lista de discussão {}\n"
+"{}"
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
-msgstr ""
+msgstr "Envia uma confirmação de uma postagem."
 
 #: src/mailman/handlers/acknowledge.py:75
 msgid "$display_name post acknowledgment"
-msgstr ""
+msgstr "Confirmação de postagem de $display_name"
 
 #: src/mailman/handlers/after_delivery.py:33
 msgid "Perform some bookkeeping after a successful post."
-msgstr ""
+msgstr "Executa uma contabilidade após uma postagem bem-sucedida."
 
 #: src/mailman/handlers/arc_sign.py:65
 msgid "Perform ARC auth checks and attach resulting headers"
 msgstr ""
+"Realiza verificações de autenticação ARC e anexa os cabeçalhos resultantes"
 
 #: src/mailman/handlers/avoid_duplicates.py:44
 msgid "Suppress some duplicates of the same message."
-msgstr ""
+msgstr "Suprime algumas duplicatas da mesma mensagem."
 
 #: src/mailman/handlers/cleanse_dkim.py:42
 msgid "Remove DomainKeys headers."
-msgstr ""
+msgstr "Remove cabeçalhos DomainKeys."
 
 #: src/mailman/handlers/cleanse.py:39
 msgid "Cleanse certain headers from all messages."
-msgstr ""
+msgstr "Limpa determinados cabeçalhos de todas as mensagens."
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
-msgstr ""
+msgstr "Modifica cabeçalhos de mensagens."
 
 #: src/mailman/handlers/decorate.py:260
 msgid "Decorate a message with headers and footers."
-msgstr ""
+msgstr "Decora uma mensagem com cabeçalhos e rodapés."
 
 #: src/mailman/handlers/dmarc.py:127
 msgid "$realname via $mlist.display_name"
-msgstr ""
+msgstr "$realname via $mlist.display_name"
 
 #: src/mailman/handlers/dmarc.py:222
 msgid "Apply DMARC mitigations."
-msgstr ""
+msgstr "Aplica mitigações DMARC."
 
 #: src/mailman/handlers/file_recipients.py:35
 msgid "Get the normal delivery recipients from an include file."
 msgstr ""
+"Obtém os destinatários normais da entrega a partir o ficheiro de inclusão."
 
 #: src/mailman/handlers/member_recipients.py:42
 msgid "Calculate the regular recipients of the message."
-msgstr ""
+msgstr "Calcula os destinatários normais da mensagem."
 
 #: src/mailman/handlers/member_recipients.py:77
 msgid ""
@@ -1474,140 +1583,149 @@ msgstr ""
 
 #: src/mailman/handlers/mime_delete.py:68
 msgid "Content filter message notification"
-msgstr ""
+msgstr "Notificação de mensagem do filtro de conteúdo"
 
 #: src/mailman/handlers/mime_delete.py:102
 msgid "The message's content type was explicitly disallowed"
-msgstr ""
+msgstr "O tipo do conteúdo da mensagem foi explicitamente proibido"
 
 #: src/mailman/handlers/mime_delete.py:107
 msgid "The message's content type was not explicitly allowed"
-msgstr ""
+msgstr "O tipo do conteúdo da mensagem não foi explicitamente permitido"
 
 #: src/mailman/handlers/mime_delete.py:116
 msgid "The message's file extension was explicitly disallowed"
-msgstr ""
+msgstr "A extensão de ficheiro da mensagem foi explicitamente proibida"
 
 #: src/mailman/handlers/mime_delete.py:120
 msgid "The message's file extension was not explicitly allowed"
-msgstr ""
+msgstr "A extensão de ficheiro da mensagem não foi explicitamente permitida"
 
 #: src/mailman/handlers/mime_delete.py:132
 msgid "After content filtering, the message was empty"
-msgstr ""
+msgstr "Após a filtragem do conteúdo, a mensagem estava vazia"
 
 #: src/mailman/handlers/mime_delete.py:322
 msgid "Filter the MIME content of messages."
-msgstr ""
+msgstr "Filtra o conteúdo MIME das mensagens."
 
 #: src/mailman/handlers/owner_recipients.py:34
 msgid "Calculate the owner and moderator recipients."
-msgstr ""
+msgstr "Calcula os destinatários donos e moderadores."
 
 #: src/mailman/handlers/replybot.py:44
 msgid "Send automatic responses."
-msgstr ""
+msgstr "Envia respostas automáticas."
 
 #: src/mailman/handlers/replybot.py:97
 msgid "Auto-response for your message to the \"$display_name\" mailing list"
 msgstr ""
+"Resposta automática para sua mensagem para a lista de discussão \"$"
+"display_name\""
 
 #: src/mailman/handlers/replybot.py:110
 msgid "The Mailman Replybot"
-msgstr ""
+msgstr "O Replybot do Mailman"
 
 #: src/mailman/handlers/rfc_2369.py:127
 msgid "Add the RFC 2369 List-* headers."
-msgstr ""
+msgstr "Adiciona os cabeçalhos List-* do RFC 2369."
 
 #: src/mailman/handlers/subject_prefix.py:153
 msgid "Add a list-specific prefix to the Subject header value."
-msgstr ""
+msgstr "Adicione um prefixo específico da lista ao valor do cabeçalho Assunto."
 
 #: src/mailman/handlers/tagger.py:173
 msgid "Tag messages with topic matches."
-msgstr ""
+msgstr "Etiqueta mensagens com correspondências de tópicos."
 
 #: src/mailman/handlers/to_archive.py:34
 msgid "Add the message to the archives."
-msgstr ""
+msgstr "Adiciona a mensagem aos arquivos."
 
 #: src/mailman/handlers/to_digest.py:36
 msgid "Add the message to the digest, possibly sending it."
-msgstr ""
+msgstr "Adiciona a mensagem ao digest, possivelmente enviando-a."
 
 #: src/mailman/handlers/to_outgoing.py:38
 msgid "Send the message to the outgoing queue."
-msgstr ""
+msgstr "Envia a mensagem para a fila de saída."
 
 #: src/mailman/handlers/to_usenet.py:39
 msgid "Move the message to the outgoing news queue."
-msgstr ""
+msgstr "Move a mensagem para a fila de saída de notícias."
 
 #: src/mailman/handlers/validate_authenticity.py:113
 msgid "Perform auth checks and attach Authentication-Results header."
 msgstr ""
+"Executa verificações de autenticação e anexa o cabeçalho Authentication-"
+"Results."
 
 #: src/mailman/interfaces/pipeline.py:53
 msgid "[No details are available]"
-msgstr ""
+msgstr "[Nenhum detalhe disponível]"
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr ""
+msgstr "[Nenhum motivo dado]"
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
-msgstr ""
+msgstr "O canal embutido do dono."
 
 #: src/mailman/pipelines/builtin.py:43
 msgid "The built-in posting pipeline."
-msgstr ""
+msgstr "O canal embutido de postagem."
 
 #: src/mailman/pipelines/virgin.py:32
 msgid "The virgin queue pipeline."
-msgstr ""
+msgstr "O canal virgem de fila."
 
 #: src/mailman/rest/sub_moderation.py:111
 msgid "Subscription request"
-msgstr ""
+msgstr "Solicitação de inscrição"
 
 #: src/mailman/rules/administrivia.py:52
 msgid "Catch mis-addressed email commands."
-msgstr ""
+msgstr "Captura comandos de e-mail endereçados incorretamente."
 
 #: src/mailman/rules/administrivia.py:96
 msgid "Message contains administrivia"
-msgstr ""
+msgstr "A mensagem contém questões administrativas"
 
 #: src/mailman/rules/any.py:32
 msgid "Look for any previous rule hit."
-msgstr ""
+msgstr "Procura qualquer ocorrência de regra anterior."
 
 #: src/mailman/rules/approved.py:45
 msgid "The message has a matching Approve or Approved header."
-msgstr ""
+msgstr "A mensagem tem um cabeçalho Aprovar ou Aprovada correspondente."
 
 #: src/mailman/rules/banned_address.py:33
 msgid "Match messages sent by banned addresses."
-msgstr ""
+msgstr "Corresponde às mensagens enviadas por endereços banidos."
 
 #: src/mailman/rules/banned_address.py:45
 msgid "Message sender {} is banned from this list"
-msgstr ""
+msgstr "O remetente da mensagem {} foi banido desta lista"
 
 #: src/mailman/rules/dmarc.py:306
 msgid "Find DMARC policy of From: domain."
-msgstr ""
+msgstr "Encontra política DMARC de domínio De:."
 
 #: src/mailman/rules/dmarc.py:326
 msgid "DMARC moderation"
-msgstr ""
+msgstr "Moderação DMARC"
 
 #: src/mailman/rules/dmarc.py:332
 #, python-brace-format
 msgid "You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or quarantine, and your message has been automatically rejected.  If you think that your messages are being rejected in error, contact the mailing list owner at ${listowner}."
 msgstr ""
+"Não está autorizado a postar nesta lista de discussão De: um domínio que "
+"publica uma política DMARC de rejeição ou quarentena e a sua mensagem foi "
+"automaticamente rejeitada. Se acha que as suas mensagens estão a ser "
+"rejeitadas por engano, entre em contato com o dono da lista de discussão em "
+"${listowner}."
 
 #: src/mailman/rules/emergency.py:34
 msgid ""
@@ -1618,63 +1736,63 @@ msgstr ""
 
 #: src/mailman/rules/emergency.py:47
 msgid "Emergency moderation is in effect for this list"
-msgstr ""
+msgstr "Moderação de emergência está em vigor para esta lista"
 
 #: src/mailman/rules/implicit_dest.py:37
 msgid "Catch messages with implicit destination."
-msgstr ""
+msgstr "Captura mensagens com destinação implícita."
 
 #: src/mailman/rules/implicit_dest.py:95
 msgid "Message has implicit destination"
-msgstr ""
+msgstr "A mensagem tem destinação implícita"
 
 #: src/mailman/rules/loop.py:32
 msgid "Look for a posting loop."
-msgstr ""
+msgstr "Procura por um loop de postagem."
 
 #: src/mailman/rules/loop.py:45
 msgid "Message has already been posted to this list"
-msgstr ""
+msgstr "A mensagem já foi postada nesta lista"
 
 #: src/mailman/rules/max_recipients.py:33
 msgid "Catch messages with too many explicit recipients."
-msgstr ""
+msgstr "Captura mensagens com muitos destinatários explícitos."
 
 #: src/mailman/rules/max_recipients.py:49
 msgid "Message has more than {} recipients"
-msgstr ""
+msgstr "A mensagem tem mais de {} destinatários"
 
 #: src/mailman/rules/max_size.py:32
 msgid "Catch messages that are bigger than a specified maximum."
-msgstr ""
+msgstr "Captura mensagens maiores do que um máximo especificado."
 
 #: src/mailman/rules/max_size.py:47
 msgid "The message is larger than the {} KB maximum size"
-msgstr ""
+msgstr "A mensagem é maior do que o tamanho máximo de {} KB"
 
 #: src/mailman/rules/moderation.py:64
 msgid "Match messages sent by moderated members."
-msgstr ""
+msgstr "Corresponde às mensagens enviadas por membros moderados."
 
 #: src/mailman/rules/moderation.py:92
 msgid "The message comes from a moderated member"
-msgstr ""
+msgstr "A mensagem vem de um membro moderado"
 
 #: src/mailman/rules/moderation.py:110
 msgid "Match messages sent by nonmembers."
-msgstr ""
+msgstr "Corresponde às mensagens enviadas por não membros."
 
 #: src/mailman/rules/moderation.py:125
 msgid "No sender was found in the message."
-msgstr ""
+msgstr "Nenhum remetente foi encontrado na mensagem."
 
 #: src/mailman/rules/moderation.py:170
 msgid "The sender is in the nonmember {} list"
-msgstr ""
+msgstr "O remetente está na lista {} de não membros"
 
 #: src/mailman/rules/moderation.py:185
 msgid "The message is not from a list member"
-msgstr ""
+msgstr "A mensagem não é de um membro da lista"
 
 #: src/mailman/rules/news_moderation.py:34
 msgid ""
@@ -1685,39 +1803,39 @@ msgstr ""
 
 #: src/mailman/rules/news_moderation.py:46
 msgid "Post to a moderated newsgroup gateway"
-msgstr ""
+msgstr "Posta num gateway de grupo de notícias moderado"
 
 #: src/mailman/rules/no_senders.py:32
 msgid "Match messages with no valid senders."
-msgstr ""
+msgstr "Corresponde às mensagens com nenhum remetente válido."
 
 #: src/mailman/rules/no_senders.py:44
 msgid "The message has no valid senders"
-msgstr ""
+msgstr "A mensagem não tem remetentes válidos"
 
 #: src/mailman/rules/no_subject.py:32
 msgid "Catch messages with no, or empty, Subject headers."
-msgstr ""
+msgstr "Captura mensagens com nenhum cabeçalho Assunto, ou que esteja vazio."
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr ""
+msgstr "A mensagem não tem um assunto"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
-msgstr ""
+msgstr "Captura mensagens com cabeçalhos suspeitos."
 
 #: src/mailman/rules/suspicious.py:97
 msgid "Header \"{}\" matched a bounce_matching_header line"
-msgstr ""
+msgstr "O cabeçalho \"{}\" corresponde a uma linha bounce_matching_header"
 
 #: src/mailman/rules/truth.py:32
 msgid "A rule which always matches."
-msgstr ""
+msgstr "Uma regra que sempre corresponde."
 
 #: src/mailman/runners/command.py:101
 msgid "Ignoring non-text/plain MIME parts"
-msgstr ""
+msgstr "Ignora partes MIME não textuais/simples"
 
 #: src/mailman/runners/command.py:139
 msgid "The results of your email command are provided below.\n"
@@ -1725,7 +1843,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:183
 msgid "- Original message details:"
-msgstr ""
+msgstr "- Detalhes da mensagem original:"
 
 #: src/mailman/runners/command.py:187
 msgid "    From: $from_"
@@ -1751,7 +1869,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:205
 msgid "No such command: $command_name"
-msgstr ""
+msgstr "Comando inexistente: $command_name"
 
 #: src/mailman/runners/command.py:219
 msgid ""
@@ -1773,11 +1891,11 @@ msgstr ""
 
 #: src/mailman/runners/command.py:233
 msgid "The results of your email commands"
-msgstr ""
+msgstr "Os resultados dos seus comandos de e-mail"
 
 #: src/mailman/runners/digest.py:54
 msgid "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
-msgstr ""
+msgstr "$mlist.display_name - Resumo, Vol $volume, Número $digest_number"
 
 #: src/mailman/runners/digest.py:82
 msgid "Today's Topics:\n"
@@ -1785,15 +1903,15 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:151
 msgid "Digest Header"
-msgstr ""
+msgstr "Cabeçalho do resumo"
 
 #: src/mailman/runners/digest.py:171
 msgid "Today's Topics ($count messages)"
-msgstr ""
+msgstr "Tópicos de hoje ($count mensagens)"
 
 #: src/mailman/runners/digest.py:193 src/mailman/runners/digest.py:278
 msgid "Digest Footer"
-msgstr ""
+msgstr "Rodapé do resumo"
 
 #: src/mailman/runners/digest.py:200 src/mailman/runners/digest.py:285
 msgid "End of "
@@ -1805,23 +1923,23 @@ msgstr ""
 
 #: src/mailman/styles/default.py:37
 msgid "Ordinary discussion mailing list style."
-msgstr ""
+msgstr "Estilo de lista de discussão comum."
 
 #: src/mailman/styles/default.py:57
 msgid "Announce only mailing list style."
-msgstr ""
+msgstr "Anuncia apenas o estilo da lista de discussão."
 
 #: src/mailman/styles/default.py:77
 msgid "Discussion mailing list style with private archives."
-msgstr ""
+msgstr "Estilo de lista de discussão com arquivos privados."
 
 #: src/mailman/utilities/options.py:47
 msgid "slice and range must be integers: $value"
-msgstr ""
+msgstr "fatia e alcance devem ser inteiros: $value"
 
 #: src/mailman/utilities/options.py:50
 msgid "Bad runner spec: $value"
-msgstr ""
+msgstr "Especificação de runner inválida: $value"
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
