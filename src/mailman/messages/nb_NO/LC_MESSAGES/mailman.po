@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2020-12-11 04:16+0000\n"
+"PO-Revision-Date: 2021-05-04 22:32+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "gnu-mailman/mailman/nb_NO/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 4.7-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -116,6 +116,7 @@ msgstr ""
 #: src/mailman/app/subscriptions.py:600
 msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"Din bekreftelse kreves for å forlate $event.mlist.fqdn_listname-e-postlisten"
 
 #: src/mailman/app/subscriptions.py:604
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
