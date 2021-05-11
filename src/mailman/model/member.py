@@ -240,7 +240,9 @@ class MembershipManager:
         # could have been reset due to bounce info getting stale. We will send
         # warnings to people who have been disabled already, regardless of
         # their bounce score. Same is true below for removal.
-        query = store.query(Member).join(
+        query = store.query(
+            Member,
+            MailingList.bounce_you_are_disabled_warnings_interval).join(
             MailingList, Member.list_id == MailingList._list_id).join(
             Member.preferences).filter(and_(
                 MailingList.process_bounces == True,       # noqa: E712
@@ -259,9 +261,8 @@ class MembershipManager:
         # func.DATETIME(MailingList.bounce_you_are_disabled_warnings_interval))
         # < func.DATETIME(now())))
 
-        for member in query.all():
-            if (member.last_warning_sent +
-                    member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now():   # noqa: E501
+        for member, interval in query.all():
+            if (member.last_warning_sent + interval) <= now():
                 yield member
 
     @dbconnection

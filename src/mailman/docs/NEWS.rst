@@ -58,6 +58,8 @@ Bugs
   the owner if the target is both an owner and moderator.  (Closes #888)
 * Command runner now handles RFC 2047 encoded command with non-ascii prefix.
   (Closes #858)
+* Improve performance of the bounce runner by decreasing the number of
+  database queries executed.
 
 Command line
 ------------
