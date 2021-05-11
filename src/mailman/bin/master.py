@@ -420,11 +420,14 @@ class Loop:
             # Find out why the subprocess exited by getting the signal
             # received or exit status.
             if os.WIFSIGNALED(status):
-                why = os.WTERMSIG(status)
+                why = os.WTERMSIG(status)                    # pragma: nocover
+                sig_or_exit = 'SIGNAL '                      # pragma: nocover
             elif os.WIFEXITED(status):
                 why = os.WEXITSTATUS(status)
-            else:
+                sig_or_exit = 'EXIT '
+            else:                                            # pragma: nocover
                 why = None
+                sig_or_exit = 'UNKNOWN'
             # We'll restart the subprocess if it exited with a SIGUSR1 or
             # because of a failure (i.e. no exit signal), and the no-restart
             # command line switch was not given.  This lets us better handle
@@ -432,7 +435,8 @@ class Loop:
             rname, slice_number, count, restarts = self._kids.pop(pid)
             config_name = 'runner.' + rname
             restart = False
-            if why == signal.SIGUSR1 and self._restartable:
+            if ((why == signal.SIGUSR1 or sig_or_exit != 'SIGNAL ') and
+                    self._restartable):                      # pragma: nocover
                 restart = True
             # Have we hit the maximum number of restarts?
             restarts += 1
@@ -442,8 +446,8 @@ class Loop:
             # Are we permanently non-restartable?
             log.debug("""\
 Master detected subprocess exit
-(pid: {0:d}, why: {1}, class: {2}, slice: {3:d}/{4:d}) {5}""".format(
-                     pid, why, rname, slice_number + 1, count,
+(pid: {0:d}, why: {1}{2}, class: {3}, slice: {4:d}/{5:d}) {6}""".format(
+                     pid, sig_or_exit, why, rname, slice_number + 1, count,
                      ('[restarting]' if restart else '')))
             # See if we've reached the maximum number of allowable restarts.
             if restarts > max_restarts:

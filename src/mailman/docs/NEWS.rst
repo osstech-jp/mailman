@@ -60,6 +60,7 @@ Bugs
   (Closes #858)
 * Improve performance of the bounce runner by decreasing the number of
   database queries executed.
+* The master watcher will now restart a process that exits.  (See #887)
 
 Command line
 ------------
