@@ -58,8 +58,8 @@ class TestCLISyncMembers(unittest.TestCase):
             result.output,
             'Usage: syncmembers [OPTIONS] FILENAME LISTSPEC\n'
             'Try \'syncmembers --help\' for help.\n\n'
-            'Error: Invalid value for \'FILENAME\': Could not open '
-            'file: bad: No such file or directory\n')
+            'Error: Invalid value for \'FILENAME\': '
+            '\'bad\': No such file or directory\n')
 
     def test_sync_invalid_email(self):
         with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
@@ -374,8 +374,8 @@ class TestCLISyncMembers(unittest.TestCase):
             'Usage: syncmembers [OPTIONS] FILENAME LISTSPEC\n'
             'Try \'syncmembers --help\' for help.\n\n'
             'Error: Invalid value for \'--delivery\' / \'-d\': '
-            'invalid choice: bogus. (choose from regular, mime, '
-            'plain, summary, disabled)\n')
+            '\'bogus\' is not one of \'regular\', \'mime\', '
+            '\'plain\', \'summary\', \'disabled\'.\n')
 
     def test_override_no_welcome(self):
         self._mlist.send_welcome_message = False

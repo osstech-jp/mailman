@@ -58,5 +58,6 @@ import, the mailing list's "real name" will change.
     Import
 
     >>> command('mailman import21 import@example.com ' + pickle_file)
+    Importing ...
     >>> print(mlist.display_name)
     Test
