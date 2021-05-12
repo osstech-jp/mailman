@@ -19,7 +19,7 @@
 
 from email.utils import formataddr
 from mailman.database.model import Model
-from mailman.database.types import SAUnicode
+from mailman.database.types import SAUnicode, SAUnicode4Byte
 from mailman.interfaces.address import (
     AddressVerificationEvent, IAddress, IEmailValidator)
 from mailman.utilities.datetime import now
@@ -41,7 +41,7 @@ class Address(Model):
     id = Column(Integer, primary_key=True)
     email = Column(SAUnicode, index=True, unique=True)
     _original = Column(SAUnicode)
-    display_name = Column(SAUnicode)
+    display_name = Column(SAUnicode4Byte)
     _verified_on = Column('verified_on', DateTime)
     registered_on = Column(DateTime)
 

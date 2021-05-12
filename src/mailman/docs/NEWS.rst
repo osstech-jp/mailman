@@ -60,6 +60,10 @@ Bugs
   (Closes #858)
 * Improve performance of the bounce runner by decreasing the number of
   database queries executed.
+* The master watcher will now restart a process that exits.  (See #887)
+* When using MySQL, most database columns that expect user input will now
+  accept emojis and other 4-byte unicode characters by using the utf8mb4
+  character set instead of 3-byte. (Closes #891)
 
 Command line
 ------------

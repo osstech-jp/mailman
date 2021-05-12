@@ -47,7 +47,8 @@ def run_migrations_offline():
     output.
     """
     context.configure(url=url, target_metadata=Model.metadata,
-                      render_as_batch=True)                   # pragma: nocover
+                      render_as_batch=True,
+                      compare_type=True)  # pragma: nocover
     with context.begin_transaction():
         context.run_migrations()
 
@@ -65,7 +66,7 @@ def run_migrations_online():
     with closing(connection):
         context.configure(
             connection=connection, target_metadata=Model.metadata,
-            render_as_batch=True)
+            render_as_batch=True, compare_type=True)
         with context.begin_transaction():
             context.run_migrations()
 

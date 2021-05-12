@@ -27,7 +27,7 @@ import datetime
 from contextlib import ExitStack
 from mailman.config import config
 from mailman.database.helpers import is_mysql
-from mailman.database.types import SAUnicode
+from mailman.database.types import SAUnicode, SAUnicode4Byte
 from mailman.handlers.decorate import decorate_template
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IEmailValidator
@@ -311,7 +311,9 @@ def import_config_pck(mlist, config_dict):
                 column = getattr(mlist.__class__, key, None)
                 if column is not None and isinstance(column.type, Boolean):
                     converter = bool
-                if column is not None and isinstance(column.type, SAUnicode):
+                if column is not None \
+                        and (isinstance(column.type, SAUnicode)
+                             or isinstance(column.type, SAUnicode4Byte)):
                     converter = maybe_truncate_mysql
             try:
                 if converter is not None:
