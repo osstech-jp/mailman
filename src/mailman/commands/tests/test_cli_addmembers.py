@@ -57,8 +57,8 @@ class TestCLIAddMembers(unittest.TestCase):
             result.output,
             'Usage: addmembers [OPTIONS] FILENAME LISTSPEC\n'
             'Try \'addmembers --help\' for help.\n\n'
-            'Error: Invalid value for \'FILENAME\': Could not open '
-            'file: bad: No such file or directory\n')
+            'Error: Invalid value for \'FILENAME\': '
+            '\'bad\': No such file or directory\n')
 
     def test_already_subscribed_with_display_name(self):
         subscribe(self._mlist, 'Anne')
@@ -265,8 +265,8 @@ class TestCLIAddMembers(unittest.TestCase):
             'Usage: addmembers [OPTIONS] FILENAME LISTSPEC\n'
             'Try \'addmembers --help\' for help.\n\n'
             'Error: Invalid value for \'--delivery\' / \'-d\': '
-            'invalid choice: bogus. (choose from regular, mime, '
-            'plain, summary, disabled)\n')
+            '\'bogus\' is not one of \'regular\', \'mime\', '
+            '\'plain\', \'summary\', \'disabled\'.\n')
 
     def test_invite_member(self):
         with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:

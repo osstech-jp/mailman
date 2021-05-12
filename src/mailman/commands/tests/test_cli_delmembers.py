@@ -56,8 +56,8 @@ class TestCLIDelMembers(unittest.TestCase):
             result.output,
             'Usage: delmembers [OPTIONS]\n'
             'Try \'delmembers --help\' for help.\n\n'
-            'Error: Invalid value for \'--file\' / \'-f\': Could not open '
-            'file: bad: No such file or directory\n')
+            'Error: Invalid value for \'--file\' / \'-f\': '
+            '\'bad\': No such file or directory\n')
 
     def test_not_subscribed_without_display_name(self):
         with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
