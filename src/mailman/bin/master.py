@@ -435,8 +435,7 @@ class Loop:
             rname, slice_number, count, restarts = self._kids.pop(pid)
             config_name = 'runner.' + rname
             restart = False
-            if ((why == signal.SIGUSR1 or sig_or_exit != 'SIGNAL ') and
-                    self._restartable):                      # pragma: nocover
+            if why == signal.SIGUSR1 and self._restartable:  # pragma: nocover
                 restart = True
             # Have we hit the maximum number of restarts?
             restarts += 1
