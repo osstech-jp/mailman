@@ -19,7 +19,7 @@
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import SAUnicode
+from mailman.database.types import SAUnicode, SAUnicode4Byte
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, DomainCreatedEvent, DomainCreatingEvent,
     DomainDeletedEvent, DomainDeletingEvent, IDomain, IDomainManager)
@@ -44,7 +44,7 @@ class Domain(Model):
     id = Column(Integer, primary_key=True)
 
     mail_host = Column(SAUnicode, unique=True)
-    description = Column(SAUnicode)
+    description = Column(SAUnicode4Byte)
     owners = relationship('User',
                           secondary='domain_owner',
                           backref='domains')

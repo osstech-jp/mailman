@@ -88,9 +88,13 @@ class SAUnicode(TypeDecorator):
     """Unicode datatype to support fixed length VARCHAR in MySQL.
 
     This type compiles to VARCHAR(255) in case of MySQL, and in case of
-    other dailects defaults to the Unicode type.  This was created so
+    other dialects defaults to the Unicode type.  This was created so
     that we don't have to alter the output of the default Unicode data
     type and it can still be used if needed in the codebase.
+
+    WARNING: On MySQL it will not be possible to insert emojis or other
+    4-byte utf-8 encoded characters. This should only be used if the entire
+    column needs to be indexed, otherwise use SAUnicode4Byte.
     """
     impl = Unicode
 
@@ -107,6 +111,29 @@ def compile_sa_unicode(element, compiler, **kw):
 
 
 @public
+class SAUnicode4Byte(TypeDecorator):
+    """Unicode datatype to support fixed length VARCHAR in MySQL.
+
+    This type compiles to VARCHAR(255) in case of MySQL, and in case of
+    other dialects defaults to the Unicode type.  This was created so
+    that we don't have to alter the output of the default Unicode data
+    type and it can still be used if needed in the codebase.
+    """
+    impl = Unicode
+
+
+@compiles(SAUnicode4Byte)
+def default_sa_unicode_4byte(element, compiler, **kw):
+    return compiler.visit_unicode(element, **kw)
+
+
+@compiles(SAUnicode4Byte, 'mysql')
+def compile_sa_unicode_4byte(element, compiler, **kw):  # pragma: nocover
+    # We hardcode the collate here to make string comparison case sensitive.
+    return 'VARCHAR(255) COLLATE utf8mb4_bin'
+
+
+@public
 class SAUnicodeLarge(TypeDecorator):
     """Similar to SAUnicode type, but compiles to VARCHAR(510).
 
@@ -116,9 +143,9 @@ class SAUnicodeLarge(TypeDecorator):
 
 
 @compiles(SAUnicodeLarge, 'mysql')
-def compile_sa_unicode_large(element, compiler, **kw):
+def compile_sa_unicode_large(element, compiler, **kw):  # pragma: nocover
     # We hardcode the collate here to make string comparison case sensitive.
-    return 'VARCHAR(510) COLLATE utf8_bin'
+    return 'VARCHAR(510) COLLATE utf8mb4_bin'
 
 
 @compiles(SAUnicodeLarge)

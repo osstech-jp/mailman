@@ -19,7 +19,7 @@
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import SAUnicode, UUID
+from mailman.database.types import SAUnicode4Byte, UUID
 from mailman.interfaces.address import (
     AddressAlreadyLinkedError, AddressNotLinkedError)
 from mailman.interfaces.user import (
@@ -49,8 +49,8 @@ class User(Model):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    display_name = Column(SAUnicode)
-    _password = Column('password', SAUnicode)
+    display_name = Column(SAUnicode4Byte)
+    _password = Column('password', SAUnicode4Byte)
     _user_id = Column(UUID, index=True)
     _created_on = Column(DateTime)
     is_server_owner = Column(Boolean, default=False)
