@@ -43,6 +43,18 @@ class TestLMTP(unittest.TestCase):
         self._lmtp.lhlo('remote.example.org')
         self.addCleanup(self._lmtp.close)
 
+    def test_unixfrom_in_message(self):
+        # Ensure a unixfrom is added to the message object.
+        self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
+From: anne@example.com
+To: test@example.com
+Subject: Test unixfrom
+Message-ID: <msg@example.com>
+
+""")
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual('anne@example.com', items[0].msg.get_unixfrom())
+
     def test_message_id_supplied_if_missing(self):
         # A Message-ID header is generated if the message doesn't have one.
         self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
