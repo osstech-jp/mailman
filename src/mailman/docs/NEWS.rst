@@ -65,6 +65,8 @@ Bugs
   accept emojis and other 4-byte unicode characters by using the utf8mb4
   character set instead of 3-byte. (Closes #891)
 * LMTP runner now sets unixfrom in incoming messages.  (Closes #904)
+* Message RFC2047-decodes and unfolds headers before looking for
+  senders. (Closes #903)
 
 Command line
 ------------

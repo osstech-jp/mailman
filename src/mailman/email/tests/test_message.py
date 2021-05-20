@@ -99,6 +99,14 @@ Test content
         # Make sure the senders property does not fail
         self.assertEqual(msg.senders, ['test@example.com'])
 
+    def test_senders_long_header(self):
+        msg = Message()
+        msg['From'] = (
+            '"User, A. Very Long Name W. (CNTR-DEPT)[An Employer,\r\n'
+            ' Inc.]" <a.user-1@example.org>'
+            )
+        self.assertEqual(msg.senders, ['a.user-1@example.org'])
+
     def test_user_notification_bad_charset(self):
         msg = UserNotification(
             'aperson@example.com',
