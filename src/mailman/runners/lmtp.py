@@ -136,6 +136,7 @@ class LMTPHandler:
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam.
             msg = email.message_from_bytes(envelope.content, Message)
+            msg.set_unixfrom(envelope.mail_from)
         except Exception:
             elog.exception('LMTP message parsing')
             config.db.abort()

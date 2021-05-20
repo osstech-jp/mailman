@@ -64,6 +64,7 @@ Bugs
 * When using MySQL, most database columns that expect user input will now
   accept emojis and other 4-byte unicode characters by using the utf8mb4
   character set instead of 3-byte. (Closes #891)
+* LMTP runner now sets unixfrom in incoming messages.  (Closes #904)
 
 Command line
 ------------
