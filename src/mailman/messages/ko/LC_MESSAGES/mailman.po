@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2019-11-19 12:04+0000\n"
-"Last-Translator: ParkSeongSoo <syvf64@naver.com>\n"
-"Language-Team: Korean <https://hosted.weblate.org/projects/gnu-mailman/mailman/ko/>\n"
+"PO-Revision-Date: 2021-05-19 11:33+0000\n"
+"Last-Translator: Lens0021 <lorentz0021@gmail.com>\n"
+"Language-Team: Korean <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/ko/>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 4.7-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -53,7 +54,7 @@ msgstr "[이유 없음]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
-msgstr "중재 된 메시지 전달"
+msgstr "관리 조정된 메시지 전달"
 
 #: src/mailman/app/moderator.py:195
 msgid "New unsubscription request from $mlist.display_name by $email"
@@ -89,19 +90,18 @@ msgid "$mlist.display_name subscription notification"
 msgstr "$ mlist.display_name 구독 알림"
 
 #: src/mailman/app/notifications.py:136
-#, fuzzy
 msgid "$member's subscription disabled on $mlist.display_name"
-msgstr "$ email을 통한 $ mlist.display_name의 새로운 구독 취소 요청"
+msgstr "$mlist.display_name에서 $member의 구독이 취소됨"
 
 #: src/mailman/app/notifications.py:157
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "$ mlist.display_name 메일 링리스트에서 탈퇴했습니다"
+msgstr "바운스로 인해 ${mlist.display_name} 메일링 목록에서 $member 구독 취소"
 
 #: src/mailman/app/notifications.py:184
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "$ mlist.display_name 메일 링리스트에서 탈퇴했습니다"
+msgstr "${mlist.display_name} 메일링 목록에 대한 구독이 비활성화되었습니다"
 
 #: src/mailman/app/subscriptions.py:310
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
@@ -113,15 +113,15 @@ msgstr "$ self.address.email에서 $ self.mlist.display_name에 대한 새로운
 
 #: src/mailman/app/subscriptions.py:597
 msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
-msgstr ""
+msgstr "$event.mlist.fqdn_listname 메일링 목록에 가입하도록 초대받았습니다."
 
 #: src/mailman/app/subscriptions.py:600
 msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
-msgstr ""
+msgstr "$event.mlist.fqdn_listname 메일링 목록을 떠나려면 확인이 필요합니다."
 
 #: src/mailman/app/subscriptions.py:604
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
-msgstr ""
+msgstr "$event.mlist.fqdn_listname 메일링 목록에 가입하려면 확인이 필요합니다."
 
 #: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:515
 #: src/mailman/bin/runner.py:96
@@ -406,7 +406,7 @@ msgstr "이미 가입 (건너 뛰기) : $ email"
 #: src/mailman/commands/cli_addmembers.py:100
 #: src/mailman/commands/cli_syncmembers.py:81
 msgid "Membership is banned (skipping): $email"
-msgstr ""
+msgstr "멤버십이 금지됨 (건너뜀): $email"
 
 #: src/mailman/commands/cli_addmembers.py:106
 msgid ""
