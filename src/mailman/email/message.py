@@ -23,11 +23,12 @@ safe pickle deserialization, even if the email package adds additional Message
 attributes.
 """
 
+import re
 import email
 import email.message
 import email.utils
 
-from email.header import Header
+from email.header import Header, decode_header, make_header
 from email.mime.multipart import MIMEMultipart
 from mailman.config import config
 from mailman.interfaces.address import IEmailValidator
@@ -107,7 +108,12 @@ class Message(email.message.Message):
             else:
                 for field_value in self.get_all(header, []):
                     # Convert the header to str in case it's a Header instance.
-                    name, address = email.utils.parseaddr(str(field_value))
+                    header_value = re.sub(
+                        '[\r\n]',
+                        '',
+                        str(make_header(decode_header(field_value)))
+                        )
+                    name, address = email.utils.parseaddr(header_value)
                     senders.append(address.lower())
         # Filter out invalid addresses, None and the empty string, and convert
         # to unicode.
