@@ -107,6 +107,15 @@ Test content
             )
         self.assertEqual(msg.senders, ['a.user-1@example.org'])
 
+    def test_senders_multiple_addresses(self):
+        msg = Message()
+        msg['From'] = 'Anne <anne@example.com>'
+        msg['Reply-To'] = 'Bart <bart@example.com>, Cate <cate@example.com>'
+        self.assertEqual(msg.senders,
+                         ['anne@example.com',
+                          'bart@example.com',
+                          'cate@example.com'])
+
     def test_user_notification_bad_charset(self):
         msg = UserNotification(
             'aperson@example.com',

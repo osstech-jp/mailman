@@ -51,7 +51,7 @@ Bugs
 * Some exceptions in ARC signing of some posts from HyperKitty and some from
   prod.outlook.com are now handled without shunting the message.  (Closes #885)
 * Command runner now will decode the message body before processing it.
- （Closes #859)
+  (Closes #859)
 * The ``mailinglist`` table ``info`` column is changed to Text.  (Closes #840
   and #886)
 * The mailing list administrators roster ``get_member()`` method now returns
@@ -65,8 +65,10 @@ Bugs
   accept emojis and other 4-byte unicode characters by using the utf8mb4
   character set instead of 3-byte. (Closes #891)
 * LMTP runner now sets unixfrom in incoming messages.  (Closes #904)
-* Message RFC2047-decodes and unfolds headers before looking for
-  senders. (Closes #903)
+* The ``Message`` ``senders()`` method now RFC2047-decodes and unfolds headers.
+  (Closes #903)
+* The ``Message`` ``senders()`` method now gets all the addresses from the
+  configured headers.  (Closes #905)
 
 Command line
 ------------

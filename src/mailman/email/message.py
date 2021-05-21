@@ -113,8 +113,9 @@ class Message(email.message.Message):
                         '',
                         str(make_header(decode_header(field_value)))
                         )
-                    name, address = email.utils.parseaddr(header_value)
-                    senders.append(address.lower())
+                    for name, address in email.utils.getaddresses(
+                            [header_value]):
+                        senders.append(address.lower())
         # Filter out invalid addresses, None and the empty string, and convert
         # to unicode.
         clean_senders = []
