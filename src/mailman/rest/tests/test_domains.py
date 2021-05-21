@@ -112,9 +112,9 @@ class TestDomains(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         # Check the result.
         domain = getUtility(IDomainManager).get('example.com')
-        self.assertEqual(
-            [list(owner.addresses)[0].email for owner in domain.owners],
-            ['anne@example.com', 'other@example.net'])
+        owners = [list(owner.addresses)[0].email for owner in domain.owners]
+        owners.sort()
+        self.assertEqual(owners, ['anne@example.com', 'other@example.net'])
 
     def test_patch_domain_readonly(self):
         # Attempt to patch mail_host.
