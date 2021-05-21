@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2021-05-04 22:32+0000\n"
+"PO-Revision-Date: 2021-05-16 22:30+0000\n"
 "Last-Translator: Eugenia Russell <eugenia.russell2019@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/el/>\n"
@@ -48,7 +48,7 @@ msgstr ""
 
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228 src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Δεν εδόθη λόγος]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
