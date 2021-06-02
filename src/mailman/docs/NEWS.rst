@@ -69,6 +69,8 @@ Bugs
   (Closes #903)
 * The ``Message`` ``senders()`` method now gets all the addresses from the
   configured headers.  (Closes #905)
+* Require flufl.bounce >=3.0.2, which improves parsing of bounce messages.
+  (Closes #892)
 
 Command line
 ------------
