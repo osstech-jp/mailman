@@ -414,12 +414,12 @@ To: ant@example.com
         mark = LogFileMark('mailman.error')
         rule = dmarc.DMARCMitigation()
         with get_dns_resolver(rmult=True):
-            self.assertTrue(rule.check(mlist, msg, {}))
+            self.assertFalse(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
-            line[-85:],
+            line[-95:],
             'RRset of TXT records for _dmarc.example.biz has 2 '
-            'v=DMARC1 entries; testing them all\n')
+            'v=DMARC1 entries; ignoring them per RFC 7849\n')
 
     def test_multiple_cnames(self):
         mlist = create_list('ant@example.com')
