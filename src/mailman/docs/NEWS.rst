@@ -71,6 +71,8 @@ Bugs
   configured headers.  (Closes #905)
 * Require flufl.bounce >=3.0.2, which improves parsing of bounce messages.
   (Closes #892)
+* DMARC policy discovery ignores domains with multiple DMARC records per
+  RFC 7849.  (Closes #907)
 
 Command line
 ------------
