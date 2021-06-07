@@ -271,15 +271,16 @@ class MembershipManager:
         from mailman.model.mailinglist import MailingList
         from mailman.model.preferences import Preferences
 
-        query = store.query(Member).join(
+        query = store.query(
+            Member,
+            MailingList.bounce_you_are_disabled_warnings_interval,
+            MailingList.bounce_you_are_disabled_warnings).join(
             MailingList, Member.list_id == MailingList._list_id).join(
             Member.preferences).filter(and_(
                 MailingList.process_bounces == True,    # noqa: E712
                 Member.total_warnings_sent >= MailingList.bounce_you_are_disabled_warnings,     # noqa: E501
                 Preferences.delivery_status == DeliveryStatus.by_bounces))
 
-        for member in query.all():
-            if ((member.last_warning_sent +
-                    member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now() or   # noqa: E501
-                    member.mailing_list.bounce_you_are_disabled_warnings == 0):
+        for member, interval, warnings in query.all():
+            if (member.last_warning_sent + interval) <= now() or warnings == 0:
                 yield member
