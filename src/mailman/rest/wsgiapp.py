@@ -18,6 +18,7 @@
 """Basic WSGI Application object for REST server."""
 
 import re
+import hmac
 import logging
 
 from base64 import b64decode
@@ -55,7 +56,8 @@ class Middleware:
             credentials = b64decode(request.auth[6:]).decode('utf-8')
             username, password = credentials.split(':', 1)
             if (username == config.webservice.admin_user and
-                    password == config.webservice.admin_pass):
+                    hmac.compare_digest(
+                        password, config.webservice.admin_pass)):
                 authorized = True
         if not authorized:
             # Not authorized.
