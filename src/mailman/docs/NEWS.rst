@@ -75,6 +75,8 @@ Bugs
   RFC 7849.  (Closes #907)
 * Held messages missing from the message store can now be accepted and/or
   forwarded.  (closes #914)
+* Only remove or send warnings to list members when processing bounces.
+  (Closes #910)
 
 Command line
 ------------
