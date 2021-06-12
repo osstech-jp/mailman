@@ -73,6 +73,8 @@ Bugs
   (Closes #892)
 * DMARC policy discovery ignores domains with multiple DMARC records per
   RFC 7849.  (Closes #907)
+* Held messages missing from the message store can now be accepted and/or
+  forwarded.  (closes #914)
 
 Command line
 ------------
