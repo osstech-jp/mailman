@@ -92,6 +92,19 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
     return request_id
 
 
+def _lost_message(mlist, subject, sender, message_id):
+    # Create a substitute for a message not found in the message store.
+    text = _("""\
+The content of this message was lost. It was probably cross-posted to
+multiple lists and previously handled on another list.
+""")
+    msg = UserNotification(
+        mlist.posting_address, sender, subject, text, mlist.preferred_language)
+    del msg['message-id']
+    msg['Message-ID'] = message_id
+    return msg
+
+
 @public
 def handle_message(mlist, id, action, comment=None, forward=None):
     message_store = getUtility(IMessageStore)
@@ -121,6 +134,8 @@ def handle_message(mlist, id, action, comment=None, forward=None):
     elif action is Action.accept:
         # Start by getting the message from the message store.
         msg = message_store.get_message_by_id(message_id)
+        if msg is None:
+            msg = _lost_message(mlist, subject, sender, message_id)
         # Delete moderation-specific entries from the message metadata.
         for key in list(msgdata):
             if key.startswith('_mod_'):
@@ -148,6 +163,8 @@ def handle_message(mlist, id, action, comment=None, forward=None):
     if forward:
         # Get a copy of the original message from the message store.
         msg = message_store.get_message_by_id(message_id)
+        if msg is None:
+            msg = _lost_message(mlist, subject, sender, message_id)
         # It's possible the forwarding address list is a comma separated list
         # of display_name/address pairs.
         addresses = [addr[1] for addr in getaddresses(forward)]

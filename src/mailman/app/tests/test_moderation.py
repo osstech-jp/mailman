@@ -96,6 +96,44 @@ Message-ID: <alpha>
         self.assertEqual(message['x-mailfrom'], 'test-bounces@example.com')
         self.assertEqual(message['x-rcptto'], 'bart@example.com')
 
+    def test_missing_accepted_message_gets_posted(self):
+        # A message that is accepted by the moderator should get posted to the
+        # mailing list.  LP: #827697
+        msgdata = dict(listname='test@example.com',
+                       recipients=['bart@example.com'])
+        request_id = hold_message(self._mlist, self._msg, msgdata)
+        message_store = getUtility(IMessageStore)
+        message_store.delete_message('<alpha>')
+        handle_message(self._mlist, request_id, Action.accept)
+        self._in.run()
+        self._pipeline.run()
+        self._out.run()
+        messages = list(SMTPLayer.smtpd.messages)
+        self.assertEqual(len(messages), 1)
+        message = messages[0]
+        # We don't need to test the entire posted message, just the bits that
+        # prove it got sent out.
+        self.assertIn('x-mailman-version', message)
+        self.assertIn('x-peer', message)
+        # The X-Mailman-Approved-At header has local timezone information in
+        # it, so test that separately.
+        self.assertEqual(message['x-mailman-approved-at'][:-5],
+                         'Mon, 01 Aug 2005 07:49:23 ')
+        del message['x-mailman-approved-at']
+        # The Message-ID matches the original.
+        self.assertEqual(message['message-id'], '<alpha>')
+        # Anne sent the message and the mailing list received it.
+        self.assertEqual(message['from'], 'anne@example.com')
+        self.assertEqual(message['to'], 'test@example.com')
+        # The Subject header has the list's prefix.
+        self.assertEqual(message['subject'], '[Test] hold me')
+        # The list's -bounce address is the actual sender, and Bart is the
+        # only actual recipient.  These headers are added by the testing
+        # framework and don't show up in production.  They match the RFC 5321
+        # envelope.
+        self.assertEqual(message['x-mailfrom'], 'test-bounces@example.com')
+        self.assertEqual(message['x-rcptto'], 'bart@example.com')
+
     def test_hold_action_alias_for_defer(self):
         # In handle_message(), the 'hold' action is the same as 'defer' for
         # purposes of this API.
@@ -129,6 +167,23 @@ Message-ID: <alpha>
                          'Forward of moderated message')
         self.assertEqual(list(items[0].msgdata['recipients']),
                          ['zack@example.com'])
+
+    def test_missing_forward(self):
+        # We can forward the message to an email address.
+        request_id = hold_message(self._mlist, self._msg)
+        message_store = getUtility(IMessageStore)
+        message_store.delete_message('<alpha>')
+        handle_message(self._mlist, request_id, Action.discard,
+                       forward=['zack@example.com'])
+        # The forwarded message lives in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(str(items[0].msg['subject']),
+                         'Forward of moderated message')
+        self.assertEqual(list(items[0].msgdata['recipients']),
+                         ['zack@example.com'])
+        payload = items[0].msg.get_payload()[0]
+        self.assertIsNotNone(payload)
+        self.assertEqual('<alpha>', payload['message-id'])
 
     def test_survive_a_deleted_message(self):
         # When the message that should be deleted is not found in the store,
