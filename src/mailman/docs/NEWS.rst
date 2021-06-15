@@ -80,6 +80,8 @@ Command line
 ------------
 * The ``notify`` subcommand is now more tolerant of certain database anomalies.
   (Closes #861)
+* The ``notify`` subcommand now handles unicode errors in decoding RFC 2047
+  encoded subject headers.  (Closes #915)
 
 REST
 ----
