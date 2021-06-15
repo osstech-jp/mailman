@@ -122,8 +122,11 @@ def _build_detail(requestdb, subs, unsubs):
                 subject = data['_mod_subject']
                 reason = data['_mod_reason']
                 detail += '    ' + _('Sender: {}\n').format(sender)
-                detail += '    ' + _('Subject: {}\n').format(
-                    str(make_header(decode_header(subject))))
+                try:
+                    detail += '    ' + _('Subject: {}\n').format(
+                        str(make_header(decode_header(subject))))
+                except UnicodeDecodeError:
+                    detail += '    ' + _('Subject: {}\n').format(subject)
                 detail += '    ' + _('Reason: {}\n\n').format(reason)
             else:
                 detail += '    ' + _(                    # pragma: nocover

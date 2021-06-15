@@ -161,3 +161,40 @@ Held Messages:
 
 Please attend to this at your earliest convenience.
 """)
+
+
+class TestBogusRFC2047(unittest.TestCase):
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('ant@example.com')
+        msg = mfs("""\
+To: ant@example.com
+From: anne@example.com
+Subject: =?gb2312?q?=E9=FF_message_1?=
+
+""")
+        # Hold this message.
+        hold_message(self._mlist, msg, {}, 'Non-member post')
+        self._command = CliRunner()
+
+    def test_bogus_rfc2047(self):
+        # Clear messages from setup.
+        get_queue_messages('virgin')
+        result = self._command.invoke(notify, ('-v',))
+        self.assertMultiLineEqual(result.output, """\
+The ant@example.com list has 1 moderation requests waiting.
+""")
+        msg = get_queue_messages('virgin', expected_count=1)[0].msg
+        self.assertMultiLineEqual(msg.get_payload(), """\
+The ant@example.com list has 1 moderation requests waiting.
+
+
+Held Messages:
+    Sender: anne@example.com
+    Subject: =?gb2312?q?=E9=FF_message_1?=
+    Reason: Non-member post
+
+
+Please attend to this at your earliest convenience.
+""")
