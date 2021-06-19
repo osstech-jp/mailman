@@ -79,6 +79,8 @@ Bugs
   #854)
 * Exceptions in bounce processing member removal don't roll back successful
   removals.  (Closes #909)
+* Only remove or send warnings to list members when processing bounces.
+  (Closes #910)
 
 Command line
 ------------

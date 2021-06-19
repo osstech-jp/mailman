@@ -245,6 +245,7 @@ class MembershipManager:
             MailingList.bounce_you_are_disabled_warnings_interval).join(
             MailingList, Member.list_id == MailingList._list_id).join(
             Member.preferences).filter(and_(
+                Member.role == MemberRole.member,
                 MailingList.process_bounces == True,       # noqa: E712
                 Member.total_warnings_sent < MailingList.bounce_you_are_disabled_warnings,  # noqa: E501
                 Preferences.delivery_status == DeliveryStatus.by_bounces))
@@ -277,6 +278,7 @@ class MembershipManager:
             MailingList.bounce_you_are_disabled_warnings).join(
             MailingList, Member.list_id == MailingList._list_id).join(
             Member.preferences).filter(and_(
+                Member.role == MemberRole.member,
                 MailingList.process_bounces == True,    # noqa: E712
                 Member.total_warnings_sent >= MailingList.bounce_you_are_disabled_warnings,     # noqa: E501
                 Preferences.delivery_status == DeliveryStatus.by_bounces))
