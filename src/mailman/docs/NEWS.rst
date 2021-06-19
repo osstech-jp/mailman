@@ -75,6 +75,9 @@ Bugs
   RFC 7849.  (Closes #907)
 * Held messages missing from the message store can now be accepted and/or
   forwarded.  (closes #914)
+* Dispose SQLAlchemy connections after a new worker process is forked. (Closes
+  #854)
+
 
 Command line
 ------------
