@@ -105,6 +105,8 @@ New Features
   at intervals defined by the new ``run_tasks_every`` setting in the
   ``[mailman]`` section of mailman.cfg. Default is 1 hour.  (Closes #467 and
   #853)
+* There is a new ``list:admin:notice:pending`` template for the notice from
+  the ``mailman notify`` command.  (Closes #890)
 
 .. _news-3.3.4:
 
