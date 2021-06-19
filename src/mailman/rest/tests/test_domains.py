@@ -374,6 +374,7 @@ class TestDomainTemplates(unittest.TestCase):
                 'list:admin:action:unsubscribe': '',
                 'list:admin:notice:subscribe': '',
                 'list:admin:notice:unrecognized': '',
+                'list:admin:notice:pending': '',
                 'list:admin:notice:increment': '',
                 'list:admin:notice:disable': '',
                 'list:admin:notice:unsubscribe': '',

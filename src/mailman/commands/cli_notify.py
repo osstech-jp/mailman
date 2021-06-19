@@ -27,7 +27,9 @@ from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
+from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.options import I18nCommand
+from mailman.utilities.string import expand, wrap
 from public import public
 from zope.component import getUtility
 from zope.interface import implementer
@@ -138,12 +140,12 @@ def _send_notice(mlist, count, detail):
     """Creates and sends the notice to the list administrators."""
     subject = _('The {} list has {} moderation requests waiting.').format(
                 mlist.fqdn_listname, count)
-    # XXX This should be a template.
-    text = _("""The {} list has {} moderation requests waiting.
-
-{}
-Please attend to this at your earliest convenience.
-""").format(mlist.fqdn_listname, count, detail)
+    template = getUtility(ITemplateLoader).get(
+        'list:admin:notice:pending', mlist)
+    text = wrap(expand(template, mlist, dict(
+        count=count,
+        data=detail,
+        )))
     msg = OwnerNotification(mlist, subject, text, mlist.administrators)
     msg.send(mlist)
 

@@ -120,8 +120,7 @@ Held Messages:
     Reason: Some other reason
 
 
-Please attend to this at your earliest convenience.
-""")
+Please attend to this at your earliest convenience.""")
 
     def test_notify_bogus_list(self):
         result = self._command.invoke(notify,
@@ -159,8 +158,7 @@ Held Messages:
     Reason: Some other reason
 
 
-Please attend to this at your earliest convenience.
-""")
+Please attend to this at your earliest convenience.""")
 
 
 class TestBogusRFC2047(unittest.TestCase):
@@ -196,5 +194,4 @@ Held Messages:
     Reason: Non-member post
 
 
-Please attend to this at your earliest convenience.
-""")
+Please attend to this at your earliest convenience.""")

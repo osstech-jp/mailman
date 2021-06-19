@@ -175,6 +175,7 @@ ALL_TEMPLATES = {
         'list:admin:notice:unsubscribe',
         'list:admin:notice:disable',
         'list:admin:notice:increment',
+        'list:admin:notice:pending',
         'list:admin:notice:removal',
         'list:member:digest:footer',
         'list:member:digest:header',
