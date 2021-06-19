@@ -77,7 +77,8 @@ Bugs
   forwarded.  (closes #914)
 * Dispose SQLAlchemy connections after a new worker process is forked. (Closes
   #854)
-
+* Exceptions in bounce processing member removal don't roll back successful
+  removals.  (Closes #909)
 
 Command line
 ------------

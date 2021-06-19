@@ -29,7 +29,8 @@ from mailman.app.notifications import (
     send_admin_removal_notice, send_user_disable_warning)
 from mailman.config import config
 from mailman.database.model import Model
-from mailman.database.transaction import dbconnection, transactional
+from mailman.database.transaction import (
+    dbconnection, transaction, transactional)
 from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.bounce import (
     BounceContext, IBounceEvent, IBounceProcessor, InvalidBounceEvent)
@@ -267,9 +268,10 @@ class BounceProcessor:
                 admin_notif = False
                 send_admin_notif = True
 
-            delete_member(
-                mlist=member._mailing_list, email=member.address.email,
-                admin_notif=admin_notif, userack=True)
+            with transaction():
+                delete_member(
+                    mlist=member._mailing_list, email=member.address.email,
+                    admin_notif=admin_notif, userack=True)
 
             if send_admin_notif:
                 send_admin_removal_notice(
