@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2021-05-19 11:33+0000\n"
+"PO-Revision-Date: 2021-06-22 05:33+0000\n"
 "Last-Translator: Lens0021 <lorentz0021@gmail.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ko/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.7.1-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -415,6 +415,10 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    -d/--delivery로 전달된 FILENAME에 있는 모든 멤버 주소를 지정된\n"
+"    배달 모드로 추가합니다. FILENAME은 표준 입력을 나타내는 '-'일.\n"
+"    수 있습니다. 빈 줄과 '#'로 시작하는 줄은 무시됩니다.\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:114
 msgid ""
@@ -423,6 +427,9 @@ msgid ""
 "    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 msgstr ""
+"    추가된 멤버의 배달 모드를 'regular', 'mime', 'plain', 'summary', 'disabled' 중\n"
+"    하나로 설정합니다. 즉, 배달의 일단 모드 중 하나거나 배달을 안 하기입니다. 제공되지\n"
+"    않으면 기본값은 'regular'입니다. 초대된 멤버는 무시됩니다."
 
 #: src/mailman/commands/cli_addmembers.py:122
 msgid ""
