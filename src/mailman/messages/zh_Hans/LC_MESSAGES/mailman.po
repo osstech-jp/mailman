@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2021-05-28 08:32+0000\n"
+"PO-Revision-Date: 2021-06-22 05:33+0000\n"
 "Last-Translator: 峡州仙士 <c@cjh0613.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "gnu-mailman/mailman/zh_Hans/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.7.1-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -205,12 +205,33 @@ msgid ""
 "    its own process id in the file specified in the configuration file but you\n"
 "    normally don't need to use this PID directly."
 msgstr ""
+"    主子流程观察者。\n"
+"\n"
+"    启动并观看已配置的跑步者，确保他们保持活力并保持\n"
+"    踢。每个跑步者依次分叉并执行，主人等待\n"
+"    在他们的进程ID上。当检测到儿童赛跑者退出时，它可能\n"
+"    重新启动它。\n"
+"\n"
+"    跑步者对SIGINT，SIGTERM，SIGUSR1和SIGHUP做出响应。 SIGINT，\n"
+"    SIGTERM和SIGUSR1都使跑步者干净退出。主人会\n"
+"    重新启动由于SIGUSR1或其他某种原因而退出的跑步者\n"
+"    退出条件（例如由于未捕获的异常）。 SIGHUP导致\n"
+"    大师和跑步者关闭他们的日志文件，然后重新打开\n"
+"    下一条打印的消息。\n"
+"\n"
+"    主机还响应SIGINT，SIGTERM，SIGUSR1和SIGHUP，\n"
+"    简单地传递给跑步者。请注意，主控器将关闭并\n"
+"    收到SIGHUP后重新打开其自己的日志文件。师父也离开\n"
+"    在配置文件中指定的文件中它自己的进程ID，但是您\n"
+"    通常不需要直接使用此PID。"
 
 #: src/mailman/bin/master.py:522
 msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
 msgstr ""
+"    当跑步者由于错误或SIGUSR1而退出时，请勿重新启动跑步者。\n"
+"    仅将此用于调试。"
 
 #: src/mailman/bin/master.py:528
 msgid ""
@@ -222,6 +243,13 @@ msgid ""
 "    remove the apparently stale lock and make another attempt to claim the\n"
 "    master lock."
 msgstr ""
+"    如果主观察者发现现有的主锁，则通常会退出\n"
+"    并显示错误消息。使用此选项，主控器将执行额外的操作。\n"
+"    检查级别。如果某个进程与主机/ pid中描述的匹配，\n"
+"    锁定文件正在运行，主服务器仍会退出，要求您手动进行\n"
+"    清理锁。但是，如果找不到匹配的过程，则母版将\n"
+"    删除看似过时的锁，然后再次尝试声明\n"
+"    主锁。"
 
 #: src/mailman/bin/master.py:541
 msgid ""
@@ -229,6 +257,9 @@ msgid ""
 "    typically defined in the configuration file.  Multiple -r options may be\n"
 "    given.  The values for -r are passed straight through to bin/runner."
 msgstr ""
+"    覆盖主服务器将调用的默认运行程序集，即\n"
+"    通常在配置文件中定义。多个-r选项可能是\n"
+"    给定的。 -r的值直接传递到bin / runner。"
 
 #: src/mailman/bin/master.py:548 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
@@ -260,6 +291,23 @@ msgid ""
 "    set which subtly changes some error handling behavior.\n"
 "    "
 msgstr ""
+"    开始跑步。\n"
+"\n"
+"    命令行上指定的运行程序已启动，并且可以运行\n"
+"    通过其主循环一次（对于支持此功能的跑步者）或\n"
+"    不断地。后者是大师赛跑者如何开始一切的方式\n"
+"    子流程。\n"
+"\n"
+"    除非指定-l或-h，否则-r是必需的，并且其参数必须为以下之一\n"
+"    -l开关显示的名称。\n"
+"\n"
+"    通常，此脚本应从“ mailman start”启动。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。"
+"。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。"
+"。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。运行它\n"
+"    通常，单独使用或与-o一起使用仅对调试有用。运行时\n"
+"    这样，环境变量$ MAILMAN_UNDER_MASTER_CONTROL将为\n"
+"    设置它可以巧妙地改变一些错误处理行为。\n"
+"    "
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
@@ -271,6 +319,9 @@ msgid ""
 "    runner runs indefinitely until the process receives a signal.  This is not\n"
 "    compatible with runners that cannot be run once."
 msgstr ""
+"    在其主循环中仅运行一次指定的运行程序。否则，\n"
+"    运行程序无限期运行，直到该过程收到信号为止。这不是\n"
+"    与无法运行一次的跑步者兼容。"
 
 #: src/mailman/bin/runner.py:115
 msgid ""
@@ -289,6 +340,20 @@ msgid ""
 "    1:1 is used.\n"
 "    "
 msgstr ""
+"\n"
+"    启动命名运行程序，该运行程序必须是-l返回的字符串之一\n"
+"    选项。\n"
+"\n"
+"    对于管理队列目录的跑步者，如果提供了可选的`slice：range`\n"
+"    用于将多个运行器进程分配给该队列。范围是\n"
+"    队列的总跑步人数，而slice是此人数\n"
+"    [0..range）的跑步者。对于不管理队列的跑步者，请切片和\n"
+"    范围将被忽略。\n"
+"\n"
+"    使用`slice：range`表格时，必须确保\n"
+"    队列被赋予相同的范围值。如果没有给出`slice：runner`，那么\n"
+"    使用1：1。\n"
+"    "
 
 #: src/mailman/bin/runner.py:157
 msgid "No runner name given."
@@ -389,6 +454,10 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    按照指定的发送方式添加FILENAME中的所有成员地址\n"
+"    -d /-交付。 FILENAME可以为“-”以表示标准输入。\n"
+"    空行和以“＃”开头的行将被忽略。\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:114
 msgid ""
@@ -397,16 +466,22 @@ msgid ""
 "    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 msgstr ""
+"    将添加的成员传送模式设置为“常规”，“哑剧”，“普通”，“\n"
+"    “摘要”或“已禁用”。即常规的三种消化模式之一\n"
+"    或没有交货。如果未给出，则默认值为常规。忽略邀请\n"
+"    成员。"
 
 #: src/mailman/commands/cli_addmembers.py:122
 msgid ""
 "    Send the added members an invitation rather than immediately adding them.\n"
 "    "
 msgstr ""
+"    向添加的成员发送邀请，而不是立即添加他们。\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:127
 msgid "    Override the list's setting for send_welcome_message."
-msgstr ""
+msgstr "    覆盖send_welcome_message的列表设置。"
 
 #: src/mailman/commands/cli_addmembers.py:136 src/mailman/commands/cli_import.py:68
 #: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:343
@@ -432,18 +507,24 @@ msgid ""
 "    File to send the output to.  If not given, or if '-' is given, standard\n"
 "    output is used."
 msgstr ""
+"    将输出发送到的文件。如果未给出，或者如果给出“-”，则为标准\n"
+"    使用输出。"
 
 #: src/mailman/commands/cli_conf.py:62
 msgid ""
 "    Section to use for the lookup.  If no key is given, all the key-value pairs\n"
 "    of the given section will be displayed."
 msgstr ""
+"    用于查找的部分。如果没有给出键，则所有键值对\n"
+"    将显示给定部分的。"
 
 #: src/mailman/commands/cli_conf.py:67
 msgid ""
 "    Key to use for the lookup.  If no section is given, all the key-values pair\n"
 "    from any section matching the given key will be displayed."
 msgstr ""
+"    用于查找的键。如果没有给出任何部分，则所有键值对\n"
+"    将显示与给定键匹配的任何部分中的内容。"
 
 #: src/mailman/commands/cli_control.py:42
 msgid "Start the Mailman master and runner processes."
@@ -459,6 +540,13 @@ msgid ""
 "    remove the apparently stale lock and make another attempt to claim the\n"
 "    master lock."
 msgstr ""
+"    如果主观察者发现现有的主锁，则通常会退出\n"
+"    并显示错误消息。使用此选项，主控器将执行额外的操作。\n"
+"    检查级别。如果某个进程与主机/ pid中描述的匹配，\n"
+"    锁定文件正在运行，主服务器仍会退出，要求您手动进行\n"
+"    清理锁。但是，如果找不到匹配的过程，则母版将\n"
+"    删除看似过时的锁，然后再次尝试声明\n"
+"    主锁。"
 
 #: src/mailman/commands/cli_control.py:57
 msgid ""
@@ -468,6 +556,11 @@ msgid ""
 "    start of mailman3 server. Setting this option to true will make this\n"
 "    script create the files and thus allow the MTA to operate smoothly."
 msgstr ""
+"    启动时生成MTA别名文件。某些MTA，例如后缀，不能\n"
+"    如果配置中未提及别名文件，则发送电子邮件\n"
+"    展示。在某些情况下，这可能会导致一开始的死锁\n"
+"    mailman3服务器的启动。将此选项设置为true将使\n"
+"    脚本创建文件，从而使MTA平稳运行。"
 
 #: src/mailman/commands/cli_control.py:66
 msgid ""
@@ -485,6 +578,19 @@ msgid ""
 "    may have permission problems, such as being unable to delete a list's\n"
 "    archives through the web.  Tough luck!"
 msgstr ""
+"    通常，如果用户标识和组标识为\n"
+"    未设置为“ mailman”用户和组（配置时定义）\n"
+"    邮递员）。如果以超级用户身份运行，则此脚本将更改为该用户和组\n"
+"    在进行检查之前。\n"
+"\n"
+"    这对于测试和调试目的可能很不方便，因此-u标志\n"
+"    表示将跳过设置和检查uid / gid的步骤，并且\n"
+"    程序以当前用户和组身份运行。不建议使用此标志\n"
+"    用于正常的生产环境。\n"
+"\n"
+"    但是请注意，如果您使用-u运行并且不在mailman组中，则您\n"
+"    可能有权限问题，例如无法删除列表的\n"
+"    通过网络存档。倒霉！"
 
 #: src/mailman/commands/cli_control.py:83 src/mailman/commands/cli_control.py:170
 #: src/mailman/commands/cli_control.py:192 src/mailman/commands/cli_control.py:214
@@ -492,6 +598,8 @@ msgid ""
 "    Don't print status messages.  Error messages are still printed to standard\n"
 "    error."
 msgstr ""
+"    不要打印状态消息。错误消息仍按标准打印\n"
+"    错误。"
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
@@ -555,13 +663,15 @@ msgstr "成员未订阅（跳过）：$ email"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
-msgstr ""
+msgstr "    从邮件列表中删除成员。"
 
 #: src/mailman/commands/cli_delmembers.py:58
 msgid ""
 "    The list to operate on.  Required unless --fromall is specified.\n"
 "    "
 msgstr ""
+"    要操作的列表。除非指定--fromall，否则为必需。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:64
 msgid ""
@@ -570,6 +680,10 @@ msgid ""
 "    standard input.  Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    删除地址除FILENAME外还位于FILENAME中的列表成员\n"
+"    用-m /-member指定（如果有）。 FILENAME可以是'-'来表示\n"
+"    标准输入。空行和以“＃”开头的行将被忽略。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:71
 msgid ""
@@ -578,6 +692,10 @@ msgid ""
 "    multiple addresses.\n"
 "    "
 msgstr ""
+"    除了删除那些地址为ADDRESS的列表成员\n"
+"    用-f /-file指定（如果有）。此选项可能会重复执行\n"
+"    多个地址。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:79
 msgid ""
@@ -585,6 +703,9 @@ msgid ""
 "    -m/--member or --fromall may be specified.\n"
 "    "
 msgstr ""
+"    删除列表中的所有成员。如果指定，则-f /-file都不存在，\n"
+"    可以指定-m /-member或--fromall。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:86
 msgid ""
@@ -593,16 +714,22 @@ msgid ""
 "    -a/--all or -l/--list.\n"
 "    "
 msgstr ""
+"    从所有目录中删除-m /-member和/或-f /-file指定的成员\n"
+"    安装中列出。可能无法与\n"
+"    -a /-全部或-l /-列表。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:93 src/mailman/commands/cli_syncmembers.py:173
 msgid ""
 "    Override the list's setting for send_goodbye_message to\n"
 "    deleted members."
 msgstr ""
+"    覆盖send_goodbye_message的列表设置为\n"
+"    删除的成员。"
 
 #: src/mailman/commands/cli_delmembers.py:98 src/mailman/commands/cli_syncmembers.py:178
 msgid "    Override the list's setting for admin_notify_mchanges."
-msgstr ""
+msgstr "    覆盖列表的admin_notify_mchanges设置。"
 
 #: src/mailman/commands/cli_delmembers.py:123
 msgid "No such list: $_list"
@@ -618,12 +745,17 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the digests for all mailing lists."
 msgstr ""
+"    在此邮件列表上进行操作。可以给出多个--list选项。这\n"
+"    参数可以是List-ID或完全限定的列表名称。没有\n"
+"    此选项将对所有邮件列表的摘要进行操作。"
 
 #: src/mailman/commands/cli_digests.py:46
 msgid ""
 "    Send any collected digests right now, even if the size threshold has not\n"
 "    yet been met."
 msgstr ""
+"    立即发送所有收集的摘要，即使大小阈值尚未达到\n"
+"    尚未遇见。"
 
 #: src/mailman/commands/cli_digests.py:52
 msgid ""
@@ -631,12 +763,17 @@ msgid ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 msgstr ""
+"    增加摘要卷号，并将摘要号重置为1。如果\n"
+"    用--send给出，卷号在任何当前值之前增加\n"
+"    摘要已发送。"
 
 #: src/mailman/commands/cli_digests.py:59 src/mailman/commands/cli_notify.py:47
 msgid ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
 msgstr ""
+"    实际上不执行任何操作，而是与--verbose一起显示\n"
+"    会发生。"
 
 #: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:53
 msgid "Print some additional status."
@@ -647,6 +784,8 @@ msgid ""
 "    Send any collected digests for the List only if their digest_send_periodic\n"
 "    is set to True."
 msgstr ""
+"    仅当摘要摘要发送时，才发送列表的所有摘要\n"
+"    设置为True。"
 
 #: src/mailman/commands/cli_digests.py:77
 msgid "--send and --periodic flags cannot be used together"
@@ -684,6 +823,8 @@ msgid ""
 "    Import Mailman 2.1 list data.  Requires the fully-qualified name of the\n"
 "    list to import and the path to the Mailman 2.1 pickle file."
 msgstr ""
+"    导入Mailman 2.1列表数据。需要名称的全限定名称\n"
+"    导入列表以及Mailman 2.1 pickle文件的路径。"
 
 #: src/mailman/commands/cli_import.py:56
 msgid ""
@@ -691,6 +832,9 @@ msgid ""
 "    thereof. This will normally be the Mailman 2.1 charset of the list's\n"
 "    preferred_language."
 msgstr ""
+"    如果不是utf-8或子集，请在PICKLE_FILE中指定字符串的编码\n"
+"    其。这通常是列表的Mailman 2.1字符集\n"
+"    首选语言。"
 
 #: src/mailman/commands/cli_import.py:82
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
@@ -706,13 +850,15 @@ msgstr "有关此Mailman实例的信息。"
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
-msgstr ""
+msgstr "    将输出发送到的文件。如果未给出，则使用标准输出。"
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
 "    A more verbose output including the file system paths that Mailman is\n"
 "    using."
 msgstr ""
+"    更详细的输出，包括Mailman所在的文件系统路径\n"
+"    使用。"
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
@@ -724,6 +870,9 @@ msgid ""
 "    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 msgstr ""
+"    要将消息注入到的队列的名称。 QUEUE必须是以下一项\n"
+"    队列目录中的目录。如果省略，则传入队列为\n"
+"    用过的。"
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
@@ -734,6 +883,8 @@ msgid ""
 "    Name of file containing the message to inject.  If not given, or\n"
 "    '-' (without the quotes) standard input is used."
 msgstr ""
+"    包含要注入的消息的文件名。如果没有给出，或者\n"
+"    使用标准输入“-”（不带引号）。"
 
 #: src/mailman/commands/cli_inject.py:66
 msgid ""
@@ -741,6 +892,9 @@ msgid ""
 "    dictionary.  Use the format key=value.  Multiple -m options are\n"
 "    allowed."
 msgstr ""
+"    要添加到消息元数据中的其他元数据键/值对\n"
+"    字典。使用格式键=值。多个-m选项是\n"
+"    允许的。"
 
 #: src/mailman/commands/cli_inject.py:79
 msgid "No such queue: $queue"
@@ -772,6 +926,9 @@ msgid ""
 "    must be the email host name.  Multiple -d options may be given.\n"
 "    "
 msgstr ""
+"    仅列出在给定域中托管的那些邮件列表，其中\n"
+"    必须是电子邮件主机名。可以给出多个-d选项。\n"
+"    "
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
@@ -789,12 +946,19 @@ msgid ""
 "    list is required.  It must be a valid email address and the domain must be\n"
 "    registered with Mailman.  List names are forced to lower case."
 msgstr ""
+"    创建一个邮件列表。\n"
+"\n"
+"    “完全限定的列表名称”，即邮件的邮寄地址\n"
+"    列表是必需的。它必须是一个有效的电子邮件地址，并且域必须是\n"
+"    向Mailman注册。列表名称被强制小写。"
 
 #: src/mailman/commands/cli_lists.py:130
 msgid ""
 "    Set the list's preferred language to CODE, which must be a registered two\n"
 "    letter language code."
 msgstr ""
+"    将列表的首选语言设置为CODE，该语言必须是已注册的两个\n"
+"    字母语言代码。"
 
 #: src/mailman/commands/cli_lists.py:136
 msgid ""
@@ -804,12 +968,19 @@ msgid ""
 "    send a list creation notice to the address.  More than one owner can be\n"
 "    specified."
 msgstr ""
+"    指定列表所有者的电子邮件地址。如果该地址当前不是\n"
+"    向Mailman注册后，该地址即被注册并链接到用户。\n"
+"    Mailman会向该地址发送确认消息，但也会\n"
+"    将列表创建通知发送到该地址。可以有多个所有者\n"
+"    指定的。"
 
 #: src/mailman/commands/cli_lists.py:145
 msgid ""
 "    Notify the list owner by email that their mailing list has been\n"
 "    created."
 msgstr ""
+"    通过电子邮件通知列表所有者他们的邮件列表已经被\n"
+"    创建。"
 
 #: src/mailman/commands/cli_lists.py:151
 msgid "Print less output."
@@ -821,6 +992,9 @@ msgid ""
 "    the default behavior, but these options are provided for backward\n"
 "    compatibility.  With -D do not register the mailing list's domain."
 msgstr ""
+"    如果尚未注册，请注册邮件列表的域。这是\n"
+"    默认行为，但是提供这些选项是为了向后\n"
+"    兼容性。使用-D时，不要注册邮件列表的域。"
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
@@ -900,6 +1074,11 @@ msgid ""
 "    to stdout is the default mode.\n"
 "    "
 msgstr ""
+"    显示，添加或删除邮件列表的成员。\n"
+"    显示时，可以按照各种条件进行过滤。\n"
+"    没有给出任何选项，显示邮件列表成员\n"
+"    到stdout是默认模式。\n"
+"    "
 
 #: src/mailman/commands/cli_members.py:262
 msgid ""
@@ -908,6 +1087,10 @@ msgid ""
 "    '#' are ignored.  This option is deprecated in favor of 'mailman\n"
 "    addmembers'."
 msgstr ""
+"    [MODE]在FILENAME中添加所有成员地址。 FILENAME可以是“-”\n"
+"    指示标准输入。空行和以a开头的行\n"
+"    '＃'被忽略。不推荐使用此选项，而推荐使用'mailman\n"
+"    addmembers'。"
 
 #: src/mailman/commands/cli_members.py:270
 msgid ""
@@ -916,6 +1099,10 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    This option is deprecated in favor of 'mailman delmembers'."
 msgstr ""
+"    [MODE]删除在FILENAME中找到的所有成员地址\n"
+"    从指定列表中。 FILENAME可以为“-”以表示标准输入。\n"
+"    空行和以“＃”开头的行将被忽略。\n"
+"    不推荐使用此选项，而推荐使用“ mailman delmembers”。"
 
 #: src/mailman/commands/cli_members.py:278
 msgid ""
@@ -925,12 +1112,19 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    This option is deprecated in favor of 'mailman syncmembers'."
 msgstr ""
+"    [MODE]同步指定邮件列表的所有成员地址\n"
+"    以及在FILENAME中找到的成员地址。\n"
+"    FILENAME可以为“-”以表示标准输入。\n"
+"    空行和以“＃”开头的行将被忽略。\n"
+"    不推荐使用此选项，而推荐使用“ mailman syncmembers”。"
 
 #: src/mailman/commands/cli_members.py:287
 msgid ""
 "    [MODE] Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
+"    [MODE]显示输出到FILENAME而不是stdout。文件名\n"
+"    可以为“-”以表示标准输出。"
 
 #: src/mailman/commands/cli_members.py:294
 msgid ""
@@ -939,16 +1133,22 @@ msgid ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then delivery members are used. "
 msgstr ""
+"    [输出过滤器]仅显示具有给定ROLE的成员。\n"
+"    角色可以是“任何”，“成员”，“非成员”，“所有者”，“主持人”，\n"
+"    或“管理员”（即所有者和主持人）。\n"
+"    如果未给出，则使用交付成员。 "
 
 #: src/mailman/commands/cli_members.py:302
 msgid "    [output filter] Display only regular delivery members."
-msgstr ""
+msgstr "    [输出过滤器]只显示常规的交付成员。"
 
 #: src/mailman/commands/cli_members.py:313 src/mailman/commands/cli_syncmembers.py:183
 msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
 msgstr ""
+"    实际上不要进行更改。相反，打印出会是什么\n"
+"    完成列表。"
 
 #: src/mailman/commands/cli_members.py:320
 msgid ""
@@ -956,6 +1156,9 @@ msgid ""
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
+"    [输出过滤器]仅显示同类摘要成员。\n"
+"    'any'表示任何摘要类型，'plaintext'表示仅纯文本（rfc 1153）\n"
+"    类型摘要，“ mime”表示MIME类型摘要。"
 
 #: src/mailman/commands/cli_members.py:328
 msgid ""
@@ -968,6 +1171,14 @@ msgid ""
 "    administrator or moderator, and 'unknown' means that delivery was disabled\n"
 "    for unknown (legacy) reasons."
 msgstr ""
+"    [输出过滤器]仅显示具有给定交付状态的成员。\n"
+"    “已启用”是指已启用递送的所有成员，“任何”是指\n"
+"    因任何原因被禁用的会员，“ byuser”表示\n"
+"    该成员禁用了自己的分娩，“跳动”表示\n"
+"    传送被自动退回处理器禁用，\n"
+"    “ byadmin”表示该列表禁止了传递\n"
+"    管理员或主持人，“未知”表示已禁用传递\n"
+"    出于未知（传统）原因。"
 
 #: src/mailman/commands/cli_notify.py:37
 msgid "Notify list owners/moderators of pending requests."
@@ -979,6 +1190,9 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the requests for all mailing lists."
 msgstr ""
+"    在此邮件列表上进行操作。可以给出多个--list选项。这\n"
+"    参数可以是List-ID或完全限定的列表名称。没有\n"
+"    此选项，对所有邮件列表的请求进行操作。"
 
 #: src/mailman/commands/cli_notify.py:77 src/mailman/commands/cli_notify.py:130
 msgid "The {} list has {} moderation requests waiting."
@@ -989,36 +1203,44 @@ msgid ""
 "\n"
 "Held Subscriptions:\n"
 msgstr ""
+"\n"
+"持有的订阅：\n"
 
 #: src/mailman/commands/cli_notify.py:110 src/mailman/commands/cli_notify.py:114
 msgid "User: {}\n"
-msgstr ""
+msgstr "用户：{}\n"
 
 #: src/mailman/commands/cli_notify.py:112
 msgid ""
 "\n"
 "Held Unsubscriptions:\n"
 msgstr ""
+"\n"
+"取消订阅：\n"
 
 #: src/mailman/commands/cli_notify.py:116
 msgid ""
 "\n"
 "Held Messages:\n"
 msgstr ""
+"\n"
+"持有的信息。\n"
 
 #: src/mailman/commands/cli_notify.py:122
 msgid "Sender: {}\n"
-msgstr ""
+msgstr "发件人：{}\n"
 
 #: src/mailman/commands/cli_notify.py:123
 msgid "Subject: {}\n"
-msgstr ""
+msgstr "主题： {}\n"
 
 #: src/mailman/commands/cli_notify.py:124
 msgid ""
 "Reason: {}\n"
 "\n"
 msgstr ""
+"原因： {}\n"
+"\n"
 
 #: src/mailman/commands/cli_notify.py:133
 msgid ""
@@ -1027,6 +1249,10 @@ msgid ""
 "{}\n"
 "Please attend to this at your earliest convenience.\n"
 msgstr ""
+"{}列表中有{}个审核请求正在等待。\n"
+"\n"
+"{}\n"
+"请尽早参加此会议。\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
@@ -1039,12 +1265,18 @@ msgid ""
 "    representation.  Useful with 'mailman qfile -i <file>'.  In that case, the\n"
 "    list of unpickled objects will be left in a variable called 'm'."
 msgstr ""
+"    不要试图漂亮地打印对象。如果有的话这很有用\n"
+"    对象的问题，而您只想去掉\n"
+"    表示。与“ mailman qfile -i <文件>”一起使用。在这种情况下，\n"
+"    未选择的对象列表将保留在名为“ m”的变量中。"
 
 #: src/mailman/commands/cli_qfile.py:50
 msgid ""
 "    Start an interactive Python session, with a variable called 'm'\n"
 "    containing the list of unpickled objects."
 msgstr ""
+"    使用名为“ m”的变量启动交互式Python会话\n"
+"    包含未腌制对象的列表。"
 
 #: src/mailman/commands/cli_qfile.py:67
 msgid "[----- start pickle -----]"
@@ -1093,6 +1325,14 @@ msgid ""
 "    be removed from the list.  FILENAME can be '-' to indicate standard input.\n"
 "    "
 msgstr ""
+"    根据需要添加和删除成员以同步列表的成员资格\n"
+"    与输入文件。 FILENAME是包含新成员资格的文件，\n"
+"    每行一个成员。空行和以'＃'开头的行是\n"
+"    忽略了。 FILENAME中不是当前列表成员的地址\n"
+"    将使用指定的投放方式添加到列表中\n"
+"    -d /-交货。列出地址不在FILENAME中的成员将\n"
+"    从列表中删除。 FILENAME可以为“-”以表示标准输入。\n"
+"    "
 
 #: src/mailman/commands/cli_syncmembers.py:163
 msgid ""
@@ -1100,10 +1340,13 @@ msgid ""
 "    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
 "    or no delivery.  If not given, the default is regular."
 msgstr ""
+"    将添加的成员传送模式设置为“常规”，“哑剧”，“普通”，“\n"
+"    “摘要”或“已禁用”。即常规的三种消化模式之一\n"
+"    或没有交货。如果未给出，则默认值为常规。"
 
 #: src/mailman/commands/cli_syncmembers.py:169
 msgid "    Override the list's setting for send_welcome_message to added members."
-msgstr ""
+msgstr "    将列表的send_welcome_message设置替换为已添加的成员。"
 
 #: src/mailman/commands/cli_unshunt.py:33
 msgid "Unshunt messages."
@@ -1114,6 +1357,8 @@ msgid ""
 "    Discard all shunted messages instead of moving them back to their original\n"
 "    queue."
 msgstr ""
+"    丢弃所有被分流的邮件，而不是将其移回原始邮件\n"
+"    队列。"
 
 #: src/mailman/commands/cli_unshunt.py:50
 msgid ""
@@ -1199,6 +1444,21 @@ msgid ""
 "\n"
 "If -l is not given then you can run a function that takes no arguments.\n"
 msgstr ""
+"这是有关如何使用--run选项的示例。假设您在\n"
+"Mailman安装目录称为“ listaddr.py”，其中以下两个目录\n"
+"职能：\n"
+"\n"
+"def listaddr（mlist）：\n"
+"    打印（mlist.posting_address）\n"
+"\n"
+"def requestaddr（mlist）：\n"
+"    打印（mlist.request_address）\n"
+"\n"
+"运行方法至少需要一个参数，即邮件列表对象才能运行\n"
+"上。命令行上给出的任何其他参数都将作为\n"
+"可调用对象的位置参数。\n"
+"\n"
+"如果未给出-l，则可以运行不带参数的函数。\n"
 
 #: src/mailman/commands/cli_withlist.py:188
 msgid ""
@@ -1271,12 +1531,18 @@ msgid ""
 "    For detailed help, see --details\n"
 "    "
 msgstr ""
+"    在邮件列表上进行操作。\n"
+"\n"
+"    有关详细帮助，请参见--details\n"
+"    "
 
 #: src/mailman/commands/cli_withlist.py:232
 msgid ""
 "    Leaves you at an interactive prompt after all other processing is complete.\n"
 "    This is the default unless the --run option is given."
 msgstr ""
+"    其他所有处理完成后，将在交互式提示下显示您。\n"
+"    除非指定了--run选项，否则这是默认设置。"
 
 #: src/mailman/commands/cli_withlist.py:237
 msgid ""
@@ -1292,6 +1558,17 @@ msgid ""
 "    called with no arguments.\n"
 "    "
 msgstr ""
+"\n"
+"    运行脚本。参数是可调用对象的模块路径。这\n"
+"    callable将被导入，然后，如果还给出了--listspec / -l，则为\n"
+"    以邮件列表作为第一个参数调用。如果额外\n"
+"    参数在命令行末尾给出，它们作为\n"
+"    可调用对象的后续位置参数。有关其他帮助，请参见\n"
+"     - 细节。\n"
+"\n"
+"    如果未给出--listspec / -l参数，则调用的脚本函数为\n"
+"    没有参数调用。\n"
+"    "
 
 #: src/mailman/commands/cli_withlist.py:253
 msgid "Print detailed instructions and exit."
@@ -1306,6 +1583,12 @@ msgid ""
 "    LISTSPEC must start with a ^ (and the matching is done with re.match().\n"
 "    LISTSPEC cannot be a regular expression unless --run is given."
 msgstr ""
+"    邮件列表的规范。这可能是发布\n"
+"    列表的地址或其列表ID。参数也可以是Python\n"
+"    正则表达式，在这种情况下，它与两个发布都匹配\n"
+"    所有邮件列表的地址和列表ID。要使用正则表达式，\n"
+"    LISTSPEC必须以^开头（并且匹配是通过re.match（）完成的。\n"
+"    除非给出--run，否则LISTSPEC不能为正则表达式。"
 
 #: src/mailman/commands/cli_withlist.py:273
 msgid "Regular expression requires --run"
@@ -1369,6 +1652,13 @@ msgid ""
 "used.  You can use the 'address' option to request subscription of an address\n"
 "other than the sender of the command.\n"
 msgstr ""
+"你将被要求确认你的订阅请求，你可能会得到一个\n"
+"临时密码。\n"
+"\n"
+"通过使用 \"摘要 \"选项，你可以指定你是否需要摘要发送\n"
+"或不发送。  如果没有指定，邮件列表的默认发送模式将被\n"
+"使用。  您可以使用'地址'选项来请求订阅命令发送者以外的地址\n"
+"您可以使用'地址'选项来请求订阅一个地址，而不是命令的发送者。\n"
 
 #: src/mailman/commands/eml_membership.py:73
 msgid "Join this mailing list."
@@ -1445,6 +1735,12 @@ msgid ""
 "either delivery= or mode= is specified more than once, only the last occurrence\n"
 "is used.\n"
 msgstr ""
+"产生一份会员姓名和电子邮件地址的清单。\n"
+"\n"
+"可选的交付=和模式=参数可以用来限制报告的范围\n"
+"限于那些具有匹配的交付状态和/或交付模式的成员。  如果\n"
+"如果交付=或模式=被指定一次以上，只使用最后出现的\n"
+"会被使用。\n"
 
 #: src/mailman/commands/eml_who.py:50
 msgid "Get a list of the list members."
@@ -1527,6 +1823,8 @@ msgid ""
 "Your urgent message to the $mlist.display_name mailing list was not authorized\n"
 "for delivery.  The original message as received by Mailman is attached.\n"
 msgstr ""
+"你给$mlist.display_name邮件列表的紧急信息没有被授权发送。\n"
+"递送。  Mailman收到的原始信息附在后面。\n"
 
 #: src/mailman/handlers/mime_delete.py:61
 msgid ""
@@ -1536,6 +1834,11 @@ msgid ""
 "message.\n"
 "\n"
 msgstr ""
+"所附信息符合$mlist.display_name邮件列表的内容过滤规则，并被阻止转发到列表中。\n"
+"过滤规则，因此被阻止转发到列表的\n"
+"会员。  您收到的是被丢弃的邮件的唯一剩余副本。\n"
+"邮件的唯一副本。\n"
+"\n"
 
 #: src/mailman/handlers/mime_delete.py:68
 msgid "Content filter message notification"
@@ -1685,6 +1988,9 @@ msgid ""
 "        pre-approved by the list administrator.\n"
 "        "
 msgstr ""
+"该邮件列表处于紧急搁置状态，并且该邮件未被\n"
+"        列表管理员预先批准的。\n"
+"        "
 
 #: src/mailman/rules/emergency.py:47
 msgid "Emergency moderation is in effect for this list"
@@ -1752,6 +2058,9 @@ msgid ""
 "        moderated newsgroup.\n"
 "        "
 msgstr ""
+"匹配所有发布到邮件列表中的信息，该邮件列表是通往一个\n"
+"        的新闻组。\n"
+"        "
 
 #: src/mailman/rules/news_moderation.py:46
 msgid "Post to a moderated newsgroup gateway"
@@ -1791,7 +2100,7 @@ msgstr "忽略非文本/平原MIME部分"
 
 #: src/mailman/runners/command.py:139
 msgid "The results of your email command are provided below.\n"
-msgstr ""
+msgstr "你的电子邮件命令的结果在下面提供。\n"
 
 #: src/mailman/runners/command.py:183
 msgid "- Original message details:"
@@ -1799,25 +2108,27 @@ msgstr "- 原始信息的细节。"
 
 #: src/mailman/runners/command.py:187
 msgid "    From: $from_"
-msgstr ""
+msgstr "    来自：$from_"
 
 #: src/mailman/runners/command.py:188
 msgid "    Subject: $subject"
-msgstr ""
+msgstr "    主题：$subject"
 
 #: src/mailman/runners/command.py:189
 msgid "    Date: $date"
-msgstr ""
+msgstr "    日期：$date"
 
 #: src/mailman/runners/command.py:190
 msgid "    Message-ID: $message_id"
-msgstr ""
+msgstr "    消息编号：$message_id"
 
 #: src/mailman/runners/command.py:191
 msgid ""
 "\n"
 "- Results:"
 msgstr ""
+"\n"
+"- 结果。"
 
 #: src/mailman/runners/command.py:205
 msgid "No such command: $command_name"
@@ -1828,18 +2139,24 @@ msgid ""
 "\n"
 "- Unprocessed:"
 msgstr ""
+"\n"
+"- 未加工的。"
 
 #: src/mailman/runners/command.py:224
 msgid ""
 "\n"
 "- Ignored:"
 msgstr ""
+"\n"
+"- 被忽视的。"
 
 #: src/mailman/runners/command.py:227
 msgid ""
 "\n"
 "- Done."
 msgstr ""
+"\n"
+"- 完成了。"
 
 #: src/mailman/runners/command.py:233
 msgid "The results of your email commands"
@@ -1851,7 +2168,7 @@ msgstr "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
 
 #: src/mailman/runners/digest.py:82
 msgid "Today's Topics:\n"
-msgstr ""
+msgstr "今天的话题。\n"
 
 #: src/mailman/runners/digest.py:151
 msgid "Digest Header"
@@ -1867,11 +2184,11 @@ msgstr "文摘页脚"
 
 #: src/mailman/runners/digest.py:200 src/mailman/runners/digest.py:285
 msgid "End of "
-msgstr ""
+msgstr "结束 "
 
 #: src/mailman/styles/base.py:55
 msgid "[$mlist.display_name] "
-msgstr ""
+msgstr "[$mlist.display_name] "
 
 #: src/mailman/styles/default.py:37
 msgid "Ordinary discussion mailing list style."
