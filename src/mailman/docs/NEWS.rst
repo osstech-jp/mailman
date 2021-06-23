@@ -114,6 +114,11 @@ New Features
 * There is a new ``list:admin:notice:pending`` template for the notice from
   the ``mailman notify`` command.  (Closes #890)
 
+Security
+--------
+* Check the REST API password in a way that is resistant to timing attacks.
+  (CVE-2021-34337, Closes #911)
+
 .. _news-3.3.4:
 
 3.3.4
