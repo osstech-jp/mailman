@@ -81,6 +81,8 @@ Bugs
   removals.  (Closes #909)
 * Only remove or send warnings to list members when processing bounces.
   (Closes #910)
+* Replacements are now expanded in the ``list:user:notice:goodbye`` template.
+  (Closes #922)
 
 Command line
 ------------
