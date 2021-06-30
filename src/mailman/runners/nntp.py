@@ -66,7 +66,9 @@ class NNTPRunner(Runner):
         if not msgdata.get('prepped'):
             prepare_message(mlist, msg, msgdata)
         # Flatten the message object, sticking it in a BytesIO object
-        fp = BytesIO(msg.as_bytes())
+        fp = BytesIO()
+        email.generator.BytesGenerator(fp, maxheaderlen=0).flatten(msg)
+        fp.seek(0)
         conn = None
         try:
             conn = nntplib.NNTP(host, port,
@@ -143,10 +145,12 @@ def prepare_message(mlist, msg, msgdata):
             # Subtitute our new header for the old one.
             del msg['newsgroups']
             msg['Newsgroups'] = COMMASPACE.join(newsgroups)
-    # Ensure we have a Message-ID.
+    # Ensure we have an unfolded Message-ID.
     if not msg.get('message-id'):
         msg['Message-ID'] = email.utils.make_msgid(mlist.list_name,
                                                    mlist.mail_host)
+    mid = re.sub(r'[\s]', '', msg.get('message-id'))
+    msg.replace_header('message-id', mid)
     # Lines: is useful.
     if msg['Lines'] is None:
         # BAW: is there a better way?

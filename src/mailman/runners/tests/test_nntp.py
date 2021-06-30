@@ -279,6 +279,31 @@ Testing
         self.assertEqual(msg['subject'], 'A newsgroup posting')
 
     @mock.patch('nntplib.NNTP')
+    def test_post_long_message_id_not_folded(self, class_mock):
+        # Test that the message with a long message-id is posted to the NNTP
+        # server without folding.
+        del self._msg['message-id']
+        mid = utils.make_msgid('a_long_string_to_make_a_very_long_message-id',
+                               self._mlist.mail_host)
+        self._msg['Message-ID'] = mid
+        self._nntpq.enqueue(self._msg, {}, listid='test.example.com')
+        self._runner.run()
+        # Get the mocked instance, which was used in the runner.
+        conn_mock = class_mock()
+        # The connection object's post() method was called once with a
+        # file-like object containing the message's bytes.  Read those bytes
+        # and make some simple checks that the message is what we expected.
+        args = conn_mock.post.call_args
+        # One positional argument.
+        self.assertEqual(len(args[0]), 1)
+        # No keyword arguments.
+        self.assertEqual(len(args[1]), 0)
+        msg_bytes = args[0][0].read()
+        msg = message_from_bytes(msg_bytes)
+        self.assertEqual(msg['subject'], 'A newsgroup posting')
+        self.assertIn(b'Message-ID: ' + mid.encode('us-ascii'), msg_bytes)
+
+    @mock.patch('nntplib.NNTP')
     def test_connection_got_quit(self, class_mock):
         # The NNTP connection gets closed after a successful post.
         # Test that the message is posted to the NNTP server.
