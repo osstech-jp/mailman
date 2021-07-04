@@ -294,7 +294,7 @@ def call_api(url, data=None, method=None, username=None, password=None,
     :type username: str
     :param password: The HTTP Basic Auth password.  None means use the value
         from the configuration.
-    :type username: str
+    :type password: str
     :param headers: List of additional headers to be included with the request.
     :type headers: A dictionary of {'Header': 'Value'}
     :param json: JSON body for the request.
