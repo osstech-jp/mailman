@@ -52,8 +52,9 @@ Bugs
   prod.outlook.com are now handled without shunting the message.  (Closes #885)
 * Command runner now will decode the message body before processing it.
   (Closes #859)
-* The ``mailinglist`` table ``info`` column is changed to Text.  (Closes #840
-  and #886)
+* The ``mailinglist`` table ``info``, ``autoresponse_owner_text``,
+  ``autoresponse_postings_text`` and ``autoresponse_request_text`` columns are
+  changed to Text.  (Closes #840, #886 and #925)
 * The mailing list administrators roster ``get_member()`` method now returns
   the owner if the target is both an owner and moderator.  (Closes #888)
 * Command runner now handles RFC 2047 encoded command with non-ascii prefix.
