@@ -88,6 +88,8 @@ Bugs
 * RFC 2047 encoded subject headers will now be recoded in the character set of
   the list's preferred_language during subject prefixing if possible.  (Closes
   #923)
+* DMARC mitigation wrap message now ensures existing cc and reply-to headers
+  are included in the wrapper.  (Closes #926)
 
 Command line
 ------------

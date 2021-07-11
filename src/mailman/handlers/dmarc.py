@@ -132,13 +132,18 @@ def munged_headers(mlist, msg, msgdata):
     if mlist.reply_goes_to_list is ReplyToMunging.no_munging:
         # Add original from to Reply-To:
         add_to = 'Reply-To'
+        other = ('Cc', msg.get('cc'))
     else:
         # Add original from to Cc:
         add_to = 'Cc'
+        other = ('Reply-To', msg.get('reply-to'))
     original = getaddresses(msg.get_all(add_to, []))
     if original_from[1] not in [x[1] for x in original]:
         original.append(original_from)
     value.append((add_to, COMMASPACE.join(formataddr(x) for x in original)))
+    # Also, add the other if any.
+    if other[1] is not None:
+        value.append((other[0], other[1]))
     return value
 
 
