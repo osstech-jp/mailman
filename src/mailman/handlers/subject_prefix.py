@@ -81,7 +81,10 @@ def all_same_charset(mlist, msgdata, subject, prefix, prefix_pattern, ws):
                 # The charset value is unknown.
                 return None
         if charset != list_charset:
-            return None
+            try:
+                chunks[-1].encode(list_charset)
+            except UnicodeEncodeError:
+                return None
     subject_text = EMPTYSTRING.join(chunks)
     # At this point, the subject may become null if someone posted mail
     # with "Subject: [subject prefix]".

@@ -19,6 +19,7 @@
 
 import unittest
 
+from email.header import decode_header
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.email.message import Message
@@ -206,7 +207,7 @@ class TestSubjectPrefix(unittest.TestCase):
         self._process(self._mlist, msg, {})
         subject = msg['subject']
         self.assertEqual(subject.encode(),
-                         '=?iso-8859-1?q?=5BTest=5D_?= Plain text')
+                         '=?iso-8859-1?q?=5BTest=5D_Plain_text?=')
 
     def test_unknown_encoded_subject(self):
         msg = Message()
@@ -215,3 +216,30 @@ class TestSubjectPrefix(unittest.TestCase):
         subject = msg['subject']
         self.assertEqual(str(subject),
                          '[Test]  Non-ascii subject - fran�ais')
+
+    def test_encoded_subject_recoded_to_list_cset(self):
+        # Test that encoded subject is recoded to cset of list's preferred
+        # language if possible.
+        msg = Message()
+        msg['Subject'] = '=?gb2312?b?1tDOxA==?='
+        old_charset = self._mlist.preferred_language.charset
+        self._mlist.preferred_language.charset = 'utf-8'
+        self._process(self._mlist, msg, {})
+        self._mlist.preferred_language.charset = old_charset
+        decoded = decode_header(msg['Subject'])
+        self.assertEqual(decoded,
+                         [(b'[Test] \xe4\xb8\xad\xe6\x96\x87', 'utf-8')])
+
+    def test_encoded_subject_not_recoded_to_list_cset(self):
+        # Test when encoded subject can't be recoded to cset of list's
+        # preferred language.
+        msg = Message()
+        msg['Subject'] = '=?gb2312?b?1tDOxA==?='
+        old_charset = self._mlist.preferred_language.charset
+        self._mlist.preferred_language.charset = 'us-ascii'
+        self._process(self._mlist, msg, {})
+        self._mlist.preferred_language.charset = old_charset
+        decoded = decode_header(msg['Subject'])
+        self.assertEqual(decoded,
+                         [(b'[Test] ', 'us-ascii'),
+                          (b'\xd6\xd0\xce\xc4', 'eucgb2312_cn')])
