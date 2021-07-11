@@ -85,6 +85,9 @@ Bugs
   (Closes #922)
 * The nntp runner no longer folds long headers in newsgroup posts.  (Closes
   #919)
+* RFC 2047 encoded subject headers will now be recoded in the character set of
+  the list's preferred_language during subject prefixing if possible.  (Closes
+  #923)
 
 Command line
 ------------
