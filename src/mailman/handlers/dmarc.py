@@ -141,8 +141,9 @@ def munged_headers(mlist, msg, msgdata):
     if original_from[1] not in [x[1] for x in original]:
         original.append(original_from)
     value.append((add_to, COMMASPACE.join(formataddr(x) for x in original)))
-    # Also, add the other if any.
-    if other[1] is not None:
+    # If wrapping, add the other if any.
+    if (mlist.dmarc_mitigate_action is DMARCMitigateAction.wrap_message and
+            other[1] is not None):
         value.append((other[0], other[1]))
     return value
 
