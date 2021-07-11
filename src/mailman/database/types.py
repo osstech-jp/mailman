@@ -183,7 +183,7 @@ def default_sa_unicode_xl(element, compiler, **kw):
 class SAText(TypeDecorator):
     """Text datatype to support large text content in MySQL.
 
-    This type compiles to TEXT COLLATE utf8_bin in case of MySQL, and in
+    This type compiles to TEXT COLLATE utf8mb4_bin in case of MySQL, and in
     case of other dialects defaults to the Text type.
     """
     impl = Text
@@ -197,4 +197,4 @@ def default_sa_text(element, compiler, **kw):
 @compiles(SAText, 'mysql')
 def compile_sa_text(element, compiler, **kw):
     # We hardcode the collate here to make string comparison case sensitive.
-    return 'TEXT COLLATE utf8_bin'                        # pragma: nocover
+    return 'TEXT COLLATE utf8mb4_bin'                     # pragma: nocover

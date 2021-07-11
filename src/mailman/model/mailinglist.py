@@ -110,11 +110,11 @@ class MailingList(Model):
     # Automatic responses.
     autoresponse_grace_period = Column(Interval)
     autorespond_owner = Column(Enum(ResponseAction))
-    autoresponse_owner_text = Column(SAUnicode4Byte)
+    autoresponse_owner_text = Column(SAText)
     autorespond_postings = Column(Enum(ResponseAction))
-    autoresponse_postings_text = Column(SAUnicode4Byte)
+    autoresponse_postings_text = Column(SAText)
     autorespond_requests = Column(Enum(ResponseAction))
-    autoresponse_request_text = Column(SAUnicode4Byte)
+    autoresponse_request_text = Column(SAText)
     # Content filters.
     filter_action = Column(Enum(FilterAction))
     filter_content = Column(Boolean)
