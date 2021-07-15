@@ -91,6 +91,7 @@ Bugs
   #923)
 * DMARC mitigation wrap message now ensures existing cc and reply-to headers
   are included in the wrapper.  (Closes #926)
+* The tagger handler now stringifies any Header instances.  (Closes #928)
 
 Command line
 ------------
