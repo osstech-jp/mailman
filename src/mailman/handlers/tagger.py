@@ -48,8 +48,8 @@ def process(mlist, msg, msgdata):
     else:
         # Scan just some of the body lines
         matchlines.extend(scanbody(msg, mlist.topics_bodylines_limit))
-    # Filter out any 'false' items.
-    matchlines = [item for item in matchlines if item]
+    # Filter out any 'false' items and stringify any Header instances.
+    matchlines = [str(item) for item in matchlines if item]
     # For each regular expression in the topics list, see if any of the lines
     # of interest from the message match the regexp.  If so, the message gets
     # added to the specific topics bucket.
