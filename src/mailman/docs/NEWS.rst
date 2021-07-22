@@ -99,6 +99,8 @@ Command line
   (Closes #861)
 * The ``notify`` subcommand now handles unicode errors in decoding RFC 2047
   encoded subject headers.  (Closes #915)
+* The ``mailman`` command will refuse to run as root unless the new
+  ``--run-as-root`` option is specified.  (Closes #776 and #920)
 
 REST
 ----
