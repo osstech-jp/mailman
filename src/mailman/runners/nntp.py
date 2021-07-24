@@ -17,13 +17,18 @@
 
 """NNTP runner."""
 
+import os
 import re
+import sys
 import email
 import socket
 import logging
 import nntplib
+import subprocess
 
+from datetime import datetime
 from io import BytesIO
+from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.nntp import NewsgroupModeration
@@ -50,6 +55,17 @@ mcre = re.compile(r"""
 
 @public
 class NNTPRunner(Runner):
+    def __init__(self, name, slice=None):
+        super().__init__(name, slice)
+        self.lastrun = datetime.min
+        self.delay = as_timedelta(config.nntp.gatenews_every)
+        self.slice = slice
+        python = sys.executable
+        mailman = os.path.join(config.BIN_DIR, 'mailman')
+        conf = config.filename
+        self.cmd = [python, mailman, '-C', conf, 'gatenews']
+        log.debug(self.cmd)
+
     def _dispose(self, mlist, msg, msgdata):
         # Get NNTP server connection information.
         host = config.nntp.host.strip()
@@ -110,6 +126,22 @@ class NNTPRunner(Runner):
             if conn:
                 conn.quit()
         return False
+
+    def _do_periodic(self):
+        """Invoked periodically by the run() method in the super class."""
+        if self.lastrun + self.delay > datetime.now():
+            return                                    # pragma: nocover
+        if not (self.slice in (None, 0)):
+            # If queue is sliced, only run for slice = 0.
+            return                                    # pragma: nocover
+        self.lastrun = datetime.now()
+        log.debug('Running nntp runner periodic task gatenews')
+        os.environ['_MAILMAN_GATENEWS_NNTP'] = 'yes'
+        result = subprocess.run(self.cmd, stderr=subprocess.PIPE)
+        if result.returncode != 0:
+            log.error(f"""\
+gatenews failed. status: {result.returncode}
+message: {result.stderr}""")
 
 
 def prepare_message(mlist, msg, msgdata):

@@ -172,6 +172,13 @@ Poll the NNTP server for messages to be gatewayed to mailing lists."""))
 @click.pass_context
 def gatenews(ctx):
     global conn, log
+    missing = object()
+    if os.getenv('_MAILMAN_GATENEWS_NNTP', missing) is missing:
+        raise click.UsageError(_("""\
+    The gatenews command is run periodically by the nntp runner.
+    If you are running it via cron, you should remove it from the crontab.
+    If you want to run it manually, set _MAILMAN_GATENEWS_NNTP in the
+    environment."""))
     GATENEWS_LOCK_FILE = os.path.join(config.LOCK_DIR, 'gatenews.lock')
     LOCK_LIFETIME = datetime.timedelta(hours=2)
     log = logging.getLogger('mailman.fromusenet')

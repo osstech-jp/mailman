@@ -17,6 +17,7 @@
 
 """Tests and mocks for gatenews subcommand."""
 
+import os
 import nntplib
 
 from click.testing import CliRunner
@@ -142,6 +143,7 @@ class Test_gatenews(TestCase):
         self.mlist.gateway_to_mail = True
         # Create a second list without gateway for test coverage purposes.
         create_list('otherlist@example.com')
+        os.environ['_MAILMAN_GATENEWS_NNTP'] = 'yes'
 
     def test_bad_nntp_connect(self):
         mark = LogFileMark('mailman.fromusenet')
@@ -251,3 +253,10 @@ class Test_gatenews(TestCase):
         self.assertEqual(msgdata['original_size'], 184)
         self.assertTrue(hasattr(msg, 'original_size'))
         self.assertEqual(msg.original_size, 184)
+
+    def test_wont_run_without_environment(self):
+        del os.environ['_MAILMAN_GATENEWS_NNTP']
+        result = self._command.invoke(gatenews)
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn('Error: The gatenews command is run periodically',
+                      result.output)
