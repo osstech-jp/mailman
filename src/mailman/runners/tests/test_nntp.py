@@ -33,6 +33,17 @@ from mailman.testing.layers import ConfigLayer
 from unittest import mock
 
 
+class MockRet():
+    """A mock to return a specific error."""
+    def __init__(self):
+        self.returncode = 2
+        self.stderr = 'A mocked error message'
+
+
+def mock_run(*args, **kwargs):
+    return MockRet()
+
+
 class TestPrepareMessage(unittest.TestCase):
     """Test message preparation."""
 
@@ -321,10 +332,7 @@ Testing
         self._nntpq.enqueue(self._msg, {}, listid='test.example.com')
         mark = LogFileMark('mailman.error')
         self._runner.run()
-        log_message = mark.readline()[:-1]
-        self.assertTrue(
-            log_message.endswith('NNTP error for test@example.com'),
-            log_message)
+        self.assertIn('NNTP error for test@example.com', mark.read())
 
     @mock.patch('nntplib.NNTP', side_effect=socket.error)
     def test_connect_with_socket_failure(self, class_mock):
@@ -402,7 +410,15 @@ Testing
         # called twice.
         self.assertEqual(conn_mock.quit.call_count, 2)
         # There should be a log message with the original Message-ID.
-        log_message = mark.readline()[:-1]
-        self.assertTrue(
-            log_message.endswith('<ant> NNTP error for test@example.com'),
-            log_message)
+        self.assertIn('<ant> NNTP error for test@example.com', mark.read())
+
+    @mock.patch('subprocess.run', mock_run)
+    def test_do_periodic_invokes_mailman_gatenews(self):
+        # _do_periodic should invoke mailman gatenews which will fail.
+        mark = LogFileMark('mailman.error')
+        nntp.NNTPRunner('nntp')._do_periodic()
+        log_message = mark.read()
+        self.assertIn('Running nntp runner periodic task gatenews',
+                      log_message)
+        self.assertIn('gatenews failed. status: 2', log_message)
+        self.assertIn('message: A mocked error message', log_message)

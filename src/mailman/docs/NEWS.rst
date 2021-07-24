@@ -126,6 +126,9 @@ New Features
   #853)
 * There is a new ``list:admin:notice:pending`` template for the notice from
   the ``mailman notify`` command.  (Closes #890)
+* The ``nntp`` runner will now run the ``gatenews`` subcommand at intervals
+  defined by a new ``gatenews_every`` setting in the ``[nntp]`` section of
+  mailman.cfg. Default is 5 every minutes.
 
 Security
 --------
