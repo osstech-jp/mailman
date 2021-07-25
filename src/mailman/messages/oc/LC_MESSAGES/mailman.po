@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-11 14:46-0700\n"
-"PO-Revision-Date: 2021-07-03 23:33+0000\n"
+"PO-Revision-Date: 2021-07-24 13:34+0000\n"
 "Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
 "Language-Team: Occitan <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/oc/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.8-dev\n"
+"X-Generator: Weblate 4.7.2-dev\n"
 
 #: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:46
@@ -48,7 +48,7 @@ msgstr "Publicacion de vòstre messatge titolat « $subject »"
 
 #: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228 src/mailman/rest/sub_moderation.py:113
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Cap de rason pas donada]"
 
 #: src/mailman/app/moderator.py:166
 msgid "Forward of moderated message"
@@ -60,7 +60,7 @@ msgstr ""
 
 #: src/mailman/app/moderator.py:227
 msgid "Unsubscription request"
-msgstr ""
+msgstr "Requèsta de resiliacion"
 
 #: src/mailman/app/moderator.py:268
 msgid "Original Message"
@@ -72,12 +72,12 @@ msgstr ""
 
 #: src/mailman/app/notifications.py:66
 msgid " (Digest mode)"
-msgstr ""
+msgstr " (Mòde digèst)"
 
 #: src/mailman/app/notifications.py:70
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr ""
+msgstr "La benvenguda a la lista de difusion « $mlist.display_name » ${digmode}"
 
 #: src/mailman/app/notifications.py:94
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
@@ -303,7 +303,7 @@ msgstr ""
 
 #: src/mailman/chains/hold.py:58
 msgid "N/A"
-msgstr ""
+msgstr "N/D"
 
 #: src/mailman/chains/hold.py:117
 msgid "Last autoresponse notification for today"
@@ -826,7 +826,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr ""
+msgstr "Suprimir una lista de difusion."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
@@ -982,7 +982,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:122
 msgid "Sender: {}\n"
-msgstr ""
+msgstr "Expeditor : {}\n"
 
 #: src/mailman/commands/cli_notify.py:123
 msgid "Subject: {}\n"
@@ -1044,7 +1044,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_status.py:38
 msgid "GNU Mailman is not running"
-msgstr ""
+msgstr "GNU Mailman es pas en execucion"
 
 #: src/mailman/commands/cli_status.py:41
 msgid "GNU Mailman is running (master pid: $pid)"
@@ -1099,7 +1099,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_version.py:32
 msgid "Display Mailman's version."
-msgstr ""
+msgstr "Afichar la version de Mailman."
 
 #: src/mailman/commands/cli_withlist.py:76
 msgid "ipython is not available, set use_ipython to no"
@@ -1258,7 +1258,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_confirm.py:78
 msgid "Confirmed"
-msgstr ""
+msgstr "Confirmat"
 
 #: src/mailman/commands/eml_confirm.py:82
 msgid "Confirmation token did not match"
@@ -1282,7 +1282,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
-msgstr ""
+msgstr "n/d"
 
 #: src/mailman/commands/eml_help.py:59
 msgid "$self.name: no such command: $command_name"
@@ -1497,7 +1497,7 @@ msgstr ""
 
 #: src/mailman/handlers/replybot.py:44
 msgid "Send automatic responses."
-msgstr ""
+msgstr "Enviar responsas automaticas."
 
 #: src/mailman/handlers/replybot.py:97
 msgid "Auto-response for your message to the \"$display_name\" mailing list"
@@ -1541,11 +1541,11 @@ msgstr ""
 
 #: src/mailman/interfaces/pipeline.py:53
 msgid "[No details are available]"
-msgstr ""
+msgstr "[Cap de detalh pas disponible]"
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr ""
+msgstr "[cap de rason pas donada]"
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
@@ -1695,7 +1695,7 @@ msgstr ""
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr ""
+msgstr "Lo messatge a pas cap de subjècte"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
@@ -1754,12 +1754,16 @@ msgid ""
 "\n"
 "- Unprocessed:"
 msgstr ""
+"\n"
+"- Pas tractat :"
 
 #: src/mailman/runners/command.py:224
 msgid ""
 "\n"
 "- Ignored:"
 msgstr ""
+"\n"
+"- Ignorat :"
 
 #: src/mailman/runners/command.py:227
 msgid ""
@@ -1825,7 +1829,7 @@ msgid "domain:admin:notice:new-list.txt"
 msgstr ""
 
 msgid "help.txt"
-msgstr ""
+msgstr "help.txt"
 
 msgid "list:admin:action:post.txt"
 msgstr ""
