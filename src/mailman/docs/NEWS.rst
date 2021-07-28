@@ -92,6 +92,8 @@ Bugs
 * DMARC mitigation wrap message now ensures existing cc and reply-to headers
   are included in the wrapper.  (Closes #926)
 * The tagger handler now stringifies any Header instances.  (Closes #928)
+* Invitation and (un)subscription confirmation subjects are now translated
+  to the list's preferred language.  (Closes #930)
 
 Command line
 ------------
