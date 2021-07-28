@@ -179,6 +179,33 @@ class TestSubjectPrefix(unittest.TestCase):
         subject = msg['subject']
         self.assertEqual(str(subject), '[Test] Re: ')
 
+    def test_empty(self):
+        # Incoming subject is empty.
+        msg = Message()
+        msg['Subject'] = ''
+        self._process(self._mlist, msg, {})
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] (no subject)')
+
+    def test_empty_all_same(self):
+        # Incoming subject is empty.
+        msg = Message()
+        msg['Subject'] = '=?utf-8?Q?_?='
+        old_charset = self._mlist.preferred_language.charset
+        self._mlist.preferred_language.charset = 'utf-8'
+        self._process(self._mlist, msg, {})
+        self._mlist.preferred_language.charset = old_charset
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] (no subject)')
+
+    def test_empty_mixed(self):
+        # Incoming subject is empty.
+        msg = Message()
+        msg['Subject'] = '=?utf-8?Q?_?='
+        self._process(self._mlist, msg, {})
+        subject = msg['subject']
+        self.assertEqual(str(subject), '[Test] (no subject)')
+
     def test_i18n_subject_with_sequential_prefix_and_re(self):
         # The mailing list defines a sequential prefix, and the original
         # Subject has a prefix with a different sequence number, *and* it also
