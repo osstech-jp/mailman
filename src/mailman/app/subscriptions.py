@@ -619,16 +619,17 @@ def _handle_confirmation_needed_events(event, template_name):
     # This function handles sending the confirmation email to the user
     # for both subscriptions requiring confirmation and invitations
     # requiring acceptance.
-    if template_name.endswith(':invite'):
-        subject = _('You have been invited to join the '
-                    '$event.mlist.fqdn_listname mailing list.')
-    elif template_name.endswith(':unsubscribe'):
-        subject = _('Your confirmation is needed to leave the '
-                    '$event.mlist.fqdn_listname mailing list.')
-    else:
-        assert(template_name.endswith(':subscribe'))
-        subject = _('Your confirmation is needed to join the '
-                    '$event.mlist.fqdn_listname mailing list.')
+    with _.using(event.mlist.preferred_language.code):
+        if template_name.endswith(':invite'):
+            subject = _('You have been invited to join the '
+                        '$event.mlist.fqdn_listname mailing list.')
+        elif template_name.endswith(':unsubscribe'):
+            subject = _('Your confirmation is needed to leave the '
+                        '$event.mlist.fqdn_listname mailing list.')
+        else:
+            assert(template_name.endswith(':subscribe'))
+            subject = _('Your confirmation is needed to join the '
+                        '$event.mlist.fqdn_listname mailing list.')
     confirm_address = event.mlist.confirm_address(event.token)
     email_address = event.email
     # Send a verification email to the address.
