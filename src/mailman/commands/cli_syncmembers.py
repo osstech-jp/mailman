@@ -29,7 +29,8 @@ from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     DeliveryMode, DeliveryStatus, MembershipIsBannedError)
-from mailman.interfaces.subscriptions import ISubscriptionManager
+from mailman.interfaces.subscriptions import (
+    ISubscriptionManager, SubscriptionPendingError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.options import I18nCommand
 from public import public
@@ -79,6 +80,9 @@ def add_members(mlist, member, delivery, welcome_msg):
         member.preferences.delivery_mode = delivery_mode
     except MembershipIsBannedError:
         print(_('Membership is banned (skipping): $email'),
+              file=sys.stderr)
+    except SubscriptionPendingError:
+        print(_('Subscription already pending (skipping): $email'),
               file=sys.stderr)
 
 
