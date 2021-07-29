@@ -94,6 +94,8 @@ Bugs
 * The tagger handler now stringifies any Header instances.  (Closes #928)
 * Invitation and (un)subscription confirmation subjects are now translated
   to the list's preferred language.  (Closes #930)
+* The ``mailman syncmembers`` command now catches and reports a
+  ``SubscriptionPendingError``.  (Closes #929)
 
 Command line
 ------------
