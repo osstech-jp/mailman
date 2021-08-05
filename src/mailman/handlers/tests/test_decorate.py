@@ -131,6 +131,18 @@ This is a test message.
         self.assertIn('http://example.com/link_to_message',
                       self._msg.as_string())
 
+    def test_trailing_space_not_removed(self):
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('-- \r\nMy sig', file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
+        self._mlist.preferred_language = 'en'
+        decorate.process(self._mlist, self._msg, {})
+        self.assertTrue(self._msg.as_string().endswith('-- \nMy sig\n'))
+
     def test_decorate_member_as_address(self):
         site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
         os.makedirs(site_dir)
