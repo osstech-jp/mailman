@@ -248,7 +248,7 @@ def decorate_template(mlist, template, extradict=None):
         substitutions.update(extradict)
     text = expand(template, mlist, substitutions)
     # Turn any \r\n line endings into just \n
-    return re.sub(r' *\r?\n', r'\n', text)
+    return re.sub(r'\r\n', r'\n', text)
 
 
 @public

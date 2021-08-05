@@ -96,6 +96,8 @@ Bugs
   to the list's preferred language.  (Closes #930)
 * The ``mailman syncmembers`` command now catches and reports a
   ``SubscriptionPendingError``.  (Closes #929)
+* Trailing spaces are no longer removed from header and footer templates.
+  (Closes #932)
 
 Command line
 ------------
