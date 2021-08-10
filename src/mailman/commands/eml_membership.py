@@ -84,8 +84,10 @@ other than the sender of the command.
             if msg['from'] is None:
                 display_name, email = ('', '')
             else:
-                decoded_from = str(make_header(decode_header(msg['from'])))
-                display_name, email = parseaddr(decoded_from)
+                # Parse before decoding in case decoded display_name contains
+                # a comma.
+                display_name, email = parseaddr(msg['from'])
+                display_name = str(make_header(decode_header(display_name)))
         else:
             display_name, email = ('', address)
         # Address could be None or the empty string.

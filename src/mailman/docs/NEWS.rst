@@ -98,6 +98,8 @@ Bugs
   ``SubscriptionPendingError``.  (Closes #929)
 * Trailing spaces are no longer removed from header and footer templates.
   (Closes #932)
+* The email ``join`` command now handles RFC2047 encoded display names with
+  embedded commas.  (Closes #933)
 
 Command line
 ------------
