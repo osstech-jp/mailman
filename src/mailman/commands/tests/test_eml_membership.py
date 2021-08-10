@@ -92,6 +92,25 @@ class TestJoin(unittest.TestCase):
         self.assertEqual('Anne', pended['display_name'])
         self.assertEqual('anne@example.com', pended['email'])
 
+    def test_join_rfc2047_display_with_comma(self):
+        # Subscribe a member with RFC 2047 encoded display name containing a
+        # comma and non-ascii via join.
+        msg = Message()
+        msg['From'] = '=?utf-8?q?J=C3=BCnk=2C_Anne?= <anne@example.com>'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertIn('Confirmation email sent to =?utf-8?b?SsO8bmssIEFubmU=?='
+                      ' <anne@example.com>', str(results))
+        # Check the pending confirmation.
+        pendings = list(getUtility(IPendings).find(self._mlist,
+                                                   'subscription',
+                                                   confirm=False))
+        self.assertEqual(1, len(pendings))
+        token = pendings[0][0]
+        pended = getUtility(IPendings).confirm(token, expunge=False)
+        self.assertEqual('Jünk, Anne', pended['display_name'])
+        self.assertEqual('anne@example.com', pended['email'])
+
     def test_join_digest(self):
         # Subscribe a member to digest via join.
         msg = Message()
