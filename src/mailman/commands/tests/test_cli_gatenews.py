@@ -110,21 +110,6 @@ def get_nntplib_nntp(fail=0):
     return patcher
 
 
-def get_email_exception():
-    """Create a mock for email.parser.BytesParser to raise an exception."""
-
-    class BytesParser:
-        def __init__(self, factory, policy):
-            self.factory = factory
-            self.policy = policy
-
-        def parsebytes(self, msg_bytes):
-            raise MessageError('Bad message')
-
-    patcher = patch('email.parser.BytesParser', BytesParser)
-    return patcher
-
-
 class Test_gatenews(TestCase):
     """Test gating messages from usenet."""
 
@@ -144,6 +129,8 @@ class Test_gatenews(TestCase):
         # Create a second list without gateway for test coverage purposes.
         create_list('otherlist@example.com')
         os.environ['_MAILMAN_GATENEWS_NNTP'] = 'yes'
+        # Also get the subject_prefix process.
+        self._process = config.handlers['subject-prefix'].process
 
     def test_bad_nntp_connect(self):
         mark = LogFileMark('mailman.fromusenet')
@@ -230,7 +217,8 @@ class Test_gatenews(TestCase):
 
     def test_email_parser_exception(self):
         mark = LogFileMark('mailman.fromusenet')
-        with get_email_exception():
+        with patch('mailman.commands.cli_gatenews.message_from_bytes',
+                   side_effect=MessageError('Bad message')):
             with get_nntplib_nntp():
                 self._command.invoke(gatenews)
         lines = mark.read().splitlines()
@@ -260,3 +248,12 @@ class Test_gatenews(TestCase):
         self.assertNotEqual(result.exit_code, 0)
         self.assertIn('Error: The gatenews command is run periodically',
                       result.output)
+
+    def test_subject_prefixing(self):
+        with get_nntplib_nntp():
+            self._command.invoke(gatenews)
+        items = get_queue_messages('in', expected_count=1)
+        msgdata = items[0].msgdata
+        msg = items[0].msg
+        self._process(self.mlist, msg, msgdata)
+        self.assertEqual(msg['subject'], '[Mylist] A Message')
