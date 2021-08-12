@@ -100,6 +100,8 @@ Bugs
   (Closes #932)
 * The email ``join`` command now handles RFC2047 encoded display names with
   embedded commas.  (Closes #933)
+* The ``gatenews`` command now parses messages with email.message_from_bytes
+  without specifying policy.  (Closes #934)
 
 Command line
 ------------

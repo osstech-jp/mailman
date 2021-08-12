@@ -24,7 +24,7 @@ import logging
 import nntplib
 import datetime
 
-from email import errors, parser, policy
+from email import errors, message_from_bytes
 from flufl.lock import Lock, TimeOutError
 from mailman.config import config
 from mailman.core.i18n import _
@@ -91,9 +91,8 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                     break
             if not beenthere:
                 lines = conn.article(num)[1].lines
-                p = parser.BytesParser(message.Message, policy=policy.default)
                 try:
-                    msg = p.parsebytes(NL.join(lines))
+                    msg = message_from_bytes(NL.join(lines), message.Message)
                 except errors.MessageError as e:
                     log.error('email package exception for %s:%d\n%s',
                               mlist.linked_newsgroup, num, e)
