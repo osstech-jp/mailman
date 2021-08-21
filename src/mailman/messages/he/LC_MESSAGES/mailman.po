@@ -7,124 +7,131 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-11 14:46-0700\n"
+"POT-Creation-Date: 2021-08-21 12:09-0700\n"
 "PO-Revision-Date: 2020-12-11 04:16+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
-"mailman/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/mailman/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
-"n % 10 == 0) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\n"
 "X-Generator: Weblate 4.4-dev\n"
 
-#: src/mailman/app/bounces.py:73 src/mailman/app/moderator.py:84
+#: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
-#: src/mailman/handlers/subject_prefix.py:46
-#: src/mailman/handlers/subject_prefix.py:90
-#: src/mailman/handlers/subject_prefix.py:118 src/mailman/runners/digest.py:86
+#: src/mailman/handlers/subject_prefix.py:45
+#: src/mailman/handlers/subject_prefix.py:91 src/mailman/runners/digest.py:87
 msgid "(no subject)"
 msgstr "(אין נושא)"
 
-#: src/mailman/app/bounces.py:75
+#: src/mailman/app/bounces.py:78
 msgid "[No bounce details are available]"
 msgstr "[פרטי ההחזרה אינם זמינים]"
 
-#: src/mailman/app/bounces.py:226
+#: src/mailman/app/bounces.py:230
 msgid "$mlist.display_name mailing list probe message"
 msgstr "הודעת תשאול מול רשימת הדיוור $mlist.display_name"
 
-#: src/mailman/app/bounces.py:262
+#: src/mailman/app/bounces.py:266
 msgid "Uncaught bounce notification"
 msgstr "הודעת החזרה שלא נתפסה"
 
-#: src/mailman/app/membership.py:140
+#: src/mailman/app/membership.py:141
 msgid "$mlist.display_name unsubscription notification"
 msgstr "הודעת ביטול מינוי מהרשימה $mlist.display_name"
 
-#: src/mailman/app/moderator.py:118
+#: src/mailman/app/moderator.py:97
+msgid ""
+"The content of this message was lost. It was probably cross-posted to\n"
+"multiple lists and previously handled on another list.\n"
+msgstr ""
+
+#: src/mailman/app/moderator.py:132
 msgid "Posting of your message titled \"$subject\""
 msgstr "פרסום ההודעה שלך עם הנושא „$subject”"
 
-#: src/mailman/app/moderator.py:119 src/mailman/app/moderator.py:228
-#: src/mailman/rest/sub_moderation.py:113
+#: src/mailman/app/moderator.py:133 src/mailman/app/moderator.py:258
+#: src/mailman/rest/sub_moderation.py:112
 msgid "[No reason given]"
 msgstr "[לא סופקה סיבה]"
 
-#: src/mailman/app/moderator.py:166
+#: src/mailman/app/moderator.py:184
 msgid "Forward of moderated message"
 msgstr "העברה של הודעה מפוקחת"
 
-#: src/mailman/app/moderator.py:195
+#: src/mailman/app/moderator.py:225
 msgid "New unsubscription request from $mlist.display_name by $email"
 msgstr "בקשת ביטול מינוי חדשה מהרשימה $mlist.display_name מאת $email"
 
-#: src/mailman/app/moderator.py:227
+#: src/mailman/app/moderator.py:257
 msgid "Unsubscription request"
 msgstr "בקשת ביטול מינוי"
 
-#: src/mailman/app/moderator.py:268
+#: src/mailman/app/moderator.py:298
 msgid "Original Message"
 msgstr "הודעה מקורית"
 
-#: src/mailman/app/moderator.py:271
+#: src/mailman/app/moderator.py:301
 msgid "Request to mailing list \"$display_name\" rejected"
 msgstr "הבקשה לרשימת הדיוור „$display_name” נדחתה"
 
-#: src/mailman/app/notifications.py:66
+#: src/mailman/app/notifications.py:94
 msgid " (Digest mode)"
 msgstr " (מצב תקציר)"
 
-#: src/mailman/app/notifications.py:70
+#: src/mailman/app/notifications.py:98
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
 msgstr "ברוך בואך אל רשימת הדיוור „$mlist.display_name”${digmode}"
 
-#: src/mailman/app/notifications.py:94
+#: src/mailman/app/notifications.py:122
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
 msgstr "המינוי שלך לרשימת הדיוור $mlist.display_name בוטל"
 
-#: src/mailman/app/notifications.py:112
+#: src/mailman/app/notifications.py:140
 msgid "$mlist.display_name subscription notification"
 msgstr "הודעת מינוי מול $mlist.display_name"
 
-#: src/mailman/app/notifications.py:136
+#: src/mailman/app/notifications.py:164
 msgid "$member's subscription disabled on $mlist.display_name"
 msgstr "המינוי של $member על $mlist.display_name בוטל"
 
-#: src/mailman/app/notifications.py:157
+#: src/mailman/app/notifications.py:192
+msgid "$member's bounce score incremented on $mlist.display_name"
+msgstr ""
+
+#: src/mailman/app/notifications.py:218
 #, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
 msgstr "המינוי של $member לרשימת הדיוור ${mlist.display_name} בוטל עקב החזרות"
 
-#: src/mailman/app/notifications.py:184
+#: src/mailman/app/notifications.py:245
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
 msgstr "המינוי שלך לרשימת הדיוור ${mlist.display_name} הושבת"
 
-#: src/mailman/app/subscriptions.py:310
+#: src/mailman/app/subscriptions.py:325
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
 msgstr "בקשת מינוי חדשה אל $self.mlist.display_name מאת $self.address.email"
 
-#: src/mailman/app/subscriptions.py:471
+#: src/mailman/app/subscriptions.py:493
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
 msgstr "בקשת ביטול מינוי חדשה מהרשימה $self.mlist.display_name מאת $self.address.email"
 
-#: src/mailman/app/subscriptions.py:597
+#: src/mailman/app/subscriptions.py:624
 msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
 msgstr "הוזמנת להצטרף לרשימת הדיוור $event.mlist.fqdn_listname."
 
-#: src/mailman/app/subscriptions.py:600
+#: src/mailman/app/subscriptions.py:627
 msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
 msgstr "נדרש אימות מצדך כדי לעזוב את רשימת הדיוור mailing list."
 
-#: src/mailman/app/subscriptions.py:604
+#: src/mailman/app/subscriptions.py:631
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
 msgstr "נדרש אימות מצדך כדי להצטרף לרשימת הדיור $event.mlist.fqdn_listname."
 
-#: src/mailman/bin/mailman.py:101 src/mailman/bin/master.py:515
+#: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
 msgid ""
 "    Configuration file to use.  If not given, the environment variable\n"
@@ -134,6 +141,16 @@ msgstr ""
 "    קובץ הגדרות לשימוש.  אם לא צוין, ההגדרות שמופיעות במשתנה הסביבתי\n"
 "    MAILMAN_CONFIG_FILE תהיינה הפעילות.  אם לא צוינה אף אחת מהן,\n"
 "    יטען קובץ הגדרות כבררת מחדל."
+
+#: src/mailman/bin/mailman.py:110
+msgid ""
+"    Running mailman commands as root is not recommended and mailman will\n"
+"    refuse to run as root unless this option is specified."
+msgstr ""
+
+#: src/mailman/bin/mailman.py:129
+msgid "    If you are sure you want to run as root, specify --run-as-root."
+msgstr ""
 
 #: src/mailman/bin/master.py:157
 msgid ""
@@ -187,7 +204,7 @@ msgstr ""
 "\n"
 "התכנית יוצאת."
 
-#: src/mailman/bin/master.py:491
+#: src/mailman/bin/master.py:494
 msgid ""
 "    Master subprocess watcher.\n"
 "\n"
@@ -210,7 +227,7 @@ msgid ""
 "    normally don't need to use this PID directly."
 msgstr ""
 
-#: src/mailman/bin/master.py:522
+#: src/mailman/bin/master.py:525
 msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
@@ -218,7 +235,7 @@ msgstr ""
 "    לא להפעיל את האצנים מחדש כשהם מסתיימים עקב שגיאה או SIGUSR1 (אות משתמש 1).\n"
 "    יש להשתמש בזה לניפוי שגיאות בלבד."
 
-#: src/mailman/bin/master.py:528
+#: src/mailman/bin/master.py:531
 msgid ""
 "    If the master watcher finds an existing master lock, it will normally exit\n"
 "    with an error message.  With this option,the master will perform an extra\n"
@@ -234,7 +251,7 @@ msgstr ""
 "    שידרוש ממך לנקות את הנעילה ידנית. אם לא נמצא תהליך תואם המשגיח יסיר\n"
 "    את הנעילה המיותרת וינסה להשיג את הנעילה הראשית פעם נוספת."
 
-#: src/mailman/bin/master.py:541
+#: src/mailman/bin/master.py:544
 msgid ""
 "    Override the default set of runners that the master will invoke, which is\n"
 "    typically defined in the configuration file.  Multiple -r options may be\n"
@@ -244,7 +261,7 @@ msgstr ""
 "    בקובץ ההגדרות.  ניתן לספק מגוון אפשרויות ‎-r.  הערכים עבור ‎-r מועברים\n"
 "    ישירות אל הבינרי/אצן."
 
-#: src/mailman/bin/master.py:548 src/mailman/bin/runner.py:133
+#: src/mailman/bin/master.py:551 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
 msgstr "הצגת פירוט ניפוי שגיאות נוסף בקובץ היומן."
 
@@ -324,8 +341,7 @@ msgstr ""
 "    הפעלת האצן שצוין שחייב להיות אחת מהמחרוזות שהוחזרו על ידי האפשרות ‎-l.\n"
 "\n"
 "    לאצנים שמנהלים תיקיית תורים, יש `חיתוך:טווח` אם זה שסופק משמש להקצאת\n"
-"    מספר תהליכי אצנים לתור הזה.  הטווח הוא מספר האצנים הכללי לתור בעוד "
-"חיתוך\n"
+"    מספר תהליכי אצנים לתור הזה.  הטווח הוא מספר האצנים הכללי לתור בעוד חיתוך\n"
 "    הוא מספר האצן הזה מ־0 ועד טווח. לאצנים שלא מנהלים תור, אין התייחסות\n"
 "    לחיתוך או לטווח.\n"
 "\n"
@@ -357,11 +373,11 @@ msgstr "השלכת ההודעה ועצירת העיבוד."
 msgid "Process DMARC reject or discard mitigations"
 msgstr "עיבוד דחיית DMARC או התעלמות מהאפחותים"
 
-#: src/mailman/chains/headers.py:120
+#: src/mailman/chains/headers.py:121
 msgid "Header \"{}\" matched a header rule"
 msgstr "הכותרת „{}” תואמת לכלל כותרת"
 
-#: src/mailman/chains/headers.py:135
+#: src/mailman/chains/headers.py:136
 msgid "The built-in header matching chain"
 msgstr "שרשרת התאמת הכותרות המובנית"
 
@@ -411,23 +427,26 @@ msgstr "שרשרת הפרסום לבעלים (‎-owner) המובנית."
 msgid "Reject/bounce a message and stop processing."
 msgstr "דחיית/הקפצת הודעה והפסקת העיבוד."
 
-#: src/mailman/commands/cli_addmembers.py:67 src/mailman/commands/cli_members.py:124
-#: src/mailman/commands/cli_members.py:137 src/mailman/commands/cli_members.py:198
-#: src/mailman/commands/cli_members.py:206
-#: src/mailman/commands/cli_syncmembers.py:112
+#: src/mailman/commands/cli_addmembers.py:68
+#: src/mailman/commands/cli_syncmembers.py:116
 msgid "Cannot parse as valid email address (skipping): $line"
 msgstr "Cannot parse as valid email address (skipping): $line"
 
-#: src/mailman/commands/cli_addmembers.py:98 src/mailman/commands/cli_members.py:143
+#: src/mailman/commands/cli_addmembers.py:99
 msgid "Already subscribed (skipping): $email"
 msgstr "כבר בוצע רישום (מדלג): $email"
 
-#: src/mailman/commands/cli_addmembers.py:100
-#: src/mailman/commands/cli_syncmembers.py:81
+#: src/mailman/commands/cli_addmembers.py:101
+#: src/mailman/commands/cli_syncmembers.py:82
 msgid "Membership is banned (skipping): $email"
 msgstr "Membership is banned (skipping): $email"
 
-#: src/mailman/commands/cli_addmembers.py:106
+#: src/mailman/commands/cli_addmembers.py:104
+#: src/mailman/commands/cli_syncmembers.py:85
+msgid "Subscription already pending (skipping): $email"
+msgstr ""
+
+#: src/mailman/commands/cli_addmembers.py:110
 msgid ""
 "    Add all member addresses in FILENAME with delivery mode as specified\n"
 "    with -d/--delivery.  FILENAME can be '-' to indicate standard input.\n"
@@ -439,7 +458,7 @@ msgstr ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 
-#: src/mailman/commands/cli_addmembers.py:114
+#: src/mailman/commands/cli_addmembers.py:118
 msgid ""
 "    Set the added members delivery mode to 'regular', 'mime', 'plain',\n"
 "    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
@@ -448,26 +467,24 @@ msgid ""
 msgstr ""
 "    Set the added members delivery mode to 'regular', 'mime', 'plain',\n"
 "    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
-"    or no delivery.  If not given, the default is regular.  Ignored for "
-"invited\n"
+"    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 
-#: src/mailman/commands/cli_addmembers.py:122
+#: src/mailman/commands/cli_addmembers.py:126
 msgid ""
 "    Send the added members an invitation rather than immediately adding them.\n"
 "    "
 msgstr ""
-"    Send the added members an invitation rather than immediately adding them."
-"\n"
+"    Send the added members an invitation rather than immediately adding them.\n"
 "    "
 
-#: src/mailman/commands/cli_addmembers.py:127
+#: src/mailman/commands/cli_addmembers.py:131
 msgid "    Override the list's setting for send_welcome_message."
 msgstr "    Override the list's setting for send_welcome_message."
 
-#: src/mailman/commands/cli_addmembers.py:136 src/mailman/commands/cli_import.py:68
-#: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:343
-#: src/mailman/commands/cli_syncmembers.py:195
+#: src/mailman/commands/cli_addmembers.py:140 src/mailman/commands/cli_import.py:68
+#: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:192
+#: src/mailman/commands/cli_syncmembers.py:199
 #: src/mailman/commands/cli_withlist.py:292 src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
 msgstr "No such list: $listspec"
@@ -479,6 +496,33 @@ msgstr "Regenerate the aliases appropriate for your MTA."
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
 msgstr "An alternative directory to output the various MTA files to."
+
+#: src/mailman/commands/cli_changeaddress.py:34
+msgid ""
+"    Change a user's email address from old_address to possibly case-preserved\n"
+"    new_address.\n"
+"    "
+msgstr ""
+
+#: src/mailman/commands/cli_changeaddress.py:45
+msgid "Address {} not found."
+msgstr ""
+
+#: src/mailman/commands/cli_changeaddress.py:47
+msgid "Address {} is not a valid email address."
+msgstr ""
+
+#: src/mailman/commands/cli_changeaddress.py:50
+msgid "Addresses are not different.  Nothing to change."
+msgstr ""
+
+#: src/mailman/commands/cli_changeaddress.py:53
+msgid "Address {} already exists; can't change."
+msgstr ""
+
+#: src/mailman/commands/cli_changeaddress.py:58
+msgid "Address changed from {} to {}."
+msgstr ""
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
@@ -639,7 +683,7 @@ msgstr "Stop and restart the Mailman runner subprocesses."
 msgid "Restarting the Mailman runners"
 msgstr "Restarting the Mailman runners"
 
-#: src/mailman/commands/cli_delmembers.py:48 src/mailman/commands/cli_members.py:164
+#: src/mailman/commands/cli_delmembers.py:48
 msgid "Member not subscribed (skipping): $email"
 msgstr "Member not subscribed (skipping): $email"
 
@@ -662,11 +706,9 @@ msgid ""
 "    standard input.  Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
-"    Delete list members whose addresses are in FILENAME in addition to "
-"those\n"
+"    Delete list members whose addresses are in FILENAME in addition to those\n"
 "    specified with -m/--member if any.  FILENAME can be '-' to indicate\n"
-"    standard input.  Blank lines and lines that start with a '#' are ignored."
-"\n"
+"    standard input.  Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 
 #: src/mailman/commands/cli_delmembers.py:71
@@ -704,7 +746,7 @@ msgstr ""
 "    "
 
 #: src/mailman/commands/cli_delmembers.py:93
-#: src/mailman/commands/cli_syncmembers.py:173
+#: src/mailman/commands/cli_syncmembers.py:177
 msgid ""
 "    Override the list's setting for send_goodbye_message to\n"
 "    deleted members."
@@ -713,7 +755,7 @@ msgstr ""
 "    deleted members."
 
 #: src/mailman/commands/cli_delmembers.py:98
-#: src/mailman/commands/cli_syncmembers.py:178
+#: src/mailman/commands/cli_syncmembers.py:182
 msgid "    Override the list's setting for admin_notify_mchanges."
 msgstr "    Override the list's setting for admin_notify_mchanges."
 
@@ -753,7 +795,7 @@ msgstr ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 
-#: src/mailman/commands/cli_digests.py:59 src/mailman/commands/cli_notify.py:47
+#: src/mailman/commands/cli_digests.py:59 src/mailman/commands/cli_notify.py:50
 msgid ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
@@ -761,7 +803,7 @@ msgstr ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
 
-#: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:53
+#: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:56
 msgid "Print some additional status."
 msgstr "Print some additional status."
 
@@ -777,7 +819,7 @@ msgstr ""
 msgid "--send and --periodic flags cannot be used together"
 msgstr "--send and --periodic flags cannot be used together"
 
-#: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:66
+#: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:69
 msgid "No such list found: $spec"
 msgstr "No such list found: $spec"
 
@@ -796,9 +838,42 @@ msgstr "$mlist.list_id bumped to volume $mlist.volume, number ${mlist.next_diges
 msgid "$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}"
 msgstr "$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}"
 
-#: src/mailman/commands/cli_gatenews.py:167
+#: src/mailman/commands/cli_findmember.py:66
+msgid ""
+"    Display all memberships for a user or users with address matching a\n"
+"    pattern.\n"
+"    "
+msgstr ""
+
+#: src/mailman/commands/cli_findmember.py:74
+msgid ""
+"    Display only memberships with the given role.  If not given, 'all' role,\n"
+"    i.e. all roles, is the default."
+msgstr ""
+
+#: src/mailman/commands/cli_findmember.py:98
+msgid "Email: {}"
+msgstr ""
+
+#: src/mailman/commands/cli_findmember.py:102
+msgid "List: {}"
+msgstr ""
+
+#: src/mailman/commands/cli_findmember.py:105
+msgid "{}"
+msgstr ""
+
+#: src/mailman/commands/cli_gatenews.py:169
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
 msgstr "Poll the NNTP server for messages to be gatewayed to mailing lists."
+
+#: src/mailman/commands/cli_gatenews.py:176
+msgid ""
+"    The gatenews command is run periodically by the nntp runner.\n"
+"    If you are running it via cron, you should remove it from the crontab.\n"
+"    If you want to run it manually, set _MAILMAN_GATENEWS_NNTP in the\n"
+"    environment."
+msgstr ""
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
@@ -856,10 +931,8 @@ msgid ""
 "    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 msgstr ""
-"    The name of the queue to inject the message to.  QUEUE must be one of "
-"the\n"
-"    directories inside the queue directory.  If omitted, the incoming queue "
-"is\n"
+"    The name of the queue to inject the message to.  QUEUE must be one of the\n"
+"    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 
 #: src/mailman/commands/cli_inject.py:56
@@ -936,10 +1009,8 @@ msgid ""
 msgstr ""
 "    Create a mailing list.\n"
 "\n"
-"    The 'fully qualified list name', i.e. the posting address of the "
-"mailing\n"
-"    list is required.  It must be a valid email address and the domain must "
-"be\n"
+"    The 'fully qualified list name', i.e. the posting address of the mailing\n"
+"    list is required.  It must be a valid email address and the domain must be\n"
 "    registered with Mailman.  List names are forced to lower case."
 
 #: src/mailman/commands/cli_lists.py:130
@@ -947,8 +1018,7 @@ msgid ""
 "    Set the list's preferred language to CODE, which must be a registered two\n"
 "    letter language code."
 msgstr ""
-"    Set the list's preferred language to CODE, which must be a registered "
-"two\n"
+"    Set the list's preferred language to CODE, which must be a registered two\n"
 "    letter language code."
 
 #: src/mailman/commands/cli_lists.py:136
@@ -960,10 +1030,8 @@ msgid ""
 "    specified."
 msgstr ""
 "    Specify a list owner email address.  If the address is not currently\n"
-"    registered with Mailman, the address is registered and linked to a user."
-"\n"
-"    Mailman will send a confirmation message to the address, but it will "
-"also\n"
+"    registered with Mailman, the address is registered and linked to a user.\n"
+"    Mailman will send a confirmation message to the address, but it will also\n"
 "    send a list creation notice to the address.  More than one owner can be\n"
 "    specified."
 
@@ -1033,36 +1101,11 @@ msgstr "אין מפרט כזה לרשימת דיוור: $listspec"
 msgid "Removed list: $listspec"
 msgstr "Removed list: $listspec"
 
-#: src/mailman/commands/cli_members.py:92
+#: src/mailman/commands/cli_members.py:84
 msgid "$mlist.list_id has no members"
 msgstr "ברשימה $mlist.list_id אין חברים"
 
-#: src/mailman/commands/cli_members.py:146
-msgid "Already subscribed (skipping): $display_name <$email>"
-msgstr "Already subscribed (skipping): $display_name <$email>"
-
-#: src/mailman/commands/cli_members.py:166
-msgid "Member not subscribed (skipping): $display_name <$email>"
-msgstr "Member not subscribed (skipping): $display_name <$email>"
-
-#: src/mailman/commands/cli_members.py:227
-#: src/mailman/commands/cli_syncmembers.py:127
-#, python-format
-msgid "[ADD] %s"
-msgstr "[ADD] %s"
-
-#: src/mailman/commands/cli_members.py:238
-#: src/mailman/commands/cli_syncmembers.py:137
-#, python-format
-msgid "[DEL] %s"
-msgstr "[DEL] %s"
-
-#: src/mailman/commands/cli_members.py:248
-#: src/mailman/commands/cli_syncmembers.py:146
-msgid "Nothing to do"
-msgstr "Nothing to do"
-
-#: src/mailman/commands/cli_members.py:253
+#: src/mailman/commands/cli_members.py:108
 msgid ""
 "    Display, add or delete a mailing list's members.\n"
 "    Filtering along various criteria can be done when displaying.\n"
@@ -1076,46 +1119,26 @@ msgstr ""
 "    to stdout is the default mode.\n"
 "    "
 
-#: src/mailman/commands/cli_members.py:262
+#: src/mailman/commands/cli_members.py:117
 msgid ""
-"    [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to\n"
-"    indicate standard input.  Blank lines and lines that start with a\n"
-"    '#' are ignored.  This option is deprecated in favor of 'mailman\n"
-"    addmembers'."
+"    [MODE] Add all member addresses in FILENAME.  This option is removed.\n"
+"    Use 'mailman addmembers' instead."
 msgstr ""
-"    [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to\n"
-"    indicate standard input.  Blank lines and lines that start with a\n"
-"    '#' are ignored.  This option is deprecated in favor of 'mailman\n"
-"    addmembers'."
 
-#: src/mailman/commands/cli_members.py:270
+#: src/mailman/commands/cli_members.py:123
 msgid ""
-"    [MODE] Delete all member addresses found in FILENAME\n"
-"    from the specified list. FILENAME can be '-' to indicate standard input.\n"
-"    Blank lines and lines that start with a '#' are ignored.\n"
-"    This option is deprecated in favor of 'mailman delmembers'."
+"    [MODE] Delete all member addresses found in FILENAME.\n"
+"    This option is removed. Use 'mailman delmembers' instead."
 msgstr ""
-"    [MODE] Delete all member addresses found in FILENAME\n"
-"    from the specified list. FILENAME can be '-' to indicate standard input."
-"\n"
-"    Blank lines and lines that start with a '#' are ignored.\n"
-"    This option is deprecated in favor of 'mailman delmembers'."
 
-#: src/mailman/commands/cli_members.py:278
+#: src/mailman/commands/cli_members.py:129
 msgid ""
 "    [MODE] Synchronize all member addresses of the specified mailing list\n"
 "    with the member addresses found in FILENAME.\n"
-"    FILENAME can be '-' to indicate standard input.\n"
-"    Blank lines and lines that start with a '#' are ignored.\n"
-"    This option is deprecated in favor of 'mailman syncmembers'."
+"    This option is removed. Use 'mailman syncmembers' instead."
 msgstr ""
-"    [MODE] Synchronize all member addresses of the specified mailing list\n"
-"    with the member addresses found in FILENAME.\n"
-"    FILENAME can be '-' to indicate standard input.\n"
-"    Blank lines and lines that start with a '#' are ignored.\n"
-"    This option is deprecated in favor of 'mailman syncmembers'."
 
-#: src/mailman/commands/cli_members.py:287
+#: src/mailman/commands/cli_members.py:136
 msgid ""
 "    [MODE] Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
@@ -1123,7 +1146,7 @@ msgstr ""
 "    [MODE] Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 
-#: src/mailman/commands/cli_members.py:294
+#: src/mailman/commands/cli_members.py:143
 msgid ""
 "    [output filter] Display only members with a given ROLE.\n"
 "    The role may be 'any', 'member', 'nonmember', 'owner', 'moderator',\n"
@@ -1135,12 +1158,12 @@ msgstr ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then delivery members are used. "
 
-#: src/mailman/commands/cli_members.py:302
+#: src/mailman/commands/cli_members.py:151
 msgid "    [output filter] Display only regular delivery members."
 msgstr "    [output filter] Display only regular delivery members."
 
-#: src/mailman/commands/cli_members.py:313
-#: src/mailman/commands/cli_syncmembers.py:183
+#: src/mailman/commands/cli_members.py:162
+#: src/mailman/commands/cli_syncmembers.py:187
 msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
@@ -1148,18 +1171,17 @@ msgstr ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
 
-#: src/mailman/commands/cli_members.py:320
+#: src/mailman/commands/cli_members.py:169
 msgid ""
 "    [output filter] Display only digest members of kind.\n"
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
 "    [output filter] Display only digest members of kind.\n"
-"    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)"
-"\n"
+"    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 
-#: src/mailman/commands/cli_members.py:328
+#: src/mailman/commands/cli_members.py:177
 msgid ""
 "    [output filter] Display only members with a given delivery status.\n"
 "    'enabled' means all members whose delivery is enabled, 'any' means\n"
@@ -1176,31 +1198,28 @@ msgstr ""
 "    that the member disabled their own delivery, 'bybounces' means that\n"
 "    delivery was disabled by the automated bounce processor,\n"
 "    'byadmin' means delivery was disabled by the list\n"
-"    administrator or moderator, and 'unknown' means that delivery was "
-"disabled\n"
+"    administrator or moderator, and 'unknown' means that delivery was disabled\n"
 "    for unknown (legacy) reasons."
 
-#: src/mailman/commands/cli_notify.py:37
+#: src/mailman/commands/cli_notify.py:40
 msgid "Notify list owners/moderators of pending requests."
 msgstr "Notify list owners/moderators of pending requests."
 
-#: src/mailman/commands/cli_notify.py:40
+#: src/mailman/commands/cli_notify.py:43
 msgid ""
 "    Operate on this mailing list.  Multiple --list options can be given.  The\n"
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the requests for all mailing lists."
 msgstr ""
-"    Operate on this mailing list.  Multiple --list options can be given.  "
-"The\n"
-"    argument can either be a List-ID or a fully qualified list name.  "
-"Without\n"
+"    Operate on this mailing list.  Multiple --list options can be given.  The\n"
+"    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the requests for all mailing lists."
 
-#: src/mailman/commands/cli_notify.py:77 src/mailman/commands/cli_notify.py:130
+#: src/mailman/commands/cli_notify.py:80 src/mailman/commands/cli_notify.py:141
 msgid "The {} list has {} moderation requests waiting."
 msgstr "לרשימה {} יש {} בקשות פיקוח ממתינות."
 
-#: src/mailman/commands/cli_notify.py:108
+#: src/mailman/commands/cli_notify.py:111
 msgid ""
 "\n"
 "Held Subscriptions:\n"
@@ -1208,11 +1227,11 @@ msgstr ""
 "\n"
 "Held Subscriptions:\n"
 
-#: src/mailman/commands/cli_notify.py:110 src/mailman/commands/cli_notify.py:114
+#: src/mailman/commands/cli_notify.py:113 src/mailman/commands/cli_notify.py:117
 msgid "User: {}\n"
 msgstr "User: {}\n"
 
-#: src/mailman/commands/cli_notify.py:112
+#: src/mailman/commands/cli_notify.py:115
 msgid ""
 "\n"
 "Held Unsubscriptions:\n"
@@ -1220,7 +1239,7 @@ msgstr ""
 "\n"
 "Held Unsubscriptions:\n"
 
-#: src/mailman/commands/cli_notify.py:116
+#: src/mailman/commands/cli_notify.py:119
 msgid ""
 "\n"
 "Held Messages:\n"
@@ -1228,15 +1247,15 @@ msgstr ""
 "\n"
 "Held Messages:\n"
 
-#: src/mailman/commands/cli_notify.py:122
+#: src/mailman/commands/cli_notify.py:126
 msgid "Sender: {}\n"
 msgstr "מוען: {}\n"
 
-#: src/mailman/commands/cli_notify.py:123
+#: src/mailman/commands/cli_notify.py:128 src/mailman/commands/cli_notify.py:131
 msgid "Subject: {}\n"
 msgstr "נושא: {}\n"
 
-#: src/mailman/commands/cli_notify.py:124
+#: src/mailman/commands/cli_notify.py:132
 msgid ""
 "Reason: {}\n"
 "\n"
@@ -1244,17 +1263,11 @@ msgstr ""
 "סיבה: {}\n"
 "\n"
 
-#: src/mailman/commands/cli_notify.py:133
+#: src/mailman/commands/cli_notify.py:135
 msgid ""
-"The {} list has {} moderation requests waiting.\n"
+"Missing data for request {}\n"
 "\n"
-"{}\n"
-"Please attend to this at your earliest convenience.\n"
 msgstr ""
-"The {} list has {} moderation requests waiting.\n"
-"\n"
-"{}\n"
-"Please attend to this at your earliest convenience.\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
@@ -1267,11 +1280,9 @@ msgid ""
 "    representation.  Useful with 'mailman qfile -i <file>'.  In that case, the\n"
 "    list of unpickled objects will be left in a variable called 'm'."
 msgstr ""
-"    Don't attempt to pretty print the object.  This is useful if there is "
-"some\n"
+"    Don't attempt to pretty print the object.  This is useful if there is some\n"
 "    problem with the object and you just want to get an unpickled\n"
-"    representation.  Useful with 'mailman qfile -i <file>'.  In that case, "
-"the\n"
+"    representation.  Useful with 'mailman qfile -i <file>'.  In that case, the\n"
 "    list of unpickled objects will be left in a variable called 'm'."
 
 #: src/mailman/commands/cli_qfile.py:50
@@ -1318,7 +1329,21 @@ msgstr "GNU Mailman is stopped (stale pid: $pid)"
 msgid "GNU Mailman is in an unexpected state ($hostname != $fqdn_name)"
 msgstr "GNU Mailman is in an unexpected state ($hostname != $fqdn_name)"
 
-#: src/mailman/commands/cli_syncmembers.py:151
+#: src/mailman/commands/cli_syncmembers.py:131
+#, python-format
+msgid "[ADD] %s"
+msgstr "[ADD] %s"
+
+#: src/mailman/commands/cli_syncmembers.py:141
+#, python-format
+msgid "[DEL] %s"
+msgstr "[DEL] %s"
+
+#: src/mailman/commands/cli_syncmembers.py:150
+msgid "Nothing to do"
+msgstr "Nothing to do"
+
+#: src/mailman/commands/cli_syncmembers.py:155
 msgid ""
 "    Add and delete members as necessary to syncronize a list's membership\n"
 "    with an input file.  FILENAME is the file containing the new membership,\n"
@@ -1330,17 +1355,15 @@ msgid ""
 "    "
 msgstr ""
 "    Add and delete members as necessary to syncronize a list's membership\n"
-"    with an input file.  FILENAME is the file containing the new membership,"
-"\n"
+"    with an input file.  FILENAME is the file containing the new membership,\n"
 "    one member per line.  Blank lines and lines that start with a '#' are\n"
 "    ignored.  Addresses in FILENAME which are not current list members\n"
 "    will be added to the list with delivery mode as specified with\n"
 "    -d/--delivery.  List members whose addresses are not in FILENAME will\n"
-"    be removed from the list.  FILENAME can be '-' to indicate standard "
-"input.\n"
+"    be removed from the list.  FILENAME can be '-' to indicate standard input.\n"
 "    "
 
-#: src/mailman/commands/cli_syncmembers.py:163
+#: src/mailman/commands/cli_syncmembers.py:167
 msgid ""
 "    Set the added members delivery mode to 'regular', 'mime', 'plain',\n"
 "    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
@@ -1350,10 +1373,9 @@ msgstr ""
 "    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
 "    or no delivery.  If not given, the default is regular."
 
-#: src/mailman/commands/cli_syncmembers.py:169
+#: src/mailman/commands/cli_syncmembers.py:173
 msgid "    Override the list's setting for send_welcome_message to added members."
-msgstr ""
-"    Override the list's setting for send_welcome_message to added members."
+msgstr "    Override the list's setting for send_welcome_message to added members."
 
 #: src/mailman/commands/cli_unshunt.py:33
 msgid "Unshunt messages."
@@ -1364,8 +1386,7 @@ msgid ""
 "    Discard all shunted messages instead of moving them back to their original\n"
 "    queue."
 msgstr ""
-"    Discard all shunted messages instead of moving them back to their "
-"original\n"
+"    Discard all shunted messages instead of moving them back to their original\n"
 "    queue."
 
 #: src/mailman/commands/cli_unshunt.py:50
@@ -1409,12 +1430,9 @@ msgid ""
 "mailing list object."
 msgstr ""
 "There are two ways to use this script: interactively or programmatically.\n"
-"Using it interactively allows you to play with, examine and modify a "
-"mailing\n"
-"list from Python's interactive interpreter.  When running interactively, "
-"the\n"
-"variable 'm' will be available in the global namespace.  It will reference "
-"the\n"
+"Using it interactively allows you to play with, examine and modify a mailing\n"
+"list from Python's interactive interpreter.  When running interactively, the\n"
+"variable 'm' will be available in the global namespace.  It will reference the\n"
 "mailing list object."
 
 #: src/mailman/commands/cli_withlist.py:160
@@ -1428,10 +1446,8 @@ msgid ""
 "where `listspec` is either the posting address of the mailing list\n"
 "(e.g. ant@example.com), or the List-ID (e.g. ant.example.com)."
 msgstr ""
-"Programmatically, you can write a function to operate on a mailing list, "
-"and\n"
-"this script will take care of the housekeeping (see below for examples).  "
-"In\n"
+"Programmatically, you can write a function to operate on a mailing list, and\n"
+"this script will take care of the housekeeping (see below for examples).  In\n"
 "that case, the general usage syntax is:\n"
 "\n"
 "% mailman withlist [options] -l listspec [args ...]\n"
@@ -1554,8 +1570,7 @@ msgid ""
 "    Leaves you at an interactive prompt after all other processing is complete.\n"
 "    This is the default unless the --run option is given."
 msgstr ""
-"    Leaves you at an interactive prompt after all other processing is "
-"complete.\n"
+"    Leaves you at an interactive prompt after all other processing is complete.\n"
 "    This is the default unless the --run option is given."
 
 #: src/mailman/commands/cli_withlist.py:237
@@ -1612,21 +1627,29 @@ msgstr "Regular expression requires --run"
 msgid "The variable 'm' is the $listspec mailing list"
 msgstr "The variable 'm' is the $listspec mailing list"
 
-#: src/mailman/commands/eml_confirm.py:35
-msgid "Confirm a subscription request."
-msgstr "אישור בקשת הרשמה."
+#: src/mailman/commands/eml_confirm.py:40
+msgid "Confirm a subscription or held message request."
+msgstr ""
 
-#: src/mailman/commands/eml_confirm.py:42
+#: src/mailman/commands/eml_confirm.py:47
 msgid "No confirmation token found"
 msgstr "לא נמצא אסימון אימות"
 
-#: src/mailman/commands/eml_confirm.py:78
+#: src/mailman/commands/eml_confirm.py:60 src/mailman/commands/eml_confirm.py:95
+msgid "Confirmation token did not match"
+msgstr "אסימון האימות לא התאים"
+
+#: src/mailman/commands/eml_confirm.py:91
 msgid "Confirmed"
 msgstr "יש אישור"
 
-#: src/mailman/commands/eml_confirm.py:82
-msgid "Confirmation token did not match"
-msgstr "אסימון האימות לא התאים"
+#: src/mailman/commands/eml_confirm.py:108
+msgid "Invalid Approved: password"
+msgstr ""
+
+#: src/mailman/commands/eml_confirm.py:111
+msgid "Message $message"
+msgstr ""
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
@@ -1656,7 +1679,7 @@ msgstr "$self.name: אין פקודה כזאת: $command_name"
 msgid "$self.name: too many arguments: $printable_arguments"
 msgstr "$self.name: יותר מדי משתנים: $printable_arguments"
 
-#: src/mailman/commands/eml_membership.py:64
+#: src/mailman/commands/eml_membership.py:65
 msgid ""
 "You will be asked to confirm your subscription request and you may be issued a\n"
 "provisional password.\n"
@@ -1673,32 +1696,32 @@ msgstr ""
 "של רשימת הדיוור. ניתן להשתמש באפשרות ‚address’ (כתובת) כדי לבקש\n"
 "מינוי של כתובת שונה מזו שממנה נשלחה ההודעה.\n"
 
-#: src/mailman/commands/eml_membership.py:73
+#: src/mailman/commands/eml_membership.py:74
 msgid "Join this mailing list."
 msgstr "הצטרפות לרשימת דיוור זו."
 
-#: src/mailman/commands/eml_membership.py:89
+#: src/mailman/commands/eml_membership.py:97
 msgid "$self.name: No valid address found to subscribe"
 msgstr "$self.name: לא נמצאה כתובת תקפה לרישום"
 
-#: src/mailman/commands/eml_membership.py:116
+#: src/mailman/commands/eml_membership.py:125
 msgid "$person has a pending subscription for $listname"
 msgstr "בקשת הרשמה של $person אל $listname ממתינה"
 
-#: src/mailman/commands/eml_membership.py:119
+#: src/mailman/commands/eml_membership.py:128
 msgid "Confirmation email sent to $person"
 msgstr "נשלחה אל $person הודעת אימות בדוא״ל"
 
-#: src/mailman/commands/eml_membership.py:136
-#: src/mailman/commands/eml_membership.py:146
+#: src/mailman/commands/eml_membership.py:145
+#: src/mailman/commands/eml_membership.py:155
 msgid "bad argument: $argument"
 msgstr "משתנה שגוי: $argument"
 
-#: src/mailman/commands/eml_membership.py:159
+#: src/mailman/commands/eml_membership.py:168
 msgid "An alias for 'join'."
 msgstr "כינוי ל־‚join’ (הצטרפות)."
 
-#: src/mailman/commands/eml_membership.py:170
+#: src/mailman/commands/eml_membership.py:179
 msgid ""
 "Leave this mailing list.\n"
 "\n"
@@ -1708,35 +1731,35 @@ msgstr ""
 "\n"
 "יכול להיות שיהיה עליך לאמת את בקשתך."
 
-#: src/mailman/commands/eml_membership.py:173
+#: src/mailman/commands/eml_membership.py:182
 msgid "Leave this mailing list."
 msgstr "לעזוב את רשימת הדיוור הזו."
 
-#: src/mailman/commands/eml_membership.py:179
+#: src/mailman/commands/eml_membership.py:188
 msgid "$self.name: No valid email address found to unsubscribe"
 msgstr "$self.name: לא נמצאו כתובות תקפות לביטול המינוי"
 
-#: src/mailman/commands/eml_membership.py:185
+#: src/mailman/commands/eml_membership.py:194
 msgid "No registered user for email address: $email"
 msgstr "אין משתמש רשום עם כתובת הדוא״ל: $email"
 
-#: src/mailman/commands/eml_membership.py:192
+#: src/mailman/commands/eml_membership.py:201
 msgid "Invalid or unverified email address: $email"
 msgstr "כתובת דוא״ל שגויה או בלתי מאומתת: $email"
 
-#: src/mailman/commands/eml_membership.py:211
+#: src/mailman/commands/eml_membership.py:220
 msgid "$self.name: $email is not a member of $mlist.fqdn_listname"
 msgstr "$self.name:‏ $email מחוץ לרשימה $mlist.fqdn_listname"
 
-#: src/mailman/commands/eml_membership.py:222
+#: src/mailman/commands/eml_membership.py:231
 msgid "$person left $mlist.fqdn_listname"
 msgstr "$person מחוץ לרשימה $mlist.fqdn_listname"
 
-#: src/mailman/commands/eml_membership.py:224
+#: src/mailman/commands/eml_membership.py:233
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
 msgstr "נשלחה הודעת דוא״ל לאישור העזיבה של $person מהרשימה $mlist.fqdn_listname"
 
-#: src/mailman/commands/eml_membership.py:234
+#: src/mailman/commands/eml_membership.py:243
 msgid "An alias for 'leave'."
 msgstr "כינוי ל־‚leave’ (עזיבה)."
 
@@ -1799,13 +1822,13 @@ msgstr "ביצוע בדיקות אימות ARC (שרשרת מיעון מהימנ
 msgid "Suppress some duplicates of the same message."
 msgstr "להדחיק עותקים משוכפלים של אותה ההודעה."
 
+#: src/mailman/handlers/cleanse.py:42
+msgid "Cleanse certain headers from all messages."
+msgstr "להסיר כותרות מסוימות מכל ההודעות."
+
 #: src/mailman/handlers/cleanse_dkim.py:42
 msgid "Remove DomainKeys headers."
 msgstr "הסרת כותרות DomainKeys."
-
-#: src/mailman/handlers/cleanse.py:39
-msgid "Cleanse certain headers from all messages."
-msgstr "להסיר כותרות מסוימות מכל ההודעות."
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
@@ -1819,7 +1842,7 @@ msgstr "עיצוב הודעה עם כותרת עליונה ותחתונה."
 msgid "$realname via $mlist.display_name"
 msgstr "$realname דרך $mlist.display_name"
 
-#: src/mailman/handlers/dmarc.py:222
+#: src/mailman/handlers/dmarc.py:228
 msgid "Apply DMARC mitigations."
 msgstr "החלת אפחותי DMARC."
 
@@ -1839,7 +1862,7 @@ msgstr ""
 "ההודעה הדחופה שלך לרשימת הדיוור $mlist.display_name mailing לא אושרה\n"
 "למשלוח.  מצורפת ההודעה המקורית שהתקבלה על ידי Mailman.\n"
 
-#: src/mailman/handlers/mime_delete.py:61
+#: src/mailman/handlers/mime_delete.py:62
 msgid ""
 "The attached message matched the $mlist.display_name mailing list's content\n"
 "filtering rules and was prevented from being forwarded on to the list\n"
@@ -1852,31 +1875,50 @@ msgstr ""
 "להלן העותק היחידי שנותר מההודעה שהושלכה.\n"
 "\n"
 
-#: src/mailman/handlers/mime_delete.py:68
+#: src/mailman/handlers/mime_delete.py:69
 msgid "Content filter message notification"
 msgstr "התראת סינון תוכן הודעה"
 
-#: src/mailman/handlers/mime_delete.py:102
+#: src/mailman/handlers/mime_delete.py:97
+msgid ""
+"\n"
+"___________________________________________\n"
+"Mailman's content filtering has removed the\n"
+"following MIME parts from this message.\n"
+msgstr ""
+
+#: src/mailman/handlers/mime_delete.py:110
 msgid "The message's content type was explicitly disallowed"
 msgstr "סוג התוכן של ההודעה נאסר במפורש"
 
-#: src/mailman/handlers/mime_delete.py:107
+#: src/mailman/handlers/mime_delete.py:115
 msgid "The message's content type was not explicitly allowed"
 msgstr "סוג התוכן של ההודעה לא אושר במפורש"
 
-#: src/mailman/handlers/mime_delete.py:116
+#: src/mailman/handlers/mime_delete.py:124
 msgid "The message's file extension was explicitly disallowed"
 msgstr "סיומת הקובץ שבהודעה נאסרה במפורש"
 
-#: src/mailman/handlers/mime_delete.py:120
+#: src/mailman/handlers/mime_delete.py:128
 msgid "The message's file extension was not explicitly allowed"
 msgstr "סיומת הקובץ שבהודעה לא אושרה במפורש"
 
-#: src/mailman/handlers/mime_delete.py:132
+#: src/mailman/handlers/mime_delete.py:140
 msgid "After content filtering, the message was empty"
 msgstr "לאחר סינון התוכן, ההודעה נותרה ריקה"
 
-#: src/mailman/handlers/mime_delete.py:322
+#: src/mailman/handlers/mime_delete.py:152 src/mailman/handlers/mime_delete.py:291
+msgid ""
+"\n"
+"Replaced multipart/alternative part with first alternative.\n"
+msgstr ""
+
+#: src/mailman/handlers/mime_delete.py:239 src/mailman/handlers/mime_delete.py:246
+#: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
+msgid "Name: $fname\n"
+msgstr ""
+
+#: src/mailman/handlers/mime_delete.py:374
 msgid "Filter the MIME content of messages."
 msgstr "סינון תוכן ה־MIME של הודעות."
 
@@ -1896,11 +1938,11 @@ msgstr "תגובה אוטומטית להודעה שלך אל רשימת הדיו
 msgid "The Mailman Replybot"
 msgstr "בוט התגובות של Mailman"
 
-#: src/mailman/handlers/rfc_2369.py:127
+#: src/mailman/handlers/rfc_2369.py:128
 msgid "Add the RFC 2369 List-* headers."
 msgstr "הוספת כותרות List-*‎ לפי תקן RFC 2369."
 
-#: src/mailman/handlers/subject_prefix.py:153
+#: src/mailman/handlers/subject_prefix.py:158
 msgid "Add a list-specific prefix to the Subject header value."
 msgstr "הוספת קידומת ייחודית לרשימה לערך כותרת הנושא (Subject)."
 
@@ -1924,7 +1966,7 @@ msgstr "שליחת ההודעה לתור היוצא."
 msgid "Move the message to the outgoing news queue."
 msgstr "להעביר את ההודעה לתור החדשות היוצאות."
 
-#: src/mailman/handlers/validate_authenticity.py:113
+#: src/mailman/handlers/validate_authenticity.py:120
 msgid "Perform auth checks and attach Authentication-Results header."
 msgstr "לבצע בדיקות אימות ולצרף כותרת Authentication-Results (תוצאות אימות)."
 
@@ -1948,7 +1990,7 @@ msgstr "תצורת הפרסום המובנית."
 msgid "The virgin queue pipeline."
 msgstr "תצורת הפרסום הבתולה."
 
-#: src/mailman/rest/sub_moderation.py:111
+#: src/mailman/rest/sub_moderation.py:114
 msgid "Subscription request"
 msgstr "בקשת רישום"
 
@@ -1976,21 +2018,30 @@ msgstr "התאמת הודעות שנשלחו מכתובות חסומות."
 msgid "Message sender {} is banned from this list"
 msgstr "מוען ההודעה {} חסום מול הרשימה הזאת"
 
-#: src/mailman/rules/dmarc.py:306
+#: src/mailman/rules/digests.py:42
+msgid "Catch messages with digest Subject or boilerplate quote."
+msgstr ""
+
+#: src/mailman/rules/digests.py:57
+msgid "Message has a digest subject"
+msgstr ""
+
+#: src/mailman/rules/digests.py:88
+msgid "Message quotes digest boilerplate"
+msgstr ""
+
+#: src/mailman/rules/dmarc.py:307
 msgid "Find DMARC policy of From: domain."
 msgstr "איתור מדיניות ה־DMARC של שם התחום בשדה From:‎ (מאת)."
 
-#: src/mailman/rules/dmarc.py:326
+#: src/mailman/rules/dmarc.py:327
 msgid "DMARC moderation"
 msgstr "פיקוח DMARC"
 
-#: src/mailman/rules/dmarc.py:332
+#: src/mailman/rules/dmarc.py:333
 #, python-brace-format
 msgid "You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or quarantine, and your message has been automatically rejected.  If you think that your messages are being rejected in error, contact the mailing list owner at ${listowner}."
-msgstr ""
-"אסור לך לפרסם לרשימה הזאת משם תחום ב־From:‎ (מאת) שמפרסם מדיניות DMARC של "
-"דחייה או בידוד וההודעה שלך נדחתה אוטומטית. אם לדעתך ההודעות שלך נדחות בשוגג, "
-"נא ליצור קשר עם בעלי רשימת הדיוור בכתובת ${listowner}."
+msgstr "אסור לך לפרסם לרשימה הזאת משם תחום ב־From:‎ (מאת) שמפרסם מדיניות DMARC של דחייה או בידוד וההודעה שלך נדחתה אוטומטית. אם לדעתך ההודעות שלך נדחות בשוגג, נא ליצור קשר עם בעלי רשימת הדיוור בכתובת ${listowner}."
 
 #: src/mailman/rules/emergency.py:34
 msgid ""
@@ -2030,11 +2081,11 @@ msgstr "לתפוס הודעות עם יותר מדי נמענים מפורשים
 msgid "Message has more than {} recipients"
 msgstr "להודעה יש למעלה מ־{} נמענים"
 
-#: src/mailman/rules/max_size.py:32
+#: src/mailman/rules/max_size.py:37
 msgid "Catch messages that are bigger than a specified maximum."
 msgstr "לתפוס הודעות גדולות מהגודל המרבי שצוין."
 
-#: src/mailman/rules/max_size.py:47
+#: src/mailman/rules/max_size.py:68
 msgid "The message is larger than the {} KB maximum size"
 msgstr "ההודעה גדולה מהמגבלה המרבית של {} ק״ב"
 
@@ -2104,35 +2155,35 @@ msgstr "הכותרת „{}” תואמת לשורה ב־bounce_matching_header (
 msgid "A rule which always matches."
 msgstr "כלל שתמיד תואם."
 
-#: src/mailman/runners/command.py:101
+#: src/mailman/runners/command.py:103
 msgid "Ignoring non-text/plain MIME parts"
 msgstr "להתעלם מהחלקים שאינם טקסט/MIME פשוט"
 
-#: src/mailman/runners/command.py:139
+#: src/mailman/runners/command.py:143
 msgid "The results of your email command are provided below.\n"
 msgstr "תוצאות פקודות הדוא״ל שלך מופיעות להלן.\n"
 
-#: src/mailman/runners/command.py:183
+#: src/mailman/runners/command.py:187
 msgid "- Original message details:"
 msgstr "- פרטי ההודעה המקורית:"
 
-#: src/mailman/runners/command.py:187
+#: src/mailman/runners/command.py:191
 msgid "    From: $from_"
 msgstr "    מאת: $from_"
 
-#: src/mailman/runners/command.py:188
+#: src/mailman/runners/command.py:192
 msgid "    Subject: $subject"
 msgstr "    נושא: $subject"
 
-#: src/mailman/runners/command.py:189
+#: src/mailman/runners/command.py:193
 msgid "    Date: $date"
 msgstr "    תאריך: $date"
 
-#: src/mailman/runners/command.py:190
+#: src/mailman/runners/command.py:194
 msgid "    Message-ID: $message_id"
 msgstr "    מזהה הודעה: $message_id"
 
-#: src/mailman/runners/command.py:191
+#: src/mailman/runners/command.py:195
 msgid ""
 "\n"
 "- Results:"
@@ -2140,11 +2191,11 @@ msgstr ""
 "\n"
 "- תוצאות:"
 
-#: src/mailman/runners/command.py:205
+#: src/mailman/runners/command.py:209
 msgid "No such command: $command_name"
 msgstr "אין פקודה כזאת: $command_name"
 
-#: src/mailman/runners/command.py:219
+#: src/mailman/runners/command.py:223
 msgid ""
 "\n"
 "- Unprocessed:"
@@ -2152,7 +2203,7 @@ msgstr ""
 "\n"
 "- ללא עיבוד:"
 
-#: src/mailman/runners/command.py:224
+#: src/mailman/runners/command.py:228
 msgid ""
 "\n"
 "- Ignored:"
@@ -2160,7 +2211,7 @@ msgstr ""
 "\n"
 "- בהתעלמות:"
 
-#: src/mailman/runners/command.py:227
+#: src/mailman/runners/command.py:231
 msgid ""
 "\n"
 "- Done."
@@ -2168,31 +2219,31 @@ msgstr ""
 "\n"
 "- הסתיים."
 
-#: src/mailman/runners/command.py:233
+#: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
 msgstr "תוצאות פקודות הדוא״ל שלך"
 
-#: src/mailman/runners/digest.py:54
+#: src/mailman/runners/digest.py:55
 msgid "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
 msgstr "תקציר של $mlist.display_name, כרך $volume, גיליון $digest_number"
 
-#: src/mailman/runners/digest.py:82
+#: src/mailman/runners/digest.py:83
 msgid "Today's Topics:\n"
 msgstr "נושאי היום:\n"
 
-#: src/mailman/runners/digest.py:151
+#: src/mailman/runners/digest.py:152
 msgid "Digest Header"
 msgstr "כותרת תקציר עליונה"
 
-#: src/mailman/runners/digest.py:171
+#: src/mailman/runners/digest.py:172
 msgid "Today's Topics ($count messages)"
 msgstr "נושאי היום ($count הודעות)"
 
-#: src/mailman/runners/digest.py:193 src/mailman/runners/digest.py:278
+#: src/mailman/runners/digest.py:194 src/mailman/runners/digest.py:269
 msgid "Digest Footer"
 msgstr "כותרת תקציר תחתונה"
 
-#: src/mailman/runners/digest.py:200 src/mailman/runners/digest.py:285
+#: src/mailman/runners/digest.py:201 src/mailman/runners/digest.py:276
 msgid "End of "
 msgstr "סוף של "
 
@@ -2220,6 +2271,23 @@ msgstr "החיתוך והטווח חייבים להיות מספרים שלמי�
 msgid "Bad runner spec: $value"
 msgstr "מפרט אצן שגוי: $value"
 
+#: src/mailman/utilities/scrubber.py:48 src/mailman/utilities/scrubber.py:49
+msgid "not available"
+msgstr ""
+
+#: src/mailman/utilities/scrubber.py:50
+msgid ""
+"A message part incompatible with plain text digests has been removed ...\n"
+"Name: $filename\n"
+"Type: $ctype\n"
+"Size: $size bytes\n"
+"Desc: $desc\n"
+msgstr ""
+
+#: src/mailman/utilities/scrubber.py:58
+msgid "-------------- next part --------------\n"
+msgstr ""
+
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
 "רשימת הדיוור ‚$listname’ נוצרה הרגע בשבילך. להלן פרטים בסיסיים על\n"
@@ -2237,8 +2305,7 @@ msgid "help.txt"
 msgstr ""
 "עזרה עבור רשימת הדיוור $listname\n"
 "\n"
-"זו פקודת הדוא״ל ‚help’ (עזרה) עבור גרסה $version של מנהל הרשימות GNU "
-"Mailman\n"
+"זו פקודת הדוא״ל ‚help’ (עזרה) עבור גרסה $version של מנהל הרשימות GNU Mailman\n"
 "תחת $domain.  להלן מתוארות פקודות שניתן לשלוח כדי לקבל מידע ולשלוט במינוי\n"
 "שלך לרשימות של Mailman באתר הזה.\n"
 "פקודה יכול להיות בשורת הנושא או בגוף ההודעה.\n"
@@ -2294,6 +2361,12 @@ msgstr ""
 "המינוי של $member לרשימת הדיוור $listname הושבתה כיוון שניקוד ההחזרה חורג\n"
 "מה־bounce_score_threshold (סף ניקוד החזרה) של הרשימה."
 
+msgid "list:admin:notice:increment.txt"
+msgstr ""
+
+msgid "list:admin:notice:pending.txt"
+msgstr ""
+
 msgid "list:admin:notice:removal.txt"
 msgstr "המינוי של $member לרשימת הדיוור $listname בוטל עקב החזרות מוגזמות."
 
@@ -2331,8 +2404,7 @@ msgid "list:member:generic:footer.txt"
 msgstr ""
 "_______________________________________________\n"
 "רשימת הדיוור$display_name ‏-- $listname\n"
-"כדי לבטל את המינוי עליך לשלוח הודעת דוא״ל אל "
-"‎${short_listname}-leave@${domain}‎"
+"כדי לבטל את המינוי עליך לשלוח הודעת דוא״ל אל ‎${short_listname}-leave@${domain}‎"
 
 msgid "list:member:regular:header.txt"
 msgstr " "
@@ -2439,8 +2511,7 @@ msgstr ""
 "\n"
 "רשימת הדיוור $listname קיבלה ממך מספר של החזרות, מה שמציין שאירעה\n"
 "תקלה בהעברת הודעות אל $sender_email. מצורפת דוגמה להלן. נא לחקור את ההודעה\n"
-"כדי לוודא שאין בעיות בכתובת הדוא״ל. אולי כדאי לך לפנות להנהלת הדוא״ל לעזרה "
-"נוספת.\n"
+"כדי לוודא שאין בעיות בכתובת הדוא״ל. אולי כדאי לך לפנות להנהלת הדוא״ל לעזרה נוספת.\n"
 "\n"
 "אין צורך בפעולות מיוחדות כדי להישאר במצב חברות פעיל ברשימת הדיוור. \n"
 "\n"
@@ -2498,11 +2569,65 @@ msgstr ""
 "  $request_email\n"
 "\n"
 "\n"
-"עם המילה ‚help’ (עזרה) בנושא או בגוף ההודעה (בלי המירכאות) ותישלח אליך "
-"הודעה\n"
+"עם המילה ‚help’ (עזרה) בנושא או בגוף ההודעה (בלי המירכאות) ותישלח אליך הודעה\n"
 "בחזרה עם הנחיות.  לצורך שינוי ההרשאות תידרש לך ססמה, אך מטעמי אבטחה\n"
 "ססמה זו אינה נכללת כאן.  אם שכחת את הססמה שלך יהיה עליך לאפס אותה דרך\n"
 "מנשק הדפדפן."
+
+#~ msgid "Already subscribed (skipping): $display_name <$email>"
+#~ msgstr "Already subscribed (skipping): $display_name <$email>"
+
+#~ msgid "Member not subscribed (skipping): $display_name <$email>"
+#~ msgstr "Member not subscribed (skipping): $display_name <$email>"
+
+#~ msgid ""
+#~ "    [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to\n"
+#~ "    indicate standard input.  Blank lines and lines that start with a\n"
+#~ "    '#' are ignored.  This option is deprecated in favor of 'mailman\n"
+#~ "    addmembers'."
+#~ msgstr ""
+#~ "    [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to\n"
+#~ "    indicate standard input.  Blank lines and lines that start with a\n"
+#~ "    '#' are ignored.  This option is deprecated in favor of 'mailman\n"
+#~ "    addmembers'."
+
+#~ msgid ""
+#~ "    [MODE] Delete all member addresses found in FILENAME\n"
+#~ "    from the specified list. FILENAME can be '-' to indicate standard input.\n"
+#~ "    Blank lines and lines that start with a '#' are ignored.\n"
+#~ "    This option is deprecated in favor of 'mailman delmembers'."
+#~ msgstr ""
+#~ "    [MODE] Delete all member addresses found in FILENAME\n"
+#~ "    from the specified list. FILENAME can be '-' to indicate standard input.\n"
+#~ "    Blank lines and lines that start with a '#' are ignored.\n"
+#~ "    This option is deprecated in favor of 'mailman delmembers'."
+
+#~ msgid ""
+#~ "    [MODE] Synchronize all member addresses of the specified mailing list\n"
+#~ "    with the member addresses found in FILENAME.\n"
+#~ "    FILENAME can be '-' to indicate standard input.\n"
+#~ "    Blank lines and lines that start with a '#' are ignored.\n"
+#~ "    This option is deprecated in favor of 'mailman syncmembers'."
+#~ msgstr ""
+#~ "    [MODE] Synchronize all member addresses of the specified mailing list\n"
+#~ "    with the member addresses found in FILENAME.\n"
+#~ "    FILENAME can be '-' to indicate standard input.\n"
+#~ "    Blank lines and lines that start with a '#' are ignored.\n"
+#~ "    This option is deprecated in favor of 'mailman syncmembers'."
+
+#~ msgid ""
+#~ "The {} list has {} moderation requests waiting.\n"
+#~ "\n"
+#~ "{}\n"
+#~ "Please attend to this at your earliest convenience.\n"
+#~ msgstr ""
+#~ "The {} list has {} moderation requests waiting.\n"
+#~ "\n"
+#~ "{}\n"
+#~ "Please attend to this at your earliest convenience.\n"
+
+#~ msgid "Confirm a subscription request."
+#~ msgstr "אישור בקשת הרשמה."
 
 #~ msgid ""
 #~ "    Import Mailman 2.1 list data'.  Requires the fully-qualified name of the\n"
