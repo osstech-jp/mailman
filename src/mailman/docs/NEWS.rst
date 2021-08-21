@@ -102,6 +102,8 @@ Bugs
   embedded commas.  (Closes #933)
 * The ``gatenews`` command now parses messages with email.message_from_bytes
   without specifying policy.  (Closes #934)
+* Improve error message from REST API for invalid email address (Fixes #872)
+
 
 Command line
 ------------
