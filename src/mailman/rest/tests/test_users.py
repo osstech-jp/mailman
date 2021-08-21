@@ -245,7 +245,9 @@ class TestUsers(unittest.TestCase):
                 email='anne@invalid'))
         # There is now one user.
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'anne@invalid')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid email address anne@invalid')
 
     def test_create_server_owner_false(self):
         # Issue #136: Creating a user with is_server_owner=no should create
