@@ -1,0 +1,2 @@
+$member's subscription has been disabled on $listname due to their bounce score
+超过邮件列表的bounce_score_threshold。

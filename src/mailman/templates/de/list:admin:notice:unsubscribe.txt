@@ -1,1 +1,1 @@
-$member wurde erfolgreich von $display_name entfernt.
+$member wurde erfolgreich entfernt von $display_name.

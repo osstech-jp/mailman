@@ -1,0 +1,2 @@
+Geri dönme puanları posta listesinin bounce_score_threshold değerini aştığı için
+$member kişisinin $listname listesindeki aboneliği devre dışı bırakıldı.

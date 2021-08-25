@@ -1,0 +1,6 @@
+您给$listname邮件列表的信息被拒绝，原因如下
+原因。
+
+$reasons
+
+附上Mailman收到的原始信息。

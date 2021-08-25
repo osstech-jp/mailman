@@ -10,6 +10,14 @@ Avant de pouvoir utiliser GNU Mailman sur ce serveur, vous devez préalablement
 confirmer que c’est bien votre adresse électronique. Vous pouvez le faire en
 répondant à ce courriel sans toucher à son objet.
 
+Vous pouvez sinon inclure la ligne suivante -- et uniquement la ligne suivante --
+dans un message à $request_email :
+
+    confirm $token
+
+Notez qu'envoyer simplement `reply` à ce message devrait fonctionner sur la plupart
+des clients mail.
+
 Si vous ne souhaitez pas inscrire cette adresse électronique, vous pouvez
 simplement ignorer ce message. Si vous pensez que vous avez été malicieusement
 inscrit à la liste, ou si vous avez n’importe quelle autre question, vous

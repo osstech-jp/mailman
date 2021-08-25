@@ -1,16 +1,16 @@
-Benvenuto alla mailing list "$display_name" !
+Benvenuto nella mailing list "$display_name"!
 
-Per pubblicare in questa lista, invia la tua e-mail a:
+Per postare in questo elenco, invia la tua email a:
 
   $listname
 
-Puoi annullare l'iscrizione o apportare modifiche alle opzioni via e-mail
-inviando un messaggio a:
+Puoi annullare l'iscrizione o apportare modifiche alle tue opzioni tramite e-mail inviando
+un messaggio a:
 
   $request_email
 
-con la parola 'help' nell'oggetto o nel corpo (non includere le virgolette),
-riceverai un messaggio con le istruzioni. 
-È necessario disporre della password per modificare le opzioni, 
-ma per motivi di sicurezza questa password non è inclusa qui. 
-Se hai dimenticato la password, dovrai reimpostarla tramite la web UI.
+con la parola 'help' nell'oggetto o nel corpo (non includere le virgolette)
+riceverai un messaggio con le istruzioni. Avrai bisogno della tua password per
+modificare le tue opzioni, ma per motivi di sicurezza, questa password non è inclusa
+qui.  Se hai dimenticato la password, dovrai reimpostarla tramite l'interfaccia utente
+web UI.

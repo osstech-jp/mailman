@@ -1,1 +1,1 @@
-$member hat erfolgreich $display_name abonniert.
+$member hat $display_name erfolgreich abonniert.

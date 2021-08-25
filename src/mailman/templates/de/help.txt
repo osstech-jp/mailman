@@ -3,20 +3,20 @@ Hilfe für Mailingliste $listname
 Dies ist der Mail-Steuerbefehl 'help' für die Mailinglistensoftware auf $domain
 in Version $version. Im Folgenden werden Steuerbefehle beschrieben mit denen
 Sie Informationen über ihr Abonnement dieser Liste erhalten und Einstellungen
-vornehmen können. Ein Steuerbefehl kann in der Betreff-Zeile oder im Haupt-
-Teil Ihrer Nachricht stehen.
+vornehmen können. Ein Steuerbefehl kann in der Betreff-Zeile oder im Hauptteil
+Ihrer Nachricht stehen.
 
 Steuerbefehle senden Sie bitte an folgende Adresse: ${listname}-request@${domain}
 
-Zu den Beschreibungen - Angaben in "<>" sind OBLIGATORISCH, während solche
-in "[]" OPTIONAL sind. Die Zeichen "<>" und "[]" bitte nicht mit angeben, wenn 
-Sie die Kommandos benutzen. 
+Zu den Beschreibungen – Angaben in "<>" sind OBLIGATORISCH, während solche in
+"[]" OPTIONAL sind. Die Zeichen "<>" und "[]" bitte nicht mit angeben, wenn Sie die
+Kommandos benutzen.
 
 Die folgenden Steuerbefehle sind gültig:
 
     $commands
 
-Mit Fragen und Anliegen, die persönlich beantwortet werden sollen, wenden Sie sich
-bitte an:
+Mit Fragen und Anliegen, die persönlich beantwortet werden sollen,
+wenden Sie sich bitte an:
 
     $administrator

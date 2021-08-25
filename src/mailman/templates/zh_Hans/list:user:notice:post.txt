@@ -1,0 +1,5 @@
+您的信息题为
+
+    主题：$subject
+
+已被$display_name邮件列表成功接收。

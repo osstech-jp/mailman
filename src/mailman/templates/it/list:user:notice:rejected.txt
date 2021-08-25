@@ -1,6 +1,6 @@
-Il tuo messaggio alla mailing list $listname è stato respinto per le seguenti
-ragioni:
+Il tuo messaggio alla mailing list $listname è stato rifiutato per i seguenti
+motivi:
 
 $reasons
 
-Il messaggio originale ricevuto da Mailman è allegato.
+Il messaggio originale ricevuto da Mailman è in allegato.

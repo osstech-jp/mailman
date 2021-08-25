@@ -1,5 +1,5 @@
 Ihre Einwilligung als Administrator*in ist für folgende Nachricht
-and die Mailingliste nötig:
+an die Mailingliste nötig:
 
     Liste:    $listname
     Absender: $sender_email
@@ -9,5 +9,5 @@ Die Nachricht wurde aus folgenden Gründen zurückgehalten:
 
 $reasons
 
-Besuchen Sie die Administrations-Seiten, um die Nachricht 
+Besuchen Sie die Administrations-Seiten, um die Nachricht
 anzunehmen oder abzulehnen.

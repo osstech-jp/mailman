@@ -1,1 +1,1 @@
-$member a été inscrit(e) à $display_name avec succès.
+$member a été inscrit⋅e à $display_name avec succès.

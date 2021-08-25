@@ -1,4 +1,4 @@
-Bienvenue dans la liste de diffusion "$display_name" !
+Bienvenue dans la liste de diffusion « $display_name » !
 
 Pour écrire à cette liste, envoyez vos courriels à :
 
@@ -9,7 +9,7 @@ un message à :
 
     $request_email
 
-avec le mot 'help' dans l’objet ou le corps (n’incluez pas les guillemets).
+avec le mot « help » dans l’objet ou le corps (n’incluez pas les guillemets).
 Vous recevrez en retour un message avec des instructions à suivre. Vous aurez
 besoin de votre mot de passe pour changer vos paramètres, mais pour des
 raisons de sécurité, celui-ci n’est pas joint au présent message. Si vous

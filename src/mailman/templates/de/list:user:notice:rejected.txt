@@ -1,5 +1,5 @@
-Ihre Nachricht and die Mailingliste $listname wurde mit folgender Begründung 
-abgelehnt:
+Ihre Nachricht an die Mailingliste $listname wurde
+mit folgender Begründung abgelehnt:
 
 $reasons
 
