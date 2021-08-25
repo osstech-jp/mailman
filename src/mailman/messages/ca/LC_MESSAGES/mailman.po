@@ -2250,23 +2250,23 @@ msgid "-------------- next part --------------\n"
 msgstr ""
 
 msgid "domain:admin:notice:new-list.txt"
-msgstr "\"S'acaba de crear la llista de correu '$listname' per a vostè. A continuació, hi ha informació bàsica sobre la vostra llista de correu. Hi ha una interfície per correu per als usuaris (no administradors) de la llista; podeu obtenir informació sobre com utilitzar-la només enviant un missatge amb la paraula 'help'com a l'assumpte o al cos del missatge, a: $request_email Podeu adreçar totes les preguntes a $site_email.\""
+msgstr "S'acaba de crear la llista de correu '$listname' per a vostè. A continuació, hi ha informació bàsica sobre la vostra llista de correu. Hi ha una interfície per correu per als usuaris (no administradors) de la llista; podeu obtenir informació sobre com utilitzar-la només enviant un missatge amb la paraula 'help'com a l'assumpte o al cos del missatge, a: $request_email Podeu adreçar totes les preguntes a $site_email."
 
 msgid "help.txt"
-msgstr "\"Ajuda per a la llista de correu $listname Aquesta és la comanda d'ajuda de correu 'help' per a la versió $version del gestor de llistes GNU Mailman a $domain.  A continuació, es descriuen les comandes que podeu enviar per obtenir informació i controlar la seva subscripció a les llistes de Mailman en aquest lloc. Les comandes poden estar a la línia de l’assumpte o al cos del missatge. Les comandes s’han d’enviar a l’adreça ${listname}-request@${domain}. Quant a les descripcions, les paraules amb \"<>\" signifiquen els elements i les paraules clau NECESSARIS i amb \"[ ] \"denota elements OPCIONALS. No incloguin els \"<>\" o \"[]\" quan utilitzi les comandes. Les següents comandes són vàlides:    $commands Questions i dubtes per l'atenció d'una persona han de ser enviades a:    $administrator\""
+msgstr "Ajuda per a la llista de correu $listname Aquesta és la comanda d'ajuda de correu 'help' per a la versió $version del gestor de llistes GNU Mailman a $domain.  A continuació, es descriuen les comandes que podeu enviar per obtenir informació i controlar la seva subscripció a les llistes de Mailman en aquest lloc. Les comandes poden estar a la línia de l’assumpte o al cos del missatge. Les comandes s’han d’enviar a l’adreça ${listname}-request@${domain}. Quant a les descripcions, les paraules amb \"<>\" signifiquen els elements i les paraules clau NECESSARIS i amb \"[ ] \"denota elements OPCIONALS. No incloguin els \"<>\" o \"[]\" quan utilitzi les comandes. Les següents comandes són vàlides:    $commands Questions i dubtes per l'atenció d'una persona han de ser enviades a:    $administrator"
 
 msgid "list:admin:action:post.txt"
-msgstr "\"Com a administrador de la llista, es demana la seva autorització pel següent enviament a la llista de correu: Llista: $ listname De: $sender_email Assumpte: $subject El missatge es manté retingut perquè: $reasons Per la seva comoditat, visiteu el vostre tauler per aprovar o denegar la petició.\""
+msgstr "Com a administrador de la llista, es demana la seva autorització pel següent enviament a la llista de correu: Llista: $ listname De: $sender_email Assumpte: $subject El missatge es manté retingut perquè: $reasons Per la seva comoditat, visiteu el vostre tauler per aprovar o denegar la petició."
 
 msgid "list:admin:action:subscribe.txt"
-msgstr "\"La vostra autorització és necessària per a una sol·licitud de subscripció a la llista de correu:    Per:  $member    Llista: $listname\""
+msgstr "La vostra autorització és necessària per a una sol·licitud de subscripció a la llista de correu:    Per:  $member    Llista: $listname"
 
 msgid "list:admin:action:unsubscribe.txt"
-msgstr "\"La vostra autorització és necessària per a l'aprovació d'una sol·licitud de baixa de llista de correu: Per: $membre Llista: $ listname\""
+msgstr "La vostra autorització és necessària per a l'aprovació d'una sol·licitud de baixa de llista de correu: Per: $membre Llista: $ listname"
 
 #, fuzzy
 msgid "list:admin:notice:disable.txt"
-msgstr "\"$member s'ha subscrit amb èxit a $display_name.\""
+msgstr "$member s'ha subscrit amb èxit a $display_name."
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
@@ -2276,25 +2276,25 @@ msgstr ""
 
 #, fuzzy
 msgid "list:admin:notice:removal.txt"
-msgstr "\"$member s'ha subscrit amb èxit a $display_name.\""
+msgstr "$member s'ha subscrit amb èxit a $display_name."
 
 msgid "list:admin:notice:subscribe.txt"
-msgstr "\"$member s'ha subscrit amb èxit a $display_name.\""
+msgstr "$member s'ha subscrit amb èxit a $display_name."
 
 msgid "list:admin:notice:unrecognized.txt"
-msgstr "\"El missatge adjunt es va rebre com a rebot, però no es va reconèixer el format de rebot o no es van poder extreure adreces de membres.  La llista de correu electrònic s'ha configurat per enviar tots els missatges de rebot no reconeguts a l'administrador(es) de la llista.\""
+msgstr "El missatge adjunt es va rebre com a rebot, però no es va reconèixer el format de rebot o no es van poder extreure adreces de membres.  La llista de correu electrònic s'ha configurat per enviar tots els missatges de rebot no reconeguts a l'administrador(es) de la llista."
 
 msgid "list:admin:notice:unsubscribe.txt"
-msgstr "\"$member s'ha eliminat de $display_name.\""
+msgstr "$member s'ha eliminat de $display_name."
 
 msgid "list:member:digest:header.txt"
 msgstr " "
 
 msgid "list:member:digest:masthead.txt"
-msgstr "\"Enviar a $listname missatges a la llista de distribució $display_name . Per subscriure-us o donar de baixa la subscripció via correu, envieu a $request_email un missatge amb la paraula 'help' a l'assumpte o cos. Pot contactar amb la persona que gestiona la llista a $propietari_email\tQuan respongueu, modifiqueu la línia de l'assumpte de manera que sigui més específic que \"Re: Contingut de $display_name digest ...\"\""
+msgstr "Enviar a $listname missatges a la llista de distribució $display_name . Per subscriure-us o donar de baixa la subscripció via correu, envieu a $request_email un missatge amb la paraula 'help' a l'assumpte o cos. Pot contactar amb la persona que gestiona la llista a $propietari_email\tQuan respongueu, modifiqueu la línia de l'assumpte de manera que sigui més específic que \"Re: Contingut de $display_name digest ...\""
 
 msgid "list:member:generic:footer.txt"
-msgstr "\"_______________________________________________Llista de correu $display_name -- $listname Per donar-se de baixa envieu un correu a ${short_listname}-leave@${domain}\""
+msgstr "_______________________________________________Llista de correu $display_name -- $listname Per donar-se de baixa envieu un correu a ${short_listname}-leave@${domain}"
 
 msgid "list:member:regular:header.txt"
 msgstr " "
@@ -2303,38 +2303,38 @@ msgid "list:user:action:invite.txt"
 msgstr ""
 
 msgid "list:user:action:subscribe.txt"
-msgstr "\"Confirmació de registre d'adreça de correu electrònic Hola, aquest és el servidor GNU Mailman de $domain. Hem rebut una sol·licitud de registre per a l'adreça de correu $user_email. Abans de poder començar a utilitzar GNU Mailman en aquest lloc, primer heu de confirmar que aquesta és la vostra adreça de correu.  Fes-ho responent a aquest missatge mantenint intacte la capçalera de l’assumpte. Si no desitja registrar aquesta adreça de correu electrònic, simplement ignora aquesta missatge. Si creu que està sent subscrit a aquesta llista de forma maliciosa, pot contactar $owner_email\""
+msgstr "Confirmació de registre d'adreça de correu electrònic Hola, aquest és el servidor GNU Mailman de $domain. Hem rebut una sol·licitud de registre per a l'adreça de correu $user_email. Abans de poder començar a utilitzar GNU Mailman en aquest lloc, primer heu de confirmar que aquesta és la vostra adreça de correu.  Fes-ho responent a aquest missatge mantenint intacte la capçalera de l’assumpte. Si no desitja registrar aquesta adreça de correu electrònic, simplement ignora aquesta missatge. Si creu que està sent subscrit a aquesta llista de forma maliciosa, pot contactar $owner_email"
 
 msgid "list:user:action:unsubscribe.txt"
-msgstr "\"Confirmació de baixa de l'adreça de correu Hola, aquest és el servidor GNU Mailman a $domain. Hem rebut una sol·licitud de baixa de l'adreça de correu electrònic    $user_email Abans que GNU Mailman pot donar-la de baixa, primer ha de confirmar la seva sol·licitud. Podeu fer-ho responent aquest missatge, mantenint l’encapçalament de Assumpte. Si no voleu donar de baixa aquesta adreça de correu, simplement ignoreu aquest missatge. Si creieu que se us ha donat de baixa de la llista de forma maliciosa o que teniu cap altra pregunta, podeu contactar amb    $propietari_email \""
+msgstr "Confirmació de baixa de l'adreça de correu Hola, aquest és el servidor GNU Mailman a $domain. Hem rebut una sol·licitud de baixa de l'adreça de correu electrònic    $user_email Abans que GNU Mailman pot donar-la de baixa, primer ha de confirmar la seva sol·licitud. Podeu fer-ho responent aquest missatge, mantenint l’encapçalament de Assumpte. Si no voleu donar de baixa aquesta adreça de correu, simplement ignoreu aquest missatge. Si creieu que se us ha donat de baixa de la llista de forma maliciosa o que teniu cap altra pregunta, podeu contactar amb    $propietari_email"
 
 msgid "list:user:notice:goodbye.txt"
 msgstr " "
 
 msgid "list:user:notice:hold.txt"
-msgstr "\"El vostre correu a '$listname' amb l'assumpte    $subject està retingut fins que el moderador de la llista pugui revisar-lo per a la seva aprovació. El missatge està retingut perquè: $reasons El missatge es publicarà a la llista o es rebrà notificació de la decisió del moderador.\""
+msgstr "El vostre correu a '$listname' amb l'assumpte    $subject està retingut fins que el moderador de la llista pugui revisar-lo per a la seva aprovació. El missatge està retingut perquè: $reasons El missatge es publicarà a la llista o es rebrà notificació de la decisió del moderador."
 
 msgid "list:user:notice:no-more-today.txt"
-msgstr "\"Hem rebut un missatge de la vostra adreça <$sender_email> per sol·licitar una resposta automàtica de la llista de correu $listname. El número que hem vist avui: $count. Per evitar problemes com ara bucles de correu electrònic entre robots de correu electrònic, avui no enviarem més respostes. Si us plau, torneu-ho a provar demà. Si creieu que aquest missatge és un error o si teniu cap pregunta, poseu-vos en contacte amb el propietari de la llista a $owner_email.\""
+msgstr "Hem rebut un missatge de la vostra adreça <$sender_email> per sol·licitar una resposta automàtica de la llista de correu $listname. El número que hem vist avui: $count. Per evitar problemes com ara bucles de correu electrònic entre robots de correu electrònic, avui no enviarem més respostes. Si us plau, torneu-ho a provar demà. Si creieu que aquest missatge és un error o si teniu cap pregunta, poseu-vos en contacte amb el propietari de la llista a $owner_email."
 
 msgid "list:user:notice:post.txt"
-msgstr "\"El seu missatge titulat $subject va ser rebut correctament per la llista de correu $display _name.\""
+msgstr "El seu missatge titulat $subject va ser rebut correctament per la llista de correu $display _name."
 
 msgid "list:user:notice:probe.txt"
-msgstr "\"Aquest és un missatge de sonda.  Podeu ignorar aquest missatge. La llista de correu $listname ha rebut diversos rebots de la vostra part, indicant que pot haver-hi un problema al enviar missatges a $sender_email. Una mostra s'adjunta a continuació.  Consulteu aquest missatge per assegurar-vos que no hi hagi problemes amb la seva adreça de correu.  Potser voldreu consultar amb el vostre administrador de correu per obtenir més ajuda. No heu de fer res per seguir sent un membre actiu de la llista de correu. Si teniu cap pregunta o problema, podeu fer-ho contactant amb el propietari de la llista de distribució a    $owner_email\""
+msgstr "Aquest és un missatge de sonda.  Podeu ignorar aquest missatge. La llista de correu $listname ha rebut diversos rebots de la vostra part, indicant que pot haver-hi un problema al enviar missatges a $sender_email. Una mostra s'adjunta a continuació.  Consulteu aquest missatge per assegurar-vos que no hi hagi problemes amb la seva adreça de correu.  Potser voldreu consultar amb el vostre administrador de correu per obtenir més ajuda. No heu de fer res per seguir sent un membre actiu de la llista de correu. Si teniu cap pregunta o problema, podeu fer-ho contactant amb el propietari de la llista de distribució a    $owner_email"
 
 msgid "list:user:notice:refuse.txt"
-msgstr "\"La seva sol·licitud a la llista de correu $listname      $request has estat rebutjada pel moderador de la llista.  El moderador va donar el motiu següent per rebutjar la seva petició: \"$reason\" Qualsevol pregunta o comentari ha de dirigir-se a l'administrador de la llista:    $owner _email\""
+msgstr "La seva sol·licitud a la llista de correu $listname      $request has estat rebutjada pel moderador de la llista.  El moderador va donar el motiu següent per rebutjar la seva petició: \"$reason\" Qualsevol pregunta o comentari ha de dirigir-se a l'administrador de la llista:    $owner _email"
 
 msgid "list:user:notice:rejected.txt"
-msgstr "\"El seu missatge a la llista de correu $listname s'ha rebutjat per les següents raons: $reasons S'adjunta el missatge original rebut per Mailman.\""
+msgstr "El seu missatge a la llista de correu $listname s'ha rebutjat per les següents raons: $reasons S'adjunta el missatge original rebut per Mailman."
 
 #, fuzzy
 msgid "list:user:notice:warning.txt"
-msgstr "\"Aquest és un missatge de sonda.  Podeu ignorar aquest missatge. La llista de correu $listname ha rebut diversos rebots de la vostra part, indicant que pot haver-hi un problema al enviar missatges a $sender_email. Una mostra s'adjunta a continuació.  Consulteu aquest missatge per assegurar-vos que no hi hagi problemes amb la seva adreça de correu.  Potser voldreu consultar amb el vostre administrador de correu per obtenir més ajuda. No heu de fer res per seguir sent un membre actiu de la llista de correu. Si teniu cap pregunta o problema, podeu fer-ho contactant amb el propietari de la llista de distribució a    $owner_email\""
+msgstr "Aquest és un missatge de sonda.  Podeu ignorar aquest missatge. La llista de correu $listname ha rebut diversos rebots de la vostra part, indicant que pot haver-hi un problema al enviar missatges a $sender_email. Una mostra s'adjunta a continuació.  Consulteu aquest missatge per assegurar-vos que no hi hagi problemes amb la seva adreça de correu.  Potser voldreu consultar amb el vostre administrador de correu per obtenir més ajuda. No heu de fer res per seguir sent un membre actiu de la llista de correu. Si teniu cap pregunta o problema, podeu fer-ho contactant amb el propietari de la llista de distribució a    $owner_email"
 
 msgid "list:user:notice:welcome.txt"
-msgstr "\"Benvingut a la llista de correu \"$display_name \"! Per a publicar en aquesta llista, envieu el vostre correu electrònic a:  $listname. Podeu donar-vos de baixa o fer ajustos a les vostres opcions per correu electrònic enviant un missatge a: $request_email amb la paraula 'help' en l'assumpte o el cos (no inclogueu les cometes) i rebreu un missatge amb instruccions. Necessitareu la vostra contrasenya per a canviar les opcions, però, a efectes de seguretat, aquesta contrasenya no s’hi inclourà. Si heu oblidat la contrasenya, haureu de restablir-la mitjançant la interfície d'usuari web. \""
+msgstr "Benvingut a la llista de correu \"$display_name \"! Per a publicar en aquesta llista, envieu el vostre correu electrònic a:  $listname. Podeu donar-vos de baixa o fer ajustos a les vostres opcions per correu electrònic enviant un missatge a: $request_email amb la paraula 'help' en l'assumpte o el cos (no inclogueu les cometes) i rebreu un missatge amb instruccions. Necessitareu la vostra contrasenya per a canviar les opcions, però, a efectes de seguretat, aquesta contrasenya no s’hi inclourà. Si heu oblidat la contrasenya, haureu de restablir-la mitjançant la interfície d'usuari web."
 
 #~ msgid "Already subscribed (skipping): $display_name <$email>"
 #~ msgstr "Ja subscrit (ometent): $display_name <$email>"
@@ -2408,4 +2408,4 @@ msgstr "\"Benvingut a la llista de correu \"$display_name \"! Per a publicar en 
 #~ "de correu.\n"
 
 #~ msgid "invite.txt"
-#~ msgstr "\"La seva adreça \"$email \"ha estat convidada a unir-se a la llista $listnamemailing a $hostname pel propietari de la llista de correu $listname. Pot acceptar la invitació simplement responent a aquest missatge, mantenint la capçalera Tema: intacta. O hauria d'incloure la línia següent -- i només la seguent -- en un missatge a $requestaddr:   confirm $cookieNote que hauria de funcionar en la majoria dels lectors de correu simplement enviant una `resposta' a aquest missatge. Si voleu rebutjar aquesta invitació, si us plau, simplement desestima aquest missatge.  Si té alguna pregunta, si us plau enviï'ls a $listowner. \""
+#~ msgstr "La seva adreça \"$email \"ha estat convidada a unir-se a la llista $listnamemailing a $hostname pel propietari de la llista de correu $listname. Pot acceptar la invitació simplement responent a aquest missatge, mantenint la capçalera Tema: intacta. O hauria d'incloure la línia següent -- i només la seguent -- en un missatge a $requestaddr:   confirm $cookieNote que hauria de funcionar en la majoria dels lectors de correu simplement enviant una `resposta' a aquest missatge. Si voleu rebutjar aquesta invitació, si us plau, simplement desestima aquest missatge.  Si té alguna pregunta, si us plau enviï'ls a $listowner."
