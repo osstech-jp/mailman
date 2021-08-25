@@ -1,0 +1,2 @@
+La suscripción de $member ha sido desactivada en $listname debido a que su nivel de rebotes
+ha excedido el máximo permitido por la variable de la lista bounce_score_threshold.

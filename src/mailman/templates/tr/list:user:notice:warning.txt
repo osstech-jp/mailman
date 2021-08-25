@@ -1,0 +1,8 @@
+Aboneliğiniz, mesajların $sender_email adresine teslim edilmesinde bir sorun
+olabileceğini gösteren bir dizi geri dönme aldığından, $listname posta listesinde devre
+dışı bırakıldı. Daha fazla yardım için e-posta yöneticinize danışmak isteyebilirsiniz.
+
+Herhangi bir sorunuz veya sorununuz varsa, aşağıdaki adresten posta listesi sahibiyle
+iletişime geçebilirsiniz:
+
+    $owner_email

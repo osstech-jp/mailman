@@ -1,0 +1,5 @@
+Via mesaĝo al la dissendolisto $listname estis malakceptita pro la jeno:
+
+$reasons
+
+La originala mesaĝo ricevita de Mailman estas kunsendita.

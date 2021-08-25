@@ -10,8 +10,16 @@ Pour que GNU Mailman puisse vous désinscrire, vous devez confirmer votre
 requête. Vous pouvez le faire en répondant à ce courriel sans toucher à son
 objet.
 
+Vous pouvez sinon inclure la ligne suivante -- et uniquement la ligne suivante --
+dans un message à $request_email :
+
+    confirm $token
+
+Notez qu'envoyer simplement un `reply' à ce message devrait fonctionner
+sur la plupart des lecteurs mail.
+
 Si vous ne souhaitez pas désinscrire cette adresse électronique, vous pouvez
-simplement ignorer ce message. Si vous pensez que quelqu’un a essayé de vous
+simplement ignorer ce message.  Si vous pensez que quelqu’un a essayé de vous
 désinscrire malicieusement de la liste, ou si vous avez n’importe quelle autre
 question, vous pouvez contacter
 

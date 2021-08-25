@@ -1,0 +1,12 @@
+将$display_name邮件列表提交到
+	$listname
+
+要通过电子邮件订阅或取消订阅，请发送一个带有主题或正文的信息
+'帮助'到
+	$request_email
+
+你可以通过以下方式联系管理该列表的人
+	$owner_email
+
+在回复时，请编辑您的主题行，使其比以下内容更具体
+"Re: $display_name digest的内容..."

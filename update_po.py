@@ -17,7 +17,6 @@
 from pathlib import Path
 try:
     from babel.messages.pofile import read_po, write_po
-    from babel.messages.catalog import Catalog, Message
 except ImportError:
     print('Please install `babel` to run this script.')
     exit(1)

@@ -1,9 +1,9 @@
-Abbiamo ricevuto un messaggio dal tuo indirizzo <$ sender_email> 
-che richiede una risposta automatica dalla mailing list $listname.
+Abbiamo ricevuto un messaggio dal tuo indirizzo <$sender_email> che richiede una
+risposta automatica dalla mailing list $listname.
 
-Oggi ne abbiamo contati: $count.  Al fine di evitare problemi come i loop di posta 
-tra i robot di posta elettronica, oggi non invieremo ulteriori risposte. 
-Per favore, riprova domani.
+Il numero che abbiamo visto oggi: $count.  Per evitare problemi quali
+loop di posta tra i robots di posta elettronica, oggi non ti invieremo ulteriori
+risposte. Per favore riprova domani.
 
-Se ritieni che questo messaggio sia errato, oppure hai qualche domanda da porre, per favore
-contatta il proprietario della lista $owner_email.
+Se ritieni che questo messaggio sia un errore o se hai domande,
+contatta il proprietario della lista a $owner_email.

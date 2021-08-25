@@ -1,5 +1,5 @@
-È richiesta la tua autorizzazione per l'approvazione di una
-richiesta di annullamento iscrizione alla mailing list:
+La tua autorizzazione è richiesta per l'annullamento dell'iscrizione a una mailing list
+richiesta approvazione:
 
     Per:  $member
     Lista: $listname

@@ -1,13 +1,14 @@
 Questo è un messaggio sonda. Puoi ignorare questo messaggio.
 
-La mailing list $ listname ha ricevuto una serie di rimbalzi da parte tua, 
-indicando che potrebbe esserci un problema nel recapitare i messaggi a $sender_email.  
-Di seguito è riportato un esempio. 
-Esamina questo messaggio per assicurarti che non ci siano problemi con il tuo indirizzo email. 
-Potresti voler verificare con il tuo amministratore di posta elettronica per ulteriore aiuto.
+La mailing list $listname ha ricevuto numerosi messaggi di mancato recapito,
+indicando che potrebbe esserci un problema durante la consegna dei messaggi a $sender_email. Un
+campione è allegato di seguito. Esamina questo messaggio per assicurarti che non siano presenti
+problemi con il tuo indirizzo email.  Per ulteriore assistenza, potresti consultare il tuo
+amministratore di posta.
 
-Non devi fare nulla per rimanere un membro abilitato della mailing list.
+Non è necessario fare nulla per rimanere un membro abilitato della mailing list.
 
-Se hai una qualsiasi domanda o problema, puoi contattare il proprietario della lista a
+In caso di domande o problemi, è possibile contattare il proprietario della mailing list
+a
 
     $owner_email

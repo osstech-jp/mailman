@@ -9,4 +9,4 @@ Der Grund dafür ist:
 $reasons
 
 Ihre Nachricht wird entweder an die Liste zugestellt, oder Sie werden
-über die die Entscheidung der Moderator*innen benachrichtigt.
+über die Entscheidung der Moderator*innen benachrichtigt.

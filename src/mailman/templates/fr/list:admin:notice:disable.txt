@@ -1,0 +1,2 @@
+L'inscription de $member a été désactivée sur $listname à cause du score de retour
+qui excède le paramètre bounce_score_threshold de la liste de diffusion.

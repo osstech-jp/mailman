@@ -1,0 +1,6 @@
+Sua mensagem para a lista de discussão $listname foi rejeitada pelos
+seguintes motivos:
+
+$reasons
+
+A mensagem original recebida pelo Mailman está anexada.
