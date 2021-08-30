@@ -140,6 +140,9 @@ class NonmemberModeration:
                     # This might be a list posting address in Reply-To: or
                     # some other invalid address.  In any case, ignore it.
                     mlist.subscribe(address, MemberRole.nonmember)
+        # If this message is gated from usenet the rule misses.
+        if msgdata.get('fromusenet', False):
+            return False
         # Check to see if any of the sender emails is already a member.  If
         # so, then this rule misses.
         member = _find_sender_member(mlist, msg)
