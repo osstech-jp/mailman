@@ -352,3 +352,21 @@ A message body.
 """)
         result = rule.check(self._mlist, msg, {})
         self.assertFalse(result)
+
+    def test_nonmember_fromusenet(self):
+        # Test a post from usenet from a nonmember is not held.
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        anne = user_manager.create_address('anne.person@example.com')
+        self._mlist.subscribe(anne, MemberRole.nonmember)
+        msg = mfs("""\
+From: anne.person@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        result = rule.check(self._mlist, msg, {'fromusenet': True})
+        self.assertFalse(result)
