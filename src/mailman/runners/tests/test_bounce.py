@@ -58,7 +58,16 @@ class TestBounceRunner(unittest.TestCase):
 From: mail-daemon@example.com
 To: test-bounces+anne=example.com@example.com
 Message-Id: <first>
+Content-Type: multipart/report; report-type=delivery-status; boundary=AAA
+MIME-Version: 1.0
 
+--AAA
+Content-Type: message/delivery-status
+
+Action: fail
+Original-Recipient: rfc822; anne@example.com
+
+--AAA--
 """)
         self._msgdata = dict(listid='test.example.com')
         self._processor = getUtility(IBounceProcessor)
@@ -91,6 +100,21 @@ Message-Id: <first>
         self.assertEqual(events[0].message_id, '<first>')
         self.assertEqual(events[0].context, BounceContext.normal)
         self.assertEqual(events[0].processed, True)
+
+    def test_verp_non_dsn(self):
+        # A VERPed non DSN (vacation response) is not scored.
+        nondsn = message_from_string("""\
+From: mail-daemon@example.com
+To: test-bounces+anne=example.com@example.com
+Message-Id: <first>
+
+I'm out of the office.
+""")
+        self._bounceq.enqueue(nondsn, self._msgdata)
+        self._runner.run()
+        get_queue_messages('bounces', expected_count=0)
+        events = list(self._processor.events)
+        self.assertEqual(len(events), 0)
 
     def test_nonfatal_verp_detection(self):
         # A VERPd bounce was received, but the error was nonfatal.
