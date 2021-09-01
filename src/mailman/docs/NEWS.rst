@@ -106,6 +106,8 @@ Bugs
 * Nonmember posts gated from usenet bypass nonmember moderation.  (Closes #937)
 * VERPed vacation responses and similar are no longer scored as bounces.
   (Closes #939)
+* If a message is held by a ``HeaderMatchRule``, the header name is now included 
+  in the reason for hold.  (Closes #785)
 
 Command line
 ------------
