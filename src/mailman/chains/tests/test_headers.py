@@ -492,7 +492,7 @@ body
         self.assertIsInstance(event, HoldEvent)
         self.assertEqual(msgdata['moderation_reasons'],
                          [('Header "{}" matched a header rule',
-                           'Bad subject')])
+                           'subject: Bad subject')])
 
     def test_reject_returns_reason(self):
         # Test that a match with reject action returns a reason
@@ -518,4 +518,4 @@ body
         self.assertIsInstance(event, RejectEvent)
         self.assertEqual(msgdata['moderation_reasons'],
                          [('Header "{}" matched a header rule',
-                           'Bad subject')])
+                           'subject: Bad subject')])

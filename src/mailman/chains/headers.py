@@ -119,7 +119,7 @@ class HeaderMatchRule:
                         # This will be translated at the point of use.
                         msgdata.setdefault('moderation_reasons', []).append(
                             (_('Header "{}" matched a header rule'),
-                             str(value)))
+                             str(self.header) + ": " + str(value)))
                     return True
         return False
 
