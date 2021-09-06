@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2021-06-22 05:33+0000\n"
-"Last-Translator: 峡州仙士 <c@cjh0613.com>\n"
-"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/gnu-mailman/mailman/zh_Hans/>\n"
+"PO-Revision-Date: 2021-08-26 12:09+0000\n"
+"Last-Translator: Eric <spice2wolf@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"gnu-mailman/mailman/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7.1-dev\n"
+"X-Generator: Weblate 4.8.1-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -1732,7 +1733,7 @@ msgstr "$self.name: 没有找到可供订阅的有效地址"
 
 #: src/mailman/commands/eml_membership.py:125
 msgid "$person has a pending subscription for $listname"
-msgstr "$person有一个$listname的待定订阅。"
+msgstr "$person 尚未订阅 $listname"
 
 #: src/mailman/commands/eml_membership.py:128
 msgid "Confirmation email sent to $person"
@@ -1779,7 +1780,7 @@ msgstr "$self.name: $email不是$mlist.fqdn_listname的成员"
 
 #: src/mailman/commands/eml_membership.py:231
 msgid "$person left $mlist.fqdn_listname"
-msgstr "$person left $mlist.fqdn_listname"
+msgstr "$person 离开了 $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:233
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
@@ -1811,7 +1812,7 @@ msgstr "获取列表中的成员名单。"
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
-msgstr "你无权查看会员名单。"
+msgstr "你无权查看成员名单。"
 
 #: src/mailman/commands/eml_who.py:78
 msgid ""
@@ -1835,7 +1836,7 @@ msgstr "发送发帖确认函。"
 
 #: src/mailman/handlers/acknowledge.py:75
 msgid "$display_name post acknowledgment"
-msgstr "$display_name post acknowledgment"
+msgstr "$display_name 发布致谢"
 
 #: src/mailman/handlers/after_delivery.py:33
 msgid "Perform some bookkeeping after a successful post."
@@ -2177,7 +2178,7 @@ msgstr "捕捉有可疑标题的信息。"
 
 #: src/mailman/rules/suspicious.py:97
 msgid "Header \"{}\" matched a bounce_matching_header line"
-msgstr "标题\"{}\"匹配了一个bounce_matching_header行。"
+msgstr "标题 \"{}\" 匹配了一个 bounce_matching_header 行"
 
 #: src/mailman/rules/truth.py:32
 msgid "A rule which always matches."
@@ -2193,7 +2194,7 @@ msgstr "你的电子邮件命令的结果在下面提供。\n"
 
 #: src/mailman/runners/command.py:187
 msgid "- Original message details:"
-msgstr "- 原始信息的细节。"
+msgstr "- 原始信息详情："
 
 #: src/mailman/runners/command.py:191
 msgid "    From: $from_"
@@ -2217,7 +2218,7 @@ msgid ""
 "- Results:"
 msgstr ""
 "\n"
-"- 结果。"
+"- 结果："
 
 #: src/mailman/runners/command.py:209
 msgid "No such command: $command_name"
@@ -2229,7 +2230,7 @@ msgid ""
 "- Unprocessed:"
 msgstr ""
 "\n"
-"- 未加工的。"
+"- 未处理："
 
 #: src/mailman/runners/command.py:228
 msgid ""
@@ -2237,7 +2238,7 @@ msgid ""
 "- Ignored:"
 msgstr ""
 "\n"
-"- 被忽视的。"
+"- 已忽略："
 
 #: src/mailman/runners/command.py:231
 msgid ""
@@ -2253,7 +2254,7 @@ msgstr "你的电子邮件命令的结果"
 
 #: src/mailman/runners/digest.py:55
 msgid "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
-msgstr "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
+msgstr "$mlist.display_name 摘要，卷 $volume, 期号 $digest_number"
 
 #: src/mailman/runners/digest.py:83
 msgid "Today's Topics:\n"
@@ -2318,16 +2319,16 @@ msgstr ""
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
-"邮件列表'$listname'刚刚为您创建。  以下是关于您的邮件列表的一些基本信息。\n"
+"刚刚为您创建了邮件列表 '$listname'   \n"
 "以下是关于您的邮件列表的一些基本信息。\n"
 "\n"
-"有一个基于电子邮件的界面给您的列表的用户（不是管理员）。\n"
-"您可以通过发送邮件获得使用信息，邮件主题或正文中只需写上 \"帮助 \"二字即可。\n"
-"作为主题或在正文中，发送到。\n"
+"您的列表有一个面向用户(而不是管理员)的基于电子邮件的界面；\n"
+"您可以通过发送一封邮件获得使用它的信息，\n"
+"该邮件的主题或正文只需包含单词 'help' 即可，收件人为：\n"
 "\n"
 "    $request_email\n"
 "\n"
-"请将所有问题发送到$site_email。"
+"请将所有问题发送到 $site_email。"
 
 msgid "help.txt"
 msgstr ""
@@ -2386,8 +2387,10 @@ msgstr ""
 
 msgid "list:admin:notice:disable.txt"
 msgstr ""
-"$member's subscription has been disabled on $listname due to their bounce score\n"
-"超过邮件列表的bounce_score_threshold。"
+"$member 的订阅在 $listname 上被禁，理由是\n"
+"退信分数超出了该邮件列表的 bounce_score_threshold。\n"
+"\n"
+"如可用，则附加触发传送状态通知。"
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
@@ -2432,8 +2435,8 @@ msgstr ""
 msgid "list:member:generic:footer.txt"
 msgstr ""
 "_______________________________________________\n"
-"$display_name邮件列表--$listname\n"
-"要取消订阅，请发送电子邮件至${short_listname}-leave@${domain}。"
+"$display_name 邮件列表 --$listname\n"
+"要取消订阅，请发送电子邮件至 ${short_listname}-leave@${domain}"
 
 msgid "list:member:regular:header.txt"
 msgstr ""

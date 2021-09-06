@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2020-12-11 04:16+0000\n"
+"PO-Revision-Date: 2021-08-29 13:33+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/mailman/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.4-dev\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 4.8.1-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -46,6 +48,8 @@ msgid ""
 "The content of this message was lost. It was probably cross-posted to\n"
 "multiple lists and previously handled on another list.\n"
 msgstr ""
+"תוכן ההודעה הזאת אבד. כנראה שהוא פורסם במקביל למספר רשימות\n"
+"וכבר טופל בעבר ברשימה אחרת.\n"
 
 #: src/mailman/app/moderator.py:132
 msgid "Posting of your message titled \"$subject\""
@@ -99,7 +103,7 @@ msgstr "המינוי של $member על $mlist.display_name בוטל"
 
 #: src/mailman/app/notifications.py:192
 msgid "$member's bounce score incremented on $mlist.display_name"
-msgstr ""
+msgstr "ניקוד ההחזרה של $member ברשימה $mlist.display_name גדל"
 
 #: src/mailman/app/notifications.py:218
 #, python-brace-format
@@ -147,10 +151,12 @@ msgid ""
 "    Running mailman commands as root is not recommended and mailman will\n"
 "    refuse to run as root unless this option is specified."
 msgstr ""
+"    לא מומלץ להריץ פקודות של mailman בתור root ו־mailman יסרב לרוץ כ־root\n"
+"    אלמלא צוינה אפשרות זו."
 
 #: src/mailman/bin/mailman.py:129
 msgid "    If you are sure you want to run as root, specify --run-as-root."
-msgstr ""
+msgstr "    אם ברצונך לרוץ כ־root באופן ודאי, יש להוסיף את ‎--run-as-root."
 
 #: src/mailman/bin/master.py:157
 msgid ""
@@ -226,6 +232,25 @@ msgid ""
 "    its own process id in the file specified in the configuration file but you\n"
 "    normally don't need to use this PID directly."
 msgstr ""
+"    עוקב אחר תת־התהליך הראשי.\n"
+"\n"
+"    הפעלה ומעקב אחר האצנים המוגדרים כדי לוודא שהם נשארים פעילים.\n"
+"    כל אצן מתפצל וזוכה ל־exec בתורו תוך שתהליך העל ממתין למזהי\n"
+"    התהליכים שלהם. כאשר הוא מזהה שאצן צאצא סיים, הוא עשוי\n"
+"    להפעיל אותו מחדש.\n"
+"\n"
+"    האצנים מגיבים ל־SIGINT,‏ SIGTERM,‏ SIGUSR1 ול־SIGHUP.‏  SIGINT,\n"
+"    SIGTERM ו־SIGUSR1 כולם גורמים לאצן להיסגר בצורה נקייה.  תהליך העל\n"
+"    יפעיל מחדש אצנים עקב SIGUSR1 או כל סוג אחר של תנאי יציאה\n"
+"    (למשל בגלל תקלה שלא טופלה).  SIGHUP גורם לתהליך העל ולאצנים\n"
+"    לסגור את קובצי היומן שלהם ולפתוח אותם מחדש עם הופעת ההודעה\n"
+"    הבאה.\n"
+"\n"
+"    תהליך העל מגיב גם ל־SIGINT,‏ SIGTERM,‏ SIGUSR1 ול־SIGHUP, שאותם\n"
+"    הוא פשוט מעביר לאצנים.  נא לשים לב שתהליך העל יסגור ויפתח מחדש\n"
+"    את קובצי היומן של עצמו עם קבלת SIGHUP.  תהליך העל משאיר את\n"
+"    מזהה התהליך של עצמו בקובץ שמופיע בקובץ ההגדרות אך בדרך כלל\n"
+"    אין לך סיב הלהשתמש במזהה התהליך (PID) ישירות."
 
 #: src/mailman/bin/master.py:525
 msgid ""
@@ -444,7 +469,7 @@ msgstr "Membership is banned (skipping): $email"
 #: src/mailman/commands/cli_addmembers.py:104
 #: src/mailman/commands/cli_syncmembers.py:85
 msgid "Subscription already pending (skipping): $email"
-msgstr ""
+msgstr "המינוי כבר ממתין (מדלג): $email"
 
 #: src/mailman/commands/cli_addmembers.py:110
 msgid ""
@@ -503,26 +528,30 @@ msgid ""
 "    new_address.\n"
 "    "
 msgstr ""
+"    Change a user's email address from old_address to possibly case-"
+"preserved\n"
+"    new_address.\n"
+"    "
 
 #: src/mailman/commands/cli_changeaddress.py:45
 msgid "Address {} not found."
-msgstr ""
+msgstr "הכתובת {} לא נמצאה."
 
 #: src/mailman/commands/cli_changeaddress.py:47
 msgid "Address {} is not a valid email address."
-msgstr ""
+msgstr "הכתובת {} אינה כתובת דוא״ל תקנית."
 
 #: src/mailman/commands/cli_changeaddress.py:50
 msgid "Addresses are not different.  Nothing to change."
-msgstr ""
+msgstr "הכתובות אינן שונות.  אין שינויים לביצוע."
 
 #: src/mailman/commands/cli_changeaddress.py:53
 msgid "Address {} already exists; can't change."
-msgstr ""
+msgstr "הכתובת {} כבר קיים, לא ניתן לשנות."
 
 #: src/mailman/commands/cli_changeaddress.py:58
 msgid "Address changed from {} to {}."
-msgstr ""
+msgstr "הכתובת הוחלפה מ־{} ל־{}."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
@@ -844,24 +873,30 @@ msgid ""
 "    pattern.\n"
 "    "
 msgstr ""
+"    Display all memberships for a user or users with address matching a\n"
+"    pattern.\n"
+"    "
 
 #: src/mailman/commands/cli_findmember.py:74
 msgid ""
 "    Display only memberships with the given role.  If not given, 'all' role,\n"
 "    i.e. all roles, is the default."
 msgstr ""
+"    Display only memberships with the given role.  If not given, 'all' role,"
+"\n"
+"    i.e. all roles, is the default."
 
 #: src/mailman/commands/cli_findmember.py:98
 msgid "Email: {}"
-msgstr ""
+msgstr "דוא״ל: {}"
 
 #: src/mailman/commands/cli_findmember.py:102
 msgid "List: {}"
-msgstr ""
+msgstr "רשימה: {}"
 
 #: src/mailman/commands/cli_findmember.py:105
 msgid "{}"
-msgstr ""
+msgstr "{}"
 
 #: src/mailman/commands/cli_gatenews.py:169
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
@@ -874,6 +909,10 @@ msgid ""
 "    If you want to run it manually, set _MAILMAN_GATENEWS_NNTP in the\n"
 "    environment."
 msgstr ""
+"    The gatenews command is run periodically by the nntp runner.\n"
+"    If you are running it via cron, you should remove it from the crontab.\n"
+"    If you want to run it manually, set _MAILMAN_GATENEWS_NNTP in the\n"
+"    environment."
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
@@ -1124,12 +1163,16 @@ msgid ""
 "    [MODE] Add all member addresses in FILENAME.  This option is removed.\n"
 "    Use 'mailman addmembers' instead."
 msgstr ""
+"    [MODE] Add all member addresses in FILENAME.  This option is removed.\n"
+"    Use 'mailman addmembers' instead."
 
 #: src/mailman/commands/cli_members.py:123
 msgid ""
 "    [MODE] Delete all member addresses found in FILENAME.\n"
 "    This option is removed. Use 'mailman delmembers' instead."
 msgstr ""
+"    [MODE] Delete all member addresses found in FILENAME.\n"
+"    This option is removed. Use 'mailman delmembers' instead."
 
 #: src/mailman/commands/cli_members.py:129
 msgid ""
@@ -1137,6 +1180,9 @@ msgid ""
 "    with the member addresses found in FILENAME.\n"
 "    This option is removed. Use 'mailman syncmembers' instead."
 msgstr ""
+"    [MODE] Synchronize all member addresses of the specified mailing list\n"
+"    with the member addresses found in FILENAME.\n"
+"    This option is removed. Use 'mailman syncmembers' instead."
 
 #: src/mailman/commands/cli_members.py:136
 msgid ""
@@ -1268,6 +1314,8 @@ msgid ""
 "Missing data for request {}\n"
 "\n"
 msgstr ""
+"חסרים נתונים לבקשה {}\n"
+"\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
@@ -1629,7 +1677,7 @@ msgstr "The variable 'm' is the $listspec mailing list"
 
 #: src/mailman/commands/eml_confirm.py:40
 msgid "Confirm a subscription or held message request."
-msgstr ""
+msgstr "אישור מינוי או בקשת הודעה מוחזקת."
 
 #: src/mailman/commands/eml_confirm.py:47
 msgid "No confirmation token found"
@@ -1645,11 +1693,11 @@ msgstr "יש אישור"
 
 #: src/mailman/commands/eml_confirm.py:108
 msgid "Invalid Approved: password"
-msgstr ""
+msgstr "אישור שגוי: ססמה"
 
 #: src/mailman/commands/eml_confirm.py:111
 msgid "Message $message"
-msgstr ""
+msgstr "הודעה $message"
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
@@ -1886,6 +1934,10 @@ msgid ""
 "Mailman's content filtering has removed the\n"
 "following MIME parts from this message.\n"
 msgstr ""
+"\n"
+"___________________________________________\n"
+"סינון התוכן של Mailman הסיר את חלקי\n"
+"ה־MIME הבאים מההודעה הזאת.\n"
 
 #: src/mailman/handlers/mime_delete.py:110
 msgid "The message's content type was explicitly disallowed"
@@ -1912,11 +1964,13 @@ msgid ""
 "\n"
 "Replaced multipart/alternative part with first alternative.\n"
 msgstr ""
+"\n"
+"ריבוי חלקים/חלק חלופי הוחלפו בחלופה הראשונה.\n"
 
 #: src/mailman/handlers/mime_delete.py:239 src/mailman/handlers/mime_delete.py:246
 #: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
 msgid "Name: $fname\n"
-msgstr ""
+msgstr "שם: $fname\n"
 
 #: src/mailman/handlers/mime_delete.py:374
 msgid "Filter the MIME content of messages."
@@ -2020,15 +2074,15 @@ msgstr "מוען ההודעה {} חסום מול הרשימה הזאת"
 
 #: src/mailman/rules/digests.py:42
 msgid "Catch messages with digest Subject or boilerplate quote."
-msgstr ""
+msgstr "לתפוס הודעות עם נושא תקציר או עם ציטוט הקדמה."
 
 #: src/mailman/rules/digests.py:57
 msgid "Message has a digest subject"
-msgstr ""
+msgstr "להודעה יש נושא של תקציר"
 
 #: src/mailman/rules/digests.py:88
 msgid "Message quotes digest boilerplate"
-msgstr ""
+msgstr "הודעה שמצטטת הקדמה של תקציר"
 
 #: src/mailman/rules/dmarc.py:307
 msgid "Find DMARC policy of From: domain."
@@ -2273,7 +2327,7 @@ msgstr "מפרט אצן שגוי: $value"
 
 #: src/mailman/utilities/scrubber.py:48 src/mailman/utilities/scrubber.py:49
 msgid "not available"
-msgstr ""
+msgstr "לא זמין"
 
 #: src/mailman/utilities/scrubber.py:50
 msgid ""
@@ -2283,10 +2337,15 @@ msgid ""
 "Size: $size bytes\n"
 "Desc: $desc\n"
 msgstr ""
+"חלק בהודעה שאינו תואם לתקצירים בטקסט פשוט הוסר …\n"
+"שם: $filename\n"
+"סוג: $ctype\n"
+"גודל: $size bytes\n"
+"תיאור: $desc\n"
 
 #: src/mailman/utilities/scrubber.py:58
 msgid "-------------- next part --------------\n"
-msgstr ""
+msgstr "-------------- החלק הבא --------------\n"
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
@@ -2359,13 +2418,22 @@ msgstr ""
 msgid "list:admin:notice:disable.txt"
 msgstr ""
 "המינוי של $member לרשימת הדיוור $listname הושבתה כיוון שניקוד ההחזרה חורג\n"
-"מה־bounce_score_threshold (סף ניקוד החזרה) של הרשימה."
+"מה־bounce_score_threshold (סף ניקוד החזרה) של הרשימה.\n"
+"\n"
+"הודעת מצב השליחה (DSN) שמוקפצת מצורפת אם היא זמינה."
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
+"ניקוד ההחזרה של $member ברשימה $listname הוגדל.\n"
+"\n"
+"הודעת מצב השליחה (DSN) שמוקפצת מצורפת אם היא זמינה."
 
 msgid "list:admin:notice:pending.txt"
 msgstr ""
+"לרשימה $listname יש $count בקשות פיקוח ממתינות.\n"
+"\n"
+"$data\n"
+"נא להתייחס אליהן בהקדם האפשרי."
 
 msgid "list:admin:notice:removal.txt"
 msgstr "המינוי של $member לרשימת הדיוור $listname בוטל עקב החזרות מוגזמות."
@@ -2559,7 +2627,7 @@ msgid "list:user:notice:welcome.txt"
 msgstr ""
 "ברוך בואך לרשימת הדיוור „$display_name”!\n"
 "\n"
-"כדי לפרסם לרשימה הזו, עליך לשלוח את כתובת הדוא״ל שלך אל:\n"
+"כדי לפרסם לרשימה הזו, עליך לשלוח את ההודעה שלך אל:\n"
 "\n"
 "  $listname\n"
 "\n"
@@ -2569,7 +2637,8 @@ msgstr ""
 "  $request_email\n"
 "\n"
 "\n"
-"עם המילה ‚help’ (עזרה) בנושא או בגוף ההודעה (בלי המירכאות) ותישלח אליך הודעה\n"
+"עם המילה ‚help’ (עזרה) בנושא או בגוף ההודעה (בלי המירכאות) ותישלח אליך "
+"הודעה\n"
 "בחזרה עם הנחיות.  לצורך שינוי ההרשאות תידרש לך ססמה, אך מטעמי אבטחה\n"
 "ססמה זו אינה נכללת כאן.  אם שכחת את הססמה שלך יהיה עליך לאפס אותה דרך\n"
 "מנשק הדפדפן."
