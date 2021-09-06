@@ -1,2 +1,4 @@
-$member's subscription has been disabled on $listname due to their bounce score
-超过邮件列表的bounce_score_threshold。
+$member 的订阅在 $listname 上被禁，理由是
+退信分数超出了该邮件列表的 bounce_score_threshold。
+
+如可用，则附加触发传送状态通知。

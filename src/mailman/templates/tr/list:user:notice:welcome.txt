@@ -1,6 +1,6 @@
 "$display_name" posta listesine hoş geldiniz!
 
-Bu listeye mesaj göndermek için e-postalarınızı aşağıdaki adrese gönderin:
+Bu listeye mesaj göndermek için mesajınızı aşağıdaki adrese gönderin:
 
   $listname
 
