@@ -2,7 +2,7 @@
  GNU Mailman 3 changes
 =======================
 
-Copyright (C) 1998-2018 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2021 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 Here is a history of user visible changes to Mailman.
@@ -10,13 +10,13 @@ Here is a history of user visible changes to Mailman.
 
 .. _news-3.3.5:
 
-3.3.5
-=====
+3.3.5rc1
+========
 
-(2021-09-06)
+(2021-09-18)
 
-Bugs
-----
+Bugs fixed
+----------
 * Bounce runner now properly commits database transactions.  (Closes #850)
 * Pending subscriptions now have a lifetime equal to the configured
   ``pending_request_life`` rather than 3650 days.  (Closes #729)
