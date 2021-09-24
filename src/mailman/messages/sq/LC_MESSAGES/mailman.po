@@ -8,24 +8,27 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2021-09-24 12:38+0000\n"
+"Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
+"Language-Team: Albanian <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/sq/>\n"
 "Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
 #: src/mailman/handlers/subject_prefix.py:45
 #: src/mailman/handlers/subject_prefix.py:91 src/mailman/runners/digest.py:87
 msgid "(no subject)"
-msgstr ""
+msgstr "(pa subjekt)"
 
 #: src/mailman/app/bounces.py:78
 msgid "[No bounce details are available]"
-msgstr ""
+msgstr "[S’ka hollësi kthimesh]"
 
 #: src/mailman/app/bounces.py:230
 msgid "$mlist.display_name mailing list probe message"
@@ -37,7 +40,7 @@ msgstr ""
 
 #: src/mailman/app/membership.py:141
 msgid "$mlist.display_name unsubscription notification"
-msgstr ""
+msgstr "njoftim shpajtimi $mlist.display_name"
 
 #: src/mailman/app/moderator.py:97
 msgid ""
@@ -52,11 +55,11 @@ msgstr ""
 #: src/mailman/app/moderator.py:133 src/mailman/app/moderator.py:258
 #: src/mailman/rest/sub_moderation.py:112
 msgid "[No reason given]"
-msgstr ""
+msgstr "[S’u dha arsye]"
 
 #: src/mailman/app/moderator.py:184
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "Përcjellje e mesazhit të moderuar"
 
 #: src/mailman/app/moderator.py:225
 msgid "New unsubscription request from $mlist.display_name by $email"
@@ -64,11 +67,11 @@ msgstr ""
 
 #: src/mailman/app/moderator.py:257
 msgid "Unsubscription request"
-msgstr ""
+msgstr "Kërkesë shpajtimi"
 
 #: src/mailman/app/moderator.py:298
 msgid "Original Message"
-msgstr ""
+msgstr "Mesazhi Origjinal"
 
 #: src/mailman/app/moderator.py:301
 msgid "Request to mailing list \"$display_name\" rejected"
@@ -76,7 +79,7 @@ msgstr ""
 
 #: src/mailman/app/notifications.py:94
 msgid " (Digest mode)"
-msgstr ""
+msgstr " (Mënyrë përmbledhje)"
 
 #: src/mailman/app/notifications.py:98
 #, python-brace-format
@@ -89,7 +92,7 @@ msgstr ""
 
 #: src/mailman/app/notifications.py:140
 msgid "$mlist.display_name subscription notification"
-msgstr ""
+msgstr "njoftim pajtimi $mlist.display_name"
 
 #: src/mailman/app/notifications.py:164
 msgid "$member's subscription disabled on $mlist.display_name"
@@ -230,7 +233,7 @@ msgstr ""
 
 #: src/mailman/bin/master.py:551 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
-msgstr ""
+msgstr "Shfaq më tepër të dhëna diagnostikimi te kartela regjistër."
 
 #: src/mailman/bin/runner.py:50
 msgid "Undefined runner name: $name"
@@ -294,15 +297,15 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:181
 msgid "$name runs $classname"
-msgstr ""
+msgstr "$name xhiron $classname"
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
-msgstr ""
+msgstr "Pranoni një mesazh."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "Zinxhir moderimi"
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
@@ -322,15 +325,15 @@ msgstr ""
 
 #: src/mailman/chains/hold.py:58
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #: src/mailman/chains/hold.py:117
 msgid "Last autoresponse notification for today"
-msgstr ""
+msgstr "Njoftimi i fundit për vetëpërgjigje, për sot"
 
 #: src/mailman/chains/hold.py:132
 msgid "Hold a message and stop processing."
-msgstr ""
+msgstr "Mba pezull një mesazh dhe ndal përpunimin"
 
 #: src/mailman/chains/hold.py:198
 msgid "Your message to $mlist.fqdn_listname awaits moderator approval"
@@ -351,7 +354,7 @@ msgstr ""
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
-msgstr ""
+msgstr "Zinxhir moderimi"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
@@ -368,12 +371,12 @@ msgstr ""
 
 #: src/mailman/commands/cli_addmembers.py:99
 msgid "Already subscribed (skipping): $email"
-msgstr ""
+msgstr "I pajtuar tashmë (po anashkalohet): $email"
 
 #: src/mailman/commands/cli_addmembers.py:101
 #: src/mailman/commands/cli_syncmembers.py:82
 msgid "Membership is banned (skipping): $email"
-msgstr ""
+msgstr "Anëtarësia është e ndaluar (po anashkalohet): $email"
 
 #: src/mailman/commands/cli_addmembers.py:104
 #: src/mailman/commands/cli_syncmembers.py:85
@@ -411,7 +414,7 @@ msgstr ""
 #: src/mailman/commands/cli_syncmembers.py:199
 #: src/mailman/commands/cli_withlist.py:292 src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
-msgstr ""
+msgstr "S’ka listë të tillë: $listspec"
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
@@ -430,11 +433,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_changeaddress.py:45
 msgid "Address {} not found."
-msgstr ""
+msgstr "S’u gjet adresë {}."
 
 #: src/mailman/commands/cli_changeaddress.py:47
 msgid "Address {} is not a valid email address."
-msgstr ""
+msgstr "Adresa {} s’është adresë email e vlefshme."
 
 #: src/mailman/commands/cli_changeaddress.py:50
 msgid "Addresses are not different.  Nothing to change."
@@ -442,15 +445,15 @@ msgstr ""
 
 #: src/mailman/commands/cli_changeaddress.py:53
 msgid "Address {} already exists; can't change."
-msgstr ""
+msgstr "Ka tashmë një adresë {}; s’mund të ndryshohet"
 
 #: src/mailman/commands/cli_changeaddress.py:58
 msgid "Address changed from {} to {}."
-msgstr ""
+msgstr "Adresa u ndryshua nga {} në {}."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
-msgstr ""
+msgstr "Shtyp formësimin e Mailman-it."
 
 #: src/mailman/commands/cli_conf.py:57
 msgid ""
@@ -520,7 +523,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
-msgstr ""
+msgstr "GNU Mailman është në xhirim tashmë"
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
@@ -536,7 +539,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:149
 msgid "PID unreadable in: $config.PID_FILE"
-msgstr ""
+msgstr "PID i palexueshëm te: $config.PID_FILE"
 
 #: src/mailman/commands/cli_control.py:151
 msgid "Is the master even running?"
@@ -544,11 +547,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:158
 msgid "No child with pid: $pid"
-msgstr ""
+msgstr "S’ka pjellë me pid: $pid"
 
 #: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
-msgstr ""
+msgstr "U hoq kartelë pid e vjetruar."
 
 #: src/mailman/commands/cli_control.py:166
 msgid "Stop the Mailman master and runner processes."
@@ -576,11 +579,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_delmembers.py:48
 msgid "Member not subscribed (skipping): $email"
-msgstr ""
+msgstr "Anëtar i papajtuar (po anashkalohet): $email"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
-msgstr ""
+msgstr "    Fshini anëtarë nga një listë postimesh."
 
 #: src/mailman/commands/cli_delmembers.py:58
 msgid ""
@@ -633,7 +636,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_delmembers.py:123
 msgid "No such list: $_list"
-msgstr ""
+msgstr "S’ka listë të tillë: $_list"
 
 #: src/mailman/commands/cli_digests.py:36
 msgid "Operate on digests."
@@ -667,7 +670,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:65 src/mailman/commands/cli_notify.py:56
 msgid "Print some additional status."
-msgstr ""
+msgstr "Shtyp ca gjendje shtesë."
 
 #: src/mailman/commands/cli_digests.py:69
 msgid ""
@@ -681,7 +684,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:69
 msgid "No such list found: $spec"
-msgstr ""
+msgstr "S’u gjet listë e tillë: $spec"
 
 #: src/mailman/commands/cli_digests.py:98
 #, python-brace-format
@@ -713,11 +716,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_findmember.py:98
 msgid "Email: {}"
-msgstr ""
+msgstr "Email: {}"
 
 #: src/mailman/commands/cli_findmember.py:102
 msgid "List: {}"
-msgstr ""
+msgstr "Listë: {}"
 
 #: src/mailman/commands/cli_findmember.py:105
 msgid "{}"
@@ -737,7 +740,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr ""
+msgstr "Shfaq këtë mesazh ndihme dhe dil."
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
@@ -762,7 +765,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
-msgstr ""
+msgstr "Hollësi mbi këtë instancë Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
@@ -808,7 +811,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:49
 msgid "List all mailing lists."
-msgstr ""
+msgstr "Radhit krejt listat e postimeve."
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List only those mailing lists that are publicly advertised"
@@ -816,15 +819,15 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:57
 msgid "Show also the list names"
-msgstr ""
+msgstr "Shfaq gjithashtu emrat e listave"
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list descriptions"
-msgstr ""
+msgstr "Shfaq gjithashtu përshkrimet e listave."
 
 #: src/mailman/commands/cli_lists.py:65
 msgid "Less verbosity"
-msgstr ""
+msgstr "Me pak hollësi"
 
 #: src/mailman/commands/cli_lists.py:69
 msgid ""
@@ -835,7 +838,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:87
 msgid "No matching mailing lists found"
-msgstr ""
+msgstr "S’u gjetën lista postimesh me përputhje"
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "$count matching mailing lists found:"
@@ -873,7 +876,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:151
 msgid "Print less output."
-msgstr ""
+msgstr "Shtyp më pak gjëra"
 
 #: src/mailman/commands/cli_lists.py:155
 msgid ""
@@ -884,7 +887,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr ""
+msgstr "Kod gjuhe i pavlefshëm: $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
@@ -896,11 +899,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:188
 msgid "List already exists: $fqdn_listname"
-msgstr ""
+msgstr "Lista ekziston tashmë: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:190
 msgid "Undefined domain: $domain"
-msgstr ""
+msgstr "Përkatësi e papërcaktuar: $domain"
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
@@ -912,11 +915,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr ""
+msgstr "Hiqni një listë postimesh."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
-msgstr ""
+msgstr "Mos lejo shfaqje mesazhesh gjendjeje"
 
 #: src/mailman/commands/cli_lists.py:237
 msgid "No such list matching spec: $listspec"
@@ -1025,39 +1028,47 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:113 src/mailman/commands/cli_notify.py:117
 msgid "User: {}\n"
-msgstr ""
+msgstr "Përdorues: {}\n"
 
 #: src/mailman/commands/cli_notify.py:115
 msgid ""
 "\n"
 "Held Unsubscriptions:\n"
 msgstr ""
+"\n"
+"Pajtime të Mbajtur:\n"
 
 #: src/mailman/commands/cli_notify.py:119
 msgid ""
 "\n"
 "Held Messages:\n"
 msgstr ""
+"\n"
+"Mesazhe të Mbajtur:\n"
 
 #: src/mailman/commands/cli_notify.py:126
 msgid "Sender: {}\n"
-msgstr ""
+msgstr "Dërgues: {}\n"
 
 #: src/mailman/commands/cli_notify.py:128 src/mailman/commands/cli_notify.py:131
 msgid "Subject: {}\n"
-msgstr ""
+msgstr "Subjekt: {}\n"
 
 #: src/mailman/commands/cli_notify.py:132
 msgid ""
 "Reason: {}\n"
 "\n"
 msgstr ""
+"Arsye: {}\n"
+"\n"
 
 #: src/mailman/commands/cli_notify.py:135
 msgid ""
 "Missing data for request {}\n"
 "\n"
 msgstr ""
+"Mungojnë të dhëna për kërkesën {}\n"
+"\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
@@ -1099,7 +1110,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_status.py:38
 msgid "GNU Mailman is not running"
-msgstr ""
+msgstr "GNU Mailman s’është duke xhiruar"
 
 #: src/mailman/commands/cli_status.py:41
 msgid "GNU Mailman is running (master pid: $pid)"
@@ -1125,7 +1136,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_syncmembers.py:150
 msgid "Nothing to do"
-msgstr ""
+msgstr "S’ka ç’bëhet"
 
 #: src/mailman/commands/cli_syncmembers.py:155
 msgid ""
@@ -1168,7 +1179,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_version.py:32
 msgid "Display Mailman's version."
-msgstr ""
+msgstr "Shfaq version Mailman-i"
 
 #: src/mailman/commands/cli_withlist.py:76
 msgid "ipython is not available, set use_ipython to no"
@@ -1297,7 +1308,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:253
 msgid "Print detailed instructions and exit."
-msgstr ""
+msgstr "Shtyp udhëzime të hollësishme dhe dil."
 
 #: src/mailman/commands/cli_withlist.py:257
 msgid ""
@@ -1311,7 +1322,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:273
 msgid "Regular expression requires --run"
-msgstr ""
+msgstr "Shprehja e rregullt lyp --run"
 
 #: src/mailman/commands/cli_withlist.py:300
 msgid "The variable 'm' is the $listspec mailing list"
@@ -1323,11 +1334,11 @@ msgstr ""
 
 #: src/mailman/commands/eml_confirm.py:47
 msgid "No confirmation token found"
-msgstr ""
+msgstr "S’u gjet token ripohimi"
 
 #: src/mailman/commands/eml_confirm.py:60 src/mailman/commands/eml_confirm.py:95
 msgid "Confirmation token did not match"
-msgstr ""
+msgstr "Token-i i ripohimit s’u përputh"
 
 #: src/mailman/commands/eml_confirm.py:91
 msgid "Confirmed"
@@ -1347,11 +1358,11 @@ msgstr ""
 
 #: src/mailman/commands/eml_end.py:33
 msgid "Stop processing commands."
-msgstr ""
+msgstr "Ndal përpunim urdhradh"
 
 #: src/mailman/commands/eml_end.py:47
 msgid "An alias for 'end'."
-msgstr ""
+msgstr "Një alias për 'end'."
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
@@ -1359,7 +1370,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
-msgstr ""
+msgstr "n/a"
 
 #: src/mailman/commands/eml_help.py:59
 msgid "$self.name: no such command: $command_name"
@@ -1367,7 +1378,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_help.py:70
 msgid "$self.name: too many arguments: $printable_arguments"
-msgstr ""
+msgstr "$self.name: shumë argumente: $printable_arguments"
 
 #: src/mailman/commands/eml_membership.py:65
 msgid ""
@@ -1382,7 +1393,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:74
 msgid "Join this mailing list."
-msgstr ""
+msgstr "Bëhuni pjesë e kësaj liste postimesh."
 
 #: src/mailman/commands/eml_membership.py:97
 msgid "$self.name: No valid address found to subscribe"
@@ -1394,16 +1405,16 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:128
 msgid "Confirmation email sent to $person"
-msgstr ""
+msgstr "U dërgua email ripohimi te $person"
 
 #: src/mailman/commands/eml_membership.py:145
 #: src/mailman/commands/eml_membership.py:155
 msgid "bad argument: $argument"
-msgstr ""
+msgstr "argument i keqformuar: $argument"
 
 #: src/mailman/commands/eml_membership.py:168
 msgid "An alias for 'join'."
-msgstr ""
+msgstr "Një alias për 'join'."
 
 #: src/mailman/commands/eml_membership.py:179
 msgid ""
@@ -1414,7 +1425,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:182
 msgid "Leave this mailing list."
-msgstr ""
+msgstr "Braktiseni këtë listë postimesh."
 
 #: src/mailman/commands/eml_membership.py:188
 msgid "$self.name: No valid email address found to unsubscribe"
@@ -1422,7 +1433,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:194
 msgid "No registered user for email address: $email"
-msgstr ""
+msgstr "S’ka përdorues të regjistruar për adresën email: $email"
 
 #: src/mailman/commands/eml_membership.py:201
 msgid "Invalid or unverified email address: $email"
@@ -1456,23 +1467,27 @@ msgstr ""
 
 #: src/mailman/commands/eml_who.py:50
 msgid "Get a list of the list members."
-msgstr ""
+msgstr "Merrni një listë të anëtarëve të listës"
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
-msgstr ""
+msgstr "S’jeni i autorizuar të shihni listën e anëtarësisë."
 
 #: src/mailman/commands/eml_who.py:78
 msgid ""
 "Unrecognized or invalid argument(s):\n"
 "{}"
 msgstr ""
+"Argument(e) i panjohur ose i pavlefshëm:\n"
+"{}"
 
 #: src/mailman/commands/eml_who.py:101
 msgid ""
 "Members of the {} mailing list:\n"
 "{}"
 msgstr ""
+"Anëtarë të listës së postimeve {}:\n"
+"{}"
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
@@ -1504,15 +1519,15 @@ msgstr ""
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
-msgstr ""
+msgstr "Ndryshoni krye mesazhesh."
 
 #: src/mailman/handlers/decorate.py:260
 msgid "Decorate a message with headers and footers."
-msgstr ""
+msgstr "Zbukurojeni një mesazh me kryefaqe dhe fundfaqe."
 
 #: src/mailman/handlers/dmarc.py:127
 msgid "$realname via $mlist.display_name"
-msgstr ""
+msgstr "$realname përmes $mlist.display_name"
 
 #: src/mailman/handlers/dmarc.py:228
 msgid "Apply DMARC mitigations."
@@ -1571,7 +1586,7 @@ msgstr ""
 
 #: src/mailman/handlers/mime_delete.py:140
 msgid "After content filtering, the message was empty"
-msgstr ""
+msgstr "Pas filtrimit të lëndës, mesazhi qe i zbrazët"
 
 #: src/mailman/handlers/mime_delete.py:152 src/mailman/handlers/mime_delete.py:291
 msgid ""
@@ -1582,11 +1597,11 @@ msgstr ""
 #: src/mailman/handlers/mime_delete.py:239 src/mailman/handlers/mime_delete.py:246
 #: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
 msgid "Name: $fname\n"
-msgstr ""
+msgstr "Emër: $fname\n"
 
 #: src/mailman/handlers/mime_delete.py:374
 msgid "Filter the MIME content of messages."
-msgstr ""
+msgstr "Filtro lëndë MIME të mesazheve."
 
 #: src/mailman/handlers/owner_recipients.py:34
 msgid "Calculate the owner and moderator recipients."
@@ -1594,7 +1609,7 @@ msgstr ""
 
 #: src/mailman/handlers/replybot.py:44
 msgid "Send automatic responses."
-msgstr ""
+msgstr "Dërgo përgjigje të automatizuara"
 
 #: src/mailman/handlers/replybot.py:97
 msgid "Auto-response for your message to the \"$display_name\" mailing list"
@@ -1618,7 +1633,7 @@ msgstr ""
 
 #: src/mailman/handlers/to_archive.py:34
 msgid "Add the message to the archives."
-msgstr ""
+msgstr "Shtoji mesazhet te arkivat."
 
 #: src/mailman/handlers/to_digest.py:36
 msgid "Add the message to the digest, possibly sending it."
@@ -1626,7 +1641,7 @@ msgstr ""
 
 #: src/mailman/handlers/to_outgoing.py:38
 msgid "Send the message to the outgoing queue."
-msgstr ""
+msgstr "Dërgoje mesazhin te radha e atyre për t’u dërguar."
 
 #: src/mailman/handlers/to_usenet.py:39
 msgid "Move the message to the outgoing news queue."
@@ -1638,11 +1653,11 @@ msgstr ""
 
 #: src/mailman/interfaces/pipeline.py:53
 msgid "[No details are available]"
-msgstr ""
+msgstr "[S’ka hollësi]"
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr ""
+msgstr "[S’u dha arsye]"
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
@@ -1658,7 +1673,7 @@ msgstr ""
 
 #: src/mailman/rest/sub_moderation.py:114
 msgid "Subscription request"
-msgstr ""
+msgstr "Kërkesë pajtimi"
 
 #: src/mailman/rules/administrivia.py:52
 msgid "Catch mis-addressed email commands."
@@ -1666,7 +1681,7 @@ msgstr ""
 
 #: src/mailman/rules/administrivia.py:96
 msgid "Message contains administrivia"
-msgstr ""
+msgstr "Mesazhi përmban administrivia"
 
 #: src/mailman/rules/any.py:32
 msgid "Look for any previous rule hit."
@@ -1682,7 +1697,7 @@ msgstr ""
 
 #: src/mailman/rules/banned_address.py:45
 msgid "Message sender {} is banned from this list"
-msgstr ""
+msgstr "Dërguesi {} i mesazhi është i dëbuar prej kësaj liste"
 
 #: src/mailman/rules/digests.py:42
 msgid "Catch messages with digest Subject or boilerplate quote."
@@ -1718,7 +1733,7 @@ msgstr ""
 
 #: src/mailman/rules/emergency.py:47
 msgid "Emergency moderation is in effect for this list"
-msgstr ""
+msgstr "Për këtë listë është në fuqi moderim nën gjendje të jashtëzakonshme"
 
 #: src/mailman/rules/implicit_dest.py:37
 msgid "Catch messages with implicit destination."
@@ -1726,7 +1741,7 @@ msgstr ""
 
 #: src/mailman/rules/implicit_dest.py:95
 msgid "Message has implicit destination"
-msgstr ""
+msgstr "Mesazhi ka vendmbërritje shprehimisht"
 
 #: src/mailman/rules/loop.py:32
 msgid "Look for a posting loop."
@@ -1742,7 +1757,7 @@ msgstr ""
 
 #: src/mailman/rules/max_recipients.py:49
 msgid "Message has more than {} recipients"
-msgstr ""
+msgstr "Mesazhi ka më tepër se {} marrës"
 
 #: src/mailman/rules/max_size.py:37
 msgid "Catch messages that are bigger than a specified maximum."
@@ -1750,7 +1765,7 @@ msgstr ""
 
 #: src/mailman/rules/max_size.py:68
 msgid "The message is larger than the {} KB maximum size"
-msgstr ""
+msgstr "Mesazhi është më i madh se madhësi maksimum {} KB"
 
 #: src/mailman/rules/moderation.py:64
 msgid "Match messages sent by moderated members."
@@ -1758,7 +1773,7 @@ msgstr ""
 
 #: src/mailman/rules/moderation.py:92
 msgid "The message comes from a moderated member"
-msgstr ""
+msgstr "Mesazhi vjen nga një anëtar i moderuar"
 
 #: src/mailman/rules/moderation.py:110
 msgid "Match messages sent by nonmembers."
@@ -1766,7 +1781,7 @@ msgstr ""
 
 #: src/mailman/rules/moderation.py:125
 msgid "No sender was found in the message."
-msgstr ""
+msgstr "Te mesazhi s’u gjet dërgues."
 
 #: src/mailman/rules/moderation.py:170
 msgid "The sender is in the nonmember {} list"
@@ -1774,7 +1789,7 @@ msgstr ""
 
 #: src/mailman/rules/moderation.py:185
 msgid "The message is not from a list member"
-msgstr ""
+msgstr "Mesazhi s’është prej një anëtari të listës"
 
 #: src/mailman/rules/news_moderation.py:34
 msgid ""
@@ -1793,7 +1808,7 @@ msgstr ""
 
 #: src/mailman/rules/no_senders.py:44
 msgid "The message has no valid senders"
-msgstr ""
+msgstr "Mesazhi s’ka dërgues të vlefshëm"
 
 #: src/mailman/rules/no_subject.py:32
 msgid "Catch messages with no, or empty, Subject headers."
@@ -1801,7 +1816,7 @@ msgstr ""
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr ""
+msgstr "Mesazh s’ka subjekt"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
@@ -1825,33 +1840,35 @@ msgstr ""
 
 #: src/mailman/runners/command.py:187
 msgid "- Original message details:"
-msgstr ""
+msgstr "- Hollësi mesazhi origjinal:"
 
 #: src/mailman/runners/command.py:191
 msgid "    From: $from_"
-msgstr ""
+msgstr "    Nga: $from_"
 
 #: src/mailman/runners/command.py:192
 msgid "    Subject: $subject"
-msgstr ""
+msgstr "    Subjekt: $subject"
 
 #: src/mailman/runners/command.py:193
 msgid "    Date: $date"
-msgstr ""
+msgstr "    Datë: $date"
 
 #: src/mailman/runners/command.py:194
 msgid "    Message-ID: $message_id"
-msgstr ""
+msgstr "    ID Mesazhi: $message_id"
 
 #: src/mailman/runners/command.py:195
 msgid ""
 "\n"
 "- Results:"
 msgstr ""
+"\n"
+"- Përfundime:"
 
 #: src/mailman/runners/command.py:209
 msgid "No such command: $command_name"
-msgstr ""
+msgstr "S’ka urdhër të tillë: $command_name"
 
 #: src/mailman/runners/command.py:223
 msgid ""
@@ -1873,7 +1890,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
-msgstr ""
+msgstr "Përfundimet për urdhrat tuaja për email"
 
 #: src/mailman/runners/digest.py:55
 msgid "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
@@ -1881,11 +1898,11 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:83
 msgid "Today's Topics:\n"
-msgstr ""
+msgstr "Temat e Sotme:\n"
 
 #: src/mailman/runners/digest.py:152
 msgid "Digest Header"
-msgstr ""
+msgstr "Krye Përmbledhjeje"
 
 #: src/mailman/runners/digest.py:172
 msgid "Today's Topics ($count messages)"
@@ -1893,7 +1910,7 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:194 src/mailman/runners/digest.py:269
 msgid "Digest Footer"
-msgstr ""
+msgstr "Poshtëshënim Përmbledhjeje"
 
 #: src/mailman/runners/digest.py:201 src/mailman/runners/digest.py:276
 msgid "End of "
