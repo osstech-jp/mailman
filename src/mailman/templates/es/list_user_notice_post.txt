@@ -1,6 +1,0 @@
-Su mensaje con el asunto
-
-    $subject
-
-se ha recibido satisfactoriamente en la lista de correo $display_name.
-
