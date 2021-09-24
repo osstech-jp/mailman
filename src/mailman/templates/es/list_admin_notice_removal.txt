@@ -1,2 +1,0 @@
-$member ha sido desuscrito de $listname debido al exceso de rebotes.
-

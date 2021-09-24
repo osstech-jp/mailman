@@ -1,7 +1,0 @@
-Su mensaje a la lista de correos $listname ha sido rechazado por las
-siguientes razones:
-
-$reasons
-
-Se adjunta el mensaje original tal y como ha sido recibido por Mailman. 
-
