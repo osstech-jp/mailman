@@ -40,6 +40,12 @@ def display_members(ctx, mlist, role, regular, digest,
             DeliveryMode.mime_digests,
             DeliveryMode.summary_digests,
             ]
+    elif digest == 'mime':
+        # Include summary with mime as they are currently treated alike.
+        digest_types = [
+            DeliveryMode.mime_digests,
+            DeliveryMode.summary_digests,
+            ]
     elif digest is not None:
         digest_types = [DeliveryMode[digest + '_digests']]
     else:
@@ -84,16 +90,14 @@ def display_members(ctx, mlist, role, regular, digest,
         print(_('$mlist.list_id has no members'), file=outfp)
         return
     for address in sorted(addresses, key=attrgetter('email')):
+        member = roster.get_member(address.email)
         if regular:
-            member = roster.get_member(address.email)
             if member.delivery_mode != DeliveryMode.regular:
                 continue
         if digest is not None:
-            member = roster.get_member(address.email)
             if member.delivery_mode not in digest_types:
                 continue
         if nomail is not None:
-            member = roster.get_member(address.email)
             if member.delivery_status not in status_types:
                 continue
         if email_only:
@@ -106,7 +110,7 @@ def display_members(ctx, mlist, role, regular, digest,
 @click.command(
     cls=I18nCommand,
     help=_("""\
-    Display, add or delete a mailing list's members.
+    Display a mailing list's members.
     Filtering along various criteria can be done when displaying.
     With no options given, displaying mailing list members
     to stdout is the default mode.
@@ -134,14 +138,14 @@ def display_members(ctx, mlist, role, regular, digest,
     '--output', '-o', 'outfp', metavar='FILENAME',
     type=click.File(mode='w', encoding='utf-8', atomic=True),
     help=_("""\
-    [MODE] Display output to FILENAME instead of stdout.  FILENAME
+    Display output to FILENAME instead of stdout.  FILENAME
     can be '-' to indicate standard output."""))
 @click.option(
     '--role', '-R',
     type=click.Choice(('any', 'owner', 'moderator', 'nonmember', 'member',
                        'administrator')),
     help=_("""\
-    [output filter] Display only members with a given ROLE.
+    Display only members with a given ROLE.
     The role may be 'any', 'member', 'nonmember', 'owner', 'moderator',
     or 'administrator' (i.e. owners and moderators).
     If not given, then delivery members are used. """))
@@ -149,25 +153,24 @@ def display_members(ctx, mlist, role, regular, digest,
     '--regular', '-r',
     is_flag=True, default=False,
     help=_("""\
-    [output filter] Display only regular delivery members."""))
+    Display only regular delivery members."""))
 @click.option(
     '--email-only', '-e', 'email_only',
     is_flag=True, default=False,
     help=("""\
-    [output filter] Display member addresses only, without the display name.
+    Display member addresses only, without the display name.
     """))
 @click.option(
     '--no-change', '-N', 'no_change',
     is_flag=True, default=False,
     help=_("""\
-    Don't actually make the changes.  Instead, print out what would be
-    done to the list."""))
+    This option has no effect. It exists for backwards compatibility only."""))
 @click.option(
     '--digest', '-d', metavar='kind',
     # baw 2010-01-23 summary digests are not really supported yet.
     type=click.Choice(('any', 'plaintext', 'mime')),
     help=_("""\
-    [output filter] Display only digest members of kind.
+    Display only digest members of kind.
     'any' means any digest type, 'plaintext' means only plain text (rfc 1153)
     type digests, 'mime' means MIME type digests."""))
 @click.option(
@@ -175,7 +178,7 @@ def display_members(ctx, mlist, role, regular, digest,
     type=click.Choice(('enabled', 'any', 'unknown',
                        'byadmin', 'byuser', 'bybounces')),
     help=_("""\
-    [output filter] Display only members with a given delivery status.
+    Display only members with a given delivery status.
     'enabled' means all members whose delivery is enabled, 'any' means
     members whose delivery is disabled for any reason, 'byuser' means
     that the member disabled their own delivery, 'bybounces' means that
