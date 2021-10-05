@@ -366,3 +366,33 @@ class TestCLIMembers(unittest.TestCase):
             '--email-only', 'ant.example.com'))
         self.assertEqual(
             result.output, 'aperson@example.com\nbperson@example.com\n')
+
+    def test_incompatible_role_any_regular(self):
+        result = self._command.invoke(members, (
+            '--role', 'any', '--regular', 'ant.example.com'))
+        self.assertEqual(
+            result.output,
+            'Usage: members [OPTIONS] LISTSPEC\n'
+            'Try \'members --help\' for help.\n\n'
+            'Error: The --regular, --digest and --nomail options are '
+            'incompatible with role=any.\n')
+
+    def test_incompatible_role_any_digest(self):
+        result = self._command.invoke(members, (
+            '--role', 'any', '--digest', 'any', 'ant.example.com'))
+        self.assertEqual(
+            result.output,
+            'Usage: members [OPTIONS] LISTSPEC\n'
+            'Try \'members --help\' for help.\n\n'
+            'Error: The --regular, --digest and --nomail options are '
+            'incompatible with role=any.\n')
+
+    def test_incompatible_role_any_nomail(self):
+        result = self._command.invoke(members, (
+            '--role', 'any', '--nomail', 'any', 'ant.example.com'))
+        self.assertEqual(
+            result.output,
+            'Usage: members [OPTIONS] LISTSPEC\n'
+            'Try \'members --help\' for help.\n\n'
+            'Error: The --regular, --digest and --nomail options are '
+            'incompatible with role=any.\n')

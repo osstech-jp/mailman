@@ -8,6 +8,18 @@ Copyright (C) 1998-2021 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
+.. _news-3.3.6:
+
+3.3.6
+=====
+
+(xxxx-xx-xx)
+
+Bugs fixed
+----------
+* The ``mailman members`` command reports incompatible options that would
+  otherwise throw exceptions.
+
 .. _news-3.3.5:
 
 3.3.5
