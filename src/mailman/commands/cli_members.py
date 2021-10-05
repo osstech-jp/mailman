@@ -148,7 +148,7 @@ def display_members(ctx, mlist, role, regular, digest,
     Display only members with a given ROLE.
     The role may be 'any', 'member', 'nonmember', 'owner', 'moderator',
     or 'administrator' (i.e. owners and moderators).
-    If not given, then delivery members are used. """))
+    If not given, then 'member' role is assumed."""))
 @click.option(
     '--regular', '-r',
     is_flag=True, default=False,
@@ -202,6 +202,9 @@ def members(ctx, add_infp, del_infp, sync_infp, outfp,
     elif sync_infp is not None:
         ctx.fail('The --sync option is removed. '
                  'Use `mailman syncmembers` instead.')
+    elif role == 'any' and (regular or digest or nomail):
+        ctx.fail('The --regular, --digest and --nomail options are '
+                 'incompatible with role=any.')
     else:
         display_members(ctx, mlist, role, regular,
                         digest, nomail, outfp, email_only)
