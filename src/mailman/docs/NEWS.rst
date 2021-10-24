@@ -19,6 +19,7 @@ Bugs fixed
 ----------
 * The ``mailman members`` command reports incompatible options that would
   otherwise throw exceptions.
+* Require authheaders >=0.14.0 and adjust tests accordingly.  (Closes #954)
 
 .. _news-3.3.5:
 
