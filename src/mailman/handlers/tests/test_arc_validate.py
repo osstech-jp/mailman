@@ -190,8 +190,9 @@ This is a test message.
 """)
 
         ValidateAuthenticity().process(lst, msg, msgdata)
-        res = ["lists.example.org; spf=pass smtp.mfrom=jqd@d1.example"
-               "; dkim=pass header.i=@d1.example; dmarc=pass; arc=fail"]
+        res = ['lists.example.org; spf=pass smtp.mfrom=jqd@d1.example',
+               '; dkim=pass header.i=@d1.example; dmarc=pass; arc=fail ',
+               '(Most recent ARC-Message-Signature did not validate)']
         self.assertEqual(msg["Authentication-Results"], ''.join(res))
 
     def test_authentication_whitelist_hit(self):
@@ -233,8 +234,9 @@ This is a test!
 
         ValidateAuthenticity().process(lst, msg, msgdata)
 
-        res = ["example.com; spf=pass smtp.mailfrom=gmail.com"
-               "; dkim=pass header.d=valimail.com; arc=none"]
+        res = ['example.com; spf=pass smtp.mailfrom=gmail.com',
+               '; dkim=pass header.d=valimail.com; arc=none ',
+               '(Message is not ARC signed)']
         self.assertEqual(msg["Authentication-Results"], ''.join(res))
 
     def test_authentication_whitelist_miss(self):
@@ -277,7 +279,8 @@ This is a test!
 
         ValidateAuthenticity().process(lst, msg, msgdata)
         self.assertEqual(msg["Authentication-Results"],
-                         "test.com; dkim=pass header.d=valimail.com; arc=none")
+                         'test.com; dkim=pass header.d=valimail.com; arc=none '
+                         '(Message is not ARC signed)')
 
     def test_authentication_bad_outlook_header(self):
         config.push('just_dkim', """
@@ -321,7 +324,8 @@ This is a test!
 
         ValidateAuthenticity().process(lst, msg, msgdata)
         self.assertEqual(msg["Authentication-Results"],
-                         "test.com; dkim=fail header.d=valimail.com; arc=none")
+                         'test.com; dkim=fail header.d=valimail.com; arc=none '
+                         '(Message is not ARC signed)')
 
 
 class TestTimeout(unittest.TestCase):
