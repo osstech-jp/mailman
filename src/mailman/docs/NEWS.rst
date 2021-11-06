@@ -20,6 +20,8 @@ Bugs fixed
 * The ``mailman members`` command reports incompatible options that would
   otherwise throw exceptions.
 * Require authheaders >=0.14.0 and adjust tests accordingly.  (Closes #954)
+* Handling a held message will not remove it from the message store if there
+  are other requests for it.  (Closes #955)
 
 .. _news-3.3.5:
 

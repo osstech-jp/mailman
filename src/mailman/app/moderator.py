@@ -189,7 +189,7 @@ def handle_message(mlist, id, action, comment=None, forward=None):
     # Delete the request and message if it's not being kept.
     if not keep:
         # There are two pended tokens.  The request id has the moderator
-        # token, but wee need to delete the user token too.
+        # token, but we need to delete the user token too.
         user_token = None
         pendings = getUtility(IPendings)
         for token, data in pendings.find(pend_type='held message'):
@@ -200,7 +200,14 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         if user_token is not None:
             pendings.confirm(user_token, expunge=True)
         requestdb.delete_request(id)
-        message_store.delete_message(message_id)
+        # Only delete the message from the message store if there's no other
+        # request for it.
+        delete = True
+        for token, data in pendings.find(pend_type='data'):
+            if data['_mod_message_id'] == message_id:
+                delete = False
+        if delete:
+            message_store.delete_message(message_id)
     # Log the rejection
     if rejection:
         note = """%s: %s posting:
