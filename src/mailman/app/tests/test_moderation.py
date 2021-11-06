@@ -206,9 +206,36 @@ Message-ID: <alpha>
         self.assertIsNone(message)
         self.assertIsNone(getUtility(IPendings).confirm(hash))
 
+    def test_handled_cross_posted_message_not_removed(self):
+        # A cross posted message is not removed when handled on the first list.
+        mlist2 = create_list('test2@example.com')
+        request_db2 = IListRequests(mlist2)
+        request_id = hold_message(self._mlist, self._msg)
+        request_id2 = hold_message(mlist2, self._msg)
+        # Get the hashes for these pending requests.
+        hash0 = list(self._request_db.held_requests)[0].data_hash
+        hash1 = list(request_db2.held_requests)[0].data_hash
+        # Handle the first list's message.
+        handle_message(self._mlist, request_id, Action.discard)
+        # There's now only the request for list2.
+        self.assertEqual(self._request_db.count, 0)
+        self.assertEqual(request_db2.count, 1)
+        message = getUtility(IMessageStore).get_message_by_id('<alpha>')
+        self.assertIsNotNone(message)
+        self.assertIsNone(getUtility(IPendings).confirm(hash0))
+        self.assertIsNotNone(getUtility(IPendings).confirm(hash1,
+                                                           expunge=False))
+        # Handle the second list's message.
+        handle_message(mlist2, request_id2, Action.discard)
+        # Now the request and message are gone.
+        self.assertEqual(request_db2.count, 0)
+        message = getUtility(IMessageStore).get_message_by_id('<alpha>')
+        self.assertIsNone(message)
+        self.assertIsNone(getUtility(IPendings).confirm(hash1))
+
     def test_all_pendings_removed(self):
         # A held message pends two tokens, One for the moderator and one for
-        # the user.  Ensure both are removed when meddage is handled.
+        # the user.  Ensure both are removed when message is handled.
         request_id = hold_message(self._mlist, self._msg)
         # The hold chain does more.
         pendings = getUtility(IPendings)
