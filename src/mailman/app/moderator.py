@@ -204,8 +204,9 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         # request for it.
         delete = True
         for token, data in pendings.find(pend_type='data'):
-            if data['_mod_message_id'] == message_id:
+            if data and data.get('_mod_message_id') == message_id:
                 delete = False
+                break
         if delete:
             message_store.delete_message(message_id)
     # Log the rejection
