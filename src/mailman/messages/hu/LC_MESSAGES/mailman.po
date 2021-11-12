@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2021-01-18 11:48+0000\n"
-"Last-Translator: balping <balping314@gmail.com>\n"
-"Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/mailman/hu/>\n"
+"PO-Revision-Date: 2021-11-04 17:36+0000\n"
+"Last-Translator: Peter Donka <peter.donka@gmail.com>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.5-dev\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -46,6 +47,8 @@ msgid ""
 "The content of this message was lost. It was probably cross-posted to\n"
 "multiple lists and previously handled on another list.\n"
 msgstr ""
+"Az üzenet tartalma elveszett. Valószínűleg a\n"
+"több listán, és korábban egy másik listán kezelték.\n"
 
 #: src/mailman/app/moderator.py:132
 msgid "Posting of your message titled \"$subject\""
@@ -78,7 +81,7 @@ msgstr "\"$display_name\" levelezőlistára küldött lekérdezés elutasítva"
 
 #: src/mailman/app/notifications.py:94
 msgid " (Digest mode)"
-msgstr ""
+msgstr " (Kivonatoló mód)"
 
 #: src/mailman/app/notifications.py:98
 #, python-brace-format
@@ -99,7 +102,7 @@ msgstr "A $member's előfizetése le van tiltva a $mlist.display_name oldalon"
 
 #: src/mailman/app/notifications.py:192
 msgid "$member's bounce score incremented on $mlist.display_name"
-msgstr ""
+msgstr "$member bounce pontszáma növekszik $mlist.display_name alapján"
 
 #: src/mailman/app/notifications.py:218
 #, python-brace-format
@@ -138,16 +141,25 @@ msgid ""
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
 "    default configuration file is loaded."
 msgstr ""
+"    Használandó konfigurációs fájl. Ha nincs megadva, akkor a környezeti "
+"változó \n"
+"a MAILMAN_CONFIG_FILE felhasználásra kerül, ha be van állítva.\n"
+"Ha egyiket sem adják meg, a az alapértelmezett konfigurációs fájl betöltődik."
 
 #: src/mailman/bin/mailman.py:110
 msgid ""
 "    Running mailman commands as root is not recommended and mailman will\n"
 "    refuse to run as root unless this option is specified."
 msgstr ""
+"    A mailman parancsok root felhasználóként történő futtatása nem ajánlott, "
+"és a mailman\n"
+"    nem hajlandó root-ként futtatni, hacsak ez az opció nincs megadva."
 
 #: src/mailman/bin/mailman.py:129
 msgid "    If you are sure you want to run as root, specify --run-as-root."
 msgstr ""
+"    Ha biztos vagy benne, hogy root-ként akarod futtatni, add meg a --run-as-"
+"root értéket."
 
 #: src/mailman/bin/master.py:157
 msgid ""
@@ -162,6 +174,8 @@ msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running $program with the --force flag."
 msgstr ""
+"A főzárat nem sikerült megszerezni.  Úgy tűnik ez egy elkallódott\n"
+"mesterzár.  Próbálja meg újra futtatni a $program-ot a --force jelzővel."
 
 #: src/mailman/bin/master.py:169
 msgid ""
@@ -213,6 +227,8 @@ msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
 msgstr ""
+"    Ne indítsa újra a futókat, amikor hiba vagy SIGUSR1 miatt lépnek ki.\n"
+"    Ezt csak hibakeresésre használja."
 
 #: src/mailman/bin/master.py:531
 msgid ""
@@ -317,9 +333,8 @@ msgid "Process DMARC reject or discard mitigations"
 msgstr ""
 
 #: src/mailman/chains/headers.py:121
-#, fuzzy
 msgid "Header \"{}\" matched a header rule"
-msgstr "A (z) \"{}\" fejléc megegyezik a fejléc szabállyal"
+msgstr "A(z) \"{}\" fejléc megfelelt egy fejlécszabálynak"
 
 #: src/mailman/chains/headers.py:136
 msgid "The built-in header matching chain"
@@ -1977,7 +1992,12 @@ msgid "list:admin:action:unsubscribe.txt"
 msgstr ""
 
 msgid "list:admin:notice:disable.txt"
-msgstr "$member feliratkozása fel lett függesztve a(z) $listname listán túl sok visszapattanó levél miatt."
+msgstr ""
+"$member előfizetése le van tiltva $listname a visszafordulási pontszámuk "
+"miatt\n"
+"amely meghaladja a levelezési lista bounce_score_threshold.\n"
+"\n"
+"Az aktiváló DSN, ha rendelkezésre áll, csatlakoztatva van."
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
