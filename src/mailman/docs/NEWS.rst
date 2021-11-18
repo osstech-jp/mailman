@@ -22,6 +22,8 @@ Bugs fixed
 * Require authheaders >=0.14.0 and adjust tests accordingly.  (Closes #954)
 * Handling a held message will not remove it from the message store if there
   are other requests for it.  (Closes #955)
+* ARC signing now signs after the message has been personalized and decorated.
+  (Closes #896)
 
 .. _news-3.3.5:
 

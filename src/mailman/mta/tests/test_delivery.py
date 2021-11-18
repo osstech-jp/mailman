@@ -33,6 +33,7 @@ from mailman.testing.helpers import (
     LogFileMark, specialized_message_from_string as mfs, subscribe)
 from mailman.testing.layers import ConfigLayer, SMTPLayer
 from mailman.utilities.modules import find_name
+from unittest.mock import patch
 from zope.component import getUtility
 
 
@@ -115,6 +116,41 @@ name     : $user_name
         _mlist, _msg, _msgdata, _recipients = _deliveries[0]
         member = _msgdata.get('member')
         self.assertEqual(member, self._anne)
+
+    def test_arc_sign_called_individual(self):
+        # Delivery with arc_sign enabled should call arc_sign.
+        msgdata = dict(recipients=['anne@example.org'])
+        keyfile = tempfile.NamedTemporaryFile(delete=True)
+        keyfile.write(b"""-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDkHlOQoBTzWRiGs5V6NpP3idY6Wk08a5qhdR6wy5bdOKb2jLQi
+Y/J16JYi0Qvx/byYzCNb3W91y3FutACDfzwQ/BC/e/8uBsCR+yz1Lxj+PL6lHvqM
+KrM3rG4hstT5QjvHO9PzoxZyVYLzBfO2EeC3Ip3G+2kryOTIKT+l/K4w3QIDAQAB
+AoGAH0cxOhFZDgzXWhDhnAJDw5s4roOXN4OhjiXa8W7Y3rhX3FJqmJSPuC8N9vQm
+6SVbaLAE4SG5mLMueHlh4KXffEpuLEiNp9Ss3O4YfLiQpbRqE7Tm5SxKjvvQoZZe
+zHorimOaChRL2it47iuWxzxSiRMv4c+j70GiWdxXnxe4UoECQQDzJB/0U58W7RZy
+6enGVj2kWF732CoWFZWzi1FicudrBFoy63QwcowpoCazKtvZGMNlPWnC7x/6o8Gc
+uSe0ga2xAkEA8C7PipPm1/1fTRQvj1o/dDmZp243044ZNyxjg+/OPN0oWCbXIGxy
+WvmZbXriOWoSALJTjExEgraHEgnXssuk7QJBALl5ICsYMu6hMxO73gnfNayNgPxd
+WFV6Z7ULnKyV7HSVYF0hgYOHjeYe9gaMtiJYoo0zGN+L3AAtNP9huqkWlzECQE1a
+licIeVlo1e+qJ6Mgqr0Q7Aa7falZ448ccbSFYEPD6oFxiOl9Y9se9iYHZKKfIcst
+o7DUw1/hz2Ck4N5JrgUCQQCyKveNvjzkkd8HjYs0SwM0fPjK16//5qDZ2UiDGnOe
+uEzxBDAr518Z8VFbR41in3W4Y3yCDgQlLlcETrS+zYcL
+-----END RSA PRIVATE KEY-----
+""")
+        keyfile.flush()
+        config.push('arc', """
+        [ARC]
+        enabled: yes
+        authserv_id: lists.example.org
+        selector: dummy
+        domain: example.org
+        sig_headers: mime-version, date, from, to, subject
+        privkey: %s
+        """ % (keyfile.name))
+        with patch.object(DeliverTester, 'arc_sign') as mock:
+            DeliverTester().deliver(self._mlist, self._msg, msgdata)
+        mock.assert_called_once()
+        config.pop('arc')
 
     def test_decoration(self):
         msgdata = dict(recipients=['anne@example.org'])
@@ -300,6 +336,41 @@ list: Test
 Footer
 
 """)
+
+    def test_arc_sign_called_bulk(self):
+        # Delivery with arc_sign enabled should call arc_sign.
+        msgdata = dict(recipients=['anne@example.org'])
+        keyfile = tempfile.NamedTemporaryFile(delete=True)
+        keyfile.write(b"""-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDkHlOQoBTzWRiGs5V6NpP3idY6Wk08a5qhdR6wy5bdOKb2jLQi
+Y/J16JYi0Qvx/byYzCNb3W91y3FutACDfzwQ/BC/e/8uBsCR+yz1Lxj+PL6lHvqM
+KrM3rG4hstT5QjvHO9PzoxZyVYLzBfO2EeC3Ip3G+2kryOTIKT+l/K4w3QIDAQAB
+AoGAH0cxOhFZDgzXWhDhnAJDw5s4roOXN4OhjiXa8W7Y3rhX3FJqmJSPuC8N9vQm
+6SVbaLAE4SG5mLMueHlh4KXffEpuLEiNp9Ss3O4YfLiQpbRqE7Tm5SxKjvvQoZZe
+zHorimOaChRL2it47iuWxzxSiRMv4c+j70GiWdxXnxe4UoECQQDzJB/0U58W7RZy
+6enGVj2kWF732CoWFZWzi1FicudrBFoy63QwcowpoCazKtvZGMNlPWnC7x/6o8Gc
+uSe0ga2xAkEA8C7PipPm1/1fTRQvj1o/dDmZp243044ZNyxjg+/OPN0oWCbXIGxy
+WvmZbXriOWoSALJTjExEgraHEgnXssuk7QJBALl5ICsYMu6hMxO73gnfNayNgPxd
+WFV6Z7ULnKyV7HSVYF0hgYOHjeYe9gaMtiJYoo0zGN+L3AAtNP9huqkWlzECQE1a
+licIeVlo1e+qJ6Mgqr0Q7Aa7falZ448ccbSFYEPD6oFxiOl9Y9se9iYHZKKfIcst
+o7DUw1/hz2Ck4N5JrgUCQQCyKveNvjzkkd8HjYs0SwM0fPjK16//5qDZ2UiDGnOe
+uEzxBDAr518Z8VFbR41in3W4Y3yCDgQlLlcETrS+zYcL
+-----END RSA PRIVATE KEY-----
+""")
+        keyfile.flush()
+        config.push('arc', """
+        [ARC]
+        enabled: yes
+        authserv_id: lists.example.org
+        selector: dummy
+        domain: example.org
+        sig_headers: mime-version, date, from, to, subject
+        privkey: %s
+        """ % (keyfile.name))
+        with patch.object(BulkDeliverTester, 'arc_sign') as mock:
+            BulkDeliverTester().deliver(self._mlist, self._msg, msgdata)
+        mock.assert_called_with(self._mlist, self._msg, msgdata)
+        config.pop('arc')
 
 
 class TestCloseAfterDelivery(unittest.TestCase):

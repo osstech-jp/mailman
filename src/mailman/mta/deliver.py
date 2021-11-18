@@ -23,6 +23,7 @@ import logging
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
+from mailman.mta.arc_signing import ARCSigningMixin
 from mailman.mta.base import IndividualDelivery
 from mailman.mta.bulk import BulkDelivery
 from mailman.mta.decorating import DecoratingMixin
@@ -37,7 +38,7 @@ log = logging.getLogger('mailman.smtp')
 
 
 @public
-class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
+class Deliver(VERPMixin, DecoratingMixin, ARCSigningMixin, PersonalizedMixin,
               IndividualDelivery):
     """Deliver one message to one recipient.
 
@@ -47,6 +48,7 @@ class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
     * VERP
     * Full Personalization
     * Header/Footer decoration
+    * ARC signing
     """
 
     def __init__(self):
@@ -55,6 +57,7 @@ class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
             self.avoid_duplicates,
             self.decorate,
             self.personalize_to,
+            self.arc_sign,
             ])
 
 
