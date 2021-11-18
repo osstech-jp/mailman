@@ -8,174 +8,153 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2021-11-04 17:36+0000\n"
-"Last-Translator: Peter Donka <peter.donka@gmail.com>\n"
-"Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/"
-"mailman/hu/>\n"
-"Language: hu\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9-dev\n"
 
-#: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
-#: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
-#: src/mailman/handlers/subject_prefix.py:45
+#: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85 src/mailman/chains/hold.py:162
+#: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:45
 #: src/mailman/handlers/subject_prefix.py:91 src/mailman/runners/digest.py:87
 msgid "(no subject)"
-msgstr "(nincs tárgy)"
+msgstr ""
 
 #: src/mailman/app/bounces.py:78
 msgid "[No bounce details are available]"
-msgstr "[A visszapattanás részletei nem állnak rendelkezésre]"
+msgstr ""
 
 #: src/mailman/app/bounces.py:230
 msgid "$mlist.display_name mailing list probe message"
-msgstr "$mlist.display_name levelezőlista próbaüzenet"
+msgstr ""
 
 #: src/mailman/app/bounces.py:266
 msgid "Uncaught bounce notification"
-msgstr "Észrevétlen visszafordulási értesítés"
+msgstr ""
 
 #: src/mailman/app/membership.py:141
 msgid "$mlist.display_name unsubscription notification"
-msgstr "$mlist.display_name értesítés leiratkozásról"
+msgstr ""
 
 #: src/mailman/app/moderator.py:97
 msgid ""
 "The content of this message was lost. It was probably cross-posted to\n"
 "multiple lists and previously handled on another list.\n"
 msgstr ""
-"Az üzenet tartalma elveszett. Valószínűleg a\n"
-"több listán, és korábban egy másik listán kezelték.\n"
 
 #: src/mailman/app/moderator.py:132
 msgid "Posting of your message titled \"$subject\""
-msgstr "\"$subject\" tárgyú üzenete küldése"
+msgstr ""
 
-#: src/mailman/app/moderator.py:133 src/mailman/app/moderator.py:258
-#: src/mailman/rest/sub_moderation.py:112
+#: src/mailman/app/moderator.py:133 src/mailman/app/moderator.py:258 src/mailman/rest/sub_moderation.py:112
 msgid "[No reason given]"
-msgstr "[indoklás nélkül]"
+msgstr ""
 
 #: src/mailman/app/moderator.py:184
 msgid "Forward of moderated message"
-msgstr "Moderált üzenet továbbítása"
+msgstr ""
 
 #: src/mailman/app/moderator.py:225
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr "Új leiratkozási igény: $mlist.display_name, $email"
+msgstr ""
 
 #: src/mailman/app/moderator.py:257
 msgid "Unsubscription request"
-msgstr "Leiratkozási kérelem"
+msgstr ""
 
 #: src/mailman/app/moderator.py:298
 msgid "Original Message"
-msgstr "Eredeti üzenet"
+msgstr ""
 
 #: src/mailman/app/moderator.py:301
 msgid "Request to mailing list \"$display_name\" rejected"
-msgstr "\"$display_name\" levelezőlistára küldött lekérdezés elutasítva"
+msgstr ""
 
 #: src/mailman/app/notifications.py:94
 msgid " (Digest mode)"
-msgstr " (Kivonatoló mód)"
+msgstr ""
 
 #: src/mailman/app/notifications.py:98
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr "Üdvözöljük a \"$mlist.display_name\" levelezőlistán${digmode}"
+msgstr ""
 
 #: src/mailman/app/notifications.py:122
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr "Leiratkozott a(z) $mlist.display_name levelezőlistáról"
+msgstr ""
 
 #: src/mailman/app/notifications.py:140
 msgid "$mlist.display_name subscription notification"
-msgstr "$mlist.display_name értesítés feliratkozásról"
+msgstr ""
 
 #: src/mailman/app/notifications.py:164
 msgid "$member's subscription disabled on $mlist.display_name"
-msgstr "A $member's előfizetése le van tiltva a $mlist.display_name oldalon"
+msgstr ""
 
 #: src/mailman/app/notifications.py:192
 msgid "$member's bounce score incremented on $mlist.display_name"
-msgstr "$member bounce pontszáma növekszik $mlist.display_name alapján"
+msgstr ""
 
 #: src/mailman/app/notifications.py:218
 #, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "$member lekerült a ${mlist.display_name} listáról visszapattanó levelek miatt"
+msgstr ""
 
 #: src/mailman/app/notifications.py:245
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "A(z) {mlist.display_name} levelezési listára szóló feliratkozása le van tiltva"
+msgstr ""
 
 #: src/mailman/app/subscriptions.py:325
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
-msgstr "Új feliratkozási kérvény a(z) $self.mlist.display_name listára $self.address.email címről"
+msgstr ""
 
 #: src/mailman/app/subscriptions.py:493
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
-msgstr "Új feliratkozási kérvény a(z) $self.mlist.display_name listára $self.address.email címről"
+msgstr ""
 
 #: src/mailman/app/subscriptions.py:624
 msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
-msgstr "Meg lett hívva a(z) $event.mlist.fqdn_listname levelezőlistára."
+msgstr ""
 
 #: src/mailman/app/subscriptions.py:627
 msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
-msgstr "Az ön hozzájárulása szülséges a(z) $event.mlist.fqdn_listname lista elhagyásához."
+msgstr ""
 
 #: src/mailman/app/subscriptions.py:631
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
-msgstr "Az ön hozzájárulása szükséges a(z) $event.mlist.fqdn_listname listához való csatlakozáshoz."
+msgstr ""
 
-#: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
-#: src/mailman/bin/runner.py:96
+#: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518 src/mailman/bin/runner.py:96
 msgid ""
 "    Configuration file to use.  If not given, the environment variable\n"
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
 "    default configuration file is loaded."
 msgstr ""
-"    Használandó konfigurációs fájl. Ha nincs megadva, akkor a környezeti "
-"változó \n"
-"a MAILMAN_CONFIG_FILE felhasználásra kerül, ha be van állítva.\n"
-"Ha egyiket sem adják meg, a az alapértelmezett konfigurációs fájl betöltődik."
 
 #: src/mailman/bin/mailman.py:110
 msgid ""
 "    Running mailman commands as root is not recommended and mailman will\n"
 "    refuse to run as root unless this option is specified."
 msgstr ""
-"    A mailman parancsok root felhasználóként történő futtatása nem ajánlott, "
-"és a mailman\n"
-"    nem hajlandó root-ként futtatni, hacsak ez az opció nincs megadva."
 
 #: src/mailman/bin/mailman.py:129
 msgid "    If you are sure you want to run as root, specify --run-as-root."
 msgstr ""
-"    Ha biztos vagy benne, hogy root-ként akarod futtatni, add meg a --run-as-"
-"root értéket."
 
 #: src/mailman/bin/master.py:157
 msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
-"A mesterzárat nem lehet kinyerni, mert úgy tűnik, hogy\n"
-"egy másik masterzár már fut."
 
 #: src/mailman/bin/master.py:163
 msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running $program with the --force flag."
 msgstr ""
-"A főzárat nem sikerült megszerezni.  Úgy tűnik ez egy elkallódott\n"
-"mesterzár.  Próbálja meg újra futtatni a $program-ot a --force jelzővel."
 
 #: src/mailman/bin/master.py:169
 msgid ""
@@ -227,8 +206,6 @@ msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
 msgstr ""
-"    Ne indítsa újra a futókat, amikor hiba vagy SIGUSR1 miatt lépnek ki.\n"
-"    Ezt csak hibakeresésre használja."
 
 #: src/mailman/bin/master.py:531
 msgid ""
@@ -318,15 +295,15 @@ msgstr ""
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
-msgstr "Üzenet elfogadása."
+msgstr ""
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr "A beépített moderálási lánc."
+msgstr ""
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
-msgstr "Üzenet megsemmisítése és feldolgozás leállítása."
+msgstr ""
 
 #: src/mailman/chains/dmarc.py:30
 msgid "Process DMARC reject or discard mitigations"
@@ -334,31 +311,31 @@ msgstr ""
 
 #: src/mailman/chains/headers.py:121
 msgid "Header \"{}\" matched a header rule"
-msgstr "A(z) \"{}\" fejléc megfelelt egy fejlécszabálynak"
+msgstr ""
 
 #: src/mailman/chains/headers.py:136
 msgid "The built-in header matching chain"
-msgstr "A beépített fejléccazonsoító lánc"
+msgstr ""
 
 #: src/mailman/chains/hold.py:58
 msgid "N/A"
-msgstr "N/A"
+msgstr ""
 
 #: src/mailman/chains/hold.py:117
 msgid "Last autoresponse notification for today"
-msgstr "Az utolsó mai automatikus válaszadás"
+msgstr ""
 
 #: src/mailman/chains/hold.py:132
 msgid "Hold a message and stop processing."
-msgstr "Üzenet felfüggesztése és feldolgozás leállítása."
+msgstr ""
 
 #: src/mailman/chains/hold.py:198
 msgid "Your message to $mlist.fqdn_listname awaits moderator approval"
-msgstr "A(z) $mlist.fqdn_listname listára küldött levele moderálásra vár"
+msgstr ""
 
 #: src/mailman/chains/hold.py:226
 msgid "$mlist.fqdn_listname post from $msg.sender requires approval"
-msgstr "$mlist.fqdn_listname listára, $msg.sender által írt üzenet jóváhagyásra vár"
+msgstr ""
 
 #: src/mailman/chains/hold.py:236
 msgid ""
@@ -371,7 +348,7 @@ msgstr ""
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
-msgstr "Moderálási lánc"
+msgstr ""
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
@@ -381,8 +358,7 @@ msgstr ""
 msgid "Reject/bounce a message and stop processing."
 msgstr ""
 
-#: src/mailman/commands/cli_addmembers.py:68
-#: src/mailman/commands/cli_syncmembers.py:116
+#: src/mailman/commands/cli_addmembers.py:68 src/mailman/commands/cli_syncmembers.py:116
 msgid "Cannot parse as valid email address (skipping): $line"
 msgstr ""
 
@@ -390,13 +366,11 @@ msgstr ""
 msgid "Already subscribed (skipping): $email"
 msgstr ""
 
-#: src/mailman/commands/cli_addmembers.py:101
-#: src/mailman/commands/cli_syncmembers.py:82
+#: src/mailman/commands/cli_addmembers.py:101 src/mailman/commands/cli_syncmembers.py:82
 msgid "Membership is banned (skipping): $email"
 msgstr ""
 
-#: src/mailman/commands/cli_addmembers.py:104
-#: src/mailman/commands/cli_syncmembers.py:85
+#: src/mailman/commands/cli_addmembers.py:104 src/mailman/commands/cli_syncmembers.py:85
 msgid "Subscription already pending (skipping): $email"
 msgstr ""
 
@@ -428,10 +402,10 @@ msgstr ""
 
 #: src/mailman/commands/cli_addmembers.py:140 src/mailman/commands/cli_import.py:68
 #: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:192
-#: src/mailman/commands/cli_syncmembers.py:199
-#: src/mailman/commands/cli_withlist.py:292 src/mailman/commands/cli_withlist.py:299
+#: src/mailman/commands/cli_syncmembers.py:199 src/mailman/commands/cli_withlist.py:292
+#: src/mailman/commands/cli_withlist.py:299
 msgid "No such list: $listspec"
-msgstr "Nincs ilyen lista: $listspec"
+msgstr ""
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
@@ -470,7 +444,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
-msgstr "Mailman beállítások megjelenítése."
+msgstr ""
 
 #: src/mailman/commands/cli_conf.py:57
 msgid ""
@@ -540,7 +514,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
-msgstr "GNU Mailman már fut"
+msgstr ""
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
@@ -639,21 +613,19 @@ msgid ""
 "    "
 msgstr ""
 
-#: src/mailman/commands/cli_delmembers.py:93
-#: src/mailman/commands/cli_syncmembers.py:177
+#: src/mailman/commands/cli_delmembers.py:93 src/mailman/commands/cli_syncmembers.py:177
 msgid ""
 "    Override the list's setting for send_goodbye_message to\n"
 "    deleted members."
 msgstr ""
 
-#: src/mailman/commands/cli_delmembers.py:98
-#: src/mailman/commands/cli_syncmembers.py:182
+#: src/mailman/commands/cli_delmembers.py:98 src/mailman/commands/cli_syncmembers.py:182
 msgid "    Override the list's setting for admin_notify_mchanges."
 msgstr ""
 
 #: src/mailman/commands/cli_delmembers.py:123
 msgid "No such list: $_list"
-msgstr "Nincs ilyen lista: $_list"
+msgstr ""
 
 #: src/mailman/commands/cli_digests.py:36
 msgid "Operate on digests."
@@ -701,7 +673,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_digests.py:90 src/mailman/commands/cli_notify.py:69
 msgid "No such list found: $spec"
-msgstr "Nincs ilyen lista: $spec"
+msgstr ""
 
 #: src/mailman/commands/cli_digests.py:98
 #, python-brace-format
@@ -828,7 +800,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:49
 msgid "List all mailing lists."
-msgstr "Összes lista megjelenítése."
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List only those mailing lists that are publicly advertised"
@@ -836,11 +808,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:57
 msgid "Show also the list names"
-msgstr "Lista nevek megjelenítése"
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list descriptions"
-msgstr "Lista leírások megjelenítése"
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:65
 msgid "Less verbosity"
@@ -859,7 +831,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "$count matching mailing lists found:"
-msgstr "$count találat:"
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:122
 msgid ""
@@ -904,7 +876,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr "Érvénytelen nyelvkód $language_code"
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
@@ -912,19 +884,19 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:186
 msgid "Illegal list name: $fqdn_listname"
-msgstr "Érvénytelen lista név: $fqdn_listname"
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:188
 msgid "List already exists: $fqdn_listname"
-msgstr "Lista már létezik: $fqdn_listname"
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:190
 msgid "Undefined domain: $domain"
-msgstr "Nem definiált domain: $domain"
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
-msgstr "Lista létrehozva: $mlist.fqdn_listname"
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
@@ -932,7 +904,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr "Lista eltávolítása."
+msgstr ""
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
@@ -944,11 +916,11 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:242
 msgid "Removed list: $listspec"
-msgstr "Lista eltávolítva: $listspec"
+msgstr ""
 
 #: src/mailman/commands/cli_members.py:84
 msgid "$mlist.list_id has no members"
-msgstr "$mlist.list_id listának nincsenek feliratkozói"
+msgstr ""
 
 #: src/mailman/commands/cli_members.py:108
 msgid ""
@@ -996,8 +968,7 @@ msgstr ""
 msgid "    [output filter] Display only regular delivery members."
 msgstr ""
 
-#: src/mailman/commands/cli_members.py:162
-#: src/mailman/commands/cli_syncmembers.py:187
+#: src/mailman/commands/cli_members.py:162 src/mailman/commands/cli_syncmembers.py:187
 msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
@@ -1042,44 +1013,36 @@ msgid ""
 "\n"
 "Held Subscriptions:\n"
 msgstr ""
-"\n"
-"Visszatartott feliratkozók:\n"
 
 #: src/mailman/commands/cli_notify.py:113 src/mailman/commands/cli_notify.py:117
 msgid "User: {}\n"
-msgstr "Felhasználó: {}\n"
+msgstr ""
 
 #: src/mailman/commands/cli_notify.py:115
 msgid ""
 "\n"
 "Held Unsubscriptions:\n"
 msgstr ""
-"\n"
-"Visszatartott leiratkozások:\n"
 
 #: src/mailman/commands/cli_notify.py:119
 msgid ""
 "\n"
 "Held Messages:\n"
 msgstr ""
-"\n"
-"Visszatartott üzenetek:\n"
 
 #: src/mailman/commands/cli_notify.py:126
 msgid "Sender: {}\n"
-msgstr "Feladó: {}\n"
+msgstr ""
 
 #: src/mailman/commands/cli_notify.py:128 src/mailman/commands/cli_notify.py:131
 msgid "Subject: {}\n"
-msgstr "Tárgy: {}\n"
+msgstr ""
 
 #: src/mailman/commands/cli_notify.py:132
 msgid ""
 "Reason: {}\n"
 "\n"
 msgstr ""
-"Indok: {}\n"
-"\n"
 
 #: src/mailman/commands/cli_notify.py:135
 msgid ""
@@ -1127,7 +1090,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_status.py:38
 msgid "GNU Mailman is not running"
-msgstr "GNU Mailman nem fut"
+msgstr ""
 
 #: src/mailman/commands/cli_status.py:41
 msgid "GNU Mailman is running (master pid: $pid)"
@@ -1153,7 +1116,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_syncmembers.py:150
 msgid "Nothing to do"
-msgstr "Nincs teendő"
+msgstr ""
 
 #: src/mailman/commands/cli_syncmembers.py:155
 msgid ""
@@ -1196,7 +1159,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_version.py:32
 msgid "Display Mailman's version."
-msgstr "Mailman verzió megjelenítése."
+msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:76
 msgid "ipython is not available, set use_ipython to no"
@@ -1359,7 +1322,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_confirm.py:91
 msgid "Confirmed"
-msgstr "Megerősítve"
+msgstr ""
 
 #: src/mailman/commands/eml_confirm.py:108
 msgid "Invalid Approved: password"
@@ -1375,11 +1338,11 @@ msgstr ""
 
 #: src/mailman/commands/eml_end.py:33
 msgid "Stop processing commands."
-msgstr "Parancsok feldolgozásának megállítása."
+msgstr ""
 
 #: src/mailman/commands/eml_end.py:47
 msgid "An alias for 'end'."
-msgstr "Ugyanaz, mint az \"end\"."
+msgstr ""
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
@@ -1387,15 +1350,15 @@ msgstr ""
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
-msgstr "n/a"
+msgstr ""
 
 #: src/mailman/commands/eml_help.py:59
 msgid "$self.name: no such command: $command_name"
-msgstr "$self.name: nincs ilyen parancs: $command_name"
+msgstr ""
 
 #: src/mailman/commands/eml_help.py:70
 msgid "$self.name: too many arguments: $printable_arguments"
-msgstr "$self.name: túl sok argumentum: $printable_arguments"
+msgstr ""
 
 #: src/mailman/commands/eml_membership.py:65
 msgid ""
@@ -1410,7 +1373,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:74
 msgid "Join this mailing list."
-msgstr "Csatlakozás a levelezőlistához."
+msgstr ""
 
 #: src/mailman/commands/eml_membership.py:97
 msgid "$self.name: No valid address found to subscribe"
@@ -1422,16 +1385,15 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:128
 msgid "Confirmation email sent to $person"
-msgstr "Megerősítési email kiküldve $person részére"
+msgstr ""
 
-#: src/mailman/commands/eml_membership.py:145
-#: src/mailman/commands/eml_membership.py:155
+#: src/mailman/commands/eml_membership.py:145 src/mailman/commands/eml_membership.py:155
 msgid "bad argument: $argument"
-msgstr "rossz argumentum: $argument"
+msgstr ""
 
 #: src/mailman/commands/eml_membership.py:168
 msgid "An alias for 'join'."
-msgstr "Ugyanaz, mint a \"join\"."
+msgstr ""
 
 #: src/mailman/commands/eml_membership.py:179
 msgid ""
@@ -1442,7 +1404,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:182
 msgid "Leave this mailing list."
-msgstr "Leiratkozás a levelezőlistáról."
+msgstr ""
 
 #: src/mailman/commands/eml_membership.py:188
 msgid "$self.name: No valid email address found to unsubscribe"
@@ -1462,7 +1424,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:231
 msgid "$person left $mlist.fqdn_listname"
-msgstr "$person elhagyta a(z) $mlist.fqdn_listname listát"
+msgstr ""
 
 #: src/mailman/commands/eml_membership.py:233
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
@@ -1470,7 +1432,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:243
 msgid "An alias for 'leave'."
-msgstr "Ugyanaz, mint a \"leave\"."
+msgstr ""
 
 #: src/mailman/commands/eml_who.py:42
 msgid ""
@@ -1532,7 +1494,7 @@ msgstr ""
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
-msgstr "Üzenet fejlécek módosítása."
+msgstr ""
 
 #: src/mailman/handlers/decorate.py:260
 msgid "Decorate a message with headers and footers."
@@ -1622,7 +1584,7 @@ msgstr ""
 
 #: src/mailman/handlers/replybot.py:44
 msgid "Send automatic responses."
-msgstr "Automatikus válaszok küldése."
+msgstr ""
 
 #: src/mailman/handlers/replybot.py:97
 msgid "Auto-response for your message to the \"$display_name\" mailing list"
@@ -1670,7 +1632,7 @@ msgstr ""
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr "[Nincs indoklás]"
+msgstr ""
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
@@ -1686,7 +1648,7 @@ msgstr ""
 
 #: src/mailman/rest/sub_moderation.py:114
 msgid "Subscription request"
-msgstr "Feliratkozási kérelem"
+msgstr ""
 
 #: src/mailman/rules/administrivia.py:52
 msgid "Catch mis-addressed email commands."
@@ -1730,11 +1692,14 @@ msgstr ""
 
 #: src/mailman/rules/dmarc.py:327
 msgid "DMARC moderation"
-msgstr "DMARC moderálás"
+msgstr ""
 
 #: src/mailman/rules/dmarc.py:333
 #, python-brace-format
-msgid "You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or quarantine, and your message has been automatically rejected.  If you think that your messages are being rejected in error, contact the mailing list owner at ${listowner}."
+msgid ""
+"You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or "
+"quarantine, and your message has been automatically rejected.  If you think that your messages are being "
+"rejected in error, contact the mailing list owner at ${listowner}."
 msgstr ""
 
 #: src/mailman/rules/emergency.py:34
@@ -1829,7 +1794,7 @@ msgstr ""
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr "Az üzenetnek nincs tárgya"
+msgstr ""
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
@@ -1845,7 +1810,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:103
 msgid "Ignoring non-text/plain MIME parts"
-msgstr "Nem sima szöveges / MIME részek figyelmen kívül hagyása"
+msgstr ""
 
 #: src/mailman/runners/command.py:143
 msgid "The results of your email command are provided below.\n"
@@ -1853,59 +1818,51 @@ msgstr ""
 
 #: src/mailman/runners/command.py:187
 msgid "- Original message details:"
-msgstr "- Eredeti üzenet részletei:"
+msgstr ""
 
 #: src/mailman/runners/command.py:191
 msgid "    From: $from_"
-msgstr "    Feladó: $from_"
+msgstr ""
 
 #: src/mailman/runners/command.py:192
 msgid "    Subject: $subject"
-msgstr "    Tárgy: $subject"
+msgstr ""
 
 #: src/mailman/runners/command.py:193
 msgid "    Date: $date"
-msgstr "    Dátum: $date"
+msgstr ""
 
 #: src/mailman/runners/command.py:194
 msgid "    Message-ID: $message_id"
-msgstr "    Üzenet azonosító: $message_id"
+msgstr ""
 
 #: src/mailman/runners/command.py:195
 msgid ""
 "\n"
 "- Results:"
 msgstr ""
-"\n"
-"- Eredmény:"
 
 #: src/mailman/runners/command.py:209
 msgid "No such command: $command_name"
-msgstr "Nincs ilyen parancs: $command_name"
+msgstr ""
 
 #: src/mailman/runners/command.py:223
 msgid ""
 "\n"
 "- Unprocessed:"
 msgstr ""
-"\n"
-"- Feldolgozatlan:"
 
 #: src/mailman/runners/command.py:228
 msgid ""
 "\n"
 "- Ignored:"
 msgstr ""
-"\n"
-"- Figyelmen kívül hagyva:"
 
 #: src/mailman/runners/command.py:231
 msgid ""
 "\n"
 "- Done."
 msgstr ""
-"\n"
-"- Kész."
 
 #: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
@@ -1917,7 +1874,7 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:83
 msgid "Today's Topics:\n"
-msgstr "Mai témák:\n"
+msgstr ""
 
 #: src/mailman/runners/digest.py:152
 msgid "Digest Header"
@@ -1925,7 +1882,7 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:172
 msgid "Today's Topics ($count messages)"
-msgstr "Mai témák ($count db.)"
+msgstr ""
 
 #: src/mailman/runners/digest.py:194 src/mailman/runners/digest.py:269
 msgid "Digest Footer"
@@ -1937,7 +1894,7 @@ msgstr ""
 
 #: src/mailman/styles/base.py:55
 msgid "[$mlist.display_name] "
-msgstr "[$mlist.display_name] "
+msgstr ""
 
 #: src/mailman/styles/default.py:37
 msgid "Ordinary discussion mailing list style."
@@ -1993,11 +1950,6 @@ msgstr ""
 
 msgid "list:admin:notice:disable.txt"
 msgstr ""
-"$member előfizetése le van tiltva $listname a visszafordulási pontszámuk "
-"miatt\n"
-"amely meghaladja a levelezési lista bounce_score_threshold.\n"
-"\n"
-"Az aktiváló DSN, ha rendelkezésre áll, csatlakoztatva van."
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
@@ -2006,7 +1958,7 @@ msgid "list:admin:notice:pending.txt"
 msgstr ""
 
 msgid "list:admin:notice:removal.txt"
-msgstr "$member el lett távolítva a(z) $listname listáról túl sok visszapattanó levél miatt."
+msgstr ""
 
 msgid "list:admin:notice:subscribe.txt"
 msgstr ""
@@ -2064,6 +2016,3 @@ msgstr ""
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
-
-#~ msgid "Confirm a subscription request."
-#~ msgstr "Feliratkozási kérvény jóváhagyása."
