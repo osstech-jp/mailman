@@ -24,6 +24,7 @@ import unittest
 
 from contextlib import ExitStack
 from mailman.app.lifecycle import create_list
+from mailman.app.notifications import send_goodbye_message
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import MemberRole
@@ -70,6 +71,11 @@ Welcome to the $list_name mailing list.
     Help and other requests: $list_requests
     Your name: $user_name
     Your address: $user_address""", file=fp)
+        # Write a goodbye message.
+        full_path = os.path.join(path, 'list:user:notice:goodbye.txt')
+        with open(full_path, 'w', encoding='utf-8') as fp:
+            print('$user_email just left the $list_name mailing list!',
+                  file=fp)
         # Write a list-specific welcome message.
         path = os.path.join(self.var_dir, 'templates', 'lists',
                             'test@example.com', 'xx')
@@ -234,6 +240,23 @@ have any other questions, you may contact
         self.assertMultiLineEqual(
             message.get_payload(decode=True).decode('utf-8'),
             'Wé need your confirmation\n')
+
+    def test_goodbye_message(self):
+        member = subscribe(self._mlist, 'Anne', email='anne@example.com')
+        # Now there's one message in the virgin queue; get it and clear it.
+        items = get_queue_messages('virgin', expected_count=1)
+        # Send anne an unsubscribe message.
+        language = getUtility(ILanguageManager).get('en')
+        send_goodbye_message(self._mlist, member.address.email, language)
+        # There's a new message in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
+        self.assertEqual(str(message['subject']),
+                         'You have been unsubscribed from the Test List '
+                         'mailing list')
+        self.assertMultiLineEqual(
+            message.get_payload(),
+            'anne@example.com just left the Test List mailing list!')
 
     def test_no_welcome_message_to_owners(self):
         # Welcome messages go only to mailing list members, not to owners.

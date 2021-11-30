@@ -116,7 +116,15 @@ def send_goodbye_message(mlist, address, language):
     :type language: ILanguage
     """
     goodbye_message = wrap(expand(getUtility(ITemplateLoader).get(
-        'list:user:notice:goodbye', mlist, language=language.code)))
+        'list:user:notice:goodbye', mlist, language=language.code),
+        mlist, dict(
+        user_email=address,
+        # For backward compatibility.
+        user_address=address,
+        fqdn_listname=mlist.fqdn_listname,
+        list_name=mlist.display_name,
+        list_requests=mlist.request_address,
+        )))
     msg = UserNotification(
         address, mlist.bounces_address,
         _('You have been unsubscribed from the $mlist.display_name '
