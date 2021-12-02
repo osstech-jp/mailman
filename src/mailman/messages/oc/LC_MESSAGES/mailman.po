@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2021-11-26 10:44+0000\n"
+"PO-Revision-Date: 2021-11-27 19:50+0000\n"
 "Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
 "Language-Team: Occitan <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/oc/>\n"
@@ -1050,6 +1050,8 @@ msgid ""
 "\n"
 "Held Subscriptions:\n"
 msgstr ""
+"\n"
+"Abonaments en espèra :\n"
 
 #: src/mailman/commands/cli_notify.py:113 src/mailman/commands/cli_notify.py:117
 msgid "User: {}\n"
@@ -1060,12 +1062,16 @@ msgid ""
 "\n"
 "Held Unsubscriptions:\n"
 msgstr ""
+"\n"
+"Desabonament en espèra :\n"
 
 #: src/mailman/commands/cli_notify.py:119
 msgid ""
 "\n"
 "Held Messages:\n"
 msgstr ""
+"\n"
+"Messatges en espèra :\n"
 
 #: src/mailman/commands/cli_notify.py:126
 msgid "Sender: {}\n"
@@ -1109,7 +1115,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_qfile.py:67
 msgid "[----- start pickle -----]"
-msgstr ""
+msgstr "[----- debuta pickle -----]"
 
 #: src/mailman/commands/cli_qfile.py:70
 msgid "<----- start object $count ----->"
@@ -1117,7 +1123,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_qfile.py:75
 msgid "[----- end pickle -----]"
-msgstr ""
+msgstr "[----- fin pickle -----]"
 
 #: src/mailman/commands/cli_qfile.py:77
 msgid "Number of objects found (see the variable 'm'): $count"
