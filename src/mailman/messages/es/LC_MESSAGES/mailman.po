@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2021-02-20 12:50+0000\n"
+"PO-Revision-Date: 2021-12-04 13:53+0000\n"
 "Last-Translator: Guillermo Hernandez <guillermo@querysoft.es>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/mailman/es/>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.5\n"
+"X-Generator: Weblate 4.10-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -46,6 +47,8 @@ msgid ""
 "The content of this message was lost. It was probably cross-posted to\n"
 "multiple lists and previously handled on another list.\n"
 msgstr ""
+"El contenido de este mensaje se ha perdido. Probablemente fue enviado a\n"
+"varias listas y ha sido gestionado previamente por otra lista.\n"
 
 #: src/mailman/app/moderator.py:132
 msgid "Posting of your message titled \"$subject\""
@@ -100,6 +103,7 @@ msgstr "La suscripción de $member a $mlist.display_name está desactivada"
 #: src/mailman/app/notifications.py:192
 msgid "$member's bounce score incremented on $mlist.display_name"
 msgstr ""
+"Se ha incrementado el cómputo de rechazos de $member's en $mlist.display_name"
 
 #: src/mailman/app/notifications.py:218
 #, python-brace-format
@@ -147,10 +151,14 @@ msgid ""
 "    Running mailman commands as root is not recommended and mailman will\n"
 "    refuse to run as root unless this option is specified."
 msgstr ""
+"    No se recomienda la ejecución de mailman como usuario root: mailman\n"
+"rehusará ejecutarse si no se especifica esta opción."
 
 #: src/mailman/bin/mailman.py:129
 msgid "    If you are sure you want to run as root, specify --run-as-root."
 msgstr ""
+"    Si está seguro de que quiere ejecutar como usuario root, especifique "
+"--run-as-root."
 
 #: src/mailman/bin/master.py:157
 msgid ""
@@ -470,7 +478,7 @@ msgstr "La dirección $email no tiene permitido suscribirse (omitiendo)"
 #: src/mailman/commands/cli_addmembers.py:104
 #: src/mailman/commands/cli_syncmembers.py:85
 msgid "Subscription already pending (skipping): $email"
-msgstr ""
+msgstr "Suscripción ya pendiente (descartando): $email"
 
 #: src/mailman/commands/cli_addmembers.py:110
 msgid ""
@@ -529,26 +537,29 @@ msgid ""
 "    new_address.\n"
 "    "
 msgstr ""
+"    Modificar una dirección de usuario desde una antigua (old_address)  a "
+"una nueva (case-preserved)\n"
+"    "
 
 #: src/mailman/commands/cli_changeaddress.py:45
 msgid "Address {} not found."
-msgstr ""
+msgstr "Dirección {} no encontrada."
 
 #: src/mailman/commands/cli_changeaddress.py:47
 msgid "Address {} is not a valid email address."
-msgstr ""
+msgstr "Dirección {} no es una dirección válida."
 
 #: src/mailman/commands/cli_changeaddress.py:50
 msgid "Addresses are not different.  Nothing to change."
-msgstr ""
+msgstr "Las direcciones son iguales. Nada que cambiar."
 
 #: src/mailman/commands/cli_changeaddress.py:53
 msgid "Address {} already exists; can't change."
-msgstr ""
+msgstr "La dirección {} ya existe; no se puede modificar."
 
 #: src/mailman/commands/cli_changeaddress.py:58
 msgid "Address changed from {} to {}."
-msgstr ""
+msgstr "Dirección modificada desde {} a {}."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
@@ -873,24 +884,31 @@ msgid ""
 "    pattern.\n"
 "    "
 msgstr ""
+"    Muestra todas las membresías de un(os) usuario(s) que cumplen una "
+"máscara\n"
+"de selección.\n"
+"    "
 
 #: src/mailman/commands/cli_findmember.py:74
 msgid ""
 "    Display only memberships with the given role.  If not given, 'all' role,\n"
 "    i.e. all roles, is the default."
 msgstr ""
+"    Muestra solo las membresías con un rol dado. Si no se indica nada, el "
+"rol 'all' (todos),\n"
+"es decir, todos los roles, es el valor predeterminado."
 
 #: src/mailman/commands/cli_findmember.py:98
 msgid "Email: {}"
-msgstr ""
+msgstr "Correo electrónico: {}"
 
 #: src/mailman/commands/cli_findmember.py:102
 msgid "List: {}"
-msgstr ""
+msgstr "Lista: {}"
 
 #: src/mailman/commands/cli_findmember.py:105
 msgid "{}"
-msgstr ""
+msgstr "{}"
 
 #: src/mailman/commands/cli_gatenews.py:169
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
@@ -903,6 +921,11 @@ msgid ""
 "    If you want to run it manually, set _MAILMAN_GATENEWS_NNTP in the\n"
 "    environment."
 msgstr ""
+"    El comando gatenews es ejecutado periódicamente por el nntp runner.\n"
+"Si ya se está ejecutando vía cron del sistema, debería eliminarlo del "
+"fichero crontab.\n"
+"Si desea ejecutarlo manualmente, configure _MAILMAN_GATENEWS_NNTP en el\n"
+"entorno."
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
@@ -1153,12 +1176,18 @@ msgid ""
 "    [MODE] Add all member addresses in FILENAME.  This option is removed.\n"
 "    Use 'mailman addmembers' instead."
 msgstr ""
+"    [MODE] Añadir todas las direcciones de miembros desde FILENAME. Esta "
+"opción ha sido eliminada.\n"
+"Utilice 'mailman addmembers' en su lugar."
 
 #: src/mailman/commands/cli_members.py:123
 msgid ""
 "    [MODE] Delete all member addresses found in FILENAME.\n"
 "    This option is removed. Use 'mailman delmembers' instead."
 msgstr ""
+"    [MODE] Borrar todas las direcciones de miembros encontradas en FILENAME."
+"\n"
+"Esta opción ha sido eliminada. Utilice 'mailman delmembers' en su lugar."
 
 #: src/mailman/commands/cli_members.py:129
 msgid ""
@@ -1166,6 +1195,10 @@ msgid ""
 "    with the member addresses found in FILENAME.\n"
 "    This option is removed. Use 'mailman syncmembers' instead."
 msgstr ""
+"    [MODE] Sincronizar todas las direcciones de miembros de la lista "
+"especificada\n"
+"con las encontradas en FILENAME.\n"
+"Esta opción ha sido eliminada. Utilice 'mailman syncmembers' en su lugar."
 
 #: src/mailman/commands/cli_members.py:136
 msgid ""
@@ -1297,6 +1330,8 @@ msgid ""
 "Missing data for request {}\n"
 "\n"
 msgstr ""
+"Faltan datos para la petición {}\n"
+"\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
@@ -1658,7 +1693,7 @@ msgstr "La variable 'm' es la $listspec de la lista de correo"
 
 #: src/mailman/commands/eml_confirm.py:40
 msgid "Confirm a subscription or held message request."
-msgstr ""
+msgstr "Confirmar una suscripción o una petición de retención de un mensaje."
 
 #: src/mailman/commands/eml_confirm.py:47
 msgid "No confirmation token found"
@@ -1674,11 +1709,11 @@ msgstr "Confirmado"
 
 #: src/mailman/commands/eml_confirm.py:108
 msgid "Invalid Approved: password"
-msgstr ""
+msgstr "Contraseña de aprobación inválida"
 
 #: src/mailman/commands/eml_confirm.py:111
 msgid "Message $message"
-msgstr ""
+msgstr "Mensaje $message"
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
@@ -1918,6 +1953,10 @@ msgid ""
 "Mailman's content filtering has removed the\n"
 "following MIME parts from this message.\n"
 msgstr ""
+"\n"
+"___________________________________________\n"
+"El filtrado de contenidos de mailman ha eliminado las\n"
+"siguientes partes MIME de este mensaje.\n"
 
 #: src/mailman/handlers/mime_delete.py:110
 msgid "The message's content type was explicitly disallowed"
@@ -1944,11 +1983,13 @@ msgid ""
 "\n"
 "Replaced multipart/alternative part with first alternative.\n"
 msgstr ""
+"\n"
+"Reemplazada la parte multipart/alternative con la primera alternativa\n"
 
 #: src/mailman/handlers/mime_delete.py:239 src/mailman/handlers/mime_delete.py:246
 #: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
 msgid "Name: $fname\n"
-msgstr ""
+msgstr "Nombre: $fname\n"
 
 #: src/mailman/handlers/mime_delete.py:374
 msgid "Filter the MIME content of messages."
@@ -2052,15 +2093,15 @@ msgstr "El remitente del mensaje {} está vetado en esta lista"
 
 #: src/mailman/rules/digests.py:42
 msgid "Catch messages with digest Subject or boilerplate quote."
-msgstr ""
+msgstr "Capturar mensajes con asunto de resumen o citas repetitivas."
 
 #: src/mailman/rules/digests.py:57
 msgid "Message has a digest subject"
-msgstr ""
+msgstr "El mensaje tiene un asunto de resumen"
 
 #: src/mailman/rules/digests.py:88
 msgid "Message quotes digest boilerplate"
-msgstr ""
+msgstr "Citas repetitivas de resumen en el mensaje"
 
 #: src/mailman/rules/dmarc.py:307
 msgid "Find DMARC policy of From: domain."
@@ -2305,7 +2346,7 @@ msgstr "Especificación de corredor incorrecta: $value"
 
 #: src/mailman/utilities/scrubber.py:48 src/mailman/utilities/scrubber.py:49
 msgid "not available"
-msgstr ""
+msgstr "no disponible"
 
 #: src/mailman/utilities/scrubber.py:50
 msgid ""
@@ -2315,10 +2356,16 @@ msgid ""
 "Size: $size bytes\n"
 "Desc: $desc\n"
 msgstr ""
+"Una parte del mensaje icompatible con los resúmenes de texto plano ha sido "
+"eliminada...\n"
+"Nombre: $filename\n"
+"Tipo: $ctype\n"
+"Tamaño: $size bytes\n"
+"Desc:ripción: $desc\n"
 
 #: src/mailman/utilities/scrubber.py:58
 msgid "-------------- next part --------------\n"
-msgstr ""
+msgstr "-------------- siguiente parte --------------\n"
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
@@ -2390,14 +2437,25 @@ msgstr ""
 
 msgid "list:admin:notice:disable.txt"
 msgstr ""
-"La suscripción de $member ha sido desactivada en $listname debido a que su nivel de rebotes\n"
-"ha excedido el máximo permitido por la variable de la lista bounce_score_threshold."
+"La suscripción de $member ha sido desactivada en $listname debido a que su "
+"nivel de rebotes\n"
+"ha excedido el máximo permitido por la variable de la lista "
+"bounce_score_threshold.\n"
+"\n"
+"Se acompaña el DSN disparador si está disponible."
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
+"El cómputo de rebotes de $member en $listname ha aumentado.\n"
+"\n"
+"Se acompaña el DSN disparador si está disponible."
 
 msgid "list:admin:notice:pending.txt"
 msgstr ""
+"La lista $listname tiene $count peticiones de moderación.\n"
+"\n"
+"$data\n"
+"Por favor, atiéndalas en cuanto le sea posible."
 
 msgid "list:admin:notice:removal.txt"
 msgstr "Se ha cancelado la suscripción de $member a $display_name por tener demasiados rebotes."
@@ -2609,7 +2667,7 @@ msgid "list:user:notice:welcome.txt"
 msgstr ""
 "Bienvenido/a a la lista de correo \"$display_name\"\n"
 "\n"
-"Para publicar correos en esta lista, envíelos a:\n"
+"Para publicar en esta lista, envíe sus correos a:\n"
 "\n"
 "  $listname\n"
 "\n"
@@ -2618,10 +2676,14 @@ msgstr ""
 "\n"
 "  $request_email\n"
 "\n"
-"con la palabra 'help' en el asunto o en el cuerpo (no incluya las comillas),\n"
-"y recibirá de vuelta un mensaje con instrucciones. Va a necesitar su contraseña\n"
-"para cambiar las diferentes opciones, pero por una cuestión de seguridad, esa\n"
-"contraseña no se acompaña aquí. Si ha olvidado su contraseña debería restaurarla\n"
+"con la palabra 'help' en el asunto o en el cuerpo (no incluya las comillas),"
+"\n"
+"y recibirá de vuelta un mensaje con instrucciones. Va a necesitar su "
+"contraseña\n"
+"para cambiar las diferentes opciones, pero por una cuestión de seguridad, "
+"esa\n"
+"contraseña no se acompaña aquí. Si ha olvidado su contraseña debería "
+"restaurarla\n"
 "usando la web."
 
 #~ msgid "Already subscribed (skipping): $display_name <$email>"
