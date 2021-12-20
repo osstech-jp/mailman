@@ -111,7 +111,7 @@ case second 'm'.  Any other spelling is incorrect.""",
         },
     install_requires = [
         'aiosmtpd>=1.4.1',
-        'alembic>=1.6.2,<1.7',
+        'alembic>=1.6.2,!=1.7.0',
         'atpublic',
         'authheaders>=0.14.0',
         'authres>=1.0.1',
