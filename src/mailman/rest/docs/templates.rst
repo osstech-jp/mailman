@@ -584,6 +584,8 @@ below.  Here are all the supported template names:
 * ``list:user:notice:goodbye``
     The notice sent to a member when they unsubscribe from a mailing list.
 
+    * ``user_email`` - the email address of the unsubscribing member
+
 * ``list:user:notice:hold``
     The notice sent to a poster when their message is being held or moderator
     approval.
