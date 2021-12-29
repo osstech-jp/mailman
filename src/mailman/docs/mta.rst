@@ -104,6 +104,9 @@ You need to tell Mailman that you are using the Postfix mail server.  In your
 Some of these settings are already the default, so take a look at Mailman's
 ``src/mailman/config/schema.cfg`` file for details.  You'll need to change the
 ``lmtp_host`` and ``smtp_host`` to the appropriate host names of course.
+For everything on the same host, the default settings ``127.0.0.1`` and
+``localhost`` respectively are probably OK. If you do set ``smtp_host`` to
+other than ``localhost``, make sure that host is in Postfix ``mynetworks``.
 Generally, Postfix will listen for incoming SMTP connections on port 25.
 Postfix will deliver via LMTP over port 24 by default, however if you are not
 running Mailman as root, you'll need to change this to a higher port number,
@@ -203,6 +206,7 @@ tables by adding the following configuration to ``mailman.cfg``::
     smtp_port: 25
     configuration: /path/to/postfix-mailman.cfg
 
+See remarks above about ``lmtp_host`` and ``smtp_host``.
 Also you will have to create another configuration file called as
 ``postfix-mailman.cfg`` and add its path to the ``configuration`` parameter
 above. The ``postfix-mailman.cfg`` would look like this::
