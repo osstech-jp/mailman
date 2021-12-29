@@ -223,7 +223,8 @@ domain that will be used for Mailman 3 lists is a `virtual alias domain`_ and
 for various reasons, perhaps because it supports Mailman 2 lists and Mailman 3
 lists need to use the same domain, it must remain a virtual alias domain.
 This is a challenge because ``virtual alias domains`` do not use
-``transport_maps``.
+``transport_maps``. This section also applies if the domain is a `virtual
+mailbox domain`_.
 
 In order to enable this configuration, Mailman `domains`_ have an
 ``alias_domain`` attribute.  This is normally ``None`` but can be set to any
@@ -231,7 +232,7 @@ otherwise unused domain name.  The ``alias_domain`` is a fictitious domain that
 is not exposed in ``DNS`` and is only known to Postfix via the Mailman
 generated mappings.  For example if the actual domain is ``example.com`` the
 ``alias_domain`` could be ``x.example.com`` or even literally ``bogus.domain``.
-If this is done and the configured MTA is Postfix, Mailman will create an
+If you set an alias_domain and the configured MTA is Postfix, Mailman will create an
 additional ``/path-to-mailman/var/data/postfix_vmap`` file with mappings from
 the ``example.com`` addresses to the corresponding addresses in the
 ``alias_domain`` and will use the ``alias_domain`` in the other files.
@@ -269,6 +270,7 @@ and the documentation for the `relay_domains`_, `mydestination`_ and
 .. _`relay_domains`: http://www.postfix.org/postconf.5.html#relay_domains
 .. _`mydestination`: http://www.postfix.org/postconf.5.html#mydestination
 .. _`virtual alias domain`: http://www.postfix.org/ADDRESS_CLASS_README.html#virtual_alias_class
+.. _`virtual mailbox domain`: http://www.postfix.org/ADDRESS_CLASS_README.html#virtual_mailbox_class
 
 
 Exim
