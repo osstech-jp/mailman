@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2021-11-27 19:50+0000\n"
+"PO-Revision-Date: 2021-12-27 11:51+0000\n"
 "Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
 "Language-Team: Occitan <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/oc/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.10-dev\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -180,6 +180,8 @@ msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
+"Mesa en plaça del verrolh impossibla perque\n"
+"sembla qu’un autre pilòt es ja en execucion."
 
 #: src/mailman/bin/master.py:163
 msgid ""
@@ -258,15 +260,15 @@ msgstr ""
 
 #: src/mailman/bin/master.py:551 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
-msgstr ""
+msgstr "Mostrar mai d’informacions de depuracion al fichièr de jornal."
 
 #: src/mailman/bin/runner.py:50
 msgid "Undefined runner name: $name"
-msgstr ""
+msgstr "Nom del processus pas definit : $name"
 
 #: src/mailman/bin/runner.py:58
 msgid "Cannot import runner module: $class_path"
-msgstr ""
+msgstr "Importacion impossibla de l’extension de processus : $class_path"
 
 #: src/mailman/bin/runner.py:76
 msgid ""
@@ -289,7 +291,7 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
-msgstr ""
+msgstr "Listar dels noms de processus disponibles e sortir."
 
 #: src/mailman/bin/runner.py:107
 msgid ""
@@ -318,7 +320,7 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:157
 msgid "No runner name given."
-msgstr ""
+msgstr "Cap de nom de processus es pas estat donat."
 
 #: src/mailman/bin/runner.py:181
 msgid "$name runs $classname"
@@ -330,11 +332,11 @@ msgstr "Accepèta un messatge."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "La cadena de moderacion incorporada."
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
-msgstr ""
+msgstr "Suprimir un messatge e daissar lo tractament."
 
 #: src/mailman/chains/dmarc.py:30
 msgid "Process DMARC reject or discard mitigations"
