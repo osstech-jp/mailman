@@ -26,6 +26,9 @@ Bugs fixed
   (Closes #896)
 * The prior fix for expanding replacements in the ``list:user:notice:goodbye``
   template was incomplete.  This is fixed.  (Closes #922)
+* Decoration of an html message containing non-ascii resulted in a message
+  that couldn't by flattened as_bytes and whose as_string representation
+  contained non-ascii.  This is fixed.  (Closes #965 and #967)
 
 .. _news-3.3.5:
 

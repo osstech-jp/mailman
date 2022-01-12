@@ -1,0 +1,17 @@
+To: ant@example.com
+From: aperson@example.com
+Message-ID: <alpha>
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>HTML formát zprávy</p>
+    <p>Hahaha<br>
+    </p>
+  </body>
+</html>

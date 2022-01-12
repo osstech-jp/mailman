@@ -18,13 +18,13 @@
 """Decorate a message by sticking the header and footer around it."""
 
 import re
+import copy
 import logging
 
 from email.mime.text import MIMEText
 from email.utils import formataddr
 from mailman.archiving.mailarchive import MailArchive
 from mailman.core.i18n import _
-from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.interfaces.template import ITemplateLoader
@@ -176,26 +176,12 @@ def process(mlist, msg, msgdata):
     # Because of the way Message objects are passed around to process(), we
     # need to play tricks with the outer message -- i.e. the outer one must
     # remain the same instance.  So we're going to create a clone of the outer
-    # message, with all the header chrome intact, then copy the payload to it.
-    # This will give us a clone of the original message, and it will form the
-    # basis of the interior, wrapped Message.
-    inner = Message()
-    # Which headers to copy?  Let's just do the Content-* headers
-    for h, v in msg.items():
-        if h.lower().startswith('content-'):
-            inner[h] = v
-    inner.set_payload(msg.get_payload())
-    # For completeness
-    inner.set_unixfrom(msg.get_unixfrom())
-    inner.preamble = msg.preamble
-    inner.epilogue = msg.epilogue
-    # Don't copy get_charset, as this might be None, even if
-    # get_content_charset isn't.  However, do make sure there is a default
-    # content-type, even if the original message was not MIME.
-    inner.set_default_type(msg.get_default_type())
-    # BAW: HACK ALERT.
-    if hasattr(msg, '__version__'):
-        inner.__version__ = msg.__version__
+    # message, with all the header chrome intact, then delete unwanted headers.
+    inner = copy.deepcopy(msg)
+    # Which headers to keep?  Let's just do the Content-* headers
+    for h, v in inner.items():
+        if not h.lower().startswith('content-'):
+            del inner[h]
     # Now, play games with the outer message to make it contain three
     # subparts: the header (if any), the wrapped message, and the footer (if
     # any).
