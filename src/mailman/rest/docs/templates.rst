@@ -23,7 +23,7 @@ Examples
 
 Let's say you have a mailing list::
 
-    >>> from mailman.app.lifecycle import create_list  
+    >>> from mailman.app.lifecycle import create_list
     >>> ant = create_list('ant@example.com')
 
 The standard welcome message doesn't have any links to it because by default
@@ -31,7 +31,7 @@ Mailman doesn't know about any web user interface front-end.  When Anne is
 subscribed to the mailing list, she sees this plain welcome message.
 
     >>> from mailman.testing.helpers import subscribe
-    >>> from mailman.testing.helpers import get_queue_messages    
+    >>> from mailman.testing.helpers import get_queue_messages
     >>> anne = subscribe(ant, 'Anne')
     >>> items = get_queue_messages('virgin')
     >>> print(items[0].msg)
@@ -114,7 +114,7 @@ retrieving the welcome message.
 
 The username and password will be used to retrieve the welcome text.
 
-    >>> cris = subscribe(ant, 'Cris')    
+    >>> cris = subscribe(ant, 'Cris')
     >>> items = get_queue_messages('virgin')
     >>> print(items[0].msg)
     MIME-Version: 1.0
@@ -200,7 +200,7 @@ blank.
     >>> import re
     >>> text = re.sub('\nhttps', '\n https', text)
     >>> print(wrap(text))
-    Here's some sample text that should be wrapped and filled to make a 
+    Here's some sample text that should be wrapped and filled to make a
     pretty looking paragraph of text with no excessively short or long
     lines, but it also contains a long url.
     <BLANKLINE>
@@ -536,6 +536,10 @@ below.  Here are all the supported template names:
     * ``user_name_or_email`` - the recipient's display name if available,
       or their email address if no display name
       (e.g. "Anne Person", "Bart", or "fperson@example.com")
+    * ``<archiver_name>_url`` - a link to the archived message for each enabled
+      archiver other than prototype. For example if the HyperKitty archiver is
+      enabled for the list, ``${hyperkitty_url}`` will point to the message in
+      HyperKitty.
 
 * ``list:member:regular:header``
     The header for a regular (non-digest) message.
@@ -552,6 +556,10 @@ below.  Here are all the supported template names:
     * ``user_name_or_email`` - the recipient's display name if available,
       or their email address if no display name
       (e.g. "Anne Person", "Bart", or "fperson@example.com")
+    * ``<archiver_name>_url`` - a link to the archived message for each enabled
+      archiver other than prototype. For example if the HyperKitty archiver is
+      enabled for the list, ``${hyperkitty_url}`` will point to the message in
+      HyperKitty.
 
 * ``list:user:action:invite``
     The message sent to subscribers when they are invited to join a List.
