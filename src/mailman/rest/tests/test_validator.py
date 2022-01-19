@@ -19,6 +19,7 @@
 
 import unittest
 
+from lazr.config import as_boolean
 from mailman.app.lifecycle import create_list
 from mailman.core.api import API30, API31
 from mailman.database.transaction import transaction
@@ -170,3 +171,10 @@ class TestGetterSetter(unittest.TestCase):
                          ['application/octet-stream'])
         self.assertEqual(list(self._mlist.pass_extensions),
                          ['.pdf'])
+
+    def test_set_boolean_as_bool(self):
+        # Non-pythonic POST data can contain JSON booleans. Ensure we can
+        # handle that.
+        getset = helpers.GetterSetter(as_boolean)
+        self.assertTrue(getset(True))
+        self.assertFalse(getset(False))
