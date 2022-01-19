@@ -29,6 +29,8 @@ Bugs fixed
 * Decoration of an html message containing non-ascii resulted in a message
   that couldn't by flattened as_bytes and whose as_string representation
   contained non-ascii.  This is fixed.  (Closes #965 and #967)
+* The REST API will now accept JSON encoded data with boolean values for
+  boolean attributes.  (Closes #970)
 
 .. _news-3.3.5:
 

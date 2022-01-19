@@ -292,6 +292,17 @@ class TestConfiguration(unittest.TestCase):
             'Invalid Parameter "archive_policy": Accepted Values are:'
             ' never, private, public.')
 
+    def test_patch_with_json_boolean(self):
+        # Ensure we can patch with JSON boolean value.
+        with transaction():
+            self._mlist.gateway_to_mail = False
+        response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config',
+            method='PATCH', headers={'Content-Type': 'application/json'},
+            json={'gateway_to_mail': True})
+        self.assertEqual(response[1].status_code, 204)
+        self.assertTrue(self._mlist.gateway_to_mail)
+
     def test_bad_pipeline_name(self):
         with self.assertRaises(HTTPError) as cm:
             call_api(

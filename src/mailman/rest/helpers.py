@@ -249,6 +249,8 @@ class GetterSetter:
         """
         if self.decoder is None:
             return value
+        if self.decoder is as_boolean and isinstance(value, bool):
+            return value
         return self.decoder(value)
 
 
