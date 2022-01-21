@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2021-11-12 17:32+0000\n"
+"PO-Revision-Date: 2022-01-19 13:17+0000\n"
 "Last-Translator: Ivan Kuznetsov <kia@solvo.ru>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ru/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.9.1-dev\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -118,7 +118,7 @@ msgstr ""
 #: src/mailman/app/notifications.py:245
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "Вы были отписаны от списка рассылки ${mlist.display_name}"
+msgstr "Ваша подписка на список рассылки ${mlist.display_name} заблокирована"
 
 #: src/mailman/app/subscriptions.py:325
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
@@ -428,7 +428,7 @@ msgstr "Принять сообщение."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr "Встроенная цепочка модерации."
+msgstr "Встроенная цепочка модерирования."
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
@@ -460,7 +460,8 @@ msgstr "Задержать сообщение и прекратить обраб
 
 #: src/mailman/chains/hold.py:198
 msgid "Your message to $mlist.fqdn_listname awaits moderator approval"
-msgstr "Ваше сообщение для $mlist.fqdn_listname ожидает одобрения модератора"
+msgstr ""
+"Ваше сообщение в рассылку $mlist.fqdn_listname ожидает одобрения модератора"
 
 #: src/mailman/chains/hold.py:226
 msgid "$mlist.fqdn_listname post from $msg.sender requires approval"
@@ -489,7 +490,7 @@ msgstr ""
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
-msgstr "Цепочка модерации"
+msgstr "Цепочка модерирования"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
@@ -502,7 +503,7 @@ msgstr "Отклонить сообщение и прекратить обраб
 #: src/mailman/commands/cli_addmembers.py:68
 #: src/mailman/commands/cli_syncmembers.py:116
 msgid "Cannot parse as valid email address (skipping): $line"
-msgstr "Невозможно распознать адрес электронной почты: $line (пропущен)"
+msgstr "Невозможно распознать адрес электронной почты: $line (адрес пропущен)"
 
 #: src/mailman/commands/cli_addmembers.py:99
 msgid "Already subscribed (skipping): $email"
@@ -525,12 +526,11 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
-"    Добавить все адреса-участники рассылки  из файла FILENAME с режимом "
-"доставки,\n"
+"    Добавить все адреса из файла FILENAME к списку подписчиков рассылки с "
+"режимом доставки,\n"
 "как указано параметром -d/--delivery. Вместо FILENAME можно указать '-' для\n"
-"использования стандартного ввода. Пустые строки и строки, начинающиеся с '#',"
-"\n"
-"игнорируются.\n"
+"использования стандартного ввода.\n"
+"Пустые строки и строки, начинающиеся с '#', игнорируются.\n"
 "    "
 
 #: src/mailman/commands/cli_addmembers.py:118
@@ -540,7 +540,7 @@ msgid ""
 "    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 msgstr ""
-"    Задает режим доставки для добавляемых адресов-участников рассылки:\n"
+"    Задает режим доставки для добавляемых адресов подписчиков рассылки:\n"
 "'regular', 'mime', 'plain', 'summary' или 'disabled', соответственно, для\n"
 "обычной доставки, трех режимов дайджеста и запрета доставки.\n"
 "По умолчанию - обычная доставка ('regular').\n"
@@ -551,13 +551,14 @@ msgid ""
 "    Send the added members an invitation rather than immediately adding them.\n"
 "    "
 msgstr ""
-"    Отправка приглашения подписываемым адресам-участникам вместо немедленной "
+"    Отправка приглашения добавляемым адресам подписчиков вместо немедленной "
 "подписки.\n"
 "    "
 
 #: src/mailman/commands/cli_addmembers.py:131
 msgid "    Override the list's setting for send_welcome_message."
-msgstr "    Переопределение настроек списка рассылки для send_welcome_message."
+msgstr ""
+"    Переопределение настройки рассылки - отправки приветственного сообщения."
 
 #: src/mailman/commands/cli_addmembers.py:140 src/mailman/commands/cli_import.py:68
 #: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:192
@@ -568,7 +569,7 @@ msgstr "Нет такой рассылки: $listspec"
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
-msgstr "Пересоздать список aliases в соответствии с MTA."
+msgstr "Пересоздать список aliases в соответствии с типом используемого MTA."
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
@@ -671,7 +672,7 @@ msgstr ""
 "postfix, не могут доставлять письма, если отсутствуют alias файлы,\n"
 "указанные в их конфигурации. В некоторых ситуациях это может\n"
 "привести к взаимной блокировке при первом запуске сервера\n"
-"mailman3. Eстановка этого параметра заставит скрипт создать эти\n"
+"mailman3. Установка этого параметра заставит скрипт создать такие\n"
 "файлы, что позволит корректно работать MTA."
 
 #: src/mailman/commands/cli_control.py:66
@@ -722,7 +723,7 @@ msgstr "GNU Mailman уже запущен"
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
 msgstr ""
-"Предыдущий запуск GNU Mailman завершился некорркетно ({}). Попробуйте с "
+"Предыдущий запуск GNU Mailman завершился некорректно ({}). Попробуйте с "
 "параметром --force"
 
 #: src/mailman/commands/cli_control.py:105
@@ -800,8 +801,8 @@ msgid ""
 msgstr ""
 "    Взять список адресов для удаления из файла FILENAME, в дополнение к\n"
 "указанным в параметре -m/--member. При задании имени файла как '-'\n"
-"будет использован стандартный ввод. Пустые строки и строки,\n"
-"начинающиеся с '#', игнорируются.\n"
+"будет использован стандартный ввод.\n"
+"Пустые строки и строки, начинающиеся с '#', игнорируются.\n"
 "    "
 
 #: src/mailman/commands/cli_delmembers.py:71
@@ -869,7 +870,7 @@ msgid ""
 msgstr ""
 "    Задает имя списка рассылки. Значение может быть List-ID или\n"
 "полное имя списка. Можно указать несколько параметров --list.\n"
-"Без этого параметра обрабатываются все списки."
+"Без этого параметра обрабатываются дайджесты для всех рассылок."
 
 #: src/mailman/commands/cli_digests.py:46
 msgid ""
@@ -1005,7 +1006,8 @@ msgstr ""
 "    Задает кодировку строк в PICKLE_FILE, если она не utf8. Обычно "
 "совпадает\n"
 "с кодировкой языка по умолчанию импортируемой рассылки. Может быть\n"
-"полезно, если рассылка 2.1 создавалась с кириллицей в 8-битной кодировке."
+"полезно, если рассылка mailman 2.1 создавалась с кириллицей в 8-битной "
+"кодировке."
 
 #: src/mailman/commands/cli_import.py:82
 msgid "Not a Mailman 2.1 configuration file: $pickle_file"
@@ -1063,7 +1065,7 @@ msgid ""
 msgstr ""
 "    Задает дополнительные пары ключ/значение для добавления к\n"
 "словарю метаданных сообщения. Используйте формат\n"
-"ключ=значение. можно указывать несколько параметров -m."
+"ключ=значение. Можно указывать несколько параметров -m."
 
 #: src/mailman/commands/cli_inject.py:79
 msgid "No such queue: $queue"
@@ -1127,7 +1129,7 @@ msgid ""
 "    Set the list's preferred language to CODE, which must be a registered two\n"
 "    letter language code."
 msgstr ""
-"    Задает предпочтительный язык для рассылки. CODE который должен\n"
+"    Задает предпочтительный язык для рассылки. CODE должен\n"
 "быть зарегистрированным двухбуквенным кодом языка."
 
 #: src/mailman/commands/cli_lists.py:136
@@ -1161,8 +1163,8 @@ msgid ""
 "    compatibility.  With -D do not register the mailing list's domain."
 msgstr ""
 "    Зарегистрировать домен новой рассылки, если он еще не\n"
-"зарегистрирован. Это  поведение по умолчанию, но оставлено\n"
-"для обратной совместимости. Укажите -D, если не нужно\n"
+"зарегистрирован. Это поведение по умолчанию, но оставлено\n"
+"для обратной совместимости параметров. Укажите -D, если не нужно\n"
 "регистрировать домен."
 
 #: src/mailman/commands/cli_lists.py:166
@@ -1232,7 +1234,7 @@ msgid ""
 "    Use 'mailman addmembers' instead."
 msgstr ""
 "    [MODE] Добавляет все адреса подписчиков из FILENAME.\n"
-"Параметр удален, используйте 'mailman addmembers'."
+"Параметр в текущей версии удален, используйте 'mailman addmembers'."
 
 #: src/mailman/commands/cli_members.py:123
 msgid ""
@@ -1240,7 +1242,7 @@ msgid ""
 "    This option is removed. Use 'mailman delmembers' instead."
 msgstr ""
 "    [MODE] Удаляет все адреса подписчиков из FILENAME.\n"
-"    Параметр удален, используйте 'mailman delmembers'."
+"    Параметр в текущей версии удален, используйте 'mailman delmembers'."
 
 #: src/mailman/commands/cli_members.py:129
 msgid ""
@@ -1250,7 +1252,7 @@ msgid ""
 msgstr ""
 "    [MODE] Синхронизировать все адреса подписчиков рассылки\n"
 "с адресами из FILENAME.\n"
-"    Параметр удален, используйте 'mailman syncmembers'."
+"    Параметр в текущей версии удален, используйте 'mailman syncmembers'."
 
 #: src/mailman/commands/cli_members.py:136
 msgid ""
@@ -1310,10 +1312,10 @@ msgstr ""
 "\n"
 "'enabled' - подписчиков, доставка которым разрешена;\n"
 "'any' - подписчиков, доставка которым запрещена по любой причине;\n"
-"'byuser' - если доставка отключена самим пользователем; \n"
+"'byuser' - если доставка отключена самим пользователем;\n"
 "'bybounces' - если доставка запрещена автоматически вследствие ошибок "
 "доставки;\n"
-"'byadmin'  - если доставка запрещена администратором или модератором;\n"
+"'byadmin' - если доставка запрещена администратором или модератором;\n"
 "'unknown' - если доставка запрещена по неизвестной причине."
 
 #: src/mailman/commands/cli_notify.py:40
@@ -1451,12 +1453,12 @@ msgstr "GNU Mailman в неожиданном состоянии ($hostname != $
 #: src/mailman/commands/cli_syncmembers.py:131
 #, python-format
 msgid "[ADD] %s"
-msgstr ""
+msgstr "[Добавить] %s"
 
 #: src/mailman/commands/cli_syncmembers.py:141
 #, python-format
 msgid "[DEL] %s"
-msgstr ""
+msgstr "[Удалить] %s"
 
 #: src/mailman/commands/cli_syncmembers.py:150
 msgid "Nothing to do"
@@ -1473,6 +1475,17 @@ msgid ""
 "    be removed from the list.  FILENAME can be '-' to indicate standard input.\n"
 "    "
 msgstr ""
+"    Добавляет и удаляет подписчиков в рассылку - синхронизирует с указанным "
+"файлом.\n"
+"FILENAME - файл со списком новых подписчиков, по одному на строку. Пустые "
+"строки и\n"
+"строки, начинающиеся с '#', игнорируются.\n"
+"Адреса в FILENAME, которые сейчас не являются подписчиками, будут добавлены "
+"в\n"
+"рассылку с режимом доставки, указанном в параметре -d/--delivery.\n"
+"Адреса подписчиков, которых нет в FILENAME, будут удалены из рассылки.\n"
+"Укажите '-' в качестве FILENAME, чтобы использовать стандартный ввод.\n"
+"    "
 
 #: src/mailman/commands/cli_syncmembers.py:167
 msgid ""
@@ -1480,34 +1493,44 @@ msgid ""
 "    'summary' or 'disabled'.  I.e., one of regular, three modes of digest\n"
 "    or no delivery.  If not given, the default is regular."
 msgstr ""
+"    Задает режим доставки для добавляемых адресов подписчиков:\n"
+"'regular', 'mime', 'plain', 'summary' или 'disabled', соответственно, для\n"
+"обычной доставки, трех режимов дайджеста и запрета доставки.\n"
+"По умолчанию - обычная доставка ('regular')."
 
 #: src/mailman/commands/cli_syncmembers.py:173
 msgid "    Override the list's setting for send_welcome_message to added members."
 msgstr ""
+"    Переопределение настройки рассылки - отправки приветственного сообщения "
+"для добавляемых адресов."
 
 #: src/mailman/commands/cli_unshunt.py:33
 msgid "Unshunt messages."
-msgstr ""
+msgstr "Разблокировать сообщения."
 
 #: src/mailman/commands/cli_unshunt.py:37
 msgid ""
 "    Discard all shunted messages instead of moving them back to their original\n"
 "    queue."
 msgstr ""
+"    Не возвращать все заблокированные сообщения в исходную очередь, а "
+"отбросить их."
 
 #: src/mailman/commands/cli_unshunt.py:50
 msgid ""
 "Cannot unshunt message $filebase, skipping:\n"
 "$error"
 msgstr ""
+"Не удалось разблокировать сообщение $filebase, сообщение пропущено:\n"
+"$error"
 
 #: src/mailman/commands/cli_version.py:32
 msgid "Display Mailman's version."
-msgstr ""
+msgstr "Показывает версию Mailman."
 
 #: src/mailman/commands/cli_withlist.py:76
 msgid "ipython is not available, set use_ipython to no"
-msgstr ""
+msgstr "ipython недоступен, установите параметр use_ipython в 'no'"
 
 #: src/mailman/commands/cli_withlist.py:85
 msgid "readline not available"
@@ -1515,7 +1538,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:133
 msgid "Invalid value for [shell]use_python: {}"
-msgstr ""
+msgstr "Неверное значение для [shell]use_python: {}"
 
 #: src/mailman/commands/cli_withlist.py:149
 msgid ""

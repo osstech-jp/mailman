@@ -8,124 +8,142 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-01-12 22:42+0000\n"
+"Last-Translator: Sebastian Machat <sebi@outlook.com>\n"
+"Language-Team: Czech <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:45
 #: src/mailman/handlers/subject_prefix.py:91 src/mailman/runners/digest.py:87
 msgid "(no subject)"
-msgstr ""
+msgstr "(bez předmětu)"
 
 #: src/mailman/app/bounces.py:78
 msgid "[No bounce details are available]"
-msgstr ""
+msgstr "[Nedostupné detaily autoodpovědi (bounce)]"
 
 #: src/mailman/app/bounces.py:230
 msgid "$mlist.display_name mailing list probe message"
-msgstr ""
+msgstr "Ověřovací zpráva mailing-listu $mlist.display_name"
 
 #: src/mailman/app/bounces.py:266
 msgid "Uncaught bounce notification"
-msgstr ""
+msgstr "Neošetřená notifikace autoodpovědi (bounce)"
 
 #: src/mailman/app/membership.py:141
 msgid "$mlist.display_name unsubscription notification"
-msgstr ""
+msgstr "Upozornění na odhlášení odběru skupiny $mlist.display_name"
 
 #: src/mailman/app/moderator.py:97
 msgid ""
 "The content of this message was lost. It was probably cross-posted to\n"
 "multiple lists and previously handled on another list.\n"
 msgstr ""
+"Obsah této zprávy byl ztracen. \n"
+"Pravděpodobně byl odeslán křížově na několik listů a jeden z předchozích "
+"listů ji již zpracoval.\n"
 
 #: src/mailman/app/moderator.py:132
 msgid "Posting of your message titled \"$subject\""
-msgstr ""
+msgstr "Probíhá odeslání Vaší zprávy s názvem \"$subject\""
 
 #: src/mailman/app/moderator.py:133 src/mailman/app/moderator.py:258 src/mailman/rest/sub_moderation.py:112
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Bez udání důvodu]"
 
 #: src/mailman/app/moderator.py:184
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "Přeposlání moderované zprávy"
 
 #: src/mailman/app/moderator.py:225
 msgid "New unsubscription request from $mlist.display_name by $email"
 msgstr ""
+"Nový požadavek na odhlášení odběru skupiny $mlist.display_name od $email"
 
 #: src/mailman/app/moderator.py:257
 msgid "Unsubscription request"
-msgstr ""
+msgstr "Požadavek na odhlášení odběru"
 
 #: src/mailman/app/moderator.py:298
 msgid "Original Message"
-msgstr ""
+msgstr "Původní zpráva"
 
 #: src/mailman/app/moderator.py:301
 msgid "Request to mailing list \"$display_name\" rejected"
-msgstr ""
+msgstr "Požadavek na mailing-list \"$display_name\" byl zamítnut"
 
 #: src/mailman/app/notifications.py:94
 msgid " (Digest mode)"
-msgstr ""
+msgstr " (Režim digestu)"
 
 #: src/mailman/app/notifications.py:98
 #, python-brace-format
 msgid "Welcome to the \"$mlist.display_name\" mailing list${digmode}"
-msgstr ""
+msgstr "Vítejte v mailing-listu \"$mlist.display_name\" ${digmode}"
 
 #: src/mailman/app/notifications.py:122
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr ""
+msgstr "Právě Vám byl odhlášen odběr mailing-listu $mlist.display_name"
 
 #: src/mailman/app/notifications.py:140
 msgid "$mlist.display_name subscription notification"
-msgstr ""
+msgstr "Upozornění na přihlášení odběru skupiny $mlist.display_name"
 
 #: src/mailman/app/notifications.py:164
 msgid "$member's subscription disabled on $mlist.display_name"
 msgstr ""
+"Odběr mailing-listu $mlist.display_name byl pro uživatele $member deaktivován"
 
 #: src/mailman/app/notifications.py:192
 msgid "$member's bounce score incremented on $mlist.display_name"
 msgstr ""
+"Bounce skóre uživatele $member na mailing-listu $mlist.display_name bylo "
+"zvýšeno"
 
 #: src/mailman/app/notifications.py:218
 #, python-brace-format
 msgid "$member unsubscribed from ${mlist.display_name} mailing list due to bounces"
 msgstr ""
+"$member byl odhlášen od odběru mailing-listu ${mlist.display_name} z důvodu "
+"opakovaných autoodpovědí (bounces)"
 
 #: src/mailman/app/notifications.py:245
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr ""
+msgstr "Váš odběr mailing-listu ${mlist.display_name} byl deaktivován"
 
 #: src/mailman/app/subscriptions.py:325
 msgid "New subscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
+"Nový požadavek na přihlášení k odběru mailing-listu $self.mlist.display_name "
+"od $self.address.email"
 
 #: src/mailman/app/subscriptions.py:493
 msgid "New unsubscription request to $self.mlist.display_name from $self.address.email"
 msgstr ""
+"Nový požadavek na odhlášení odběru mailing-listu $self.mlist.display_name od "
+"$self.address.email"
 
 #: src/mailman/app/subscriptions.py:624
 msgid "You have been invited to join the $event.mlist.fqdn_listname mailing list."
-msgstr ""
+msgstr "Byli jste přizváni k odběru mailing-listu $event.mlist.fqdn_listname."
 
 #: src/mailman/app/subscriptions.py:627
 msgid "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"Musíte potvrdit odhlášení odběru mailing-listu $event.mlist.fqdn_listname."
 
 #: src/mailman/app/subscriptions.py:631
 msgid "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing list."
 msgstr ""
+"Musíte potvrdit přihlášení k odběru mailing-listu $event.mlist.fqdn_listname."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518 src/mailman/bin/runner.py:96
 msgid ""
@@ -133,6 +151,10 @@ msgid ""
 "    MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a\n"
 "    default configuration file is loaded."
 msgstr ""
+"    Který konfigurační soubor se má použít.  Pokud není k dispozici, bude "
+"využita systémová\n"
+"    proměnná MAILMAN_CONFIG_FILE.  Pokud není k dispozici ani ta,\n"
+"    bude načtena výchozí konfigurace."
 
 #: src/mailman/bin/mailman.py:110
 msgid ""
@@ -295,15 +317,15 @@ msgstr ""
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
-msgstr ""
+msgstr "Přijmout zprávu."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "Integrovaný řetězec pro moderování."
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
-msgstr ""
+msgstr "Zahodit zprávu a ukončit její zpracování."
 
 #: src/mailman/chains/dmarc.py:30
 msgid "Process DMARC reject or discard mitigations"
