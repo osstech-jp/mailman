@@ -19,6 +19,7 @@
 
 import re
 
+from lazr.config import as_boolean
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
@@ -224,7 +225,11 @@ class Validator:
         # Now do all the conversions.
         for key, value in form_data.items():
             try:
-                values[key] = self._converters[key](value)
+                if (self._converters[key] is as_boolean and
+                        isinstance(value, bool)):
+                    values[key] = value
+                else:
+                    values[key] = self._converters[key](value)
             except KeyError:
                 extras.add(key)
             except (TypeError, ValueError) as e:
