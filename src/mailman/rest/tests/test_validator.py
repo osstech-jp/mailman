@@ -27,7 +27,7 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest import helpers
 from mailman.rest.validator import (
-    email_or_regexp_validator, email_validator, enum_validator,
+    Validator, email_or_regexp_validator, email_validator, enum_validator,
     integer_ge_zero_validator, list_of_emails_validator,
     list_of_strings_validator, subscriber_validator)
 from mailman.testing.layers import RESTLayer
@@ -146,6 +146,20 @@ class TestValidators(unittest.TestCase):
         self.assertRaises(ValueError,
                           email_validator, 'foo.example.com')
         self.assertEqual('foo@example.com', email_validator('foo@example.com'))
+
+    def test_validator_class_boolean_as_bool(self):
+
+        class RequestTrue:
+            params = dict(key=True)
+            content_type = 'application/x-www-form-urlencoded'
+
+        class RequestFalse:
+            params = dict(key=False)
+            content_type = 'application/x-www-form-urlencoded'
+
+        validator = Validator(key=as_boolean)
+        self.assertTrue(validator(RequestTrue)['key'])
+        self.assertFalse(validator(RequestFalse)['key'])
 
 
 class TestGetterSetter(unittest.TestCase):
