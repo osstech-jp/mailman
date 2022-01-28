@@ -1,5 +1,5 @@
 # Test catalog for Freedonia (xx)
-# Copyright (C) 2011-2021 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
