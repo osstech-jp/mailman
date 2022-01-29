@@ -33,7 +33,8 @@ Bugs fixed
   boolean attributes.  (Closes #970)
 * Fix a bug where loading a plugin which raises an exception in ``pre_hook``
   can cause Mailman to crash trying to disable that plugin. (Closes #724)
-  
+* Fix a bug where the ``PIDWatcher()`` iterates over internal dict while
+  it can be updated during that time. (Closes #724)
 
 .. _news-3.3.5:
 
@@ -133,7 +134,7 @@ Bugs fixed
 * Nonmember posts gated from usenet bypass nonmember moderation.  (Closes #937)
 * VERPed vacation responses and similar are no longer scored as bounces.
   (Closes #939)
-* If a message is held by a ``HeaderMatchRule``, the header name is now included 
+* If a message is held by a ``HeaderMatchRule``, the header name is now included
   in the reason for hold.  (Closes #785)
 
 Command line
