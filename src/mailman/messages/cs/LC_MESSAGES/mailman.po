@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2022-01-12 22:42+0000\n"
+"PO-Revision-Date: 2022-01-29 15:54+0000\n"
 "Last-Translator: Sebastian Machat <sebi@outlook.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/cs/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85 src/mailman/chains/hold.py:162
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:45
@@ -898,51 +898,51 @@ msgstr ""
 
 #: src/mailman/commands/cli_lists.py:166
 msgid "Invalid language code: $language_code"
-msgstr ""
+msgstr "Neplatný kód jazyka: $language_code"
 
 #: src/mailman/commands/cli_lists.py:182
 msgid "Illegal owner addresses: $invalid"
-msgstr ""
+msgstr "Neplatná adresa vlastníka: $invalid"
 
 #: src/mailman/commands/cli_lists.py:186
 msgid "Illegal list name: $fqdn_listname"
-msgstr ""
+msgstr "Neplatný název mailing-listu: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:188
 msgid "List already exists: $fqdn_listname"
-msgstr ""
+msgstr "Mailing-list již existuje: $fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:190
 msgid "Undefined domain: $domain"
-msgstr ""
+msgstr "Nedefinovaná doména: $domain"
 
 #: src/mailman/commands/cli_lists.py:198
 msgid "Created mailing list: $mlist.fqdn_listname"
-msgstr ""
+msgstr "Mailing-list vytvořen: $mlist.fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:213
 msgid "Your new mailing list: $fqdn_listname"
-msgstr ""
+msgstr "Váš nový mailing-list: $mlist.fqdn_listname"
 
 #: src/mailman/commands/cli_lists.py:227
 msgid "Remove a mailing list."
-msgstr ""
+msgstr "Odstranit maining-list."
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Suppress status messages"
-msgstr ""
+msgstr "Potlačit stavové zprávy"
 
 #: src/mailman/commands/cli_lists.py:237
 msgid "No such list matching spec: $listspec"
-msgstr ""
+msgstr "Této definici neodpovídá žádný list: $listspec"
 
 #: src/mailman/commands/cli_lists.py:242
 msgid "Removed list: $listspec"
-msgstr ""
+msgstr "List odstraněn: $listspec"
 
 #: src/mailman/commands/cli_members.py:84
 msgid "$mlist.list_id has no members"
-msgstr ""
+msgstr "$mlist.list_id nemá žádné členy"
 
 #: src/mailman/commands/cli_members.py:108
 msgid ""
@@ -1017,7 +1017,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:40
 msgid "Notify list owners/moderators of pending requests."
-msgstr ""
+msgstr "Upozornit vlastníky/moderátory mailing-listu na nezpracované požadavky."
 
 #: src/mailman/commands/cli_notify.py:43
 msgid ""
@@ -1028,53 +1028,63 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:80 src/mailman/commands/cli_notify.py:141
 msgid "The {} list has {} moderation requests waiting."
-msgstr ""
+msgstr "Mailing-list {} má {} čekajících požadavků na moderování."
 
 #: src/mailman/commands/cli_notify.py:111
 msgid ""
 "\n"
 "Held Subscriptions:\n"
 msgstr ""
+"\n"
+"Přidržených odběrů:\n"
 
 #: src/mailman/commands/cli_notify.py:113 src/mailman/commands/cli_notify.py:117
 msgid "User: {}\n"
-msgstr ""
+msgstr "Uživatel: {}\n"
 
 #: src/mailman/commands/cli_notify.py:115
 msgid ""
 "\n"
 "Held Unsubscriptions:\n"
 msgstr ""
+"\n"
+"Přidržených zrušení odběru:\n"
 
 #: src/mailman/commands/cli_notify.py:119
 msgid ""
 "\n"
 "Held Messages:\n"
 msgstr ""
+"\n"
+"Přidržených zpráv:\n"
 
 #: src/mailman/commands/cli_notify.py:126
 msgid "Sender: {}\n"
-msgstr ""
+msgstr "Odesílatel: {}\n"
 
 #: src/mailman/commands/cli_notify.py:128 src/mailman/commands/cli_notify.py:131
 msgid "Subject: {}\n"
-msgstr ""
+msgstr "Předmět: {}\n"
 
 #: src/mailman/commands/cli_notify.py:132
 msgid ""
 "Reason: {}\n"
 "\n"
 msgstr ""
+"Důvod: {}\n"
+"\n"
 
 #: src/mailman/commands/cli_notify.py:135
 msgid ""
 "Missing data for request {}\n"
 "\n"
 msgstr ""
+"Pro požadavek {} chybí data\n"
+"\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
-msgstr ""
+msgstr "Získat informace ze souboru s frontou."
 
 #: src/mailman/commands/cli_qfile.py:42
 msgid ""
@@ -1332,35 +1342,35 @@ msgstr ""
 
 #: src/mailman/commands/eml_confirm.py:40
 msgid "Confirm a subscription or held message request."
-msgstr ""
+msgstr "Potvrdit odběr nebo požadavek přidržené zprávy."
 
 #: src/mailman/commands/eml_confirm.py:47
 msgid "No confirmation token found"
-msgstr ""
+msgstr "Nebyl nalezen žádný token pro potvrzení"
 
 #: src/mailman/commands/eml_confirm.py:60 src/mailman/commands/eml_confirm.py:95
 msgid "Confirmation token did not match"
-msgstr ""
+msgstr "Chybný token ověření"
 
 #: src/mailman/commands/eml_confirm.py:91
 msgid "Confirmed"
-msgstr ""
+msgstr "Potvrzeno"
 
 #: src/mailman/commands/eml_confirm.py:108
 msgid "Invalid Approved: password"
-msgstr ""
+msgstr "Neplatné schválení: heslo"
 
 #: src/mailman/commands/eml_confirm.py:111
 msgid "Message $message"
-msgstr ""
+msgstr "Zpráva $message"
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
-msgstr ""
+msgstr "Přehled Vašich parametrů."
 
 #: src/mailman/commands/eml_end.py:33
 msgid "Stop processing commands."
-msgstr ""
+msgstr "Ukončit zpracování příkazů."
 
 #: src/mailman/commands/eml_end.py:47
 msgid "An alias for 'end'."
@@ -1368,19 +1378,19 @@ msgstr ""
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
-msgstr ""
+msgstr "Získat návod k dostupným emailovým příkazům."
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
-msgstr ""
+msgstr "nedostupné"
 
 #: src/mailman/commands/eml_help.py:59
 msgid "$self.name: no such command: $command_name"
-msgstr ""
+msgstr "$self.name: příkaz nenalezen: $command_name"
 
 #: src/mailman/commands/eml_help.py:70
 msgid "$self.name: too many arguments: $printable_arguments"
-msgstr ""
+msgstr "$self.name: příliš mnoho parametrů: $printable_arguments"
 
 #: src/mailman/commands/eml_membership.py:65
 msgid ""
@@ -1392,30 +1402,38 @@ msgid ""
 "used.  You can use the 'address' option to request subscription of an address\n"
 "other than the sender of the command.\n"
 msgstr ""
+"Budete požádáni o potvrzení svého přihlášení k odběru a bude Vám vystaveno "
+"dočasné heslo.\n"
+"\n"
+"Užitím možnosti 'digest' můžete definovat, jestli si přejete dostávat "
+"Souhrnů, nebo nikoliv. Pokud parametr nespecifikujete, bude použit výchozí "
+"režim dodání zpráv.\n"
+"Použitím parametru 'address' můžete požádat o přihlášení k odběru pro jinou "
+"emailovou adresu, než je odesílatel tohoto požadavku.\n"
 
 #: src/mailman/commands/eml_membership.py:74
 msgid "Join this mailing list."
-msgstr ""
+msgstr "Připojit se k tomuto mailing-listu."
 
 #: src/mailman/commands/eml_membership.py:97
 msgid "$self.name: No valid address found to subscribe"
-msgstr ""
+msgstr "$self.name: Nebyla nalezena žádná platná adresa k přihlášení odběru"
 
 #: src/mailman/commands/eml_membership.py:125
 msgid "$person has a pending subscription for $listname"
-msgstr ""
+msgstr "$person má nepotvrzené přihlášení k odběru mailing-listu $listname"
 
 #: src/mailman/commands/eml_membership.py:128
 msgid "Confirmation email sent to $person"
-msgstr ""
+msgstr "Potvrzovací email odeslán $person"
 
 #: src/mailman/commands/eml_membership.py:145 src/mailman/commands/eml_membership.py:155
 msgid "bad argument: $argument"
-msgstr ""
+msgstr "špatný parametr: $argument"
 
 #: src/mailman/commands/eml_membership.py:168
 msgid "An alias for 'join'."
-msgstr ""
+msgstr "Alias pro 'join'."
 
 #: src/mailman/commands/eml_membership.py:179
 msgid ""
@@ -1423,38 +1441,41 @@ msgid ""
 "\n"
 "You may be asked to confirm your request."
 msgstr ""
+"Opustit tento mailing list.\n"
+"\n"
+"Můžete být požádáni o potvrzení Vašeho požadavku."
 
 #: src/mailman/commands/eml_membership.py:182
 msgid "Leave this mailing list."
-msgstr ""
+msgstr "Opustit tento mailing-list."
 
 #: src/mailman/commands/eml_membership.py:188
 msgid "$self.name: No valid email address found to unsubscribe"
-msgstr ""
+msgstr "$self.name: Nebyla nalezena žádná platná adresa pro zrušení odběru"
 
 #: src/mailman/commands/eml_membership.py:194
 msgid "No registered user for email address: $email"
-msgstr ""
+msgstr "Pod emailovou adresou $email není žádný registrovaný uživatel"
 
 #: src/mailman/commands/eml_membership.py:201
 msgid "Invalid or unverified email address: $email"
-msgstr ""
+msgstr "Neplatná nebo neověřená emailová adresa: $email"
 
 #: src/mailman/commands/eml_membership.py:220
 msgid "$self.name: $email is not a member of $mlist.fqdn_listname"
-msgstr ""
+msgstr "$self.name: $email není členem mailing-listu $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:231
 msgid "$person left $mlist.fqdn_listname"
-msgstr ""
+msgstr "$person opustil $mlist.fqdn_listname"
 
 #: src/mailman/commands/eml_membership.py:233
 msgid "Confirmation email sent to $person to leave $mlist.fqdn_listname"
-msgstr ""
+msgstr "Potvrzovací email pro opuštění $mlist.fqdn_listname byl odeslán $person"
 
 #: src/mailman/commands/eml_membership.py:243
 msgid "An alias for 'leave'."
-msgstr ""
+msgstr "Alias pro 'leave'."
 
 #: src/mailman/commands/eml_who.py:42
 msgid ""
@@ -1465,84 +1486,98 @@ msgid ""
 "either delivery= or mode= is specified more than once, only the last occurrence\n"
 "is used.\n"
 msgstr ""
+"Vytvoří seznam jmen a emailových adres členů.\n"
+"\n"
+"Volitelné parametry delivery= a mode= mohou být použity pro vyfiltrování "
+"pouze těch členů, kteří mají odpovídající delivery status a/nebo delivery "
+"mode.\n"
+"Pokud je parametr delivery= nebo mode= naspecifikován více než jednou, "
+"použije se poslední výskyt.\n"
 
 #: src/mailman/commands/eml_who.py:50
 msgid "Get a list of the list members."
-msgstr ""
+msgstr "Získat seznam členů mailing-listu."
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
-msgstr ""
+msgstr "K zobrazení seznamu členů tohoto mailing-listu nemáte oprávnění."
 
 #: src/mailman/commands/eml_who.py:78
 msgid ""
 "Unrecognized or invalid argument(s):\n"
 "{}"
 msgstr ""
+"Neznámé nebo neplatné parametry:\n"
+"{}"
 
 #: src/mailman/commands/eml_who.py:101
 msgid ""
 "Members of the {} mailing list:\n"
 "{}"
 msgstr ""
+"Členové listu {}:\n"
+"{}"
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
-msgstr ""
+msgstr "Poslat potvrzení o přijetí příspěvku."
 
 #: src/mailman/handlers/acknowledge.py:75
 msgid "$display_name post acknowledgment"
-msgstr ""
+msgstr "Příspěvek $display_name přijat ke zpracování"
 
 #: src/mailman/handlers/after_delivery.py:33
 msgid "Perform some bookkeeping after a successful post."
-msgstr ""
+msgstr "Po úspěšném příspěvku provádí nějaké papírování."
 
 #: src/mailman/handlers/arc_sign.py:65
 msgid "Perform ARC auth checks and attach resulting headers"
-msgstr ""
+msgstr "Provést autorizační kontrolu ARC a přiložit hlavičku výsledku"
 
 #: src/mailman/handlers/avoid_duplicates.py:44
 msgid "Suppress some duplicates of the same message."
-msgstr ""
+msgstr "Potlačit některé duplicity stejné zprávy."
 
 #: src/mailman/handlers/cleanse.py:42
 msgid "Cleanse certain headers from all messages."
-msgstr ""
+msgstr "Vyčistit vybrané hlavičky ze všech zpráv."
 
 #: src/mailman/handlers/cleanse_dkim.py:42
 msgid "Remove DomainKeys headers."
-msgstr ""
+msgstr "Odstranit hlavičky DomainKeys."
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
-msgstr ""
+msgstr "Upravit hlavičky zprávy."
 
 #: src/mailman/handlers/decorate.py:260
 msgid "Decorate a message with headers and footers."
-msgstr ""
+msgstr "Rozšířit zprávu o hlavičku a patičku."
 
 #: src/mailman/handlers/dmarc.py:127
 msgid "$realname via $mlist.display_name"
-msgstr ""
+msgstr "$realname via $mlist.display_name"
 
 #: src/mailman/handlers/dmarc.py:228
 msgid "Apply DMARC mitigations."
-msgstr ""
+msgstr "Aplikovat DMARK."
 
 #: src/mailman/handlers/file_recipients.py:35
 msgid "Get the normal delivery recipients from an include file."
-msgstr ""
+msgstr "Získat běžné přijemce zprávy z přiloženého souboru."
 
 #: src/mailman/handlers/member_recipients.py:42
 msgid "Calculate the regular recipients of the message."
-msgstr ""
+msgstr "Spočítat běžné příjemce zprávy."
 
 #: src/mailman/handlers/member_recipients.py:77
 msgid ""
 "Your urgent message to the $mlist.display_name mailing list was not authorized\n"
 "for delivery.  The original message as received by Mailman is attached.\n"
 msgstr ""
+"Vaše urgentní zpráva do mailing-listu $mlist.display_name nebyla "
+"autorizována pro doručení.\n"
+"Původní zpráva tak, jak byla přijata, je přiložena.\n"
 
 #: src/mailman/handlers/mime_delete.py:62
 msgid ""
@@ -1552,10 +1587,14 @@ msgid ""
 "message.\n"
 "\n"
 msgstr ""
+"Přiložená zpráva odpovídá pravidlům zakázaného obsahu mailing listu $"
+"mlist.display_name a z tohoto důvodu nebude dále zpracována. Tento email je "
+"tak jedinou kopií Vámi odeslané zprávy.\n"
+"\n"
 
 #: src/mailman/handlers/mime_delete.py:69
 msgid "Content filter message notification"
-msgstr ""
+msgstr "Upozornění provedeného filtrování obsahu"
 
 #: src/mailman/handlers/mime_delete.py:97
 msgid ""
@@ -1564,105 +1603,112 @@ msgid ""
 "Mailman's content filtering has removed the\n"
 "following MIME parts from this message.\n"
 msgstr ""
+"\n"
+"___________________________________________\n"
+"Filtrování obsahu v Mailmanu odstranilo následující MIME části této zprávy.\n"
 
 #: src/mailman/handlers/mime_delete.py:110
 msgid "The message's content type was explicitly disallowed"
 msgstr ""
+"Typ obsahu (content type) této zprávy byl v mailing-listu specificky zakázán"
 
 #: src/mailman/handlers/mime_delete.py:115
 msgid "The message's content type was not explicitly allowed"
-msgstr ""
+msgstr "Typ obsahu (content type) této zprávy nebyl specificky povolen"
 
 #: src/mailman/handlers/mime_delete.py:124
 msgid "The message's file extension was explicitly disallowed"
-msgstr ""
+msgstr "Koncovka přílohy této zprávy byla specificky zakázána"
 
 #: src/mailman/handlers/mime_delete.py:128
 msgid "The message's file extension was not explicitly allowed"
-msgstr ""
+msgstr "Koncovka přílohy této zprávy nebyla specificky povolena"
 
 #: src/mailman/handlers/mime_delete.py:140
 msgid "After content filtering, the message was empty"
-msgstr ""
+msgstr "Po provedení filtrování obsahu zůstala prázdná zpráva"
 
 #: src/mailman/handlers/mime_delete.py:152 src/mailman/handlers/mime_delete.py:291
 msgid ""
 "\n"
 "Replaced multipart/alternative part with first alternative.\n"
 msgstr ""
+"\n"
+"Multi/alternativní část zprávy byla nahrazena první variantou.\n"
 
 #: src/mailman/handlers/mime_delete.py:239 src/mailman/handlers/mime_delete.py:246
 #: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
 msgid "Name: $fname\n"
-msgstr ""
+msgstr "Název: $fname\n"
 
 #: src/mailman/handlers/mime_delete.py:374
 msgid "Filter the MIME content of messages."
-msgstr ""
+msgstr "Filtrovat MIME obsah zpráv."
 
 #: src/mailman/handlers/owner_recipients.py:34
 msgid "Calculate the owner and moderator recipients."
-msgstr ""
+msgstr "Spočítat příjemce vlastníků a moderátorů."
 
 #: src/mailman/handlers/replybot.py:44
 msgid "Send automatic responses."
-msgstr ""
+msgstr "Odeslat automatické odpovědi."
 
 #: src/mailman/handlers/replybot.py:97
 msgid "Auto-response for your message to the \"$display_name\" mailing list"
-msgstr ""
+msgstr "Autoodpověď na Vaši zprávu do mailing-listu \"$display_name\""
 
 #: src/mailman/handlers/replybot.py:110
 msgid "The Mailman Replybot"
-msgstr ""
+msgstr "Bot pro autoodpovědi Mailman"
 
 #: src/mailman/handlers/rfc_2369.py:128
 msgid "Add the RFC 2369 List-* headers."
-msgstr ""
+msgstr "Přidat hlavičky odpovídající RFC 2369 List-*."
 
 #: src/mailman/handlers/subject_prefix.py:158
 msgid "Add a list-specific prefix to the Subject header value."
-msgstr ""
+msgstr "Přidat do Předmětu zprávy prefix specifický pro tento mailing-list."
 
 #: src/mailman/handlers/tagger.py:173
 msgid "Tag messages with topic matches."
-msgstr ""
+msgstr "Označit zprávy souvisejícími tématy."
 
 #: src/mailman/handlers/to_archive.py:34
 msgid "Add the message to the archives."
-msgstr ""
+msgstr "Přidat zprávu do archivů."
 
 #: src/mailman/handlers/to_digest.py:36
 msgid "Add the message to the digest, possibly sending it."
-msgstr ""
+msgstr "Přidat zprávu do Souhrnu (může vést k okemžitému odeslání)."
 
 #: src/mailman/handlers/to_outgoing.py:38
 msgid "Send the message to the outgoing queue."
-msgstr ""
+msgstr "Odeslat zprávu do odchozí fronty."
 
 #: src/mailman/handlers/to_usenet.py:39
 msgid "Move the message to the outgoing news queue."
-msgstr ""
+msgstr "Přesunout zprávu do fronty odchozích zpráv."
 
 #: src/mailman/handlers/validate_authenticity.py:120
 msgid "Perform auth checks and attach Authentication-Results header."
 msgstr ""
+"Provést kontrolu autorizace a přiložit Authentication-Result do hlavičky."
 
 #: src/mailman/interfaces/pipeline.py:53
 msgid "[No details are available]"
-msgstr ""
+msgstr "[Nejsou dostupné žádné detaily]"
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr ""
+msgstr "[Nebyl uveden žádný důvod]"
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
-msgstr ""
+msgstr "Vestavěná pipeline vlastníka."
 
 #: src/mailman/pipelines/builtin.py:43
 msgid "The built-in posting pipeline."
-msgstr ""
+msgstr "Vestavěná pipeline příspěvku."
 
 #: src/mailman/pipelines/virgin.py:32
 msgid "The virgin queue pipeline."
@@ -1670,51 +1716,51 @@ msgstr ""
 
 #: src/mailman/rest/sub_moderation.py:114
 msgid "Subscription request"
-msgstr ""
+msgstr "Požadavek na odběr"
 
 #: src/mailman/rules/administrivia.py:52
 msgid "Catch mis-addressed email commands."
-msgstr ""
+msgstr "Zachytit emailové příkazy odeslané na špatnou adresu."
 
 #: src/mailman/rules/administrivia.py:96
 msgid "Message contains administrivia"
-msgstr ""
+msgstr "Zpráva obsahuje administrivia"
 
 #: src/mailman/rules/any.py:32
 msgid "Look for any previous rule hit."
-msgstr ""
+msgstr "Vyhledat předchozí pozitivní výsledky tohoto pravidla."
 
 #: src/mailman/rules/approved.py:45
 msgid "The message has a matching Approve or Approved header."
-msgstr ""
+msgstr "Tato zpráva má odpovídající Approve nebo Approved-Header."
 
 #: src/mailman/rules/banned_address.py:33
 msgid "Match messages sent by banned addresses."
-msgstr ""
+msgstr "Párovat zprávy odeslané ze zakázaných adres."
 
 #: src/mailman/rules/banned_address.py:45
 msgid "Message sender {} is banned from this list"
-msgstr ""
+msgstr "Odesílatel {} je v tomto listu zakázán"
 
 #: src/mailman/rules/digests.py:42
 msgid "Catch messages with digest Subject or boilerplate quote."
-msgstr ""
+msgstr "Zachytit zprávy s předmětem Souhrnu."
 
 #: src/mailman/rules/digests.py:57
 msgid "Message has a digest subject"
-msgstr ""
+msgstr "Zpráva má předmět Souhrnu"
 
 #: src/mailman/rules/digests.py:88
 msgid "Message quotes digest boilerplate"
-msgstr ""
+msgstr "Zpráva obsahuje známky Souhrnu"
 
 #: src/mailman/rules/dmarc.py:307
 msgid "Find DMARC policy of From: domain."
-msgstr ""
+msgstr "Nalézt pravidlo DMARC pro doménu \"Odesílatel:\"."
 
 #: src/mailman/rules/dmarc.py:327
 msgid "DMARC moderation"
-msgstr ""
+msgstr "Moderování DMARC"
 
 #: src/mailman/rules/dmarc.py:333
 #, python-brace-format
@@ -1723,6 +1769,10 @@ msgid ""
 "quarantine, and your message has been automatically rejected.  If you think that your messages are being "
 "rejected in error, contact the mailing list owner at ${listowner}."
 msgstr ""
+"Do tohoto mailing listu není možné přispívat z adresy, jejíž doména má "
+"aktivní DMARC s nastavením Zamítnout nebo Karanténa. Proto byla Vaše zpráva "
+"automaticky odmítnuta. Pokud si myslíte, že Vaše zprávy jsou odmítnuty "
+"omylem, kontaktujte vlastníka mailing-listu na adrese ${listowner}."
 
 #: src/mailman/rules/emergency.py:34
 msgid ""
@@ -1733,7 +1783,7 @@ msgstr ""
 
 #: src/mailman/rules/emergency.py:47
 msgid "Emergency moderation is in effect for this list"
-msgstr ""
+msgstr "Na tomto listu je aktivní nouzové moderování"
 
 #: src/mailman/rules/implicit_dest.py:37
 msgid "Catch messages with implicit destination."
@@ -1808,27 +1858,27 @@ msgstr ""
 
 #: src/mailman/rules/no_senders.py:44
 msgid "The message has no valid senders"
-msgstr ""
+msgstr "Zpráva nemá žádné platné odesílatele"
 
 #: src/mailman/rules/no_subject.py:32
 msgid "Catch messages with no, or empty, Subject headers."
-msgstr ""
+msgstr "Zachytit zprávy s žádnou, nebo prázdnou, hlavičkou Předmět."
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr ""
+msgstr "Zpráva nemá žádný předmět"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
-msgstr ""
+msgstr "Zachytit zprávy s podezřelými hlavičkami."
 
 #: src/mailman/rules/suspicious.py:97
 msgid "Header \"{}\" matched a bounce_matching_header line"
-msgstr ""
+msgstr "Hlavička \"{}\" odpovídá lince bounce_matching_header"
 
 #: src/mailman/rules/truth.py:32
 msgid "A rule which always matches."
-msgstr ""
+msgstr "Pravidlo, které vždy odpovídá."
 
 #: src/mailman/runners/command.py:103
 msgid "Ignoring non-text/plain MIME parts"
@@ -1836,111 +1886,119 @@ msgstr ""
 
 #: src/mailman/runners/command.py:143
 msgid "The results of your email command are provided below.\n"
-msgstr ""
+msgstr "Výsledky Vašeho emailového příkazu jsou uvedeny níže.\n"
 
 #: src/mailman/runners/command.py:187
 msgid "- Original message details:"
-msgstr ""
+msgstr "- Detaily původní zprávy:"
 
 #: src/mailman/runners/command.py:191
 msgid "    From: $from_"
-msgstr ""
+msgstr "    Odesílatel: $from_"
 
 #: src/mailman/runners/command.py:192
 msgid "    Subject: $subject"
-msgstr ""
+msgstr "    Předmět: $subject"
 
 #: src/mailman/runners/command.py:193
 msgid "    Date: $date"
-msgstr ""
+msgstr "    Datum: $date"
 
 #: src/mailman/runners/command.py:194
 msgid "    Message-ID: $message_id"
-msgstr ""
+msgstr "    Message-ID: $message_id"
 
 #: src/mailman/runners/command.py:195
 msgid ""
 "\n"
 "- Results:"
 msgstr ""
+"\n"
+"- Výsledky:"
 
 #: src/mailman/runners/command.py:209
 msgid "No such command: $command_name"
-msgstr ""
+msgstr "Neexistující příkaz: $command_name"
 
 #: src/mailman/runners/command.py:223
 msgid ""
 "\n"
 "- Unprocessed:"
 msgstr ""
+"\n"
+"- Nezpracováno:"
 
 #: src/mailman/runners/command.py:228
 msgid ""
 "\n"
 "- Ignored:"
 msgstr ""
+"\n"
+"- Ignorováno:"
 
 #: src/mailman/runners/command.py:231
 msgid ""
 "\n"
 "- Done."
 msgstr ""
+"\n"
+"- Hotovo."
 
 #: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
-msgstr ""
+msgstr "Výstup Vašich emailových příkazů"
 
 #: src/mailman/runners/digest.py:55
 msgid "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
-msgstr ""
+msgstr "Shrnutí z $mlist.display_name, Číslo $volume, Vydání $digest_number"
 
 #: src/mailman/runners/digest.py:83
 msgid "Today's Topics:\n"
-msgstr ""
+msgstr "Dnešní témata:\n"
 
 #: src/mailman/runners/digest.py:152
 msgid "Digest Header"
-msgstr ""
+msgstr "Hlavička Shrnutí"
 
 #: src/mailman/runners/digest.py:172
 msgid "Today's Topics ($count messages)"
-msgstr ""
+msgstr "Dnešní témata ($count zpráv)"
 
 #: src/mailman/runners/digest.py:194 src/mailman/runners/digest.py:269
 msgid "Digest Footer"
-msgstr ""
+msgstr "Patička Shrnutí"
 
 #: src/mailman/runners/digest.py:201 src/mailman/runners/digest.py:276
 msgid "End of "
-msgstr ""
+msgstr "Konec "
 
 #: src/mailman/styles/base.py:55
 msgid "[$mlist.display_name] "
-msgstr ""
+msgstr "[$mlist.display_name] "
 
 #: src/mailman/styles/default.py:37
 msgid "Ordinary discussion mailing list style."
-msgstr ""
+msgstr "Styl obyčejného diskuzního mailing-listu."
 
 #: src/mailman/styles/default.py:57
 msgid "Announce only mailing list style."
-msgstr ""
+msgstr "Styl mailing-listu pouze pro oznámení."
 
 #: src/mailman/styles/default.py:77
 msgid "Discussion mailing list style with private archives."
-msgstr ""
+msgstr "Styl diskuzního mailing-listu se soukromými archivy."
 
 #: src/mailman/utilities/options.py:47
 msgid "slice and range must be integers: $value"
-msgstr ""
+msgstr "řez a rozsah musí nabývat číselných hodnot: $value"
 
 #: src/mailman/utilities/options.py:50
 msgid "Bad runner spec: $value"
-msgstr ""
+msgstr "Špatná specifikace runneru: $value"
 
 #: src/mailman/utilities/scrubber.py:48 src/mailman/utilities/scrubber.py:49
 msgid "not available"
-msgstr ""
+msgstr "nedostupné"
 
 #: src/mailman/utilities/scrubber.py:50
 msgid ""
@@ -1950,91 +2008,335 @@ msgid ""
 "Size: $size bytes\n"
 "Desc: $desc\n"
 msgstr ""
+"Část zprávy nekompatibilní s plain text formátem zpráv Shrnutí byla "
+"odstraněna ...\n"
+"Název: $filename\n"
+"Typ: $ctype\n"
+"Velikost: $size bytes\n"
+"Popis: $desc\n"
 
 #: src/mailman/utilities/scrubber.py:58
 msgid "-------------- next part --------------\n"
-msgstr ""
+msgstr "-------------- následující část --------------\n"
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
+"Byl pro Vás právě vytvořen mailing-list '$listname'.\n"
+"Níže pár základních informací.\n"
+"\n"
+"Mailing-list je vybaven emailovým rozhraním pro uživatele listu (nikoliv "
+"jeho administrátory).\n"
+"Návod k jeho použití získáte tak, že pošlete na adresu listu zprávu "
+"obsahující jediné slovo: 'help' buď v předmětu, nebo v těle zprávy, na "
+"emailovou adresu:\n"
+"\n"
+"    $request_email\n"
+"\n"
+"\n"
+"S případnými dotazy se prosím obraťte na $site_email."
 
 msgid "help.txt"
 msgstr ""
+"Návod pro mailing list $listname\n"
+"\n"
+"Toto je zpráva odeslaná v reakci na klíčové slovo 'help' obsahující návod "
+"pro použití listu běžícím na GNU Mailman manažeru na doméně $domain ve verzi "
+"$version.\n"
+"Následuje seznam příkazů po jejichž odeslání bude automaticky vykonána Vámi "
+"zvolená akce sloužící jak k získání informací, tak ke správě Vašeho odběru "
+"Mailman listů.\n"
+"\n"
+"Příkazy mohou být jak v předmětu, tak v těle zprávy.\n"
+"\n"
+"Odesílejte je, prosím, na adresu: ${listname}-request@${domain}.\n"
+"\n"
+"Použít je možné následující příkazy:\n"
+"\n"
+"    $commands\n"
+"\n"
+"K jednotlivým popiskům - slova v \"<>\" označují POVINNÉ položky, zatímco "
+"slova v \"[]\" označují VOLITELNÉ položky.\n"
+"Prosím neposílejte samotné znaky \"<>\" a \"[]\" při používání těchto "
+"příkazů.\n"
+"\n"
+"\n"
+"S dotazy se, prosím, obracejte na adresu správce systému:\n"
+"\n"
+"    $administrator"
 
 msgid "list:admin:action:post.txt"
 msgstr ""
+"Do Vašeho mailing-listu dorazil následující příspěvek, který je třeba Vámi, "
+"jakožto administrátorem, schválit:\n"
+"\n"
+"    List:    $listname\n"
+"    Odesílatel:    $sender_email\n"
+"    Předmět: $subject\n"
+"\n"
+"Zpráva byla přidržena z důvodu:\n"
+"\n"
+"$reasons\n"
+"\n"
+"\n"
+"\n"
+"Navštivte, prosím, webové rozhraní mailing-listu a tento příspěvek schvalte "
+"nebo zamítněte."
 
 msgid "list:admin:action:subscribe.txt"
 msgstr ""
+"K Vašemu mailing-listu by se rád přihlásil nový odběratel.\n"
+"Tento požadavek musíte nejdříve schválit:\n"
+"\n"
+"    Kdo:  $member\n"
+"    List: $listname"
 
 msgid "list:admin:action:unsubscribe.txt"
 msgstr ""
+"Od Vašeho mailing-listu by se rád odhlásil jeden ze stávajících uživatelů.\n"
+"Tento požadavek musíte nejdříve schválit:\n"
+"\n"
+"    Kdo:  $member\n"
+"    List: $listname"
 
 msgid "list:admin:notice:disable.txt"
 msgstr ""
+"Odběr listu $listname byl, z důvodu opakovaných neúspěšných doručení ("
+"přesáhnutí tzv. bounce skóre), zakázán uživateli $member.\n"
+"\n"
+"\n"
+"DSN které tento zákaz způsobilo je přiložené."
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
+"Bounce skóre (označující počet nedoručitelných emailů) uživatele $member se "
+"právě na mailing-listu $listname zvýšilo.\n"
+"\n"
+"DSN které toto zvýšení způsobilo je přiložené."
 
 msgid "list:admin:notice:pending.txt"
 msgstr ""
+"V mailing-listu $listname je $count příspěvků čekajících na schválení "
+"moderátorem.\n"
+"\n"
+"$data\n"
+"Co nejdříve je, prosím, zkontrolujte."
 
 msgid "list:admin:notice:removal.txt"
 msgstr ""
+"Uživateli $member byl z důvodu příliš mnoho nedoručenek odhlášen odběr listu "
+"$listname."
 
 msgid "list:admin:notice:subscribe.txt"
 msgstr ""
+"Uživateli $member byl úspěšně přihlášený odběr mailing-listu $display_name."
 
 msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
+"Přiložená zpráva byla přijata jako nedoručenka (bounce), ale její formát buď "
+"nebyl automaticky rozeznán, nebo se z něj nepovedlo získat adresu žádného z "
+"přihlášených členů.\n"
+"\n"
+"\n"
+"Tento mailing-list je nastaven tak, aby všechny nerozeznané nedoručenky "
+"přeposlal administrátorům."
 
 msgid "list:admin:notice:unsubscribe.txt"
-msgstr ""
+msgstr "Uživatel $member byl odebrán z listu $display_name."
 
 msgid "list:member:digest:header.txt"
 msgstr ""
 
 msgid "list:member:digest:masthead.txt"
 msgstr ""
+"Příspěvky do mailing-listu $display_name odesílejte na adresu \n"
+"\t$listname\n"
+"\n"
+"K přihlášení nebo odhlášení jeho odběru pomocí emailu odešlete email s "
+"předmětem nebo tělem 'help' na adresu\n"
+"\t$request_email\n"
+"\n"
+"Správce tohoto listu můžete kontaktovat na\n"
+"\t$owner_email\n"
+"\n"
+"\n"
+"\n"
+"Při odpovědi prosím upravte předmět tak, aby z něj bylo jasné, co "
+"potřebujete."
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
+"_______________________________________________\n"
+"$display_name mailing-list -- $listname\n"
+"Pro odhlášení odešlete email na ${short_listname}-leave@${domain}"
 
 msgid "list:member:regular:header.txt"
 msgstr ""
 
 msgid "list:user:action:invite.txt"
 msgstr ""
+"Vaše adresa \"$user_email\" byla vlastníkem pozvána k přihlášení odběru "
+"mailing-listu $short_listname.\n"
+"Odběr potvrďte, prosím, odpovědí na tuto zprávu.\n"
+"\n"
+"\n"
+"Alternativně můžete odeslat nový email na adresu $request_email, který bude "
+"v těle obsahovat jediný text a sice:\n"
+"\n"
+"    confirm $token\n"
+"\n"
+"Ve většině emailových klientů ale bude stačit kliknout na \"Odpovědět\" nebo "
+"\"Reply\" a zprávu odeslat.\n"
+"\n"
+"Pokud si přejete tuto pozvánku ignorovat, jednoduše tuto zprávu smažte.\n"
+"V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese "
+"$owner_email."
 
 msgid "list:user:action:subscribe.txt"
 msgstr ""
+"Potvrzení registrace emailové adresy\n"
+"\n"
+"Dobrý den, tohle je mailing-listový server na adrese $domain.\n"
+"\n"
+"Přijali jsme Vaší žádost o registraci emailové adresy\n"
+"\t$user_email\n"
+"\n"
+"Než budete moci začít distribuční skupinu používat, je třeba nejprve "
+"potvrdit, že se skutečně jedná o Vaši adresu. Nejjednodušší cestou jak toto "
+"udělat je jednoduše odpovědět na tuto zprávu.\n"
+"\n"
+"Alternativně můžete odeslat nový email na adresu $request_email, který bude "
+"v těle obsahovat jediný text a sice:\n"
+"\n"
+"    confirm $token\n"
+"\n"
+"Ve většině emailových klientů ale bude stačit kliknout na \"Odpovědět\" nebo "
+"\"Reply\" a zprávu odeslat.\n"
+"\n"
+"Pokud si tuto emailovou adresu registrovat nepřejete, jednoduše tuto zprávu "
+"smažte.\n"
+"V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese \n"
+"\t$owner_email"
 
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
+"Potvrzení odhlášení emailové adresy\n"
+"\n"
+"Dobrý den, tohle je mailing-listový server na adrese $domain.\n"
+"\n"
+"Přijali jsme Vaší žádost o zrušení odběru na emailové adrese\n"
+"\t$user_email\n"
+"\n"
+"Než budete moci začít distribuční skupinu používat, je třeba nejprve "
+"potvrdit, že jste o odhlášení skutečně požádali Vy. Nejjednodušší cestou jak "
+"toto udělat je jednoduše odpovědět na tuto zprávu.\n"
+"\n"
+"Alternativně můžete odeslat nový email na adresu $request_email, který bude "
+"v těle obsahovat jediný text a sice:\n"
+"    confirm $token\n"
+"\n"
+"Ve většině emailových klientů ale bude stačit kliknout na \"Odpovědět\" nebo "
+"\"Reply\" a zprávu odeslat.\n"
+"\n"
+"Pokud si odběr na této emailové adrese zrušit nepřejete, jednoduše tuto "
+"zprávu smažte.\n"
+"V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese \n"
+"\t$owner_email"
 
 msgid "list:user:notice:goodbye.txt"
 msgstr ""
 
 msgid "list:user:notice:hold.txt"
 msgstr ""
+"Váš příspěvek do mailing-listu '$listname' s předmětem\n"
+"    $subject\n"
+"\n"
+"je prozatím přidržen ke kontrole moderátorem.\n"
+"\n"
+"Zpráva byla přidržena, protože:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Email bude do listu buď odeslán, nebo dostanete notifikaci o moderátorově "
+"rozhodnutí."
 
 msgid "list:user:notice:no-more-today.txt"
 msgstr ""
+"Z Vaší adresy <$sender_email> jsme dostali zprávu požadující automatickou "
+"odpověď mailing-listu $listname.\n"
+"\n"
+"Dnes jsme takových zpráv dostali už: $count.  Abychom zabránili případným "
+"problémům, jako například smyčkám mezi emailovými roboty, dnes už Vám "
+"nebudeme posílat žádné další automatické odpovědi.\n"
+"Vše můžete opět vyzkoušet zítra. \n"
+"\n"
+"Pokud si myslíte, že je tato informace chybná nebo máte jiné dotazy, "
+"kontaktujte, prosím, vlastníka listu na adrese $owner_email."
 
 msgid "list:user:notice:post.txt"
 msgstr ""
+"Vaše zpráva s názvem\n"
+"\n"
+"    $subject\n"
+"\n"
+"byla úspěšně přijata mailing-listem $display_name."
 
 msgid "list:user:notice:probe.txt"
 msgstr ""
+"Toto je zkušení zpráva. Pokud jste ji dostali, prosím, ignorujte ji.\n"
+"\n"
+"Mailing-listu $listname v nedávné době při pokusu o doručení emailu na Vaší "
+"adresu $sender_email opakovaně dorazily tzv. nedoručenky (bounces), jejichž "
+"příklad najdete níže.\n"
+"Prosím zkontrolujte tuto zprávu a prověřte, jestli nemáte ve svém nastavení "
+"nějakou chybu - pokud nevíte, doporučujeme tuto zprávu prověřit spolu s "
+"Vaším poskytovatelem/správcem emailu.\n"
+"\n"
+"Pro zachování odběru tohoto mailing-listu nemusíte nyní dělat vůbec nic.\n"
+"\n"
+"V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese "
+"$owner_email"
 
 msgid "list:user:notice:refuse.txt"
 msgstr ""
+"Váš příspěvek do mailing-listu '$listname' s předmětem\n"
+"    $subject\n"
+"\n"
+"byl odmítnut moderátorem. Jako odůvodnění tohoto zamítnutí uvedl:\n"
+"\n"
+"\"$reason\"\n"
+"\n"
+"Případné dotazy a připomínky směřujte na správce tohoto listu na $owner_email"
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
+"Váš příspěvek do mailing-listu '$listname' byl odmítnut. Důvodem tohoto "
+"odmítnutí je:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Původní zpráva kterou od Vás distribuční list dostal je přiložena."
 
 msgid "list:user:notice:warning.txt"
 msgstr ""
+"Váš odběr mailing-listu $listname byl ukončen, protože jsme od Vás dostali "
+"příliš mnoho nedoručenek (bounces) značících možné problémy při doručení "
+"emailu na Vaší adresu $sender_email.\n"
+"Doporučujeme kontaktovat správce Vašeho emailu o pomoc.\n"
+"\n"
+"Pokud máte jakékoliv otázky nebo potíže, můžete kontaktovat vlastníka "
+"mailing-listu na adrese $owner_email"
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
+"Vítejte v mailing listu \"$display_name\"!\n"
+"\n"
+"Pro odeslání nového příspěvku jako adresu příjemce používejte:\n"
+"\t$listname\n"
+"\n"
+"Zrušit odběr a další změny konfigurace můžete provést odesláním emailu na "
+"adresu:\n"
+"\t$request_email\n"
+"obsahující slovo 'help' (bez uvozovek) buď v předmětu, nebo těle zprávy. Ke "
+"změně nastavení budete potřebovat heslo, které zde z bezpečnostních důvodů "
+"nepřikládáme. Pokud jste jej zapomněli, budete si jej muset resetovat ve "
+"webovém rozhraní."
