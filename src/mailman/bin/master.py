@@ -204,7 +204,7 @@ class PIDWatcher:
         # asynchronous signals are involved, the dictionary's size could
         # change during iteration.  Iterate over a copy of the keys to avoid
         # that.
-        for pid in self._pids.keys():
+        for pid in list(self._pids):
             yield pid
 
     def add(self, pid, info):
