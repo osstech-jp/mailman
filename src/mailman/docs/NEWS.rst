@@ -31,6 +31,9 @@ Bugs fixed
   contained non-ascii.  This is fixed.  (Closes #965 and #967)
 * The REST API will now accept JSON encoded data with boolean values for
   boolean attributes.  (Closes #970)
+* Fix a bug where loading a plugin which raises an exception in ``pre_hook``
+  can cause Mailman to crash trying to disable that plugin. (Closes #724)
+  
 
 .. _news-3.3.5:
 

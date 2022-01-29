@@ -21,6 +21,7 @@ import sys
 import unittest
 
 from contextlib import ExitStack
+from mailman.core.initialize import run_plugin_pre_hook
 from mailman.interfaces.plugin import IPlugin
 from mailman.plugins.initialize import initialize
 from mailman.plugins.testing.layer import PluginRESTLayer
@@ -50,6 +51,16 @@ class TestablePlugin:
     def post_hook(self):
         pass
 
+    resource = None
+
+
+@implementer(IPlugin)
+class ExceptionRaisingPlugin:
+    def pre_hook(self):
+        raise Exception('Bad plugin')
+
+    def post_hook(self):
+        pass
     resource = None
 
 
@@ -144,3 +155,23 @@ class TestInitializePlugins(unittest.TestCase):
             initialize()
             log_mock.info.assert_called_once_with(
                 'Plugin not enabled, or empty class path: example')
+
+    def test_plugin_disabled_with_exception(self):
+        with ExitStack() as resources:
+            system_path = resources.enter_context(TemporaryDirectory())
+            fake_plugin_config = {
+                'path': system_path,
+                'enabled': 'yes',
+                'class': 'ExamplePlugin',
+                }
+            testable_plugin = ExceptionRaisingPlugin()
+            fake_mailman_config = SimpleNamespace(
+                plugin_configs=[('example', fake_plugin_config)],
+                plugins={'example': testable_plugin},
+                )
+
+            resources.enter_context(patch(
+                'mailman.plugins.initialize.call_name',
+                return_value=testable_plugin))
+            run_plugin_pre_hook(fake_mailman_config)
+            self.assertNotIn('example', fake_mailman_config.plugins)

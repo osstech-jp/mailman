@@ -131,6 +131,27 @@ def initialize_1(config_path=None):
 
 
 @public
+def run_plugin_pre_hook(config):
+    """Run the plugin pre_hooks, if one fails, disable the offending plugin."""
+    disabled_plugins = []
+    for name in config.plugins:                     # pragma: nocover
+        plugin = config.plugins[name]
+        if hasattr(plugin, 'pre_hook'):
+            try:
+                plugin.pre_hook()
+            except Exception:                                # pragma: nocover
+                log = logging.getLogger('mailman.plugins')
+                log.exception('Plugin failed to run its pre_hook: "{}". '
+                              'It will be disabled and its components '
+                              "won't be loaded.".format(name))
+                disabled_plugins.append(name)
+
+    if disabled_plugins:
+        for plugin in disabled_plugins:
+            del config.plugins[plugin]
+
+
+@public
 def initialize_2(debug=False, propagate_logs=None, testing=False):
     """Second initialization step.
 
@@ -159,18 +180,7 @@ def initialize_2(debug=False, propagate_logs=None, testing=False):
         log.warning(
             'The [mailman]pre_hook configuration value has been replaced '
             "by the plugins infrastructure, and won't be called.")
-    # Run the plugin pre_hooks, if one fails, disable the offending plugin.
-    for name in config.plugins:                     # pragma: nocover
-        plugin = config.plugins[name]
-        if hasattr(plugin, 'pre_hook'):
-            try:
-                plugin.pre_hook()
-            except Exception:                                # pragma: nocover
-                log = logging.getLogger('mailman.plugins')
-                log.exception('Plugin failed to run its pre_hook: {}'
-                              'It will be disabled and its components '
-                              "won't be loaded.".format(name))
-                del config.plugins[name]
+    run_plugin_pre_hook(config)
     # Instantiate the database class, ensure that it's of the right type, and
     # initialize it.  Then stash the object on our configuration object.
     utility_name = ('testing' if testing else 'production')
