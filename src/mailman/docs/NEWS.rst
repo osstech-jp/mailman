@@ -36,6 +36,10 @@ Bugs fixed
 * Fix a bug where the ``PIDWatcher()`` iterates over internal dict while
   it can be updated during that time. (Closes #724)
 
+REST
+====
+* Expose bounce related parameters for Member objects.
+
 .. _news-3.3.5:
 
 3.3.5

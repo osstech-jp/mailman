@@ -61,6 +61,10 @@ class _MemberBase(CollectionMixin):
         # issue #121 for details.
         return {
             'address': self._get_address,
+            'bounce_score': attrgetter('bounce_score'),
+            'last_bounce_received': attrgetter('last_bounce_received'),
+            'last_warning_sent': attrgetter('last_warning_sent'),
+            'total_warnings_sent': attrgetter('total_warnings_sent'),
             'delivery_mode': attrgetter('delivery_mode'),
             'email': attrgetter('address.email'),
             'list_id': attrgetter('list_id'),
