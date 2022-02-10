@@ -107,6 +107,30 @@ A message body.
         self.assertEqual(
             reasons, ['The message comes from a moderated member'])
 
+    def test_these_nonmembers_malformed_regexp(self):
+        user_manager = getUtility(IUserManager)
+        nonmembers = [
+            # Malformed regexps should be skipped
+            '^int\\entionally-.*@broken.regex',
+            ]
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('anne@example.com')
+        setattr(self._mlist, 'reject_these_nonmembers', nonmembers)
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertTrue(result, 'NonmemberModeration rule should hit')
+        self.assertIn('member_moderation_action', msgdata)
+
     def test_these_nonmembers(self):
         # Test the legacy *_these_nonmembers attributes.
         actions = {
