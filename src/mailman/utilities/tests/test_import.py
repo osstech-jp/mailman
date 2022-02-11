@@ -1130,6 +1130,21 @@ class TestRosterImport(unittest.TestCase):
         member = self._mlist.members.get_member('bob@example.com')
         self.assertEqual(member.user, user)
 
+    def test_owner_and_moderator_delivery_enabled(self):
+        # If an owner or moderator is a member with delivery disabled, the
+        # imported owner/moderator must have delivery enabled.
+        # Set anne and bob's delivery status disabled by user.
+        self._pckdict['delivery_status'] = {
+            'anne@example.com': (2, 1612366744.399534),
+            'bob@example.com': (2, 1612366744.399534)}
+        import_config_pck(self._mlist, self._pckdict)
+        self.assertEqual(
+            self._mlist.owners.get_member('anne@example.com').delivery_status,
+            DeliveryStatus.enabled)
+        self.assertEqual(
+            self._mlist.moderators.get_member('bob@example.com').
+            delivery_status, DeliveryStatus.enabled)
+
     def test_owner_and_moderator_not_lowercase(self):
         # In the v2.1 pickled dict, the owner and moderator lists are not
         # necessarily lowercased already.
