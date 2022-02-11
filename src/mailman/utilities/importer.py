@@ -682,18 +682,23 @@ def _import_roster(mlist, config_dict, members, role, action=None):
         # if email in config_dict.get('passwords', {}):
         #     user.password = config.password_context.encrypt(
         #         config_dict['passwords'][email])
-        # delivery_status
-        oldds = config_dict.get('delivery_status', {}).get(email, (0, 0))[0]
-        if oldds == 0:
+        # delivery_status - for members. owners/moderators are always enabled.
+        if role in (MemberRole.owner, MemberRole.moderator):
             member.preferences.delivery_status = DeliveryStatus.enabled
-        elif oldds == 1:
-            member.preferences.delivery_status = DeliveryStatus.unknown
-        elif oldds == 2:
-            member.preferences.delivery_status = DeliveryStatus.by_user
-        elif oldds == 3:
-            member.preferences.delivery_status = DeliveryStatus.by_moderator
-        elif oldds == 4:
-            member.preferences.delivery_status = DeliveryStatus.by_bounces
+        else:
+            oldds = config_dict.get(
+                'delivery_status', {}).get(email, (0, 0))[0]
+            if oldds == 0:
+                member.preferences.delivery_status = DeliveryStatus.enabled
+            elif oldds == 1:
+                member.preferences.delivery_status = DeliveryStatus.unknown
+            elif oldds == 2:
+                member.preferences.delivery_status = DeliveryStatus.by_user
+            elif oldds == 3:
+                member.preferences.delivery_status = \
+                    DeliveryStatus.by_moderator
+            elif oldds == 4:
+                member.preferences.delivery_status = DeliveryStatus.by_bounces
         # Moderation.
         if prefs is not None:
             # We're adding a member.

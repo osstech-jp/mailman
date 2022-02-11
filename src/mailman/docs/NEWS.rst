@@ -35,6 +35,8 @@ Bugs fixed
   can cause Mailman to crash trying to disable that plugin. (Closes #724)
 * Fix a bug where the ``PIDWatcher()`` iterates over internal dict while
   it can be updated during that time. (Closes #724)
+* The ``mailman import21`` now always imports owners/moderators with
+  ``DeliveryStatus.enabled``.  (Closes #977)
 
 REST
 ====
