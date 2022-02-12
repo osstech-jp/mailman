@@ -35,7 +35,8 @@ from mailman.rest.helpers import (
 from mailman.rest.validator import (
     PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
     Validator, enum_validator, integer_ge_zero_validator,
-    language_validator, list_of_strings_validator
+    language_validator, list_of_emails_or_regexp_validator,
+    list_of_strings_validator,
     )
 from public import public
 from zope.component import getUtility
@@ -148,7 +149,7 @@ def no_newlines_validator(value):
 
 ATTRIBUTES = dict(
     acceptable_aliases=AcceptableAliases(list_of_strings_validator),
-    accept_these_nonmembers=GetterSetter(list_of_strings_validator),
+    accept_these_nonmembers=GetterSetter(list_of_emails_or_regexp_validator),
     admin_immed_notify=GetterSetter(as_boolean),
     admin_notify_mchanges=GetterSetter(as_boolean),
     administrivia=GetterSetter(as_boolean),
@@ -185,7 +186,7 @@ ATTRIBUTES = dict(
     digest_volume_frequency=GetterSetter(enum_validator(DigestFrequency)),
     digests_enabled=GetterSetter(as_boolean),
     display_name=GetterSetter(str),
-    discard_these_nonmembers=GetterSetter(list_of_strings_validator),
+    discard_these_nonmembers=GetterSetter(list_of_emails_or_regexp_validator),
     dmarc_mitigate_action=GetterSetter(enum_validator(DMARCMitigateAction)),
     dmarc_mitigate_unconditionally=GetterSetter(as_boolean),
     dmarc_moderation_notice=GetterSetter(str),
@@ -201,7 +202,7 @@ ATTRIBUTES = dict(
     fqdn_listname=GetterSetter(None),
     gateway_to_mail=GetterSetter(as_boolean),
     gateway_to_news=GetterSetter(as_boolean),
-    hold_these_nonmembers=GetterSetter(list_of_strings_validator),
+    hold_these_nonmembers=GetterSetter(list_of_emails_or_regexp_validator),
     include_rfc2369_headers=GetterSetter(as_boolean),
     info=GetterSetter(str),
     join_address=GetterSetter(None),
@@ -228,7 +229,7 @@ ATTRIBUTES = dict(
     posting_pipeline=GetterSetter(pipeline_validator),
     preferred_language=LanguageGetterSetter(language_validator),
     process_bounces=GetterSetter(as_boolean),
-    reject_these_nonmembers=GetterSetter(list_of_strings_validator),
+    reject_these_nonmembers=GetterSetter(list_of_emails_or_regexp_validator),
     reply_goes_to_list=GetterSetter(enum_validator(ReplyToMunging)),
     reply_to_address=GetterSetter(str),
     request_address=GetterSetter(None),

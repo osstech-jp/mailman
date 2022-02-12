@@ -18,6 +18,7 @@
 """Membership related rules."""
 
 import re
+import logging
 
 from contextlib import suppress
 from mailman.core.i18n import _
@@ -182,18 +183,29 @@ class NonmemberModeration:
                     action_name)
                 checklist = getattr(mlist, legacy_attribute_name)
                 for addr in checklist:
-                    if ((addr.startswith('^') and re.match(addr, sender))
-                            or addr == sender):     # noqa: W503
-                        # accept_these_nonmembers should 'defer'.
-                        if action_name == 'accept':
-                            return False
-                        with _.defer_translation():
-                            # This will be translated at the point of use.
-                            reason = (
-                                _('The sender is in the nonmember {} list'),
-                                action_name)
-                        _record_action(msgdata, action_name, sender, reason)
-                        return True
+                    try:
+                        if ((addr.startswith('^') and re.match(addr, sender))
+                                or addr == sender):     # noqa: W503
+                            # accept_these_nonmembers should 'defer'.
+                            if action_name == 'accept':
+                                return False
+                            with _.defer_translation():
+                                # This will be translated at the point of use.
+                                reason = (_(
+                                    'The sender is in the nonmember {} list'
+                                    ), action_name)
+                            _record_action(msgdata,
+                                           action_name, sender, reason)
+                            return True
+                    except re.error as error:
+                        # The pattern is a malformed regular expression.
+                        # Log and continue with the next pattern.
+                        log = logging.getLogger('mailman.error')
+                        log.error("Invalid regexp '{}' in "
+                                  '{}_these_nonmembers for {}: {}'
+                                  .format(addr, action_name, mlist.list_id,
+                                          error.msg))
+                        continue
             # No nonmember.moderation.action and no legacy hits.
             action = mlist.default_nonmember_action
             return _do_action(msgdata, action, sender)

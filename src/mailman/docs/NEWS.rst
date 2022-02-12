@@ -39,6 +39,8 @@ Bugs fixed
   ``DeliveryStatus.enabled``.  (Closes #977)
 * A specific nonmember moderation action will be checked for and applied before
   testing the legacy ``*_these_nonmembers`` settings.  (Closes #978)
+* Invalid regexps in ``*_these_nonmembers`` are properly logged and can't be
+  set via REST.  (Closes #974)
 
 REST
 ====

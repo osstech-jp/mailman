@@ -28,8 +28,9 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.rest import helpers
 from mailman.rest.validator import (
     Validator, email_or_regexp_validator, email_validator, enum_validator,
-    integer_ge_zero_validator, list_of_emails_validator,
-    list_of_strings_validator, subscriber_validator)
+    integer_ge_zero_validator, list_of_emails_or_regexp_validator,
+    list_of_emails_validator, list_of_strings_validator,
+    subscriber_validator)
 from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
 
@@ -141,6 +142,24 @@ class TestValidators(unittest.TestCase):
             ValueError, email_or_regexp_validator, '^[^@]+(')
         self.assertRaises(
             ValueError, email_or_regexp_validator, '')
+
+    def test_list_of_emails_or_regexp_validator_valid(self):
+        self.assertEqual(
+            list_of_emails_or_regexp_validator(
+                ['foo@example.com', '^.*@example.com']),
+            ['foo@example.com', '^.*@example.com'])
+        self.assertEqual(
+            list_of_emails_or_regexp_validator([]), [])
+
+    def test_list_of_emails_or_regexp_validator_invalid(self):
+        self.assertRaises(
+            ValueError, list_of_emails_or_regexp_validator, 'foo.example.com')
+        self.assertRaises(
+            ValueError, list_of_emails_or_regexp_validator,
+            ['foo.example.com', '^.*@example.com'])
+        self.assertRaises(
+            ValueError, list_of_emails_or_regexp_validator,
+            ['foo@example.com', '^*@example.com'])
 
     def test_email_validator(self):
         self.assertRaises(ValueError,

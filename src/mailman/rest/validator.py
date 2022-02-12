@@ -131,6 +131,15 @@ def list_of_emails_validator(values):
 
 
 @public
+def list_of_emails_or_regexp_validator(values):
+    if not isinstance(values, (list, tuple)):
+        values = [values]
+    for value in values:
+        email_or_regexp_validator(value)
+    return values
+
+
+@public
 def integer_ge_zero_validator(value):
     """Validate that the value is a non-negative integer."""
     value = int(value)
