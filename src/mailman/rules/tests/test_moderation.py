@@ -26,7 +26,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rules import moderation
 from mailman.testing.helpers import (
-    set_preferred, specialized_message_from_string as mfs, LogFileMark)
+    LogFileMark, set_preferred, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

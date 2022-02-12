@@ -28,8 +28,8 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.rest import helpers
 from mailman.rest.validator import (
     Validator, email_or_regexp_validator, email_validator, enum_validator,
-    integer_ge_zero_validator, list_of_emails_validator,
-    list_of_emails_or_regexp_validator, list_of_strings_validator,
+    integer_ge_zero_validator, list_of_emails_or_regexp_validator,
+    list_of_emails_validator, list_of_strings_validator,
     subscriber_validator)
 from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
