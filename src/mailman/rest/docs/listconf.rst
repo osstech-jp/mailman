@@ -158,7 +158,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             filter_extensions=['.mkv'],
     ...             filter_types=['application/zip'],
     ...             process_bounces=True,
-    ...             discard_these_nonmembers=[r'name_*bperson*@example.com'],
+    ...             discard_these_nonmembers=[r'^name_*bperson*@example.com'],
     ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
@@ -184,8 +184,8 @@ When using ``PUT``, all writable attributes must be included.
     ...             nntp_prefix_subject_too=False,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
-    ...             reject_these_nonmembers=[r'b[hello]*@example.com'],
-    ...             hold_these_nonmembers=[r're[gG]ex@example.com'],
+    ...             reject_these_nonmembers=[r'^b[hello]*@example.com'],
+    ...             hold_these_nonmembers=[r'^re[gG]ex@example.com'],
     ...             reply_goes_to_list='point_to_list',
     ...             reply_to_address='bee@example.com',
     ...             require_explicit_destination=False,
@@ -252,7 +252,7 @@ These values are changed permanently.
     digest_size_threshold: 10.5
     digest_volume_frequency: yearly
     digests_enabled: False
-    discard_these_nonmembers: ['name_*bperson*@example.com']
+    discard_these_nonmembers: ['^name_*bperson*@example.com']
     display_name: Fnords
     dmarc_mitigate_action: munge_from
     dmarc_mitigate_unconditionally: False
@@ -270,7 +270,7 @@ These values are changed permanently.
     gateway_to_mail: True
     gateway_to_news: True
     ...
-    hold_these_nonmembers: ['re[gG]ex@example.com']
+    hold_these_nonmembers: ['^re[gG]ex@example.com']
     http_etag: "..."
     include_rfc2369_headers: False
     ...
@@ -286,7 +286,7 @@ These values are changed permanently.
     posting_pipeline: virgin
     preferred_language: ja
     process_bounces: True
-    reject_these_nonmembers: ['b[hello]*@example.com']
+    reject_these_nonmembers: ['^b[hello]*@example.com']
     reply_goes_to_list: point_to_list
     reply_to_address: bee@example.com
     ...
