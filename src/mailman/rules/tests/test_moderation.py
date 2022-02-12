@@ -109,7 +109,6 @@ A message body.
 
     def test_these_nonmembers(self):
         # Test the legacy *_these_nonmembers attributes.
-        user_manager = getUtility(IUserManager)
         actions = {
             'anne@example.com': 'accept',
             'bill@example.com': 'hold',
@@ -150,6 +149,59 @@ A message body.
                 self.assertEqual(
                     msgdata['member_moderation_action'], action_name,
                     'Wrong action for {}: {}'.format(address, action_name))
+
+    def test_specific_nonmember_action_trumps_legacy(self):
+        # A specific nonmember.moderation_action trumps *_these_nonmembers.
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        address = 'anne@example.com'
+        # Add Anne to hold_these_nonmembers and create a nonmember with
+        # moderation_action = Action.defer
+        setattr(self._mlist, 'hold_these_nonmembers', [address])
+        anne = user_manager.create_address(address)
+        nonmember = self._mlist.subscribe(anne, MemberRole.nonmember)
+        nonmember.moderation_action = Action.defer
+        msg = mfs("""\
+From: {}
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""".format(address))
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(
+            result, 'NonmemberModeration rule should miss')
+
+    def test_nonmember_action_none_ignored(self):
+        # A specific nonmember.moderation_action trumps *_these_nonmembers.
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        address = 'anne@example.com'
+        # Add Anne to hold_these_nonmembers and create a nonmember with
+        # moderation_action = None
+        setattr(self._mlist, 'hold_these_nonmembers', [address])
+        anne = user_manager.create_address(address)
+        nonmember = self._mlist.subscribe(anne, MemberRole.nonmember)
+        nonmember.moderation_action = None
+        msg = mfs("""\
+From: {}
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""".format(address))
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertTrue(result, 'NonmemberModeration rule should hit')
+        self.assertIn('member_moderation_action', msgdata)
+        self.assertEqual(
+            msgdata['member_moderation_action'], 'hold',
+            'Wrong action for {}: {}'.format(address, 'hold'))
 
     def test_nonmember_fallback_to_list_defaults(self):
         # https://gitlab.com/mailman/mailman/issues/189
