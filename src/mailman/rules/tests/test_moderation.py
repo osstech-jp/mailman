@@ -26,7 +26,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rules import moderation
 from mailman.testing.helpers import (
-    set_preferred, specialized_message_from_string as mfs)
+    set_preferred, specialized_message_from_string as mfs, LogFileMark)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -108,15 +108,17 @@ A message body.
             reasons, ['The message comes from a moderated member'])
 
     def test_these_nonmembers_malformed_regexp(self):
+        mark = LogFileMark('mailman.error')
         user_manager = getUtility(IUserManager)
         nonmembers = [
             # Malformed regexps should be skipped
-            '^int\\entionally-.*@broken.regex',
+            '^*@broken.regex',
+            'anne@example.com',
             ]
         rule = moderation.NonmemberModeration()
         user_manager = getUtility(IUserManager)
         user_manager.create_address('anne@example.com')
-        setattr(self._mlist, 'reject_these_nonmembers', nonmembers)
+        setattr(self._mlist, 'accept_these_nonmembers', nonmembers)
         msg = mfs("""\
 From: anne@example.com
 To: test@example.com
@@ -128,8 +130,10 @@ A message body.
 """)
         msgdata = {}
         result = rule.check(self._mlist, msg, msgdata)
-        self.assertTrue(result, 'NonmemberModeration rule should hit')
-        self.assertIn('member_moderation_action', msgdata)
+        self.assertFalse(result, 'NonmemberModeration rule should not hit')
+        self.assertIn("Invalid regexp '^*@broken.regex' in "
+                      'accept_these_nonmembers for test.example.com: '
+                      'nothing to repeat', mark.readline())
 
     def test_these_nonmembers(self):
         # Test the legacy *_these_nonmembers attributes.

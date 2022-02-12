@@ -197,15 +197,14 @@ class NonmemberModeration:
                             _record_action(msgdata,
                                            action_name, sender, reason)
                             return True
-                    except re.error:
+                    except re.error as error:
                         # The pattern is a malformed regular expression.
                         # Log and continue with the next pattern.
                         log = logging.getLogger('mailman.error')
-                        log.exception('Regular expression "{}" in the '
-                                      'nonmember {} list of {} failed to '
-                                      'compile'
-                                      .format(addr, action_name,
-                                              mlist.fqdn_listname))
+                        log.error("Invalid regexp '{}' in "
+                                  '{}_these_nonmembers for {}: {}'
+                                  .format(addr, action_name, mlist.list_id,
+                                          error.msg))
                         continue
             # No nonmember.moderation.action and no legacy hits.
             action = mlist.default_nonmember_action
