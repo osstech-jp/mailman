@@ -37,6 +37,8 @@ Bugs fixed
   it can be updated during that time. (Closes #724)
 * The ``mailman import21`` now always imports owners/moderators with
   ``DeliveryStatus.enabled``.  (Closes #977)
+* A specific nonmember moderation action will be checked for and applied before
+  testing the legacy ``*_these_nonmembers`` settings.  (Closes #978)
 
 REST
 ====
