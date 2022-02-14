@@ -135,7 +135,9 @@ def list_of_emails_or_regexp_validator(values):
     if not isinstance(values, (list, tuple)):
         values = [values]
     for value in values:
-        email_or_regexp_validator(value)
+        # Allow an empty value to clear the list.
+        if value:
+            email_or_regexp_validator(value)
     return values
 
 
