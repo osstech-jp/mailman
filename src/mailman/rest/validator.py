@@ -132,12 +132,12 @@ def list_of_emails_validator(values):
 
 @public
 def list_of_emails_or_regexp_validator(values):
+    if values == '':
+        return []
     if not isinstance(values, (list, tuple)):
         values = [values]
     for value in values:
-        # Allow an empty value to clear the list.
-        if value:
-            email_or_regexp_validator(value)
+        email_or_regexp_validator(value)
     return values
 
 
