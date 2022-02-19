@@ -27,7 +27,8 @@ from email.utils import _has_surrogates
 from importlib_resources import path
 from mailman.app.lifecycle import create_list
 from mailman.email.message import Message, UserNotification
-from mailman.testing.helpers import get_queue_messages
+from mailman.testing.helpers import (
+    get_queue_messages, specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 
 
@@ -160,6 +161,19 @@ IM3F1M/EwSDQz8nTy8Egy8zJxc7Uz9c/Cg==
             with open(str(email_path), 'rb') as fp:
                 msg = message_from_binary_file(fp, Message)
         self.assertFalse(_has_surrogates(msg.as_string()))
+
+    def test_as_bytes_python_bug_41307(self):
+        msgstr = """\
+To: list@example.com
+From: user@example.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Message with \u201cNon-ascii\u201d.
+"""
+        msg = mfs(msgstr)
+        self.assertEqual(msg.as_bytes(), msgstr.encode('utf-8'))
 
     def test_bogus_content_charset(self):
         with path('mailman.email.tests.data', 'bad_email_3.eml') as email_path:
