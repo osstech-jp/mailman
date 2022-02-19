@@ -41,6 +41,8 @@ Bugs fixed
   testing the legacy ``*_these_nonmembers`` settings.  (Closes #978)
 * Invalid regexps in ``*_these_nonmembers`` are properly logged and can't be
   set via REST.  (Closes #974)
+* Override the as_bytes() method in the mailman.email.message.Message class to
+  workaround https://bugs.python.org/issue41307.  (Closes #979 and #980)
 
 REST
 ====

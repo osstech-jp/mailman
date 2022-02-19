@@ -59,6 +59,14 @@ class Message(email.message.Message):
         # Also ensure no unicode surrogates in the returned string.
         return email.utils._sanitize(value)
 
+    def as_bytes(self):
+        # Workaround for https://bugs.python.org/issue41307.
+        try:
+            value = email.message.Message.as_bytes(self)
+        except UnicodeEncodeError:
+            value = email.message.Message.as_string(self).encode('utf-8')
+        return value
+
     @property
     def sender(self):
         """The address considered to be the author of the email.
