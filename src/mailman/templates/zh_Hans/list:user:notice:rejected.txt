@@ -1,6 +1,5 @@
-您给$listname邮件列表的信息被拒绝，原因如下
-原因。
+你发给 $listname 邮件列表的消息已被以下原因拒绝：
 
 $reasons
 
-附上Mailman收到的原始信息。
+附上 Mailman 接收到的原始消息。

@@ -1,0 +1,5 @@
+Váš příspěvek do mailing-listu '$listname' byl odmítnut. Důvodem tohoto odmítnutí je:
+
+$reasons
+
+Původní zpráva kterou od Vás distribuční list dostal je přiložena.

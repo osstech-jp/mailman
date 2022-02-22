@@ -1,0 +1,12 @@
+Vaše adresa "$user_email" byla vlastníkem pozvána k přihlášení odběru mailing-listu $short_listname.
+Odběr potvrďte, prosím, odpovědí na tuto zprávu.
+
+
+Alternativně můžete odeslat nový email na adresu $request_email, který bude v těle obsahovat jediný text a sice:
+
+    confirm $token
+
+Ve většině emailových klientů ale bude stačit kliknout na "Odpovědět" nebo "Reply" a zprávu odeslat.
+
+Pokud si přejete tuto pozvánku ignorovat, jednoduše tuto zprávu smažte.
+V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese $owner_email.

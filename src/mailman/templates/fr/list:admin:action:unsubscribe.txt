@@ -1,4 +1,5 @@
-Une demande de désinscription à une liste est en attente de votre validation :
+Votre autorisation est nécessaire pour approuver une demande de
+déabonnement à une liste de diffusion :
 
-    Pour :  $member
+    Pour : $member
     Liste : $listname

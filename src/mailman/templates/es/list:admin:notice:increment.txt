@@ -1,0 +1,3 @@
+El cómputo de rebotes de $member en $listname ha aumentado.
+
+Se acompaña el DSN disparador si está disponible.
