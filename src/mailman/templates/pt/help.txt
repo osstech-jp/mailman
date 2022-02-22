@@ -1,0 +1,21 @@
+Ajuda para a lista de discussão $listname
+
+Este é o comando de e-mail "help" para a versão $version do gestor de
+listas do GNU Mailman em $domain. Abaixo são descritos comandos descrevem
+o que pode enviar para obter informações sobre e para controlar sua
+inscrição a listas do Mailman neste site. Um comando pode ser a linha de
+Assunto ou o corpo da mensagem.
+
+Envie comandos para o endereço ${listname}-request@${domain}.
+
+Sobre as descrições - palavras entre "<>"s significam itens OBRIGATÓRIOS
+e palavras entre "[]" denotam itens OPCIONAIS. Não inclua os "<>"s ou
+"[]"s quando usar os comandos.
+
+Os seguintes comandos são válidos:
+
+    $commands
+
+Perguntas e pedidos de atenção de uma pessoa devem ser enviados para:
+
+    $administrator

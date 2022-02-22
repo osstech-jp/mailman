@@ -1,6 +1,6 @@
 Bienvenido/a a la lista de correo "$display_name"
 
-Para publicar correos en esta lista, envíelos a:
+Para publicar en esta lista, envíe sus correos a:
 
   $listname
 

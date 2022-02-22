@@ -1,0 +1,16 @@
+Esta é uma mensagem de sondagem. Pode ignorá-la.
+
+A lista de discussão $listname recebeu algumas devoluções suas,
+a indicar que pode haver um problema na entrega de mensagens para
+$sender_email. Um exemplo está anexado abaixo. Examine esta
+mensagem para certificar-se de que não haja problemas com o seu endereço
+de e-mail. Pode consultar o seu administrador de e-mail para obter
+mais ajuda.
+
+Não precisa fazer nada para se manter como membro ativado da
+lista de discussão.
+
+Se tiver dúvidas ou problemas, pode entrar em contacto com o dono
+da lista de discussão em
+
+    $owner_email
