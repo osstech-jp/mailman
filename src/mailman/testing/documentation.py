@@ -191,6 +191,10 @@ def run_mailman(args, **overrides):
     env = os.environ.copy()
     env.update(overrides)
     run_args = [exe]
+    # When running tests as root, just add the flag to force run mailman
+    # command without errors.
+    if os.geteuid() == 0:
+        run_args.append('--run-as-root')
     run_args.extend(args)
     proc = run(
         run_args, env=env, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
