@@ -54,8 +54,11 @@ class TestMailmanCommand(unittest.TestCase):
             self._command.invoke(main, ('info',))
         init.assert_called_once_with(None)
 
+    @patch('mailman.bin.mailman.os')
     @patch('mailman.bin.mailman.initialize')
-    def test_mailman_command_without_subcommand_prints_help(self, mock):
+    def test_mailman_command_without_subcommand_prints_help(
+            self, mock_os, mock):
+        mock_os.geteuid.return_value = 1000
         # Issue #137: Running `mailman` without a subcommand raises an
         # AttributeError.
         result = self._command.invoke(main, [])
@@ -84,8 +87,11 @@ class TestMailmanCommand(unittest.TestCase):
         # command line.
         self.assertEqual(lines[0], 'Usage: main [OPTIONS] COMMAND [ARGS]...')
 
+    @patch('mailman.bin.mailman.os')
     @patch('mailman.bin.mailman.initialize')
-    def test_transaction_commit_after_successful_subcommand(self, mock):
+    def test_transaction_commit_after_successful_subcommand(
+            self, mock_os, mock):
+        mock_os.geteuid.return_value = 0
         # Issue #223: Subcommands which change the database need to commit or
         # abort the transaction.
         with transaction():
