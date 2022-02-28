@@ -32,7 +32,7 @@ import logging
 import datetime
 import tempfile
 
-from importlib_resources import read_text
+from importlib_resources import files, read_text
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.core import initialize
@@ -46,7 +46,6 @@ from mailman.testing.mta import (
     ConnectionCountingController, ConnectionCountingSSLController,
     ConnectionCountingSTARTTLSController)
 from mailman.utilities.string import expand
-from pkg_resources import resource_filename
 from public import public
 from textwrap import dedent
 from zope.component import getUtility
@@ -276,10 +275,8 @@ class SMTPSLayer(ConfigLayer):
         smtp_port: 9465
         smtp_secure_mode: smtps
         """)
-        test_cert_path = resource_filename('mailman.testing',
-                                           'ssl_test_cert.crt')
-        test_key_path = resource_filename('mailman.testing',
-                                          'ssl_test_key.key')
+        test_cert_path = files('mailman.testing') / 'ssl_test_cert.crt'
+        test_key_path = files('mailman.testing') / 'ssl_test_key.key'
 
         client_context = ssl.create_default_context()
         client_context.load_verify_locations(cafile=test_cert_path)
@@ -331,10 +328,8 @@ class STARTTLSLayer(ConfigLayer):
         smtp_port: 9587
         smtp_secure_mode: starttls
         """)
-        test_cert_path = resource_filename('mailman.testing',
-                                           'ssl_test_cert.crt')
-        test_key_path = resource_filename('mailman.testing',
-                                          'ssl_test_key.key')
+        test_cert_path = files('mailman.testing') / 'ssl_test_cert.crt'
+        test_key_path = files('mailman.testing') / 'ssl_test_key.key'
 
         client_context = ssl.create_default_context()
         client_context.load_verify_locations(cafile=test_cert_path)
