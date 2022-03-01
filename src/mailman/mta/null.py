@@ -17,7 +17,7 @@
 
 """Creation/deletion hooks for the MTAs that do things automatically.
 
-Exim one example of an MTA that Just Works.
+Exim is one example of an MTA that Just Works.
 """
 
 from mailman.interfaces.mta import IMailTransportAgentLifecycle
