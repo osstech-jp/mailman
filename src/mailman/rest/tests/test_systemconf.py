@@ -132,6 +132,7 @@ class TestSystemConfiguration(unittest.TestCase):
             'dmarc',
             'language.ar',
             'language.ast',
+            'language.bg',
             'language.ca',
             'language.cs',
             'language.da',
