@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-03-04 22:15+0000\n"
+"Last-Translator: dpa-weblate@aegee.org <dpa-weblate@aegee.org>\n"
+"Language-Team: Bulgarian <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/bg/>\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.12-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:162 src/mailman/handlers/acknowledge.py:56
@@ -52,7 +55,7 @@ msgstr ""
 #: src/mailman/app/moderator.py:133 src/mailman/app/moderator.py:258
 #: src/mailman/rest/sub_moderation.py:112
 msgid "[No reason given]"
-msgstr ""
+msgstr "[Не е посочена причина]"
 
 #: src/mailman/app/moderator.py:184
 msgid "Forward of moderated message"
@@ -1899,7 +1902,7 @@ msgstr ""
 
 #: src/mailman/rules/moderation.py:125
 msgid "No sender was found in the message."
-msgstr ""
+msgstr "В съобщението не беше намерен подател."
 
 #: src/mailman/rules/moderation.py:170
 msgid "The sender is in the nonmember {} list"
@@ -1934,7 +1937,7 @@ msgstr ""
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
-msgstr ""
+msgstr "Съобщението няма тема"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
@@ -1958,7 +1961,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:187
 msgid "- Original message details:"
-msgstr ""
+msgstr "- Подробности от оригиналното съобщение:"
 
 #: src/mailman/runners/command.py:191
 msgid "    From: $from_"
@@ -1981,6 +1984,8 @@ msgid ""
 "\n"
 "- Results:"
 msgstr ""
+"\n"
+"- Резултати:"
 
 #: src/mailman/runners/command.py:209
 msgid "No such command: $command_name"
@@ -1991,6 +1996,8 @@ msgid ""
 "\n"
 "- Unprocessed:"
 msgstr ""
+"\n"
+"- Необработени:"
 
 #: src/mailman/runners/command.py:228
 msgid ""
@@ -2003,6 +2010,8 @@ msgid ""
 "\n"
 "- Done."
 msgstr ""
+"\n"
+"- Готово."
 
 #: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
@@ -2030,7 +2039,7 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:201 src/mailman/runners/digest.py:276
 msgid "End of "
-msgstr ""
+msgstr "Край на "
 
 #: src/mailman/styles/base.py:55
 msgid "[$mlist.display_name] "
@@ -2075,9 +2084,44 @@ msgstr ""
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
+"Пощенският списък „$listname“ беше току що създаден за теб.  Следва\n"
+"основна информация за твоя пощенски списък.\n"
+"\n"
+"Потребителите (не администратори) могат да общуват с Mailman  като изпращат\n"
+"команди по електронна поща; за повече информация изпрати съобщение с думата "
+"'help'\n"
+"като тема или в тялото на съобщението до:\n"
+"\n"
+"    $request_email\n"
+"\n"
+"Изпрати въпросите си до $site_email."
 
 msgid "help.txt"
 msgstr ""
+"Помощ за пощенския списък $listname\n"
+"\n"
+"Това е команда „help“ за версия $version на GNU Mailman - управител на "
+"пощенски\n"
+"списъци на $domain.  Следният текст описва команди, които може да изпратиш "
+"за\n"
+"да получиш информация за и да управляваш абонаментите си за Mailman пощенски "
+"списъци\n"
+"на този сайт.  Команда може да бъде изпратена като тема на писмо или в "
+"тялото на съобщението.\n"
+"\n"
+"Командите следва да се изпращат на адрес ${listname}-request@${domain}.\n"
+"\n"
+"По отношение на описанието - думи в „<>“ са ЗАДЪЛЖИТЕЛНИ елементи, думи\n"
+"в „[]“ са ПО ЖЕЛАНИЕ.  Не включвай „<>“ и „[]“  когато изпращаш командите.\n"
+"\n"
+"Съществуват следните команди:\n"
+"\n"
+"    $commands\n"
+"\n"
+"Въпроси и съображения, които следва да се обработят от човек, следва да се "
+"изпращат до:\n"
+"\n"
+"    $administrator"
 
 msgid "list:admin:action:post.txt"
 msgstr ""
