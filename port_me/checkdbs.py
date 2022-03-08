@@ -171,7 +171,7 @@ def main():
                 # This is the only place we've changed the list's database
                 mlist.Save()
             if count:
-                # Set the default language the the list's preferred language.
+                # Set the default language to the list's preferred language.
                 _.default = mlist.preferred_language
                 realname = mlist.real_name
                 discarded = auto_discard(mlist)

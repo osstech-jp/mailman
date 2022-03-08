@@ -106,7 +106,7 @@ Nothing.
 
     def test_inject_message_id_hash(self):
         # When the injected message has a Message-ID header, the injected
-        # message will also get an Message-ID-Hash header.
+        # message will also get a Message-ID-Hash header.
         inject_message(self.mlist, self.msg)
         items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msg['message-id-hash'],
@@ -115,7 +115,7 @@ Nothing.
     def test_inject_message_id_hash_without_message_id(self):
         # When the injected message does not have a Message-ID header, a
         # Message-ID header will be added, and the injected message will also
-        # get an Message-ID-Hash header.
+        # get a Message-ID-Hash header.
         del self.msg['message-id']
         self.assertNotIn('message-id', self.msg)
         self.assertNotIn('message-id-hash', self.msg)
@@ -227,7 +227,7 @@ Nothing.
 
     def test_inject_message_id_hash(self):
         # When the injected message has a Message-ID header, the injected
-        # message will also get an Message-ID-Hash header.
+        # message will also get a Message-ID-Hash header.
         inject_text(self.mlist, self.text)
         items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msg['message-id-hash'],
@@ -236,7 +236,7 @@ Nothing.
     def test_inject_message_id_hash_without_message_id(self):
         # When the injected message does not have a Message-ID header, a
         # Message-ID header will be added, and the injected message will also
-        # get an Message-ID-Hash header.
+        # get a Message-ID-Hash header.
         filtered = self._remove_line('message-id')
         self.assertNotIn('Message-ID', filtered)
         self.assertNotIn('Message-ID-Hash', filtered)

@@ -322,7 +322,7 @@ From: Anne Person <anne@example.org>
         self._commandq.enqueue(msg, dict(listid='test.example.com',
                                          subaddress='confirm'))
         self._runner.run()
-        # Now there's a email command notification and a welcome message.  All
+        # Now there's an email command notification and a welcome message.  All
         # we care about for this test is the welcome message.
         items = get_queue_messages('virgin', sort_on='subject',
                                    expected_count=1)

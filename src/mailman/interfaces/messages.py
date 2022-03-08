@@ -27,7 +27,7 @@ class IMessageStore(Interface):
 
     All messages that are stored in the system live in the message
     storage service.  A message stored in this service must have a
-    Message-ID header.  The store writes an Message-ID-Hash header which
+    Message-ID header.  The store writes a Message-ID-Hash header which
     contains the Base32 encoded SHA1 hash of the message's Message-ID
     header.  Any existing Message-ID-Hash header is overwritten.
 

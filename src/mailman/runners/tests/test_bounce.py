@@ -470,7 +470,7 @@ Message-Id: <first>
         self.assertEqual(anne.bounce_score, 3)
         self.assertEqual(
             anne.preferences.delivery_status, DeliveryStatus.by_bounces)
-        # There should also be a pending notification for the the list
+        # There should also be a pending notification for the list
         # administrator.
         items = get_queue_messages('virgin', expected_count=2)
         if items[0].msg['to'] == 'test-owner@example.com':
