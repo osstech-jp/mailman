@@ -363,7 +363,7 @@ Testing
 
     @mock.patch('nntplib.NNTP', side_effect=nntplib.NNTPTemporaryError)
     def test_connection_never_gets_quit_after_failures(self, class_mock):
-        # The NNTP connection doesn't get closed after a unsuccessful
+        # The NNTP connection doesn't get closed after an unsuccessful
         # connection, since there's nothing to close.
         self._nntpq.enqueue(self._msg, {}, listid='test.example.com')
         self._runner.run()
@@ -378,7 +378,7 @@ Testing
 
     @mock.patch('nntplib.NNTP')
     def test_connection_got_quit_after_post_failure(self, class_mock):
-        # The NNTP connection does get closed after a unsuccessful post.
+        # The NNTP connection does get closed after an unsuccessful post.
         # Add a side-effect to the instance mock's .post() method.
         conn_mock = class_mock()
         conn_mock.post.side_effect = nntplib.NNTPTemporaryError
@@ -396,7 +396,7 @@ Testing
 
     @mock.patch('nntplib.NNTP')
     def test_connection_got_two_quit_after_post_failure(self, class_mock):
-        # The NNTP connection does get closed after a unsuccessful post.
+        # The NNTP connection does get closed after an unsuccessful post.
         # Add a side-effect to the instance mock's .post() method.
         conn_mock = class_mock()
         conn_mock.post.side_effect = nntplib.NNTPTemporaryError

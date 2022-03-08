@@ -184,7 +184,7 @@ class IMember(Interface):
         """The object representing how this member is subscribed.
 
         This will be an ``IAddress`` if the user is subscribed via an explicit
-        address, otherwise if the the user is subscribed via their preferred
+        address, otherwise if the user is subscribed via their preferred
         address, it will be an ``IUser``.
         """)
 

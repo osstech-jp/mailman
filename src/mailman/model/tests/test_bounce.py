@@ -301,7 +301,7 @@ Message-Id: <first>
                          ' been disabled')
 
     def test_send_warnings_and_remove_membership(self):
-        # Test that required number of warnings are send and then the the
+        # Test that required number of warnings are sent and then the
         # membership is removed.
         self._mlist.bounce_notify_owner_on_disable = False
         self._mlist.bounce_notify_owner_on_removal = True

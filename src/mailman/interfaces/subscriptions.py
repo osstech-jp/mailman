@@ -27,7 +27,7 @@ from zope.interface import Interface
 
 @public
 class MissingUserError(MailmanError):
-    """A an invalid user id was given."""
+    """An invalid user id was given."""
 
     def __init__(self, user_id):
         super().__init__()

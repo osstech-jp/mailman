@@ -381,7 +381,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
 
     def test_do_subscription_pre_approved(self):
-        # An moderation-requiring subscription policy plus a pre-verified and
+        # A moderation-requiring subscription policy plus a pre-verified and
         # pre-approved address means the user gets subscribed to the mailing
         # list without any further confirmations or approvals.
         self._mlist.subscription_policy = SubscriptionPolicy.moderate
@@ -400,7 +400,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
 
     def test_do_subscription_pre_approved_pre_confirmed(self):
-        # An moderation-requiring subscription policy plus a pre-verified and
+        # A moderation-requiring subscription policy plus a pre-verified and
         # pre-approved address means the user gets subscribed to the mailing
         # list without any further confirmations or approvals.
         self._mlist.subscription_policy = (
