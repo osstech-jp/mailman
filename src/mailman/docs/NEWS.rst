@@ -43,6 +43,8 @@ Bugs fixed
   set via REST.  (Closes #974)
 * Override the as_bytes() method in the mailman.email.message.Message class to
   workaround https://bugs.python.org/issue41307.  (Closes #979 and #980)
+* The nonmember moderation rule now checks all senders, not just the first.
+  (Closes #986)
 
 REST
 ====
