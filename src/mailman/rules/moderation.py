@@ -206,8 +206,7 @@ class NonmemberModeration:
                                   .format(addr, action_name, mlist.list_id,
                                           error.msg))
                         continue
-            # No nonmember.moderation.action and no legacy hits.
-            action = mlist.default_nonmember_action
-            return _do_action(msgdata, action, sender)
-        # The sender must be a member, so this rule does not match.
-        return False
+            # No nonmember.moderation.action and no legacy hits for this
+            # sender - continue
+        action = mlist.default_nonmember_action
+        return _do_action(msgdata, action, sender)

@@ -231,6 +231,84 @@ A message body.
             msgdata['member_moderation_action'], 'hold',
             'Wrong action for {}: {}'.format(address, 'hold'))
 
+    def test_subsequent_nonmember_in_accept_these_may_post(self):
+        # A nonmember sender not first in the senders list and in
+        # accept_these_nonmembers may post.
+        # https://gitlab.com/mailman/mailman/-/issues/986
+        self._mlist.default_nonmember_action = Action.hold
+        setattr(self._mlist, 'accept_these_nonmembers', ['bart@example.com'])
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('anne@example.com')
+        user_manager.create_address('bart@example.com')
+        rule = moderation.NonmemberModeration()
+        msg = mfs("""\
+From: anne@example.com
+Sender: bart@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(result, 'NonmemberModeration rule should not hit')
+
+    def test_subsequent_nonmember_with_accept_action_may_post(self):
+        # A nonmember sender not first in the senders list and with explicit
+        # moderation_action accept may post.
+        # https://gitlab.com/mailman/mailman/-/issues/986
+        self._mlist.default_nonmember_action = Action.hold
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('anne@example.com')
+        bart = user_manager.create_address('bart@example.com')
+        nonmember = self._mlist.subscribe(bart, MemberRole.nonmember)
+        nonmember.moderation_action = Action.accept
+        rule = moderation.NonmemberModeration()
+        msg = mfs("""\
+From: anne@example.com
+Sender: bart@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertEqual(msgdata['member_moderation_action'], 'accept')
+        self.assertEqual(msgdata['moderation_sender'], 'bart@example.com')
+        self.assertEqual(msgdata['moderation_reasons'][0],
+                         'The message is not from a list member')
+        self.assertTrue(result, 'NonmemberModeration should hit')
+
+    def test_subsequent_nonmember_with_defer_action_may_post(self):
+        # A nonmember sender not first in the senders list and with explicit
+        # moderation_action defer may post.
+        # https://gitlab.com/mailman/mailman/-/issues/986
+        self._mlist.default_nonmember_action = Action.hold
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('anne@example.com')
+        bart = user_manager.create_address('bart@example.com')
+        nonmember = self._mlist.subscribe(bart, MemberRole.nonmember)
+        nonmember.moderation_action = Action.defer
+        rule = moderation.NonmemberModeration()
+        msg = mfs("""\
+From: anne@example.com
+Sender: bart@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(result, 'NonmemberModeration should not hit')
+
     def test_nonmember_fallback_to_list_defaults(self):
         # https://gitlab.com/mailman/mailman/issues/189
         self._mlist.default_nonmember_action = Action.hold
