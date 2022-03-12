@@ -36,7 +36,8 @@ Hooks
 Plugins can add initialization hooks, which will be run at two stages in the
 initialization process - one before the database is initialized and one after.
 These correspond to methods the plugin defines, a ``pre_hook()`` method and a
-``post_hook()`` method.  Each of these methods are optional.
+``post_hook()`` method.  Each of these methods must be present, together with
+the ``resource`` property, for the plugin to be operational.
 
 Here is a plugin that defines these hooks:
 
