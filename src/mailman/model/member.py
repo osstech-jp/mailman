@@ -18,7 +18,6 @@
 """Model for members."""
 
 from datetime import datetime
-
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -27,14 +26,20 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    DeliveryStatus, IMember, IMembershipManager, MemberRole, MembershipError,
-    SubscriptionMode, UnsubscriptionEvent)
+    DeliveryStatus,
+    IMember,
+    IMembershipManager,
+    MemberRole,
+    MembershipError,
+    SubscriptionMode,
+    UnsubscriptionEvent,
+)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import now
 from mailman.utilities.uid import UIDFactory
 from public import public
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, and_
+from sqlalchemy import and_, Column, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from zope.component import getUtility
 from zope.event import notify

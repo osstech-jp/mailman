@@ -22,16 +22,13 @@ import codecs
 import datetime
 import optparse
 
-from xml.sax.saxutils import escape
-
-from mailman import Defaults
-from mailman import errors
-from mailman import MemberAdaptor
-from mailman.MailList import MailList
+from mailman import Defaults, errors, MemberAdaptor
 from mailman.configuration import config
 from mailman.core.i18n import _
 from mailman.initialize import initialize
+from mailman.MailList import MailList
 from mailman.version import MAILMAN_VERSION
+from xml.sax.saxutils import escape
 
 
 SPACE = ' '

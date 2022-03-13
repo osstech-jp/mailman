@@ -27,7 +27,7 @@ from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.archiver import ClobberDate
 from mailman.interfaces.mailinglist import IListArchiverSet
-from mailman.utilities.datetime import RFC822_DATE_FMT, now
+from mailman.utilities.datetime import now, RFC822_DATE_FMT
 from public import public
 
 

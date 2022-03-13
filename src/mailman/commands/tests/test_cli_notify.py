@@ -26,8 +26,10 @@ from mailman.commands.cli_notify import notify
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import (get_queue_messages,
-                                     specialized_message_from_string as mfs)
+from mailman.testing.helpers import (
+    get_queue_messages,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

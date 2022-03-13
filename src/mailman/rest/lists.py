@@ -19,14 +19,18 @@
 
 from lazr.config import as_boolean
 from mailman.app.digests import (
-    bump_digest_number_and_volume, maybe_send_digest_now)
+    bump_digest_number_and_volume,
+    maybe_send_digest_now,
+)
 from mailman.app.lifecycle import (
-    InvalidListNameError, create_list, remove_list)
+    create_list,
+    InvalidListNameError,
+    remove_list,
+)
 from mailman.config import config
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import BadDomainSpecificationError
-from mailman.interfaces.listmanager import (
-    IListManager, ListAlreadyExistsError)
+from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.styles import IStyleManager
@@ -34,15 +38,30 @@ from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.rest.bans import BannedEmails
 from mailman.rest.header_matches import HeaderMatches
 from mailman.rest.helpers import (
-    BadRequest, CollectionMixin, GetterSetter, NotFound, accepted,
-    bad_request, child, created, etag, no_content, not_found, okay)
+    accepted,
+    bad_request,
+    BadRequest,
+    child,
+    CollectionMixin,
+    created,
+    etag,
+    GetterSetter,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.listconf import ListConfiguration
 from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.post_moderation import HeldMessages
 from mailman.rest.sub_moderation import SubscriptionRequests
 from mailman.rest.uris import AListURI, AllListURIs
 from mailman.rest.validator import (
-    Validator, enum_validator, list_of_strings_validator, subscriber_validator)
+    enum_validator,
+    list_of_strings_validator,
+    subscriber_validator,
+    Validator,
+)
 from public import public
 from zope.component import getUtility
 

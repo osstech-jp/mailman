@@ -22,8 +22,12 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.database.transaction import dbconnection, transaction
 from mailman.interfaces.domain import (
-    DomainCreatedEvent, DomainCreatingEvent, DomainDeletedEvent,
-    DomainDeletingEvent, IDomainManager)
+    DomainCreatedEvent,
+    DomainCreatingEvent,
+    DomainDeletedEvent,
+    DomainDeletingEvent,
+    IDomainManager,
+)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.domain import Domain

@@ -23,7 +23,8 @@ import unittest
 from mailman.config import config
 from mailman.testing.helpers import (
     LogFileMark,
-    specialized_message_from_string as mfs)
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 

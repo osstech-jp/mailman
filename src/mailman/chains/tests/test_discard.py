@@ -22,7 +22,9 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.core.chains import process as process_chain
 from mailman.testing.helpers import (
-    LogFileMark, specialized_message_from_string as mfs)
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 

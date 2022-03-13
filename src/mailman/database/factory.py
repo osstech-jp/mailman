@@ -28,7 +28,10 @@ from mailman.config import config
 from mailman.database.alembic import alembic_cfg
 from mailman.database.model import Model
 from mailman.interfaces.database import (
-    DatabaseError, IDatabase, IDatabaseFactory)
+    DatabaseError,
+    IDatabase,
+    IDatabaseFactory,
+)
 from mailman.utilities.modules import call_name
 from public import public
 from sqlalchemy import MetaData

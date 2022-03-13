@@ -21,7 +21,9 @@ import sys
 import click
 
 from mailman.app.digests import (
-    bump_digest_number_and_volume, maybe_send_digest_now)
+    bump_digest_number_and_volume,
+    maybe_send_digest_now,
+)
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager

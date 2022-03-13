@@ -19,7 +19,13 @@
 
 from mailman.interfaces.template import ALL_TEMPLATES, ITemplateManager
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, etag, no_content, not_found, okay)
+    bad_request,
+    CollectionMixin,
+    etag,
+    no_content,
+    not_found,
+    okay,
+)
 from mailman.rest.validator import Validator
 from operator import attrgetter
 from public import public

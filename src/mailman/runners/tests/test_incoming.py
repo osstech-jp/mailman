@@ -25,8 +25,10 @@ from mailman.config import config
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.runners.incoming import IncomingRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 

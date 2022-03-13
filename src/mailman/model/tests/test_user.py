@@ -23,7 +23,9 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.address import (
-    AddressAlreadyLinkedError, AddressNotLinkedError)
+    AddressAlreadyLinkedError,
+    AddressNotLinkedError,
+)
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager

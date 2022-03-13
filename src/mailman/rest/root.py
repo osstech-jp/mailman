@@ -27,15 +27,22 @@ from mailman.rest.addresses import AllAddresses, AnAddress
 from mailman.rest.bans import BannedEmail, BannedEmails
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import (
-    BadRequest, NotFound, child, etag, no_content, not_found, okay)
+    BadRequest,
+    child,
+    etag,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.lists import AList, AllLists, FindLists, Styles
-from mailman.rest.members import AMember, AllMembers, FindMembers
-from mailman.rest.plugins import APlugin, AllPlugins
+from mailman.rest.members import AllMembers, AMember, FindMembers
+from mailman.rest.plugins import AllPlugins, APlugin
 from mailman.rest.preferences import ReadOnlyPreferences
-from mailman.rest.queues import AQueue, AQueueFile, AllQueues
+from mailman.rest.queues import AllQueues, AQueue, AQueueFile
 from mailman.rest.templates import TemplateFinder
-from mailman.rest.uris import ASiteURI, AllSiteURIs
-from mailman.rest.users import AUser, AllUsers, FindUsers, ServerOwners
+from mailman.rest.uris import AllSiteURIs, ASiteURI
+from mailman.rest.users import AllUsers, AUser, FindUsers, ServerOwners
 from public import public
 from zope.component import getUtility
 

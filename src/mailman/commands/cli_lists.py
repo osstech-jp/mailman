@@ -26,10 +26,14 @@ from mailman.core.i18n import _
 from mailman.database.transaction import transaction
 from mailman.email.message import UserNotification
 from mailman.interfaces.address import (
-    IEmailValidator, InvalidEmailAddressError)
+    IEmailValidator,
+    InvalidEmailAddressError,
+)
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.domain import (
-    BadDomainSpecificationError, IDomainManager)
+    BadDomainSpecificationError,
+    IDomainManager,
+)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 from mailman.interfaces.template import ITemplateLoader

@@ -32,8 +32,11 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import AcceptableAlias
 from mailman.runners.digest import DigestRunner
 from mailman.testing.helpers import (
-    call_api, get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    call_api,
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import RESTLayer
 from mailman.utilities.datetime import now as right_now
 from urllib.error import HTTPError

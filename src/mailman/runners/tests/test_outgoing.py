@@ -36,8 +36,12 @@ from mailman.interfaces.pending import IPendings
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages, make_testable_runner,
-    specialized_message_from_string as message_from_string)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    make_testable_runner,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer, SMTPLayer
 from mailman.utilities.datetime import factory, now
 from zope.component import getUtility

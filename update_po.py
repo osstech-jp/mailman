@@ -15,6 +15,8 @@
 # filename of the template and msgstr is the content of that file.
 
 from pathlib import Path
+
+
 try:
     from babel.messages.pofile import read_po, write_po
 except ImportError:

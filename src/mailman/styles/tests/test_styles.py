@@ -23,10 +23,13 @@ from mailman.app.lifecycle import create_list
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.styles import (
-    DuplicateStyleError, IStyle, IStyleManager)
+    DuplicateStyleError,
+    IStyle,
+    IStyleManager,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
-from zope.interface import Invalid, implementer
+from zope.interface import implementer, Invalid
 
 
 @implementer(IStyle)

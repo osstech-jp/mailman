@@ -32,7 +32,10 @@ from mailman.core.switchboard import Switchboard
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.runner import (
-    IRunner, RunnerCrashEvent, RunnerInterrupt)
+    IRunner,
+    RunnerCrashEvent,
+    RunnerInterrupt,
+)
 from mailman.utilities.string import expand
 from public import public
 from zope.component import getUtility

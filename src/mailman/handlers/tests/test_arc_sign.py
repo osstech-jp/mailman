@@ -26,7 +26,9 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers.arc_sign import ARCSign
 from mailman.testing.helpers import (
-    LogFileMark, specialized_message_from_string as message_from_string)
+    LogFileMark,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 

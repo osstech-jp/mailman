@@ -18,8 +18,8 @@
 """Extract topics from the original mail message."""
 
 import re
-import email.iterators
 import email.parser
+import email.iterators
 
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler

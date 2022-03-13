@@ -24,7 +24,12 @@ import tempfile
 import unittest
 
 from mailman.app.bounces import (
-    ProbeVERP, StandardVERP, bounce_message, maybe_forward, send_probe)
+    bounce_message,
+    maybe_forward,
+    ProbeVERP,
+    send_probe,
+    StandardVERP,
+)
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
@@ -33,8 +38,11 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, get_queue_messages, specialized_message_from_string as mfs,
-    subscribe)
+    get_queue_messages,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

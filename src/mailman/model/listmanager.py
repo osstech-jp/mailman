@@ -20,13 +20,21 @@
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import (
-    IListManager, ListAlreadyExistsError, ListCreatedEvent, ListCreatingEvent,
-    ListDeletedEvent, ListDeletingEvent)
+    IListManager,
+    ListAlreadyExistsError,
+    ListCreatedEvent,
+    ListCreatingEvent,
+    ListDeletedEvent,
+    ListDeletingEvent,
+)
 from mailman.interfaces.requests import IListRequests
 from mailman.model.autorespond import AutoResponseRecord
 from mailman.model.bans import Ban
 from mailman.model.mailinglist import (
-    IAcceptableAliasSet, ListArchiver, MailingList)
+    IAcceptableAliasSet,
+    ListArchiver,
+    MailingList,
+)
 from mailman.model.mime import ContentFilter
 from mailman.utilities.datetime import now
 from mailman.utilities.queries import QuerySequence

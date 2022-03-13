@@ -12,6 +12,7 @@ from alembic import op
 from mailman.database.helpers import exists_in_db, is_sqlite
 from mailman.database.types import SAUnicode
 
+
 # Revision identifiers, used by Alembic.
 revision = '42756496720'
 down_revision = '2bb9b382198'

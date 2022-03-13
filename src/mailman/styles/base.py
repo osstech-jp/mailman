@@ -31,8 +31,12 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    ArchiveRenderingMode, DMARCMitigateAction, Personalization,
-    ReplyToMunging, SubscriptionPolicy)
+    ArchiveRenderingMode,
+    DMARCMitigateAction,
+    Personalization,
+    ReplyToMunging,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.model.roster import RosterVisibility
 from public import public

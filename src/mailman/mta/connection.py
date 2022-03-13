@@ -29,6 +29,7 @@ from mailman.config import config
 from mailman.interfaces.configuration import InvalidConfigurationError
 from public import public
 
+
 log = logging.getLogger('mailman.smtp')
 
 

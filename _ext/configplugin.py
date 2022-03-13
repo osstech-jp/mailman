@@ -19,12 +19,11 @@
 
 import re
 import configparser
-from importlib_resources import files
 
 from docutils import nodes
+from docutils.parsers.rst import Directive, directives
 from docutils.statemachine import ViewList
-from docutils.parsers.rst import Directive
-from docutils.parsers.rst import directives
+from importlib_resources import files
 from sphinx.util.nodes import nested_parse_with_titles
 
 

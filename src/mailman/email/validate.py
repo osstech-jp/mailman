@@ -20,7 +20,9 @@
 import re
 
 from mailman.interfaces.address import (
-    IEmailValidator, InvalidEmailAddressError)
+    IEmailValidator,
+    InvalidEmailAddressError,
+)
 from mailman.utilities.email import split_email
 from public import public
 from zope.interface import implementer

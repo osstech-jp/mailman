@@ -32,7 +32,10 @@ from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    get_queue_messages, set_preferred, subscribe)
+    get_queue_messages,
+    set_preferred,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from tempfile import TemporaryDirectory

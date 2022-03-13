@@ -14,6 +14,8 @@
 # back into individual files of each language using *this script*.
 
 from pathlib import Path
+
+
 try:
     from babel.messages.pofile import read_po, write_po
 except ImportError:

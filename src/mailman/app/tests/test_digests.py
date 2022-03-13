@@ -22,15 +22,20 @@ import unittest
 
 from datetime import timedelta
 from mailman.app.digests import (
-    bump_digest_number_and_volume, maybe_send_digest_now)
+    bump_digest_number_and_volume,
+    maybe_send_digest_now,
+)
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.member import DeliveryMode
 from mailman.runners.digest import DigestRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs, subscribe)
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import factory, now as right_now
 

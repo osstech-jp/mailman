@@ -20,9 +20,17 @@
 from mailman.interfaces.action import Action
 from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.rest.helpers import (
-    CollectionMixin, GetterSetter, bad_request, child, created,
-    etag, no_content, not_found, okay)
-from mailman.rest.validator import Validator, enum_validator, regexp_validator
+    bad_request,
+    child,
+    CollectionMixin,
+    created,
+    etag,
+    GetterSetter,
+    no_content,
+    not_found,
+    okay,
+)
+from mailman.rest.validator import enum_validator, regexp_validator, Validator
 from public import public
 
 

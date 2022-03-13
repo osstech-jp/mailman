@@ -140,8 +140,8 @@ def path(package, module, *args, **kw):
             from importlib.resources import path
             return path(package, module, *args, **kw)
         else:
-            from importlib.resources import files             # pragma: nocover
+            from importlib.resources import files  # pragma: nocover
             return files(module_package, *args, **kw)         # pragma: nocover
     except ImportError:                                       # pragma: nocover
-        from importlib_resources import files                 # pragma: nocover
+        from importlib_resources import files  # pragma: nocover
         return files(module_package, *args, **kw)             # pragma: nocover

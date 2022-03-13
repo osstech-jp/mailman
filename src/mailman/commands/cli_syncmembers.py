@@ -28,9 +28,14 @@ from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    DeliveryMode, DeliveryStatus, MembershipIsBannedError)
+    DeliveryMode,
+    DeliveryStatus,
+    MembershipIsBannedError,
+)
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, SubscriptionPendingError)
+    ISubscriptionManager,
+    SubscriptionPendingError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.options import I18nCommand
 from public import public

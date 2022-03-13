@@ -30,7 +30,10 @@ from mailman.interfaces.template import ITemplateManager
 from mailman.mta.bulk import BulkDelivery
 from mailman.mta.deliver import Deliver
 from mailman.testing.helpers import (
-    LogFileMark, specialized_message_from_string as mfs, subscribe)
+    LogFileMark,
+    specialized_message_from_string as mfs,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer, SMTPLayer
 from mailman.utilities.modules import find_name
 from unittest.mock import patch

@@ -24,7 +24,8 @@ from mailman.app.lifecycle import create_list
 from mailman.email.message import Message
 from mailman.testing.helpers import (
     get_queue_messages,
-    specialized_message_from_string as message_from_string)
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 
 

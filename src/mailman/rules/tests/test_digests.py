@@ -22,7 +22,9 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.rules import digests
 from mailman.testing.helpers import (
-    configuration, specialized_message_from_string as mfs)
+    configuration,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 

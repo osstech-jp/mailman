@@ -32,14 +32,23 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, DeliveryStatus, MemberRole,
-    MembershipIsBannedError, NotAMemberError)
+    AlreadySubscribedError,
+    DeliveryMode,
+    DeliveryStatus,
+    MemberRole,
+    MembershipIsBannedError,
+    NotAMemberError,
+)
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, ISubscriptionService,
-    SubscriptionConfirmationNeededEvent, SubscriptionInvitationNeededEvent,
-    SubscriptionPendingError, TokenOwner,
-    UnsubscriptionConfirmationNeededEvent)
+    ISubscriptionManager,
+    ISubscriptionService,
+    SubscriptionConfirmationNeededEvent,
+    SubscriptionInvitationNeededEvent,
+    SubscriptionPendingError,
+    TokenOwner,
+    UnsubscriptionConfirmationNeededEvent,
+)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager

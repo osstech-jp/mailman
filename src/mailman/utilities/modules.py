@@ -172,6 +172,7 @@ def find_pluggable_components(subpackage, interface):
     """
     # This can't be imported at module level because of circular imports.
     from mailman.config import config
+
     # Return the system components first.
     yield from find_components('mailman.' + subpackage, interface)
     # Return all the matching components in all the subpackages of all enabled

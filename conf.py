@@ -11,7 +11,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import os
+import sys
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -56,6 +58,8 @@ copyright = u'1998-2018 by the Free Software Foundation, Inc.'
 # The short X.Y version.
 import sys; sys.path.append('src')
 from mailman.version import VERSION
+
+
 version = '.'.join(VERSION.split('.')[0:2])
 # The full version, including alpha/beta/rc tags.
 release = VERSION
@@ -249,4 +253,6 @@ def index_html():
         os.chdir(cwd)
 
 import atexit
+
+
 atexit.register(index_html)

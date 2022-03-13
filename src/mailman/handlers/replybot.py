@@ -22,7 +22,11 @@ import logging
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import (
-    ALWAYS_REPLY, IAutoResponseSet, Response, ResponseAction)
+    ALWAYS_REPLY,
+    IAutoResponseSet,
+    Response,
+    ResponseAction,
+)
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import today

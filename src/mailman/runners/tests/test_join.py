@@ -25,12 +25,17 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, ISubscriptionService, TokenOwner)
+    ISubscriptionManager,
+    ISubscriptionService,
+    TokenOwner,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

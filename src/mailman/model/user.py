@@ -21,9 +21,14 @@ from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode4Byte, UUID
 from mailman.interfaces.address import (
-    AddressAlreadyLinkedError, AddressNotLinkedError)
+    AddressAlreadyLinkedError,
+    AddressNotLinkedError,
+)
 from mailman.interfaces.user import (
-    IUser, PasswordChangeEvent, UnverifiedAddressError)
+    IUser,
+    PasswordChangeEvent,
+    UnverifiedAddressError,
+)
 from mailman.model.address import Address
 from mailman.model.member import Member
 from mailman.model.preferences import Preferences
@@ -31,8 +36,7 @@ from mailman.model.roster import Memberships
 from mailman.utilities.datetime import factory as date_factory
 from mailman.utilities.uid import UIDFactory
 from public import public
-from sqlalchemy import (
-    Boolean, Column, DateTime, ForeignKey, Integer)
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import backref, relationship
 from zope.event import notify
 from zope.interface import implementer

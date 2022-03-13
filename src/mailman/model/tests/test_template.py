@@ -35,6 +35,7 @@ from unittest import mock
 from urllib.error import URLError
 from zope.component import getUtility
 
+
 # New in Python 3.5.
 try:
     from http import HTTPStatus

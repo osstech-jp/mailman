@@ -26,11 +26,18 @@ from mailman.config import config
 from mailman.core.chains import process
 from mailman.email.message import Message
 from mailman.interfaces.chain import (
-    DiscardEvent, HoldEvent, LinkAction, RejectEvent)
+    DiscardEvent,
+    HoldEvent,
+    LinkAction,
+    RejectEvent,
+)
 from mailman.interfaces.mailinglist import IHeaderMatchList
 from mailman.testing.helpers import (
-    LogFileMark, configuration, event_subscribers,
-    specialized_message_from_string as mfs)
+    configuration,
+    event_subscribers,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 

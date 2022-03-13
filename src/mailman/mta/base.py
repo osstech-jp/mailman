@@ -25,7 +25,7 @@ import smtplib
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.interfaces.mta import IMailTransportAgentDelivery
-from mailman.mta.connection import Connection, as_SecureMode
+from mailman.mta.connection import as_SecureMode, Connection
 from public import public
 from zope.interface import implementer
 

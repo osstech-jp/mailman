@@ -29,6 +29,7 @@ from public import public
 from zope.component import getUtility
 from zope.interface import implementer
 
+
 # Re to recognize a digest subject:
 DIGRE = re.compile(r' Digest, Vol \d+, Issue \d+$', re.IGNORECASE)
 

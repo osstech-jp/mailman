@@ -24,7 +24,9 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.listmanager import NoSuchListError
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.subscriptions import (
-    ISubscriptionService, TooManyMembersError)
+    ISubscriptionService,
+    TooManyMembersError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import set_preferred, subscribe
 from mailman.testing.layers import ConfigLayer

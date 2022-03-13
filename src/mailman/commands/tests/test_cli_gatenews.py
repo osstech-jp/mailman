@@ -26,7 +26,7 @@ from email.errors import MessageError
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_gatenews import gatenews
 from mailman.config import config
-from mailman.testing.helpers import LogFileMark, get_queue_messages
+from mailman.testing.helpers import get_queue_messages, LogFileMark
 from mailman.testing.layers import ConfigLayer
 from unittest import TestCase
 from unittest.mock import patch

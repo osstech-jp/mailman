@@ -33,7 +33,10 @@ from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
-    TestableMaster, get_lmtp_client, make_testable_runner)
+    get_lmtp_client,
+    make_testable_runner,
+    TestableMaster,
+)
 from mailman.testing.layers import SMTPLayer
 from operator import itemgetter
 from zope.component import getUtility

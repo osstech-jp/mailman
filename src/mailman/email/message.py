@@ -25,10 +25,10 @@ attributes.
 
 import re
 import email
-import email.message
 import email.utils
+import email.message
 
-from email.header import Header, decode_header, make_header
+from email.header import decode_header, Header, make_header
 from email.mime.multipart import MIMEMultipart
 from mailman.config import config
 from mailman.interfaces.address import IEmailValidator

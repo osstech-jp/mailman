@@ -34,7 +34,10 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.testing.helpers import (
-    LogFileMark, configuration, specialized_message_from_string as mfs)
+    configuration,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from tempfile import TemporaryDirectory
 from zope.component import getUtility

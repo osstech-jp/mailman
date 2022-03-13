@@ -25,8 +25,15 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, child, etag, no_content, not_found, okay)
-from mailman.rest.validator import Validator, enum_validator
+    bad_request,
+    child,
+    CollectionMixin,
+    etag,
+    no_content,
+    not_found,
+    okay,
+)
+from mailman.rest.validator import enum_validator, Validator
 from public import public
 from zope.component import getUtility
 

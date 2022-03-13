@@ -98,6 +98,7 @@ class AbstractRoster:
     def _get_all_memberships(self, store, email):
         # Avoid circular imports.
         from mailman.model.user import User
+
         # Here's a query that finds all members subscribed with an explicit
         # email address.
         members_a = store.query(Member).filter(

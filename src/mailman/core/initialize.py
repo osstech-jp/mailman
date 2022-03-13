@@ -27,8 +27,8 @@ by the command line arguments.
 import os
 import sys
 import logging
-import mailman.config.config
 import mailman.core.logging
+import mailman.config.config
 
 from importlib_resources import read_text
 from mailman.interfaces.database import IDatabaseFactory
@@ -191,6 +191,7 @@ def initialize_2(debug=False, propagate_logs=None, testing=False):
     from mailman.core.chains import initialize as initialize_chains
     from mailman.core.pipelines import initialize as initialize_pipelines
     from mailman.core.rules import initialize as initialize_rules
+
     # Order here is somewhat important.
     initialize_rules()
     initialize_chains()

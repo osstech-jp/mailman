@@ -25,12 +25,16 @@ from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode, SAUnicodeXL
 from mailman.interfaces.pending import (
-    IPendable, IPended, IPendedKeyValue, IPendings)
+    IPendable,
+    IPended,
+    IPendedKeyValue,
+    IPendings,
+)
 from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.utilities.datetime import now
 from mailman.utilities.uid import TokenFactory
 from public import public
-from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, and_
+from sqlalchemy import and_, Column, DateTime, ForeignKey, Index, Integer
 from sqlalchemy.orm import aliased, relationship
 from zope.component import getUtility
 from zope.interface import implementer

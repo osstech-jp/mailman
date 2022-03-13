@@ -25,19 +25,36 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    ArchiveRenderingMode, DMARCMitigateAction, IAcceptableAliasSet,
-    IMailingList,  Personalization, ReplyToMunging, SubscriptionPolicy)
+    ArchiveRenderingMode,
+    DMARCMitigateAction,
+    IAcceptableAliasSet,
+    IMailingList,
+    Personalization,
+    ReplyToMunging,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.template import ITemplateManager
 from mailman.model.roster import RosterVisibility
 from mailman.rest.helpers import (
-    GetterSetter, bad_request, etag, no_content, not_found, okay)
+    bad_request,
+    etag,
+    GetterSetter,
+    no_content,
+    not_found,
+    okay,
+)
 from mailman.rest.validator import (
-    PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
-    Validator, enum_validator, integer_ge_zero_validator,
-    language_validator, list_of_emails_or_regexp_validator,
+    enum_validator,
+    integer_ge_zero_validator,
+    language_validator,
+    list_of_emails_or_regexp_validator,
     list_of_strings_validator,
-    )
+    PatchValidator,
+    ReadOnlyPATCHRequestError,
+    UnknownPATCHRequestError,
+    Validator,
+)
 from public import public
 from zope.component import getUtility
 

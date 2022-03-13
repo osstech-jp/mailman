@@ -26,10 +26,15 @@ from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.runner import RunnerCrashEvent
 from mailman.runners.virgin import VirginRunner
 from mailman.testing.helpers import (
-    LogFileMark, configuration, event_subscribers, get_queue_messages,
-    make_digest_messages, make_testable_runner,
+    configuration,
+    event_subscribers,
+    get_queue_messages,
+    LogFileMark,
+    make_digest_messages,
+    make_testable_runner,
     specialized_message_from_string as mfs,
-    subscribe)
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 
 
