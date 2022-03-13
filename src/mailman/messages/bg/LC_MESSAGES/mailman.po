@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-21 12:09-0700\n"
-"PO-Revision-Date: 2022-03-06 08:56+0000\n"
+"PO-Revision-Date: 2022-03-13 17:16+0000\n"
 "Last-Translator: dpa-weblate@aegee.org <dpa-weblate@aegee.org>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/bg/>\n"
@@ -63,7 +63,7 @@ msgstr ""
 
 #: src/mailman/app/moderator.py:225
 msgid "New unsubscription request from $mlist.display_name by $email"
-msgstr ""
+msgstr "Ново желание за отписване от $mlist.display_name за $email"
 
 #: src/mailman/app/moderator.py:257
 msgid "Unsubscription request"
@@ -88,7 +88,7 @@ msgstr "Добре дошли в пощенския списък „$mlist.displ
 
 #: src/mailman/app/notifications.py:122
 msgid "You have been unsubscribed from the $mlist.display_name mailing list"
-msgstr "Беше изтрит от пощенския списък $mlist.display_name mailing"
+msgstr "Беше изтрит от пощенския списък $mlist.display_name"
 
 #: src/mailman/app/notifications.py:140
 msgid "$mlist.display_name subscription notification"
@@ -124,28 +124,29 @@ msgid ""
 "New unsubscription request to $self.mlist.display_name from $self.address."
 "email"
 msgstr ""
+"Ново желание за отписване от $self.mlist.display_name за $self.address.email"
 
 #: src/mailman/app/subscriptions.py:624
 msgid ""
 "You have been invited to join the $event.mlist.fqdn_listname mailing list."
 msgstr ""
-"Поканен си да се включиш в пощенския списък $event.mlist.fqdn_listname."
+"Поканен си да се включиш в пощенския списък ${event.mlist.fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:627
 msgid ""
 "Your confirmation is needed to leave the $event.mlist.fqdn_listname mailing "
 "list."
 msgstr ""
-"Необходимо е потвърждението ти за напускане на пощенския списък $event.mlist."
-"fqdn_listname."
+"Необходимо е потвърждението ти за напускане на пощенския списък ${event.mlist"
+".fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:631
 msgid ""
 "Your confirmation is needed to join the $event.mlist.fqdn_listname mailing "
 "list."
 msgstr ""
-"Необходимо е да потвърдиш включването в пощенския списък $event.mlist."
-"fqdn_listname."
+"Необходимо е да потвърдиш включването в пощенския списък ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
@@ -1726,7 +1727,7 @@ msgstr ""
 
 #: src/mailman/handlers/replybot.py:44
 msgid "Send automatic responses."
-msgstr ""
+msgstr "Изпращай автоматични отговори."
 
 #: src/mailman/handlers/replybot.py:97
 msgid "Auto-response for your message to the \"$display_name\" mailing list"
@@ -1750,7 +1751,7 @@ msgstr ""
 
 #: src/mailman/handlers/to_archive.py:34
 msgid "Add the message to the archives."
-msgstr ""
+msgstr "Добави съобщението към архива."
 
 #: src/mailman/handlers/to_digest.py:36
 msgid "Add the message to the digest, possibly sending it."
@@ -1774,7 +1775,7 @@ msgstr ""
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr ""
+msgstr "[Без причина]"
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
@@ -1790,7 +1791,7 @@ msgstr ""
 
 #: src/mailman/rest/sub_moderation.py:114
 msgid "Subscription request"
-msgstr ""
+msgstr "Желание за записване"
 
 #: src/mailman/rules/administrivia.py:52
 msgid "Catch mis-addressed email commands."
@@ -1814,7 +1815,7 @@ msgstr ""
 
 #: src/mailman/rules/banned_address.py:45
 msgid "Message sender {} is banned from this list"
-msgstr ""
+msgstr "Изпращачът {} е блокиран за този пощенски списък"
 
 #: src/mailman/rules/digests.py:42
 msgid "Catch messages with digest Subject or boilerplate quote."
@@ -1854,7 +1855,7 @@ msgstr ""
 
 #: src/mailman/rules/emergency.py:47
 msgid "Emergency moderation is in effect for this list"
-msgstr ""
+msgstr "Аварийното модериране е включено за този пощенски списък"
 
 #: src/mailman/rules/implicit_dest.py:37
 msgid "Catch messages with implicit destination."
@@ -2151,7 +2152,7 @@ msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
 
 msgid "list:admin:notice:unsubscribe.txt"
-msgstr ""
+msgstr "$member е изтрит от ${display_name}."
 
 msgid "list:member:digest:header.txt"
 msgstr ""
@@ -2161,6 +2162,9 @@ msgstr ""
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
+"_______________________________________________\n"
+"$display_name пощенски списък -- $listname\n"
+"За отписване изпрати писмо на ${short_listname}-leave@${domain}"
 
 msgid "list:member:regular:header.txt"
 msgstr ""
