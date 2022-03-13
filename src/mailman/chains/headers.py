@@ -20,7 +20,7 @@
 import re
 import logging
 
-from email.header import Header, decode_header, make_header
+from email.header import decode_header, Header, make_header
 from itertools import count
 from mailman.chains.base import Chain, Link
 from mailman.config import config

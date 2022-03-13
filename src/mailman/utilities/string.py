@@ -24,7 +24,7 @@ from email.header import decode_header, make_header
 from mailman.config import config
 from public import public
 from string import Template, whitespace
-from textwrap import TextWrapper, dedent
+from textwrap import dedent, TextWrapper
 
 
 EMPTYSTRING = ''

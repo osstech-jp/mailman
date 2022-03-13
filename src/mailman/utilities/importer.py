@@ -39,8 +39,13 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    DMARCMitigateAction, IAcceptableAliasSet, IHeaderMatchList,
-    Personalization, ReplyToMunging, SubscriptionPolicy)
+    DMARCMitigateAction,
+    IAcceptableAliasSet,
+    IHeaderMatchList,
+    Personalization,
+    ReplyToMunging,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.template import ITemplateLoader, ITemplateManager
@@ -52,6 +57,7 @@ from public import public
 from sqlalchemy import Boolean
 from urllib.error import URLError
 from zope.component import getUtility
+
 
 log = logging.getLogger('mailman.error')
 

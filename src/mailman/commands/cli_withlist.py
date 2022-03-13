@@ -80,7 +80,8 @@ def start_python(overrides, banner):
     # Set the tab completion.
     with ExitStack() as resources:
         try:                                    # pragma: nocover
-            import readline, rlcompleter        # noqa: F401,E401
+            import readline  # noqa: F401,E401
+            import rlcompleter  # noqa: F401
         except ImportError:                     # pragma: nocover
             print(_('readline not available'), file=sys.stderr)
             pass

@@ -24,8 +24,12 @@ from mailman.handlers import cook_headers
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.interfaces.member import DeliveryMode
 from mailman.testing.helpers import (
-    LogFileMark, get_queue_messages, make_digest_messages,
-    specialized_message_from_string as mfs, subscribe)
+    get_queue_messages,
+    LogFileMark,
+    make_digest_messages,
+    specialized_message_from_string as mfs,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 
 

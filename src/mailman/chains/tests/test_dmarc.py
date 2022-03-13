@@ -23,8 +23,10 @@ from mailman.app.lifecycle import create_list
 from mailman.core.chains import process as process_chain
 from mailman.interfaces.chain import DiscardEvent, RejectEvent
 from mailman.testing.helpers import (
-    event_subscribers, get_queue_messages,
-    specialized_message_from_string as mfs)
+    event_subscribers,
+    get_queue_messages,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 

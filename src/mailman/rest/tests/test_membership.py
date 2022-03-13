@@ -29,8 +29,15 @@ from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.incoming import IncomingRunner
 from mailman.testing.helpers import (
-    TestableMaster, call_api, get_lmtp_client, get_queue_messages,
-    make_testable_runner, set_preferred, subscribe, wait_for_webservice)
+    call_api,
+    get_lmtp_client,
+    get_queue_messages,
+    make_testable_runner,
+    set_preferred,
+    subscribe,
+    TestableMaster,
+    wait_for_webservice,
+)
 from mailman.testing.layers import ConfigLayer, RESTLayer
 from mailman.utilities.datetime import now
 from urllib.error import HTTPError

@@ -21,8 +21,14 @@ from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode, SAUnicode4Byte
 from mailman.interfaces.domain import (
-    BadDomainSpecificationError, DomainCreatedEvent, DomainCreatingEvent,
-    DomainDeletedEvent, DomainDeletingEvent, IDomain, IDomainManager)
+    BadDomainSpecificationError,
+    DomainCreatedEvent,
+    DomainCreatingEvent,
+    DomainDeletedEvent,
+    DomainDeletingEvent,
+    IDomain,
+    IDomainManager,
+)
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import MailingList

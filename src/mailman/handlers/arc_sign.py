@@ -28,6 +28,7 @@ from mailman.interfaces.handler import IHandler
 from public import public
 from zope.interface import implementer
 
+
 # A manual override used by the test suite.
 timestamp = None
 

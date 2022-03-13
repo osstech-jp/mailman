@@ -27,7 +27,8 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers.validate_authenticity import ValidateAuthenticity
 from mailman.testing.helpers import (
-    specialized_message_from_string as message_from_string)
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 

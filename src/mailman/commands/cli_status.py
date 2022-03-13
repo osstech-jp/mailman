@@ -21,7 +21,7 @@ import sys
 import click
 import socket
 
-from mailman.bin.master import WatcherState, master_state
+from mailman.bin.master import master_state, WatcherState
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.utilities.options import I18nCommand

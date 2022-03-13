@@ -23,7 +23,10 @@ from mailman.app.bounces import bounce_message
 from mailman.config import config
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import (
-    DiscardMessage, IPipeline, RejectMessage)
+    DiscardMessage,
+    IPipeline,
+    RejectMessage,
+)
 from mailman.utilities.modules import add_components
 from public import public
 

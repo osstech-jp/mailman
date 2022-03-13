@@ -26,8 +26,12 @@ from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import (LogFileMark, get_queue_messages,
-                                     set_preferred, subscribe)
+from mailman.testing.helpers import (
+    get_queue_messages,
+    LogFileMark,
+    set_preferred,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from unittest.mock import patch

@@ -21,5 +21,6 @@
 from mailman.plugins.testing.layer import PluginRESTLayer
 from public import public
 
+
 # For flufl.testing.
 public(layer=PluginRESTLayer)

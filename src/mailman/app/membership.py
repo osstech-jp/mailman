@@ -19,15 +19,21 @@
 
 from email.utils import formataddr
 from mailman.app.notifications import (
-    send_admin_subscription_notice, send_goodbye_message,
-    send_welcome_message)
+    send_admin_subscription_notice,
+    send_goodbye_message,
+    send_welcome_message,
+)
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
-    NotAMemberError, SubscriptionEvent)
+    AlreadySubscribedError,
+    MemberRole,
+    MembershipIsBannedError,
+    NotAMemberError,
+    SubscriptionEvent,
+)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager

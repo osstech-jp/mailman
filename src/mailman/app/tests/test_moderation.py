@@ -21,7 +21,11 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import (
-    handle_message, handle_unsubscription, hold_message, hold_unsubscription)
+    handle_message,
+    handle_unsubscription,
+    hold_message,
+    hold_unsubscription,
+)
 from mailman.chains.hold import HeldMessagePendable
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import MemberRole
@@ -34,8 +38,11 @@ from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner, set_preferred,
-    specialized_message_from_string as mfs)
+    get_queue_messages,
+    make_testable_runner,
+    set_preferred,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import SMTPLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility

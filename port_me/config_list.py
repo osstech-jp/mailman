@@ -20,8 +20,7 @@ import sys
 import time
 import optparse
 
-from mailman import MailList
-from mailman import errors
+from mailman import errors, MailList
 from mailman.configuration import config
 from mailman.core.i18n import _
 from mailman.initialize import initialize

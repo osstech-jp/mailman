@@ -24,7 +24,9 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.rules import approved
 from mailman.testing.helpers import (
-    configuration, specialized_message_from_string as mfs)
+    configuration,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 

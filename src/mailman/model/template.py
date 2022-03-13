@@ -27,9 +27,13 @@ from mailman.interfaces.cache import ICacheManager
 from mailman.interfaces.domain import IDomain
 from mailman.interfaces.mailinglist import IMailingList
 from mailman.interfaces.template import (
-    ALL_TEMPLATES, ALT_TEMPLATE_NAMES, ITemplateLoader, ITemplateManager)
+    ALL_TEMPLATES,
+    ALT_TEMPLATE_NAMES,
+    ITemplateLoader,
+    ITemplateManager,
+)
 from mailman.utilities import protocols
-from mailman.utilities.i18n import TemplateNotFoundError, find
+from mailman.utilities.i18n import find, TemplateNotFoundError
 from mailman.utilities.string import expand
 from public import public
 from requests import HTTPError

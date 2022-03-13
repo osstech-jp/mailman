@@ -24,7 +24,9 @@ from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rules import banned_address
 from mailman.testing.helpers import (
-    set_preferred, specialized_message_from_string as mfs)
+    set_preferred,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

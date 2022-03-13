@@ -23,19 +23,43 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, DeliveryStatus, MemberRole,
-    MembershipError, MembershipIsBannedError, MissingPreferredAddressError)
+    AlreadySubscribedError,
+    DeliveryMode,
+    DeliveryStatus,
+    MemberRole,
+    MembershipError,
+    MembershipIsBannedError,
+    MissingPreferredAddressError,
+)
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, ISubscriptionService, RequestRecord,
-    SubscriptionPendingError, TokenOwner)
+    ISubscriptionManager,
+    ISubscriptionService,
+    RequestRecord,
+    SubscriptionPendingError,
+    TokenOwner,
+)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
-    CollectionMixin, NotFound, accepted, bad_request, child, conflict,
-    created, etag, no_content, not_found, okay)
+    accepted,
+    bad_request,
+    child,
+    CollectionMixin,
+    conflict,
+    created,
+    etag,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
-    Validator, enum_validator, list_of_strings_validator, subscriber_validator)
+    enum_validator,
+    list_of_strings_validator,
+    subscriber_validator,
+    Validator,
+)
 from operator import attrgetter
 from public import public
 from uuid import UUID

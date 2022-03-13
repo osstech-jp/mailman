@@ -24,9 +24,16 @@ from mailman.interfaces.member import AlreadySubscribedError
 from mailman.interfaces.pending import IPendings, PendType
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, child, conflict, etag, no_content,
-    not_found, okay)
-from mailman.rest.validator import Validator, enum_validator
+    bad_request,
+    child,
+    CollectionMixin,
+    conflict,
+    etag,
+    no_content,
+    not_found,
+    okay,
+)
+from mailman.rest.validator import enum_validator, Validator
 from public import public
 from zope.component import getUtility
 

@@ -20,8 +20,15 @@
 from mailman.core.i18n import _
 from mailman.interfaces.styles import IStyle
 from mailman.styles.base import (
-    Announcement, BasicOperation, Bounces, Discussion, Identity, Moderation,
-    Private, Public)
+    Announcement,
+    BasicOperation,
+    Bounces,
+    Discussion,
+    Identity,
+    Moderation,
+    Private,
+    Public,
+)
 from public import public
 from zope.interface import implementer
 

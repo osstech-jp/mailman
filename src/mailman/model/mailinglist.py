@@ -23,7 +23,12 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import (
-    Enum, SAText, SAUnicode, SAUnicode4Byte, SAUnicodeLarge)
+    Enum,
+    SAText,
+    SAUnicode,
+    SAUnicode4Byte,
+    SAUnicodeLarge,
+)
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.archiver import ArchivePolicy
@@ -34,13 +39,26 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    ArchiveRenderingMode, DMARCMitigateAction, IAcceptableAlias,
-    IAcceptableAliasSet, IHeaderMatch, IHeaderMatchList, IListArchiver,
-    IListArchiverSet, IMailingList, Personalization, ReplyToMunging,
-    SubscriptionPolicy)
+    ArchiveRenderingMode,
+    DMARCMitigateAction,
+    IAcceptableAlias,
+    IAcceptableAliasSet,
+    IHeaderMatch,
+    IHeaderMatchList,
+    IListArchiver,
+    IListArchiverSet,
+    IMailingList,
+    Personalization,
+    ReplyToMunging,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
-    MissingPreferredAddressError, SubscriptionEvent)
+    AlreadySubscribedError,
+    MemberRole,
+    MembershipIsBannedError,
+    MissingPreferredAddressError,
+    SubscriptionEvent,
+)
 from mailman.interfaces.mime import FilterType
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.user import IUser
@@ -53,8 +71,16 @@ from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
 from public import public
 from sqlalchemy import (
-    Boolean, Column, DateTime, Float, ForeignKey, Integer, Interval,
-    LargeBinary, PickleType)
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    Interval,
+    LargeBinary,
+    PickleType,
+)
 from sqlalchemy.event import listen
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.mutable import MutableList

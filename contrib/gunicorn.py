@@ -51,6 +51,7 @@ def run(environ, start_response):
     global _initialized
     if not _initialized:
         from mailman.core.initialize import initialize
+
         # First things first, initialize the system before any other imports or
         # other operations.  It must only be initialized once though.
         initialize(propagate_logs=True)

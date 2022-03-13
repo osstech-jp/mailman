@@ -30,7 +30,7 @@ from importlib import import_module
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import SMTPLayer
 from public import public
-from subprocess import PIPE, STDOUT, run
+from subprocess import PIPE, run, STDOUT
 
 
 DOT = '.'

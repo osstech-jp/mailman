@@ -23,8 +23,10 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.runners.retry import RetryRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
-    specialized_message_from_string as message_from_string)
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 
 

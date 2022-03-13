@@ -20,10 +20,13 @@
 import logging
 
 from flufl.bounce import all_failures
-from mailman.app.bounces import ProbeVERP, StandardVERP, maybe_forward
+from mailman.app.bounces import maybe_forward, ProbeVERP, StandardVERP
 from mailman.core.runner import Runner
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceProcessor, InvalidBounceEvent)
+    BounceContext,
+    IBounceProcessor,
+    InvalidBounceEvent,
+)
 from public import public
 from zope.component import getUtility
 

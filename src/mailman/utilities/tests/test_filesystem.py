@@ -22,7 +22,7 @@ import shutil
 import tempfile
 import unittest
 
-from mailman.utilities.filesystem import makedirs, first_inexistent_directory
+from mailman.utilities.filesystem import first_inexistent_directory, makedirs
 
 
 def fake_makedirs(path, mode):

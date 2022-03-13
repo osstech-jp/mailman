@@ -19,7 +19,10 @@
 
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from mailman.interfaces.styles import (
-    DuplicateStyleError, IStyle, IStyleManager)
+    DuplicateStyleError,
+    IStyle,
+    IStyleManager,
+)
 from mailman.utilities.modules import add_components
 from public import public
 from zope.component import getUtility

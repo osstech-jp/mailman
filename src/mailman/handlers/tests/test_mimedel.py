@@ -24,7 +24,7 @@ import shutil
 import tempfile
 import unittest
 
-from contextlib import ExitStack, contextmanager
+from contextlib import contextmanager, ExitStack
 from importlib_resources import open_binary as resource_open, read_text
 from io import StringIO
 from mailman.app.lifecycle import create_list
@@ -35,8 +35,11 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pipeline import DiscardMessage, RejectMessage
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages,
-    specialized_message_from_string as mfs)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 from zope.component import getUtility

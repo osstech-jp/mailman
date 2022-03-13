@@ -24,9 +24,14 @@ import unittest
 from contextlib import ExitStack
 from importlib_resources import path
 from mailman.config.config import (
-    Configuration, external_configuration, load_external)
+    Configuration,
+    external_configuration,
+    load_external,
+)
 from mailman.interfaces.configuration import (
-    ConfigurationUpdatedEvent, MissingConfigurationFileError)
+    ConfigurationUpdatedEvent,
+    MissingConfigurationFileError,
+)
 from mailman.testing.helpers import configuration, event_subscribers
 from mailman.testing.layers import ConfigLayer
 from tempfile import NamedTemporaryFile, TemporaryDirectory

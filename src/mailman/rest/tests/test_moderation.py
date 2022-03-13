@@ -30,8 +30,11 @@ from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    call_api, get_queue_messages, set_preferred,
-    specialized_message_from_string as mfs)
+    call_api,
+    get_queue_messages,
+    set_preferred,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 from zope.component import getUtility

@@ -21,7 +21,10 @@ from email.utils import formataddr
 from mailman.database.model import Model
 from mailman.database.types import SAUnicode, SAUnicode4Byte
 from mailman.interfaces.address import (
-    AddressVerificationEvent, IAddress, IEmailValidator)
+    AddressVerificationEvent,
+    IAddress,
+    IEmailValidator,
+)
 from mailman.utilities.datetime import now
 from public import public
 from sqlalchemy import Column, DateTime, ForeignKey, Integer

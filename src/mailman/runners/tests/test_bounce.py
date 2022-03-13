@@ -25,7 +25,10 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceProcessor, UnrecognizedBounceDisposition)
+    BounceContext,
+    IBounceProcessor,
+    UnrecognizedBounceDisposition,
+)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryStatus, MemberRole
 from mailman.interfaces.pending import IPendings
@@ -33,8 +36,11 @@ from mailman.interfaces.styles import IStyle, IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.bounce import BounceRunner
 from mailman.testing.helpers import (
-    LogFileMark, get_queue_messages, make_testable_runner,
-    specialized_message_from_string as message_from_string)
+    get_queue_messages,
+    LogFileMark,
+    make_testable_runner,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility

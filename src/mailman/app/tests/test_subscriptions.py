@@ -30,12 +30,19 @@ from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import (
-    DeliveryMode, DeliveryStatus, MemberRole, MembershipIsBannedError)
+    DeliveryMode,
+    DeliveryStatus,
+    MemberRole,
+    MembershipIsBannedError,
+)
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, get_queue_messages, set_preferred)
+    get_queue_messages,
+    LogFileMark,
+    set_preferred,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from unittest.mock import patch

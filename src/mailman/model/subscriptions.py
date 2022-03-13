@@ -22,7 +22,9 @@ from mailman.database.transaction import dbconnection
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.subscriptions import (
-    ISubscriptionService, TooManyMembersError)
+    ISubscriptionService,
+    TooManyMembersError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.address import Address
 from mailman.model.member import Member
@@ -33,6 +35,7 @@ from public import public
 from sqlalchemy import or_
 from zope.component import getUtility
 from zope.interface import implementer
+
 
 EMPTY = object()
 

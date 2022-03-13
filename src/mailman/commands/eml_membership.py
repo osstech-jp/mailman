@@ -23,9 +23,14 @@ from mailman.core.i18n import _
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, MembershipIsBannedError)
+    AlreadySubscribedError,
+    DeliveryMode,
+    MembershipIsBannedError,
+)
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, SubscriptionPendingError)
+    ISubscriptionManager,
+    SubscriptionPendingError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from public import public
 from zope.component import getUtility

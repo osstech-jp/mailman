@@ -18,7 +18,7 @@
 """Template finder."""
 
 from mailman.rest.helpers import not_found
-from mailman.utilities.i18n import TemplateNotFoundError, find
+from mailman.utilities.i18n import find, TemplateNotFoundError
 from public import public
 
 

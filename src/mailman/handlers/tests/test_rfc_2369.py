@@ -24,7 +24,9 @@ from mailman.config import config
 from mailman.handlers import rfc_2369
 from mailman.interfaces.archiver import ArchivePolicy, IArchiver
 from mailman.testing.helpers import (
-    LogFileMark, specialized_message_from_string as mfs)
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from urllib.parse import urljoin
 from zope.interface import implementer

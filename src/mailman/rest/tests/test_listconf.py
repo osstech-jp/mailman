@@ -23,12 +23,15 @@ from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, SubscriptionPolicy)
+    IAcceptableAliasSet,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.template import ITemplateManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 from zope.component import getUtility
+
 
 # The representation of the listconf resource as a dictionary.  This is used
 # when PUTting to the list's configuration resource.

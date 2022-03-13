@@ -19,7 +19,12 @@
 
 from mailman.config import config
 from mailman.interfaces.chain import (
-    IChain, IChainIterator, IChainLink, IMutableChain, LinkAction)
+    IChain,
+    IChainIterator,
+    IChainLink,
+    IMutableChain,
+    LinkAction,
+)
 from mailman.interfaces.rules import IRule
 from mailman.utilities.modules import abstract_component
 from public import public

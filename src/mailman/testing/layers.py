@@ -41,14 +41,21 @@ from mailman.core.logging import get_handler
 from mailman.database.transaction import transaction
 from mailman.interfaces.domain import IDomainManager
 from mailman.testing.helpers import (
-    TestableMaster, get_lmtp_client, reset_the_world, wait_for_webservice)
+    get_lmtp_client,
+    reset_the_world,
+    TestableMaster,
+    wait_for_webservice,
+)
 from mailman.testing.mta import (
-    ConnectionCountingController, ConnectionCountingSSLController,
-    ConnectionCountingSTARTTLSController)
+    ConnectionCountingController,
+    ConnectionCountingSSLController,
+    ConnectionCountingSTARTTLSController,
+)
 from mailman.utilities.string import expand
 from public import public
 from textwrap import dedent
 from zope.component import getUtility
+
 
 TEST_TIMEOUT = datetime.timedelta(seconds=5)
 NL = '\n'

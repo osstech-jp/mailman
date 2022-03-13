@@ -26,6 +26,7 @@ from mailman.commands.cli_inject import inject
 from mailman.testing.helpers import get_queue_messages
 from mailman.testing.layers import ConfigLayer
 
+
 test_msg = b"""\
 To: ant@example.com
 From: user@example.com

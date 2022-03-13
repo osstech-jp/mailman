@@ -21,14 +21,17 @@ import os
 import sys
 import unittest
 
-from contextlib import ExitStack, contextmanager
+from contextlib import contextmanager, ExitStack
 from mailman.interfaces.rules import IRule
 from mailman.interfaces.styles import IStyle
 from mailman.testing.helpers import configuration
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.filesystem import path
 from mailman.utilities.modules import (
-    find_components, find_pluggable_components, hacked_sys_modules)
+    find_components,
+    find_pluggable_components,
+    hacked_sys_modules,
+)
 from pathlib import Path
 from tempfile import TemporaryDirectory
 

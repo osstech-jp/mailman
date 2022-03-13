@@ -25,7 +25,9 @@ from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import IPipeline
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
-    make_testable_runner, specialized_message_from_string as mfs)
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.interface import implementer
 

@@ -20,8 +20,7 @@
 import unittest
 
 from mailman.interfaces.messages import IMessageStore
-from mailman.testing.helpers import (
-    specialized_message_from_string as mfs)
+from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.email import add_message_hash, split_email
 from zope.component import getUtility

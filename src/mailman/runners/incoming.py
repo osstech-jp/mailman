@@ -39,6 +39,7 @@ from mailman.interfaces.usermanager import IUserManager
 from public import public
 from zope.component import getUtility
 
+
 log = logging.getLogger('mailman.vette')
 
 

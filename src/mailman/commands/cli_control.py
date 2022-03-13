@@ -24,7 +24,7 @@ import errno
 import signal
 import logging
 
-from mailman.bin.master import WatcherState, master_state
+from mailman.bin.master import master_state, WatcherState
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand

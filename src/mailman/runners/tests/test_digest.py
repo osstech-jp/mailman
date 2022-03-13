@@ -33,10 +33,15 @@ from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.template import ITemplateManager
 from mailman.runners.digest import DigestRunner
 from mailman.testing.helpers import (
-    LogFileMark, digest_mbox, get_queue_messages, make_digest_messages,
-    make_testable_runner, message_from_string,
+    digest_mbox,
+    get_queue_messages,
+    LogFileMark,
+    make_digest_messages,
+    make_testable_runner,
+    message_from_string,
     specialized_message_from_string as mfs,
-    subscribe)
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 from string import Template
 from tempfile import TemporaryDirectory

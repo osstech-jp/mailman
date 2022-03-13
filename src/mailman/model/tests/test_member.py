@@ -23,7 +23,11 @@ from datetime import timedelta
 from mailman.app.lifecycle import create_list
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import (
-    DeliveryStatus, MemberRole, MembershipError, SubscriptionMode)
+    DeliveryStatus,
+    MemberRole,
+    MembershipError,
+    SubscriptionMode,
+)
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member, MembershipManager

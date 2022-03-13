@@ -37,7 +37,10 @@ from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    DMARCMitigateAction, IAcceptableAliasSet, SubscriptionPolicy)
+    DMARCMitigateAction,
+    IAcceptableAliasSet,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.template import ITemplateLoader, ITemplateManager
@@ -48,7 +51,10 @@ from mailman.testing.layers import ConfigLayer
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.i18n import search
 from mailman.utilities.importer import (
-    Import21Error, check_language_code, import_config_pck)
+    check_language_code,
+    Import21Error,
+    import_config_pck,
+)
 from pickle import load
 from shutil import rmtree
 from unittest import mock

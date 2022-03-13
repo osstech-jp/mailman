@@ -18,15 +18,27 @@
 """REST for addresses."""
 
 from mailman.interfaces.address import (
-    AddressAlreadyLinkedError, ExistingAddressError, InvalidEmailAddressError)
+    AddressAlreadyLinkedError,
+    ExistingAddressError,
+    InvalidEmailAddressError,
+)
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
-    BadRequest, CollectionMixin, NotFound, bad_request, child, created, etag,
-    no_content, not_found, okay)
+    bad_request,
+    BadRequest,
+    child,
+    CollectionMixin,
+    created,
+    etag,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.members import MemberCollection
 from mailman.rest.preferences import Preferences
-from mailman.rest.validator import Validator, email_validator
+from mailman.rest.validator import email_validator, Validator
 from mailman.utilities.datetime import now
 from operator import attrgetter
 from public import public

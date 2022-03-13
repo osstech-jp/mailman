@@ -28,7 +28,9 @@ from mailman.config.config import external_configuration
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mta import (
-    IMailTransportAgentAliases, IMailTransportAgentLifecycle)
+    IMailTransportAgentAliases,
+    IMailTransportAgentLifecycle,
+)
 from mailman.utilities.datetime import now
 from operator import attrgetter
 from public import public

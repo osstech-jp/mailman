@@ -23,12 +23,18 @@ from datetime import datetime, timedelta
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceProcessor, InvalidBounceEvent)
+    BounceContext,
+    IBounceProcessor,
+    InvalidBounceEvent,
+)
 from mailman.interfaces.member import DeliveryStatus
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages,
-    specialized_message_from_string as message_from_string)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility

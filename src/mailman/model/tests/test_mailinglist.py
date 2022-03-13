@@ -26,13 +26,22 @@ from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, IHeaderMatchList, IListArchiverSet)
+    IAcceptableAliasSet,
+    IHeaderMatchList,
+    IListArchiverSet,
+)
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
-    MissingPreferredAddressError)
+    AlreadySubscribedError,
+    MemberRole,
+    MembershipIsBannedError,
+    MissingPreferredAddressError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    configuration, get_queue_messages, set_preferred)
+    configuration,
+    get_queue_messages,
+    set_preferred,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility

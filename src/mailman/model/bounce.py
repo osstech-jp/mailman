@@ -22,18 +22,28 @@ import datetime
 
 from email.utils import make_msgid
 from lazr.config import as_boolean, as_timedelta
-from mailman.app.bounces import PENDABLE_LIFETIME, _ProbePendable, send_probe
+from mailman.app.bounces import _ProbePendable, PENDABLE_LIFETIME, send_probe
 from mailman.app.membership import delete_member
 from mailman.app.notifications import (
-    send_admin_disable_notice, send_admin_increment_notice,
-    send_admin_removal_notice, send_user_disable_warning)
+    send_admin_disable_notice,
+    send_admin_increment_notice,
+    send_admin_removal_notice,
+    send_user_disable_warning,
+)
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import (
-    dbconnection, transaction, transactional)
+    dbconnection,
+    transaction,
+    transactional,
+)
 from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceEvent, IBounceProcessor, InvalidBounceEvent)
+    BounceContext,
+    IBounceEvent,
+    IBounceProcessor,
+    InvalidBounceEvent,
+)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import DeliveryStatus, IMembershipManager
 from mailman.interfaces.messages import IMessageStore

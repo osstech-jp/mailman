@@ -25,7 +25,7 @@ warning header, or pass it through, depending on the user's preferences.
 
 import re
 
-from email.utils import getaddresses, formataddr
+from email.utils import formataddr, getaddresses
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from public import public

@@ -21,7 +21,14 @@ from mailman.app.inject import inject_text
 from mailman.config import config
 from mailman.interfaces.listmanager import IListManager
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, created, etag, no_content, not_found, okay)
+    bad_request,
+    CollectionMixin,
+    created,
+    etag,
+    no_content,
+    not_found,
+    okay,
+)
 from mailman.rest.validator import Validator
 from public import public
 from zope.component import getUtility

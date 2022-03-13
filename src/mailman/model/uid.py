@@ -80,6 +80,7 @@ class UID(Model):
     def cull_orphans(store):
         # Avoid circular imports.
         from mailman.model.user import User
+
         # Delete all uids in this table that are not associated with user
         # rows.
         results = store.query(UID).filter(

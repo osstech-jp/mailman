@@ -22,7 +22,10 @@ import os
 from contextlib import ExitStack
 from importlib_resources import path
 from mailman.testing.helpers import (
-    TestableMaster, hackenv, wait_for_webservice)
+    hackenv,
+    TestableMaster,
+    wait_for_webservice,
+)
 from mailman.testing.layers import SMTPLayer
 from public import public
 

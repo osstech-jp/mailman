@@ -25,7 +25,9 @@ from mailman.config import config
 from mailman.core.chains import process as process_chain
 from mailman.interfaces.chain import AcceptEvent, IChain, LinkAction
 from mailman.testing.helpers import (
-    event_subscribers, specialized_message_from_string as mfs)
+    event_subscribers,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.interface import implementer
 

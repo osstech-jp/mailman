@@ -28,7 +28,7 @@ import re
 import copy
 import logging
 
-from email.header import Header, decode_header
+from email.header import decode_header, Header
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formataddr, getaddresses, make_msgid

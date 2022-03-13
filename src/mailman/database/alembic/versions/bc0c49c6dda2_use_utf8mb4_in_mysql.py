@@ -27,6 +27,7 @@ from mailman.database.helpers import is_mysql
 from mailman.database.types import SAUnicode4Byte, SAUnicodeLarge
 from sqlalchemy.dialects import mysql
 
+
 # revision identifiers, used by Alembic.
 revision = 'bc0c49c6dda2'
 down_revision = 'ec5fe422e27c'
