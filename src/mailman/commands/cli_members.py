@@ -87,7 +87,7 @@ def display_members(ctx, mlist, role, regular, digest,
     # Print; outfp will be either the file or stdout to print to.
     addresses = list(roster.addresses)
     if len(addresses) == 0:
-        print(_('$mlist.list_id has no members'), file=outfp)
+        print(_('${mlist.list_id} has no members'), file=outfp)
         return
     for address in sorted(addresses, key=attrgetter('email')):
         member = roster.get_member(address.email)
@@ -192,7 +192,7 @@ def members(ctx, add_infp, del_infp, sync_infp, outfp,
             role, regular, no_change, digest, nomail, listspec, email_only):
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
-        ctx.fail(_('No such list: $listspec'))
+        ctx.fail(_('No such list: ${listspec}'))
     if add_infp is not None:
         ctx.fail('The --add option is removed. '
                  'Use `mailman addmembers` instead.')

@@ -13,5 +13,5 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/mailman/app/notifications.py:112
-msgid "$mlist.display_name subscription notification"
-msgstr "$mlist.display_name subscription notification"
+msgid "${mlist.display_name} subscription notification"
+msgstr "${mlist.display_name} subscription notification"

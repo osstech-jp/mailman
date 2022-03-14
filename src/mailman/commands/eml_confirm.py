@@ -108,5 +108,5 @@ class Confirm:
             print(_('Invalid Approved: password'), file=results)
             return ContinueProcessing.no
         handle_message(mlist, pendable['id'], action)
-        print(_('Message $message'), file=results)
+        print(_('Message ${message}'), file=results)
         return ContinueProcessing.no

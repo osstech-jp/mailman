@@ -44,10 +44,10 @@ def validate_runner_spec(ctx, param, value):
                 rrange = int(parts[2])
             except ValueError:
                 raise click.BadParameter(
-                    _('slice and range must be integers: $value'))
+                    _('slice and range must be integers: ${value}'))
             specs.append((runner, rslice, rrange))
         else:
-            raise click.UsageError(_('Bad runner spec: $value'))
+            raise click.UsageError(_('Bad runner spec: ${value}'))
     return specs[0] if isinstance(value, str) else specs
 
 

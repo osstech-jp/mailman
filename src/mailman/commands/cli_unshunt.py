@@ -47,7 +47,7 @@ def unshunt(discard):
             if not discard:
                 config.switchboards[which_queue].enqueue(msg, msgdata)
         except Exception as error:                             # noqa: F841
-            print(_('Cannot unshunt message $filebase, skipping:\n$error'),
+            print(_('Cannot unshunt message ${filebase}, skipping:\n${error}'),
                   file=sys.stderr)
         else:
             # Unlink the .bak file left by dequeue()

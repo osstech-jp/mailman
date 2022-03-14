@@ -52,7 +52,8 @@ class Digester:
         self._charset = mlist.preferred_language.charset
         # This will be used in the Subject, so use $-strings.
         self._digest_id = _(
-            '$mlist.display_name Digest, Vol $volume, Issue $digest_number')
+            '${mlist.display_name} Digest, Vol ${volume}, Issue '
+            '${digest_number}')
         self._subject = Header(self._digest_id,
                                self._charset,
                                header_name='Subject')
@@ -169,7 +170,7 @@ class MIMEDigester(Digester):
         except UnicodeError:
             toc_part = MIMEText(toc_text.encode('utf-8'), _charset='utf-8')
         toc_part['Content-Description'] = _(
-            "Today's Topics ($count messages)")
+            "Today's Topics (${count} messages)")
         self._message.attach(toc_part)
 
     def add_message(self, msg, count):

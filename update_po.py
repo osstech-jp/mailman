@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # Author: Abhilash Raj
 # Date: Sept 26 2020
 #

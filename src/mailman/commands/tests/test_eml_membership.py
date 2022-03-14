@@ -57,6 +57,25 @@ class TestLeave(unittest.TestCase):
             str(results).splitlines()[-1],
             'leave: anne@example.com is not a member of ant@example.com')
 
+    def test_leave_no_sender(self):
+        # Initiate an unsubscription with no sender in the message.
+        msg = Message()
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertEqual(
+            str(results).splitlines()[-1],
+            'leave: No valid email address found to unsubscribe')
+
+    def test_leave_no_user(self):
+        # Initiate an unsubscription for a non-user.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertEqual(
+            str(results).splitlines()[-1],
+            'No registered user for email address: anne@example.com')
+
 
 class TestJoin(unittest.TestCase):
     layer = ConfigLayer

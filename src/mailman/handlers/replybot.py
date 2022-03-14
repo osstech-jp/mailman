@@ -98,7 +98,7 @@ class Replybot:
         # message, send it, and update the database.
         display_name = mlist.display_name
         subject = _(
-            'Auto-response for your message to the "$display_name" '
+            'Auto-response for your message to the "${display_name}" '
             'mailing list')
         # Do string interpolation into the autoresponse text
         d = dict(

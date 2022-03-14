@@ -38,17 +38,17 @@ def status():
         message = _('GNU Mailman is not running')
     elif status is WatcherState.conflict:
         hostname, pid, tempfile = lock.details
-        message = _('GNU Mailman is running (master pid: $pid)')
+        message = _('GNU Mailman is running (master pid: ${pid})')
     elif status is WatcherState.stale_lock:
         hostname, pid, tempfile = lock.details
-        message = _('GNU Mailman is stopped (stale pid: $pid)')
+        message = _('GNU Mailman is stopped (stale pid: ${pid})')
     else:
         hostname, pid, tempfile = lock.details
         fqdn_name = socket.getfqdn()                         # noqa: F841
         assert status is WatcherState.host_mismatch, (
             'Invalid enum value: %s' % status)
         message = _('GNU Mailman is in an unexpected state '
-                    '($hostname != $fqdn_name)')
+                    '(${hostname} != ${fqdn_name})')
     print(message)
     sys.exit(status.value)
 

@@ -60,7 +60,7 @@ def dispose(mlist, msg, msgdata, why):
             msgdata.get('fwd_preserve', True)):
         # Forward it on to the list moderators.
         text = _("""\
-The attached message matched the $mlist.display_name mailing list's content
+The attached message matched the ${mlist.display_name} mailing list's content
 filtering rules and was prevented from being forwarded on to the list
 membership.  You are receiving the only remaining copy of the discarded
 message.
@@ -236,14 +236,14 @@ def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
             # Throw this subpart away
             report += '\nContent-Type: %s\n' % ctype
             if fname:
-                report += '    ' + _('Name: $fname\n')
+                report += '    ' + _('Name: ${fname}\n')
             attach_report = True
             continue
         if passtypes and not (ctype in passtypes or mtype in passtypes):
             # Throw this subpart away
             report += '\nContent-Type: %s\n' % ctype
             if fname:
-                report += '    ' + _('Name: $fname\n')
+                report += '    ' + _('Name: ${fname}\n')
             attach_report = True
             continue
         # check file extension
@@ -252,13 +252,13 @@ def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
             if fext in filterexts:
                 report += '\nContent-Type: %s\n' % ctype
                 if fname:
-                    report += '    ' + _('Name: $fname\n')
+                    report += '    ' + _('Name: ${fname}\n')
                 attach_report = True
                 continue
             if passexts and not (fext in passexts):
                 report += '\nContent-Type: %s\n' % ctype
                 if fname:
-                    report += '    ' + _('Name: $fname\n')
+                    report += '    ' + _('Name: ${fname}\n')
                 attach_report = True
                 continue
         newpayload.append(subpart)

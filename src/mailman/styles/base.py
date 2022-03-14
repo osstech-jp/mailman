@@ -56,7 +56,7 @@ class Identity:
         mlist.description = ''
         mlist.info = ''
         mlist.preferred_language = 'en'
-        mlist.subject_prefix = _('[$mlist.display_name] ')
+        mlist.subject_prefix = _('[${mlist.display_name}] ')
         mlist.encode_ascii_prefixes = (
             mlist.preferred_language.charset != 'us-ascii')
 

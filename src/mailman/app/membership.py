@@ -144,7 +144,7 @@ def delete_member(mlist, email, admin_notif=None, userack=None):
     if admin_notif:
         user = getUtility(IUserManager).get_user(email)
         display_name = user.display_name
-        subject = _('$mlist.display_name unsubscription notification')
+        subject = _('${mlist.display_name} unsubscription notification')
         text = expand(getUtility(ITemplateLoader).get(
             'list:admin:notice:unsubscribe', mlist),
             mlist, dict(

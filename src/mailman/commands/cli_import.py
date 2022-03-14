@@ -65,7 +65,7 @@ class _Bouncer:
 def import21(ctx, charset, listspec, pickle_file):
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
-        ctx.fail(_('No such list: $listspec'))
+        ctx.fail(_('No such list: ${listspec}'))
     with ExitStack() as resources:
         resources.enter_context(hacked_sys_modules('Mailman', _Mailman))
         resources.enter_context(
@@ -79,7 +79,7 @@ def import21(ctx, charset, listspec, pickle_file):
                 break
             except pickle.UnpicklingError:
                 ctx.fail(
-                    _('Not a Mailman 2.1 configuration file: $pickle_file'))
+                    _('Not a Mailman 2.1 configuration file: ${pickle_file}'))
             else:
                 if not isinstance(config_dict, dict):
                     print(_('Ignoring non-dictionary: {0!r}').format(

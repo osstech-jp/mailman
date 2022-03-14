@@ -124,7 +124,7 @@ def munged_headers(mlist, msg, msgdata):
     realname = EMPTYSTRING.join(realname_bits)
     # Ensure the i18n context is the list's preferred_language.
     with _.using(mlist.preferred_language.code):
-        via = _('$realname via $mlist.display_name')
+        via = _('${realname} via ${mlist.display_name}')
     # Get an RFC 2047 encoded header string.
     display_name = str(Header(via, mlist.preferred_language.charset))
     value = [('From', formataddr((display_name, mlist.posting_address)))]
