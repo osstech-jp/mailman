@@ -2671,10 +2671,10 @@ msgstr ""
 #~ "原始消息已附在后面。\n"
 
 #~ msgid "Already subscribed (skipping): ${display_name} <${email}>"
-#~ msgstr "已订阅（跳过）：$ display_name <$ email>"
+#~ msgstr "已订阅（跳过）：$display_name <$email>"
 
 #~ msgid "Member not subscribed (skipping): ${display_name} <${email}>"
-#~ msgstr "成员未订阅（跳过）：$ display_name <$ email>"
+#~ msgstr "成员未订阅（跳过）：$display_name <$email>"
 
 #~ msgid ""
 #~ "    [MODE] Add all member addresses in FILENAME.  FILENAME can be '-' to\n"
