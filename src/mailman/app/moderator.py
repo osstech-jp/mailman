@@ -129,7 +129,7 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         else:
             language = None
         send_rejection(
-            mlist, _('Posting of your message titled "$subject"'),
+            mlist, _('Posting of your message titled "${subject}"'),
             sender, comment or _('[No reason given]'), language)
     elif action is Action.accept:
         # Start by getting the message from the message store.
@@ -230,7 +230,8 @@ def hold_unsubscription(mlist, email):
     # Possibly notify the administrator of the hold
     if mlist.admin_immed_notify:
         subject = _(
-            'New unsubscription request from $mlist.display_name by $email')
+            'New unsubscription request from ${mlist.display_name} by ${email}'
+            )
         template = getUtility(ITemplateLoader).get(
             'list:admin:action:unsubscribe', mlist)
         text = wrap(expand(template, mlist, dict(
@@ -306,7 +307,7 @@ def send_rejection(mlist, request, recip, comment, origmsg=None, lang=None):
                  '---------- ' + _('Original Message') + ' ----------',
                  str(origmsg)
                  ])
-        subject = _('Request to mailing list "$display_name" rejected')
+        subject = _('Request to mailing list "${display_name}" rejected')
     msg = UserNotification(recip, mlist.bounces_address, subject, text, lang)
     msg.send(mlist)
 

@@ -188,10 +188,10 @@ class CommandRunner(Runner):
         subject = msg.get('subject', 'n/a')                      # noqa: F841
         date = msg.get('date', 'n/a')                            # noqa: F841
         from_ = msg.get('from', 'n/a')                           # noqa: F841
-        print(_('    From: $from_'), file=results)
-        print(_('    Subject: $subject'), file=results)
-        print(_('    Date: $date'), file=results)
-        print(_('    Message-ID: $message_id'), file=results)
+        print(_('    From: ${from_}'), file=results)
+        print(_('    Subject: ${subject}'), file=results)
+        print(_('    Date: ${date}'), file=results)
+        print(_('    Message-ID: ${message_id}'), file=results)
         print(_('\n- Results:'), file=results)
         finder = CommandFinder(msg, msgdata, results)
         for parts in finder:
@@ -206,7 +206,7 @@ class CommandRunner(Runner):
                 command_name = parts.pop(0)
                 command = config.commands.get(command_name)
             if command is None:
-                print(_('No such command: $command_name'), file=results)
+                print(_('No such command: ${command_name}'), file=results)
             else:
                 status = command.process(
                     mlist, msg, msgdata, parts, results)

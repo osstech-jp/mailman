@@ -95,7 +95,7 @@ def send_welcome_message(mlist, member, language, text=''):
     msg = UserNotification(
         formataddr((display_name, member.address.email)),
         mlist.request_address,
-        _('Welcome to the "$mlist.display_name" mailing list${digmode}'),
+        _('Welcome to the "${mlist.display_name}" mailing list${digmode}'),
         text, language)
     msg['X-No-Archive'] = 'yes'
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
@@ -127,7 +127,7 @@ def send_goodbye_message(mlist, address, language):
         )))
     msg = UserNotification(
         address, mlist.bounces_address,
-        _('You have been unsubscribed from the $mlist.display_name '
+        _('You have been unsubscribed from the ${mlist.display_name} '
           'mailing list'),
         goodbye_message, language)
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
@@ -145,7 +145,7 @@ def send_admin_subscription_notice(mlist, address, display_name):
     :type display_name: string
     """
     with _.using(mlist.preferred_language.code):
-        subject = _('$mlist.display_name subscription notification')
+        subject = _('${mlist.display_name} subscription notification')
     text = expand(
         getUtility(ITemplateLoader).get('list:admin:notice:subscribe', mlist),
         mlist, dict(
@@ -169,7 +169,8 @@ def send_admin_disable_notice(mlist, event, display_name):
     member = formataddr((display_name, event.email))
     data = {'member': member}
     with _.using(mlist.preferred_language.code):
-        subject = _('$member\'s subscription disabled on $mlist.display_name')
+        subject = _(
+            '${member}\'s subscription disabled on ${mlist.display_name}')
     text = expand(
         getUtility(ITemplateLoader).get('list:admin:notice:disable', mlist),
         mlist, data)
@@ -197,7 +198,7 @@ def send_admin_increment_notice(mlist, event, display_name):
     data = {'member': member}
     with _.using(mlist.preferred_language.code):
         subject = _(
-            '$member\'s bounce score incremented on $mlist.display_name')
+            '${member}\'s bounce score incremented on ${mlist.display_name}')
     text = expand(
         getUtility(ITemplateLoader).get('list:admin:notice:increment', mlist),
         mlist, data)
@@ -223,7 +224,7 @@ def send_admin_removal_notice(mlist, address, display_name):
     member = formataddr((display_name, address))
     data = {'member': member, 'mlist': mlist.display_name}
     with _.using(mlist.preferred_language.code):
-        subject = _('$member unsubscribed from ${mlist.display_name} '
+        subject = _('${member} unsubscribed from ${mlist.display_name} '
                     'mailing list due to bounces')
     text = expand(
         getUtility(ITemplateLoader).get('list:admin:notice:removal', mlist),

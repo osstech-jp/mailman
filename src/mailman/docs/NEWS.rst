@@ -45,6 +45,9 @@ Bugs fixed
   workaround https://bugs.python.org/issue41307.  (Closes #979 and #980)
 * The nonmember moderation rule now checks all senders, not just the first.
   (Closes #986)
+* The i18n gettext replacements now all use curly brace notation to avoid
+  issues whith translations that might follow them immediately with a period.
+  The various mailman.po files have been updated accordingly.  (Closes #987)
 
 REST
 ====

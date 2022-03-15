@@ -92,7 +92,7 @@ def lists(ctx, advertised, names, descriptions, quiet, domains):
         sys.exit()
     count = len(mailing_lists)                  # noqa: F841
     if not quiet:
-        print(_('$count matching mailing lists found:'))
+        print(_('${count} matching mailing lists found:'))
     # Calculate the longest identifier.
     longest = 0
     output = []
@@ -167,7 +167,7 @@ def create(ctx, language, owners, notify, quiet, create_domain, fqdn_listname):
                      else system_preferences.preferred_language.code)
     # Make sure that the selected language code is known.
     if language_code not in getUtility(ILanguageManager).codes:
-        ctx.fail(_('Invalid language code: $language_code'))
+        ctx.fail(_('Invalid language code: ${language_code}'))
     # Check to see if the domain exists or not.
     listname, at, domain = fqdn_listname.partition('@')
     domain_manager = getUtility(IDomainManager)
@@ -183,15 +183,15 @@ def create(ctx, language, owners, notify, quiet, create_domain, fqdn_listname):
                           if not validator.is_valid(owner)]
         if invalid_owners:
             invalid = COMMASPACE.join(sorted(invalid_owners))  # noqa: F841
-            ctx.fail(_('Illegal owner addresses: $invalid'))
+            ctx.fail(_('Illegal owner addresses: ${invalid}'))
     try:
         mlist = create_list(fqdn_listname, owners)
     except InvalidEmailAddressError:
-        ctx.fail(_('Illegal list name: $fqdn_listname'))
+        ctx.fail(_('Illegal list name: ${fqdn_listname}'))
     except ListAlreadyExistsError:
-        ctx.fail(_('List already exists: $fqdn_listname'))
+        ctx.fail(_('List already exists: ${fqdn_listname}'))
     except BadDomainSpecificationError as domain:              # noqa: F841
-        ctx.fail(_('Undefined domain: $domain'))
+        ctx.fail(_('Undefined domain: ${domain}'))
     # Find the language associated with the code, then set the mailing list's
     # preferred language to that.
     language_manager = getUtility(ILanguageManager)
@@ -199,7 +199,7 @@ def create(ctx, language, owners, notify, quiet, create_domain, fqdn_listname):
         mlist.preferred_language = language_manager[language_code]
     # Do the notification.
     if not quiet:
-        print(_('Created mailing list: $mlist.fqdn_listname'))
+        print(_('Created mailing list: ${mlist.fqdn_listname}'))
     if notify:
         template = getUtility(ITemplateLoader).get(
             'domain:admin:notice:new-list', mlist)
@@ -214,7 +214,7 @@ def create(ctx, language, owners, notify, quiet, create_domain, fqdn_listname):
         with _.using(mlist.preferred_language.code):
             msg = UserNotification(
                 owners, mlist.no_reply_address,
-                _('Your new mailing list: $fqdn_listname'),
+                _('Your new mailing list: ${fqdn_listname}'),
                 text, mlist.preferred_language)
             msg.send(mlist)
 
@@ -238,12 +238,12 @@ def remove(quiet, listspec):
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
         if not quiet:
-            print(_('No such list matching spec: $listspec'))
+            print(_('No such list matching spec: ${listspec}'))
             sys.exit(0)
     with transaction():
         remove_list(mlist)
         if not quiet:
-            print(_('Removed list: $listspec'))
+            print(_('Removed list: ${listspec}'))
 
 
 @public

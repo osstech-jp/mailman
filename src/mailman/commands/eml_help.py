@@ -56,7 +56,7 @@ class Help:
             command_name = arguments[0]
             command = config.commands.get(command_name)
             if command is None:
-                print(_('$self.name: no such command: $command_name'),
+                print(_('${self.name}: no such command: ${command_name}'),
                       file=results)
                 return ContinueProcessing.no
             print('{} {}'.format(command.name, command.argument_description),
@@ -67,6 +67,7 @@ class Help:
             return ContinueProcessing.yes
         else:
             printable_arguments = SPACE.join(arguments)           # noqa: F841
-            print(_('$self.name: too many arguments: $printable_arguments'),
+            print(_('${self.name}: too many arguments: '
+                    '${printable_arguments}'),
                   file=results)
             return ContinueProcessing.no

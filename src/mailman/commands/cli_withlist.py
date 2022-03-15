@@ -290,15 +290,15 @@ def shell(ctx, interactive, run, listspec, run_args):
         else:
             m = list_manager.get(listspec)
             if m is None:
-                ctx.fail(_('No such list: $listspec'))
+                ctx.fail(_('No such list: ${listspec}'))
             r = call_name(dotted_name, m, *run_args)
     else:
         # Not --run.
         if listspec is not None:
             m = list_manager.get(listspec)
             if m is None:
-                ctx.fail(_('No such list: $listspec'))
-            banner = _("The variable 'm' is the $listspec mailing list")
+                ctx.fail(_('No such list: ${listspec}'))
+            banner = _("The variable 'm' is the ${listspec} mailing list")
     # All other processing is finished; maybe go into interactive mode.
     if interactive:
         do_interactive(ctx, banner)

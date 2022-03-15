@@ -331,8 +331,8 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         # Possibly send a notification to the list moderators.
         if self.mlist.admin_immed_notify:
             subject = _(
-                'New subscription request to $self.mlist.display_name '
-                'from $self.address.email')
+                'New subscription request to ${self.mlist.display_name} '
+                'from ${self.address.email}')
             username = formataddr(
                 (self.subscriber.display_name, self.address.email))
             template = getUtility(ITemplateLoader).get(
@@ -499,8 +499,8 @@ class UnSubscriptionWorkflow(_SubscriptionWorkflowCommon):
             self.mlist.fqdn_listname, self.address.email))
         if self.mlist.admin_immed_notify:
             subject = _(
-                'New unsubscription request to $self.mlist.display_name '
-                'from $self.address.email')
+                'New unsubscription request to ${self.mlist.display_name} '
+                'from ${self.address.email}')
             username = formataddr(
                 (self.subscriber.display_name, self.address.email))
             template = getUtility(ITemplateLoader).get(
@@ -631,14 +631,14 @@ def _handle_confirmation_needed_events(event, template_name):
     with _.using(event.mlist.preferred_language.code):
         if template_name.endswith(':invite'):
             subject = _('You have been invited to join the '
-                        '$event.mlist.fqdn_listname mailing list.')
+                        '${event.mlist.fqdn_listname} mailing list.')
         elif template_name.endswith(':unsubscribe'):
             subject = _('Your confirmation is needed to leave the '
-                        '$event.mlist.fqdn_listname mailing list.')
+                        '${event.mlist.fqdn_listname} mailing list.')
         else:
             assert(template_name.endswith(':subscribe'))
             subject = _('Your confirmation is needed to join the '
-                        '$event.mlist.fqdn_listname mailing list.')
+                        '${event.mlist.fqdn_listname} mailing list.')
     confirm_address = event.mlist.confirm_address(event.token)
     email_address = event.email
     # Send a verification email to the address.

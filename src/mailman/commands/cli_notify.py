@@ -66,7 +66,7 @@ def notify(ctx, list_ids, dry_run, verbose):
             else:
                 mlist = list_manager.get_by_list_id(spec)
             if mlist is None:
-                print(_('No such list found: $spec'), file=sys.stderr)
+                print(_('No such list found: ${spec}'), file=sys.stderr)
             else:
                 lists.append(mlist)
     else:

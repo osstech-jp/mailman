@@ -47,7 +47,7 @@ def make_runner(name, slice, range, once=False):
     # names are supported.
     runner_config = getattr(config, 'runner.' + name, None)
     if runner_config is None:
-        print(_('Undefined runner name: $name'), file=sys.stderr)
+        print(_('Undefined runner name: ${name}'), file=sys.stderr)
         # Exit with SIGTERM exit code so the master won't try to restart us.
         sys.exit(signal.SIGTERM)
     class_path = runner_config['class']
@@ -55,7 +55,7 @@ def make_runner(name, slice, range, once=False):
         runner_class = find_name(class_path)
     except ImportError:
         if os.environ.get('MAILMAN_UNDER_MASTER_CONTROL') is not None:
-            print(_('Cannot import runner module: $class_path'),
+            print(_('Cannot import runner module: ${class_path}'),
                   file=sys.stderr)
             traceback.print_exc()
             sys.exit(signal.SIGTERM)
@@ -178,7 +178,7 @@ def main(ctx, config_file, verbose, list_runners, once, runner_spec):
             classname = descriptions[shortname]
             spaces = longest - len(shortname)
             name = (' ' * spaces) + shortname       # noqa: F841
-            print(_('$name runs $classname'))
+            print(_('${name} runs ${classname}'))
         sys.exit(0)
 
     runner = make_runner(*runner_spec, once=once)

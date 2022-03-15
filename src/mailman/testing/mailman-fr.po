@@ -44,8 +44,8 @@ msgstr ""
 "qu'il soit plus spécifique que « Re: Contenu du groupe de $display_name... »"
 
 #: Mailman/Handlers/ToDigest.py:159
-msgid "$mlist.display_name Digest, Vol $volume, Issue $digest_number"
-msgstr "Groupe $mlist.display_name, Vol $volume, Parution $digest_number"
+msgid "${mlist.display_name} Digest, Vol ${volume}, Issue ${digest_number}"
+msgstr "Groupe ${mlist.display_name}, Vol ${volume}, Parution ${digest_number}"
 
 #: Mailman/Handlers/ToDigest.py:205
 msgid "digest header"

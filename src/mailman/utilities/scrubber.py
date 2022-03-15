@@ -49,10 +49,10 @@ def scrub(msg):
             filename = part.get_filename(_('not available'))    # noqa: F841
             payload = _("""\
 A message part incompatible with plain text digests has been removed ...
-Name: $filename
-Type: $ctype
-Size: $size bytes
-Desc: $desc
+Name: ${filename}
+Type: ${ctype}
+Size: ${size} bytes
+Desc: ${desc}
 """)
         if len(text) > 0:
             text += _('-------------- next part --------------\n')

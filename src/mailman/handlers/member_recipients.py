@@ -75,8 +75,9 @@ class MemberRecipients:
                 # I think it's better that the sender know they screwed up
                 # than to deliver it normally.
                 text = _("""\
-Your urgent message to the $mlist.display_name mailing list was not authorized
-for delivery.  The original message as received by Mailman is attached.
+Your urgent message to the ${mlist.display_name} mailing list was not
+authorized for delivery.  The original message as received by Mailman is
+attached.
 """)
                 raise RejectMessage(wrap(text))
         # Calculate the regular recipients of the message

@@ -162,7 +162,7 @@ master is already running.""")
             program = sys.argv[0]                   # noqa: F841
             message = _("""\
 The master lock could not be acquired.  It appears as though there is a stale
-master lock.  Try re-running $program with the --force flag.""")
+master lock.  Try re-running ${program} with the --force flag.""")
         elif status is WatcherState.host_mismatch:
             # Hostname doesn't even match.
             hostname, pid, tempfile = lock.details
@@ -171,8 +171,8 @@ The master lock could not be acquired, because it appears as if some process
 on some other host may have acquired it.  We can't test for stale locks across
 host boundaries, so you'll have to clean this up manually.
 
-Lock file: $config.LOCK_FILE
-Lock host: $hostname
+Lock file: ${config.LOCK_FILE}
+Lock host: ${hostname}
 
 Exiting.""")
         else:
@@ -182,8 +182,8 @@ Exiting.""")
             message = _("""\
 For unknown reasons, the master lock could not be acquired.
 
-Lock file: $config.LOCK_FILE
-Lock host: $hostname
+Lock file: ${config.LOCK_FILE}
+Lock host: ${hostname}
 
 Exiting.""")
         print(message, file=sys.stderr)

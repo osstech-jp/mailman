@@ -20,4 +20,4 @@ for each in src/mailman/messages/*/*/*.po; do
 done
 
 # Finally, update the engligh PO file.
-python update_po.py
+python3 update_po.py
