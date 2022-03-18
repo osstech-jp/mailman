@@ -48,7 +48,7 @@ from mailman.interfaces.mailinglist import (
 )
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
-from mailman.interfaces.template import ITemplateLoader, ITemplateManager
+from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.roster import RosterVisibility
 from mailman.utilities.filesystem import makedirs
@@ -468,7 +468,7 @@ def import_config_pck(mlist, config_dict):
     # special `mailman:` scheme indicating a file system path.  What we do
     # here is look to see if the list's decoration is different than the
     # default, and if so, we'll write the new decoration template to a
-    # `mailman:` scheme path, then add the template to the template manager.
+    # `mailman:` scheme path which is in the standard search path.
     # We are intentionally omitting the 2.1 welcome_msg here because the
     # string is actually interpolated into a larger template and there's
     # no good way to figure where in the default template to insert it.
@@ -493,7 +493,6 @@ def import_config_pck(mlist, config_dict):
         ('%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s\n', ''),
         ]
     # Collect defaults.
-    manager = getUtility(ITemplateManager)
     defaults = {}
     for oldvar, newvar in convert_to_uri.items():
         default_value = getUtility(ITemplateLoader).get(newvar, mlist)
@@ -541,11 +540,8 @@ def import_config_pck(mlist, config_dict):
                 expanded_text.strip() == default_text.strip()):
             # Keep the default.
             continue
-        # Write the custom value to the right file and add it to the template
-        # manager for real.
-        base_uri = 'mailman:///$listname/$language/'
+        # Write the custom value to the right file.
         filename = '{}.txt'.format(newvar)
-        manager.set(newvar, mlist.list_id, base_uri + filename)
         with ExitStack() as resources:
             filepath = list(search(resources, filename, mlist))[0]
         makedirs(os.path.dirname(filepath))

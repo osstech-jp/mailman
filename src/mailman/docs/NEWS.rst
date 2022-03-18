@@ -48,6 +48,8 @@ Bugs fixed
 * The i18n gettext replacements now all use curly brace notation to avoid
   issues whith translations that might follow them immediately with a period.
   The various mailman.po files have been updated accordingly.  (Closes #987)
+* The ``mailman import21`` command no longer creates unnecessary entries in the
+  ``template`` table.  (Closes #988)
 
 REST
 ====
