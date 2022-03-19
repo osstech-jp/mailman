@@ -99,7 +99,8 @@ def munged_headers(mlist, msg, msgdata):
     # If there was no display name in the email header, see if we have a
     # matching member with a display name.
     if len(realname) == 0:
-        member = mlist.members.get_member(email)
+        member = (mlist.members.get_member(email) or
+                  mlist.nonmembers.get_member(email))
         if member:
             realname = member.display_name or email
         else:

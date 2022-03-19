@@ -23,6 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.app.membership import add_member
 from mailman.handlers import dmarc
 from mailman.interfaces.mailinglist import DMARCMitigateAction, ReplyToMunging
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.subscriptions import RequestRecord
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
@@ -245,6 +246,41 @@ Content-Transfer-Encoding: 7bit
         add_member(
             self._mlist,
             RequestRecord('anne@example.com', 'Anna Banana')
+            )
+        msgdata = {'dmarc': True}
+        msg = mfs(self._text)
+        dmarc.process(self._mlist, msg, msgdata)
+        self.assertMultiLineEqual(msg.as_string(), """\
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+Message-ID: <alpha@example.com>
+Date: Fri, 1 Jan 2016 00:00:01 +0000
+Another-Header: To test removal in wrapper
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=====abc=="
+From: Anna Banana via Ant <ant@example.com>
+Reply-To: anne@example.com
+
+--=====abc==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Some things to say.
+--=====abc==
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+<html><head></head><body>Some things to say.</body></html>
+--=====abc==--
+""")
+
+    def test_action_munge_from_nonmember_display_name_in_list(self):
+        self._mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        add_member(
+            self._mlist,
+            RequestRecord('anne@example.com', 'Anna Banana'),
+            role=MemberRole.nonmember
             )
         msgdata = {'dmarc': True}
         msg = mfs(self._text)

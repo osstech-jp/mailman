@@ -50,6 +50,8 @@ Bugs fixed
   The various mailman.po files have been updated accordingly.  (Closes #987)
 * The ``mailman import21`` command no longer creates unnecessary entries in the
   ``template`` table.  (Closes #988)
+* DMARC munge from mitigation will now find a nonmember poster's display name.
+  (Closes #989)
 
 REST
 ====
