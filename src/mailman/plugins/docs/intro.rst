@@ -2,6 +2,10 @@
  Plugins
 =========
 
+.. seealso:: See an `example Mailman plugin
+             <https://gitlab.com/mailman/example-mailman-plugin/-/tree/master>`_
+             as a starting point for writing a new plugin.
+
 Mailman defines a plugin as a Python package on ``sys.path`` that provides
 components matching the ``IPlugin`` interface.  ``IPlugin`` implementations
 can define a *pre-hook*, a *post-hook*, and a *REST resource*.  Plugins are
