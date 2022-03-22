@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-22 10:08+0000\n"
+"PO-Revision-Date: 2022-03-22 19:19+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
@@ -1391,11 +1391,11 @@ msgstr "מספר הפריטים שנמצאו (להלן המשתנה ‚m’): ${
 
 #: src/mailman/commands/cli_status.py:34
 msgid "Show the current running status of the Mailman system."
-msgstr "Show the current running status of the Mailman system."
+msgstr "להציג את מצב הפעילות הנוכחי של מערכת Mailman."
 
 #: src/mailman/commands/cli_status.py:38
 msgid "GNU Mailman is not running"
-msgstr "GNU Mailman is not running"
+msgstr "GNU Mailman אינו פעיל"
 
 #: src/mailman/commands/cli_status.py:41
 #, python-brace-format
