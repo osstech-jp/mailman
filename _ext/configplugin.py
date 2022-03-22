@@ -1,4 +1,4 @@
-# Copyright (C) 2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2020-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,12 +19,11 @@
 
 import re
 import configparser
-from importlib_resources import files
 
 from docutils import nodes
+from docutils.parsers.rst import Directive, directives
 from docutils.statemachine import ViewList
-from docutils.parsers.rst import Directive
-from docutils.parsers.rst import directives
+from importlib_resources import files
 from sphinx.util.nodes import nested_parse_with_titles
 
 

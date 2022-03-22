@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,12 +21,19 @@ from mailman.app.moderator import send_rejection
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError
-from mailman.interfaces.pending import IPendings
+from mailman.interfaces.pending import IPendings, PendType
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, child, conflict, etag, no_content,
-    not_found, okay)
-from mailman.rest.validator import Validator, enum_validator
+    bad_request,
+    child,
+    CollectionMixin,
+    conflict,
+    etag,
+    no_content,
+    not_found,
+    okay,
+)
+from mailman.rest.validator import enum_validator, Validator
 from public import public
 from zope.component import getUtility
 
@@ -70,7 +77,9 @@ class IndividualRequest(_ModerationBase):
 
     def on_post(self, request, response):
         try:
-            validator = Validator(action=enum_validator(Action))
+            validator = Validator(action=enum_validator(Action),
+                                  reason=str,
+                                  _optional=('reason',))
             arguments = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
@@ -107,10 +116,10 @@ class IndividualRequest(_ModerationBase):
                 not_found(response)
             else:
                 no_content(response)
+                reason = arguments.get('reason', _('[No reason given]'))
                 send_rejection(
                     self._mlist, _('Subscription request'),
-                    pendable['email'],
-                    _('[No reason given]'))
+                    pendable['email'], reason)
 
 
 class _SubscriptionRequestsFound(_ModerationBase, CollectionMixin):
@@ -134,16 +143,18 @@ class _SubscriptionRequestCount:
     def on_get(self, request, response):
         validator = Validator(
             token_owner=enum_validator(TokenOwner),
-            _optional=['token_owner'])
+            request_type=enum_validator(PendType),
+            _optional=['token_owner', 'request_type'])
         try:
             data = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
         else:
             token_owner = data.pop('token_owner', None)
+            pend_type = data.pop('request_type', PendType.subscription)
             count = getUtility(IPendings).count(
                 mlist=self._mlist,
-                pend_type='subscription',
+                pend_type=pend_type.name,
                 token_owner=token_owner)
             okay(response, etag(dict(count=count)))
 
@@ -160,9 +171,10 @@ class SubscriptionRequests(_ModerationBase, CollectionMixin):
         """/lists/listname/requests"""
         validator = Validator(
             token_owner=enum_validator(TokenOwner),
+            request_type=enum_validator(PendType),
             page=int,
             count=int,
-            _optional=['token_owner', 'page', 'count'],
+            _optional=['token_owner', 'page', 'count', 'request_type'],
             )
 
         try:
@@ -173,9 +185,10 @@ class SubscriptionRequests(_ModerationBase, CollectionMixin):
             data.pop('page', None)
             data.pop('count', None)
             token_owner = data.pop('token_owner', None)
+            pend_type = data.pop('request_type', PendType.subscription)
             pendings = getUtility(IPendings).find(
                 mlist=self._mlist,
-                pend_type='subscription',
+                pend_type=pend_type.name,
                 token_owner=token_owner)
             resource = _SubscriptionRequestsFound(
                 [token for token, pendable in pendings])

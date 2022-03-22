@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,7 +22,9 @@ from mailman.database.transaction import dbconnection
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.subscriptions import (
-    ISubscriptionService, TooManyMembersError)
+    ISubscriptionService,
+    TooManyMembersError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.address import Address
 from mailman.model.member import Member
@@ -31,9 +33,11 @@ from mailman.utilities.queries import QuerySequence
 from operator import attrgetter
 from public import public
 from sqlalchemy import or_
-from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from zope.component import getUtility
 from zope.interface import implementer
+
+
+EMPTY = object()
 
 
 @public
@@ -76,12 +80,18 @@ class SubscriptionService:
             return members[0]
 
     @dbconnection
-    def _find_members(self, store, subscriber, list_id, role):
+    def _find_members(self, store, subscriber, list_id, role,
+                      delivery_mode, moderation_action, delivery_status):
         # If `subscriber` is a user id, then we'll search for all addresses
         # which are controlled by the user, otherwise we'll just search for
         # the given address.
-        if subscriber is None and list_id is None and role is None:
-            return None
+        if (subscriber is None and
+                list_id is None and
+                role is None and
+                delivery_mode is None and
+                moderation_action is EMPTY and
+                delivery_status is None):
+            return []
         order = (Member.list_id, Address.email, Member.role)
         # Querying for the subscriber is the most complicated part, because
         # the parameter can either be an email address or a user id.  Start by
@@ -122,25 +132,45 @@ class SubscriptionService:
         if role is not None:
             q_address = q_address.filter(Member.role == role)
             q_user = q_user.filter(Member.role == role)
+        if moderation_action is not EMPTY:
+            q_address = q_address.filter(
+                Member.moderation_action == moderation_action)
+            q_user = q_user.filter(
+                Member.moderation_action == moderation_action)
         # Do a UNION of the two queries, sort the result and generate Members.
-        return q_address.union(q_user).order_by(*order).from_self(Member)
+        query = QuerySequence(
+            q_address.union(q_user).order_by(*order).from_self(Member))
+        # These are python attributes and not actual table colukmsn and hence
+        # their filtering can only be done in Python.
+        if delivery_status or delivery_mode:
+            return self._filter(query, delivery_mode, delivery_status)
+        return query
 
-    def find_members(self, subscriber=None, list_id=None, role=None):
+    def _filter(self, query, delivery_mode, delivery_status):
+        if delivery_mode is not None:
+            query = filter(lambda m: m.delivery_mode == delivery_mode, query)
+        if delivery_status is not None:
+            query = filter(
+                lambda m: m.delivery_status == delivery_status, query)
+        return list(query)
+
+    def find_members(self, subscriber=None, list_id=None, role=None,
+                     delivery_mode=None, moderation_action=EMPTY,
+                     delivery_status=None):
         """See `ISubscriptionService`."""
-        return QuerySequence(self._find_members(subscriber, list_id, role))
+        return self._find_members(
+            subscriber, list_id, role, delivery_mode, moderation_action,
+            delivery_status)
 
     def find_member(self, subscriber=None, list_id=None, role=None):
         """See `ISubscriptionService`."""
-        try:
-            result = self._find_members(subscriber, list_id, role)
-            return (result if result is None else result.one())
-        except NoResultFound:
+        result = self._find_members(
+            subscriber, list_id, role, None, EMPTY, None)
+        if len(result) == 0:
             return None
-        except MultipleResultsFound:
-            # Coerce the exception into a Mailman-layer exception so call
-            # sites don't have to import from SQLAlchemy, resulting in a layer
-            # violation.
-            raise TooManyMembersError(subscriber, list_id, role)
+        elif len(result) == 1:
+            return result[0]
+        raise TooManyMembersError(subscriber, list_id, role)
 
     def __iter__(self):
         yield from self.get_members()

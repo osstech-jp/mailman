@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -30,13 +30,18 @@ from mailman.config import config
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.mta import SomeRecipientsFailed
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages, make_testable_runner,
-    specialized_message_from_string as message_from_string)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    make_testable_runner,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer, SMTPLayer
 from mailman.utilities.datetime import factory, now
 from zope.component import getUtility
@@ -73,7 +78,7 @@ Message-Id: <first>
         deliver_after = now() + timedelta(days=10)
         self._msgdata['deliver_after'] = deliver_after
         self._outq.enqueue(self._msg, self._msgdata,
-                           tolist=True, listid='test.example.com')
+                           to_list=True, listid='test.example.com')
         self._runner.run()
         items = get_queue_messages('out', expected_count=1)
         self.assertEqual(items[0].msgdata['deliver_after'], deliver_after)
@@ -307,12 +312,12 @@ Message-Id: <first>
 
     def test_probe_failure(self):
         # When a probe message fails during SMTP, a bounce event is recorded
-        # with the proper bounce context.
+        # with the proper bounce context and a fake DSN is recorded.
         anne = getUtility(IUserManager).create_address('anne@example.com')
         member = self._mlist.subscribe(anne, MemberRole.member)
         token = send_probe(member, self._msg)
         msgdata = dict(probe_token=token)
-        permanent_failures.append('anne@example.com')
+        permanent_failures.append(('anne@example.com', 500, 'Failure'))
         self._outq.enqueue(self._msg, msgdata, listid='test.example.com')
         self._runner.run()
         events = list(self._processor.unprocessed)
@@ -321,9 +326,14 @@ Message-Id: <first>
         self.assertEqual(event.list_id, 'test.example.com')
         self.assertEqual(event.email, 'anne@example.com')
         self.assertEqual(event.timestamp, datetime(2005, 8, 1, 7, 49, 23))
-        self.assertEqual(event.message_id, '<first>')
         self.assertEqual(event.context, BounceContext.probe)
         self.assertFalse(event.processed)
+        # We can't say anything about the Message-ID because it's generated,
+        # But we can get the message.
+        msg = getUtility(IMessageStore).get_message_by_id(event.message_id)
+        self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertIn('Error code: 500', msg.as_string())
+        self.assertIn('Error message: Failure', msg.as_string())
 
     def test_confirmed_probe_failure(self):
         # This time, a probe also fails, but for some reason the probe token
@@ -333,7 +343,7 @@ Message-Id: <first>
         token = send_probe(member, self._msg)
         getUtility(IPendings).confirm(token)
         msgdata = dict(probe_token=token)
-        permanent_failures.append('anne@example.com')
+        permanent_failures.append(('anne@example.com', 500, 'Failure'))
         self._outq.enqueue(self._msg, msgdata, listid='test.example.com')
         self._runner.run()
         events = list(self._processor.unprocessed)
@@ -355,18 +365,23 @@ Message-Id: <first>
 
     def test_one_permanent_failure(self):
         # Normal (i.e. non-probe) permanent failures just get registered.
-        permanent_failures.append('anne@example.com')
+        permanent_failures.append(('anne@example.com', 500, 'Failure'))
         self._outq.enqueue(self._msg, {}, listid='test.example.com')
         self._runner.run()
         events = list(self._processor.unprocessed)
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0].email, 'anne@example.com')
         self.assertEqual(events[0].context, BounceContext.normal)
+        # Check the fake DSN we created.
+        msg = getUtility(IMessageStore).get_message_by_id(events[0].message_id)
+        self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertIn('Error code: 500', msg.as_string())
+        self.assertIn('Error message: Failure', msg.as_string())
 
     def test_two_permanent_failures(self):
         # Two normal (i.e. non-probe) permanent failures just get registered.
-        permanent_failures.append('anne@example.com')
-        permanent_failures.append('bart@example.com')
+        permanent_failures.append(('anne@example.com', 500, 'Failure'))
+        permanent_failures.append(('bart@example.com', 501, 'Another Failure'))
         self._outq.enqueue(self._msg, {}, listid='test.example.com')
         self._runner.run()
         events = list(self._processor.unprocessed)
@@ -375,6 +390,15 @@ Message-Id: <first>
         self.assertEqual(events[0].context, BounceContext.normal)
         self.assertEqual(events[1].email, 'bart@example.com')
         self.assertEqual(events[1].context, BounceContext.normal)
+        # Check the fake DSNs we created.
+        msg = getUtility(IMessageStore).get_message_by_id(events[0].message_id)
+        self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertIn('Error code: 500', msg.as_string())
+        self.assertIn('Error message: Failure', msg.as_string())
+        msg = getUtility(IMessageStore).get_message_by_id(events[1].message_id)
+        self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertIn('Error code: 501', msg.as_string())
+        self.assertIn('Error message: Another Failure', msg.as_string())
 
     def test_one_temporary_failure(self):
         # The first time there are temporary failures, the message just gets
@@ -414,8 +438,8 @@ Message-Id: <first>
 
     def test_mixed_failures(self):
         # Some temporary and some permanent failures.
-        permanent_failures.append('elle@example.com')
-        permanent_failures.append('fred@example.com')
+        permanent_failures.append(('elle@example.com', 500, 'Failure'))
+        permanent_failures.append(('fred@example.com', 501, 'Another Failure'))
         temporary_failures.append('gwen@example.com')
         temporary_failures.append('herb@example.com')
         self._outq.enqueue(self._msg, {}, listid='test.example.com')
@@ -427,6 +451,15 @@ Message-Id: <first>
         self.assertEqual(events[0].context, BounceContext.normal)
         self.assertEqual(events[1].email, 'fred@example.com')
         self.assertEqual(events[1].context, BounceContext.normal)
+        # Check the fake DSNs we created.
+        msg = getUtility(IMessageStore).get_message_by_id(events[0].message_id)
+        self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertIn('Error code: 500', msg.as_string())
+        self.assertIn('Error message: Failure', msg.as_string())
+        msg = getUtility(IMessageStore).get_message_by_id(events[1].message_id)
+        self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertIn('Error code: 501', msg.as_string())
+        self.assertIn('Error message: Another Failure', msg.as_string())
         # Let's look at the temporary failures.
         items = get_queue_messages('retry', expected_count=1)
         self.assertEqual(items[0].msgdata['recipients'],

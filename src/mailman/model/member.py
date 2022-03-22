@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,7 +18,6 @@
 """Model for members."""
 
 from datetime import datetime
-
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -27,14 +26,20 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    DeliveryStatus, IMember, IMembershipManager, MemberRole, MembershipError,
-    SubscriptionMode, UnsubscriptionEvent)
+    DeliveryStatus,
+    IMember,
+    IMembershipManager,
+    MemberRole,
+    MembershipError,
+    SubscriptionMode,
+    UnsubscriptionEvent,
+)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import now
 from mailman.utilities.uid import UIDFactory
 from public import public
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, and_
+from sqlalchemy import and_, Column, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from zope.component import getUtility
 from zope.event import notify
@@ -146,7 +151,7 @@ class Member(Model):
         """See `IMember`."""
         return (self._user
                 if self._address is None
-                else getUtility(IUserManager).get_user(self._address.email))
+                else self._address.user)
 
     @property
     def subscriber(self):
@@ -240,9 +245,12 @@ class MembershipManager:
         # could have been reset due to bounce info getting stale. We will send
         # warnings to people who have been disabled already, regardless of
         # their bounce score. Same is true below for removal.
-        query = store.query(Member).join(
+        query = store.query(
+            Member,
+            MailingList.bounce_you_are_disabled_warnings_interval).join(
             MailingList, Member.list_id == MailingList._list_id).join(
             Member.preferences).filter(and_(
+                Member.role == MemberRole.member,
                 MailingList.process_bounces == True,       # noqa: E712
                 Member.total_warnings_sent < MailingList.bounce_you_are_disabled_warnings,  # noqa: E501
                 Preferences.delivery_status == DeliveryStatus.by_bounces))
@@ -259,9 +267,8 @@ class MembershipManager:
         # func.DATETIME(MailingList.bounce_you_are_disabled_warnings_interval))
         # < func.DATETIME(now())))
 
-        for member in query.all():
-            if (member.last_warning_sent +
-                    member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now():   # noqa: E501
+        for member, interval in query.all():
+            if (member.last_warning_sent + interval) <= now():
                 yield member
 
     @dbconnection
@@ -270,15 +277,17 @@ class MembershipManager:
         from mailman.model.mailinglist import MailingList
         from mailman.model.preferences import Preferences
 
-        query = store.query(Member).join(
+        query = store.query(
+            Member,
+            MailingList.bounce_you_are_disabled_warnings_interval,
+            MailingList.bounce_you_are_disabled_warnings).join(
             MailingList, Member.list_id == MailingList._list_id).join(
             Member.preferences).filter(and_(
+                Member.role == MemberRole.member,
                 MailingList.process_bounces == True,    # noqa: E712
                 Member.total_warnings_sent >= MailingList.bounce_you_are_disabled_warnings,     # noqa: E501
                 Preferences.delivery_status == DeliveryStatus.by_bounces))
 
-        for member in query.all():
-            if ((member.last_warning_sent +
-                    member.mailing_list.bounce_you_are_disabled_warnings_interval) <= now() or   # noqa: E501
-                    member.mailing_list.bounce_you_are_disabled_warnings == 0):
+        for member, interval, warnings in query.all():
+            if (member.last_warning_sent + interval) <= now() or warnings == 0:
                 yield member

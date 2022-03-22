@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,7 +23,10 @@ from mailman.app.bounces import bounce_message
 from mailman.config import config
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import (
-    DiscardMessage, IPipeline, RejectMessage)
+    DiscardMessage,
+    IPipeline,
+    RejectMessage,
+)
 from mailman.utilities.modules import add_components
 from public import public
 

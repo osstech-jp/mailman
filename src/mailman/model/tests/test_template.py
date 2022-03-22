@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -34,6 +34,7 @@ from tempfile import TemporaryDirectory
 from unittest import mock
 from urllib.error import URLError
 from zope.component import getUtility
+
 
 # New in Python 3.5.
 try:

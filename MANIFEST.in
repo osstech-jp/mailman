@@ -1,6 +1,7 @@
 include *.py
 include COPYING MANIFEST.in
 recursive-include .buildout *
+recursive-include _ext *
 recursive-include contrib *
 recursive-include cron *
 recursive-include data *
@@ -14,3 +15,4 @@ prune .tox
 include src/mailman/testing/config*.pck
 include src/mailman/database/alembic/script.py.mako
 include src/mailman/database/alembic/versions/*.py
+include src/mailman/testing/ssl_test_*

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,9 +17,11 @@
 
 """Cleanse certain headers from all messages."""
 
+import re
 import logging
 
-from email.utils import formataddr
+from email.utils import formataddr, make_msgid
+from mailman.config import config
 from mailman.core.i18n import _
 from mailman.handlers.cook_headers import uheader
 from mailman.interfaces.handler import IHandler
@@ -27,7 +29,8 @@ from public import public
 from zope.interface import implementer
 
 
-log = logging.getLogger('mailman.post')
+log = logging.getLogger('mailman.smtp')
+elog = logging.getLogger('mailman.error')
 
 
 @public
@@ -37,6 +40,26 @@ class Cleanse:
 
     name = 'cleanse'
     description = _('Cleanse certain headers from all messages.')
+
+    def remove_nonkeepers(self, msg):
+        cres = []
+        for regexp in config.mailman.anonymous_list_keep_headers.split():
+            try:
+                if regexp.endswith(':'):
+                    regexp = regexp[:-1] + '$'
+                cres.append(re.compile(regexp, re.IGNORECASE))
+            except re.error as e:
+                elog.error(
+                    'Ignored bad anonymous_list_keep_headers regexp %s: %s',
+                    regexp, e)
+        for hdr in msg.keys():
+            keep = False
+            for cre in cres:
+                if cre.search(hdr):
+                    keep = True
+                    break
+            if not keep:
+                del msg[hdr]
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
@@ -53,8 +76,20 @@ class Cleanse:
             del msg['from']
             del msg['reply-to']
             del msg['sender']
+            del msg['organization']
+            del msg['return-path']
             # Hotmail sets this one
             del msg['x-originating-email']
+            # And these can reveal the sender too
+            del msg['received']
+            # And so can the message-id so replace it.
+            del msg['message-id']
+            msg['Message-ID'] = make_msgid()
+            # And something sets these
+            del msg['x-mailfrom']
+            del msg['x-envelope-from']
+            # And now remove all but the keepers.
+            self.remove_nonkeepers(msg)
             i18ndesc = str(uheader(mlist, mlist.description, 'From'))
             msg['From'] = formataddr((i18ndesc, mlist.posting_address))
             msg['Reply-To'] = mlist.posting_address

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,6 +17,7 @@
 
 """Test the `confirm` command."""
 
+import base64
 import unittest
 
 from datetime import datetime
@@ -27,8 +28,10 @@ from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -78,6 +81,100 @@ To: test-confirm@example.com
 """)
         msg['Subject'] = subject
         self._commandq.enqueue(msg, dict(listid='test.example.com'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        address = list(user.addresses)[0]
+        self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
+        address = manager.get_address('anne@example.org')
+        self.assertEqual(address.email, 'anne@example.org')
+
+    def test_confirm_with_non_ascii_prefix(self):
+        msg = mfs("""\
+From: anne@example.org
+To: test-confirm@example.com
+""")
+        msg['Subject'] = '=?utf-8?b?5Zue5aSN?= confirm {}'.format(self._token)
+        self._commandq.enqueue(msg, dict(listid='test.example.com'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        address = list(user.addresses)[0]
+        self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on,
+                         datetime(2005, 8, 1, 7, 49, 23))
+        address = manager.get_address('anne@example.org')
+        self.assertEqual(address.email, 'anne@example.org')
+
+    def test_confirm_with_non_ascii_prefix_and_encoded_command(self):
+        msg = mfs("""\
+From: anne@example.org
+To: test-confirm@example.com
+""")
+        conf = 'confirm {}'.format(self._token)
+        rfc2047_conf = base64.encodebytes(conf.encode()).strip().decode()
+        msg['Subject'] = '=?utf-8?b?5Zue5aSNOiA?= =?us-ascii?b?{}?='.format(
+            rfc2047_conf)
+        self._commandq.enqueue(msg, dict(listid='test.example.com'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        address = list(user.addresses)[0]
+        self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on,
+                         datetime(2005, 8, 1, 7, 49, 23))
+        address = manager.get_address('anne@example.org')
+        self.assertEqual(address.email, 'anne@example.org')
+
+    def test_confirm_with_command_in_base64_encoded_body(self):
+        # Clear out the virgin queue so that the test below only sees the
+        # reply to the confirmation message.
+        get_queue_messages('virgin')
+        mail_content = 'confirm {}'.format(self._token)
+        msg = mfs("""\
+From: Anne Person <anne@example.org>
+To: test-confirm@example.com
+Subject: 'Re: Your confirmation ...'
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+{}
+""".format(base64.encodebytes(mail_content.encode()).decode()))
+        self._commandq.enqueue(msg, dict(listid='test.example.com'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        address = list(user.addresses)[0]
+        self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
+        address = manager.get_address('anne@example.org')
+        self.assertEqual(address.email, 'anne@example.org')
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msgdata['recipients'],
+                         set(['anne@example.org']))
+
+    def test_confirm_with_folded_to_header(self):
+        # Test that a folded To: header is properly parsed.
+        msg = mfs("""\
+From: anne@example.org
+To: "test-confirm+{0}@example.com"
+ <test-confirm+{0}@example.com>
+Subject: Your confirmation is required ...
+
+""".format(self._token))
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='confirm'))
         self._runner.run()
         # Anne is now a confirmed member so her user record and email address
         # should exist in the database.
@@ -227,7 +324,7 @@ From: Anne Person <anne@example.org>
         self._commandq.enqueue(msg, dict(listid='test.example.com',
                                          subaddress='confirm'))
         self._runner.run()
-        # Now there's a email command notification and a welcome message.  All
+        # Now there's an email command notification and a welcome message.  All
         # we care about for this test is the welcome message.
         items = get_queue_messages('virgin', sort_on='subject',
                                    expected_count=1)

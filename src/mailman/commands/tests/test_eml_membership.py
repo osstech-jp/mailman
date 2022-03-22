@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,6 +24,8 @@ from mailman.commands.eml_membership import Join, Leave
 from mailman.email.message import Message
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
+from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import Results
@@ -55,6 +57,25 @@ class TestLeave(unittest.TestCase):
             str(results).splitlines()[-1],
             'leave: anne@example.com is not a member of ant@example.com')
 
+    def test_leave_no_sender(self):
+        # Initiate an unsubscription with no sender in the message.
+        msg = Message()
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertEqual(
+            str(results).splitlines()[-1],
+            'leave: No valid email address found to unsubscribe')
+
+    def test_leave_no_user(self):
+        # Initiate an unsubscription for a non-user.
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertEqual(
+            str(results).splitlines()[-1],
+            'No registered user for email address: anne@example.com')
+
 
 class TestJoin(unittest.TestCase):
     layer = ConfigLayer
@@ -72,6 +93,43 @@ class TestJoin(unittest.TestCase):
         self.assertIn('Confirmation email sent to anne@example.com',
                       str(results))
 
+    def test_join_rfc2047_display(self):
+        # Subscribe a member with RFC 2047 encoded display name via join.
+        msg = Message()
+        msg['From'] = '=?utf-8?q?Anne?= <anne@example.com>'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertIn('Confirmation email sent to Anne <anne@example.com>',
+                      str(results))
+        # Check the pending confirmation.
+        pendings = list(getUtility(IPendings).find(self._mlist,
+                                                   'subscription',
+                                                   confirm=False))
+        self.assertEqual(1, len(pendings))
+        token = pendings[0][0]
+        pended = getUtility(IPendings).confirm(token, expunge=False)
+        self.assertEqual('Anne', pended['display_name'])
+        self.assertEqual('anne@example.com', pended['email'])
+
+    def test_join_rfc2047_display_with_comma(self):
+        # Subscribe a member with RFC 2047 encoded display name containing a
+        # comma and non-ascii via join.
+        msg = Message()
+        msg['From'] = '=?utf-8?q?J=C3=BCnk=2C_Anne?= <anne@example.com>'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, (), results)
+        self.assertIn('Confirmation email sent to =?utf-8?b?SsO8bmssIEFubmU=?='
+                      ' <anne@example.com>', str(results))
+        # Check the pending confirmation.
+        pendings = list(getUtility(IPendings).find(self._mlist,
+                                                   'subscription',
+                                                   confirm=False))
+        self.assertEqual(1, len(pendings))
+        token = pendings[0][0]
+        pended = getUtility(IPendings).confirm(token, expunge=False)
+        self.assertEqual('Jünk, Anne', pended['display_name'])
+        self.assertEqual('anne@example.com', pended['email'])
+
     def test_join_digest(self):
         # Subscribe a member to digest via join.
         msg = Message()
@@ -80,6 +138,24 @@ class TestJoin(unittest.TestCase):
         self._command.process(self._mlist, msg, {}, ('digest=mime',), results)
         self.assertIn('Confirmation email sent to anne@example.com',
                       str(results))
+
+    def test_join_digest_works(self):
+        # Subscribe a member to digest via join and verify it works.
+        # Set things so the subscribe works now.
+        self._mlist.subscription_policy = SubscriptionPolicy.open
+        # Create a verified address for Anne.
+        user = getUtility(IUserManager).make_user('anne@example.com', 'Anne')
+        address = user.addresses[0]
+        address.verified_on = address.registered_on
+        msg = Message()
+        msg['From'] = 'anne@example.com'
+        results = Results()
+        self._command.process(self._mlist, msg, {}, ('digest=mime',), results)
+        # Anne is a member.
+        members = list(self._mlist.members.members)
+        self.assertEqual(1, len(members))
+        self.assertEqual('anne@example.com', members[0].address.email)
+        self.assertEqual(DeliveryMode.mime_digests, members[0].delivery_mode)
 
     def test_join_other(self):
         # Subscribe a different address via join.

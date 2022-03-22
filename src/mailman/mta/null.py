@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,7 +17,7 @@
 
 """Creation/deletion hooks for the MTAs that do things automatically.
 
-Exim one example of an MTA that Just Works.
+Exim is one example of an MTA that Just Works.
 """
 
 from mailman.interfaces.mta import IMailTransportAgentLifecycle

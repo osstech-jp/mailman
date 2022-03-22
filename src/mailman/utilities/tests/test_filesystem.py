@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,7 +22,7 @@ import shutil
 import tempfile
 import unittest
 
-from mailman.utilities.filesystem import makedirs, first_inexistent_directory
+from mailman.utilities.filesystem import first_inexistent_directory, makedirs
 
 
 def fake_makedirs(path, mode):

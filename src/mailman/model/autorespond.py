@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,10 +21,13 @@ from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
 from mailman.interfaces.autorespond import (
-    IAutoResponseRecord, IAutoResponseSet, Response)
+    IAutoResponseRecord,
+    IAutoResponseSet,
+    Response,
+)
 from mailman.utilities.datetime import today
 from public import public
-from sqlalchemy import Column, Date, ForeignKey, Integer, desc
+from sqlalchemy import Column, Date, desc, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from zope.interface import implementer
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -35,7 +35,7 @@ class FakeRequest:
 
 class FakeResponse:
     def __init__(self):
-        self.body = 'not set'
+        self.text = 'not set'
 
 
 class Unserializable:
@@ -48,27 +48,37 @@ class TestHelpers(unittest.TestCase):
     def test_not_found_body_is_none(self):
         response = FakeResponse()
         helpers.not_found(response, body=None)
-        self.assertEqual(response.body, 'not set')
+        self.assertEqual(response.text, 'not set')
 
     def test_accepted_body_is_not_none(self):
         response = FakeResponse()
         helpers.accepted(response, body='set')
-        self.assertEqual(response.body, 'set')
+        self.assertEqual(response.text, 'set')
+
+    def test_okay_body_is_none(self):
+        response = FakeResponse()
+        helpers.okay(response, body=None)
+        self.assertEqual(response.text, 'not set')
+
+    def test_okay_body_is_not_none(self):
+        response = FakeResponse()
+        helpers.okay(response, body='set')
+        self.assertEqual(response.text, 'set')
 
     def test_bad_request_body_is_none(self):
         response = FakeResponse()
         helpers.bad_request(response, body=None)
-        self.assertEqual(response.body, 'not set')
+        self.assertEqual(response.text, 'not set')
 
     def test_conflict_body_is_none(self):
         response = FakeResponse()
         helpers.conflict(response, body=None)
-        self.assertEqual(response.body, 'not set')
+        self.assertEqual(response.text, 'not set')
 
     def test_forbidden_body_is_none(self):
         response = FakeResponse()
         helpers.forbidden(response, body=None)
-        self.assertEqual(response.body, 'not set')
+        self.assertEqual(response.text, 'not set')
 
     def test_json_encoding_datetime_seconds(self):
         resource = dict(interval=timedelta(seconds=2))
@@ -101,7 +111,7 @@ class TestHelpers(unittest.TestCase):
         helpers.bad_request(response, 'Missing Parameter: random')
         self.assertEqual(response.content_type,
                          'application/json; charset=UTF-8')
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.text),
                          {'title': '400 Bad Request',
                           'description': 'Missing Parameter: random', })
 
@@ -110,7 +120,7 @@ class TestHelpers(unittest.TestCase):
         helpers.not_found(response, 'Resource not found')
         self.assertEqual(response.content_type,
                          'application/json; charset=UTF-8')
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.text),
                          {'title': '404 Not Found',
                           'description': 'Resource not found', })
 
@@ -119,7 +129,7 @@ class TestHelpers(unittest.TestCase):
         helpers.conflict(response, 'Conflicting request')
         self.assertEqual(response.content_type,
                          'application/json; charset=UTF-8')
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.text),
                          {'title': '409 Conflict',
                           'description': 'Conflicting request', })
 
@@ -128,7 +138,7 @@ class TestHelpers(unittest.TestCase):
         helpers.forbidden(response, 'Conflicting request')
         self.assertEqual(response.content_type,
                          'application/json; charset=UTF-8')
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.text),
                          {'title': '403 Forbidden',
                           'description': 'Conflicting request', })
 
@@ -137,7 +147,7 @@ class TestHelpers(unittest.TestCase):
         helpers.bad_request(response, b'Missing Parameter: random')
         self.assertEqual(response.content_type,
                          'application/json; charset=UTF-8')
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.text),
                          {'title': '400 Bad Request',
                           'description': 'Missing Parameter: random', })
 
@@ -146,7 +156,7 @@ class TestHelpers(unittest.TestCase):
         helpers.not_found(response, b'Resource not found')
         self.assertEqual(response.content_type,
                          'application/json; charset=UTF-8')
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.text),
                          {'title': '404 Not Found',
                           'description': 'Resource not found', })
 
@@ -155,7 +165,7 @@ class TestHelpers(unittest.TestCase):
         helpers.conflict(response, b'Conflicting request')
         self.assertEqual(response.content_type,
                          'application/json; charset=UTF-8')
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.text),
                          {'title': '409 Conflict',
                           'description': 'Conflicting request', })
 
@@ -164,7 +174,7 @@ class TestHelpers(unittest.TestCase):
         helpers.forbidden(response, b'Conflicting request')
         self.assertEqual(response.content_type,
                          'application/json; charset=UTF-8')
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.text),
                          {'title': '403 Forbidden',
                           'description': 'Conflicting request', })
 

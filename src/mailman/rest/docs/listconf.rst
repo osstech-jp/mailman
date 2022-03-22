@@ -36,6 +36,7 @@ All readable attributes for a list are available on a sub-resource.
     autoresponse_postings_text:
     autoresponse_request_text:
     bounce_info_stale_after: 7d
+    bounce_notify_owner_on_bounce_increment: False
     bounce_notify_owner_on_disable: True
     bounce_notify_owner_on_removal: True
     bounce_score_threshold: 5
@@ -108,6 +109,7 @@ All readable attributes for a list are available on a sub-resource.
     request_address: ant-request@example.com
     require_explicit_destination: True
     respond_to_post_requests: True
+    send_goodbye_message: True
     send_welcome_message: True
     subject_prefix: [Ant]
     subscription_policy: confirm
@@ -146,6 +148,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
     ...             bounce_info_stale_after='5d',
+    ...             bounce_notify_owner_on_bounce_increment=False,
     ...             bounce_notify_owner_on_disable=True,
     ...             bounce_notify_owner_on_removal=True,
     ...             bounce_score_threshold=5,
@@ -155,7 +158,7 @@ When using ``PUT``, all writable attributes must be included.
     ...             filter_extensions=['.mkv'],
     ...             filter_types=['application/zip'],
     ...             process_bounces=True,
-    ...             discard_these_nonmembers=[r'name_*bperson*@example.com'],
+    ...             discard_these_nonmembers=[r'^name_*bperson*@example.com'],
     ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
@@ -181,12 +184,13 @@ When using ``PUT``, all writable attributes must be included.
     ...             nntp_prefix_subject_too=False,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
-    ...             reject_these_nonmembers=[r'b[hello]*@example.com'],
-    ...             hold_these_nonmembers=[r're[gG]ex@example.com'],
+    ...             reject_these_nonmembers=[r'^b[hello]*@example.com'],
+    ...             hold_these_nonmembers=[r'^re[gG]ex@example.com'],
     ...             reply_goes_to_list='point_to_list',
     ...             reply_to_address='bee@example.com',
     ...             require_explicit_destination=False,
     ...             member_roster_visibility='members',
+    ...             send_goodbye_message=False,
     ...             send_welcome_message=False,
     ...             subject_prefix='[ant]',
     ...             subscription_policy='moderate',
@@ -230,6 +234,7 @@ These values are changed permanently.
     autoresponse_postings_text: the mailing list
     autoresponse_request_text: the robot
     bounce_info_stale_after: 5d
+    bounce_notify_owner_on_bounce_increment: False
     bounce_notify_owner_on_disable: True
     bounce_notify_owner_on_removal: True
     bounce_score_threshold: 5
@@ -247,7 +252,7 @@ These values are changed permanently.
     digest_size_threshold: 10.5
     digest_volume_frequency: yearly
     digests_enabled: False
-    discard_these_nonmembers: ['name_*bperson*@example.com']
+    discard_these_nonmembers: ['^name_*bperson*@example.com']
     display_name: Fnords
     dmarc_mitigate_action: munge_from
     dmarc_mitigate_unconditionally: False
@@ -265,7 +270,7 @@ These values are changed permanently.
     gateway_to_mail: True
     gateway_to_news: True
     ...
-    hold_these_nonmembers: ['re[gG]ex@example.com']
+    hold_these_nonmembers: ['^re[gG]ex@example.com']
     http_etag: "..."
     include_rfc2369_headers: False
     ...
@@ -281,12 +286,13 @@ These values are changed permanently.
     posting_pipeline: virgin
     preferred_language: ja
     process_bounces: True
-    reject_these_nonmembers: ['b[hello]*@example.com']
+    reject_these_nonmembers: ['^b[hello]*@example.com']
     reply_goes_to_list: point_to_list
     reply_to_address: bee@example.com
     ...
     require_explicit_destination: False
     respond_to_post_requests: True
+    send_goodbye_message: False
     send_welcome_message: False
     subject_prefix: [ant]
     subscription_policy: moderate

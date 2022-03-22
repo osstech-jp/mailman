@@ -75,6 +75,7 @@ have a reduced set of `List-` headers.  Specifically, there is no `List-Post`,
     ---start---
     list-help: <mailto:test-request@example.com?subject=help>
     list-id: <test.example.com>
+    list-owner: <mailto:test-owner@example.com>
     list-subscribe: <mailto:test-join@example.com>
     list-unsubscribe: <mailto:test-leave@example.com>
     ---end---
@@ -97,6 +98,7 @@ header which contains the `mailto:` URL used to send messages to the list.
     ---start---
     list-help: <mailto:test-request@example.com?subject=help>
     list-id: <test.example.com>
+    list-owner: <mailto:test-owner@example.com>
     list-post: <mailto:test@example.com>
     list-subscribe: <mailto:test-join@example.com>
     list-unsubscribe: <mailto:test-leave@example.com>
@@ -117,6 +119,7 @@ to RFC 2369.
     ---start---
     list-help: <mailto:test-request@example.com?subject=help>
     list-id: <test.example.com>
+    list-owner: <mailto:test-owner@example.com>
     list-post: NO
     list-subscribe: <mailto:test-join@example.com>
     list-unsubscribe: <mailto:test-leave@example.com>
@@ -140,6 +143,7 @@ header.
     ---start---
     list-help: <mailto:test-request@example.com?subject=help>
     list-id: My test mailing list <test.example.com>
+    list-owner: <mailto:test-owner@example.com>
     list-post: <mailto:test@example.com>
     list-subscribe: <mailto:test-join@example.com>
     list-unsubscribe: <mailto:test-leave@example.com>

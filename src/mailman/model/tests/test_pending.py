@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,6 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.subscriptions import TokenOwner
+from mailman.interfaces.workflow import IWorkflowStateManager
 from mailman.model.pending import PendedKeyValue
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
@@ -53,6 +54,22 @@ class TestPendings(unittest.TestCase):
         pendingdb.confirm(token)
         self.assertEqual(pendingdb.count(), 0)
         self.assertEqual(config.db.store.query(PendedKeyValue).count(), 0)
+
+    def test_delete_workflow(self):
+        # Deleting a pending should delete any associated workflow state.
+        pendingdb = getUtility(IPendings)
+        wsmanager = getUtility(IWorkflowStateManager)
+        subscription = SimplePendable(
+            type='subscription',
+            address='aperson@example.com',
+            display_name='Anne Person',
+            language='en',
+            password='xyz')
+        token = pendingdb.add(subscription)
+        wsmanager.save(token, step='step1', data='data')
+        self.assertEqual(wsmanager.count, 1)
+        pendingdb.confirm(token)
+        self.assertEqual(wsmanager.count, 0)
 
     def test_find(self):
         # Test getting pendables for a mailing-list.

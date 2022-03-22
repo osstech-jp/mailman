@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,14 +18,26 @@
 """REST for domains."""
 
 from mailman.interfaces.domain import (
-    BadDomainSpecificationError, IDomainManager)
+    BadDomainSpecificationError,
+    IDomainManager,
+)
 from mailman.rest.helpers import (
-    BadRequest, CollectionMixin, GetterSetter, NotFound, bad_request, child,
-    created, etag, no_content, not_found, okay)
+    bad_request,
+    BadRequest,
+    child,
+    CollectionMixin,
+    created,
+    etag,
+    GetterSetter,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.lists import ListsForDomain
 from mailman.rest.uris import ADomainURI, AllDomainURIs
 from mailman.rest.users import ListOfDomainOwners, OwnersForDomain
-from mailman.rest.validator import Validator, list_of_strings_validator
+from mailman.rest.validator import list_of_strings_validator, Validator
 from public import public
 from zope.component import getUtility
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,16 +21,34 @@ from functools import lru_cache
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.interfaces.address import (
-    ExistingAddressError, InvalidEmailAddressError)
+    ExistingAddressError,
+    InvalidEmailAddressError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import PreferredAddress, UserAddresses
 from mailman.rest.helpers import (
-    BadRequest, CollectionMixin, GetterSetter, NotFound, bad_request, child,
-    conflict, created, etag, forbidden, no_content, not_found, okay)
+    bad_request,
+    BadRequest,
+    child,
+    CollectionMixin,
+    conflict,
+    created,
+    etag,
+    forbidden,
+    GetterSetter,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.preferences import Preferences
 from mailman.rest.validator import (
-    PatchValidator, ReadOnlyPATCHRequestError, UnknownPATCHRequestError,
-    Validator, list_of_strings_validator)
+    list_of_strings_validator,
+    PatchValidator,
+    ReadOnlyPATCHRequestError,
+    UnknownPATCHRequestError,
+    Validator,
+)
 from passlib.utils import generate_password as generate
 from public import public
 from zope.component import getUtility
@@ -144,7 +162,7 @@ class _UserBase(CollectionMixin):
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        return list(getUtility(IUserManager).users)
+        return getUtility(IUserManager).users
 
 
 @public
@@ -163,8 +181,44 @@ class AllUsers(_UserBase):
             arguments = validator(request)
             create_user(self.api, arguments, response)
         except (ValueError, InvalidEmailAddressError) as error:
+            error_message = 'Invalid email address {}'.format(error)
+            bad_request(response, error_message)
+            return
+
+
+class _FoundUsers(_UserBase):
+    def __init__(self, users, api):
+        super().__init__()
+        self._users = users
+        self.api = api
+
+    def _get_collection(self, request):
+        return self._users
+
+
+class FindUsers(_UserBase):
+
+    def on_get(self, request, response):
+        validator = Validator(q=str,
+                              # Allow pagination.
+                              page=int,
+                              count=int,
+                              _optional=('page', 'count'))
+        try:
+            data = validator(request)
+        except ValueError as error:
             bad_request(response, str(error))
             return
+
+        user_manager = getUtility(IUserManager)
+        users = list(user_manager.find_users(data.get('q')))
+        resource = _FoundUsers(users, self.api)
+        try:
+            collection = resource._make_collection(request)
+        except ValueError as ex:
+            bad_request(response, str(ex))
+        else:
+            okay(response, etag(collection))
 
 
 @public

@@ -1,4 +1,4 @@
-# Copyright (C) 2019-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2019-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -44,6 +44,14 @@ class GunicornApplication(gunicorn.app.base.BaseApplication):
         return self.application
 
 
+def _post_worker_init(worker):
+    """Post worker initialize event handler for Gunicorn."""
+    # Dispose engine connections whenever a new process is forked and
+    # initialized so they don't step on each other's connections.
+    # https://docs.gunicorn.org/en/latest/settings.html#post-worker-init
+    config.db.engine.dispose()
+
+
 @public
 def make_gunicorn_server():
     """Create a gunicorn server.
@@ -64,6 +72,7 @@ def make_gunicorn_server():
         'access_log_format': config.logging.http['format'],
         'disable_redirect_access_to_syslog': True,
         'workers': int(config.webservice.workers),
+        'post_worker_init': _post_worker_init,
         }
     # Read the ini configuration and pass those values to the
     # GunicornApplication.

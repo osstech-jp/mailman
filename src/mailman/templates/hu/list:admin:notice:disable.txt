@@ -1,0 +1,4 @@
+$member előfizetése le van tiltva $listname a visszafordulási pontszámuk miatt
+amely meghaladja a levelezési lista bounce_score_threshold.
+
+Az aktiváló DSN, ha rendelkezésre áll, csatlakoztatva van.

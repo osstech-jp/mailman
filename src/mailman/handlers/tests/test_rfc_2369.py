@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,7 +24,9 @@ from mailman.config import config
 from mailman.handlers import rfc_2369
 from mailman.interfaces.archiver import ArchivePolicy, IArchiver
 from mailman.testing.helpers import (
-    LogFileMark, specialized_message_from_string as mfs)
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from urllib.parse import urljoin
 from zope.interface import implementer
@@ -154,3 +156,29 @@ Dummy text
         self.assertIsNone(self._msg.get('archived-at'))
         self.assertIn('Exception in "broken" archiver', log_messages)
         self.assertIn('RuntimeError: Cannot get permalink', log_messages)
+
+    def test_add_other_headers(self):
+        # Test that other RFC-2369 headers are added.
+        self._mlist.include_rfc2369_headers = True
+        rfc_2369.process(self._mlist, self._msg, {})
+        self.assertEqual(
+            self._msg.get_all('List-Help'),
+            ['<mailto:{}?subject=help>'.format(self._mlist.request_address)])
+        self.assertEqual(
+            self._msg.get_all('List-Owner'),
+            ['<mailto:{}>'.format(self._mlist.owner_address)])
+        self.assertEqual(
+            self._msg.get_all('List-Unsubscribe'),
+            ['<mailto:{}>'.format(self._mlist.leave_address)])
+        self.assertEqual(
+            self._msg.get_all('List-Subscribe'),
+            ['<mailto:{}>'.format(self._mlist.join_address)])
+
+    def test_dont_add_other_headers(self):
+        # Test that other RFC-2369 headers are not added if not requested.
+        self._mlist.include_rfc2369_headers = False
+        rfc_2369.process(self._mlist, self._msg, {})
+        self.assertIsNone(self._msg.get_all('List-Help'))
+        self.assertIsNone(self._msg.get_all('List-Owner'))
+        self.assertIsNone(self._msg.get_all('List-Unsubscribe'))
+        self.assertIsNone(self._msg.get_all('List-Subscribe'))

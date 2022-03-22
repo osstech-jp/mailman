@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -64,6 +64,7 @@ def process(mlist, msg, msgdata):
     # suppressed).
     headers.extend((
         ('List-Help', '<mailto:{}?subject=help>'.format(requestaddr)),
+        ('List-Owner', '<mailto:{}>'.format(mlist.owner_address)),
         ('List-Unsubscribe', '<mailto:{}>'.format(mlist.leave_address)),
         ('List-Subscribe', '<mailto:{}>'.format(mlist.join_address)),
         ))

@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,13 +22,21 @@ import unittest
 from contextlib import ExitStack
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import (
-    add_member, delete_member, handle_SubscriptionEvent)
+    add_member,
+    delete_member,
+    handle_SubscriptionEvent,
+)
 from mailman.core.constants import system_preferences
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, MemberRole, MembershipIsBannedError,
-    NotAMemberError, SubscriptionEvent)
+    AlreadySubscribedError,
+    DeliveryMode,
+    MemberRole,
+    MembershipIsBannedError,
+    NotAMemberError,
+    SubscriptionEvent,
+)
 from mailman.interfaces.subscriptions import RequestRecord
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer

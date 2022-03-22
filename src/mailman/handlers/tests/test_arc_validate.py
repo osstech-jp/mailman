@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,7 +27,8 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers.validate_authenticity import ValidateAuthenticity
 from mailman.testing.helpers import (
-    specialized_message_from_string as message_from_string)
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 
@@ -190,8 +191,9 @@ This is a test message.
 """)
 
         ValidateAuthenticity().process(lst, msg, msgdata)
-        res = ["lists.example.org; spf=pass smtp.mfrom=jqd@d1.example"
-               "; dkim=pass header.i=@d1.example; dmarc=pass; arc=fail"]
+        res = ['lists.example.org; spf=pass smtp.mfrom=jqd@d1.example',
+               '; dkim=pass header.i=@d1.example; dmarc=pass; arc=fail ',
+               '(Most recent ARC-Message-Signature did not validate)']
         self.assertEqual(msg["Authentication-Results"], ''.join(res))
 
     def test_authentication_whitelist_hit(self):
@@ -233,8 +235,9 @@ This is a test!
 
         ValidateAuthenticity().process(lst, msg, msgdata)
 
-        res = ["example.com; spf=pass smtp.mailfrom=gmail.com"
-               "; dkim=pass header.d=valimail.com; arc=none"]
+        res = ['example.com; spf=pass smtp.mailfrom=gmail.com',
+               '; dkim=pass header.d=valimail.com; arc=none ',
+               '(Message is not ARC signed)']
         self.assertEqual(msg["Authentication-Results"], ''.join(res))
 
     def test_authentication_whitelist_miss(self):
@@ -277,7 +280,53 @@ This is a test!
 
         ValidateAuthenticity().process(lst, msg, msgdata)
         self.assertEqual(msg["Authentication-Results"],
-                         "test.com; dkim=pass header.d=valimail.com; arc=none")
+                         'test.com; dkim=pass header.d=valimail.com; arc=none '
+                         '(Message is not ARC signed)')
+
+    def test_authentication_bad_outlook_header(self):
+        config.push('just_dkim', """
+        [ARC]
+        enabled: yes
+        authserv_id: test.com
+        trusted_authserv_ids: example.com
+        dkim: yes
+        dmarc: no
+        privkey: {}
+        """.format(self.keyfile.name))
+        self.addCleanup(config.pop, 'just_dkim')
+
+        lst = create_list('test@example.com')
+        msgdata = {}
+
+        msg = message_from_string("""DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=valimail.com; s=google2048;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=3VWGQGY+cSNYd1MGM+X6hRXU0stl8JCaQtl4mbX/j2I=;
+        b=gntRk4rCVYIGkpO09ROkbs3n4YSIcp/Pi7tUnSIgs8uS+uZ2a77dG+/qlSvnk+mWET
+         IBrkt1YpDzev/0ITTDy/zgTHjPiQIFcg9Q+3hn3sTz8ExCyM8/YYgoPqSs3oUXn3jwXk
+         N/wpMuF29LTVp1gpkYzaoCDNPGd1Wag6Vh2lw65S7ruECCAdBm5XeSnvTOzIC0E/jmEt
+         3hvaPiKAohCAsC5JAN89EATPOjnYJL4Q6X6p2qUsusz/8tkHuYvReHmxQkjQ0/N3fPP0
+         6VfkIrPOHympq6qDUizbjiBmgiMWKnarrptblJvyt66/aIHx+QamP6LUA+/RUFY1q7TG
+         MSDg==
+Authentication-Results: groups.example.com; dkim=none (message not signed)
+ header.d=none;groups.groups.example.com; dmarc=none action=none
+ header.from=AList.onmicrosoft.com;
+MIME-Version: 1.0
+From: A List <alist@example.com>
+Date: Wed, 25 Jan 2017 16:13:31 -0800
+Message-ID:
+  <CANtLugNVcUMfjVH22FN=+A6Y_Ss+QX_=GnJ3xGfDY1iuEbbuRA@mail.gmail.com>
+Subject: Test
+To: geneshuman@gmail.com
+Content-Type: text/plain; charset=UTF-8
+
+This is a test!
+""")
+
+        ValidateAuthenticity().process(lst, msg, msgdata)
+        self.assertEqual(msg["Authentication-Results"],
+                         'test.com; dkim=fail header.d=valimail.com; arc=none '
+                         '(Message is not ARC signed)')
 
 
 class TestTimeout(unittest.TestCase):

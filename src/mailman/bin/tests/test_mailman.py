@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -33,6 +33,10 @@ from mailman.utilities.modules import add_components
 from unittest.mock import patch
 
 
+def mock_euid():
+    return 0
+
+
 class TestMailmanCommand(unittest.TestCase):
     layer = ConfigLayer
 
@@ -50,8 +54,11 @@ class TestMailmanCommand(unittest.TestCase):
             self._command.invoke(main, ('info',))
         init.assert_called_once_with(None)
 
+    @patch('mailman.bin.mailman.os')
     @patch('mailman.bin.mailman.initialize')
-    def test_mailman_command_without_subcommand_prints_help(self, mock):
+    def test_mailman_command_without_subcommand_prints_help(
+            self, mock_os, mock):
+        mock_os.geteuid.return_value = 1000
         # Issue #137: Running `mailman` without a subcommand raises an
         # AttributeError.
         result = self._command.invoke(main, [])
@@ -80,8 +87,11 @@ class TestMailmanCommand(unittest.TestCase):
         # command line.
         self.assertEqual(lines[0], 'Usage: main [OPTIONS] COMMAND [ARGS]...')
 
+    @patch('mailman.bin.mailman.os')
     @patch('mailman.bin.mailman.initialize')
-    def test_transaction_commit_after_successful_subcommand(self, mock):
+    def test_transaction_commit_after_successful_subcommand(
+            self, mock_os, mock):
+        mock_os.geteuid.return_value = 0
         # Issue #223: Subcommands which change the database need to commit or
         # abort the transaction.
         with transaction():
@@ -111,3 +121,20 @@ class TestMailmanCommand(unittest.TestCase):
         # The volume and number haven't changed.
         self.assertEqual(mlist.volume, 5)
         self.assertEqual(mlist.next_digest_number, 3)
+
+    @patch('mailman.bin.mailman.initialize')
+    @patch('os.geteuid', mock_euid)
+    def test_wont_run_as_root(self, mock):
+        result = self._command.invoke(main)
+        self.assertIn(
+            'Error: If you are sure you want to run as root, '
+            'specify --run-as-root.',
+            result.output)
+        self.assertNotEqual(result.exit_code, 0)
+
+    @patch('mailman.bin.mailman.initialize')
+    @patch('os.geteuid', mock_euid)
+    def test_will_run_as_root_with_option(self, mock):
+        result = self._command.invoke(main, ('--run-as-root'))
+        self.assertNotIn('Error:', result.output)
+        self.assertEqual(result.exit_code, 0)

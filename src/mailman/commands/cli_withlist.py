@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -80,7 +80,8 @@ def start_python(overrides, banner):
     # Set the tab completion.
     with ExitStack() as resources:
         try:                                    # pragma: nocover
-            import readline, rlcompleter        # noqa: F401,E401
+            import readline  # noqa: F401,E401
+            import rlcompleter  # noqa: F401
         except ImportError:                     # pragma: nocover
             print(_('readline not available'), file=sys.stderr)
             pass
@@ -289,15 +290,15 @@ def shell(ctx, interactive, run, listspec, run_args):
         else:
             m = list_manager.get(listspec)
             if m is None:
-                ctx.fail(_('No such list: $listspec'))
+                ctx.fail(_('No such list: ${listspec}'))
             r = call_name(dotted_name, m, *run_args)
     else:
         # Not --run.
         if listspec is not None:
             m = list_manager.get(listspec)
             if m is None:
-                ctx.fail(_('No such list: $listspec'))
-            banner = _("The variable 'm' is the $listspec mailing list")
+                ctx.fail(_('No such list: ${listspec}'))
+            banner = _("The variable 'm' is the ${listspec} mailing list")
     # All other processing is finished; maybe go into interactive mode.
     if interactive:
         do_interactive(ctx, banner)

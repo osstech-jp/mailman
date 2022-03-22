@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,7 +27,7 @@ from zope.interface import Interface
 
 @public
 class MissingUserError(MailmanError):
-    """A an invalid user id was given."""
+    """An invalid user id was given."""
 
     def __init__(self, user_id):
         super().__init__()
@@ -56,17 +56,18 @@ class TooManyMembersError(MembershipError):
 
 _RequestRecord = namedtuple(
     'RequestRecord',
-    'email display_name delivery_mode, language')
+    'email display_name delivery_mode language delivery_status')
 
 
 @public
 def RequestRecord(email, display_name='',
                   delivery_mode=DeliveryMode.regular,
-                  language=None):
+                  language=None, delivery_status=None):
     if language is None:
         from mailman.core.constants import system_preferences
         language = system_preferences.preferred_language
-    return _RequestRecord(email, display_name, delivery_mode, language)
+    return _RequestRecord(
+        email, display_name, delivery_mode, language, delivery_status)
 
 
 @public
@@ -233,7 +234,8 @@ class ISubscriptionManager(Interface):
     """
     def register(subscriber=None, *,
                  pre_verified=False, pre_confirmed=False, pre_approved=False,
-                 invitation=False, send_welcome_message=None):
+                 invitation=False, send_welcome_message=None,
+                 delivery_mode=None, delivery_status=None):
         """Subscribe an address or user according to subscription policies.
 
         The mailing list's subscription policy is used to subscribe
@@ -250,7 +252,7 @@ class ISubscriptionManager(Interface):
         resume the workflow.
 
         :param subscriber: The user or address to subscribe.
-        :type email: ``IUser`` or ``IAddress``
+        :type subscriber: ``IUser`` or ``IAddress``
         :param pre_verified: A flag indicating whether the subscriber's email
             address should be considered pre-verified.  Normally a never
             before seen email address must be verified by mail-back
@@ -284,6 +286,12 @@ class ISubscriptionManager(Interface):
             should receive a welcome message. This overrides the list's
             configuration of send_welcome_message if it is specified.
         :type send_welcome_message: bool
+        :param delivery_mode: A ``DeliveryMode`` enum which if specified sets
+            delivery_mode for the subscription.
+        :type delivery_mode: ``DeliveryMode`` enum or None:
+        :param delivery_status: A ``DeliveryStatus`` enum which if specified
+            sets delivery_status for the subscription.
+        :type delivery_status: ``DeliveryStatus`` enum or None:
         :return: A 3-tuple is returned where the first element is the token
             hash, the second element is a ``TokenOwner`, and the third element
             is the subscribed member.  If the subscriber got subscribed
@@ -314,7 +322,7 @@ class ISubscriptionManager(Interface):
         resume the workflow.
 
         :param subscriber: The user or address to unsubscribe.
-        :type email: ``IUser`` or ``IAddress``
+        :type subscriber: ``IUser`` or ``IAddress``
         :param pre_confirmed: A flag indicating whether, when required by the
             unsubscription policy, an unsubscription request should be
             considered pre-confirmed.  Normally in such cases, a mail-back

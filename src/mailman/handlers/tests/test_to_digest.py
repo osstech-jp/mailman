@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -51,3 +51,13 @@ Message-ID: <ant>
         # Make sure the digest mbox is not empty.
         mailbox_path = os.path.join(self._mlist.data_path, 'digest.mmdf')
         self.assertGreater(os.path.getsize(mailbox_path), 0)
+
+    def test_absent_parent_directory(self):
+        # Remove parent directory to setup for testing
+        os.rmdir(self._mlist.data_path)
+        # Call process function
+        self._msg.set_payload('test')
+        self._msg['X-Test'] = 'dummy'
+        self._handler.process(self._mlist, self._msg, {})
+        # Assert digest.mmdf parent directory is present
+        self.assertTrue(os.path.exists(self._mlist.data_path))

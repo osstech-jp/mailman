@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -172,6 +172,7 @@ def find_pluggable_components(subpackage, interface):
     """
     # This can't be imported at module level because of circular imports.
     from mailman.config import config
+
     # Return the system components first.
     yield from find_components('mailman.' + subpackage, interface)
     # Return all the matching components in all the subpackages of all enabled

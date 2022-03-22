@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,7 +22,11 @@ import logging
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import (
-    ALWAYS_REPLY, IAutoResponseSet, Response, ResponseAction)
+    ALWAYS_REPLY,
+    IAutoResponseSet,
+    Response,
+    ResponseAction,
+)
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import today
@@ -94,7 +98,7 @@ class Replybot:
         # message, send it, and update the database.
         display_name = mlist.display_name
         subject = _(
-            'Auto-response for your message to the "$display_name" '
+            'Auto-response for your message to the "${display_name}" '
             'mailing list')
         # Do string interpolation into the autoresponse text
         d = dict(

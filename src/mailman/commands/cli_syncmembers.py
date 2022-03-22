@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,8 +28,14 @@ from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    DeliveryMode, DeliveryStatus, MembershipIsBannedError)
-from mailman.interfaces.subscriptions import ISubscriptionManager
+    DeliveryMode,
+    DeliveryStatus,
+    MembershipIsBannedError,
+)
+from mailman.interfaces.subscriptions import (
+    ISubscriptionManager,
+    SubscriptionPendingError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.options import I18nCommand
 from public import public
@@ -78,7 +84,10 @@ def add_members(mlist, member, delivery, welcome_msg):
         member.preferences.delivery_status = delivery_status
         member.preferences.delivery_mode = delivery_mode
     except MembershipIsBannedError:
-        print(_('Membership is banned (skipping): $email'),
+        print(_('Membership is banned (skipping): ${email}'),
+              file=sys.stderr)
+    except SubscriptionPendingError:
+        print(_('Subscription already pending (skipping): ${email}'),
               file=sys.stderr)
 
 
@@ -109,7 +118,7 @@ def sync_members(mlist, in_fp, delivery, welcome_msg, goodbye_msg,
         # parseaddr can return invalid emails.  E.g. parseaddr('foobar@')
         # returns ('', 'foobar@') in python 3.6.7 and 3.7.1 so check validity.
         if not email_validator.is_valid(parsed_addr[1]):
-            print(_('Cannot parse as valid email address (skipping): $line'),
+            print(_('Cannot parse as valid email address (skipping): ${line}'),
                   file=sys.stderr)
             continue
         new_display_name, new_email = parsed_addr
@@ -192,7 +201,7 @@ def syncmembers(ctx, in_fp, delivery, welcome_msg, goodbye_msg,
     global email_validator, registrar, user_manager
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
-        ctx.fail(_('No such list: $listspec'))
+        ctx.fail(_('No such list: ${listspec}'))
     email_validator = getUtility(IEmailValidator)
     registrar = ISubscriptionManager(mlist)
     user_manager = getUtility(IUserManager)

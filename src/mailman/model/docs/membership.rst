@@ -313,7 +313,7 @@ though that the address they're changing to must be verified.
     ...     print(m.member_id.int, m.mailing_list.list_id, m.address.email)
     9 bee.example.com gwen@example.com
 
-Gwen gets a email address.
+Gwen gets an email address.
 
     >>> new_address = gwen.register('gperson@example.com')
 

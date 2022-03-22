@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,8 +22,12 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.database.transaction import dbconnection, transaction
 from mailman.interfaces.domain import (
-    DomainCreatedEvent, DomainCreatingEvent, DomainDeletedEvent,
-    DomainDeletingEvent, IDomainManager)
+    DomainCreatedEvent,
+    DomainCreatingEvent,
+    DomainDeletedEvent,
+    DomainDeletingEvent,
+    IDomainManager,
+)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.domain import Domain

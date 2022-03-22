@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,7 +28,10 @@ from mailman.config import config
 from mailman.database.alembic import alembic_cfg
 from mailman.database.model import Model
 from mailman.interfaces.database import (
-    DatabaseError, IDatabase, IDatabaseFactory)
+    DatabaseError,
+    IDatabase,
+    IDatabaseFactory,
+)
 from mailman.utilities.modules import call_name
 from public import public
 from sqlalchemy import MetaData
@@ -59,7 +62,7 @@ class DatabaseFactory:
 
 @public
 class SchemaManager:
-    "Manage schema migrations."""
+    """Manage schema migrations."""
 
     def __init__(self, database):
         self._database = database

@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,6 +20,7 @@
 import unittest
 
 from mailman.app.lifecycle import create_list
+from mailman.config import config
 from mailman.rules import max_size
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
@@ -53,3 +54,64 @@ A message body.
         self.assertEqual(msgdata['moderation_reasons'],
                          [('The message is larger than the {} KB maximum size',
                           1)])
+
+
+class TestiFilteredMaximumSize(unittest.TestCase):
+    """Test the max_size rule with filtered content."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        config.push('filter', """
+        [mailman]
+        check_max_size_on_filtered_message: yes
+        """)
+        self._mlist = create_list('test@example.com')
+        self._mlist.max_message_size = 1
+        self._msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A Subject
+Message-ID: <ant>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="AAAA"
+
+--AAAA
+Content-Type: text/plain
+
+Small text plain part
+
+--AAAA
+Content-Type: application/octet-stream
+
+This is a big part > 1K bytes
+{}
+
+--AAAA--
+""".format(('x'*72 + '\n')*15))
+
+    def test_no_filtering(self):
+        # Test that unfiltered message is too big.
+        self._mlist.filter_content = False
+        rule = max_size.MaximumSize()
+        msgdata = {}
+        result = rule.check(self._mlist, self._msg, msgdata)
+        self.assertTrue(result)
+
+    def test_with_filtering(self):
+        # Test that removing the big part passes the check.
+        self._mlist.filter_content = True
+        self._mlist.pass_types = ['multipart', 'text']
+        rule = max_size.MaximumSize()
+        msgdata = {}
+        result = rule.check(self._mlist, self._msg, msgdata)
+        self.assertFalse(result)
+
+    def test_with_total_filtering(self):
+        # Test that removing the whole message passes the check.
+        self._mlist.filter_content = True
+        self._mlist.pass_types = ['nothing']
+        rule = max_size.MaximumSize()
+        msgdata = {}
+        result = rule.check(self._mlist, self._msg, msgdata)
+        self.assertFalse(result)

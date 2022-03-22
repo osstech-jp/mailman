@@ -1,0 +1,4 @@
+L'abonnement de $member a été désactivé sur $listname à cause du compte de rejets
+qui dépasse le paramètre bounce_score_threshold de la liste de diffusion.
+
+Si disponible le DSN déclenchant est joint.

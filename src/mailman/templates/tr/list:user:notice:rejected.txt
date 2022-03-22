@@ -1,0 +1,6 @@
+$listname posta listesine mesajınız aşağıdaki nedenlerden dolayı
+reddedildi:
+
+$reasons
+
+Orijinal mesaj Mailman tarafından alındığı şekilde ektedir.

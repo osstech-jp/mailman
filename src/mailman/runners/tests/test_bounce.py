@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,15 +25,22 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceProcessor, UnrecognizedBounceDisposition)
+    BounceContext,
+    IBounceProcessor,
+    UnrecognizedBounceDisposition,
+)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryStatus, MemberRole
+from mailman.interfaces.pending import IPendings
 from mailman.interfaces.styles import IStyle, IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.bounce import BounceRunner
 from mailman.testing.helpers import (
-    LogFileMark, get_queue_messages, make_testable_runner,
-    specialized_message_from_string as message_from_string)
+    get_queue_messages,
+    LogFileMark,
+    make_testable_runner,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility
@@ -57,10 +64,20 @@ class TestBounceRunner(unittest.TestCase):
 From: mail-daemon@example.com
 To: test-bounces+anne=example.com@example.com
 Message-Id: <first>
+Content-Type: multipart/report; report-type=delivery-status; boundary=AAA
+MIME-Version: 1.0
 
+--AAA
+Content-Type: message/delivery-status
+
+Action: fail
+Original-Recipient: rfc822; anne@example.com
+
+--AAA--
 """)
         self._msgdata = dict(listid='test.example.com')
         self._processor = getUtility(IBounceProcessor)
+        self._pendings = getUtility(IPendings)
         config.push('site owner', """
         [mailman]
         site_owner: postmaster@example.com
@@ -89,6 +106,21 @@ Message-Id: <first>
         self.assertEqual(events[0].message_id, '<first>')
         self.assertEqual(events[0].context, BounceContext.normal)
         self.assertEqual(events[0].processed, True)
+
+    def test_verp_non_dsn(self):
+        # A VERPed non DSN (vacation response) is not scored.
+        nondsn = message_from_string("""\
+From: mail-daemon@example.com
+To: test-bounces+anne=example.com@example.com
+Message-Id: <first>
+
+I'm out of the office.
+""")
+        self._bounceq.enqueue(nondsn, self._msgdata)
+        self._runner.run()
+        get_queue_messages('bounces', expected_count=0)
+        events = list(self._processor.events)
+        self.assertEqual(len(events), 0)
 
     def test_nonfatal_verp_detection(self):
         # A VERPd bounce was received, but the error was nonfatal.
@@ -245,6 +277,87 @@ Message-Id: <third>
         items = get_queue_messages('virgin', expected_count=1)
         self.assertEqual(items[0].msg['to'], 'postmaster@example.com')
 
+    def test_saving_dsn_pends_msgid(self):
+        # When we save a DSN for notices, we have to pend its msgid so task
+        # Runner won't remove it as an orphan.
+        self._bounceq.enqueue(self._msg, self._msgdata)
+        self._runner.run()
+        get_queue_messages('bounces', expected_count=0)
+        events = list(self._processor.events)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].email, 'anne@example.com')
+        self.assertEqual(events[0].list_id, 'test.example.com')
+        self.assertEqual(events[0].message_id, '<first>')
+        self.assertEqual(events[0].context, BounceContext.normal)
+        self.assertEqual(events[0].processed, True)
+        # Check for a pended item with the msgid.
+        self.assertEqual(self._pendings.count(), 1)
+        token, pended = list(self._pendings)[0]
+        self.assertEqual(pended['_mod_message_id'], '<first>')
+
+    def test_bounce_increment_notice_sent_with_dsn(self):
+        # Test that bounce_notify_owner_on_bounce_increment sends a notice
+        # and the notice contains the DSN.
+        self._mlist.bounce_notify_owner_on_bounce_increment = True
+        self._bounceq.enqueue(self._msg, self._msgdata)
+        self._runner.run()
+        get_queue_messages('bounces', expected_count=0)
+        events = list(self._processor.events)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].email, 'anne@example.com')
+        self.assertEqual(events[0].list_id, 'test.example.com')
+        self.assertEqual(events[0].message_id, '<first>')
+        self.assertEqual(events[0].context, BounceContext.normal)
+        self.assertEqual(events[0].processed, True)
+        # Anne's delivery should still be enabled.
+        self.assertEqual(DeliveryStatus.enabled, self._member.delivery_status)
+        # There should be a message to the admin.
+        items = get_queue_messages('virgin', expected_count=1)
+        msg = items[0].msg
+        self.assertEqual("anne@example.com's bounce score incremented on Test",
+                         msg['subject'])
+        # The message should be multipart withe the DSN attached.
+        self.assertEqual('multipart/mixed', msg.get_content_type())
+        dsn = msg.get_payload(1)
+        self.assertEqual('message/rfc822', dsn.get_content_type())
+        self.assertIn('From: mail-daemon@example.com\n'
+                      'To: test-bounces+anne=example.com@example.com\n'
+                      'Message-Id: <first>', dsn.as_string())
+
+    def test_bounce_disabled_notice_sent_with_dsn(self):
+        # Test that bounce_notify_owner_on_disable sends a notice
+        # and the notice contains the DSN.
+        self._mlist.bounce_score_threshold = 1
+        self._bounceq.enqueue(self._msg, self._msgdata)
+        self._runner.run()
+        get_queue_messages('bounces', expected_count=0)
+        events = list(self._processor.events)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].email, 'anne@example.com')
+        self.assertEqual(events[0].list_id, 'test.example.com')
+        self.assertEqual(events[0].message_id, '<first>')
+        self.assertEqual(events[0].context, BounceContext.normal)
+        self.assertEqual(events[0].processed, True)
+        # Anne's delivery should be disabled.
+        self.assertEqual(DeliveryStatus.by_bounces,
+                         self._member.delivery_status)
+        # There should be a messages to the admin and user.
+        items = get_queue_messages('virgin', expected_count=2)
+        # Get the one to the admin.
+        if items[0].msg['to'] == 'test-owner@example.com':
+            msg = items[0].msg
+        else:
+            msg = items[1].msg
+        self.assertEqual("anne@example.com's subscription disabled on Test",
+                         msg['subject'])
+        # The message should be multipart withe the DSN attached.
+        self.assertEqual('multipart/mixed', msg.get_content_type())
+        dsn = msg.get_payload(1)
+        self.assertEqual('message/rfc822', dsn.get_content_type())
+        self.assertIn('From: mail-daemon@example.com\n'
+                      'To: test-bounces+anne=example.com@example.com\n'
+                      'Message-Id: <first>', dsn.as_string())
+
 
 # Create a style for the mailing list which sets the absolute minimum
 # attributes.  In particular, this will not set the bogus `bounce_processing`
@@ -363,7 +476,7 @@ Message-Id: <first>
         self.assertEqual(anne.bounce_score, 3)
         self.assertEqual(
             anne.preferences.delivery_status, DeliveryStatus.by_bounces)
-        # There should also be a pending notification for the the list
+        # There should also be a pending notification for the list
         # administrator.
         items = get_queue_messages('virgin', expected_count=2)
         if items[0].msg['to'] == 'test-owner@example.com':
@@ -372,7 +485,6 @@ Message-Id: <first>
             disable_notice, owner_notif = items
         self.assertEqual(owner_notif.msg['Subject'],
                          "anne@example.com's subscription disabled on Test")
-
         self.assertEqual(disable_notice.msg['to'], 'anne@example.com')
         self.assertEqual(
             str(disable_notice.msg['subject']),

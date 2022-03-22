@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -56,10 +56,11 @@ def dispose(mlist, msg, msgdata, why):
     if mlist.filter_action is FilterAction.reject:
         # Bounce the message to the original author.
         raise RejectMessage(why)
-    elif mlist.filter_action is FilterAction.forward:
+    elif (mlist.filter_action is FilterAction.forward and
+            msgdata.get('fwd_preserve', True)):
         # Forward it on to the list moderators.
         text = _("""\
-The attached message matched the $mlist.display_name mailing list's content
+The attached message matched the ${mlist.display_name} mailing list's content
 filtering rules and was prevented from being forwarded on to the list
 membership.  You are receiving the only remaining copy of the discarded
 message.
@@ -72,7 +73,8 @@ message.
         notice.attach(MIMEMessage(msg))
         notice.send(mlist)
         # Let this fall through so the original message gets discarded.
-    elif mlist.filter_action is FilterAction.preserve:
+    elif (mlist.filter_action is FilterAction.preserve and
+            msgdata.get('fwd_preserve', True)):
         if as_boolean(config.mailman.filtered_messages_are_preservable):
             # This is just like discarding the message except that a copy is
             # placed in the 'bad' queue should the site administrator want to
@@ -82,7 +84,7 @@ message.
                 msg.get('message-id', 'n/a'), filebase))
     elif mlist.filter_action is FilterAction.discard:
         pass
-    else:
+    elif msgdata.get('fwd_preserve', True):
         log.error(
             '{} invalid FilterAction: {}.  Treating as discard'.format(
                 mlist.fqdn_listname, mlist.filter_action.name))
@@ -91,7 +93,13 @@ message.
 
 
 def process(mlist, msg, msgdata):
-    # We also don't care about our own digests or plaintext
+    global attach_report, report
+    report = _("""
+___________________________________________
+Mailman's content filtering has removed the
+following MIME parts from this message.
+""")
+    attach_report = False
     ctype = msg.get_content_type()
     mtype = msg.get_content_maintype()
     # Check to see if the outer type matches one of the filter types
@@ -141,6 +149,15 @@ def process(mlist, msg, msgdata):
         if ctype == 'multipart/alternative':
             firstalt = msg.get_payload(0)
             reset_payload(msg, firstalt)
+            report += _("""
+Replaced multipart/alternative part with first alternative.
+""")
+            # MAS Not setting attach_report True here will not report if the
+            # only change is collapsing an outer MPA message. On lists where
+            # most people post from MUAs that compose HTML and send MPA,
+            # setting this here will add this report to most messages which
+            # can be annoying.
+            # attach_report = True
     # Now that we've collapsed the MPA parts, go through the message
     # and recast any multipart parts with only one sub-part as just
     # the sub-part.
@@ -162,6 +179,18 @@ def process(mlist, msg, msgdata):
             changedp = 1
     if changedp:
         msg['X-Content-Filtered-By'] = 'Mailman/MimeDel {}'.format(VERSION)
+    if attach_report and as_boolean(config.mailman.filter_report):
+        if msg.is_multipart():
+            msg.attach(MIMEText(report))
+        else:
+            pl = msg.get_payload(decode=True)
+            cset = msg.get_content_charset(None) or 'us-ascii'
+            del msg['content-transfer-encoding']
+            new_pl = pl.decode(cset)
+            if not pl.endswith(b'\n'):
+                new_pl += '\n'
+            new_pl += report
+            msg.set_payload(new_pl, cset)
 
 
 def reset_payload(msg, subpart):
@@ -188,6 +217,7 @@ def reset_payload(msg, subpart):
 
 
 def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
+    global attach_report, report
     # Look at all the message's subparts, and recursively filter
     if not msg.is_multipart():
         return True
@@ -201,18 +231,35 @@ def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
             continue
         ctype = subpart.get_content_type()
         mtype = subpart.get_content_maintype()
+        fname = subpart.get_filename('') or subpart.get_param('name', '')
         if ctype in filtertypes or mtype in filtertypes:
             # Throw this subpart away
+            report += '\nContent-Type: %s\n' % ctype
+            if fname:
+                report += '    ' + _('Name: ${fname}\n')
+            attach_report = True
             continue
         if passtypes and not (ctype in passtypes or mtype in passtypes):
             # Throw this subpart away
+            report += '\nContent-Type: %s\n' % ctype
+            if fname:
+                report += '    ' + _('Name: ${fname}\n')
+            attach_report = True
             continue
         # check file extension
         fext = get_file_ext(subpart)
         if fext:
             if fext in filterexts:
+                report += '\nContent-Type: %s\n' % ctype
+                if fname:
+                    report += '    ' + _('Name: ${fname}\n')
+                attach_report = True
                 continue
             if passexts and not (fext in passexts):
+                report += '\nContent-Type: %s\n' % ctype
+                if fname:
+                    report += '    ' + _('Name: ${fname}\n')
+                attach_report = True
                 continue
         newpayload.append(subpart)
     # Check to see if we discarded all the subparts
@@ -225,6 +272,7 @@ def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
 
 
 def collapse_multipart_alternatives(msg):
+    global attach_report, report
     if not msg.is_multipart():
         return
     newpayload = []
@@ -240,6 +288,10 @@ def collapse_multipart_alternatives(msg):
                     newpayload.append(subpart)
                 else:
                     newpayload.append(firstalt)
+                report += _("""
+Replaced multipart/alternative part with first alternative.
+""")
+                attach_report = True
         elif subpart.is_multipart():
             collapse_multipart_alternatives(subpart)
             newpayload.append(subpart)
@@ -277,9 +329,9 @@ def to_plaintext(msg):
         resources.callback(shutil.rmtree, tempdir)
         for subpart in typed_subpart_iterator(msg, 'text', 'html'):
             filename = os.path.join(tempdir, '{}.html'.format(next(counter)))
-            ctype = msg.get_content_charset('us-ascii')
+            cset = subpart.get_content_charset('us-ascii')
             with open(filename, 'w', encoding='utf-8') as fp:
-                fp.write(subpart.get_payload(decode=True).decode(ctype,
+                fp.write(subpart.get_payload(decode=True).decode(cset,
                          errors='replace'))
             template = Template(config.mailman.html_to_plain_text_command)
             command = template.safe_substitute(filename=filename).split()
@@ -291,7 +343,7 @@ def to_plaintext(msg):
                 # Replace the payload of the subpart with the converted text
                 # and tweak the content type.
                 del subpart['content-transfer-encoding']
-                subpart.set_payload(stdout, charset=ctype)
+                subpart.set_payload(stdout, charset=cset)
                 subpart.set_type('text/plain')
                 changedp += 1
     return changedp

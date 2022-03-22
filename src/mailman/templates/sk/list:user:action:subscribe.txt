@@ -1,0 +1,24 @@
+Potvrdenie registrácie e-mailovej adresy na odber
+
+Dobrý deň, toto je server GNU Mailman v $domain.
+
+Dostali sme žiadosť o registráciu e-mailovej adresy
+
+    $user_email
+
+Skôr ako začnete používať GNU Mailman, musíte najskôr potvrdiť že toto je vaša
+e-mailová adresa. Môžete to urobiť odpovedaním na túto správu.
+
+Alebo by ste mali zahrnúť nasledujúci riadok - a iba nasledujúci
+riadok - v správe pre $request_email:
+
+    confirm $token
+
+Poznámka, jednoduché odoslanie `Odpovedať' na túto správu by malo fungovať vo
+väčšine emailových programov.
+
+Ak si neželáte zaregistrovať túto e-mailovú adresu, jednoducho ignorujte túto
+správu. Ak si myslíte, že ste boli falošne prihlásený na odber, alebo ak máte
+ďalšie otázky, môžete sa obrátiť na
+
+    $owner_email

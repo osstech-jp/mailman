@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -31,8 +31,12 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    ArchiveRenderingMode, DMARCMitigateAction, Personalization,
-    ReplyToMunging, SubscriptionPolicy)
+    ArchiveRenderingMode,
+    DMARCMitigateAction,
+    Personalization,
+    ReplyToMunging,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.model.roster import RosterVisibility
 from public import public
@@ -52,7 +56,7 @@ class Identity:
         mlist.description = ''
         mlist.info = ''
         mlist.preferred_language = 'en'
-        mlist.subject_prefix = _('[$mlist.display_name] ')
+        mlist.subject_prefix = _('[${mlist.display_name}] ')
         mlist.encode_ascii_prefixes = (
             mlist.preferred_language.charset != 'us-ascii')
 
@@ -152,6 +156,7 @@ class Bounces:
         mlist.bounce_info_stale_after = timedelta(days=7)
         mlist.bounce_you_are_disabled_warnings = 3
         mlist.bounce_you_are_disabled_warnings_interval = timedelta(days=7)
+        mlist.bounce_notify_owner_on_bounce_increment = False
         mlist.bounce_notify_owner_on_disable = True
         mlist.bounce_notify_owner_on_removal = True
         # Autoresponder

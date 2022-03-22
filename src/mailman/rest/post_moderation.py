@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,8 +25,15 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, child, etag, no_content, not_found, okay)
-from mailman.rest.validator import Validator, enum_validator
+    bad_request,
+    child,
+    CollectionMixin,
+    etag,
+    no_content,
+    not_found,
+    okay,
+)
+from mailman.rest.validator import enum_validator, Validator
 from public import public
 from zope.component import getUtility
 
@@ -74,7 +81,15 @@ class _HeldMessageBase(_ModerationBase):
         # resource.  XXX See LP: #967954
         key = resource.pop('key')
         msg = getUtility(IMessageStore).get_message_by_id(key)
-        resource['msg'] = msg.as_string()
+        if msg is None:
+            resource['msg'] = """\
+Subject: Message content lost
+Message-ID: {}
+
+This held message has been lost.
+""".format(key)
+        else:
+            resource['msg'] = msg.as_string()
         # Some of the _mod_* keys we want to rename and place into the JSON
         # resource.  Others we can drop.  Since we're mutating the dictionary,
         # we need to make a copy of the keys.  When you port this to Python 3,

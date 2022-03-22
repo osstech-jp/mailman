@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,8 +25,10 @@ from mailman.database.transaction import transaction
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 

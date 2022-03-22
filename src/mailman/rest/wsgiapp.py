@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,10 +18,11 @@
 """Basic WSGI Application object for REST server."""
 
 import re
+import hmac
 import logging
 
 from base64 import b64decode
-from falcon import API, HTTPUnauthorized
+from falcon import App, HTTPUnauthorized
 from falcon.routing import map_http_methods, set_default_responders
 from mailman.config import config
 from mailman.database.transaction import transactional
@@ -55,7 +56,8 @@ class Middleware:
             credentials = b64decode(request.auth[6:]).decode('utf-8')
             username, password = credentials.split(':', 1)
             if (username == config.webservice.admin_user and
-                    password == config.webservice.admin_pass):
+                    hmac.compare_digest(
+                        password, config.webservice.admin_pass)):
                 authorized = True
         if not authorized:
             # Not authorized.
@@ -171,7 +173,7 @@ class ObjectRouter:
                 return None, None, None
 
 
-class RootedAPI(API):
+class RootedAPI(App):
     def __init__(self, root, *args, **kws):
         super().__init__(
             *args,

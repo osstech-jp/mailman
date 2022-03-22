@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,7 +23,7 @@ from email import message_from_bytes as mfb
 from importlib_resources import read_binary
 from mailman.app.lifecycle import create_list
 from mailman.chains.builtin import BuiltInChain
-from mailman.chains.hold import HoldChain, autorespond_to_sender
+from mailman.chains.hold import autorespond_to_sender, HoldChain
 from mailman.core.chains import process as process_chain
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.member import MemberRole
@@ -31,8 +31,12 @@ from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages, set_preferred,
-    specialized_message_from_string as mfs)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    set_preferred,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

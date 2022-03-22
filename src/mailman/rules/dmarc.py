@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -211,12 +211,12 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
         name = txt_rec.name.to_text().lower()
         if txt_rec.rdtype == dns.rdatatype.CNAME:
             cnames[name] = (
-                txt_rec.items[0].target.to_text())
+                next(iter(txt_rec.items)).target.to_text())
         if txt_rec.rdtype != dns.rdatatype.TXT:
             continue
         result = EMPTYSTRING.join(
             str(record, encoding='utf-8')
-            for record in txt_rec.items[0].strings)
+            for record in next(iter(txt_rec.items)).strings)
         results_by_name.setdefault(name, []).append(result)
     expands = list(want_names)
     seen = set(expands)
@@ -245,8 +245,9 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
         if len(dmarcs) > 1:
             elog.error(
                 'RRset of TXT records for %s has %d v=DMARC1 entries; '
-                'testing them all',
+                'ignoring them per RFC 7849',
                 dmarc_domain, len(dmarcs))
+            return False
         for entry in dmarcs:
             mo = re.search(r'\bsp=(\w*)\b', entry, re.IGNORECASE)
             if org and mo:

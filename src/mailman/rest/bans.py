@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,9 +19,16 @@
 
 from mailman.interfaces.bans import IBanManager
 from mailman.rest.helpers import (
-    CollectionMixin, bad_request, child, created, etag, no_content, not_found,
-    okay)
-from mailman.rest.validator import Validator, email_or_regexp_validator
+    bad_request,
+    child,
+    CollectionMixin,
+    created,
+    etag,
+    no_content,
+    not_found,
+    okay,
+)
+from mailman.rest.validator import email_or_regexp_validator, Validator
 from public import public
 from urllib.parse import quote_plus
 

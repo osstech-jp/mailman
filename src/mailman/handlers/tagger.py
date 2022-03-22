@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,8 +18,8 @@
 """Extract topics from the original mail message."""
 
 import re
-import email.iterators
 import email.parser
+import email.iterators
 
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -48,8 +48,8 @@ def process(mlist, msg, msgdata):
     else:
         # Scan just some of the body lines
         matchlines.extend(scanbody(msg, mlist.topics_bodylines_limit))
-    # Filter out any 'false' items.
-    matchlines = [item for item in matchlines if item]
+    # Filter out any 'false' items and stringify any Header instances.
+    matchlines = [str(item) for item in matchlines if item]
     # For each regular expression in the topics list, see if any of the lines
     # of interest from the message match the regexp.  If so, the message gets
     # added to the specific topics bucket.
@@ -108,7 +108,7 @@ def scanbody(msg, numlines=None):
 
 
 class _ForgivingParser(email.parser.HeaderParser):
-    """An lax email parser.
+    """A lax email parser.
 
     Be a little more forgiving about non-header/continuation lines, since
     we'll just read as much as we can from 'header-like' lines in the body.

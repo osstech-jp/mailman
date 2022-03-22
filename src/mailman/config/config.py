@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,10 +25,13 @@ from configparser import ConfigParser
 from contextlib import ExitStack
 from flufl.lock import Lock
 from importlib_resources import path, read_text
-from lazr.config import ConfigSchema, as_boolean
+from lazr.config import as_boolean, ConfigSchema
 from mailman import version
 from mailman.interfaces.configuration import (
-    ConfigurationUpdatedEvent, IConfiguration, MissingConfigurationFileError)
+    ConfigurationUpdatedEvent,
+    IConfiguration,
+    MissingConfigurationFileError,
+)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.modules import call_name, expand_path
@@ -253,6 +256,7 @@ class Configuration:
                 makedirs(directory)
             # Avoid circular imports.
             from mailman.utilities.datetime import now
+
             # Create a mailman.cfg template file if it doesn't already exist.
             # LBYL: <boo hiss>, but it's probably okay because the directories
             # likely didn't exist before the above loop, and we'll create a

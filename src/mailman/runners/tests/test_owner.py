@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -33,7 +33,10 @@ from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
-    TestableMaster, get_lmtp_client, make_testable_runner)
+    get_lmtp_client,
+    make_testable_runner,
+    TestableMaster,
+)
 from mailman.testing.layers import SMTPLayer
 from operator import itemgetter
 from zope.component import getUtility

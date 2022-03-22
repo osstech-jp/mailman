@@ -1,0 +1,20 @@
+$listname posta listesi için yardım
+
+Bu, $domain etki alanındaki GNU Mailman liste yöneticisinin $version sürümü için
+'help' e-posta komutudur.  Aşağıda, bu sitedeki Mailman listelerine aboneliğiniz
+hakkında bilgi almak ve onu denetlemek için gönderebileceğiniz komutlar
+açıklanmaktadır.  Bir komut, Konu satırında veya mesajın gövdesinde olabilir.
+
+Komutlar ${listname}-request@${domain} adresine gönderilmelidir.
+
+Açıklamalar hakkında - "<>" karakterleri arasındaki sözcükler GEREKLİ ögeleri ve
+"[]" arasındaki sözcükler İSTEĞE BAĞLI ögeleri gösterir.  Komutları kullanırken "<>"
+veya "[]" karakterlerini dahil etmeyin.
+
+Aşağıdaki komutlar geçerlidir:
+
+    $commands
+
+Bir kişinin görmesi gereken sorular ve sorunlar aşağıdaki adrese gönderilmelidir:
+
+    $administrator

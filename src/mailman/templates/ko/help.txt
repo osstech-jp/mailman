@@ -1,0 +1,1 @@
+"$ listname 메일링리스트에 대한 도움말 이것은 $ domain에있는 GNU Mailman listmanager의 버전 $ version에 대한 이메일 명령 'help'입니다. 다음은이 사이트에서 Mailman 목록에 대한 정보를 얻고 구독을 제어 할 수있는 명령에 대한 설명입니다. 명령은 $ {listname} -request @ $ {domain} 주소로 보내야합니다. 설명에 대해서는 "<>"의 단어는 필수 항목과 "[ ] "는 옵션 항목을 나타냅니다. 명령을 사용할 때"<> "또는"[] "를 포함하지 마십시오. 다음 명령이 유효합니다. $ commands 개인의주의를 끌기위한 질문과 우려 사항은 $ administrator로 보내야합니다. "

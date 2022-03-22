@@ -1,0 +1,18 @@
+Potvrzení registrace emailové adresy
+
+Dobrý den, tohle je mailing-listový server na adrese $domain.
+
+Přijali jsme Vaší žádost o registraci emailové adresy
+	$user_email
+
+Než budete moci začít distribuční skupinu používat, je třeba nejprve potvrdit, že se skutečně jedná o Vaši adresu. Nejjednodušší cestou jak toto udělat je jednoduše odpovědět na tuto zprávu.
+
+Alternativně můžete odeslat nový email na adresu $request_email, který bude v těle obsahovat jediný text a sice:
+
+    confirm $token
+
+Ve většině emailových klientů ale bude stačit kliknout na "Odpovědět" nebo "Reply" a zprávu odeslat.
+
+Pokud si tuto emailovou adresu registrovat nepřejete, jednoduše tuto zprávu smažte.
+V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese 
+	$owner_email

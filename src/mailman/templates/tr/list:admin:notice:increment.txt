@@ -1,0 +1,3 @@
+$member'in $listname listesindeki geri dönme puanı artırıldı.
+
+Varsa tetikleyen DSN ektedir.

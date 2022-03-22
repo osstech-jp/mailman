@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,7 +28,7 @@ import re
 import copy
 import logging
 
-from email.header import Header, decode_header
+from email.header import decode_header, Header
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formataddr, getaddresses, make_msgid
@@ -99,7 +99,8 @@ def munged_headers(mlist, msg, msgdata):
     # If there was no display name in the email header, see if we have a
     # matching member with a display name.
     if len(realname) == 0:
-        member = mlist.members.get_member(email)
+        member = (mlist.members.get_member(email) or
+                  mlist.nonmembers.get_member(email))
         if member:
             realname = member.display_name or email
         else:
@@ -124,7 +125,7 @@ def munged_headers(mlist, msg, msgdata):
     realname = EMPTYSTRING.join(realname_bits)
     # Ensure the i18n context is the list's preferred_language.
     with _.using(mlist.preferred_language.code):
-        via = _('$realname via $mlist.display_name')
+        via = _('${realname} via ${mlist.display_name}')
     # Get an RFC 2047 encoded header string.
     display_name = str(Header(via, mlist.preferred_language.charset))
     value = [('From', formataddr((display_name, mlist.posting_address)))]
@@ -132,13 +133,19 @@ def munged_headers(mlist, msg, msgdata):
     if mlist.reply_goes_to_list is ReplyToMunging.no_munging:
         # Add original from to Reply-To:
         add_to = 'Reply-To'
+        other = ('Cc', msg.get('cc'))
     else:
         # Add original from to Cc:
         add_to = 'Cc'
+        other = ('Reply-To', msg.get('reply-to'))
     original = getaddresses(msg.get_all(add_to, []))
     if original_from[1] not in [x[1] for x in original]:
         original.append(original_from)
     value.append((add_to, COMMASPACE.join(formataddr(x) for x in original)))
+    # If wrapping, add the other if any.
+    if (mlist.dmarc_mitigate_action is DMARCMitigateAction.wrap_message and
+            other[1] is not None):
+        value.append((other[0], other[1]))
     return value
 
 

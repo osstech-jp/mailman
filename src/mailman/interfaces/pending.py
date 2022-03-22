@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,8 +22,16 @@ maps these events to a unique hash that can be used as a token for end user
 confirmation.
 """
 
+from enum import Enum
 from public import public
 from zope.interface import Attribute, Interface
+
+
+@public
+class PendType(Enum):
+    """PEND_TYPE of an IPendable."""
+    subscription = 'subscription'
+    unsubscription = 'unsubscription'
 
 
 @public

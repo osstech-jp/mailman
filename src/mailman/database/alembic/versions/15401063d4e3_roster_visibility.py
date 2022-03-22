@@ -13,6 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 from mailman.database.helpers import exists_in_db, is_sqlite
 
+
 revision = '15401063d4e3'
 down_revision = 'b2e694dfde35'
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,7 +22,13 @@ import os
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import Enum, SAUnicode, SAUnicodeLarge
+from mailman.database.types import (
+    Enum,
+    SAText,
+    SAUnicode,
+    SAUnicode4Byte,
+    SAUnicodeLarge,
+)
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.archiver import ArchivePolicy
@@ -33,13 +39,26 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    ArchiveRenderingMode, DMARCMitigateAction, IAcceptableAlias,
-    IAcceptableAliasSet, IHeaderMatch, IHeaderMatchList, IListArchiver,
-    IListArchiverSet, IMailingList, Personalization, ReplyToMunging,
-    SubscriptionPolicy)
+    ArchiveRenderingMode,
+    DMARCMitigateAction,
+    IAcceptableAlias,
+    IAcceptableAliasSet,
+    IHeaderMatch,
+    IHeaderMatchList,
+    IListArchiver,
+    IListArchiverSet,
+    IMailingList,
+    Personalization,
+    ReplyToMunging,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
-    MissingPreferredAddressError, SubscriptionEvent)
+    AlreadySubscribedError,
+    MemberRole,
+    MembershipIsBannedError,
+    MissingPreferredAddressError,
+    SubscriptionEvent,
+)
 from mailman.interfaces.mime import FilterType
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.interfaces.user import IUser
@@ -52,8 +71,16 @@ from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
 from public import public
 from sqlalchemy import (
-    Boolean, Column, DateTime, Float, ForeignKey, Integer, Interval,
-    LargeBinary, PickleType)
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    Interval,
+    LargeBinary,
+    PickleType,
+)
 from sqlalchemy.event import listen
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.mutable import MutableList
@@ -109,11 +136,11 @@ class MailingList(Model):
     # Automatic responses.
     autoresponse_grace_period = Column(Interval)
     autorespond_owner = Column(Enum(ResponseAction))
-    autoresponse_owner_text = Column(SAUnicode)
+    autoresponse_owner_text = Column(SAText)
     autorespond_postings = Column(Enum(ResponseAction))
-    autoresponse_postings_text = Column(SAUnicode)
+    autoresponse_postings_text = Column(SAText)
     autorespond_requests = Column(Enum(ResponseAction))
-    autoresponse_request_text = Column(SAUnicode)
+    autoresponse_request_text = Column(SAText)
     # Content filters.
     filter_action = Column(Enum(FilterAction))
     filter_content = Column(Boolean)
@@ -121,7 +148,8 @@ class MailingList(Model):
     convert_html_to_plaintext = Column(Boolean)
     # Bounces.
     bounce_info_stale_after = Column(Interval)
-    bounce_matching_headers = Column(SAUnicode)                  # XXX
+    bounce_matching_headers = Column(SAUnicode4Byte)              # XXX
+    bounce_notify_owner_on_bounce_increment = Column(Boolean)
     bounce_notify_owner_on_disable = Column(Boolean)
     bounce_notify_owner_on_removal = Column(Boolean)
     bounce_score_threshold = Column(Integer)
@@ -138,7 +166,7 @@ class MailingList(Model):
     # Miscellaneous
     default_member_action = Column(Enum(Action))
     default_nonmember_action = Column(Enum(Action))
-    description = Column(SAUnicode)
+    description = Column(SAUnicode4Byte)
     digests_enabled = Column(Boolean)
     digest_is_default = Column(Boolean)
     digest_send_periodic = Column(Boolean)
@@ -152,17 +180,17 @@ class MailingList(Model):
     gateway_to_mail = Column(Boolean)
     gateway_to_news = Column(Boolean)
     hold_these_nonmembers = Column(MutableList.as_mutable(PickleType))
-    info = Column(SAUnicode)
+    info = Column(SAText)
     linked_newsgroup = Column(SAUnicode)
     max_days_to_hold = Column(Integer)
     max_message_size = Column(Integer)
     max_num_recipients = Column(Integer)
-    member_moderation_notice = Column(SAUnicode)
+    member_moderation_notice = Column(SAUnicode4Byte)
     # FIXME: There should be no moderator_password
     moderator_password = Column(LargeBinary)             # TODO : was RawStr()
     newsgroup_moderation = Column(Enum(NewsgroupModeration))
     nntp_prefix_subject_too = Column(Boolean)
-    nonmember_rejection_notice = Column(SAUnicode)
+    nonmember_rejection_notice = Column(SAUnicode4Byte)
     obscure_addresses = Column(Boolean)
     owner_chain = Column(SAUnicode)
     owner_pipeline = Column(SAUnicode)
@@ -171,7 +199,7 @@ class MailingList(Model):
     posting_chain = Column(SAUnicode)
     posting_pipeline = Column(SAUnicode)
     _preferred_language = Column('preferred_language', SAUnicode)
-    display_name = Column(SAUnicode)
+    display_name = Column(SAUnicode4Byte)
     reject_these_nonmembers = Column(MutableList.as_mutable(PickleType))
     reply_goes_to_list = Column(Enum(ReplyToMunging))
     reply_to_address = Column(SAUnicode)
@@ -181,7 +209,7 @@ class MailingList(Model):
     scrub_nondigest = Column(Boolean)
     send_goodbye_message = Column(Boolean)
     send_welcome_message = Column(Boolean)
-    subject_prefix = Column(SAUnicode)
+    subject_prefix = Column(SAUnicode4Byte)
     subscription_policy = Column(Enum(SubscriptionPolicy))
     topics = Column(PickleType)
     topics_bodylines_limit = Column(Integer)
@@ -653,7 +681,7 @@ class HeaderMatch(Model):
 
     _position = Column('position', Integer, index=True, default=0)
     header = Column(SAUnicode)
-    pattern = Column(SAUnicode)
+    pattern = Column(SAUnicode4Byte)
     chain = Column(SAUnicode, nullable=True)
     tag = Column(SAUnicode, nullable=True)
 

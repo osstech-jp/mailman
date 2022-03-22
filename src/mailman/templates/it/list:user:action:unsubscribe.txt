@@ -1,17 +1,24 @@
-Conferma di annullamento iscrizione per l'indirizzo e-mail
+Conferma dell'annullamento dell'iscrizione all'indirizzo e-mail
 
-Ciao! Questo è il GNU Mailman server per $domain.
+Ciao, questo è il server GNU Mailman su $domain.
 
-Abbiamo ricevuto una richiesta di disiscrizione per questo indirizzo e-mail
+Abbiamo ricevuto una richiesta di annullamento dell'iscrizione per l'indirizzo e-mail
 
     $user_email
 
-Prima che tu possa iniziare ad utilizzare GNU Mailman in questo sito, devi prima 
-confermare che questo è il tuo indirizzo email. 
-Puoi farlo rispondendo a questo messaggio, mantenendo intatta l'intestazione oggetto.
+Prima che GNU Mailman possa cancellarti, devi prima confermare la tua richiesta.
+Puoi farlo semplicemente rispondendo a questo messaggio.
 
-Se non desideri disiscrivere questo indirizzo e-mail, ignora semplicemente questo messaggio.  
-Se, invece, ritieni di essere stato disiniscritto maliziosamente a questa lista oppure 
-hai una qualsiasi altra domanda, puoi contattare
+Oppure dovresti includere la seguente riga -- e solo la seguente
+riga -- in un messaggio a $request_email:
+
+    conferma $token
+
+Nota che il semplice invio di una 'risposta' a questo messaggio dovrebbe funzionare
+dalla maggior parte dei lettori di posta.
+
+Se non desideri annullare l'iscrizione a questo indirizzo e-mail, ignora questo
+messaggio.  Se pensi di essere stato cancellato dall'elenco in modo intenzionale,
+o hai altre domande, puoi contattare
 
     $owner_email

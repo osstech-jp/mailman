@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -39,6 +39,7 @@ from public import public
 from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
+
 
 SEMISPACE = '; '
 SPACE = ' '
@@ -195,7 +196,8 @@ class HoldChain(TerminalChainBase):
             # We can respond to the sender with a message indicating their
             # posting was held.
             subject = _(
-              'Your message to $mlist.fqdn_listname awaits moderator approval')
+              'Your message to ${mlist.fqdn_listname} awaits moderator '
+              'approval')
             send_language_code = msgdata.get('lang', language.code)
             template = getUtility(ITemplateLoader).get(
                 'list:user:notice:hold', mlist,
@@ -223,7 +225,7 @@ class HoldChain(TerminalChainBase):
                 substitutions['reasons'] = _compose_reasons(msgdata, 55)
                 # craft the admin notification message and deliver it
                 subject = _(
-                    '$mlist.fqdn_listname post from $msg.sender requires '
+                    '${mlist.fqdn_listname} post from ${msg.sender} requires '
                     'approval')
                 nmsg = UserNotification(mlist.owner_address,
                                         mlist.owner_address,

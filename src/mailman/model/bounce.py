@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,20 +20,34 @@
 import logging
 import datetime
 
-from lazr.config import as_boolean
-from mailman.app.bounces import send_probe
+from email.utils import make_msgid
+from lazr.config import as_boolean, as_timedelta
+from mailman.app.bounces import _ProbePendable, PENDABLE_LIFETIME, send_probe
 from mailman.app.membership import delete_member
 from mailman.app.notifications import (
-    send_admin_disable_notice, send_admin_removal_notice,
-    send_user_disable_warning)
+    send_admin_disable_notice,
+    send_admin_increment_notice,
+    send_admin_removal_notice,
+    send_user_disable_warning,
+)
 from mailman.config import config
 from mailman.database.model import Model
-from mailman.database.transaction import dbconnection, transactional
+from mailman.database.transaction import (
+    dbconnection,
+    transaction,
+    transactional,
+)
 from mailman.database.types import Enum, SAUnicode
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceEvent, IBounceProcessor, InvalidBounceEvent)
+    BounceContext,
+    IBounceEvent,
+    IBounceProcessor,
+    InvalidBounceEvent,
+)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import DeliveryStatus, IMembershipManager
+from mailman.interfaces.messages import IMessageStore
+from mailman.interfaces.pending import IPendings
 from mailman.utilities.datetime import now
 from public import public
 from sqlalchemy import Boolean, Column, DateTime, Integer
@@ -77,6 +91,20 @@ class BounceProcessor:
     @dbconnection
     def register(self, store, mlist, email, msg, where=None):
         """See `IBounceProcessor`."""
+        # Save the DSN in the message store for notices.  It doesn't
+        # matter if we save it more than once.  Only one copy will be
+        # saved, but ensure it has a Message-ID so we can retreive it.
+        if msg.get('message-id') is None:
+            msg['Message-ID'] = make_msgid          # pragma: nocover
+        getUtility(IMessageStore).add(msg)
+        # We also need to pend a token for this or the message will be
+        # removed as an orphan by the task runner.  We don't need much
+        # from this.  We pend the msgid as _mod_message_id for the
+        # task runner.
+        pendable = _ProbePendable(
+            _mod_message_id=msg.get('message-id'))
+        getUtility(IPendings).add(
+            pendable, lifetime=as_timedelta(PENDABLE_LIFETIME))
         event = BounceEvent(mlist.list_id, email, msg, where)
         store.add(event)
         return event
@@ -116,7 +144,7 @@ class BounceProcessor:
                  event.email, mlist.list_id)
         if mlist.bounce_notify_owner_on_disable:
             send_admin_disable_notice(
-                mlist, event.email, display_name=member.display_name)
+                mlist, event, display_name=member.display_name)
 
     @transactional
     @dbconnection
@@ -124,6 +152,13 @@ class BounceProcessor:
         """See `IBounceProcessor`."""
         list_manager = getUtility(IListManager)
         mlist = list_manager.get(event.list_id)
+        if mlist is None:
+            # List was removed before the bounce is processed.
+            event.processed = True
+            # This needs an explicit commit because of the raise.
+            config.db.commit()
+            raise InvalidBounceEvent(
+                'Bounce for non-existent list {}'.format(event.list_id))
         member = mlist.members.get_member(event.email)
         if member is None:
             event.processed = True
@@ -183,12 +218,20 @@ class BounceProcessor:
         log.info('Member %s on list %s, bounce score = %d.', event.email,
                  mlist.list_id, member.bounce_score)
         # Now, we are done updating. Let's see if the threshold is reached and
-        # disable based on that.
+        # disable based on that, but first if we're not going to disable we
+        # need to send the bounce score incremented notice if requested.
+        if mlist.bounce_notify_owner_on_bounce_increment and (
+                member.bounce_score < mlist.bounce_score_threshold or
+                not as_boolean(config.mta.verp_probes)):
+            send_admin_increment_notice(
+                mlist, event, display_name=member.display_name)
         if member.bounce_score >= mlist.bounce_score_threshold:
             # Save bounce_score because sending probe resets it.
             saved_bounce_score = member.bounce_score
+            # Try to get the dsn from the message store.  It should be there.
+            msg = getUtility(IMessageStore).get_message_by_id(event.message_id)
             if as_boolean(config.mta.verp_probes):
-                send_probe(member, message_id=event.message_id)
+                send_probe(member, msg=msg, message_id=event.message_id)
                 action = 'sending probe'
             else:
                 self._disable_delivery(mlist, member, event)
@@ -199,6 +242,7 @@ class BounceProcessor:
                 mlist.bounce_score_threshold, action)
         event.processed = True
 
+    @transactional
     @dbconnection
     def send_warnings_and_remove(self, store):
         """Send a warning email to the users who are disabled, if needed.
@@ -234,9 +278,10 @@ class BounceProcessor:
                 admin_notif = False
                 send_admin_notif = True
 
-            delete_member(
-                mlist=member._mailing_list, email=member.address.email,
-                admin_notif=admin_notif, userack=True)
+            with transaction():
+                delete_member(
+                    mlist=member._mailing_list, email=member.address.email,
+                    admin_notif=admin_notif, userack=True)
 
             if send_admin_notif:
                 send_admin_removal_notice(

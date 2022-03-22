@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,11 +17,16 @@
 
 """The 'confirm' email command."""
 
+from mailman.app.moderator import handle_message
 from mailman.core.i18n import _
+from mailman.interfaces.action import Action
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import MembershipIsBannedError
+from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
+from mailman.rules.approved import Approved
 from public import public
+from zope.component import getUtility
 from zope.interface import implementer
 
 
@@ -32,7 +37,7 @@ class Confirm:
 
     name = 'confirm'
     argument_description = 'token'
-    description = _('Confirm a subscription request.')
+    description = _('Confirm a subscription or held message request.')
     short_description = description
 
     def process(self, mlist, msg, msgdata, arguments, results):
@@ -49,6 +54,14 @@ class Confirm:
             return ContinueProcessing.no
         tokens.add(token)
         results.confirms = tokens
+        # now figure out what this token is for.
+        pendable = getUtility(IPendings).confirm(token, expunge=False)
+        if pendable is None:
+            print(_('Confirmation token did not match'), file=results)
+            return ContinueProcessing.no
+        if pendable['type'] == 'held message':
+            return self.process_held(
+                mlist, msg, msgdata, token, pendable, results)
         try:
             new_token, token_owner, member = ISubscriptionManager(
                 mlist).confirm(token)
@@ -80,4 +93,20 @@ class Confirm:
             # the email.
             return ContinueProcessing.no
         print(_('Confirmation token did not match'), file=results)
+        return ContinueProcessing.no
+
+    def process_held(self, mlist, msg, msgdata, token, pendable, results):
+        # Is this confirmation approved?
+        approved = Approved().check(mlist, msg, msgdata)
+        if approved:
+            action = Action.accept
+            message = 'accepted'                          # noqa: F841
+        elif not msgdata.get('has_approved', False):
+            action = Action.discard
+            message = 'discarded'                         # noqa: F841
+        else:
+            print(_('Invalid Approved: password'), file=results)
+            return ContinueProcessing.no
+        handle_message(mlist, pendable['id'], action)
+        print(_('Message ${message}'), file=results)
         return ContinueProcessing.no

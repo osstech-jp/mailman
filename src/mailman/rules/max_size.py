@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,7 +17,12 @@
 
 """The maximum message size rule."""
 
+from copy import deepcopy
+from lazr.config import as_boolean
+from mailman.config import config
 from mailman.core.i18n import _
+from mailman.handlers.mime_delete import process
+from mailman.interfaces.pipeline import DiscardMessage, RejectMessage
 from mailman.interfaces.rules import IRule
 from public import public
 from zope.interface import implementer
@@ -38,8 +43,24 @@ class MaximumSize:
             return False
         assert hasattr(msg, 'original_size'), (
             'Message was not sized on initial parsing.')
+        if msg.original_size / 1024.0 <= mlist.max_message_size:
+            # If it's already not too big, no need to filter it
+            return False
+        test_size = msg.original_size
+        if (mlist.filter_content and
+                as_boolean(config.mailman.check_max_size_on_filtered_message)):
+            test_msg = deepcopy(msg)
+            test_data = msgdata.copy()
+            test_data['fwd_preserve'] = False
+            try:
+                process(mlist, test_msg, test_data)
+            except (DiscardMessage, RejectMessage):
+                # Nothing left after content filtering.  Let the pipeline
+                # handle it.
+                return False
+            test_size = len(test_msg.as_string())
         # The maximum size is specified in 1024 bytes.
-        if msg.original_size / 1024.0 > mlist.max_message_size:
+        if test_size / 1024.0 > mlist.max_message_size:
             msgdata['moderation_sender'] = msg.sender
             with _.defer_translation():
                 # This will be translated at the point of use.

@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,8 +26,10 @@ from mailman.commands.cli_notify import notify
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import (get_queue_messages,
-                                     specialized_message_from_string as mfs)
+from mailman.testing.helpers import (
+    get_queue_messages,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -52,7 +54,7 @@ Subject: message 1
         msg2 = mfs("""\
 To: ant@example.com
 From: bob@example.com
-Subject: message 2
+Subject: =?utf-8?q?message_2?=
 
 """)
         hold_message(self._mlist, msg2, {}, 'Some other reason')
@@ -120,8 +122,7 @@ Held Messages:
     Reason: Some other reason
 
 
-Please attend to this at your earliest convenience.
-""")
+Please attend to this at your earliest convenience.""")
 
     def test_notify_bogus_list(self):
         result = self._command.invoke(notify,
@@ -159,5 +160,40 @@ Held Messages:
     Reason: Some other reason
 
 
-Please attend to this at your earliest convenience.
+Please attend to this at your earliest convenience.""")
+
+
+class TestBogusRFC2047(unittest.TestCase):
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('ant@example.com')
+        msg = mfs("""\
+To: ant@example.com
+From: anne@example.com
+Subject: =?gb2312?q?=E9=FF_message_1?=
+
 """)
+        # Hold this message.
+        hold_message(self._mlist, msg, {}, 'Non-member post')
+        self._command = CliRunner()
+
+    def test_bogus_rfc2047(self):
+        # Clear messages from setup.
+        get_queue_messages('virgin')
+        result = self._command.invoke(notify, ('-v',))
+        self.assertMultiLineEqual(result.output, """\
+The ant@example.com list has 1 moderation requests waiting.
+""")
+        msg = get_queue_messages('virgin', expected_count=1)[0].msg
+        self.assertMultiLineEqual(msg.get_payload(), """\
+The ant@example.com list has 1 moderation requests waiting.
+
+
+Held Messages:
+    Sender: anne@example.com
+    Subject: =?gb2312?q?=E9=FF_message_1?=
+    Reason: Non-member post
+
+
+Please attend to this at your earliest convenience.""")

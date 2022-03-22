@@ -1,0 +1,8 @@
+Váš odber v konferencii $listname bol deaktivovaný, pretože sme dostali niekoľko
+správ o nedoručení, čo naznačuje, že môže byť problém pri doručovaní správ pre
+$sender_email. Možno budete chcieť požiadať o pomoc svojho email správcu.
+
+V prípade akýchkoľvek otázok alebo problémov môžete kontaktovať vlastníka
+konferencie na adrese
+
+    $owner_email

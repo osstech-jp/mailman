@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,7 +27,7 @@ from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.archiver import ClobberDate
 from mailman.interfaces.mailinglist import IListArchiverSet
-from mailman.utilities.datetime import RFC822_DATE_FMT, now
+from mailman.utilities.datetime import now, RFC822_DATE_FMT
 from public import public
 
 

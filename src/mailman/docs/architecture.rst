@@ -34,7 +34,7 @@ Users and addresses are managed by the *user manager*.
 A *member* is created by linking a *subscriber* to a mailing list.
 Subscribers can be:
 
-* A user, which become members through their *preferred address*.
+* A user, which becomes a member through their *preferred address*.
 * An address, which can be linked or unlinked to a user, but must be verified.
 
 Members also have a *role*, representing regular members, digest members, list
@@ -152,7 +152,7 @@ change a mailing list's pipelines.
 Integration and control
 =======================
 
-Humans and external programs can interact with a running Core system in may
+Humans and external programs can interact with a running Core system in many
 different ways.  There's an extensive command line interface that provides
 useful options to a system administrator.  For external applications such as
 the Postorius web user interface, and the HyperKitty archiver, the
@@ -175,10 +175,10 @@ Other bits and pieces
 There are lots of other pieces to the Mailman puzzle, such as the set of core
 functionality (logging, initialization, event handling, etc.), mailing list
 *styles*, the API for integrating external archivers and mail servers.  The
-database layer is an critical piece, and Mailman has an extensive set of
+database layer is a critical piece, and Mailman has an extensive set of
 command line commands, and email commands.
 
-Almost the entire system is documented in these pages, but it maybe be a bit
+Almost the entire system is documented in these pages, but it may be a bit
 of a spelunking effort to find it.  Improvements are welcome!
 
 

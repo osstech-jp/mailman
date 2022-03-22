@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,8 +20,15 @@
 from mailman.core.i18n import _
 from mailman.interfaces.styles import IStyle
 from mailman.styles.base import (
-    Announcement, BasicOperation, Bounces, Discussion, Identity, Moderation,
-    Private, Public)
+    Announcement,
+    BasicOperation,
+    Bounces,
+    Discussion,
+    Identity,
+    Moderation,
+    Private,
+    Public,
+)
 from public import public
 from zope.interface import implementer
 

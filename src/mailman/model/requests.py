@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,7 +17,8 @@
 
 """Implementations of the pending requests interfaces."""
 
-from datetime import timedelta
+from lazr.config import as_timedelta
+from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum, SAUnicode
@@ -102,7 +103,9 @@ class ListRequests:
         else:
             pendable = DataPendable()
             pendable.update(data)
-            token = getUtility(IPendings).add(pendable, timedelta(days=5000))
+            # MAS Use the moderator default lifetime.
+            lifetime = as_timedelta(config.mailman.moderator_request_life)
+            token = getUtility(IPendings).add(pendable, lifetime=lifetime)
             data_hash = token
         request = _Request(key, request_type, self.mailing_list, data_hash)
         store.add(request)

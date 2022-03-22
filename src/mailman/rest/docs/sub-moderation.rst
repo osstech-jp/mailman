@@ -85,7 +85,7 @@ request's resource.  The POST data requires an action of one of the following:
 
  * discard - throw the request away.
  * reject - the request is denied and a notification is sent to the email
-            address requesting the membership change.
+   address requesting the membership change.
  * defer - defer any action on this membership change (continue to hold it).
  * accept - accept the membership change.
 
@@ -110,3 +110,57 @@ There are no more membership change requests.
     http_etag: "..."
     start: 0
     total_size: 0
+
+
+..  >>> # Clear the virgin queue.
+    >>> from mailman.testing.helpers import get_queue_messages
+	  >>> items = get_queue_messages('virgin')
+
+When rejecting subscription requests, an optional reason can be specified. When
+Bart tries to subscribe to Ant mailing list, the request is held for moderator
+approval::
+
+    >>> dump_json('http://localhost:9001/3.0/members', {
+    ...           'list_id': 'ant.example.com',
+    ...           'subscriber': 'bperson@example.com',
+    ...           'display_name': 'Bart Person',
+    ...           'pre_verified': True,
+    ...           'pre_confirmed': True,
+    ...           })
+    http_etag: ...
+    token: 0000000000000000000000000000000000000002
+    token_owner: moderator
+
+
+The moderator can then reject the request stating the reason for rejection::
+
+    >>> dump_json('http://localhost:9001/3.0/lists/ant.example.com/requests'
+    ...           '/0000000000000000000000000000000000000002',
+    ...           {'action': 'reject', 'reason': 'This is a private list'})
+    date: ...
+    server: ...
+    status: 204
+
+This will send an email to Bart with the rejection reason::
+
+    >>> from mailman.testing.helpers import get_queue_messages
+	  >>> items = get_queue_messages('virgin')
+    >>> message = items[0].msg
+    >>> print(message.as_string())
+    MIME-Version: 1.0
+		...
+    <BLANKLINE>
+    Your request to the ant@example.com mailing list
+    <BLANKLINE>
+        Subscription request
+    <BLANKLINE>
+    has been rejected by the list moderator.  The moderator gave the
+    following reason for rejecting your request:
+    <BLANKLINE>
+    "This is a private list"
+    <BLANKLINE>
+    Any questions or comments should be directed to the list administrator
+    at:
+    <BLANKLINE>
+        ant-owner@example.com
+    <BLANKLINE>

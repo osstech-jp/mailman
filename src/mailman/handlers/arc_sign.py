@@ -1,4 +1,4 @@
-# Copyright (C) 2017-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2017-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,6 +28,7 @@ from mailman.interfaces.handler import IHandler
 from public import public
 from zope.interface import implementer
 
+
 # A manual override used by the test suite.
 timestamp = None
 
@@ -50,7 +51,7 @@ def sign(msg, msgdata):
                            standardize=('ARC-Standardize' in msgdata))
     except DKIMException:
         log.exception('Failed to sign message: %s', msg['Message-ID'])
-        raise
+        return
 
     headers = [x.decode('utf-8').split(': ', 1) for x in sig]
     prepend_headers(msg, headers)

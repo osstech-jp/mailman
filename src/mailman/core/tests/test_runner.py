@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,16 +26,25 @@ from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.runner import RunnerCrashEvent
 from mailman.runners.virgin import VirginRunner
 from mailman.testing.helpers import (
-    LogFileMark, configuration, event_subscribers, get_queue_messages,
-    make_digest_messages, make_testable_runner,
+    configuration,
+    event_subscribers,
+    get_queue_messages,
+    LogFileMark,
+    make_digest_messages,
+    make_testable_runner,
     specialized_message_from_string as mfs,
-    subscribe)
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 
 
 class CrashingRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
         raise RuntimeError('borked')
+
+
+class NonQueueRunner(Runner):
+    is_queue_runner = False
 
 
 class TestRunner(unittest.TestCase):
@@ -118,3 +127,11 @@ Message-ID: <ant>
         # The list's -request address is the original sender.
         self.assertEqual(item.msgdata['original_sender'],
                          'test-request@example.com')
+
+    @configuration('runner.nonqueue',
+                   **{'class': 'mailman.core.tests.NonQueueRunner'})
+    def test_non_queue_runner(self):
+        # Test that a runner with no queue can run _one_iteration.
+        runner = make_testable_runner(NonQueueRunner)
+        # This will throw AttributeError on failure.
+        runner.run()

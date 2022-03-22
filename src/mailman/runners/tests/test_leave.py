@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,8 +27,11 @@ from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner, set_preferred,
-    specialized_message_from_string as mfs)
+    get_queue_messages,
+    make_testable_runner,
+    set_preferred,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

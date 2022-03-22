@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,7 +28,9 @@ from mailman.config.config import external_configuration
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mta import (
-    IMailTransportAgentAliases, IMailTransportAgentLifecycle)
+    IMailTransportAgentAliases,
+    IMailTransportAgentLifecycle,
+)
 from mailman.utilities.datetime import now
 from operator import attrgetter
 from public import public

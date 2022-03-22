@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -270,6 +270,8 @@ class TestSiteTemplates(unittest.TestCase):
                 'list:admin:notice:subscribe': '',
                 'list:admin:notice:unrecognized': '',
                 'list:admin:notice:unsubscribe': '',
+                'list:admin:notice:pending': '',
+                'list:admin:notice:increment': '',
                 'list:admin:notice:disable': '',
                 'list:admin:notice:removal': '',
                 'list:member:digest:footer': '',

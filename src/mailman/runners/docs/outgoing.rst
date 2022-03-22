@@ -58,7 +58,7 @@ destination mailing list name.  Simulate that here too.
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
-    ...     tolist=True,
+    ...     to_list=True,
     ...     listid=mlist.list_id)
 
 Running the outgoing runner processes the message, delivering it to the

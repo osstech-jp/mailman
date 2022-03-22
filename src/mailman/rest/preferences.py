@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,9 +20,18 @@
 from lazr.config import as_boolean
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.rest.helpers import (
-    GetterSetter, bad_request, etag, no_content, not_found, okay)
+    bad_request,
+    etag,
+    GetterSetter,
+    no_content,
+    not_found,
+    okay,
+)
 from mailman.rest.validator import (
-    Validator, enum_validator, language_validator)
+    enum_validator,
+    language_validator,
+    Validator,
+)
 from public import public
 
 

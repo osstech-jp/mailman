@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,11 +22,14 @@ import shutil
 import unittest
 
 from mailman.app.lifecycle import (
-    InvalidListNameError, create_list, remove_list)
+    create_list,
+    InvalidListNameError,
+    remove_list,
+)
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import IListManager
-from mailman.testing.helpers import LogFileMark, configuration
+from mailman.testing.helpers import configuration, LogFileMark
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 

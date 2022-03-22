@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,7 +18,7 @@
 """Template finder."""
 
 from mailman.rest.helpers import not_found
-from mailman.utilities.i18n import TemplateNotFoundError, find
+from mailman.utilities.i18n import find, TemplateNotFoundError
 from public import public
 
 

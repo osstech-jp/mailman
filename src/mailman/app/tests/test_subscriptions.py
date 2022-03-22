@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,20 +17,32 @@
 
 """Tests for the subscription service."""
 
+import sys
 import unittest
 
 from contextlib import suppress
+from datetime import datetime
+from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
 from mailman.app.subscriptions import SubscriptionWorkflow
+from mailman.config import config
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import MemberRole, MembershipIsBannedError
+from mailman.interfaces.member import (
+    DeliveryMode,
+    DeliveryStatus,
+    MemberRole,
+    MembershipIsBannedError,
+)
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, get_queue_messages, set_preferred)
+    get_queue_messages,
+    LogFileMark,
+    set_preferred,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from unittest.mock import patch
@@ -75,6 +87,55 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(pendable['display_name'], '')
         self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
         self.assertEqual(pendable['token_owner'], 'subscriber')
+        # The token is still in the database.
+        self._expected_pendings_count = 1
+
+    @unittest.skipIf(sys.hexversion < 0x30700a0, 'No datetime.fromisoformat')
+    def test_pended_expiration_user(self):
+        # As test_pended_data, but here we're interested in the expiration
+        # which we need to get at a low level.
+        anne = self._user_manager.create_address(self._anne)
+        workflow = SubscriptionWorkflow(self._mlist, anne)
+        with suppress(StopIteration):
+            workflow.run_thru('send_confirmation')
+        self.assertIsNotNone(workflow.token)
+        pendable = getUtility(IPendings).confirm(workflow.token, expunge=False)
+        self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
+        self.assertEqual(pendable['token_owner'], 'subscriber')
+        # Get the expiration datetime and verify.
+        expiration = config.db.store.execute(
+            "select expiration_date from pended where token = '{}';".format(
+                workflow.token)).fetchone()[0]
+        if isinstance(expiration, str):
+            expiration = datetime.fromisoformat(expiration)
+        expected = datetime.fromisoformat(pendable['when']) + as_timedelta(
+            config.mailman.pending_request_life)
+        self.assertEqual(expiration, expected)
+        # The token is still in the database.
+        self._expected_pendings_count = 1
+
+    @unittest.skipIf(sys.hexversion < 0x30700a0, 'No datetime.fromisoformat')
+    def test_pended_expiration_moderator(self):
+        # Test that a Pendable for the moderator has the right expiration.
+        self._mlist.subscription_policy = SubscriptionPolicy.moderate
+        anne = self._user_manager.create_address(self._anne)
+        anne.verified_on = datetime.now()
+        workflow = SubscriptionWorkflow(self._mlist, anne)
+        with suppress(StopIteration):
+            workflow.run_thru('get_moderator_approval')
+        self.assertIsNotNone(workflow.token)
+        pendable = getUtility(IPendings).confirm(workflow.token, expunge=False)
+        self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
+        self.assertEqual(pendable['token_owner'], 'moderator')
+        # Get the expiration datetime and verify.
+        expiration = config.db.store.execute(
+            "select expiration_date from pended where token = '{}';".format(
+                workflow.token)).fetchone()[0]
+        if isinstance(expiration, str):
+            expiration = datetime.fromisoformat(expiration)
+        expected = datetime.fromisoformat(pendable['when']) + as_timedelta(
+            config.mailman.moderator_request_life)
+        self.assertEqual(expiration, expected)
         # The token is still in the database.
         self._expected_pendings_count = 1
 
@@ -327,7 +388,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
 
     def test_do_subscription_pre_approved(self):
-        # An moderation-requiring subscription policy plus a pre-verified and
+        # A moderation-requiring subscription policy plus a pre-verified and
         # pre-approved address means the user gets subscribed to the mailing
         # list without any further confirmations or approvals.
         self._mlist.subscription_policy = SubscriptionPolicy.moderate
@@ -346,7 +407,7 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(workflow.token_owner, TokenOwner.no_one)
 
     def test_do_subscription_pre_approved_pre_confirmed(self):
-        # An moderation-requiring subscription policy plus a pre-verified and
+        # A moderation-requiring subscription policy plus a pre-verified and
         # pre-approved address means the user gets subscribed to the mailing
         # list without any further confirmations or approvals.
         self._mlist.subscription_policy = (
@@ -779,3 +840,24 @@ approval:
         self.assertEqual(approved_workflow.user, bill)
         # Run the workflow through.
         list(approved_workflow)
+
+    def test_set_member_prefs_and_subscribe(self):
+        # Test that we can set member's delivery_mode and delivery_status
+        # after subscribing them.
+        anne = self._user_manager.create_user(self._anne)
+        anne_address = anne.addresses[0]
+        workflow = SubscriptionWorkflow(
+            self._mlist, anne_address,
+            pre_verified=True, delivery_mode=DeliveryMode.plaintext_digests,
+            delivery_status=DeliveryStatus.by_user)
+        list(workflow)
+        # Anne's subcription is pending confirmation.
+        confirm_workflow = SubscriptionWorkflow(self._mlist)
+        confirm_workflow.token = workflow.token
+        confirm_workflow.restore()
+        list(confirm_workflow)
+        # Anne should be subscribed with the desired membership preferences.
+        anne_member = self._mlist.members.get_member(anne_address.email)
+        self.assertEqual(
+            anne_member.delivery_mode, DeliveryMode.plaintext_digests)
+        self.assertEqual(anne_member.delivery_status, DeliveryStatus.by_user)

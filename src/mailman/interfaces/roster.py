@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -57,6 +57,9 @@ class IRoster(Interface):
         indirectly through a user's preferred address.  In this case,
         this API always returns the explicit address.  Use
         ``get_memberships()`` to return them all.
+        Likewise, an email can be a member of the administrators roster,
+        both as an owner and as a moderator.  In this case, this API will
+        return the owner.
 
         :param email: The email address to search for.
         :type email: string

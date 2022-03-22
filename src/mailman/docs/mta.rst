@@ -104,6 +104,9 @@ You need to tell Mailman that you are using the Postfix mail server.  In your
 Some of these settings are already the default, so take a look at Mailman's
 ``src/mailman/config/schema.cfg`` file for details.  You'll need to change the
 ``lmtp_host`` and ``smtp_host`` to the appropriate host names of course.
+For everything on the same host, the default settings ``127.0.0.1`` and
+``localhost`` respectively are probably OK. If you do set ``smtp_host`` to
+other than ``localhost``, make sure that host is in Postfix ``mynetworks``.
 Generally, Postfix will listen for incoming SMTP connections on port 25.
 Postfix will deliver via LMTP over port 24 by default, however if you are not
 running Mailman as root, you'll need to change this to a higher port number,
@@ -203,6 +206,7 @@ tables by adding the following configuration to ``mailman.cfg``::
     smtp_port: 25
     configuration: /path/to/postfix-mailman.cfg
 
+See remarks above about ``lmtp_host`` and ``smtp_host``.
 Also you will have to create another configuration file called as
 ``postfix-mailman.cfg`` and add its path to the ``configuration`` parameter
 above. The ``postfix-mailman.cfg`` would look like this::
@@ -219,7 +223,8 @@ domain that will be used for Mailman 3 lists is a `virtual alias domain`_ and
 for various reasons, perhaps because it supports Mailman 2 lists and Mailman 3
 lists need to use the same domain, it must remain a virtual alias domain.
 This is a challenge because ``virtual alias domains`` do not use
-``transport_maps``.
+``transport_maps``. This section also applies if the domain is a `virtual
+mailbox domain`_.
 
 In order to enable this configuration, Mailman `domains`_ have an
 ``alias_domain`` attribute.  This is normally ``None`` but can be set to any
@@ -227,7 +232,7 @@ otherwise unused domain name.  The ``alias_domain`` is a fictitious domain that
 is not exposed in ``DNS`` and is only known to Postfix via the Mailman
 generated mappings.  For example if the actual domain is ``example.com`` the
 ``alias_domain`` could be ``x.example.com`` or even literally ``bogus.domain``.
-If this is done and the configured MTA is Postfix, Mailman will create an
+If you set an alias_domain and the configured MTA is Postfix, Mailman will create an
 additional ``/path-to-mailman/var/data/postfix_vmap`` file with mappings from
 the ``example.com`` addresses to the corresponding addresses in the
 ``alias_domain`` and will use the ``alias_domain`` in the other files.
@@ -265,6 +270,7 @@ and the documentation for the `relay_domains`_, `mydestination`_ and
 .. _`relay_domains`: http://www.postfix.org/postconf.5.html#relay_domains
 .. _`mydestination`: http://www.postfix.org/postconf.5.html#mydestination
 .. _`virtual alias domain`: http://www.postfix.org/ADDRESS_CLASS_README.html#virtual_alias_class
+.. _`virtual mailbox domain`: http://www.postfix.org/ADDRESS_CLASS_README.html#virtual_mailbox_class
 
 
 Exim
@@ -450,52 +456,12 @@ Sendmail
 ========
 
 The core Mailman developers generally do not use Sendmail, so experience is
-limited.  Any and all contributions are welcome!  The follow information from
-a post by Gary Algier <gaa@ulticom.com> may be useful as a starting point,
-although it describes Mailman 2:
-
-    I have it working fine.  I recently replaced a very old implementation
-    of sendmail and Mailman 2 on Solaris with a new one on CentOS 6.  When I
-    did so, I used the POSTFIX_ALIAS_CMD mechanism to automatically process
-    the aliases.  See::
-
-        https://mail.python.org/pipermail/mailman-users/2004-June/037518.html
-
-    In mm_cfg.py::
-
-         MTA='Postfix'
-         POSTFIX_ALIAS_CMD = '/usr/bin/sudo /etc/mail/import-mailman-aliases'
-
-    /etc/mail/import-mailman-aliases contains::
-
-         #! /bin/sh
-         /bin/cp /etc/mailman/aliases /etc/mail/mailman.aliases
-         /usr/bin/newaliases
-
-    In /etc/sudoers.d/mailman::
-
-         Cmnd_Alias IMPORT_MAILMAN_ALIASES = /etc/mail/import-mailman-aliases
-         apache ALL= NOPASSWD: IMPORT_MAILMAN_ALIASES
-         mailman ALL= NOPASSWD: IMPORT_MAILMAN_ALIASES
-         Defaults!IMPORT_MAILMAN_ALIASES !requiretty
-
-    In the sendmail.mc file I changed::
-
-         define(`ALIAS_FILE', `/etc/aliases')dnl
-
-    to::
-
-         define(`ALIAS_FILE', `/etc/aliases,/etc/mail/mailman.aliases')dnl
-
-    so that the Mailman aliases would be in a separate file.
-
-The main issue here is that Mailman 2 expects to receive messages from
-the MTA via pipes, whereas Mailman 3 uses LMTP exclusively.  Recent
-Sendmail does support LMTP, so it's a matter of configuring a stock
-Sendmail.  But rather than using aliases, it needs to be configured to
-relay to the LMTP port of Mailman.
+limited.  Any and all contributions are welcome!  There is one such
+contribution on GitHub_ and another in comments at this issue_.
 
 
+.. _GitHub: https://gist.github.com/Maeglin73/72eb5b1e4ee66a383c2aa454726be9a5
+.. _issue: https://gitlab.com/mailman/mailman/-/issues/307#note_632495542
 .. _`mailing list or on IRC`: START.html#contact-us
 .. _`Local Mail Transfer Protocol`:
    https://en.wikipedia.org/wiki/Local_Mail_Transfer_Protocol

@@ -5,7 +5,7 @@
     - merge_requests
     - tags
 
-image: maxking/mailman-ci-runner
+image: ghcr.io/maxking/mailman-ci-runner:latest
 
 variables:
   POSTGRES_DB: "mailman_test"

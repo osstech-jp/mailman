@@ -15,18 +15,26 @@ You can also get all the values for a particular section, such as the
 ``[mailman]`` section...
 
     >>> dump_json('http://localhost:9001/3.0/system/configuration/mailman')
+    anonymous_list_keep_headers: ^(?!x-) ^x-mailman- ^x-content-filtered-by:
+    ^x-topics: ^x-ack: ^x-beenthere: ^x-list-administrivia: ^x-spam-
     cache_life: 7d
+    check_max_size_on_filtered_message: no
     default_language: en
     email_commands_max_lines: 10
+    filter_report: no
     filtered_messages_are_preservable: no
+    hold_digest: no
     html_to_plain_text_command: /usr/bin/lynx -dump $filename
     http_etag: ...
     layout: testing
     listname_chars: [-_.0-9a-z]
+    masthead_threshold: 4
+    moderator_request_life: 180d
     noreply_address: noreply
     pending_request_life: 3d
     post_hook:
     pre_hook:
+    run_tasks_every: 1h
     self_link: http://localhost:9001/3.0/system/configuration/mailman
     sender_headers: from from_ reply-to sender
     site_owner: noreply@example.com

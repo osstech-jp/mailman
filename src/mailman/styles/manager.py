@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,7 +19,10 @@
 
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from mailman.interfaces.styles import (
-    DuplicateStyleError, IStyle, IStyleManager)
+    DuplicateStyleError,
+    IStyle,
+    IStyleManager,
+)
 from mailman.utilities.modules import add_components
 from public import public
 from zope.component import getUtility

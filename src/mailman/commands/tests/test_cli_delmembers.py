@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -56,8 +56,8 @@ class TestCLIDelMembers(unittest.TestCase):
             result.output,
             'Usage: delmembers [OPTIONS]\n'
             'Try \'delmembers --help\' for help.\n\n'
-            'Error: Invalid value for \'--file\' / \'-f\': Could not open '
-            'file: bad: No such file or directory\n')
+            'Error: Invalid value for \'--file\' / \'-f\': '
+            '\'bad\': No such file or directory\n')
 
     def test_not_subscribed_without_display_name(self):
         with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:

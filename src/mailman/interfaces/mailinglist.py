@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -211,7 +211,7 @@ class IMailingList(Interface):
 
     no_reply_address = Attribute(
         """The address to which all messages will be immediately discarded,
-        without prejudice or record.  This address is specific to the ddomain,
+        without prejudice or record.  This address is specific to the domain,
         even though it's available on the IMailingListAddresses interface.
         Generally, humans should never respond directly to this address.
         """)
@@ -318,7 +318,7 @@ class IMailingList(Interface):
         they have their delivery disabled or not.""")
 
     regular_members = Attribute(
-        """An roster of all the IMembers who are to receive regular postings
+        """A roster of all the IMembers who are to receive regular postings
         (i.e. non-digests) from the mailing list, regardless of whether they
         have their delivery disabled or not.""")
 
@@ -405,7 +405,7 @@ class IMailingList(Interface):
     member_roster_visibility = Attribute(
         """The policy for who can view the member roster of this mailing list.
 
-        The value is an `RosterVisibility` enum.  Use this to change who can
+        The value is a `RosterVisibility` enum.  Use this to change who can
         view the member list. Options are public, members, or moderators.""")
 
     # Digests.
@@ -665,6 +665,11 @@ class IMailingList(Interface):
         The number of days after which a member's bounce information is
         considered stale. If no new bounces have been received in the interim,
         the bounce score is reset to zero. This value must be an integer.
+        """)
+
+    bounce_notify_owner_on_bounce_increment = Attribute(
+        """This option controls whether or not the list owner
+        is notified when a member's bounce score is incremented.
         """)
 
     bounce_notify_owner_on_disable = Attribute(

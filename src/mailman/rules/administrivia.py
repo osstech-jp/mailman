@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,6 +23,7 @@ from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 from public import public
 from zope.interface import implementer
+
 
 # The list of email commands we search for in the Subject header and payload.
 # We probably should get this information from the actual implemented

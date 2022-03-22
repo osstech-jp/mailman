@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,15 +27,22 @@ from mailman.rest.addresses import AllAddresses, AnAddress
 from mailman.rest.bans import BannedEmail, BannedEmails
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import (
-    BadRequest, NotFound, child, etag, no_content, not_found, okay)
+    BadRequest,
+    child,
+    etag,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.lists import AList, AllLists, FindLists, Styles
-from mailman.rest.members import AMember, AllMembers, FindMembers
-from mailman.rest.plugins import APlugin, AllPlugins
+from mailman.rest.members import AllMembers, AMember, FindMembers
+from mailman.rest.plugins import AllPlugins, APlugin
 from mailman.rest.preferences import ReadOnlyPreferences
-from mailman.rest.queues import AQueue, AQueueFile, AllQueues
+from mailman.rest.queues import AllQueues, AQueue, AQueueFile
 from mailman.rest.templates import TemplateFinder
-from mailman.rest.uris import ASiteURI, AllSiteURIs
-from mailman.rest.users import AUser, AllUsers, ServerOwners
+from mailman.rest.uris import AllSiteURIs, ASiteURI
+from mailman.rest.users import AllUsers, AUser, FindUsers, ServerOwners
 from public import public
 from zope.component import getUtility
 
@@ -249,9 +256,13 @@ class TopLevel:
         """/<api>/users"""
         if len(segments) == 0:
             return AllUsers()
+
+        segment = segments.pop(0)
+        if segment == 'find':
+            resource = FindUsers()
         else:
-            user_identifier = segments.pop(0)
-            return AUser(user_identifier), segments
+            resource = AUser(segment)
+        return resource, segments
 
     @child()
     def owners(self, context, segments):

@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -62,6 +62,13 @@ class IWorkflowStateManager(Interface):
 
         :param token: A unique token identifying this workflow instance.
         :type token: str
+        """
+
+    def get_all_tokens():
+        """Get a generator yielding all saved workflow tokens.
+
+        :return: A generator yielding all saved workflow tokens.
+        :rtype: string
         """
 
     count = Attribute('The number of saved workflows in the database.')

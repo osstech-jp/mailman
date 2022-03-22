@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -30,6 +30,7 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.member import NotAMemberError
 from mailman.interfaces.messages import IMessageStore
+from mailman.interfaces.pending import IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.datetime import now
@@ -91,6 +92,19 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
     return request_id
 
 
+def _lost_message(mlist, subject, sender, message_id):
+    # Create a substitute for a message not found in the message store.
+    text = _("""\
+The content of this message was lost. It was probably cross-posted to
+multiple lists and previously handled on another list.
+""")
+    msg = UserNotification(
+        mlist.posting_address, sender, subject, text, mlist.preferred_language)
+    del msg['message-id']
+    msg['Message-ID'] = message_id
+    return msg
+
+
 @public
 def handle_message(mlist, id, action, comment=None, forward=None):
     message_store = getUtility(IMessageStore)
@@ -115,11 +129,13 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         else:
             language = None
         send_rejection(
-            mlist, _('Posting of your message titled "$subject"'),
+            mlist, _('Posting of your message titled "${subject}"'),
             sender, comment or _('[No reason given]'), language)
     elif action is Action.accept:
         # Start by getting the message from the message store.
         msg = message_store.get_message_by_id(message_id)
+        if msg is None:
+            msg = _lost_message(mlist, subject, sender, message_id)
         # Delete moderation-specific entries from the message metadata.
         for key in list(msgdata):
             if key.startswith('_mod_'):
@@ -147,6 +163,8 @@ def handle_message(mlist, id, action, comment=None, forward=None):
     if forward:
         # Get a copy of the original message from the message store.
         msg = message_store.get_message_by_id(message_id)
+        if msg is None:
+            msg = _lost_message(mlist, subject, sender, message_id)
         # It's possible the forwarding address list is a comma separated list
         # of display_name/address pairs.
         addresses = [addr[1] for addr in getaddresses(forward)]
@@ -168,9 +186,29 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         fmsg.set_type('message/rfc822')
         fmsg.attach(msg)
         fmsg.send(mlist)
-    # Delete the request if it's not being kept.
+    # Delete the request and message if it's not being kept.
     if not keep:
+        # There are two pended tokens.  The request id has the moderator
+        # token, but we need to delete the user token too.
+        user_token = None
+        pendings = getUtility(IPendings)
+        for token, data in pendings.find(pend_type='held message'):
+            # This can return None if there is a concurrent deletion.
+            if data and data['id'] == id:
+                user_token = token
+                break
+        if user_token is not None:
+            pendings.confirm(user_token, expunge=True)
         requestdb.delete_request(id)
+        # Only delete the message from the message store if there's no other
+        # request for it.
+        delete = True
+        for token, data in pendings.find(pend_type='data'):
+            if data and data.get('_mod_message_id') == message_id:
+                delete = False
+                break
+        if delete:
+            message_store.delete_message(message_id)
     # Log the rejection
     if rejection:
         note = """%s: %s posting:
@@ -192,7 +230,8 @@ def hold_unsubscription(mlist, email):
     # Possibly notify the administrator of the hold
     if mlist.admin_immed_notify:
         subject = _(
-            'New unsubscription request from $mlist.display_name by $email')
+            'New unsubscription request from ${mlist.display_name} by ${email}'
+            )
         template = getUtility(ITemplateLoader).get(
             'list:admin:action:unsubscribe', mlist)
         text = wrap(expand(template, mlist, dict(
@@ -268,7 +307,7 @@ def send_rejection(mlist, request, recip, comment, origmsg=None, lang=None):
                  '---------- ' + _('Original Message') + ' ----------',
                  str(origmsg)
                  ])
-        subject = _('Request to mailing list "$display_name" rejected')
+        subject = _('Request to mailing list "${display_name}" rejected')
     msg = UserNotification(recip, mlist.bounces_address, subject, text, lang)
     msg.send(mlist)
 

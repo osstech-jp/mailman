@@ -1,4 +1,4 @@
-# Copyright (C) 2017-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2017-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,6 +20,7 @@
 
 from mailman.plugins.testing.layer import PluginRESTLayer
 from public import public
+
 
 # For flufl.testing.
 public(layer=PluginRESTLayer)

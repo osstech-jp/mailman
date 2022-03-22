@@ -4,7 +4,7 @@ Ihre Anfrage an die Mailingliste $listname
 
 wurde von einer Moderator*in mit folgender Begründung abgelehnt:
 
-"$reason"
+$reason
 
 Für weitere Fragen oder Anmerkungen wenden Sie sich bitte an die
 Administrator*in unter:

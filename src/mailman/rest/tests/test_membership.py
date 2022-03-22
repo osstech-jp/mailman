@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,13 +24,20 @@ from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
-from mailman.interfaces.member import DeliveryMode, MemberRole
+from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.incoming import IncomingRunner
 from mailman.testing.helpers import (
-    TestableMaster, call_api, get_lmtp_client, get_queue_messages,
-    make_testable_runner, set_preferred, subscribe, wait_for_webservice)
+    call_api,
+    get_lmtp_client,
+    get_queue_messages,
+    make_testable_runner,
+    set_preferred,
+    subscribe,
+    TestableMaster,
+    wait_for_webservice,
+)
 from mailman.testing.layers import ConfigLayer, RESTLayer
 from mailman.utilities.datetime import now
 from urllib.error import HTTPError
@@ -71,7 +78,8 @@ class TestMembership(unittest.TestCase):
 
     def test_try_to_leave_a_list_twice(self):
         with transaction():
-            anne = self._usermanager.create_address('anne@example.com')
+            anne = self._usermanager.create_user('anne@example.com')
+            set_preferred(anne)
             self._mlist.subscribe(anne)
         url = 'http://localhost:9001/3.0/members/1'
         json, response = call_api(url, method='DELETE')
@@ -82,6 +90,76 @@ class TestMembership(unittest.TestCase):
         with self.assertRaises(HTTPError) as cm:
             call_api(url, method='DELETE')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_leave_mlist_sends_notice_to_user(self):
+        with transaction():
+            anne = self._usermanager.create_user('anne@example.com')
+            set_preferred(anne)
+            self._mlist.subscribe(anne)
+        # Empty the virgin queue.
+        get_queue_messages('virgin', expected_count=1)
+        url = 'http://localhost:9001/3.0/members/1'
+        # Calling the DELETE api should send user a notice.
+        json, response = call_api(url, method='DELETE')
+        self.assertEqual(json, None)
+        self.assertEqual(response.status_code, 204)
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(str(items[0].msg['to']), 'anne@example.com')
+        self.assertEqual(
+            str(items[0].msg['subject']),
+            'You have been unsubscribed from the Test mailing list')
+
+    def test_leave_mlist_moderate_policy(self):
+        with transaction():
+            self._mlist.unsubscription_policy = SubscriptionPolicy.moderate
+            anne = self._usermanager.create_user('anne@example.com')
+            set_preferred(anne)
+            self._mlist.subscribe(anne)
+        # Empty the virgin queue.
+        get_queue_messages('virgin', expected_count=1)
+        url = 'http://localhost:9001/3.0/members/1'
+        # Try unsubscribing the user.
+        with transaction():
+            json, resp = call_api(
+                url,
+                data=dict(pre_confirmed=True),
+                method='DELETE')
+        self.assertEqual(resp.status_code, 202)
+        self.assertEqual(json.get('token_owner'), 'moderator')
+        token = json.get('token')
+        # The member should not have been deleted.
+        json, resp = call_api(url)
+        self.assertEqual(resp.status_code, 200)
+        # Now, approve the un-subscription request.
+        json, resp = call_api(
+            'http://localhost:9001/3.0/lists/test.example.com/'
+            'requests/{}'.format(token),
+            data={'action': 'accept'})
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(json, None)
+        # Finally, the user should be unsubscribed.
+        with self.assertRaises(HTTPError) as cm:
+            resp = call_api(url)
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_leave_mlist_confirm_policy(self):
+        with transaction():
+            anne = self._usermanager.create_user('anne@example.com')
+            set_preferred(anne)
+            self._mlist.subscribe(anne)
+        # Empty the virgin queue.
+        get_queue_messages('virgin', expected_count=1)
+        url = 'http://localhost:9001/3.0/members/1'
+        # The default policy is to confirm, so an un-confirmed request would be
+        # held for user confirmation.
+        json, response = call_api(url, data={'pre_confirmed': False},
+                                  method='DELETE')
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(str(items[0].msg['to']), 'anne@example.com')
+        self.assertEqual(
+            str(items[0].msg['subject']),
+            'Your confirmation is needed to leave the test@example.com'
+            ' mailing list.')
 
     def test_try_to_join_a_list_twice(self):
         with transaction():
@@ -553,6 +631,37 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(str(items[0].msg['to']), 'anne@example.com')
         self.assertEqual(
             str(items[0].msg['subject']), 'Welcome to the "Test" mailing list')
+
+    def test_subscribe_with_digests_nomail(self):
+        content, response = call_api('http://localhost:9001/3.1/members', {
+            'list_id': 'test.example.com',
+            'subscriber': 'ANNE@example.com',
+            'pre_verified': True,
+            'pre_confirmed': True,
+            'delivery_status': 'by_user',
+            'delivery_mode': 'plaintext_digests',
+            })
+        self.assertEqual(response.status_code, 201)
+        member = self._mlist.members.get_member('anne@example.com')
+        self.assertIsNotNone(member)
+        self.assertEqual(member.delivery_mode, DeliveryMode.plaintext_digests)
+        self.assertEqual(member.delivery_status, DeliveryStatus.by_user)
+
+    def test_add_owner_with_options(self):
+        content, response = call_api('http://localhost:9001/3.1/members', {
+            'list_id': 'test.example.com',
+            'subscriber': 'ANNE@example.com',
+            'role': 'owner',
+            'pre_verified': True,
+            'pre_confirmed': True,
+            'delivery_status': 'by_user',
+            'delivery_mode': 'plaintext_digests',
+            })
+        self.assertEqual(response.status_code, 201)
+        member = self._mlist.owners.get_member('anne@example.com')
+        self.assertIsNotNone(member)
+        self.assertEqual(member.delivery_mode, DeliveryMode.plaintext_digests)
+        self.assertEqual(member.delivery_status, DeliveryStatus.by_user)
 
 
 class CustomLayer(ConfigLayer):

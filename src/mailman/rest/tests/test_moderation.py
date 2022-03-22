@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,15 +21,20 @@ import unittest
 
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
+from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    call_api, get_queue_messages, set_preferred,
-    specialized_message_from_string as mfs)
+    call_api,
+    get_queue_messages,
+    set_preferred,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 from zope.component import getUtility
@@ -76,6 +81,54 @@ Something else.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/ant@example.com/held/99')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_held_message_is_missing(self):
+        # Missing message returns appropriately.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+        url = 'http://localhost:9001/3.0/lists/ant@example.com/held'
+        json, response = call_api(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['total_size'], 1)
+        self.assertEqual(json['entries'][0]['request_id'], held_id)
+        self.assertEqual(json['entries'][0]['msg'], """\
+From: anne@example.com
+To: ant@example.com
+Subject: Something
+Message-ID: <alpha>
+Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
+X-Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
+
+Something else.
+""")
+        # Now delete the message from the message store and try again.
+        getUtility(IMessageStore).delete_message('<alpha>')
+        config.db.commit()
+        json, response = call_api(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['total_size'], 1)
+        self.assertEqual(json['entries'][0]['request_id'], held_id)
+        self.assertEqual(json['entries'][0]['msg'], """\
+Subject: Message content lost
+Message-ID: <alpha>
+
+This held message has been lost.
+""")
+
+    def test_delete_missing_message(self):
+        # Ensure we can delete a held message request with a missing message.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+        # Now delete the message from the message store.
+        getUtility(IMessageStore).delete_message('<alpha>')
+        config.db.commit()
+        # There is still a request.
+        requests = IListRequests(self._mlist)
+        key, data = requests.get_request(held_id)
+        self.assertEqual(key, '<alpha>')
+        # Now delete the request.
+        requests.delete_request(held_id)
+        self.assertIsNone(requests.get_request(held_id))
 
     def test_request_is_not_held_message(self):
         requests = IListRequests(self._mlist)
@@ -207,6 +260,7 @@ class TestSubscriptionModeration(unittest.TestCase):
     def setUp(self):
         with transaction():
             self._mlist = create_list('ant@example.com')
+            self._mlist.unsubscription_policy = SubscriptionPolicy.moderate
             self._registrar = ISubscriptionManager(self._mlist)
             manager = getUtility(IUserManager)
             self._anne = manager.create_address(
@@ -308,6 +362,52 @@ class TestSubscriptionModeration(unittest.TestCase):
             '/count?token_owner=subscriber')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json['count'], 2)
+
+    def test_list_held_unsubscription_request(self):
+        with transaction():
+            # First, subscribe Anne and then trigger an un-subscription.
+            self._mlist.subscribe(self._bart)
+            token, token_owner, member = self._registrar.unregister(self._bart)
+            # Anne's un-subscription request got held.
+            self.assertIsNotNone(token)
+            self.assertIsNotNone(member)
+        json, response = call_api(
+            'http://localhost:9001/3.0/lists/ant@example.com/requests'
+            '?request_type=unsubscription')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json['entries']), 1)
+        # Individual request can then be fetched.
+        url = 'http://localhost:9001/3.0/lists/ant@example.com/requests/{}'
+        json, response = call_api(url.format(token))
+        self.assertEqual(json['token'], token)
+        self.assertEqual(json['token_owner'], token_owner.name)
+        self.assertEqual(json['email'], 'bart@example.com')
+        self.assertEqual(json['type'], 'unsubscription')
+        # Bart should still be a Member.
+        self.assertIsNotNone(
+            self._mlist.members.get_member('bart@example.com'))
+        # Now, accept the request.
+        json, response, call_api(url.format(token), dict(
+            action='accept',
+            ))
+        self.assertEqual(response.status_code, 200)
+        # Now, the Member should be un-subscribed.
+        self.assertIsNone(
+            self._mlist.members.get_member('bart@example.com'))
+
+    def test_unsubscription_request_count(self):
+        with transaction():
+            # First, subscribe Anne and then trigger an un-subscription.
+            self._mlist.subscribe(self._bart)
+            token, token_owner, member = self._registrar.unregister(self._bart)
+            # Anne's un-subscription request got held.
+            self.assertIsNotNone(token)
+            self.assertIsNotNone(member)
+        json, response = call_api(
+            'http://localhost:9001/3.0/lists/ant@example.com/requests/count'
+            '?request_type=unsubscription')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['count'], 1)
 
     def test_individual_request(self):
         # We can view an individual request.
@@ -501,6 +601,33 @@ class TestSubscriptionModeration(unittest.TestCase):
                      '/requests/bogus',
                      dict(action='reject'))
         self.assertEqual(cm.exception.code, 404)
+
+    def test_reject_with_reason(self):
+        # Try to reject a request with an additional comment/reason.
+        # POST to the request to reject it.  This leaves a bounce message in
+        # the virgin queue.
+        with transaction():
+            token, token_owner, member = self._registrar.register(self._anne)
+        # Anne's subscription request got held.
+        self.assertIsNone(member)
+        # Clear out the virgin queue, which currently contains the
+        # confirmation message sent to Anne.
+        get_queue_messages('virgin')
+        url = 'http://localhost:9001/3.0/lists/ant@example.com/requests/{}'
+        reason = 'You are not authorized!'
+        json, response = call_api(url.format(token), dict(
+            action='reject',
+            reason=reason))
+        self.assertEqual(response.status_code, 204)
+        # And the rejection message to Anne is now in the virgin queue.
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        message = items[0].msg
+        self.assertEqual(message['From'], 'ant-bounces@example.com')
+        self.assertEqual(message['To'], 'anne@example.com')
+        self.assertEqual(message['Subject'],
+                         'Request to mailing list "Ant" rejected')
+        self.assertTrue(reason in message.as_string())
 
     def test_hold_keeps_holding(self):
         # POST to the request to continue holding it.

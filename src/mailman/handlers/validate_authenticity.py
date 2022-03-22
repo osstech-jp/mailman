@@ -1,4 +1,4 @@
-# Copyright (C) 2017-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2017-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,7 +21,7 @@ an Authentication-Results header to the outgoing message"""
 import logging
 
 from authheaders import authenticate_message
-from authres import AuthenticationResultsHeader
+from authres import AuthenticationResultsHeader, SyntaxError
 from dns.resolver import Timeout
 from itertools import chain
 from mailman.config import config
@@ -70,9 +70,16 @@ def trusted_auth_res(msg):
 
     if config.arc.trusted_authserv_ids and (AUTH_RESULT_HEADER in msg):
         header = '{}: {}'.format(AUTH_RESULT_HEADER, msg[AUTH_RESULT_HEADER])
-        authserv_id = AuthenticationResultsHeader.parse(header).authserv_id
-        if authserv_id in config.arc.trusted_authserv_ids:
-            return header
+        # prod.outlook.com sends malformed headers. If we find these,
+        # ignore them, as they are the equivalent of not trusted.
+        # See https://gitlab.com/mailman/mailman/-/issues/885
+        try:
+            authserv_id = AuthenticationResultsHeader.parse(header).authserv_id
+            if authserv_id in config.arc.trusted_authserv_ids:
+                return header
+        except SyntaxError:
+            # Treat the faulty header as though it does not exist
+            return
 
 
 @retry(Timeout, NUM_TIMEOUT_RETRIES)

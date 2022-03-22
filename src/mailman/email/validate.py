@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,7 +20,9 @@
 import re
 
 from mailman.interfaces.address import (
-    IEmailValidator, InvalidEmailAddressError)
+    IEmailValidator,
+    InvalidEmailAddressError,
+)
 from mailman.utilities.email import split_email
 from public import public
 from zope.interface import implementer

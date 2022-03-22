@@ -1,4 +1,4 @@
-# Copyright (C) 2017-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2017-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,6 +25,7 @@ from mailman.app.lifecycle import create_list
 from mailman.commands.cli_inject import inject
 from mailman.testing.helpers import get_queue_messages
 from mailman.testing.layers import ConfigLayer
+
 
 test_msg = b"""\
 To: ant@example.com

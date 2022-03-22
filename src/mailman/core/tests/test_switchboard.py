@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,7 +23,8 @@ import unittest
 from mailman.config import config
 from mailman.testing.helpers import (
     LogFileMark,
-    specialized_message_from_string as mfs)
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 

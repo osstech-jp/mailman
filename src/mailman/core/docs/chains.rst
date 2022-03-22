@@ -275,7 +275,7 @@ This message will end up in the `pipeline` queue.
     X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
         loop; banned-address; member-moderation; nonmember-moderation;
         administrivia; implicit-dest; max-recipients; max-size;
-        news-moderation; no-subject; suspicious-header
+        news-moderation; no-subject; digests; suspicious-header
     <BLANKLINE>
     An important message.
     <BLANKLINE>
@@ -290,6 +290,7 @@ hit and all rules that have missed.
     administrivia
     approved
     banned-address
+    digests
     dmarc-mitigation
     emergency
     implicit-dest

@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,7 +20,7 @@
 import re
 
 from contextlib import suppress
-from email.header import Header, decode_header, make_header
+from email.header import decode_header, Header, make_header
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from public import public
@@ -39,8 +39,7 @@ def ascii_header(mlist, msgdata, subject, prefix, prefix_pattern, ws):
         if charset not in ASCII_CHARSETS:
             return None
     subject_text = EMPTYSTRING.join(str(subject).splitlines())
-    # At this point, the subject may become null if someone posted mail
-    # with "Subject: [subject prefix]".
+    # Replace empty subject.
     if subject_text.strip() == '':
         with _.using(mlist.preferred_language.code):
             subject_text = _('(no subject)')
@@ -81,12 +80,14 @@ def all_same_charset(mlist, msgdata, subject, prefix, prefix_pattern, ws):
                 # The charset value is unknown.
                 return None
         if charset != list_charset:
-            return None
+            try:
+                chunks[-1].encode(list_charset)
+            except UnicodeEncodeError:
+                return None
     subject_text = EMPTYSTRING.join(chunks)
-    # At this point, the subject may become null if someone posted mail
-    # with "Subject: [subject prefix]".
+    # Replace empty subject.
     if subject_text.strip() == '':
-        with _.push(mlist.preferred_language.code):
+        with _.using(mlist.preferred_language.code):
             subject_text = _('(no subject)')
     else:
         subject_text = re.sub(prefix_pattern, '', subject_text)
@@ -113,13 +114,17 @@ def all_same_charset(mlist, msgdata, subject, prefix, prefix_pattern, ws):
 def mixed_charsets(mlist, msgdata, subject, prefix, prefix_pattern, ws):
     list_charset = mlist.preferred_language.charset
     chunks = decode_header(subject.encode())
-    if len(chunks) == 0:
-        with _.push(mlist.preferred_language.code):
-            subject_text = _('(no subject)')
-        chunks = [(prefix, list_charset),
-                  (subject_text, list_charset),
-                  ]
-        return make_header(chunks, continuation_ws=ws)
+    # This code was:
+    # if len(chunks) == 0:
+    #     with _.using(mlist.preferred_language.code):
+    #         subject_text = _('(no subject)')
+    #     chunks = [(prefix, list_charset),
+    #               (subject_text, list_charset),
+    #               ]
+    #     return make_header(chunks, continuation_ws=ws)
+    # but len(chunks) == 0 is always False and an empty Subject: will always
+    # be processed in all_same_charset() anyway.
+
     # Only search the first chunk for Re and existing prefix.
     chunk_text, chunk_charset = chunks[0]
     if chunk_charset is None:

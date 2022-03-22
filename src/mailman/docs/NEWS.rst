@@ -2,16 +2,324 @@
  GNU Mailman 3 changes
 =======================
 
-Copyright (C) 1998-2018 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2021 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 Here is a history of user visible changes to Mailman.
 
 
+.. _news-3.3.6:
+
+3.3.6
+=====
+
+(xxxx-xx-xx)
+
+Bugs fixed
+----------
+* The ``mailman members`` command reports incompatible options that would
+  otherwise throw exceptions.
+* Require authheaders >=0.14.0 and adjust tests accordingly.  (Closes #954)
+* Handling a held message will not remove it from the message store if there
+  are other requests for it.  (Closes #955)
+* ARC signing now signs after the message has been personalized and decorated.
+  (Closes #896)
+* The prior fix for expanding replacements in the ``list:user:notice:goodbye``
+  template was incomplete.  This is fixed.  (Closes #922)
+* Decoration of an html message containing non-ascii resulted in a message
+  that couldn't by flattened as_bytes and whose as_string representation
+  contained non-ascii.  This is fixed.  (Closes #965 and #967)
+* The REST API will now accept JSON encoded data with boolean values for
+  boolean attributes.  (Closes #970)
+* Fix a bug where loading a plugin which raises an exception in ``pre_hook``
+  can cause Mailman to crash trying to disable that plugin. (Closes #724)
+* Fix a bug where the ``PIDWatcher()`` iterates over internal dict while
+  it can be updated during that time. (Closes #724)
+* The ``mailman import21`` now always imports owners/moderators with
+  ``DeliveryStatus.enabled``.  (Closes #977)
+* A specific nonmember moderation action will be checked for and applied before
+  testing the legacy ``*_these_nonmembers`` settings.  (Closes #978)
+* Invalid regexps in ``*_these_nonmembers`` are properly logged and can't be
+  set via REST.  (Closes #974)
+* Override the as_bytes() method in the mailman.email.message.Message class to
+  workaround https://bugs.python.org/issue41307.  (Closes #979 and #980)
+* The nonmember moderation rule now checks all senders, not just the first.
+  (Closes #986)
+* The i18n gettext replacements now all use curly brace notation to avoid
+  issues whith translations that might follow them immediately with a period.
+  The various mailman.po files have been updated accordingly.  (Closes #987)
+* The ``mailman import21`` command no longer creates unnecessary entries in the
+  ``template`` table.  (Closes #988)
+* DMARC munge from mitigation will now find a nonmember poster's display name.
+  (Closes #989)
+
+REST
+====
+* Expose bounce related parameters for Member objects.
+
+.. _news-3.3.5:
+
+3.3.5
+=====
+
+(2021-09-28)
+
+Bugs fixed
+----------
+* Bounce runner now properly commits database transactions.  (Closes #850)
+* Pending subscriptions now have a lifetime equal to the configured
+  ``pending_request_life`` rather than 3650 days.  (Closes #729)
+* Held messages which are handled are now removed from the message store and
+  the pending db.  (Closes #257)
+* Admin notices sent when a list member's delivery is disabled by bounce or
+  when a member's bounce score is incremented, now contain a copy of the
+  triggering DSN.  (Closes #737)
+* Handling a held message now also removes the poster's pending
+  ``held message`` from the pending db.  (Closes #257)
+* Deleting a pending request now also deletes any associated workflow.
+  (See #853)
+* A new runner which is not a queue runner and which doesn't override its
+  ``run`` or ``_one_itiration`` methods can now be implemented.  (Closes #866)
+* The ``FileNotFound`` exception thrown in CacheManager on attempt to delete
+  an entry for a missing file is now caught.  (Closes #867)
+* Pending probe bounce tokens now have a lifetime of 10 days.  (Closes #869)
+* Improve the performance of ``/users`` API when paginating by doing the
+  pagination in database layer. (Closes #876)
+* Attempts to get a message from the message store with a missing file are
+  now handled.  (Closes #877)
+* The task runner no longer prematurely deletes saved DSNs.  (Closes #878)
+* Bounce probe messages now contain the DSN as advertised.  (Closes #880)
+* The avoid_duplicates handler properly handles headers that are returned as
+  email.header.Header instances rather than strings.  (Closeds #881)
+* The mta.deliver module properly handles headers that are returned as
+  email.header.Header instances rather than strings.  (Closeds #882)
+* Places where  ``to_list`` in the message metadata were increctly referenced
+  as ``tolist`` have been corrected.  (Closes #883)
+* It is now possible to confirm held messages by email as the admin notice
+  says.  (Closes #169)
+* Some exceptions in ARC signing of some posts from HyperKitty and some from
+  prod.outlook.com are now handled without shunting the message.  (Closes #885)
+* Command runner now will decode the message body before processing it.
+  (Closes #859)
+* The ``mailinglist`` table ``info``, ``autoresponse_owner_text``,
+  ``autoresponse_postings_text`` and ``autoresponse_request_text`` columns are
+  changed to Text.  (Closes #840, #886 and #925)
+* The mailing list administrators roster ``get_member()`` method now returns
+  the owner if the target is both an owner and moderator.  (Closes #888)
+* Command runner now handles RFC 2047 encoded command with non-ascii prefix.
+  (Closes #858)
+* Improve performance of the bounce runner by decreasing the number of
+  database queries executed.
+* The master watcher will now restart a process that exits.  (See #887)
+* When using MySQL, most database columns that expect user input will now
+  accept emojis and other 4-byte unicode characters by using the utf8mb4
+  character set instead of 3-byte. (Closes #891)
+* LMTP runner now sets unixfrom in incoming messages.  (Closes #904)
+* The ``Message`` ``senders()`` method now RFC2047-decodes and unfolds headers.
+  (Closes #903)
+* The ``Message`` ``senders()`` method now gets all the addresses from the
+  configured headers.  (Closes #905)
+* Require flufl.bounce >=3.0.2, which improves parsing of bounce messages.
+  (Closes #892)
+* DMARC policy discovery ignores domains with multiple DMARC records per
+  RFC 7849.  (Closes #907)
+* Held messages missing from the message store can now be accepted and/or
+  forwarded.  (closes #914)
+* Dispose SQLAlchemy connections after a new worker process is forked. (Closes
+  #854)
+* Exceptions in bounce processing member removal don't roll back successful
+  removals.  (Closes #909)
+* Only remove or send warnings to list members when processing bounces.
+  (Closes #910)
+* Replacements are now expanded in the ``list:user:notice:goodbye`` template.
+  (Closes #922)
+* The nntp runner no longer folds long headers in newsgroup posts.  (Closes
+  #919)
+* RFC 2047 encoded subject headers will now be recoded in the character set of
+  the list's preferred_language during subject prefixing if possible.  (Closes
+  #923)
+* DMARC mitigation wrap message now ensures existing cc and reply-to headers
+  are included in the wrapper.  (Closes #926)
+* The tagger handler now stringifies any Header instances.  (Closes #928)
+* Invitation and (un)subscription confirmation subjects are now translated
+  to the list's preferred language.  (Closes #930)
+* The ``mailman syncmembers`` command now catches and reports a
+  ``SubscriptionPendingError``.  (Closes #929)
+* Trailing spaces are no longer removed from header and footer templates.
+  (Closes #932)
+* The email ``join`` command now handles RFC2047 encoded display names with
+  embedded commas.  (Closes #933)
+* The ``gatenews`` command now parses messages with email.message_from_bytes
+  without specifying policy.  (Closes #934)
+* Improve error message from REST API for invalid email address (Fixes #872)
+* Nonmember posts gated from usenet bypass nonmember moderation.  (Closes #937)
+* VERPed vacation responses and similar are no longer scored as bounces.
+  (Closes #939)
+* If a message is held by a ``HeaderMatchRule``, the header name is now included
+  in the reason for hold.  (Closes #785)
+
+Command line
+------------
+* The ``notify`` subcommand is now more tolerant of certain database anomalies.
+  (Closes #861)
+* The ``notify`` subcommand now handles unicode errors in decoding RFC 2047
+  encoded subject headers.  (Closes #915)
+* The ``mailman`` command will refuse to run as root unless the new
+  ``--run-as-root`` option is specified.  (Closes #776 and #920)
+
+REST
+----
+* Fixed an exception on retreiving held messages if the held request exists,
+  but the message is missing.  (Closes #856)
+* Add a new ``/users/find`` endpoint to allow searching for users by matching
+  display_name and user's email address. (Closes #874)
+
+New Features
+------------
+* There is a new ``bounce_notify_admin_on_bounce_increment`` list setting and
+  a corresponding ``list:admin:notice:increment`` template for the notice.
+  This setting, if True, will cause a notice to be sent to the list admins
+  when a member's bounce score is incremented, but doesn't disable delivery.
+* There is a new ``moderator_request_life`` setting in the ``[mailman]``
+  section of mailman.cfg that controls the lifetime of pending moderator
+  requests as opposed to pending user confirmations.  Default is 180 days.
+* There is a new ``task`` runner to do periodic tasks.  The current
+  implementation evicts expired pendings and cache entries and removes
+  orphaned workflows and orphaned message store messages.  It does these tasks
+  at intervals defined by the new ``run_tasks_every`` setting in the
+  ``[mailman]`` section of mailman.cfg. Default is 1 hour.  (Closes #467 and
+  #853)
+* There is a new ``list:admin:notice:pending`` template for the notice from
+  the ``mailman notify`` command.  (Closes #890)
+* The ``nntp`` runner will now run the ``gatenews`` subcommand at intervals
+  defined by a new ``gatenews_every`` setting in the ``[nntp]`` section of
+  mailman.cfg. Default is 5 every minutes.
+
+Security
+--------
+* Check the REST API password in a way that is resistant to timing attacks.
+  (CVE-2021-34337, Closes #911)
+
+.. _news-3.3.4:
+
+3.3.4
+=====
+
+(2021-03-21)
+
+Bugs
+----
+* Require aiosmtpd >= 1.4.1 to allow address local parts longer than 64 bytes
+  in the lmtp runner.  (Closes #836)
+* The email join command now honors the digest=<no|mime|plain> option.
+  (Closes #19)
+* Folded ``Message-ID`` headers no longer cause folded smtp.log messages.
+  (Closes #844)
+* Removal of headers from posts to anonymous lists that can reveal the poster
+  or the poster's domain has been improved.  (Closes #848)
+
+Command line
+------------
+* The ``notify`` subcommand will now decode an RFC 2047 encoded Subject: for
+  the report of held messages.  (Closes #831)
+* The deprecated options ``--add``, ``--del`` and ``--sync`` are now disabled
+  on the ``mailman members`` command.
+
+REST
+----
+* Improve the speed of Members lookup via REST API. (Related to #700)
+* Allow specifying ``delivery_mode`` and ``delivery_status`` when creating a
+  new Member. (Closes #828)
+* Allow filtering members in ``/members/find`` API using ``delivery_status``,
+  ``delivery_mode`` and ``moderation_action``. (See #827)
+
+New Features
+------------
+* There is a new setting ``filter_report`` in the ``[mailman]`` section of
+  mailman.cfg.  If this is set to ``yes``, a report of changes by content
+  filtering will be added to the outgoing message.  (Closes #833)
+* There is a new setting ``check_max_size_on_filtered_message`` in the
+  ``[mailman]`` section of mailman.cfg.  If this is set to ``yes`` and the
+  list does content filtering, the ``max_message_size`` hold will be based
+  on the size of the content filtered message.  (Closes #377)
+* There is a new setting ``anonymous_list_keep_headers`` in the ``[mailman]``
+  section of mailman.cfg.  This is part of improved removal of headers from
+  posts to anonymous lists.  This setting is a space separated list of regexp
+  patterns.  After anonomyzing removes the headers which are known to reveal
+  the poster or poster's domain, it then removes all headers whose names do
+  not match (case-insensitively) one of these patterns.  The default setting
+  keeps non X- headers, those X- headers added by Mailman and any X-Spam-
+  headers.
+
+Other
+-----
+* Add better error message for preferred email edit when not verified. (Closes #706)
+* Reduce the number of database calls in UserManager. (Closes #700)
+
+.. _news-3.3.3:
+
+3.3.3
+=====
+
+(2021-02-02)
+
+Bugs
+----
+* Handle some UnicodeEncodeErrors in creating digests.  (Closes #560)
+* Increased the size of the data column in the workflowstate table.
+  (Closes #793)
+* Implemented a ``scrubber`` for plain text digests.  (Closes #473)
+* The ``mailman gatenews`` command now adds ``original_size`` as a message
+  attribute.  (Extends fix for #762)
+* Handle FileNotFoundError when creating digest.mmdf file without a
+  parent directory present.  (Closes #699)
+* Fixed an issue where content filtering can throw UnicodeEncodeError when
+  converting HTML to plain text.  (Closes #798)
+* A bounce for a non-existent list is now handled.  (Closes #799)
+* RFC 2047 From: headers in emailed ``join`` commands are now decoded.
+  (Closes #802)
+* The ``mailman addmembers`` command now catches and reports a
+  ``SubscriptionPendingError``.  (Closes #805)
+* RFC 2369 ``List-Owner`` header is now added when these headers are included.
+  (Closes #809)
+* Header filters will now properly match RFC 2047 encoded headers.
+  (Closes #815)
+* Mailman's ``vette`` log discard messages now include the reasons.
+  (Closes #816)
+* Increase the default REST API (gunicorn) timeout to 360 seconds from 30 as
+  several API endpoinds can be very slow. (Closes #770)
+* Header filter rules are now properly processed after deletions and/or
+  reordering.  (Closes #818)
+* Folded ``To: list-confirm+token@...`` headers are now parsed correctly.
+  (Closes: #819)
+
+Command line
+------------
+* A new ``findmember`` ``mailman`` subcommand has been added to find to which
+  lists and with which roles an address matching a given pattern belongs.
+* A new ``changeaddress`` ``mailman`` subcommand has been added to enable site
+  admins to change a user's address.
+
+New Features
+------------
+* There is a new setting ``hold_digest`` in the ``[mailman]`` section of
+  mailman.cfg.  If this is set to ``yes``, posts with a digest like Subject:
+  header or which quote the digest masthead will be held for moderation.
+
+REST
+----
+* List configuration option ``send_goodbye_message`` is now exposed through
+  the REST API. (See !737)
+* Allow updating an Addresses' display_name attribute. (Closes #786)
+* Allow specifying a reason when rejecting a subscription request. (Closes
+  #767)
+* REST API now exposes unsubscription requests that can be handled by
+  Moderator. (Closes #768)
+
 3.3.2
 =====
 
-(XXXX-XX-XX)
+(2020-11-6)
 
 Bugs
 ----
@@ -40,6 +348,11 @@ Bugs
 * Fixed an invalid logging call in bin/master.py.  (Closes #756)
 * VERPed list welcome messages now have a correct envelope sender.
   (Closes #757)
+* Messages in digests now contain a ``Message: N`` header.  (Closes #764)
+* The LMTP runner will now add a ``Message-ID:`` header if missing.
+  (Closes #448 and #490)
+* The ``mailman gatenews`` command now adds ``original_size`` to the msgdata.
+  (Closes #762)
 
 Command line
 ------------
@@ -50,6 +363,12 @@ Command line
 * The ``mailman conf`` command without a ``-s/--section`` argument will now
   show sections defined only in mailman.cfg in addition to those from
   schema.cfg.  (Closes #736)
+* Added a ``charset`` option to the ``import21`` subcommand.  (Closes #769)
+* The ``import21`` subcommand will now truncate long SAUnicode values if the
+  database is MySQL.  (Closes #772)
+* The ``import21`` subcommand no longer adds the entire legacy
+  ``*_these_nonmembers`` list and then removes the non-regexps.  It now just
+  adds the regexps.  (Closes #773)
 
 REST
 ----
@@ -82,7 +401,9 @@ Others
 * Made (un)subscription confirmation email subjects user friendly and
   translatable.  (Closes #541)
 * Implemented a new email ``who`` command to obtain list membership.
-
+* Add support  for dnspython>=2.0. (Closes #743)
+* Added information about ``pass_types``, ``filter_extensions`` and
+  ``pass_extensions`` to the content filtering doc.  (Closes #775)
 
 3.3.1
 =====
@@ -146,6 +467,9 @@ REST
 * Add ``advertised`` attribute to ``MailingList`` object so Postorius doesn't
   have to make multiple calls for Index Page. (See !608)
 * Expose ``filter_action`` attribute of MailingList through API. (See !609)
+* Unsubscribing a user by calling ``DELETE`` on a Member resources now honors
+  Lists's ``unsubscription_policy`` and also sends out notifications to user
+  and admins if list is configured to do so. (Closes #759)
 
 Features
 --------

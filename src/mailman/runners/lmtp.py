@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -91,7 +91,6 @@ ERR_451 = '451 Requested action aborted: error in processing'
 ERR_501 = '501 Message has defects'
 ERR_502 = '502 Error: command HELO not implemented'
 ERR_550 = '550 Requested action not taken: mailbox unavailable'
-ERR_550_MID = '550 No Message-ID header provided'
 
 
 def split_recipient(address):
@@ -137,6 +136,7 @@ class LMTPHandler:
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam.
             msg = email.message_from_bytes(envelope.content, Message)
+            msg.set_unixfrom(envelope.mail_from)
         except Exception:
             elog.exception('LMTP message parsing')
             config.db.abort()
@@ -145,7 +145,13 @@ class LMTPHandler:
         # other missing information.
         message_id = msg.get('message-id')
         if message_id is None:
-            return ERR_550_MID
+            # We have observed cases in the wild where bounce DSNs have no
+            # Message-ID; header.  Also, there are brain dead phone clients
+            # that don't include a Message-ID: header.  Thus, we cave and
+            # generate one. See https://gitlab.com/mailman/mailman/-/issues/448
+            # and https://gitlab.com/mailman/mailman/-/issues/490.
+            message_id = email.utils.make_msgid()
+            msg['Message-ID'] = message_id
         if msg.defects:
             return ERR_501
         msg.original_size = len(envelope.content)

@@ -138,6 +138,29 @@ Now Cris's address is unverified.
     self_link: http://localhost:9001/3.0/addresses/cris@example.com
 
 
+Updating
+========
+
+Each address has a ``display_name`` associated with it. This name can be
+updated by PATCH'ing the address resource::
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com',
+    ...           method='PATCH', data={'display_name': 'Cris P. Person'})
+    date: ...
+    server: ...
+    status: 204
+
+This should update the display_name associated::
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com')
+    display_name: Cris P. Person
+    email: cris@example.com
+    http_etag: "..."
+    original_email: cris@example.com
+    registered_on: 2005-08-01T07:49:23
+    self_link: http://localhost:9001/3.0/addresses/cris@example.com
+
+
 The user
 ========
 
@@ -168,7 +191,7 @@ The user is now created and the address is linked to it:
 A link to the user resource is now available as a sub-resource.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com')
-    display_name: Cris Person
+    display_name: Cris P. Person
     email: cris@example.com
     http_etag: "..."
     original_email: cris@example.com
@@ -383,7 +406,7 @@ Setting Ram's preferred addresses requires that it first be verified:
     ...     {'email': 'ram@example.com'})
     Traceback (most recent call last):
     ...
-    urllib.error.HTTPError: HTTP Error 400: Ram Person <ram@example.com>
+    urllib.error.HTTPError: HTTP Error 400: Ram Person <ram@example.com> must be verified before setting as primary
 
 Verify Ram's address first:
 ::
@@ -459,27 +482,33 @@ Elle can get her memberships for each of her email addresses.
     ...           'elle@example.com/memberships')
     entry 0:
         address: http://localhost:9001/3.0/addresses/elle@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Elle Person
         email: elle@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/5
     entry 1:
         address: http://localhost:9001/3.0/addresses/elle@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Elle Person
         email: elle@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/5
     http_etag: "..."
     start: 0
@@ -504,27 +533,33 @@ does not show up in the list of memberships for his other address.
     ...           'elle@example.com/memberships')
     entry 0:
         address: http://localhost:9001/3.0/addresses/elle@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Elle Person
         email: elle@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/5
     entry 1:
         address: http://localhost:9001/3.0/addresses/elle@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Elle Person
         email: elle@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/5
     http_etag: "..."
     start: 0
@@ -534,15 +569,18 @@ does not show up in the list of memberships for his other address.
     ...           'eperson@example.com/memberships')
     entry 0:
         address: http://localhost:9001/3.0/addresses/eperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Elle Person
         email: eperson@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/5
     http_etag: "..."
     start: 0
@@ -596,6 +634,7 @@ user, it just unlinks it.
     start: 0
     total_size: 1
 
+    
     >>> dump_json('http://localhost:9001/3.0/addresses/gwen@example.com',
     ...     method='DELETE')
     date: ...

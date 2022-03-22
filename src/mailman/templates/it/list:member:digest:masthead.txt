@@ -1,12 +1,12 @@
-Invia delle iscrizioni alla mailing list $display_name a
+Invia la mailing list $display_name a
 	$listname
 
-Per iscriverti o disinscriverti via e-mail, invia 'help' 
-come oggetto o corpo del messaggio al seguente indirizzo:
+Per iscriverti o annullare l'iscrizione tramite e-mail, invia un messaggio con oggetto o corpo
+'help' a
 	$request_email
 
-Puoi contattare la persona che gestisce la mailing list al seguente indirizzo:
+Puoi contattare la persona che gestisce la lista all'indirizzo
 	$owner_email
 
-Quando rispondi, modifica la riga dell'oggetto in modo che sia più specifica di un semplice
-"Re: Riassunto $display_name ..."
+Quando rispondi, modifica la riga dell'oggetto in modo che sia più specifica di
+"Re: Contenuto di $display_name digest..."

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,12 +18,12 @@
 import re
 import sys
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 from string import Template
 
 
-if sys.hexversion < 0x30500f0:
-    print('Mailman requires at least Python 3.5')
+if sys.hexversion < 0x30600f0:
+    print('Mailman requires at least Python 3.6')
     sys.exit(1)
 
 
@@ -95,9 +95,10 @@ case second 'm'.  Any other spelling is incorrect.""",
         'License :: OSI Approved :: '
         'GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: POSIX',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Communications :: Email :: Mailing List Servers',
         'Topic :: Communications :: Usenet News',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
@@ -109,24 +110,25 @@ case second 'm'.  Any other spelling is incorrect.""",
         'console_scripts' : list(scripts),
         },
     install_requires = [
-        'aiosmtpd>=1.1',
-        'alembic',
+        'aiosmtpd>=1.4.1',
+        'alembic>=1.6.2,!=1.7.0',
         'atpublic',
-        'authheaders>=0.9.2',
+        'attrs<21.3.0',
+        'authheaders>=0.14.0',
         'authres>=1.0.1',
-        'click>=7.0.0',
-        'dnspython>=1.14.0,<2.0.0',
-        'falcon>1.0.0',
-        'flufl.bounce',
-        'flufl.i18n>=2.0',
-        'flufl.lock>=3.1',
+        'click>=8.0.0',
+        'dnspython>=1.14.0',
+        'falcon>=3.0.0',
+        'flufl.bounce>=4.0',
+        'flufl.i18n>=3.2',
+        'flufl.lock>=5.1',
         'importlib_resources>=1.1.0',
         'gunicorn',
         'lazr.config',
         'python-dateutil>=2.0',
         'passlib',
         'requests',
-        'sqlalchemy>=1.2.3',
+        'sqlalchemy>=1.2.3,<1.4',
         'zope.component',
         'zope.configuration',
         'zope.event',

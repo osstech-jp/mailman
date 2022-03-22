@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,10 +19,16 @@
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import SAUnicode
+from mailman.database.types import SAUnicode, SAUnicode4Byte
 from mailman.interfaces.domain import (
-    BadDomainSpecificationError, DomainCreatedEvent, DomainCreatingEvent,
-    DomainDeletedEvent, DomainDeletingEvent, IDomain, IDomainManager)
+    BadDomainSpecificationError,
+    DomainCreatedEvent,
+    DomainCreatingEvent,
+    DomainDeletedEvent,
+    DomainDeletingEvent,
+    IDomain,
+    IDomainManager,
+)
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import MailingList
@@ -44,7 +50,7 @@ class Domain(Model):
     id = Column(Integer, primary_key=True)
 
     mail_host = Column(SAUnicode, unique=True)
-    description = Column(SAUnicode)
+    description = Column(SAUnicode4Byte)
     owners = relationship('User',
                           secondary='domain_owner',
                           backref='domains')

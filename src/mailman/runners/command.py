@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -69,7 +69,9 @@ class CommandFinder:
             is_address_command = True
             self.send_response = False
         elif subaddress == 'confirm':
-            mo = re.match(config.mta.verp_confirm_regexp, msg.get('to', ''))
+            # match with re.DOTALL in case header is folded.
+            mo = re.match(config.mta.verp_confirm_regexp,
+                          msg.get('to', ''), re.DOTALL)
             if mo:
                 self.command_lines.append('confirm ' + mo.group('cookie'))
                 is_address_command = True
@@ -81,8 +83,8 @@ class CommandFinder:
         raw_subject = msg.get('subject', '')
         try:
             subject = str(make_header(decode_header(raw_subject)))
-            # Mail commands must be ASCII.
-            self.command_lines.append(subject.encode('us-ascii'))
+            # Mail commands must be ASCII, so strip non-ascii.
+            self.command_lines.append(subject.encode('us-ascii', 'ignore'))
         except (HeaderParseError, UnicodeError, LookupError):
             # The Subject header was unparseable or not ASCII.  If the raw
             # subject is a unicode object, convert it to ASCII ignoring all
@@ -102,9 +104,11 @@ class CommandFinder:
         if part is None:
             # There was no text/plain part to be found.
             return
-        body = part.get_payload()
+        body = part.get_payload(decode=True)
         # text/plain parts better have string payloads.
-        assert isinstance(body, (bytes, str)), 'Non-string decoded payload'
+        assert body is not None, 'Non-text payload'
+        body = body.decode(part.get_content_charset('us-ascii'),
+                           errors='replace')
         lines = body.splitlines()
         # Use no more lines than specified
         max_lines = int(config.mailman.email_commands_max_lines)
@@ -184,10 +188,10 @@ class CommandRunner(Runner):
         subject = msg.get('subject', 'n/a')                      # noqa: F841
         date = msg.get('date', 'n/a')                            # noqa: F841
         from_ = msg.get('from', 'n/a')                           # noqa: F841
-        print(_('    From: $from_'), file=results)
-        print(_('    Subject: $subject'), file=results)
-        print(_('    Date: $date'), file=results)
-        print(_('    Message-ID: $message_id'), file=results)
+        print(_('    From: ${from_}'), file=results)
+        print(_('    Subject: ${subject}'), file=results)
+        print(_('    Date: ${date}'), file=results)
+        print(_('    Message-ID: ${message_id}'), file=results)
         print(_('\n- Results:'), file=results)
         finder = CommandFinder(msg, msgdata, results)
         for parts in finder:
@@ -202,7 +206,7 @@ class CommandRunner(Runner):
                 command_name = parts.pop(0)
                 command = config.commands.get(command_name)
             if command is None:
-                print(_('No such command: $command_name'), file=results)
+                print(_('No such command: ${command_name}'), file=results)
             else:
                 status = command.process(
                     mlist, msg, msgdata, parts, results)

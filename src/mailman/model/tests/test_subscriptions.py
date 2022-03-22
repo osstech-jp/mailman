@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,10 +20,13 @@
 import unittest
 
 from mailman.app.lifecycle import create_list
+from mailman.interfaces.action import Action
 from mailman.interfaces.listmanager import NoSuchListError
-from mailman.interfaces.member import MemberRole
+from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.subscriptions import (
-    ISubscriptionService, TooManyMembersError)
+    ISubscriptionService,
+    TooManyMembersError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import set_preferred, subscribe
 from mailman.testing.layers import ConfigLayer
@@ -353,8 +356,10 @@ class TestSubscriptionService(unittest.TestCase):
         # Now obtain various rosters and ensure that they have the
         # memberships we expect, after the mass unsubscribe.
         ant_members = ant.get_roster(MemberRole.member)
+        ant_addresses = [address.email for address in ant_members.addresses]
+        ant_addresses.sort()
         self.assertEqual(
-            [address.email for address in ant_members.addresses],
+            ant_addresses,
             ['anne_2@example.com',
              'dave@example.com',
              ])
@@ -362,8 +367,10 @@ class TestSubscriptionService(unittest.TestCase):
         # anne_0 is in the list twice, once because she's subscribed
         # with her preferred address, and again because she's subscribed
         # with her explicit address.
+        bee_addresses = [address.email for address in (bee_members.addresses)]
+        bee_addresses.sort()
         self.assertEqual(
-            [address.email for address in bee_members.addresses],
+            bee_addresses,
             ['anne_0@example.com',
              'anne_0@example.com',
              'anne_1@example.com',
@@ -374,16 +381,20 @@ class TestSubscriptionService(unittest.TestCase):
              'gwen@example.com',
              ])
         ant_moderators = ant.get_roster(MemberRole.moderator)
+        ant_addresses = [address.email for address in ant_moderators.addresses]
+        ant_addresses.sort()
         self.assertEqual(
-            [address.email for address in ant_moderators.addresses],
+            ant_addresses,
             ['anne_0@example.com',
              'anne_1@example.com',
              'cris@example.com',
              ])
         bee_moderators = bee.get_roster(MemberRole.moderator)
         # As above, anne_0 shows up the moderators twice.
+        bee_addresses = [address.email for address in bee_moderators.addresses]
+        bee_addresses.sort()
         self.assertEqual(
-            [address.email for address in bee_moderators.addresses],
+            bee_addresses,
             ['anne_0@example.com',
              'anne_0@example.com',
              'dave@example.com',
@@ -529,3 +540,80 @@ class TestSubscriptionService(unittest.TestCase):
         # Search for Bob's name.
         members = self._service.find_members('*Bo*')
         self.assertEqual(len(members), 1)
+
+    def test_find_members_by_moderation_action(self):
+        # Test that we can filter the Memberships with specific
+        # fileds.
+        anne = self._user_manager.create_address('anne@example.com')
+        bart = self._user_manager.create_address('bart@example.com')
+        cperson = self._user_manager.create_address('cperson@example.com')
+        # Subscribe all the adddresses.
+
+        anne_member = self._mlist.subscribe(anne)
+        anne_member.moderation_action = Action.hold
+
+        bart_member = self._mlist.subscribe(bart)
+        bart_member.moderation_action = Action.defer
+        self._mlist.subscribe(cperson)
+
+        members = self._service.find_members(moderation_action=Action.defer)
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0].address, bart)
+        members = self._service.find_members(moderation_action=Action.hold)
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0].address, anne)
+        members = self._service.find_members(moderation_action=None)
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0].address, cperson)
+
+    def test_find_members_by_preferences(self):
+        anne = self._user_manager.create_address('anne@example.com')
+        bart = self._user_manager.create_address('bart@example.com')
+        cperson = self._user_manager.create_address('cperson@example.com')
+        # Subscribe all the adddresses and set the delivery_mode as preference.
+
+        anne_member = self._mlist.subscribe(anne)
+        # set preference on the Member.
+        anne_member.preferences.delivery_mode = DeliveryMode.plaintext_digests
+        anne.preferences.delivery_status = DeliveryStatus.by_user
+
+        bart_member = self._mlist.subscribe(bart)
+        # Set preferences on address.
+        bart.preferences.delivery_mode = DeliveryMode.plaintext_digests
+        bart_member.preferences.delivery_status = DeliveryStatus.by_bounces
+
+        cmember = self._mlist.subscribe(cperson)
+        cmember.preferences.delivery_status = DeliveryStatus.by_moderator
+
+        members = self._service.find_members(
+            delivery_mode=DeliveryMode.plaintext_digests)
+        self.assertEqual(len(members), 2)
+        emails = sorted(member.address.email for member in members)
+        self.assertEqual(
+            list(emails), ['anne@example.com', 'bart@example.com'])
+
+        # Filter by both subscriber and delivery_mode.
+        members = self._service.find_members(
+            subscriber=anne.email,
+            delivery_mode=DeliveryMode.plaintext_digests)
+        self.assertEqual(len(members), 1)
+
+        # Look for people with regular delivery mode.
+        members = self._service.find_members(
+            delivery_mode=DeliveryMode.regular)
+        self.assertEqual(len(members), 1)
+
+        # Look for people with delivery status.
+        members = self._service.find_members(
+            delivery_status=DeliveryStatus.enabled)
+        self.assertEqual(len(members), 0)
+
+        members = self._service.find_members(
+            delivery_status=DeliveryStatus.by_bounces)
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0].address, bart)
+
+        members = self._service.find_members(
+            delivery_status=DeliveryStatus.by_user)
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0].address, anne)

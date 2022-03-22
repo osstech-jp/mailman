@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,7 +18,6 @@
 """Fake MTA for testing purposes."""
 from __future__ import generator_stop
 
-import asyncio
 import smtplib
 
 from aiosmtpd.controller import Controller
@@ -54,14 +53,12 @@ class ConnectionCountingHandler(MessageHandler):
     def handle_message(self, message):
         self._msg_queue.put(message)
 
-    @asyncio.coroutine
-    def handle_EHLO(self, server, session, envelope, hostname):
+    async def handle_EHLO(self, server, session, envelope, hostname):
         session.host_name = hostname
-        yield from server.push('250-AUTH PLAIN')
+        await server.push('250-AUTH PLAIN')
         return '250 HELP'
 
-    @asyncio.coroutine
-    def handle_RSET(self, server, session, envelope):
+    async def handle_RSET(self, server, session, envelope):
         self.connection_count = 0
         return '250 OK'
 
@@ -83,8 +80,7 @@ class ConnectionCountingSMTP(SMTP):
         # same though, so it's fine to stash this value away there.
         self.event_handler.connection_count += 1
 
-    @asyncio.coroutine
-    def smtp_AUTH(self, arg):
+    async def smtp_AUTH(self, arg):
         """Record that the AUTH occurred."""
         args = arg.split()
         if args[0].lower() == 'plain':
@@ -94,25 +90,24 @@ class ConnectionCountingSMTP(SMTP):
                 # which must be equal to the base 64 equivalent of the
                 # expected login string "testuser:testpass".
                 if response == 'AHRlc3R1c2VyAHRlc3RwYXNz':
-                    yield from self.push('235 Ok')
+                    await self.push('235 Ok')
                     self._oob_queue.put(response)
                 else:
-                    yield from self.push('571 Bad authentication')
+                    await self.push('571 Bad authentication')
             else:
                 assert len(args) == 1, args
                 # Send a challenge and set us up to wait for the response.
-                yield from self.push('334 ')
+                await self.push('334 ')
                 self._waiting_for_auth_response = True
         else:
-            yield from self.push('571 Bad authentication')
+            await self.push('571 Bad authentication')
 
-    @asyncio.coroutine
-    def smtp_STAT(self, arg):
+    async def smtp_STAT(self, arg):
         """Cause the server to send statistics to its controller."""
         # Do not count the connection caused by the STAT connect.
         self.event_handler.connection_count -= 1
         self._oob_queue.put(self.event_handler.connection_count)
-        yield from self.push('250 Ok')
+        await self.push('250 Ok')
 
     def _next_error(self, command):
         """Return the next error for the SMTP command, if there is one.
@@ -139,29 +134,27 @@ class ConnectionCountingSMTP(SMTP):
             return code
         return None
 
-    @asyncio.coroutine
-    def smtp_RCPT(self, arg):
+    async def smtp_RCPT(self, arg):
         """For testing, sometimes cause a non-25x response."""
         code = self._next_error('rcpt')
         if code is None:
             # Everything's cool.
-            yield from super().smtp_RCPT(arg)
+            await super().smtp_RCPT(arg)
         else:
             # The test suite wants this to fail.  The message corresponds to
             # the exception we expect smtplib.SMTP to raise.
-            yield from self.push('%d Error: SMTPRecipientsRefused' % code)
+            await self.push('%d Error: SMTPRecipientsRefused' % code)
 
-    @asyncio.coroutine
-    def smtp_MAIL(self, arg):
+    async def smtp_MAIL(self, arg):
         """For testing, sometimes cause a non-25x response."""
         code = self._next_error('mail')
         if code is None:
             # Everything's cool.
-            yield from super().smtp_MAIL(arg)
+            await super().smtp_MAIL(arg)
         else:
             # The test suite wants this to fail.  The message corresponds to
             # the exception we expect smtplib.SMTP to raise.
-            yield from self.push('%d Error: SMTPResponseException' % code)
+            await self.push('%d Error: SMTPResponseException' % code)
 
 
 class ConnectionCountingController(Controller):

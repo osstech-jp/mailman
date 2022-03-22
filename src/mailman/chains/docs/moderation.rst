@@ -104,6 +104,7 @@ built-in chain.  No rules hit and so the message is accepted.
         max-size
         news-moderation
         no-subject
+        digests
         suspicious-header
 
 However, when Anne's moderation action is set to `hold`, her post is held for

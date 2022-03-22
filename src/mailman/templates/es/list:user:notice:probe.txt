@@ -1,0 +1,14 @@
+Este es un mensaje de prueba. Puede ser ignorado.
+
+La lista de correos $listname ha recibido varios rebotes de correo de su parte,
+indicando que puede haber un problema con el envío de mensajes a $sender_email.
+Se ha adjuntado un ejemplo debajo. Por favor, revise el mensaje para asegurarse 
+de que no hay problemas con su dirección de email. Quizá deba comprobarlo junto
+a su administrador de correo para obtener más ayuda.
+
+No necesita hacer nada para continuar siendo miembro activo de la lista de correo.
+
+Si tiene dudas o problemas, puede contactar con el propietario de la lista vía
+
+
+  $owner_email

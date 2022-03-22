@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,10 +20,13 @@
 import logging
 
 from flufl.bounce import all_failures
-from mailman.app.bounces import ProbeVERP, StandardVERP, maybe_forward
+from mailman.app.bounces import maybe_forward, ProbeVERP, StandardVERP
 from mailman.core.runner import Runner
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceProcessor, InvalidBounceEvent)
+    BounceContext,
+    IBounceProcessor,
+    InvalidBounceEvent,
+)
 from public import public
 from zope.component import getUtility
 
@@ -51,12 +54,17 @@ class BounceRunner(Runner):
         addresses = StandardVERP().get_verp(mlist, msg)
         if len(addresses) > 0:
             # Scan the message to see if it contained permanent or temporary
-            # failures.  We'll ignore temporary failures, but even if there
-            # are no permanent failures, we'll assume VERP bounces are
-            # permanent.
+            # failures.  We'll ignore temporary failures, and if there
+            # are no permanent failures, we'll assume this is a vacation
+            # response or similar.
             temporary, permanent = all_failures(msg)
             if len(temporary) > 0:
                 # This was a temporary failure, so just ignore it.
+                return False
+            if len(permanent) == 0:
+                log.info('VERPed bounce message but not a recognized DSN: %s',
+                         msg.get('message-id', 'n/a'))
+                maybe_forward(mlist, msg)
                 return False
         else:
             # See if this was a probe message.

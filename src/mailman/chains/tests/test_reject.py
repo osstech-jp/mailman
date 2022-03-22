@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,7 +22,9 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.core.chains import process as process_chain
 from mailman.testing.helpers import (
-    get_queue_messages, specialized_message_from_string as mfs)
+    get_queue_messages,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 

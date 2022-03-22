@@ -1,0 +1,1 @@
+El seu missatge a la llista de correu $listname s'ha rebutjat per les següents raons: $reasons S'adjunta el missatge original rebut per Mailman.

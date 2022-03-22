@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,6 +17,7 @@
 
 """Bulk message delivery."""
 
+from mailman.mta.arc_signing import ARCSigningMixin
 from mailman.mta.base import BaseDelivery
 from mailman.mta.decorating import DecoratingMixin
 from public import public
@@ -36,7 +37,7 @@ CHUNKMAP = dict(
 
 
 @public
-class BulkDelivery(BaseDelivery, DecoratingMixin):
+class BulkDelivery(BaseDelivery, DecoratingMixin, ARCSigningMixin):
     """Deliver messages to the MSA in as few sessions as possible."""
 
     def __init__(self, max_recipients=None):
@@ -96,10 +97,9 @@ class BulkDelivery(BaseDelivery, DecoratingMixin):
 
     def deliver(self, mlist, msg, msgdata):
         """See `IMailTransportAgentDelivery`."""
-        # Message needs to be decorated.
+        # Message needs to be decorated and arc signed.
         self.decorate(mlist, msg, msgdata)
-        # Only decorate once.
-        msgdata['nodecorate'] = True
+        self.arc_sign(mlist, msg, msgdata)
         refused = {}
         for recipients in self.chunkify(msgdata.get('recipients', set())):
             chunk_refused = self._deliver_to_recipients(

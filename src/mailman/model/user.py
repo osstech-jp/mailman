@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,11 +19,16 @@
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
-from mailman.database.types import SAUnicode, UUID
+from mailman.database.types import SAUnicode4Byte, UUID
 from mailman.interfaces.address import (
-    AddressAlreadyLinkedError, AddressNotLinkedError)
+    AddressAlreadyLinkedError,
+    AddressNotLinkedError,
+)
 from mailman.interfaces.user import (
-    IUser, PasswordChangeEvent, UnverifiedAddressError)
+    IUser,
+    PasswordChangeEvent,
+    UnverifiedAddressError,
+)
 from mailman.model.address import Address
 from mailman.model.member import Member
 from mailman.model.preferences import Preferences
@@ -31,8 +36,7 @@ from mailman.model.roster import Memberships
 from mailman.utilities.datetime import factory as date_factory
 from mailman.utilities.uid import UIDFactory
 from public import public
-from sqlalchemy import (
-    Boolean, Column, DateTime, ForeignKey, Integer)
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import backref, relationship
 from zope.event import notify
 from zope.interface import implementer
@@ -49,8 +53,8 @@ class User(Model):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    display_name = Column(SAUnicode)
-    _password = Column('password', SAUnicode)
+    display_name = Column(SAUnicode4Byte)
+    _password = Column('password', SAUnicode4Byte)
     _user_id = Column(UUID, index=True)
     _created_on = Column(DateTime)
     is_server_owner = Column(Boolean, default=False)
@@ -132,7 +136,9 @@ class User(Model):
     def preferred_address(self, address):
         """See `IUser`."""
         if address.verified_on is None:
-            raise UnverifiedAddressError(address)
+            raise UnverifiedAddressError(
+                "{} must be verified before setting as primary".format(address)
+                    )
         if self.controls(address.email):
             # This user already controls the email address.
             pass

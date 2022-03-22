@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,6 +28,7 @@ from mailman.database.transaction import dbconnection
 from mailman.database.types import SAUnicode
 from mailman.interfaces.cache import ICacheManager
 from mailman.utilities.datetime import now
+from mailman.utilities.filesystem import safe_remove
 from public import public
 from sqlalchemy import Boolean, Column, DateTime, Integer
 from zope.interface import implementer
@@ -127,16 +128,22 @@ class CacheManager:
             return None
         file_path, dir_path = self._id_to_path(entry.file_id)
         with ExitStack() as resources:
-            if entry.is_bytes:
-                fp = resources.enter_context(open(file_path, 'rb'))
+            if os.path.isfile(file_path):
+                if entry.is_bytes:
+                    fp = resources.enter_context(open(file_path, 'rb'))
+                else:
+                    fp = resources.enter_context(
+                        open(file_path, 'r', encoding='utf-8'))
+                contents = fp.read()
             else:
-                fp = resources.enter_context(
-                    open(file_path, 'r', encoding='utf-8'))
-            contents = fp.read()
+                if entry.is_bytes:
+                    contents = b'Cache content lost'
+                else:
+                    contents = 'Cache content lost'
         # Do we expunge the cache file?
         if expunge:
             store.delete(entry)
-            os.remove(file_path)
+            safe_remove(file_path)
         return contents
 
     @dbconnection
@@ -147,7 +154,7 @@ class CacheManager:
         if entry is None:
             return
         file_path, dir_path = self._id_to_path(entry.file_id)
-        os.remove(file_path)
+        safe_remove(file_path)
         store.delete(entry)
 
     @dbconnection
@@ -161,7 +168,7 @@ class CacheManager:
                            .all())
         for entry in expired_entries:
             file_path, _ = self._id_to_path(entry.file_id)
-            os.remove(file_path)
+            safe_remove(file_path)
             store.delete(entry)
 
     @dbconnection
@@ -170,5 +177,5 @@ class CacheManager:
         # but for now there probably aren't that many cached files.
         for entry in store.query(CacheEntry):
             file_path, dir_path = self._id_to_path(entry.file_id)
-            os.remove(file_path)
+            safe_remove(file_path)
             store.delete(entry)

@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,7 +19,7 @@
 
 from lazr.config import as_boolean
 from mailman.config import config
-from mailman.rest.helpers import CollectionMixin, NotFound, etag, okay
+from mailman.rest.helpers import CollectionMixin, etag, NotFound, okay
 from operator import itemgetter
 from public import public
 

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,11 +23,12 @@ safe pickle deserialization, even if the email package adds additional Message
 attributes.
 """
 
+import re
 import email
-import email.message
 import email.utils
+import email.message
 
-from email.header import Header
+from email.header import decode_header, Header, make_header
 from email.mime.multipart import MIMEMultipart
 from mailman.config import config
 from mailman.interfaces.address import IEmailValidator
@@ -57,6 +58,14 @@ class Message(email.message.Message):
                 'ascii', 'replace')
         # Also ensure no unicode surrogates in the returned string.
         return email.utils._sanitize(value)
+
+    def as_bytes(self):
+        # Workaround for https://bugs.python.org/issue41307.
+        try:
+            value = email.message.Message.as_bytes(self)
+        except UnicodeEncodeError:
+            value = email.message.Message.as_string(self).encode('utf-8')
+        return value
 
     @property
     def sender(self):
@@ -107,8 +116,14 @@ class Message(email.message.Message):
             else:
                 for field_value in self.get_all(header, []):
                     # Convert the header to str in case it's a Header instance.
-                    name, address = email.utils.parseaddr(str(field_value))
-                    senders.append(address.lower())
+                    header_value = re.sub(
+                        '[\r\n]',
+                        '',
+                        str(make_header(decode_header(field_value)))
+                        )
+                    for name, address in email.utils.getaddresses(
+                            [header_value]):
+                        senders.append(address.lower())
         # Filter out invalid addresses, None and the empty string, and convert
         # to unicode.
         clean_senders = []

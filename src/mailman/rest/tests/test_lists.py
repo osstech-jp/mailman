@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -32,8 +32,11 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import AcceptableAlias
 from mailman.runners.digest import DigestRunner
 from mailman.testing.helpers import (
-    call_api, get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    call_api,
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import RESTLayer
 from mailman.utilities.datetime import now as right_now
 from urllib.error import HTTPError
@@ -634,6 +637,7 @@ class TestListDigests(unittest.TestCase):
     def setUp(self):
         with transaction():
             self._mlist = create_list('ant@example.com')
+            self._mlist.send_goodbye_message = False
             self._mlist.send_welcome_message = False
             anne = getUtility(IUserManager).create_address('anne@example.com')
             self._mlist.subscribe(anne)
@@ -858,6 +862,8 @@ class TestListTemplates(unittest.TestCase):
                 'list:admin:notice:subscribe': '',
                 'list:admin:notice:unrecognized': '',
                 'list:admin:notice:unsubscribe': '',
+                'list:admin:notice:pending': '',
+                'list:admin:notice:increment': '',
                 'list:admin:notice:disable': '',
                 'list:admin:notice:removal': '',
                 'list:member:digest:footer': '',

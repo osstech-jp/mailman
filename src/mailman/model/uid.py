@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -80,6 +80,7 @@ class UID(Model):
     def cull_orphans(store):
         # Avoid circular imports.
         from mailman.model.user import User
+
         # Delete all uids in this table that are not associated with user
         # rows.
         results = store.query(UID).filter(

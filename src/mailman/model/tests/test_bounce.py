@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,15 +20,21 @@
 import unittest
 
 from datetime import datetime, timedelta
-from mailman.app.lifecycle import create_list
+from mailman.app.lifecycle import create_list, remove_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.bounce import (
-    BounceContext, IBounceProcessor, InvalidBounceEvent)
+    BounceContext,
+    IBounceProcessor,
+    InvalidBounceEvent,
+)
 from mailman.interfaces.member import DeliveryStatus
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages,
-    specialized_message_from_string as message_from_string)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from zope.component import getUtility
@@ -137,6 +143,18 @@ Message-Id: <first>
         self.assertIsNotNone(member.last_bounce_received)
         # Also, the delivery should be unset, the default.
         self.assertIsNone(member.preferences.delivery_status)
+
+        # Now create another event for Anne.
+        self._subscribe_and_add_bounce_event('anne@example.com', create=False,
+                                             subscribe=False)
+        # Now delete the list and process the bounce for the non-existent list.
+        remove_list(self._mlist)
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 1)
+        # If the MailingList has been deleted, an InvalidBounceEvent exception
+        # is raised.
+        with self.assertRaises(InvalidBounceEvent):
+            self._processor.process_event(events[0])
 
     def test_bounce_score_increases_once_everyday(self):
         # Test only the bounce events more than a day apart can increase the
@@ -289,7 +307,7 @@ Message-Id: <first>
                          ' been disabled')
 
     def test_send_warnings_and_remove_membership(self):
-        # Test that required number of warnings are send and then the the
+        # Test that required number of warnings are sent and then the
         # membership is removed.
         self._mlist.bounce_notify_owner_on_disable = False
         self._mlist.bounce_notify_owner_on_removal = True

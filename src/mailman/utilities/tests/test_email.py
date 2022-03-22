@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,8 +20,7 @@
 import unittest
 
 from mailman.interfaces.messages import IMessageStore
-from mailman.testing.helpers import (
-    specialized_message_from_string as mfs)
+from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.email import add_message_hash, split_email
 from zope.component import getUtility

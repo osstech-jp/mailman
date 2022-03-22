@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,8 +23,7 @@ import unittest
 from mailman.config import config
 from mailman.interfaces.messages import IMessageStore
 from mailman.model.message import Message
-from mailman.testing.helpers import (
-    specialized_message_from_string as mfs)
+from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.email import add_message_hash
 from zope.component import getUtility
@@ -93,6 +92,25 @@ Message-ID: <ant>
             message_id='<ant>').first()
         os.remove(os.path.join(config.MESSAGES_DIR, row.path))
         self._store.delete_message('<ant>')
+        self.assertEqual(len(list(self._store.messages)), 0)
+
+    def test_get_message_missing_returns_none_and_deletes(self):
+        # Getting a message which is in the store, but which doesn't appear
+        # on the file system returns None and removes the message from the
+        # store.
+        msg = mfs("""\
+Message-ID: <ant>
+
+""")
+        self._store.add(msg)
+        self.assertEqual(len(list(self._store.messages)), 1)
+        # We have to use the SQLAlchemy API because the .get_message_by_*()
+        # methods return email Message objects, not IMessages.  The former
+        # does not give us the path to the object on the file system.
+        row = config.db.store.query(Message).filter_by(
+            message_id='<ant>').first()
+        os.remove(os.path.join(config.MESSAGES_DIR, row.path))
+        self.assertIsNone(self._store.get_message_by_id('<ant>'))
         self.assertEqual(len(list(self._store.messages)), 0)
 
     def test_message_id_hash(self):

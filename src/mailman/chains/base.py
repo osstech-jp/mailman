@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,7 +19,12 @@
 
 from mailman.config import config
 from mailman.interfaces.chain import (
-    IChain, IChainIterator, IChainLink, IMutableChain, LinkAction)
+    IChain,
+    IChainIterator,
+    IChainLink,
+    IMutableChain,
+    LinkAction,
+)
 from mailman.interfaces.rules import IRule
 from mailman.utilities.modules import abstract_component
 from public import public

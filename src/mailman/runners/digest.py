@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -35,6 +35,7 @@ from mailman.handlers.decorate import decorate
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.mailbox import Mailbox
+from mailman.utilities.scrubber import scrub
 from mailman.utilities.string import expand, oneline, wrap
 from public import public
 from zope.component import getUtility
@@ -51,7 +52,8 @@ class Digester:
         self._charset = mlist.preferred_language.charset
         # This will be used in the Subject, so use $-strings.
         self._digest_id = _(
-            '$mlist.display_name Digest, Vol $volume, Issue $digest_number')
+            '${mlist.display_name} Digest, Vol ${volume}, Issue '
+            '${digest_number}')
         self._subject = Header(self._digest_id,
                                self._charset,
                                header_name='Subject')
@@ -168,14 +170,20 @@ class MIMEDigester(Digester):
         except UnicodeError:
             toc_part = MIMEText(toc_text.encode('utf-8'), _charset='utf-8')
         toc_part['Content-Description'] = _(
-            "Today's Topics ($count messages)")
+            "Today's Topics (${count} messages)")
         self._message.attach(toc_part)
 
     def add_message(self, msg, count):
         """Add the message to the digest."""
         # Make a copy of the message object, since the RFC 1153 processing
         # scrubs out attachments.
-        self._digest_part.attach(MIMEMessage(deepcopy(msg)))
+        digest_msg = MIMEMessage(deepcopy(msg))
+        digest_msg_content = digest_msg.get_payload(0)
+        # It would be nice to add Message: n near the beginning, but there's no
+        # method for that.  MUAs mostly don't display it anyway, so it doesn't
+        # really matter.
+        digest_msg_content['Message'] = str(count)
+        self._digest_part.attach(digest_msg)
 
     def finish(self):
         """Finish up the digest, producing the email-ready copy."""
@@ -232,6 +240,9 @@ class RFC1153Digester(Digester):
             print(self._separator30, file=self._text)
             print(file=self._text)
         # Each message section contains a few headers.
+        # add the Message: n header first.
+        print('Message: {}'.format(count), file=self._text)
+        # Then the others.
         for header in config.digests.plain_digest_keep_headers.split():
             if header in msg:
                 value = oneline(msg[header], in_unicode=True)
@@ -239,20 +250,10 @@ class RFC1153Digester(Digester):
                 value = '\n\t'.join(value.split('\n'))
                 print(value, file=self._text)
         print(file=self._text)
-        # Add the payload.  If the decoded payload is empty, this may be a
-        # multipart message.  In that case, just stringify it.
-        payload = msg.get_payload(decode=True)
-        if not payload:
-            payload = msg.as_string().split('\n\n', 1)[1]
-        if isinstance(payload, bytes):
-            try:
-                # Do the decoding inside the try/except so that if the charset
-                # conversion fails, we'll just drop back to ascii.
-                charset = msg.get_content_charset('us-ascii')
-                payload = payload.decode(charset, 'replace')
-            except (LookupError, TypeError):
-                # Unknown or empty charset.
-                payload = payload.decode('us-ascii', 'replace')
+        # Get the scrubbed payload.  This is the original payload with all
+        # non text/plain parts replaced by notes that they've been removed.
+        payload = scrub(msg)
+        # Add the payload.
         print(payload, file=self._text)
         if not payload.endswith('\n'):
             print(file=self._text)
@@ -277,13 +278,14 @@ class RFC1153Digester(Digester):
         print(sign_off, file=self._text)
         print('*' * len(sign_off), file=self._text)
         # If the digest message can't be encoded by the list character set,
-        # fall back to utf-8.
+        # fall back to utf-8 with error replacement.
         text = self._text.getvalue()
         try:
             self._message.set_payload(text.encode(self._charset),
                                       charset=self._charset)
         except UnicodeError:
-            self._message.set_payload(text.encode('utf-8'), charset='utf-8')
+            self._message.set_payload(text.encode('utf-8', errors='replace'),
+                                      charset='utf-8')
         return self._message
 
 

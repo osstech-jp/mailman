@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -72,11 +72,11 @@ def show_queues(ctx, param, value):
 def inject(ctx, queue, message_file, keywords, listspec):
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
-        ctx.fail(_('No such list: $listspec'))
+        ctx.fail(_('No such list: ${listspec}'))
     queue_name = ('in' if queue is None else queue)
     switchboard = config.switchboards.get(queue_name)
     if switchboard is None:
-        ctx.fail(_('No such queue: $queue'))
+        ctx.fail(_('No such queue: ${queue}'))
     try:
         message_text = message_file.read()
     except KeyboardInterrupt:

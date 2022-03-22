@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,13 +20,16 @@
 import sys
 import click
 
+from email.header import decode_header, make_header
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
+from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.options import I18nCommand
+from mailman.utilities.string import expand, wrap
 from public import public
 from zope.component import getUtility
 from zope.interface import implementer
@@ -63,7 +66,7 @@ def notify(ctx, list_ids, dry_run, verbose):
             else:
                 mlist = list_manager.get_by_list_id(spec)
             if mlist is None:
-                print(_('No such list found: $spec'), file=sys.stderr)
+                print(_('No such list found: ${spec}'), file=sys.stderr)
             else:
                 lists.append(mlist)
     else:
@@ -115,13 +118,21 @@ def _build_detail(requestdb, subs, unsubs):
     if requestdb.count_of(RequestType.held_message) > 0:
         detail += _('\nHeld Messages:\n')
         for rq in requestdb.of_type(RequestType.held_message):
-            key, data = requestdb.get_request(rq.id)
-            sender = data['_mod_sender']
-            subject = data['_mod_subject']
-            reason = data['_mod_reason']
-            detail += '    ' + _('Sender: {}\n').format(sender)
-            detail += '    ' + _('Subject: {}\n').format(subject)
-            detail += '    ' + _('Reason: {}\n\n').format(reason)
+            if requestdb.get_request(rq.id):
+                key, data = requestdb.get_request(rq.id)
+                sender = data['_mod_sender']
+                subject = data['_mod_subject']
+                reason = data['_mod_reason']
+                detail += '    ' + _('Sender: {}\n').format(sender)
+                try:
+                    detail += '    ' + _('Subject: {}\n').format(
+                        str(make_header(decode_header(subject))))
+                except UnicodeDecodeError:
+                    detail += '    ' + _('Subject: {}\n').format(subject)
+                detail += '    ' + _('Reason: {}\n\n').format(reason)
+            else:
+                detail += '    ' + _(                    # pragma: nocover
+                    'Missing data for request {}\n\n').format(rq.id)
     return detail
 
 
@@ -129,12 +140,12 @@ def _send_notice(mlist, count, detail):
     """Creates and sends the notice to the list administrators."""
     subject = _('The {} list has {} moderation requests waiting.').format(
                 mlist.fqdn_listname, count)
-    # XXX This should be a template.
-    text = _("""The {} list has {} moderation requests waiting.
-
-{}
-Please attend to this at your earliest convenience.
-""").format(mlist.fqdn_listname, count, detail)
+    template = getUtility(ITemplateLoader).get(
+        'list:admin:notice:pending', mlist)
+    text = wrap(expand(template, mlist, dict(
+        count=count,
+        data=detail,
+        )))
     msg = OwnerNotification(mlist, subject, text, mlist.administrators)
     msg.send(mlist)
 

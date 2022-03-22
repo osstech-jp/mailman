@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,7 +24,7 @@ from email.header import decode_header, make_header
 from mailman.config import config
 from public import public
 from string import Template, whitespace
-from textwrap import TextWrapper, dedent
+from textwrap import dedent, TextWrapper
 
 
 EMPTYSTRING = ''

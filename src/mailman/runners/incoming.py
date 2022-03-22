@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -38,6 +38,7 @@ from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.usermanager import IUserManager
 from public import public
 from zope.component import getUtility
+
 
 log = logging.getLogger('mailman.vette')
 

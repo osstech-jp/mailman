@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,7 +25,9 @@ from mailman.config import config
 from mailman.core.chains import process as process_chain
 from mailman.interfaces.chain import AcceptEvent, IChain, LinkAction
 from mailman.testing.helpers import (
-    event_subscribers, specialized_message_from_string as mfs)
+    event_subscribers,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.interface import implementer
 

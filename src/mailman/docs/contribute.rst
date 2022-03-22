@@ -58,7 +58,7 @@ long time, and/or require versions of Python or other components you might not
 have installed.  You can run ``tox -l`` to list the test suite *environments*
 available.  Very often, when you want to run the full test suite in the
 quickest manner with components that should be available everywhere, run one
-of these command, depending on which version of Python 3 you have::
+of these commands, depending on which version of Python 3 you have::
 
     $ tox -e py36-nocov
     $ tox -e py35-nocov
@@ -127,10 +127,12 @@ into ``/tmp/mm3``::
 
     $ python3 -m venv /tmp/mm3
 
-Now, activate the virtual environment and set it up for development::
+Now, in the directory containing Mailman, activate the virtual environment
+and set it up for development::
 
-    % source /tmp/mm3/bin/activate
-    % python setup.py develop
+    $ cd directory/containing/mailman
+    $ source /tmp/mm3/bin/activate
+    $ pip install -e .
 
 Sit back and have some Kombucha while you wait for everything to download and
 install.

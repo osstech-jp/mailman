@@ -18,3 +18,6 @@ done
 for each in src/mailman/messages/*/*/*.po; do
     msgmerge --update -w 85 --no-fuzzy-matching --no-wrap $each $pot_file
 done
+
+# Finally, update the engligh PO file.
+python3 update_po.py

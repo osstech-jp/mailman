@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,7 +26,9 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.handlers.arc_sign import ARCSign
 from mailman.testing.helpers import (
-    specialized_message_from_string as message_from_string)
+    LogFileMark,
+    specialized_message_from_string as message_from_string,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 
@@ -174,6 +176,9 @@ This is a test message.
         self.assertEqual("ARC-Message-Signature" in msg, False)
         self.assertEqual("ARC-Seal" in msg, False)
 
+    # This test is now expected to fail since we now only log the exception
+    # and don't re-raise it.
+    @unittest.expectedFailure
     @patch('mailman.handlers.arc_sign.sign_message', side_effect=DKIMException)
     def test_arc_sign_raises_exception(self, mocked_sign_message):
         config.push('arc_sign', """
@@ -205,3 +210,41 @@ This is a test message.
         with self.assertRaises(DKIMException):
             ARCSign().process(lst, msg, msgdata)
         self.assertTrue(mocked_sign_message.called)
+
+    def test_dkim_exception_is_logged(self):
+
+        config.push('arc_sign', """
+        [ARC]
+        enabled: yes
+        dmarc: yes
+        dkim: yes
+        authserv_id: example.com
+        selector: dummy
+        domain: example.com
+        privkey: %s
+        """ % (self.keyfile.name))
+
+        self.addCleanup(config.pop, 'arc_sign')
+
+        lst = create_list('test@example.com')
+        msgdata = {}
+
+        msg = """\
+Authentication-Results: example.com; arc=none; dkim=fail; arc=none; dmarc=none
+Received: from example.com (localhost [127.0.0.1])
+        by mail.example.com (Postfix) with ESMTP id B9E401F93BD
+        for <test@example.com>; Mon, 26 Apr 2021 16:21:37 -0700 (PDT)
+From: User <user@example.org>
+To: test@example.com
+Date: Mon, 26 Apr 2021 23:21:37 -0000
+Message-ID: <161947929775.27402.13795118666345547446@example.com>
+Subject: A test...
+
+Message body
+"""
+        msg = message_from_string(msg)
+        mark = LogFileMark('mailman.error')
+        ARCSign().process(lst, msg, msgdata)
+        self.assertIn(
+            'ParameterError: No existing chain found on message, '
+            'cv should be none', mark.read())

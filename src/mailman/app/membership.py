@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,15 +19,21 @@
 
 from email.utils import formataddr
 from mailman.app.notifications import (
-    send_admin_subscription_notice, send_goodbye_message,
-    send_welcome_message)
+    send_admin_subscription_notice,
+    send_goodbye_message,
+    send_welcome_message,
+)
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
-    NotAMemberError, SubscriptionEvent)
+    AlreadySubscribedError,
+    MemberRole,
+    MembershipIsBannedError,
+    NotAMemberError,
+    SubscriptionEvent,
+)
 from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
@@ -96,6 +102,7 @@ def add_member(mlist, record, role=MemberRole.member):
             error.fqdn_listname, record.email, error.role)
     member.preferences.preferred_language = record.language
     member.preferences.delivery_mode = record.delivery_mode
+    member.preferences.delivery_status = record.delivery_status
     # Check for and remove nonmember subscriptions of the user to this list.
     if role is MemberRole.member:
         for address in user.addresses:
@@ -137,7 +144,7 @@ def delete_member(mlist, email, admin_notif=None, userack=None):
     if admin_notif:
         user = getUtility(IUserManager).get_user(email)
         display_name = user.display_name
-        subject = _('$mlist.display_name unsubscription notification')
+        subject = _('${mlist.display_name} unsubscription notification')
         text = expand(getUtility(ITemplateLoader).get(
             'list:admin:notice:unsubscribe', mlist),
             mlist, dict(

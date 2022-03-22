@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,13 +17,18 @@
 
 """NNTP runner."""
 
+import os
 import re
+import sys
 import email
 import socket
 import logging
 import nntplib
+import subprocess
 
+from datetime import datetime
 from io import BytesIO
+from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.interfaces.nntp import NewsgroupModeration
@@ -50,6 +55,17 @@ mcre = re.compile(r"""
 
 @public
 class NNTPRunner(Runner):
+    def __init__(self, name, slice=None):
+        super().__init__(name, slice)
+        self.lastrun = datetime.min
+        self.delay = as_timedelta(config.nntp.gatenews_every)
+        self.slice = slice
+        python = sys.executable
+        mailman = os.path.join(config.BIN_DIR, 'mailman')
+        conf = config.filename
+        self.cmd = [python, mailman, '-C', conf, 'gatenews']
+        log.debug(self.cmd)
+
     def _dispose(self, mlist, msg, msgdata):
         # Get NNTP server connection information.
         host = config.nntp.host.strip()
@@ -66,7 +82,9 @@ class NNTPRunner(Runner):
         if not msgdata.get('prepped'):
             prepare_message(mlist, msg, msgdata)
         # Flatten the message object, sticking it in a BytesIO object
-        fp = BytesIO(msg.as_bytes())
+        fp = BytesIO()
+        email.generator.BytesGenerator(fp, maxheaderlen=0).flatten(msg)
+        fp.seek(0)
         conn = None
         try:
             conn = nntplib.NNTP(host, port,
@@ -109,6 +127,22 @@ class NNTPRunner(Runner):
                 conn.quit()
         return False
 
+    def _do_periodic(self):
+        """Invoked periodically by the run() method in the super class."""
+        if self.lastrun + self.delay > datetime.now():
+            return                                    # pragma: nocover
+        if not (self.slice in (None, 0)):
+            # If queue is sliced, only run for slice = 0.
+            return                                    # pragma: nocover
+        self.lastrun = datetime.now()
+        log.debug('Running nntp runner periodic task gatenews')
+        os.environ['_MAILMAN_GATENEWS_NNTP'] = 'yes'
+        result = subprocess.run(self.cmd, stderr=subprocess.PIPE)
+        if result.returncode != 0:
+            log.error(f"""\
+gatenews failed. status: {result.returncode}
+message: {result.stderr}""")
+
 
 def prepare_message(mlist, msg, msgdata):
     # If the newsgroup is moderated, we need to add this header for the Usenet
@@ -143,10 +177,12 @@ def prepare_message(mlist, msg, msgdata):
             # Subtitute our new header for the old one.
             del msg['newsgroups']
             msg['Newsgroups'] = COMMASPACE.join(newsgroups)
-    # Ensure we have a Message-ID.
+    # Ensure we have an unfolded Message-ID.
     if not msg.get('message-id'):
         msg['Message-ID'] = email.utils.make_msgid(mlist.list_name,
                                                    mlist.mail_host)
+    mid = re.sub(r'[\s]', '', msg.get('message-id'))
+    msg.replace_header('message-id', mid)
     # Lines: is useful.
     if msg['Lines'] is None:
         # BAW: is there a better way?

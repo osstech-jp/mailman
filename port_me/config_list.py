@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,8 +20,7 @@ import sys
 import time
 import optparse
 
-from mailman import MailList
-from mailman import errors
+from mailman import errors, MailList
 from mailman.configuration import config
 from mailman.core.i18n import _
 from mailman.initialize import initialize

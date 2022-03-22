@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -43,21 +43,28 @@ class TestLMTP(unittest.TestCase):
         self._lmtp.lhlo('remote.example.org')
         self.addCleanup(self._lmtp.close)
 
-    def test_message_id_required(self):
-        # The message is rejected if it does not have a Message-ID header.
-        with self.assertRaises(smtplib.SMTPDataError) as cm:
-            self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
+    def test_unixfrom_in_message(self):
+        # Ensure a unixfrom is added to the message object.
+        self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
+From: anne@example.com
+To: test@example.com
+Subject: Test unixfrom
+Message-ID: <msg@example.com>
+
+""")
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual('anne@example.com', items[0].msg.get_unixfrom())
+
+    def test_message_id_supplied_if_missing(self):
+        # A Message-ID header is generated if the message doesn't have one.
+        self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
 From: anne@example.com
 To: test@example.com
 Subject: This has no Message-ID header
 
 """)
-        # LMTP returns a 550: Requested action not taken: mailbox unavailable
-        # (e.g., mailmailman.runners.tests.test_lmtp.TestLMTPbox not found, no
-        # access, or command rejected for policy reasons)
-        self.assertEqual(cm.exception.smtp_code, 550)
-        self.assertEqual(cm.exception.smtp_error,
-                         b'No Message-ID header provided')
+        items = get_queue_messages('in', expected_count=1)
+        self.assertIsNotNone(items[0].msg.get('message-id'))
 
     def test_message_id_hash_is_added(self):
         self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
@@ -295,3 +302,19 @@ Message-ID: <alpha>
 """)
         items = get_queue_messages('in', expected_count=1)
         self.assertEqual(items[0].msg['message-id'], '<alpha>')
+
+    def test_issue_836(self):
+        # Local parts > 64 bytes should be accepted.
+        with transaction():
+            create_list('longer_than_15_bytes@example.com')
+        recip = 'longer_than_15_bytes-confirm+{}@example.com'.format(40*'x')
+        self._lmtp.sendmail('anne@example.com', [recip], """\
+From: anne@example.com
+To: {}
+Subject: confirm
+Message-ID: <alpha>
+
+""".format(recip))
+        items = get_queue_messages('command', expected_count=1)
+        self.assertEqual(items[0].msgdata['listid'],
+                         'longer_than_15_bytes.example.com')

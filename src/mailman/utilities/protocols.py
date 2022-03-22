@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,11 +21,12 @@ import requests
 
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager
-from mailman.utilities.i18n import TemplateNotFoundError, find
+from mailman.utilities.i18n import find, TemplateNotFoundError
 from public import public
 from urllib.error import URLError
 from urllib.parse import urlparse
 from zope.component import getUtility
+
 
 COMMASPACE = ', '
 REQUEST_TIMEOUT = 5

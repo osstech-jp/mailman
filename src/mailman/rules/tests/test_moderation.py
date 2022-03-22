@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,7 +26,10 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rules import moderation
 from mailman.testing.helpers import (
-    set_preferred, specialized_message_from_string as mfs)
+    LogFileMark,
+    set_preferred,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -107,9 +110,36 @@ A message body.
         self.assertEqual(
             reasons, ['The message comes from a moderated member'])
 
+    def test_these_nonmembers_malformed_regexp(self):
+        mark = LogFileMark('mailman.error')
+        user_manager = getUtility(IUserManager)
+        nonmembers = [
+            # Malformed regexps should be skipped
+            '^*@broken.regex',
+            'anne@example.com',
+            ]
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('anne@example.com')
+        setattr(self._mlist, 'accept_these_nonmembers', nonmembers)
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(result, 'NonmemberModeration rule should not hit')
+        self.assertIn("Invalid regexp '^*@broken.regex' in "
+                      'accept_these_nonmembers for test.example.com: '
+                      'nothing to repeat', mark.readline())
+
     def test_these_nonmembers(self):
         # Test the legacy *_these_nonmembers attributes.
-        user_manager = getUtility(IUserManager)
         actions = {
             'anne@example.com': 'accept',
             'bill@example.com': 'hold',
@@ -150,6 +180,137 @@ A message body.
                 self.assertEqual(
                     msgdata['member_moderation_action'], action_name,
                     'Wrong action for {}: {}'.format(address, action_name))
+
+    def test_specific_nonmember_action_trumps_legacy(self):
+        # A specific nonmember.moderation_action trumps *_these_nonmembers.
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        address = 'anne@example.com'
+        # Add Anne to hold_these_nonmembers and create a nonmember with
+        # moderation_action = Action.defer
+        setattr(self._mlist, 'hold_these_nonmembers', [address])
+        anne = user_manager.create_address(address)
+        nonmember = self._mlist.subscribe(anne, MemberRole.nonmember)
+        nonmember.moderation_action = Action.defer
+        msg = mfs("""\
+From: {}
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""".format(address))
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(
+            result, 'NonmemberModeration rule should miss')
+
+    def test_nonmember_action_none_ignored(self):
+        # A specific nonmember.moderation_action trumps *_these_nonmembers.
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        address = 'anne@example.com'
+        # Add Anne to hold_these_nonmembers and create a nonmember with
+        # moderation_action = None
+        setattr(self._mlist, 'hold_these_nonmembers', [address])
+        anne = user_manager.create_address(address)
+        nonmember = self._mlist.subscribe(anne, MemberRole.nonmember)
+        nonmember.moderation_action = None
+        msg = mfs("""\
+From: {}
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""".format(address))
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertTrue(result, 'NonmemberModeration rule should hit')
+        self.assertIn('member_moderation_action', msgdata)
+        self.assertEqual(
+            msgdata['member_moderation_action'], 'hold',
+            'Wrong action for {}: {}'.format(address, 'hold'))
+
+    def test_subsequent_nonmember_in_accept_these_may_post(self):
+        # A nonmember sender not first in the senders list and in
+        # accept_these_nonmembers may post.
+        # https://gitlab.com/mailman/mailman/-/issues/986
+        self._mlist.default_nonmember_action = Action.hold
+        setattr(self._mlist, 'accept_these_nonmembers', ['bart@example.com'])
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('anne@example.com')
+        user_manager.create_address('bart@example.com')
+        rule = moderation.NonmemberModeration()
+        msg = mfs("""\
+From: anne@example.com
+Sender: bart@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(result, 'NonmemberModeration rule should not hit')
+
+    def test_subsequent_nonmember_with_accept_action_may_post(self):
+        # A nonmember sender not first in the senders list and with explicit
+        # moderation_action accept may post.
+        # https://gitlab.com/mailman/mailman/-/issues/986
+        self._mlist.default_nonmember_action = Action.hold
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('anne@example.com')
+        bart = user_manager.create_address('bart@example.com')
+        nonmember = self._mlist.subscribe(bart, MemberRole.nonmember)
+        nonmember.moderation_action = Action.accept
+        rule = moderation.NonmemberModeration()
+        msg = mfs("""\
+From: anne@example.com
+Sender: bart@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertEqual(msgdata['member_moderation_action'], 'accept')
+        self.assertEqual(msgdata['moderation_sender'], 'bart@example.com')
+        self.assertEqual(msgdata['moderation_reasons'][0],
+                         'The message is not from a list member')
+        self.assertTrue(result, 'NonmemberModeration should hit')
+
+    def test_subsequent_nonmember_with_defer_action_may_post(self):
+        # A nonmember sender not first in the senders list and with explicit
+        # moderation_action defer may post.
+        # https://gitlab.com/mailman/mailman/-/issues/986
+        self._mlist.default_nonmember_action = Action.hold
+        user_manager = getUtility(IUserManager)
+        user_manager.create_address('anne@example.com')
+        bart = user_manager.create_address('bart@example.com')
+        nonmember = self._mlist.subscribe(bart, MemberRole.nonmember)
+        nonmember.moderation_action = Action.defer
+        rule = moderation.NonmemberModeration()
+        msg = mfs("""\
+From: anne@example.com
+Sender: bart@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertFalse(result, 'NonmemberModeration should not hit')
 
     def test_nonmember_fallback_to_list_defaults(self):
         # https://gitlab.com/mailman/mailman/issues/189
@@ -351,4 +512,22 @@ MIME-Version: 1.0
 A message body.
 """)
         result = rule.check(self._mlist, msg, {})
+        self.assertFalse(result)
+
+    def test_nonmember_fromusenet(self):
+        # Test a post from usenet from a nonmember is not held.
+        rule = moderation.NonmemberModeration()
+        user_manager = getUtility(IUserManager)
+        anne = user_manager.create_address('anne.person@example.com')
+        self._mlist.subscribe(anne, MemberRole.nonmember)
+        msg = mfs("""\
+From: anne.person@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        result = rule.check(self._mlist, msg, {'fromusenet': True})
         self.assertFalse(result)

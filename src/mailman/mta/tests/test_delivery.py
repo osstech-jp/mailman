@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,6 +22,7 @@ import shutil
 import tempfile
 import unittest
 
+from email.header import make_header
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
@@ -29,9 +30,13 @@ from mailman.interfaces.template import ITemplateManager
 from mailman.mta.bulk import BulkDelivery
 from mailman.mta.deliver import Deliver
 from mailman.testing.helpers import (
-    specialized_message_from_string as mfs, subscribe)
+    LogFileMark,
+    specialized_message_from_string as mfs,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer, SMTPLayer
 from mailman.utilities.modules import find_name
+from unittest.mock import patch
 from zope.component import getUtility
 
 
@@ -114,6 +119,41 @@ name     : $user_name
         _mlist, _msg, _msgdata, _recipients = _deliveries[0]
         member = _msgdata.get('member')
         self.assertEqual(member, self._anne)
+
+    def test_arc_sign_called_individual(self):
+        # Delivery with arc_sign enabled should call arc_sign.
+        msgdata = dict(recipients=['anne@example.org'])
+        keyfile = tempfile.NamedTemporaryFile(delete=True)
+        keyfile.write(b"""-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDkHlOQoBTzWRiGs5V6NpP3idY6Wk08a5qhdR6wy5bdOKb2jLQi
+Y/J16JYi0Qvx/byYzCNb3W91y3FutACDfzwQ/BC/e/8uBsCR+yz1Lxj+PL6lHvqM
+KrM3rG4hstT5QjvHO9PzoxZyVYLzBfO2EeC3Ip3G+2kryOTIKT+l/K4w3QIDAQAB
+AoGAH0cxOhFZDgzXWhDhnAJDw5s4roOXN4OhjiXa8W7Y3rhX3FJqmJSPuC8N9vQm
+6SVbaLAE4SG5mLMueHlh4KXffEpuLEiNp9Ss3O4YfLiQpbRqE7Tm5SxKjvvQoZZe
+zHorimOaChRL2it47iuWxzxSiRMv4c+j70GiWdxXnxe4UoECQQDzJB/0U58W7RZy
+6enGVj2kWF732CoWFZWzi1FicudrBFoy63QwcowpoCazKtvZGMNlPWnC7x/6o8Gc
+uSe0ga2xAkEA8C7PipPm1/1fTRQvj1o/dDmZp243044ZNyxjg+/OPN0oWCbXIGxy
+WvmZbXriOWoSALJTjExEgraHEgnXssuk7QJBALl5ICsYMu6hMxO73gnfNayNgPxd
+WFV6Z7ULnKyV7HSVYF0hgYOHjeYe9gaMtiJYoo0zGN+L3AAtNP9huqkWlzECQE1a
+licIeVlo1e+qJ6Mgqr0Q7Aa7falZ448ccbSFYEPD6oFxiOl9Y9se9iYHZKKfIcst
+o7DUw1/hz2Ck4N5JrgUCQQCyKveNvjzkkd8HjYs0SwM0fPjK16//5qDZ2UiDGnOe
+uEzxBDAr518Z8VFbR41in3W4Y3yCDgQlLlcETrS+zYcL
+-----END RSA PRIVATE KEY-----
+""")
+        keyfile.flush()
+        config.push('arc', """
+        [ARC]
+        enabled: yes
+        authserv_id: lists.example.org
+        selector: dummy
+        domain: example.org
+        sig_headers: mime-version, date, from, to, subject
+        privkey: %s
+        """ % (keyfile.name))
+        with patch.object(DeliverTester, 'arc_sign') as mock:
+            DeliverTester().deliver(self._mlist, self._msg, msgdata)
+        mock.assert_called_once()
+        config.pop('arc')
 
     def test_decoration(self):
         msgdata = dict(recipients=['anne@example.org'])
@@ -300,6 +340,41 @@ Footer
 
 """)
 
+    def test_arc_sign_called_bulk(self):
+        # Delivery with arc_sign enabled should call arc_sign.
+        msgdata = dict(recipients=['anne@example.org'])
+        keyfile = tempfile.NamedTemporaryFile(delete=True)
+        keyfile.write(b"""-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDkHlOQoBTzWRiGs5V6NpP3idY6Wk08a5qhdR6wy5bdOKb2jLQi
+Y/J16JYi0Qvx/byYzCNb3W91y3FutACDfzwQ/BC/e/8uBsCR+yz1Lxj+PL6lHvqM
+KrM3rG4hstT5QjvHO9PzoxZyVYLzBfO2EeC3Ip3G+2kryOTIKT+l/K4w3QIDAQAB
+AoGAH0cxOhFZDgzXWhDhnAJDw5s4roOXN4OhjiXa8W7Y3rhX3FJqmJSPuC8N9vQm
+6SVbaLAE4SG5mLMueHlh4KXffEpuLEiNp9Ss3O4YfLiQpbRqE7Tm5SxKjvvQoZZe
+zHorimOaChRL2it47iuWxzxSiRMv4c+j70GiWdxXnxe4UoECQQDzJB/0U58W7RZy
+6enGVj2kWF732CoWFZWzi1FicudrBFoy63QwcowpoCazKtvZGMNlPWnC7x/6o8Gc
+uSe0ga2xAkEA8C7PipPm1/1fTRQvj1o/dDmZp243044ZNyxjg+/OPN0oWCbXIGxy
+WvmZbXriOWoSALJTjExEgraHEgnXssuk7QJBALl5ICsYMu6hMxO73gnfNayNgPxd
+WFV6Z7ULnKyV7HSVYF0hgYOHjeYe9gaMtiJYoo0zGN+L3AAtNP9huqkWlzECQE1a
+licIeVlo1e+qJ6Mgqr0Q7Aa7falZ448ccbSFYEPD6oFxiOl9Y9se9iYHZKKfIcst
+o7DUw1/hz2Ck4N5JrgUCQQCyKveNvjzkkd8HjYs0SwM0fPjK16//5qDZ2UiDGnOe
+uEzxBDAr518Z8VFbR41in3W4Y3yCDgQlLlcETrS+zYcL
+-----END RSA PRIVATE KEY-----
+""")
+        keyfile.flush()
+        config.push('arc', """
+        [ARC]
+        enabled: yes
+        authserv_id: lists.example.org
+        selector: dummy
+        domain: example.org
+        sig_headers: mime-version, date, from, to, subject
+        privkey: %s
+        """ % (keyfile.name))
+        with patch.object(BulkDeliverTester, 'arc_sign') as mock:
+            BulkDeliverTester().deliver(self._mlist, self._msg, msgdata)
+        mock.assert_called_with(self._mlist, self._msg, msgdata)
+        config.pop('arc')
+
 
 class TestCloseAfterDelivery(unittest.TestCase):
     """Test that connections close after delivery."""
@@ -357,3 +432,48 @@ Subject: test
         # Since max_sessions_per_connection is 3, sending 4 personalized
         # messages creates 2 connections.
         self.assertEqual(SMTPLayer.smtpd.get_connection_count(), 2)
+
+
+class TestDeliveryLogging(unittest.TestCase):
+    """Test that logging doesn't split on folded Message-IDs."""
+
+    layer = SMTPLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        # Make Anne a member of this mailing list.
+        self._anne = subscribe(self._mlist, 'Anne', email='anne@example.org')
+        self._msg = mfs("""\
+From: anne@example.org
+To: test@example.com
+Subject: test
+Message-ID:
+ <AM6PR09MB347488BB9A684F6A23A1D375966C9@AM6PR09MB34.eurprd09.prod.outlook.com>
+
+""")
+        self._deliverer = find_name(config.mta.outgoing)
+
+    def test_logging_with_folded_messageid(self):
+        # Test that folded Message-ID header doesn't fold the log messages.
+        mark = LogFileMark('mailman.smtp')
+        msgdata = dict(recipients=['anne@example.org'], to_list=True)
+        self._deliverer(self._mlist, self._msg, msgdata)
+        logs = mark.read()
+        self.assertRegex(logs, r' \(\d+\) <AM6PR09MB347488.*smtp')
+        self.assertRegex(logs, r' \(\d+\) <AM6PR09MB347488.*post')
+
+    def test_logging_with_header_instance(self):
+        msgdata = dict(recipients=['test@example.com', 'bart@example.org'])
+        self._mlist.personalize = Personalization.none
+        msgdata['recipients'] = ['test@example.com', 'bart@example.org']
+        self._msg['CC'] = make_header([('bart@example.org', None)])
+        config.push('logging', """
+        [logging.smtp]
+        success: post for $recip recips
+        """)
+        self.addCleanup(config.pop, 'logging')
+        mark = LogFileMark('mailman.smtp')
+        self._deliverer(self._mlist, self._msg, msgdata)
+        self.assertIn(
+            'post for test@example.com,bart@example.org recips',
+            mark.read())

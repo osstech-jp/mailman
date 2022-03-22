@@ -1,0 +1,2 @@
+L'iscrizione di $member è stato disabilitato su $listname perché il loro punteggio di rimbalzo
+supera la soglia di bounce_score_threshold della mailing list.

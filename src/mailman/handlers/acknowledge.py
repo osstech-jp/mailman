@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -72,7 +72,7 @@ class Acknowledge:
         # Craft the outgoing message, with all headers and attributes
         # necessary for general delivery.  Then enqueue it to the outgoing
         # queue.
-        subject = _('$display_name post acknowledgment')
+        subject = _('${display_name} post acknowledgment')
         usermsg = UserNotification(sender, mlist.bounces_address,
                                    subject, text, language)
         usermsg.send(mlist)

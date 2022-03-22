@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,9 +19,12 @@
 
 from email.utils import formataddr
 from mailman.database.model import Model
-from mailman.database.types import SAUnicode
+from mailman.database.types import SAUnicode, SAUnicode4Byte
 from mailman.interfaces.address import (
-    AddressVerificationEvent, IAddress, IEmailValidator)
+    AddressVerificationEvent,
+    IAddress,
+    IEmailValidator,
+)
 from mailman.utilities.datetime import now
 from public import public
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
@@ -41,7 +44,7 @@ class Address(Model):
     id = Column(Integer, primary_key=True)
     email = Column(SAUnicode, index=True, unique=True)
     _original = Column(SAUnicode)
-    display_name = Column(SAUnicode)
+    display_name = Column(SAUnicode4Byte)
     _verified_on = Column('verified_on', DateTime)
     registered_on = Column(DateTime)
 

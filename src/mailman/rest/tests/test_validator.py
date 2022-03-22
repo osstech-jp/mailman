@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,6 +19,7 @@
 
 import unittest
 
+from lazr.config import as_boolean
 from mailman.app.lifecycle import create_list
 from mailman.core.api import API30, API31
 from mailman.database.transaction import transaction
@@ -26,9 +27,16 @@ from mailman.interfaces.action import Action
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest import helpers
 from mailman.rest.validator import (
-    email_or_regexp_validator, email_validator, enum_validator,
-    integer_ge_zero_validator, list_of_emails_validator,
-    list_of_strings_validator, subscriber_validator)
+    email_or_regexp_validator,
+    email_validator,
+    enum_validator,
+    integer_ge_zero_validator,
+    list_of_emails_or_regexp_validator,
+    list_of_emails_validator,
+    list_of_strings_validator,
+    subscriber_validator,
+    Validator,
+)
 from mailman.testing.layers import RESTLayer
 from zope.component import getUtility
 
@@ -49,6 +57,10 @@ class TestValidators(unittest.TestCase):
     def test_list_of_strings_validator_empty_list(self):
         # This validator should return an empty list for an empty string input.
         self.assertEqual(list_of_strings_validator(''), [])
+
+    def test_list_of_emails_or_regexp_validator_empty_list(self):
+        # This validator should return an empty list for an empty string input.
+        self.assertEqual(list_of_emails_or_regexp_validator(''), [])
 
     def test_integer_ge_zero_validator_invalid(self):
         self.assertRaises(ValueError, integer_ge_zero_validator, 'foo')
@@ -141,10 +153,42 @@ class TestValidators(unittest.TestCase):
         self.assertRaises(
             ValueError, email_or_regexp_validator, '')
 
+    def test_list_of_emails_or_regexp_validator_valid(self):
+        self.assertEqual(
+            list_of_emails_or_regexp_validator(
+                ['foo@example.com', '^.*@example.com']),
+            ['foo@example.com', '^.*@example.com'])
+        self.assertEqual(
+            list_of_emails_or_regexp_validator([]), [])
+
+    def test_list_of_emails_or_regexp_validator_invalid(self):
+        self.assertRaises(
+            ValueError, list_of_emails_or_regexp_validator, 'foo.example.com')
+        self.assertRaises(
+            ValueError, list_of_emails_or_regexp_validator,
+            ['foo.example.com', '^.*@example.com'])
+        self.assertRaises(
+            ValueError, list_of_emails_or_regexp_validator,
+            ['foo@example.com', '^*@example.com'])
+
     def test_email_validator(self):
         self.assertRaises(ValueError,
                           email_validator, 'foo.example.com')
         self.assertEqual('foo@example.com', email_validator('foo@example.com'))
+
+    def test_validator_class_boolean_as_bool(self):
+
+        class RequestTrue:
+            params = dict(key=True)
+            content_type = 'application/x-www-form-urlencoded'
+
+        class RequestFalse:
+            params = dict(key=False)
+            content_type = 'application/x-www-form-urlencoded'
+
+        validator = Validator(key=as_boolean)
+        self.assertTrue(validator(RequestTrue)['key'])
+        self.assertFalse(validator(RequestFalse)['key'])
 
 
 class TestGetterSetter(unittest.TestCase):
@@ -170,3 +214,10 @@ class TestGetterSetter(unittest.TestCase):
                          ['application/octet-stream'])
         self.assertEqual(list(self._mlist.pass_extensions),
                          ['.pdf'])
+
+    def test_set_boolean_as_bool(self):
+        # Non-pythonic POST data can contain JSON booleans. Ensure we can
+        # handle that.
+        getset = helpers.GetterSetter(as_boolean)
+        self.assertTrue(getset(True))
+        self.assertFalse(getset(False))

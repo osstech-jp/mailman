@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -45,7 +45,7 @@ def delete_members(mlists, memb_list, goodbye_msg, admin_notify):
             except NotAMemberError:
                 email = formataddr((display_name, email))
                 if len(mlists) == 1:
-                    print(_('Member not subscribed (skipping): $email'),
+                    print(_('Member not subscribed (skipping): ${email}'),
                           file=sys.stderr)
 
 
@@ -120,7 +120,7 @@ def delmembers(ctx, _list, in_fp, member, _all, fromall, goodbye_msg,
     else:
         mlist = list_manager.get(_list)
         if mlist is None:
-            ctx.fail(_('No such list: $_list'))
+            ctx.fail(_('No such list: ${_list}'))
         mlists = [mlist]
     if _all:
         memb_list = [(address.display_name, address.email) for address in

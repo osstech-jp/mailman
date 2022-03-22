@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -119,6 +119,26 @@ class TestMailingListRoster(unittest.TestCase):
         self.assertEqual(self._mlist.regular_members.member_count, 1)
         self.assertEqual(self._mlist.digest_members.member_count, 1)
         self.assertEqual(self._mlist.subscribers.member_count, 4)
+
+    def test_various_administrator_returns(self):
+        # Anne is an owner, Bart is a moderator and Cris is neither.
+        self._mlist.subscribe(self._anne, role=MemberRole.owner)
+        self._mlist.subscribe(self._bart, role=MemberRole.moderator)
+        owner = self._mlist.administrators.get_member(self._anne.email)
+        moderator = self._mlist.administrators.get_member(self._bart.email)
+        nobody = self._mlist.administrators.get_member(self._cris.email)
+        self.assertEqual(owner.role, MemberRole.owner)
+        self.assertEqual(moderator.role, MemberRole.moderator)
+        self.assertIsNone(nobody)
+
+    def test_address_is_both_owner_and_moderator(self):
+        # Anne is both owner and moderator.  The administrators.get_member()
+        # method returns the owner.
+        self._mlist.subscribe(self._anne, role=MemberRole.owner)
+        self._mlist.subscribe(self._anne, role=MemberRole.moderator)
+        self.assertEqual(self._mlist.administrators.member_count, 2)
+        admin = self._mlist.administrators.get_member(self._anne.email)
+        self.assertEqual(admin.role, MemberRole.owner)
 
 
 class TestMembershipsRoster(unittest.TestCase):

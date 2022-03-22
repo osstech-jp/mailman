@@ -2,6 +2,10 @@
  Plugins
 =========
 
+.. seealso:: See an `example Mailman plugin
+             <https://gitlab.com/mailman/example-mailman-plugin/-/tree/master>`_
+             as a starting point for writing a new plugin.
+
 Mailman defines a plugin as a Python package on ``sys.path`` that provides
 components matching the ``IPlugin`` interface.  ``IPlugin`` implementations
 can define a *pre-hook*, a *post-hook*, and a *REST resource*.  Plugins are
@@ -36,7 +40,8 @@ Hooks
 Plugins can add initialization hooks, which will be run at two stages in the
 initialization process - one before the database is initialized and one after.
 These correspond to methods the plugin defines, a ``pre_hook()`` method and a
-``post_hook()`` method.  Each of these methods are optional.
+``post_hook()`` method.  Each of these methods must be present, together with
+the ``resource`` property, for the plugin to be operational.
 
 Here is a plugin that defines these hooks:
 

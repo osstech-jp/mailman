@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,12 +19,15 @@
 
 import logging
 
+from email.mime.message import MIMEMessage
+from email.mime.text import MIMEText
 from email.utils import formataddr
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.string import expand, wrap
 from public import public
@@ -32,6 +35,31 @@ from zope.component import getUtility
 
 
 log = logging.getLogger('mailman.error')
+
+
+def _get_dsn(message_id):
+    # Get the DSN from the message store and delete it from the message store.
+    messagestore = getUtility(IMessageStore)
+    dsn = messagestore.get_message_by_id(message_id)
+    if dsn:
+        messagestore.delete_message(message_id)
+    return dsn
+
+
+def _make_multipart(msg):
+    """Turn an OwnerNotification into a multipart/mixed with a text/plain
+    payload. This is all a Kludge due to messages being email.Message objects
+    and not email.EmailMessage objects. If they were the latter we could just
+    use the message's add_content method in a straight forward way.
+    """
+    text = MIMEText(msg.get_payload(decode=True).decode(
+                    msg.get_content_charset('utf-8')))
+    del msg['content-type']
+    del msg['content-transfer-encoding']
+    msg['Content-Type'] = 'multipart/mixed'
+    msg.set_payload(None)
+    msg.attach(text)
+    return msg
 
 
 @public
@@ -67,7 +95,7 @@ def send_welcome_message(mlist, member, language, text=''):
     msg = UserNotification(
         formataddr((display_name, member.address.email)),
         mlist.request_address,
-        _('Welcome to the "$mlist.display_name" mailing list${digmode}'),
+        _('Welcome to the "${mlist.display_name}" mailing list${digmode}'),
         text, language)
     msg['X-No-Archive'] = 'yes'
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
@@ -87,11 +115,19 @@ def send_goodbye_message(mlist, address, language):
     :param language: the language of the response
     :type language: ILanguage
     """
-    goodbye_message = wrap(getUtility(ITemplateLoader).get(
-        'list:user:notice:goodbye', mlist, language=language.code))
+    goodbye_message = wrap(expand(getUtility(ITemplateLoader).get(
+        'list:user:notice:goodbye', mlist, language=language.code),
+        mlist, dict(
+        user_email=address,
+        # For backward compatibility.
+        user_address=address,
+        fqdn_listname=mlist.fqdn_listname,
+        list_name=mlist.display_name,
+        list_requests=mlist.request_address,
+        )))
     msg = UserNotification(
         address, mlist.bounces_address,
-        _('You have been unsubscribed from the $mlist.display_name '
+        _('You have been unsubscribed from the ${mlist.display_name} '
           'mailing list'),
         goodbye_message, language)
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
@@ -109,7 +145,7 @@ def send_admin_subscription_notice(mlist, address, display_name):
     :type display_name: string
     """
     with _.using(mlist.preferred_language.code):
-        subject = _('$mlist.display_name subscription notification')
+        subject = _('${mlist.display_name} subscription notification')
     text = expand(
         getUtility(ITemplateLoader).get('list:admin:notice:subscribe', mlist),
         mlist, dict(
@@ -120,24 +156,58 @@ def send_admin_subscription_notice(mlist, address, display_name):
 
 
 @public
-def send_admin_disable_notice(mlist, address, display_name):
+def send_admin_disable_notice(mlist, event, display_name):
     """Send the list administrators a membership disabled by-bounce notice.
 
     :param mlist: The mailing list
     :type mlist: IMailingList
-    :param address: The address of the member
-    :type address: string
+    :param event: The BounceEvent that triggered this notice.
+    :type event: A mailman.model.bounce.BounceEvent instance.
     :param display_name: The name of the subscriber
     :type display_name: string
     """
-    member = formataddr((display_name, address))
+    member = formataddr((display_name, event.email))
     data = {'member': member}
     with _.using(mlist.preferred_language.code):
-        subject = _('$member\'s subscription disabled on $mlist.display_name')
+        subject = _(
+            '${member}\'s subscription disabled on ${mlist.display_name}')
     text = expand(
         getUtility(ITemplateLoader).get('list:admin:notice:disable', mlist),
         mlist, data)
     msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
+    dsn = _get_dsn(event.message_id)
+    if dsn:
+        msg = _make_multipart(msg)
+        att = MIMEMessage(dsn)
+        msg.attach(att)
+    msg.send(mlist)
+
+
+@public
+def send_admin_increment_notice(mlist, event, display_name):
+    """Send the list administrators a bounce score incremented notice.
+
+    :param mlist: The mailing list
+    :type mlist: IMailingList
+    :param event: The BounceEvent that triggered this notice.
+    :type event: A mailman.model.bounce.BounceEvent instance.
+    :param display_name: The name of the subscriber
+    :type display_name: string
+    """
+    member = formataddr((display_name, event.email))
+    data = {'member': member}
+    with _.using(mlist.preferred_language.code):
+        subject = _(
+            '${member}\'s bounce score incremented on ${mlist.display_name}')
+    text = expand(
+        getUtility(ITemplateLoader).get('list:admin:notice:increment', mlist),
+        mlist, data)
+    msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
+    dsn = _get_dsn(event.message_id)
+    if dsn:
+        msg = _make_multipart(msg)
+        att = MIMEMessage(dsn)
+        msg.attach(att)
     msg.send(mlist)
 
 
@@ -154,7 +224,7 @@ def send_admin_removal_notice(mlist, address, display_name):
     member = formataddr((display_name, address))
     data = {'member': member, 'mlist': mlist.display_name}
     with _.using(mlist.preferred_language.code):
-        subject = _('$member unsubscribed from ${mlist.display_name} '
+        subject = _('${member} unsubscribed from ${mlist.display_name} '
                     'mailing list due to bounces')
     text = expand(
         getUtility(ITemplateLoader).get('list:admin:notice:removal', mlist),

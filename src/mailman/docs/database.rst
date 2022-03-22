@@ -64,7 +64,7 @@ Many thanks to Stephen A. Goss for his contribution of PostgreSQL support.
 MySQL
 =====
 
-First you need to configure MySQL itself.  Lets say you create the `mailman`
+First you need to configure MySQL itself.  Let's say you create the `mailman`
 database in MySQL via::
 
     mysql> CREATE DATABASE mailman;
@@ -78,7 +78,7 @@ You would then need to set both the `class` and `url` variables in
 
     [database]
     class: mailman.database.mysql.MySQLDatabase
-    url: mysql+pymysql://myuser:mypassword@mymysqlhost/mailman?charset=utf8&use_unicode=1
+    url: mysql+pymysql://myuser:mypassword@mymysqlhost/mailman?charset=utf8mb4&use_unicode=1
 
 The last part of the url specifies the charset that client expects from the
 server and to use Unicode via the flag `use_unicode`.  You can find more about
@@ -99,9 +99,10 @@ something in the models, what steps are needed to reflect that change in the
 database schema?  You need to create and enter a virtual environment, install
 Mailman into that, and then run the ``alembic`` command.  For example::
 
+    $ cd /directory/containing/mailman
     $ python3 -m venv /tmp/mm3
     $ source /tmp/mm3/bin/activate
-    $ python setup.py develop
+    $ pip install -e .
     $ mailman info
     $ alembic -c src/mailman/config/alembic.cfg revision --autogenerate -m
       "<migration_name>"

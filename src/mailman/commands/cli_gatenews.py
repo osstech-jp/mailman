@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,7 +24,7 @@ import logging
 import nntplib
 import datetime
 
-from email import errors, parser, policy
+from email import errors, message_from_bytes
 from flufl.lock import Lock, TimeOutError
 from mailman.config import config
 from mailman.core.i18n import _
@@ -35,6 +35,7 @@ from mailman.utilities.options import I18nCommand
 from public import public
 from zope.component import getUtility
 from zope.interface import implementer
+
 
 NL = b'\n'
 log = None
@@ -91,9 +92,8 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                     break
             if not beenthere:
                 lines = conn.article(num)[1].lines
-                p = parser.BytesParser(message.Message, policy=policy.default)
                 try:
-                    msg = p.parsebytes(NL.join(lines))
+                    msg = message_from_bytes(NL.join(lines), message.Message)
                 except errors.MessageError as e:
                     log.error('email package exception for %s:%d\n%s',
                               mlist.linked_newsgroup, num, e)
@@ -105,8 +105,12 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 msg['To'] = mlist.posting_address
                 # Post the message to the list
                 inq = config.switchboards['in']
+                # original_size is both a message attribute and a key in
+                # msgdata.
+                msg.original_size = len(msg.as_bytes())
                 inq.enqueue(msg,
                             listid=mlist.list_id,
+                            original_size=msg.original_size,
                             fromusenet=True)
                 log.info('posted to list %s: %7d', listname, num)
         except nntplib.NNTPError as e:
@@ -168,6 +172,13 @@ Poll the NNTP server for messages to be gatewayed to mailing lists."""))
 @click.pass_context
 def gatenews(ctx):
     global conn, log
+    missing = object()
+    if os.getenv('_MAILMAN_GATENEWS_NNTP', missing) is missing:
+        raise click.UsageError(_("""\
+    The gatenews command is run periodically by the nntp runner.
+    If you are running it via cron, you should remove it from the crontab.
+    If you want to run it manually, set _MAILMAN_GATENEWS_NNTP in the
+    environment."""))
     GATENEWS_LOCK_FILE = os.path.join(config.LOCK_DIR, 'gatenews.lock')
     LOCK_LIFETIME = datetime.timedelta(hours=2)
     log = logging.getLogger('mailman.fromusenet')

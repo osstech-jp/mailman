@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,14 +17,20 @@
 
 """The email commands 'join' and 'subscribe'."""
 
+from email.header import decode_header, make_header
 from email.utils import formataddr, parseaddr
 from mailman.core.i18n import _
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, MembershipIsBannedError)
+    AlreadySubscribedError,
+    DeliveryMode,
+    MembershipIsBannedError,
+)
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, SubscriptionPendingError)
+    ISubscriptionManager,
+    SubscriptionPendingError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from public import public
 from zope.component import getUtility
@@ -79,14 +85,21 @@ other than the sender of the command.
         if delivery_mode is ContinueProcessing.no:
             return ContinueProcessing.no
         if not address:
-            display_name, email = parseaddr(msg['from'])
+            # RFC 2047 decode the From: header.
+            if msg['from'] is None:
+                display_name, email = ('', '')
+            else:
+                # Parse before decoding in case decoded display_name contains
+                # a comma.
+                display_name, email = parseaddr(msg['from'])
+                display_name = str(make_header(decode_header(display_name)))
         else:
             display_name, email = ('', address)
         # Address could be None or the empty string.
         if not email:
             email = msg.sender
         if not email:
-            print(_('$self.name: No valid address found to subscribe'),
+            print(_('${self.name}: No valid address found to subscribe'),
                   file=results)
             return ContinueProcessing.no
         if isinstance(email, bytes):
@@ -106,17 +119,18 @@ other than the sender of the command.
             print('Invalid email address: {}'.format(e), file=results)
             return ContinueProcessing.yes
         try:
-            ISubscriptionManager(mlist).register(subscriber)
+            ISubscriptionManager(mlist).register(subscriber,
+                                                 delivery_mode=delivery_mode)
         except (AlreadySubscribedError, InvalidEmailAddressError,
                 MembershipIsBannedError) as e:
             print(str(e), file=results)
         except SubscriptionPendingError:
             # SubscriptionPendingError doesn't return an error message.
             listname = mlist.fqdn_listname                        # noqa: F841
-            print(_('$person has a pending subscription for $listname'),
+            print(_('${person} has a pending subscription for ${listname}'),
                   file=results)
         else:
-            print(_('Confirmation email sent to $person'), file=results)
+            print(_('Confirmation email sent to ${person}'), file=results)
         return ContinueProcessing.yes
 
     def _parse_arguments(self, arguments, results):
@@ -133,7 +147,7 @@ other than the sender of the command.
         for argument in arguments:
             parts = argument.split('=', 1)
             if len(parts) != 2 or parts[0] not in ('digest', 'address'):
-                print(self.name, _('bad argument: $argument'),
+                print(self.name, _('bad argument: ${argument}'),
                       file=results)
                 return (ContinueProcessing.no, None)
             if parts[0] == 'digest':
@@ -143,7 +157,7 @@ other than the sender of the command.
                     'mime': DeliveryMode.mime_digests,
                     }.get(parts[1])
                 if mode is None:
-                    print(self.name, _('bad argument: $argument'),
+                    print(self.name, _('bad argument: ${argument}'),
                           file=results)
                     return (ContinueProcessing.no, None)
             if parts[0] == 'address':
@@ -176,20 +190,21 @@ You may be asked to confirm your request.""")
         """See `IEmailCommand`."""
         email = msg.sender
         if not email:
-            print(_('$self.name: No valid email address found to unsubscribe'),
-                  file=results)
+            print(
+                _('${self.name}: No valid email address found to unsubscribe'),
+                file=results)
             return ContinueProcessing.no
         user_manager = getUtility(IUserManager)
         user = user_manager.get_user(email)
         if user is None:
-            print(_('No registered user for email address: $email'),
+            print(_('No registered user for email address: ${email}'),
                   file=results)
             return ContinueProcessing.no
         # The address that the -leave command was sent from, must be verified.
         # Otherwise you could link a bogus address to anyone's account, and
         # then send a leave command from that address.
         if user_manager.get_address(email).verified_on is None:
-            print(_('Invalid or unverified email address: $email'),
+            print(_('Invalid or unverified email address: ${email}'),
                   file=results)
             return ContinueProcessing.no
         already_left = msgdata.setdefault('leaves', set())
@@ -208,8 +223,8 @@ You may be asked to confirm your request.""")
             # contained the 'leave' command.  Don't send a bogus response in
             # this case, just ignore subsequent leaves of the same address.
             if email not in already_left:
-                print(_('$self.name: $email is not a member of '
-                        '$mlist.fqdn_listname'), file=results)
+                print(_('${self.name}: ${email} is not a member of '
+                        '${mlist.fqdn_listname}'), file=results)
                 return ContinueProcessing.no
         if email in already_left:
             return ContinueProcessing.yes
@@ -219,10 +234,10 @@ You may be asked to confirm your request.""")
         token, token_owner, member = manager.unregister(user_address)
         person = formataddr((user.display_name, email))   # noqa: F841
         if member is None:
-            print(_('$person left $mlist.fqdn_listname'), file=results)
+            print(_('${person} left ${mlist.fqdn_listname}'), file=results)
         else:
-            print(_('Confirmation email sent to $person to leave'
-                    ' $mlist.fqdn_listname'), file=results)
+            print(_('Confirmation email sent to ${person} to leave'
+                    ' ${mlist.fqdn_listname}'), file=results)
         return ContinueProcessing.yes
 
 

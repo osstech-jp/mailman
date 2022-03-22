@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -55,7 +55,7 @@ class IDatabase(Interface):
 
 @public
 class IDatabaseFactory(Interface):
-    "Interface for creating new databases."""
+    """Interface for creating new databases."""
 
     def create():
         """Return a new `IDatabase`.

@@ -18,6 +18,8 @@ defaults for these variables, then we'll explain them in more detail below.
     >>> mlist.filter_content = True
     >>> mlist.filter_types = []
     >>> mlist.pass_types = []
+    >>> mlist.filter_extensions = []
+    >>> mlist.pass_extensions = []
     >>> mlist.convert_html_to_plaintext = False
 
 
@@ -332,5 +334,354 @@ so the entire inner ``multipart/mixed`` is discarded.
 Passing MIME types
 ==================
 
-XXX Describe the pass_mime_types setting and how it interacts with
-``filter_mime_types``.
+All of the above examples set only ``filter_types`` which will cause parts
+with matching MIME types to be removed.  There is also a ``pass_types``
+setting which if non-empty, causes parts with non-matching MIME types to be
+removed.  I.e., it lists only those MIME types that will be kept.  Also, note
+that if we want to keep elemental parts including those that might be
+sub-parts of some ``multipart`` or ``message/rfc822`` part, we also need to
+include those types in ``pass_types``.  Here we use the example above to
+illustrate ``pass_types`` instead.  Note that we want to keep both
+``multipart/mixed`` and ``multipart/alternative`` to be able to keep some of
+their sub-parts so we just keep all ``multipart`` types.  Likewise, we'll
+keep all ``text`` parts even though in this case the original ``text/plain``
+part will be removed by ``collapse_alternatives``.  Finally, we'll keep only
+the ``image/gif`` image parts.
+::
+
+    >>> mlist.filter_types = []
+    >>> mlist.pass_types = ['multipart', 'text', 'image/gif']
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... Content-Type: multipart/mixed; boundary=AAA
+    ...
+    ... --AAA
+    ... Content-Type: multipart/mixed; boundary=BBB
+    ...
+    ... --BBB
+    ... Content-Type: image/jpeg
+    ...
+    ... xxx
+    ... --BBB
+    ... Content-Type: image/jpeg
+    ...
+    ... yyy
+    ... --BBB---
+    ... --AAA
+    ... Content-Type: multipart/alternative; boundary=CCC
+    ...
+    ... --CCC
+    ... Content-Type: text/html
+    ...
+    ... <h2>This is a header</h2>
+    ...
+    ... --CCC
+    ... Content-Type: text/plain
+    ...
+    ... A different message
+    ... --CCC--
+    ... --AAA
+    ... Content-Type: image/gif
+    ...
+    ... zzz
+    ... --AAA
+    ... Content-Type: image/gif
+    ...
+    ... aaa
+    ... --AAA--
+    ... """)
+
+    >>> with dummy_script():
+    ...     process(mlist, msg, {})
+
+    >>> print(msg.as_string())
+    From: aperson@example.com
+    Content-Type: multipart/mixed; boundary=AAA
+    X-Content-Filtered-By: Mailman/MimeDel ...
+    <BLANKLINE>
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    Converted text/html to text/plain
+    Filename: ...
+    <BLANKLINE>
+    --AAA
+    Content-Type: image/gif
+    <BLANKLINE>
+    zzz
+    --AAA
+    Content-Type: image/gif
+    <BLANKLINE>
+    aaa
+    --AAA--
+    <BLANKLINE>
+
+Interaction between passing and filtering
+=========================================
+
+If both ``pass_types`` and ``filter_types`` are non-empty, any parts with types
+in ``filter_types`` are removed and any remaining parts with types not in
+``pass_types`` are removed as well.  Here's an example.
+::
+
+    >>> mlist.filter_types = ['text/rtf']
+    >>> mlist.pass_types = ['multipart/mixed', 'text']
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... Content-Type: multipart/mixed; boundary=AAA
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --AAA
+    ... Content-Type: text/html
+    ...
+    ...
+    ... <h2>A header</h2>
+    ...
+    ... --AAA
+    ... Content-Type: text/rtf
+    ...
+    ... will be removed
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... another plain text
+    ... --AAA
+    ... Content-Type: image/gif
+    ...
+    ... image will be removed
+    ... --AAA
+    ... Content-Type: multipart/alternative; boundary="BBB"
+    ...
+    ... --BBB
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --BBB
+    ... Content-Type: text/html
+    ...
+    ...  <h2>Another header</h2>
+    ...
+    ... --BBB--
+    ... --AAA--
+    ...
+    ... """)
+
+    >>> with dummy_script():
+    ...     process(mlist, msg, {})
+
+    >>> print(msg.as_string())
+    From: aperson@example.com
+    Content-Type: multipart/mixed; boundary=AAA
+    X-Content-Filtered-By: Mailman/MimeDel ...
+    <BLANKLINE>
+    --AAA
+    Content-Type: text/plain
+    <BLANKLINE>
+    plain text
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    Converted text/html to text/plain
+    Filename: ...
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    --AAA
+    Content-Type: text/plain
+    <BLANKLINE>
+    another plain text
+    --AAA--
+    <BLANKLINE>
+    <BLANKLINE>
+
+Note that the html is still converted to plain text because we didn't change
+that, the ``text/rtf`` part is removed due to ``filter_types`` and the image
+and the entire ``multipart/alternative`` parts are removed as they aren't in
+``pass_types``
+
+Passing and filtering extensions
+================================
+
+``pass_extensions`` and ``filter_extensions`` work in exactly the same way.
+These filters are applied following ``filter_types`` and ``pass_types`` and
+filter based on the filename extension of any part that has an associated
+filename with extension.  Parts that don't have an associated filename with
+an extension are not affected.  Here's a simple example.
+::
+
+    >>> mlist.filter_types = []
+    >>> mlist.pass_types = []
+    >>> mlist.filter_extensions = ['pdf']
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... Content-Type: multipart/mixed; boundary=AAA
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --AAA
+    ... Content-Type: application/pdf; name="file.pdf"
+    ... Content-Disposition: attachment; filename="file.pdf"
+    ...
+    ... pdf to remove
+    ... --AAA--
+    ... """)
+
+    >>> with dummy_script():
+    ...     process(mlist, msg, {})
+
+    >>> print(msg.as_string())
+    From: aperson@example.com
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: 7bit
+    Content-Type: text/plain
+    X-Content-Filtered-By: Mailman/MimeDel ...
+    <BLANKLINE>
+    plain text
+
+Reporting Option
+================
+
+Finally, there is a global mailman.cfg setting to append a report of what was
+filtered to the message.  Here's a simple example.
+::
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... Content-Type: multipart/mixed; boundary=AAA
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --AAA
+    ... Content-Type: application/pdf; name="file.pdf"
+    ... Content-Disposition: attachment; filename="file.pdf"
+    ...
+    ... pdf to remove
+    ... --AAA--
+    ... """)
+
+    >>> with dummy_script('report'):
+    ...     process(mlist, msg, {})
+
+    >>> print(msg.as_string())
+    From: aperson@example.com
+    MIME-Version: 1.0
+    X-Content-Filtered-By: Mailman/MimeDel ...
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    <BLANKLINE>
+    plain text
+    <BLANKLINE>
+    ___________________________________________
+    Mailman's content filtering has removed the
+    following MIME parts from this message.
+    <BLANKLINE>
+    Content-Type: application/pdf
+        Name: file.pdf
+    <BLANKLINE>
+
+And here's a more complex one.  Note that if the filtered message is multipart,
+the report is attached as a separate MIME part.
+::
+
+
+    >>> mlist.filter_types = ['text/rtf']
+    >>> mlist.pass_types = ['multipart/mixed', 'text']
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... Content-Type: multipart/mixed; boundary=AAA
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --AAA
+    ... Content-Type: text/html
+    ...
+    ...
+    ... <h2>A header</h2>
+    ...
+    ... --AAA
+    ... Content-Type: text/rtf
+    ...
+    ... will be removed
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... another plain text
+    ... --AAA
+    ... Content-Type: image/gif
+    ...
+    ... image will be removed
+    ... --AAA
+    ... Content-Type: multipart/alternative; boundary="BBB"
+    ...
+    ... --BBB
+    ... Content-Type: text/plain
+    ...
+    ... plain text
+    ... --BBB
+    ... Content-Type: text/html
+    ...
+    ...  <h2>Another header</h2>
+    ...
+    ... --BBB--
+    ... --AAA--
+    ...
+    ... """)
+
+    >>> with dummy_script('report'):
+    ...     process(mlist, msg, {})
+
+    >>> print(msg.as_string())
+    From: aperson@example.com
+    Content-Type: multipart/mixed; boundary=AAA
+    X-Content-Filtered-By: Mailman/MimeDel ...
+    <BLANKLINE>
+    --AAA
+    Content-Type: text/plain
+    <BLANKLINE>
+    plain text
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    Converted text/html to text/plain
+    Filename: ...
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    --AAA
+    Content-Type: text/plain
+    <BLANKLINE>
+    another plain text
+    --AAA
+    Content-Type: text/plain; charset="us-ascii"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: 7bit
+    <BLANKLINE>
+    <BLANKLINE>
+    ___________________________________________
+    Mailman's content filtering has removed the
+    following MIME parts from this message.
+    <BLANKLINE>
+    Content-Type: text/rtf
+    <BLANKLINE>
+    Content-Type: image/gif
+    <BLANKLINE>
+    Content-Type: multipart/alternative
+    <BLANKLINE>
+    --AAA--
+    <BLANKLINE>
+    <BLANKLINE>

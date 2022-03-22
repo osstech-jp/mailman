@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,12 +25,17 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, ISubscriptionService, TokenOwner)
+    ISubscriptionManager,
+    ISubscriptionService,
+    TokenOwner,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -196,7 +201,6 @@ join digest=no
         self.assertEqual(anne.delivery_mode, DeliveryMode.regular)
 
     # LP: #1444184 - digest=mime is not currently supported.
-    @unittest.expectedFailure
     def test_join_with_mime_digests(self):
         # Test the digest=mime argument to the join command.
         msg = mfs("""\
@@ -212,7 +216,6 @@ join digest=mime
         self.assertEqual(anne.delivery_mode, DeliveryMode.mime_digests)
 
     # LP: #1444184 - digest=mime is not currently supported.
-    @unittest.expectedFailure
     def test_join_with_plain_digests(self):
         # Test the digest=mime argument to the join command.
         msg = mfs("""\

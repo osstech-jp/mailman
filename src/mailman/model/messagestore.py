@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,6 +21,7 @@ import os
 import errno
 import pickle
 
+from contextlib import suppress
 from mailman.config import config
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.messages import IMessageStore
@@ -90,10 +91,16 @@ class MessageStore:
             makedirs(os.path.dirname(path))
         return hash32
 
-    def _get_message(self, row):
+    @dbconnection
+    def _get_message(self, store, row):
         path = os.path.join(config.MESSAGES_DIR, row.path)
-        with open(path, 'rb') as fp:
-            return pickle.load(fp)
+        # The message file may have been externally removed.
+        with suppress(FileNotFoundError):
+            with open(path, 'rb') as fp:
+                return pickle.load(fp)
+        # The message is gone.  Delete the entry and return None.
+        store.delete(row)
+        return None
 
     @dbconnection
     def get_message_by_id(self, store, message_id):

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,10 +27,25 @@ from mailman.config import config
 from mailman.interfaces.nntp import NewsgroupModeration
 from mailman.runners import nntp
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest import mock
+
+
+class MockRet():
+    """A mock to return a specific error."""
+    def __init__(self):
+        self.returncode = 2
+        self.stderr = 'A mocked error message'
+
+
+def mock_run(*args, **kwargs):
+    return MockRet()
 
 
 class TestPrepareMessage(unittest.TestCase):
@@ -279,6 +294,31 @@ Testing
         self.assertEqual(msg['subject'], 'A newsgroup posting')
 
     @mock.patch('nntplib.NNTP')
+    def test_post_long_message_id_not_folded(self, class_mock):
+        # Test that the message with a long message-id is posted to the NNTP
+        # server without folding.
+        del self._msg['message-id']
+        mid = utils.make_msgid('a_long_string_to_make_a_very_long_message-id',
+                               self._mlist.mail_host)
+        self._msg['Message-ID'] = mid
+        self._nntpq.enqueue(self._msg, {}, listid='test.example.com')
+        self._runner.run()
+        # Get the mocked instance, which was used in the runner.
+        conn_mock = class_mock()
+        # The connection object's post() method was called once with a
+        # file-like object containing the message's bytes.  Read those bytes
+        # and make some simple checks that the message is what we expected.
+        args = conn_mock.post.call_args
+        # One positional argument.
+        self.assertEqual(len(args[0]), 1)
+        # No keyword arguments.
+        self.assertEqual(len(args[1]), 0)
+        msg_bytes = args[0][0].read()
+        msg = message_from_bytes(msg_bytes)
+        self.assertEqual(msg['subject'], 'A newsgroup posting')
+        self.assertIn(b'Message-ID: ' + mid.encode('us-ascii'), msg_bytes)
+
+    @mock.patch('nntplib.NNTP')
     def test_connection_got_quit(self, class_mock):
         # The NNTP connection gets closed after a successful post.
         # Test that the message is posted to the NNTP server.
@@ -296,10 +336,7 @@ Testing
         self._nntpq.enqueue(self._msg, {}, listid='test.example.com')
         mark = LogFileMark('mailman.error')
         self._runner.run()
-        log_message = mark.readline()[:-1]
-        self.assertTrue(
-            log_message.endswith('NNTP error for test@example.com'),
-            log_message)
+        self.assertIn('NNTP error for test@example.com', mark.read())
 
     @mock.patch('nntplib.NNTP', side_effect=socket.error)
     def test_connect_with_socket_failure(self, class_mock):
@@ -330,7 +367,7 @@ Testing
 
     @mock.patch('nntplib.NNTP', side_effect=nntplib.NNTPTemporaryError)
     def test_connection_never_gets_quit_after_failures(self, class_mock):
-        # The NNTP connection doesn't get closed after a unsuccessful
+        # The NNTP connection doesn't get closed after an unsuccessful
         # connection, since there's nothing to close.
         self._nntpq.enqueue(self._msg, {}, listid='test.example.com')
         self._runner.run()
@@ -345,7 +382,7 @@ Testing
 
     @mock.patch('nntplib.NNTP')
     def test_connection_got_quit_after_post_failure(self, class_mock):
-        # The NNTP connection does get closed after a unsuccessful post.
+        # The NNTP connection does get closed after an unsuccessful post.
         # Add a side-effect to the instance mock's .post() method.
         conn_mock = class_mock()
         conn_mock.post.side_effect = nntplib.NNTPTemporaryError
@@ -363,7 +400,7 @@ Testing
 
     @mock.patch('nntplib.NNTP')
     def test_connection_got_two_quit_after_post_failure(self, class_mock):
-        # The NNTP connection does get closed after a unsuccessful post.
+        # The NNTP connection does get closed after an unsuccessful post.
         # Add a side-effect to the instance mock's .post() method.
         conn_mock = class_mock()
         conn_mock.post.side_effect = nntplib.NNTPTemporaryError
@@ -377,7 +414,15 @@ Testing
         # called twice.
         self.assertEqual(conn_mock.quit.call_count, 2)
         # There should be a log message with the original Message-ID.
-        log_message = mark.readline()[:-1]
-        self.assertTrue(
-            log_message.endswith('<ant> NNTP error for test@example.com'),
-            log_message)
+        self.assertIn('<ant> NNTP error for test@example.com', mark.read())
+
+    @mock.patch('subprocess.run', mock_run)
+    def test_do_periodic_invokes_mailman_gatenews(self):
+        # _do_periodic should invoke mailman gatenews which will fail.
+        mark = LogFileMark('mailman.error')
+        nntp.NNTPRunner('nntp')._do_periodic()
+        log_message = mark.read()
+        self.assertIn('Running nntp runner periodic task gatenews',
+                      log_message)
+        self.assertIn('gatenews failed. status: 2', log_message)
+        self.assertIn('message: A mocked error message', log_message)

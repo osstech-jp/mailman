@@ -17,10 +17,10 @@ There are no mailing lists and no members yet.
 We create a mailing list, which starts out with no members.
 ::
 
-    >>> from mailman.app.lifecycle import create_list   
+    >>> from mailman.app.lifecycle import create_list
     >>> bee = create_list('bee@example.com')
     >>> from mailman.config import config
-    >>> transaction = config.db    
+    >>> transaction = config.db
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/members')
@@ -49,15 +49,18 @@ the REST interface.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/1
     http_etag: "..."
     start: 0
@@ -67,15 +70,18 @@ Bart's specific membership can be accessed directly:
 
     >>> dump_json('http://localhost:9001/3.0/members/1')
     address: http://localhost:9001/3.0/addresses/bperson@example.com
+    bounce_score: 0
     delivery_mode: regular
     display_name: Bart Person
     email: bperson@example.com
     http_etag: ...
+    last_warning_sent: 0001-01-01T00:00:00
     list_id: bee.example.com
     member_id: 1
     role: member
     self_link: http://localhost:9001/3.0/members/1
     subscription_mode: as_address
+    total_warnings_sent: 0
     user: http://localhost:9001/3.0/users/1
 
 When Cris also joins the mailing list, her subscription is also available via
@@ -89,27 +95,33 @@ the REST interface.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/1
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -126,39 +138,48 @@ subscribes, she is returned first.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/1
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -181,63 +202,78 @@ User ids are different than member ids.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 5
         role: member
         self_link: http://localhost:9001/3.0/members/5
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     entry 2:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     entry 3:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/1
     entry 4:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -249,27 +285,33 @@ We can also get just the members of a single mailing list.
     ...     'http://localhost:9001/3.0/lists/ant@example.com/roster/member')
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 5
         role: member
         self_link: http://localhost:9001/3.0/members/5
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -289,15 +331,18 @@ page.
     ...     '?count=1&page=1')
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     http_etag: ...
     start: 0
@@ -309,15 +354,18 @@ This works with members of a single list as well as with all members.
     ...     'http://localhost:9001/3.0/members?count=1&page=1')
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     http_etag: ...
     start: 0
@@ -338,6 +386,7 @@ fields to return from:
 - ``member_id``
 - ``role``
 - ``subscription_mode``
+  total_warnings_sent: 0
 - ``user``
 - ``moderation_action``
 
@@ -408,89 +457,110 @@ mailing list.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: http://localhost:9001/3.0/addresses/dperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name:
         email: dperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 6
         moderation_action: accept
         role: moderator
         self_link: http://localhost:9001/3.0/members/6
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/4
     entry 1:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 5
         role: member
         self_link: http://localhost:9001/3.0/members/5
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     entry 3:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 7
         moderation_action: accept
         role: owner
         self_link: http://localhost:9001/3.0/members/7
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     entry 4:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     entry 5:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/1
     entry 6:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -502,16 +572,19 @@ We can access all the owners of a list.
     ...     'http://localhost:9001/3.0/lists/bee@example.com/roster/owner')
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 7
         moderation_action: accept
         role: owner
         self_link: http://localhost:9001/3.0/members/7
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -526,16 +599,19 @@ A specific member can always be referenced by their role and address.
     >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'bee@example.com/owner/cperson@example.com')
     address: http://localhost:9001/3.0/addresses/cperson@example.com
+    bounce_score: 0
     delivery_mode: regular
     display_name: Cris Person
     email: cperson@example.com
     http_etag: ...
+    last_warning_sent: 0001-01-01T00:00:00
     list_id: bee.example.com
     member_id: 7
     moderation_action: accept
     role: owner
     self_link: http://localhost:9001/3.0/members/7
     subscription_mode: as_address
+    total_warnings_sent: 0
     user: http://localhost:9001/3.0/users/2
 
 You can find a specific member based on several different criteria.  For
@@ -546,27 +622,33 @@ example, we can search for all the memberships of a particular address.
     ...           })
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 4
         role: member
         self_link: http://localhost:9001/3.0/members/4
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     http_etag: ...
     start: 0
@@ -579,52 +661,64 @@ Or, we can find all the memberships for a particular mailing list.
     ...           })
     entry 0:
         address: http://localhost:9001/3.0/addresses/aperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Anna Person
         email: aperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 3
         role: member
         self_link: http://localhost:9001/3.0/members/3
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: http://localhost:9001/3.0/addresses/bperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Bart Person
         email: bperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 1
         role: member
         self_link: http://localhost:9001/3.0/members/1
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/1
     entry 2:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     entry 3:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 7
         moderation_action: accept
         role: owner
         self_link: http://localhost:9001/3.0/members/7
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
@@ -639,28 +733,34 @@ list.
     ...           })
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 7
         moderation_action: accept
         role: owner
         self_link: http://localhost:9001/3.0/members/7
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -674,31 +774,95 @@ Or, we can find all the memberships for an address with a specific role.
     ...           })
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 5
         role: member
         self_link: http://localhost:9001/3.0/members/5
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     entry 1:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
     total_size: 2
+
+Or, we can search for all members with a specific moderation action on a list.
+
+    >>> from mailman.testing.helpers import set_moderation
+    >>> set_moderation(bee, 'cperson@example.com', 'hold')
+    >>> transaction.commit()
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'moderation_action': 'hold',
+    ...           'list_id': 'bee.example.com',
+    ...           })
+    entry 0:
+        address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
+        delivery_mode: regular
+        display_name: Cris Person
+        email: cperson@example.com
+        http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
+        list_id: bee.example.com
+        member_id: 2
+        moderation_action: hold
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        subscription_mode: as_address
+        total_warnings_sent: 0
+        user: http://localhost:9001/3.0/users/2
+    http_etag: ...
+    start: 0
+    total_size: 1
+
+Or, we can search for all members with a specific ``delivery_status`` or
+``delivery_mode``:
+
+    >>> from mailman.testing.helpers import set_delivery
+    >>> set_delivery(bee, 'bperson@example.com', 'by_bounces')
+    >>> transaction.commit()
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'delivery_status': 'by_bounces',
+    ...           'list_id': 'bee.example.com',
+    ...           })
+    entry 0:
+        address: http://localhost:9001/3.0/addresses/bperson@example.com
+        bounce_score: 0
+        delivery_mode: regular
+        display_name: Bart Person
+        email: bperson@example.com
+        http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
+        list_id: bee.example.com
+        member_id: 1
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        subscription_mode: as_address
+        total_warnings_sent: 0
+        user: http://localhost:9001/3.0/users/1
+    http_etag: ...
+    start: 0
+    total_size: 1
 
 Finally, we can search for a specific member given all three criteria.
 
@@ -709,15 +873,19 @@ Finally, we can search for a specific member given all three criteria.
     ...           })
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
+        moderation_action: hold
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -732,15 +900,19 @@ Search can also be performed using HTTP GET queries.
     ...           )
     entry 0:
         address: http://localhost:9001/3.0/addresses/cperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Cris Person
         email: cperson@example.com
         http_etag: ...
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 2
+        moderation_action: hold
         role: member
         self_link: http://localhost:9001/3.0/members/2
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
@@ -765,6 +937,10 @@ approve her subscription request. ``send_welcome_message`` controls whether a
 welcome message will be sent to the user. This option overrides the
 Mailinglist's ``send_welcome_message`` setting.
 
+Additionally, a user can set their ``delivery_mode``, for example to
+``plaintext_digests`` to susbcribe to email digests. Also, they can disable
+delivery on the subscription by setting ``delivery_status`` to ``by_user``.
+
     >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'list_id': 'ant.example.com',
     ...           'subscriber': 'eperson@example.com',
@@ -773,6 +949,8 @@ Mailinglist's ``send_welcome_message`` setting.
     ...           'pre_confirmed': True,
     ...           'pre_approved': True,
     ...           'send_welcome_message': True,
+    ...           'delivery_mode': 'plaintext_digests',
+    ...           'delivery_status': 'by_user',
     ...           })
     content-length: 0
     content-type: application/json
@@ -780,6 +958,15 @@ Mailinglist's ``send_welcome_message`` setting.
     location: http://localhost:9001/3.0/members/8
     server: ...
     status: 201
+
+We can check the preferences for the new subscriber are set correctly:
+
+    >>> dump_json('http://localhost:9001/3.0/members/8/preferences')
+    delivery_mode: plaintext_digests
+    delivery_status: by_user
+    http_etag: "..."
+    self_link: http://localhost:9001/3.0/members/8/preferences
+
 
 Elly is now a known user, and a member of the mailing list.
 ::
@@ -796,7 +983,8 @@ Elly is now a known user, and a member of the mailing list.
     ...
     entry 3:
         address: http://localhost:9001/3.0/addresses/eperson@example.com
-        delivery_mode: regular
+        bounce_score: 0
+        delivery_mode: plaintext_digests
         display_name: Elly Person
         email: eperson@example.com
         http_etag: ...
@@ -805,11 +993,13 @@ Elly is now a known user, and a member of the mailing list.
         role: member
         self_link: http://localhost:9001/3.0/members/8
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/5
     ...
 
 Gwen is a user with a preferred address.  She subscribes to the `ant` mailing
 list with her preferred address. A Membership's ``subscription_mode`` reflects
+total_warnings_sent: 0
 if it is via a user's preferred address (``as_user``) or via an address
 (``as_address``) so clients can differentiate between two modes of
 subscription::
@@ -847,15 +1037,18 @@ subscription::
     ...
     entry 4:
         address: http://localhost:9001/3.0/addresses/gwen@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Gwen Person
         email: gwen@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 9
         role: member
         self_link: http://localhost:9001/3.0/members/9
         subscription_mode: as_user
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/6
     ...
     total_size: 9
@@ -874,15 +1067,18 @@ the new address.
     ...
     entry 4:
         address: http://localhost:9001/3.0/addresses/gwen.person@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Gwen Person
         email: gwen.person@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 9
         role: member
         self_link: http://localhost:9001/3.0/members/9
         subscription_mode: as_user
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/6
     ...
     total_size: 9
@@ -907,6 +1103,12 @@ Elly is no longer a member of the mailing list.
 
     >>> set(member.mailing_list for member in elly.memberships.members)
     set()
+
+DELETE request on Memberships also optionally accept ``pre_approved`` (defaults
+to False) and ``pre_confirmed`` (defaults to ``True``, for backwards behavioural
+compatability with older versions of Mailman 3) boolean parameters. Depending
+on the Mailinglist's ``unsubscription_policy``, Mailman can optionally send a
+confirmation email to User or ask the moderator to approve the request.
 
 
 Changing delivery address
@@ -943,28 +1145,34 @@ addresses.
     ...
     entry 4:
         address: http://localhost:9001/3.0/addresses/herb@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Herb Person
         email: herb@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 10
         role: member
         self_link: http://localhost:9001/3.0/members/10
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/7
     ...
     entry 9:
         address: http://localhost:9001/3.0/addresses/herb@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Herb Person
         email: herb@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 11
         role: member
         self_link: http://localhost:9001/3.0/members/11
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/7
     http_etag: "..."
     start: 0
@@ -1014,27 +1222,33 @@ his membership ids have not changed.
     ...           'hperson@example.com/memberships')
     entry 0:
         address: http://localhost:9001/3.0/addresses/hperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Herb Person
         email: hperson@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: ant.example.com
         member_id: 10
         role: member
         self_link: http://localhost:9001/3.0/members/10
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/7
     entry 1:
         address: http://localhost:9001/3.0/addresses/hperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Herb Person
         email: hperson@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 11
         role: member
         self_link: http://localhost:9001/3.0/members/11
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/7
     http_etag: "..."
     start: 0
@@ -1056,15 +1270,18 @@ mode of delivery.
     ...           'herb@example.com/memberships')
     entry 0:
         address: http://localhost:9001/3.0/addresses/herb@example.com
+        bounce_score: 0
         delivery_mode: mime_digests
         display_name: Herb Person
         email: herb@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: bee.example.com
         member_id: 11
         role: member
         self_link: http://localhost:9001/3.0/members/11
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/7
     http_etag: "..."
     start: 0
@@ -1110,15 +1327,18 @@ default, there is no such attribute in the resource.
 
     >>> dump_json('http://localhost:9001/3.0/members/10')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
+    bounce_score: 0
     delivery_mode: regular
     display_name: Herb Person
     email: hperson@example.com
     http_etag: "..."
+    last_warning_sent: 0001-01-01T00:00:00
     list_id: ant.example.com
     member_id: 10
     role: member
     self_link: http://localhost:9001/3.0/members/10
     subscription_mode: as_address
+    total_warnings_sent: 0
     user: http://localhost:9001/3.0/users/7
 
 Patching the moderation action both changes it for the given user, and adds
@@ -1134,6 +1354,7 @@ the attribute to the member's resource.
 
     >>> dump_json('http://localhost:9001/3.0/members/10')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
+    bounce_score: 0
     ...
     moderation_action: hold
     ...
@@ -1150,15 +1371,18 @@ It can be reset to the list default by patching an empty value.
 
     >>> dump_json('http://localhost:9001/3.0/members/10')
     address: http://localhost:9001/3.0/addresses/hperson@example.com
+    bounce_score: 0
     delivery_mode: regular
     display_name: Herb Person
     email: hperson@example.com
     http_etag: "..."
+    last_warning_sent: 0001-01-01T00:00:00
     list_id: ant.example.com
     member_id: 10
     role: member
     self_link: http://localhost:9001/3.0/members/10
     subscription_mode: as_address
+    total_warnings_sent: 0
     user: http://localhost:9001/3.0/users/7
 
 
@@ -1298,15 +1522,18 @@ And now only Kate is still a member.
     ...     'http://localhost:9001/3.0/lists/cat.example.com/roster/member')
     entry 0:
         address: http://localhost:9001/3.0/addresses/kperson@example.com
+        bounce_score: 0
         delivery_mode: regular
         display_name: Kate Person
         email: kperson@example.com
         http_etag: "..."
+        last_warning_sent: 0001-01-01T00:00:00
         list_id: cat.example.com
         member_id: 14
         role: member
         self_link: http://localhost:9001/3.0/members/14
         subscription_mode: as_address
+        total_warnings_sent: 0
         user: http://localhost:9001/3.0/users/11
     ...
     total_size: 1

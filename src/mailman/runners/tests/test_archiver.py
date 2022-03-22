@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,10 +27,14 @@ from mailman.interfaces.archiver import IArchiver
 from mailman.interfaces.mailinglist import IListArchiverSet
 from mailman.runners.archive import ArchiveRunner
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.datetime import RFC822_DATE_FMT, factory, now
+from mailman.utilities.datetime import factory, now, RFC822_DATE_FMT
 from zope.interface import implementer
 
 

@@ -23,7 +23,7 @@ Examples
 
 Let's say you have a mailing list::
 
-    >>> from mailman.app.lifecycle import create_list  
+    >>> from mailman.app.lifecycle import create_list
     >>> ant = create_list('ant@example.com')
 
 The standard welcome message doesn't have any links to it because by default
@@ -31,7 +31,7 @@ Mailman doesn't know about any web user interface front-end.  When Anne is
 subscribed to the mailing list, she sees this plain welcome message.
 
     >>> from mailman.testing.helpers import subscribe
-    >>> from mailman.testing.helpers import get_queue_messages    
+    >>> from mailman.testing.helpers import get_queue_messages
     >>> anne = subscribe(ant, 'Anne')
     >>> items = get_queue_messages('virgin')
     >>> print(items[0].msg)
@@ -45,7 +45,7 @@ subscribed to the mailing list, she sees this plain welcome message.
     <BLANKLINE>
     Welcome to the "Ant" mailing list!
     <BLANKLINE>
-    To post to this list, send your email to:
+    To post to this list, send your message to:
     <BLANKLINE>
       ant@example.com
     <BLANKLINE>
@@ -114,7 +114,7 @@ retrieving the welcome message.
 
 The username and password will be used to retrieve the welcome text.
 
-    >>> cris = subscribe(ant, 'Cris')    
+    >>> cris = subscribe(ant, 'Cris')
     >>> items = get_queue_messages('virgin')
     >>> print(items[0].msg)
     MIME-Version: 1.0
@@ -162,6 +162,51 @@ Template URLs can be any of the following schemes:
 Generally, if a template is not defined or not found, the empty string is
 used.  IOW, a missing template does not cause an error, it simply causes the
 named template to be blank.
+
+
+Line wrapping
+=============
+
+Many, but not all, templates have their text wrapped at column 70. This can
+result in a nicer looking result but can also break long URLs. To avoid this,
+you can indent any lines you don't want wrapped by one or more spaces which
+will inhibit wrapping of those lines. Here are some examples.
+
+    >>> text = """Here's some sample text
+    ... that should be wrapped and filled to make a pretty looking paragraph of text with no excessively short
+    ... or long lines, but it also contains a long url.
+    ...
+    ... https://www.example.com/mailman3/lists/mailman-users.mailman3.org/members/options/user@example.org?role=member
+    ...
+    ... which shouldn't be wrapped.
+    ... """
+
+The normal template wrapping process produces
+
+    >>> from mailman.utilities.string import wrap
+    >>> print(wrap(text))
+    Here's some sample text that should be wrapped and filled to make a
+    pretty looking paragraph of text with no excessively short or long
+    lines, but it also contains a long url.
+    <BLANKLINE>
+    https://www.example.com/mailman3/lists/mailman-users.mailman3.org/memb
+    ers/options/user@example.org?role=member
+    <BLANKLINE>
+    which shouldn't be wrapped.
+
+We see the URL is wrapped and we don't want that so we insert a leading
+blank.
+
+    >>> import re
+    >>> text = re.sub('\nhttps', '\n https', text)
+    >>> print(wrap(text))
+    Here's some sample text that should be wrapped and filled to make a
+    pretty looking paragraph of text with no excessively short or long
+    lines, but it also contains a long url.
+    <BLANKLINE>
+     https://www.example.com/mailman3/lists/mailman-users.mailman3.org/members/options/user@example.org?role=member
+    <BLANKLINE>
+    which shouldn't be wrapped.
 
 
 URL placeholders
@@ -425,6 +470,31 @@ below.  Here are all the supported template names:
 
     * ``member`` - display name and email address of the subscriber
 
+* ``list:admin:notice:disable``
+    Sent to the list administrators to notify them when a member's delivery
+    is disabled due to excessive bounces.
+
+    * ``member`` - display name and email address of the subscriber
+
+* ``list:admin:notice:increment``
+    When configured, sent to the list administrators to notify them when a
+    member's bounce score is incremented.
+
+    * ``member`` - display name and email address of the subscriber
+
+* ``list:admin:notice:pending``
+    The notice of pending moderator requests sent to the list administrators
+    by the ``mailman notify`` command.
+
+    * ``count`` - the number of pending requests.
+    * ``data`` - the list of pending requests.
+
+* ``list:admin:notice:removal``
+   Sent to the list administrators to notify them when a member is unsubscribed
+   from am mailing list due to excessive bounces.
+
+   * ``member`` - display name and email address of the subscriber
+
 * ``list:admin:notice:subscribe``
     Sent to the list administrators to notify them when a new member has
     been subscribed.
@@ -440,18 +510,6 @@ below.  Here are all the supported template names:
     unsubscribed.
 
     * ``member`` - display name and email address of the subscriber
-
-* ``list:admin:notice:disable``
-    Sent to the list administrators to notify them when a member's delivery
-    is disabled due to excessive bounces.
-
-    * ``member`` - display name and email address of the subscriber
-
-* ``list:admin:notice:removal``
-   Sent to the list administrators to notify them when a member is unsubscribed
-   from am mailing list due to excessive bounces.
-
-   * ``member`` - display name and email address of the subscriber
 
 * ``list:member:digest:footer``
     The footer for a digest message.
@@ -478,6 +536,10 @@ below.  Here are all the supported template names:
     * ``user_name_or_email`` - the recipient's display name if available,
       or their email address if no display name
       (e.g. "Anne Person", "Bart", or "fperson@example.com")
+    * ``<archiver_name>_url`` - a link to the archived message for each enabled
+      archiver other than prototype. For example if the HyperKitty archiver is
+      enabled for the list, ``${hyperkitty_url}`` will point to the message in
+      HyperKitty.
 
 * ``list:member:regular:header``
     The header for a regular (non-digest) message.
@@ -494,6 +556,16 @@ below.  Here are all the supported template names:
     * ``user_name_or_email`` - the recipient's display name if available,
       or their email address if no display name
       (e.g. "Anne Person", "Bart", or "fperson@example.com")
+    * ``<archiver_name>_url`` - a link to the archived message for each enabled
+      archiver other than prototype. For example if the HyperKitty archiver is
+      enabled for the list, ``${hyperkitty_url}`` will point to the message in
+      HyperKitty.
+
+* ``list:user:action:invite``
+    The message sent to subscribers when they are invited to join a List.
+
+    * ``user_email`` - the email address being invited.
+    * ``token`` - the unique confirmation token
 
 * ``list:user:action:subscribe``
     The message sent to subscribers when a subscription confirmation is
@@ -519,6 +591,8 @@ below.  Here are all the supported template names:
 
 * ``list:user:notice:goodbye``
     The notice sent to a member when they unsubscribe from a mailing list.
+
+    * ``user_email`` - the email address of the unsubscribing member
 
 * ``list:user:notice:hold``
     The notice sent to a poster when their message is being held or moderator
@@ -560,17 +634,17 @@ below.  Here are all the supported template names:
 
     * ``reasons`` - some reasons why the post was rejected
 
+* ``list:user:notice:warning``
+    The notice sent to a member when their membership has been disabled due to
+    excessive bounces.
+
+    * ``user_email`` - the email address of the bouncing member.
+
 * ``list:user:notice:welcome``
     The notice sent to a member when they are subscribed to the mailing list.
 
     * ``user_name`` - the display name of the new member
     * ``user_email`` - the email address of the new member
-
-* ``list:user:notice:warning``
-   The notice sent to a member when their membership has been disabled due to
-   excessive bounces.
-
-    * ``user_email`` - the email address of the bouncing member.
 
 
 .. _requests: http://docs.python-requests.org/en/master/

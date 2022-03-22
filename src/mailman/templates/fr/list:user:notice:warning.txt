@@ -1,0 +1,9 @@
+Votre abonnement a été désactivé de la liste de diffusion $listname parce qu'elle
+a reçu un nombre de rejets indiquant qu'il y a probablement un problème de
+distribution de messages à $sender_email. Vous devriez voir avec votre
+administrateur de courriels pour plus d'aide.
+
+Si vous avez la moindre question ou le moindre problème, vous pouvez contacter
+le propriétaire de la liste à l'adresse :
+
+    $owner_email

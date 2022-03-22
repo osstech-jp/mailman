@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,6 +23,7 @@ import logging
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
+from mailman.mta.arc_signing import ARCSigningMixin
 from mailman.mta.base import IndividualDelivery
 from mailman.mta.bulk import BulkDelivery
 from mailman.mta.decorating import DecoratingMixin
@@ -37,7 +38,7 @@ log = logging.getLogger('mailman.smtp')
 
 
 @public
-class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
+class Deliver(VERPMixin, DecoratingMixin, ARCSigningMixin, PersonalizedMixin,
               IndividualDelivery):
     """Deliver one message to one recipient.
 
@@ -47,6 +48,7 @@ class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
     * VERP
     * Full Personalization
     * Header/Footer decoration
+    * ARC signing
     """
 
     def __init__(self):
@@ -55,6 +57,7 @@ class Deliver(VERPMixin, DecoratingMixin, PersonalizedMixin,
             self.avoid_duplicates,
             self.decorate,
             self.personalize_to,
+            self.arc_sign,
             ])
 
 
@@ -99,7 +102,8 @@ def deliver(mlist, msg, msgdata):
     if size is None:
         size = len(msg.as_string())
     substitutions = dict(
-        msgid       = msg.get('message-id', 'n/a'),   # noqa: E221,E251
+        msgid       = msg.get('message-id',           # noqa: E221,E251
+                              'n/a').strip(),
         listname    = mlist.fqdn_listname,            # noqa: E221,E251
         sender      = original_sender,                # noqa: E221,E251
         recip       = len(original_recipients),       # noqa: E221,E251
@@ -120,10 +124,14 @@ def deliver(mlist, msg, msgdata):
         # Log the successful post, but if it was not destined to the mailing
         # list (e.g. to the owner or admin), print the actual recipients
         # instead of just the number.
-        if not msgdata.get('tolist', False):
+        if not msgdata.get('to_list', False):
+            # XXX This is meaningless as the config.logging.smtp.success
+            # template doesn't contain a recip substitution, but do it anyway
+            # in case the template is changed.
             recips = msg.get_all('to', [])
             recips.extend(msg.get_all('cc', []))
-            substitutions['recips'] = COMMA.join(recips)
+            # recips can contain a Header() instance.  Stringify it.
+            substitutions['recip'] = COMMA.join(map(str, recips))
         template = config.logging.smtp.success
         if template.lower() != 'no':
             log.info('%s', expand(template, mlist, substitutions))
@@ -141,8 +149,9 @@ def deliver(mlist, msg, msgdata):
         #   so the logic below works.
         #
         if code >= 500 and code != 552:
-            # A permanent failure
-            permanent_failures.append(recipient)
+            # A permanent failure.  Keep the code and message for a fake DSN.
+            permanent_failures.append(
+                (recipient, code, smtp_message))    # pragma: nocover
         else:
             # Deal with persistent transient failures by queuing them up for
             # future delivery.  TBD: this could generate lots of log entries!

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,7 +25,9 @@ from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import IPipeline
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
-    make_testable_runner, specialized_message_from_string as mfs)
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.interface import implementer
 

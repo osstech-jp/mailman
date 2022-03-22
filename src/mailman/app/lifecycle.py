@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,7 +25,9 @@ from contextlib import suppress
 from mailman.config import config
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.domain import (
-    BadDomainSpecificationError, IDomainManager)
+    BadDomainSpecificationError,
+    IDomainManager,
+)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import InvalidListNameError
 from mailman.interfaces.member import MemberRole

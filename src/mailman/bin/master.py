@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -162,7 +162,7 @@ master is already running.""")
             program = sys.argv[0]                   # noqa: F841
             message = _("""\
 The master lock could not be acquired.  It appears as though there is a stale
-master lock.  Try re-running $program with the --force flag.""")
+master lock.  Try re-running ${program} with the --force flag.""")
         elif status is WatcherState.host_mismatch:
             # Hostname doesn't even match.
             hostname, pid, tempfile = lock.details
@@ -171,8 +171,8 @@ The master lock could not be acquired, because it appears as if some process
 on some other host may have acquired it.  We can't test for stale locks across
 host boundaries, so you'll have to clean this up manually.
 
-Lock file: $config.LOCK_FILE
-Lock host: $hostname
+Lock file: ${config.LOCK_FILE}
+Lock host: ${hostname}
 
 Exiting.""")
         else:
@@ -182,8 +182,8 @@ Exiting.""")
             message = _("""\
 For unknown reasons, the master lock could not be acquired.
 
-Lock file: $config.LOCK_FILE
-Lock host: $hostname
+Lock file: ${config.LOCK_FILE}
+Lock host: ${hostname}
 
 Exiting.""")
         print(message, file=sys.stderr)
@@ -204,7 +204,7 @@ class PIDWatcher:
         # asynchronous signals are involved, the dictionary's size could
         # change during iteration.  Iterate over a copy of the keys to avoid
         # that.
-        for pid in self._pids.keys():
+        for pid in list(self._pids):
             yield pid
 
     def add(self, pid, info):
@@ -420,11 +420,14 @@ class Loop:
             # Find out why the subprocess exited by getting the signal
             # received or exit status.
             if os.WIFSIGNALED(status):
-                why = os.WTERMSIG(status)
+                why = os.WTERMSIG(status)                    # pragma: nocover
+                sig_or_exit = 'SIGNAL '                      # pragma: nocover
             elif os.WIFEXITED(status):
                 why = os.WEXITSTATUS(status)
-            else:
+                sig_or_exit = 'EXIT '
+            else:                                            # pragma: nocover
                 why = None
+                sig_or_exit = 'UNKNOWN'
             # We'll restart the subprocess if it exited with a SIGUSR1 or
             # because of a failure (i.e. no exit signal), and the no-restart
             # command line switch was not given.  This lets us better handle
@@ -432,7 +435,7 @@ class Loop:
             rname, slice_number, count, restarts = self._kids.pop(pid)
             config_name = 'runner.' + rname
             restart = False
-            if why == signal.SIGUSR1 and self._restartable:
+            if why == signal.SIGUSR1 and self._restartable:  # pragma: nocover
                 restart = True
             # Have we hit the maximum number of restarts?
             restarts += 1
@@ -442,8 +445,8 @@ class Loop:
             # Are we permanently non-restartable?
             log.debug("""\
 Master detected subprocess exit
-(pid: {0:d}, why: {1}, class: {2}, slice: {3:d}/{4:d}) {5}""".format(
-                     pid, why, rname, slice_number + 1, count,
+(pid: {0:d}, why: {1}{2}, class: {3}, slice: {4:d}/{5:d}) {6}""".format(
+                     pid, sig_or_exit, why, rname, slice_number + 1, count,
                      ('[restarting]' if restart else '')))
             # See if we've reached the maximum number of allowable restarts.
             if restarts > max_restarts:

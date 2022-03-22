@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,7 +18,7 @@
 """Mailman version strings."""
 
 # Mailman version.
-VERSION = '3.3.2b1'
+VERSION = '3.3.6b1'
 CODENAME = 'Tom Sawyer'
 
 # And as a hex number in the manner of PY_VERSION_HEX.
@@ -31,7 +31,7 @@ FINAL = 0xf
 
 MAJOR_REV = 3
 MINOR_REV = 3
-MICRO_REV = 2
+MICRO_REV = 6
 REL_LEVEL = BETA
 # At most 15 beta releases!
 REL_SERIAL = 1

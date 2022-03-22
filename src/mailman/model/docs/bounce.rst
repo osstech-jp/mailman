@@ -213,7 +213,7 @@ Next bounce event for anne should trigger a probe which resets bounce_score:
     >>> msg = items[0].msg
     >>> print(msg.as_string())
     Subject: Test mailing list probe message
-    From: test-bounces+0000000000000000000000000000000000000001@example.com
+    From: test-bounces+...@example.com
     To: anne@example.com
     MIME-Version: 1.0
     Content-Type: multipart/mixed; boundary="..."
@@ -242,8 +242,13 @@ Next bounce event for anne should trigger a probe which resets bounce_score:
         test-owner@example.com
     <BLANKLINE>
     ...
+    Content-Type: message/rfc822
+    MIME-Version: 1.0
     <BLANKLINE>
-
+    From: mail-daemon@example.org
+    To: test-bounces@example.com
+    Message-ID: <second>
+    ...
 
 When such a probe bounces, their delivery is then suspended immediately:
 

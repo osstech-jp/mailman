@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -54,7 +54,7 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     interp = code.InteractiveConsole(namespace)
     # Try to import the readline module, but don't worry if it's unavailable.
     with suppress(ImportError):
-        import readline                             # noqa: F401
+        import readline  # noqa: F401
     # Mimic the real interactive interpreter's loading of any $PYTHONSTARTUP
     # file.  Note that if the startup file is not prepared to be exec'd more
     # than once, this could cause a problem.

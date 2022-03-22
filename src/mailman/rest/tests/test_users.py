@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -245,7 +245,9 @@ class TestUsers(unittest.TestCase):
                 email='anne@invalid'))
         # There is now one user.
         self.assertEqual(cm.exception.code, 400)
-        self.assertEqual(cm.exception.reason, 'anne@invalid')
+        self.assertEqual(
+            cm.exception.reason,
+            'Invalid email address anne@invalid')
 
     def test_create_server_owner_false(self):
         # Issue #136: Creating a user with is_server_owner=no should create
@@ -303,6 +305,20 @@ class TestUsers(unittest.TestCase):
         self.assertEqual(
             json['self_link'],
             'http://localhost:9001/3.0/users/1/preferences')
+
+    def test_find_users(self):
+        usermanager = getUtility(IUserManager)
+        with transaction():
+            user = usermanager.create_user(
+                'aperson@example.com', 'Anne Person')
+            user2 = usermanager.create_user('bperson@example.com', 'Bart')
+        json, response = call_api(
+            'http://localhost:9001/3.0/users/find?q=person')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json.get('entries')), 2)
+        # both matched since one has person in name and other has in email.
+        user_ids = [each.get('user_id') for each in json.get('entries')]
+        self.assertEqual(sorted(user_ids), [(user.id), user2.id])
 
 
 class TestLogin(unittest.TestCase):

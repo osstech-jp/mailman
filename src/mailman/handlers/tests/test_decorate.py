@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,10 +18,14 @@
 """Test the decorate handler."""
 
 import os
+import re
+import email
 import unittest
 
+from importlib_resources import open_binary as resource_open
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.email.message import Message
 from mailman.handlers import decorate
 from mailman.interfaces.archiver import IArchiver
 from mailman.interfaces.member import MemberRole
@@ -30,7 +34,10 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.testing.helpers import (
-    LogFileMark, configuration, specialized_message_from_string as mfs)
+    configuration,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from tempfile import TemporaryDirectory
 from zope.component import getUtility
@@ -106,6 +113,11 @@ Content-Type: text/html;
 This is a test message.
 --aaaaaa--
 """)
+        # We need to get this message the way lmtp runner gets it.
+        with resource_open(
+                'mailman.handlers.tests.data',
+                'html_non_ascii.eml') as fp:
+            self._htmlna = email.message_from_binary_file(fp, Message)
         temporary_dir = TemporaryDirectory()
         self.addCleanup(temporary_dir.cleanup)
         template_dir = temporary_dir.name
@@ -130,6 +142,18 @@ This is a test message.
         decorate.process(self._mlist, self._msg, {})
         self.assertIn('http://example.com/link_to_message',
                       self._msg.as_string())
+
+    def test_trailing_space_not_removed(self):
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('-- \r\nMy sig', file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
+        self._mlist.preferred_language = 'en'
+        decorate.process(self._mlist, self._msg, {})
+        self.assertTrue(self._msg.as_string().endswith('-- \nMy sig\n'))
 
     def test_decorate_member_as_address(self):
         site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
@@ -242,6 +266,87 @@ This is a test message.
         decorate.process(self._mlist, self._mpm, {})
         self.assertIn('Head?r:', self._mpm.get_payload(0).as_string())
         self.assertIn('Foot?r:', self._mpm.get_payload(3).as_string())
+
+    def test_decorate_html_nonascii_flattened_as_bytes(self):
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        header_path = os.path.join(site_dir, 'myheader.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('Footer:', file=fp)
+        with open(header_path, 'w', encoding='utf-8') as fp:
+            print('Header:', file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
+        getUtility(ITemplateManager).set(
+            'list:member:regular:header', None, 'mailman:///myheader.txt')
+        self._mlist.preferred_language = 'en'
+        decorate.process(self._mlist, self._htmlna, {})
+        # This should raise no exception
+        bytes = self._htmlna.as_bytes()
+        self.assertIn('Header:', self._htmlna.get_payload(0).as_string())
+        self.assertIn('Footer:', self._htmlna.get_payload(2).as_string())
+        self.assertRegex(bytes, b"""\
+To: ant@example.com
+From: aperson@example.com
+Message-ID: <alpha>
+Content-Type: multipart/mixed; boundary="([^"]*)"
+
+--\\1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Header:
+
+--\\1
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>HTML form\xc3\xa1t zpr\xc3\xa1vy</p>
+    <p>Hahaha<br>
+    </p>
+  </body>
+</html>
+
+--\\1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Footer:
+
+--\\1--
+""")
+
+    def test_decorate_html_nonascii_flattened_as_string(self):
+        site_dir = os.path.join(config.TEMPLATE_DIR, 'site', 'en')
+        os.makedirs(site_dir)
+        footer_path = os.path.join(site_dir, 'myfooter.txt')
+        header_path = os.path.join(site_dir, 'myheader.txt')
+        with open(footer_path, 'w', encoding='utf-8') as fp:
+            print('Footer:', file=fp)
+        with open(header_path, 'w', encoding='utf-8') as fp:
+            print('Header:', file=fp)
+        getUtility(ITemplateManager).set(
+            'list:member:regular:footer', None, 'mailman:///myfooter.txt')
+        getUtility(ITemplateManager).set(
+            'list:member:regular:header', None, 'mailman:///myheader.txt')
+        self._mlist.preferred_language = 'en'
+        decorate.process(self._mlist, self._htmlna, {})
+        self.assertIn('Header:', self._htmlna.get_payload(0).as_string())
+        self.assertIn('Footer:', self._htmlna.get_payload(2).as_string())
+        # there should be no non-ascii in the as_string() rendering.
+        self.assertEqual('', re.sub(r'[\x00-\x7f]', '',
+                         self._htmlna.as_string()))
 
     def test_list_id_allowed_in_template_uri(self):
         # Issue #196 - allow the list_id in the template uri expansion.

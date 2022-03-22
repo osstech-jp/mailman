@@ -1,0 +1,14 @@
+Bu bir sorgu mesajıdır.  Bu mesajı yok sayabilirsiniz.
+
+$listname posta listesi, sizden mesajları bu adrese teslim ederken bir sorun
+olabileceğini belirten bir dizi geri dönme mesajı aldı.  Aşağıda bir örneği eklenmiştir.
+E-posta adresinizle ilgili herhangi bir sorun olmadığından emin olmak için lütfen bu
+mesajı inceleyin.  Daha fazla yardım için e-posta yöneticinize danışmak
+isteyebilirsiniz.
+
+Posta listesinin etkin bir üyesi olarak kalmak için hiçbir şey yapmanıza gerek yoktur.
+
+Herhangi bir sorunuz veya sorununuz varsa, aşağıdaki adresten posta listesi sahibiyle
+iletişime geçebilirsiniz:
+
+    $owner_email

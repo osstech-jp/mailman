@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -30,7 +30,9 @@ from mailman.archiving.prototype import Prototype
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.testing.helpers import (
-    LogFileMark, specialized_message_from_string as mfs)
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.email import add_message_hash
 

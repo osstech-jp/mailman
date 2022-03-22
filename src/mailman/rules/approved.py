@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -131,8 +131,16 @@ class Approved:
                 del msg[header]
         if password is missing:
             return False
-        is_valid, new_hash = config.password_context.verify(
-            password, mlist.moderator_password)
+        # Email confirm command wants to know there was an Approved:.
+        msgdata['has_approved'] = True
+        # The following is a workaround for
+        # https://foss.heptapod.net/python-libs/passlib/-/issues/133
+        # Ensure the hash for `verify` is not bytes.
+        if isinstance(mlist.moderator_password, str):
+            mpw = mlist.moderator_password
+        else:
+            mpw = mlist.moderator_password.decode('utf-8')
+        is_valid, new_hash = config.password_context.verify(password, mpw)
         if is_valid and new_hash:
             # Hash algorithm migration.
             mlist.moderator_password = new_hash

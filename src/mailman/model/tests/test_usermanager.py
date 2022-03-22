@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -121,3 +121,18 @@ class TestUserManager(unittest.TestCase):
         # without the fix.
         config.db.store.flush()
         self.assertIsNone(self._usermanager.get_address('anne@example.com'))
+
+    def test_find_user(self):
+        user = self._usermanager.make_user('ane@example.com', 'Anne Person')
+        self._usermanager.make_user('bee@example.com', 'Bart Person')
+        # search by display name. anne person, case insensitive.
+        results = list(self._usermanager.find_users('anne'))
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0], user)
+        # search by email address, case insensitive.
+        results = list(self._usermanager.find_users('ANe'))
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0], user)
+        # search by display name again case insensitive.
+        results = list(self._usermanager.find_users('pERSON'))
+        self.assertEqual(len(results), 2)

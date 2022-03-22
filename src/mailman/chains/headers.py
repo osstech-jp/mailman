@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,7 +20,7 @@
 import re
 import logging
 
-from email.header import Header
+from email.header import decode_header, Header, make_header
 from itertools import count
 from mailman.chains.base import Chain, Link
 from mailman.config import config
@@ -65,9 +65,8 @@ def make_link(header, pattern, chain=None, suffix=None):
     """
     rule_name = _make_rule_name(suffix)
     if rule_name in config.rules:
-        rule = config.rules[rule_name]
-    else:
-        rule = HeaderMatchRule(header, pattern, suffix)
+        del config.rules[rule_name]
+    rule = HeaderMatchRule(header, pattern, suffix)
     if chain is None:
         return Link(rule)
     return Link(rule, LinkAction.jump, chain)
@@ -104,8 +103,10 @@ class HeaderMatchRule:
         for value in headers:
             if isinstance(value, Header):
                 value = value.encode()
+            # RFC2047 decode, but don't change value as it affects the msg.
+            new_value = str(make_header(decode_header(value)))
             try:
-                mo = re.search(self.pattern, value, re.IGNORECASE)
+                mo = re.search(self.pattern, new_value, re.IGNORECASE)
             except re.error as error:
                 log.error(
                     "Invalid regexp '{}' in header_matches for {}: {}".format(
@@ -118,7 +119,7 @@ class HeaderMatchRule:
                         # This will be translated at the point of use.
                         msgdata.setdefault('moderation_reasons', []).append(
                             (_('Header "{}" matched a header rule'),
-                             str(value)))
+                             str(self.header) + ": " + str(value)))
                     return True
         return False
 

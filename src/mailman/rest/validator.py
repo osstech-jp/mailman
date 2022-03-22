@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,6 +19,7 @@
 
 import re
 
+from lazr.config import as_boolean
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
@@ -130,6 +131,17 @@ def list_of_emails_validator(values):
 
 
 @public
+def list_of_emails_or_regexp_validator(values):
+    if values == '':
+        return []
+    if not isinstance(values, (list, tuple)):
+        values = [values]
+    for value in values:
+        email_or_regexp_validator(value)
+    return values
+
+
+@public
 def integer_ge_zero_validator(value):
     """Validate that the value is a non-negative integer."""
     value = int(value)
@@ -224,7 +236,11 @@ class Validator:
         # Now do all the conversions.
         for key, value in form_data.items():
             try:
-                values[key] = self._converters[key](value)
+                if (self._converters[key] is as_boolean and
+                        isinstance(value, bool)):
+                    values[key] = value
+                else:
+                    values[key] = self._converters[key](value)
             except KeyError:
                 extras.add(key)
             except (TypeError, ValueError) as e:

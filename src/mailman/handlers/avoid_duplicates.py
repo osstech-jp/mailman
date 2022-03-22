@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,7 +25,7 @@ warning header, or pass it through, depending on the user's preferences.
 
 import re
 
-from email.utils import getaddresses, formataddr
+from email.utils import formataddr, getaddresses
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from public import public
@@ -65,7 +65,8 @@ class AvoidDuplicates:
         # '"real name\r\n (dept)" <user@example.com>' which parses incorrectly,
         # so we "unfold" headers here.
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-            hdrs_unfolded = [re.sub('[\r\n]', '', value) for value in
+            # The value can contain a Header instance so stringify it.
+            hdrs_unfolded = [re.sub('[\r\n]', '', str(value)) for value in
                              msg.get_all(header, [])]
             addrs = getaddresses(hdrs_unfolded)
             header_addresses = dict((addr, formataddr((name, addr)))

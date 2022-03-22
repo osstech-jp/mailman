@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,6 +19,7 @@
 
 import unittest
 
+from email.header import make_header
 from mailman.app.lifecycle import create_list
 from mailman.handlers.avoid_duplicates import AvoidDuplicates
 from mailman.interfaces.member import MemberRole
@@ -126,6 +127,36 @@ X-Mailman-Version: X.Y
 More things to say.
 """)
         msgdata = dict(recipients=set(['anne@example.com']))
+        AvoidDuplicates().process(self._mlist, msg, msgdata)
+        # Don't test the whole message. The order in the Cc: varies with
+        # Python version.
+        ccs = msg.get('cc')
+        self.assertIn('"last, first" <other@example.com>', ccs)
+        self.assertIn('"real name (dept)" <user@example.com>', ccs)
+        del msg['cc']
+        self.assertMultiLineEqual(msg.as_string(), """\
+From: anne@example.com
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+
+More things to say.
+""")
+
+    def test_cc_with_header_instance(self):
+        # Ensure we can process header instances.
+        msg = mfs("""\
+From: anne@example.com
+To: ant@example.com
+Subject: A subject
+X-Mailman-Version: X.Y
+
+More things to say.
+""")
+        msgdata = dict(recipients=set(['anne@example.com']))
+        msg['Cc'] = make_header(
+            [('"last, first" <other@example.com>', None),
+             ('"real name (dept)" <user@example.com>', None)])
         AvoidDuplicates().process(self._mlist, msg, msgdata)
         # Don't test the whole message. The order in the Cc: varies with
         # Python version.

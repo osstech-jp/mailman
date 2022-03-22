@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,7 +24,12 @@ import tempfile
 import unittest
 
 from mailman.app.bounces import (
-    ProbeVERP, StandardVERP, bounce_message, maybe_forward, send_probe)
+    bounce_message,
+    maybe_forward,
+    ProbeVERP,
+    send_probe,
+    StandardVERP,
+)
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
@@ -33,8 +38,11 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, get_queue_messages, specialized_message_from_string as mfs,
-    subscribe)
+    get_queue_messages,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -216,6 +224,9 @@ Message-ID: <first>
         self.assertEqual(message.get_content_type(), 'multipart/mixed')
         self.assertTrue(message.is_multipart())
         self.assertEqual(len(message.get_payload()), 2)
+        # Check that the second part is the DSN
+        part_content = message.get_payload(1).get_payload(0).as_string()
+        self.assertEqual(part_content, self._msg.as_string())
 
     def test_probe_sends_one_message(self):
         # send_probe() places one message in the virgin queue.  We start out

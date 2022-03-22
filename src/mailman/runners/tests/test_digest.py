@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,10 +18,13 @@
 """Test the digest runner."""
 
 import os
+import re
 import unittest
 
+from email import message_from_binary_file, message_from_bytes
 from email.iterators import _structure as structure
 from email.mime.text import MIMEText
+from importlib_resources import open_binary
 from io import StringIO
 from mailman.app.lifecycle import create_list
 from mailman.config import config
@@ -30,10 +33,15 @@ from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.template import ITemplateManager
 from mailman.runners.digest import DigestRunner
 from mailman.testing.helpers import (
-    LogFileMark, digest_mbox, get_queue_messages, make_digest_messages,
-    make_testable_runner, message_from_string,
+    digest_mbox,
+    get_queue_messages,
+    LogFileMark,
+    make_digest_messages,
+    make_testable_runner,
+    message_from_string,
     specialized_message_from_string as mfs,
-    subscribe)
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 from string import Template
 from tempfile import TemporaryDirectory
@@ -66,6 +74,13 @@ class TestDigest(unittest.TestCase):
         for item in items:
             self.assertEqual(item.msg['subject'],
                              'Test Digest, Vol 1, Issue 1')
+        return items
+
+    def _get_plain_body(self, items):
+        # Need to run after _check_virgin_queue which gets the items.
+        for item in items:
+            if item.msg.get_content_type() == 'text/plain':
+                return item.msg.get_payload(decode=True)
 
     def test_simple_message(self):
         # Subscribe some users receiving digests.
@@ -99,6 +114,95 @@ class TestDigest(unittest.TestCase):
         # The runner will send the file to the shunt queue on exception.
         self.assertEqual(len(self._shuntq.files), 0, error_log.read())
         self._check_virgin_queue()
+
+    def test_utf7_message_with_inline_ascii_sig(self):
+        # The test message is bigger than 1K.  Set the threshold bigger to
+        # avoid double processing in make_digest_messages.
+        self._mlist.digest_size_threshold = 5
+        # Subscribe some users receiving digests.
+        anne = subscribe(self._mlist, 'Anne')
+        anne.preferences.delivery_mode = DeliveryMode.mime_digests
+        bart = subscribe(self._mlist, 'Bart')
+        bart.preferences.delivery_mode = DeliveryMode.plaintext_digests
+        with open_binary('mailman.runners.tests.data',
+                         'ascii_in_utf7.eml') as fp:
+            msg = message_from_binary_file(fp, Message)
+        # Use any error logs as the error message if the test fails.
+        error_log = LogFileMark('mailman.error')
+        make_digest_messages(self._mlist, msg)
+        # The runner will send the file to the shunt queue on exception.
+        self.assertEqual(len(self._shuntq.files), 0, error_log.read())
+        self._check_virgin_queue()
+
+    def test_non_ascii_in_ascii_part(self):
+        # Subscribe some users receiving digests.
+        anne = subscribe(self._mlist, 'Anne')
+        anne.preferences.delivery_mode = DeliveryMode.mime_digests
+        bart = subscribe(self._mlist, 'Bart')
+        bart.preferences.delivery_mode = DeliveryMode.plaintext_digests
+        msg = message_from_bytes(b"""\
+From: anne@example.org
+To: test@example.com
+Subject: Non-ascii in ascii message
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="abcxyz"
+
+--abcxyz
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
+
+Don\xe2\x80\x99t try this at home.
+--abcxyz--
+""", Message)
+        # Use any error logs as the error message if the test fails.
+        error_log = LogFileMark('mailman.error')
+        make_digest_messages(self._mlist, msg)
+        # The runner will send the file to the shunt queue on exception.
+        self.assertEqual(len(self._shuntq.files), 0, error_log.read())
+        items = self._check_virgin_queue()
+        self.assertEqual(self._get_plain_body(items), b"""\
+Send Test mailing list submissions to
+\ttest@example.com
+
+To subscribe or unsubscribe via email, send a message with subject or
+body 'help' to
+\ttest-request@example.com
+
+You can reach the person managing the list at
+\ttest-owner@example.com
+
+When replying, please edit your Subject line so it is more specific
+than "Re: Contents of Test digest..."
+
+Today\'s Topics:
+
+   1. Non-ascii in ascii message (anne@example.org)
+
+
+----------------------------------------------------------------------
+
+Message: 1
+From: anne@example.org
+Subject: Non-ascii in ascii message
+To: test@example.com
+Content-Type: multipart/mixed; boundary="abcxyz"
+
+Don\xef\xbf\xbd\xef\xbf\xbd\xef\xbf\xbdt try this at home.
+
+------------------------------
+
+Subject: Digest Footer
+
+_______________________________________________
+Test mailing list -- test@example.com
+To unsubscribe send an email to test-leave@example.com
+
+
+------------------------------
+
+End of Test Digest, Vol 1, Issue 1
+**********************************
+""")
 
     def test_mime_digest_format(self):
         # Make sure that the format of the MIME digest is as expected.
@@ -156,6 +260,60 @@ multipart/mixed
             text/plain
     text/plain
 """)
+        # Verify the Message: headers
+        for i in range(1, 5):
+            body = mime_digest.get_payload(2).get_payload(i-1).get_payload(0)
+            self.assertEqual(body['message'], str(i))
+
+    def test_plain_digest_format(self):
+        # Make sure that the format of the MIME digest is as expected.
+        self._mlist.digest_size_threshold = 0.6
+        self._mlist.volume = 1
+        self._mlist.next_digest_number = 1
+        self._mlist.send_welcome_message = False
+        # Subscribe some users receiving digests.
+        anne = subscribe(self._mlist, 'Anne')
+        anne.preferences.delivery_mode = DeliveryMode.mime_digests
+        bart = subscribe(self._mlist, 'Bart')
+        bart.preferences.delivery_mode = DeliveryMode.plaintext_digests
+        # Fill the digest.
+        process = config.handlers['to-digest'].process
+        size = 0
+        for i in range(1, 5):
+            text = Template("""\
+From: aperson@example.com
+To: xtest@example.com
+Subject: Test message $i
+List-Post: <test@example.com>
+
+Here is message $i
+""").substitute(i=i)
+            msg = message_from_string(text)
+            process(self._mlist, msg, {})
+            size += len(text)
+            if size >= self._mlist.digest_size_threshold * 1024:
+                break
+        # Run the digest runner to create the MIME and RFC 1153 digests.
+        runner = make_testable_runner(DigestRunner)
+        runner.run()
+        items = get_queue_messages('virgin', expected_count=2)
+        # Find the plain one.
+        plain_digest = None
+        for item in items:
+            if not item.msg.is_multipart():
+                assert plain_digest is None, 'We got two plain digests'
+                plain_digest = item.msg
+        fp = StringIO()
+        # Verify the structure is what we expect.
+        structure(plain_digest, fp)
+        self.assertMultiLineEqual(fp.getvalue(), """\
+text/plain
+""")
+        # Verify the Message: headers
+        body = plain_digest.get_payload(decode=True).decode('us-ascii')
+        for i in range(1, 5):
+            mo = re.search('^Message: {}$'.format(i), body, re.MULTILINE)
+            self.assertIsNotNone(mo)
 
     def test_issue141(self):
         # Currently DigestMode.summary_digests are equivalent to mime_digests.

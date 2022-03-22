@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -32,7 +32,10 @@ from mailman.core.switchboard import Switchboard
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.runner import (
-    IRunner, RunnerCrashEvent, RunnerInterrupt)
+    IRunner,
+    RunnerCrashEvent,
+    RunnerInterrupt,
+)
 from mailman.utilities.string import expand
 from public import public
 from zope.component import getUtility
@@ -149,7 +152,10 @@ class Runner:
         dlog.debug('[%s] starting oneloop', me)
         # List all the files in our queue directory.  The switchboard is
         # guaranteed to hand us the files in FIFO order.
-        files = self.switchboard.files
+        if self.switchboard is None:
+            files = []
+        else:
+            files = self.switchboard.files
         for filebase in files:
             dlog.debug('[%s] processing filebase: %s', me, filebase)
             try:

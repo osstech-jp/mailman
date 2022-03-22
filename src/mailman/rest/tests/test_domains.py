@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -112,9 +112,9 @@ class TestDomains(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         # Check the result.
         domain = getUtility(IDomainManager).get('example.com')
-        self.assertEqual(
-            [list(owner.addresses)[0].email for owner in domain.owners],
-            ['anne@example.com', 'other@example.net'])
+        owners = [list(owner.addresses)[0].email for owner in domain.owners]
+        owners.sort()
+        self.assertEqual(owners, ['anne@example.com', 'other@example.net'])
 
     def test_patch_domain_readonly(self):
         # Attempt to patch mail_host.
@@ -374,6 +374,8 @@ class TestDomainTemplates(unittest.TestCase):
                 'list:admin:action:unsubscribe': '',
                 'list:admin:notice:subscribe': '',
                 'list:admin:notice:unrecognized': '',
+                'list:admin:notice:pending': '',
+                'list:admin:notice:increment': '',
                 'list:admin:notice:disable': '',
                 'list:admin:notice:unsubscribe': '',
                 'list:admin:notice:removal': '',

@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,9 +21,11 @@ import socket
 import logging
 
 from datetime import datetime
+from email.utils import formatdate, make_msgid
 from lazr.config import as_boolean, as_timedelta
 from mailman.config import config
 from mailman.core.runner import Runner
+from mailman.email.message import Message
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
@@ -58,6 +60,22 @@ class OutgoingRunner(Runner):
         # set if there was a socket.error.
         self._logged = False
         self._retryq = config.switchboards['retry']
+
+    def _fake_dsn(self, recipient, code, smtp_message):
+        # Craft a fake DSN for SMTP permanent failures.
+        msg = Message()
+        msg['From'] = 'Mailman <mailman@example.com>'
+        msg['To'] = 'Mailman Bounces <mailman-bounces@example.com>'
+        msg['Subject'] = 'SMTP Delivery Failure'
+        msg['Message-ID'] = make_msgid()
+        msg['Date'] = formatdate(localtime=True)
+        msg.set_payload("""\
+Mail to {} failed at outgoing SMTP
+
+Error code: {}
+Error message: {}
+""".format(recipient, code, smtp_message))
+        return msg
 
     def _dispose(self, mlist, msg, msgdata):
         # See if we should retry delivery of this message again.
@@ -126,6 +144,7 @@ class OutgoingRunner(Runner):
                         # The UUID had to be pended as a unicode.
                         member = getUtility(ISubscriptionService).get_member(
                             UUID(hex=pended['member_id']))
+                        msg = self._fake_dsn(*error.permanent_failures[0])
                         processor.register(
                             mlist, member.address.email, msg,
                             BounceContext.probe)
@@ -133,7 +152,8 @@ class OutgoingRunner(Runner):
                 # Delivery failed at SMTP time for some or all of the
                 # recipients.  Permanent failures are registered as bounces,
                 # but temporary failures are retried for later.
-                for email in error.permanent_failures:
+                for email, code, smtp_message in error.permanent_failures:
+                    msg = self._fake_dsn(email, code, smtp_message)
                     processor.register(mlist, email, msg, BounceContext.normal)
                 # Move temporary failures to the qfiles/retry queue which will
                 # occasionally move them back here for another shot at

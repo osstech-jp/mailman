@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,12 +23,15 @@ from mailman.app.lifecycle import create_list
 from mailman.database.transaction import transaction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import (
-    IAcceptableAliasSet, SubscriptionPolicy)
+    IAcceptableAliasSet,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.template import ITemplateManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 from urllib.error import HTTPError
 from zope.component import getUtility
+
 
 # The representation of the listconf resource as a dictionary.  This is used
 # when PUTting to the list's configuration resource.
@@ -57,6 +60,7 @@ RESOURCE = dict(
     autoresponse_postings_text='the mailing list',
     autoresponse_request_text='the robot',
     bounce_info_stale_after='7d',
+    bounce_notify_owner_on_bounce_increment=False,
     bounce_notify_owner_on_disable=False,
     bounce_notify_owner_on_removal=True,
     bounce_score_threshold=5,
@@ -112,6 +116,7 @@ RESOURCE = dict(
     reply_to_address='bee@example.com',
     require_explicit_destination=True,
     member_roster_visibility='public',
+    send_goodbye_message=False,
     send_welcome_message=False,
     subject_prefix='[ant]',
     subscription_policy='confirm_then_moderate',
@@ -289,6 +294,17 @@ class TestConfiguration(unittest.TestCase):
             cm.exception.reason,
             'Invalid Parameter "archive_policy": Accepted Values are:'
             ' never, private, public.')
+
+    def test_patch_with_json_boolean(self):
+        # Ensure we can patch with JSON boolean value.
+        with transaction():
+            self._mlist.gateway_to_mail = False
+        response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config',
+            method='PATCH', headers={'Content-Type': 'application/json'},
+            json={'gateway_to_mail': True})
+        self.assertEqual(response[1].status_code, 204)
+        self.assertTrue(self._mlist.gateway_to_mail)
 
     def test_bad_pipeline_name(self):
         with self.assertRaises(HTTPError) as cm:
@@ -517,6 +533,28 @@ class TestConfiguration(unittest.TestCase):
                 dict(info=''),
                 'PATCH')
             self.assertEqual(self._mlist.info, '')
+
+    def test_patch_send_welcome_message(self):
+        with transaction():
+            self._mlist.send_welcome_message = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/send_welcome_message',
+            dict(send_welcome_message=True),
+            'PATCH')
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(self._mlist.send_welcome_message)
+
+    def test_patch_send_goodbye_message(self):
+        with transaction():
+            self._mlist.send_goodbye_message = False
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/ant.example.com/config'
+            '/send_goodbye_message',
+            dict(send_goodbye_message=True),
+            'PATCH')
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(self._mlist.send_goodbye_message)
 
     def test_delete_top_level_listconf(self):
         with self.assertRaises(HTTPError) as cm:

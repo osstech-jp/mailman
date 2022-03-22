@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,7 +23,9 @@ from click.testing import CliRunner
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_syncmembers import syncmembers
 from mailman.interfaces.bans import IBanManager
+from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
+from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import get_queue_messages, subscribe
 from mailman.testing.layers import ConfigLayer
@@ -58,8 +60,8 @@ class TestCLISyncMembers(unittest.TestCase):
             result.output,
             'Usage: syncmembers [OPTIONS] FILENAME LISTSPEC\n'
             'Try \'syncmembers --help\' for help.\n\n'
-            'Error: Invalid value for \'FILENAME\': Could not open '
-            'file: bad: No such file or directory\n')
+            'Error: Invalid value for \'FILENAME\': '
+            '\'bad\': No such file or directory\n')
 
     def test_sync_invalid_email(self):
         with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
@@ -113,6 +115,28 @@ class TestCLISyncMembers(unittest.TestCase):
            'Anne Person <aperson@example.com>\n'
            )
         self.assertEqual(len(list(self._mlist.members.members)), 0)
+
+    def test_subscription_pending(self):
+        # Pend a subscription for Anne.
+        self._mlist.subscription_policy = SubscriptionPolicy.confirm
+        address = getUtility(IUserManager).create_address(
+            'aperson@example.com', 'Anne Person')
+        ISubscriptionManager(self._mlist).register(address)
+        with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
+            print('Anne Person <aperson@example.com>', file=infp)
+            print('Bart Person <bperson@example.com>', file=infp)
+            result = self._command.invoke(syncmembers, (
+                infp.name, 'ant.example.com'))
+        self.assertEqual(result.output,
+                         '[ADD] Anne Person'
+                         ' <aperson@example.com>\n'
+                         'Subscription already pending (skipping): '
+                         'Anne Person <aperson@example.com>\n'
+                         '[ADD] Bart Person'
+                         ' <bperson@example.com>\n')
+        members = list(self._mlist.members.members)
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0].address.email, 'bperson@example.com')
 
     def test_sync_commented_lines(self):
         subscribe(self._mlist, 'Anne')
@@ -374,8 +398,8 @@ class TestCLISyncMembers(unittest.TestCase):
             'Usage: syncmembers [OPTIONS] FILENAME LISTSPEC\n'
             'Try \'syncmembers --help\' for help.\n\n'
             'Error: Invalid value for \'--delivery\' / \'-d\': '
-            'invalid choice: bogus. (choose from regular, mime, '
-            'plain, summary, disabled)\n')
+            '\'bogus\' is not one of \'regular\', \'mime\', '
+            '\'plain\', \'summary\', \'disabled\'.\n')
 
     def test_override_no_welcome(self):
         self._mlist.send_welcome_message = False

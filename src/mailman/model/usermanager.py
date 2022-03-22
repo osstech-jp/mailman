@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,7 +26,9 @@ from mailman.model.digests import OneLastDigest
 from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.model.user import User
+from mailman.utilities.queries import QuerySequence
 from public import public
+from sqlalchemy import or_
 from zope.interface import implementer
 
 
@@ -82,10 +84,10 @@ class UserManager:
     @dbconnection
     def get_user(self, store, email):
         """See `IUserManager`."""
-        addresses = store.query(Address).filter_by(email=email.lower())
-        if addresses.count() == 0:
+        address = self.get_address(email)
+        if address is None:
             return None
-        return addresses.one().user
+        return address.user
 
     @dbconnection
     def get_user_by_id(self, store, user_id):
@@ -99,7 +101,7 @@ class UserManager:
     @dbconnection
     def users(self, store):
         """See `IUserManager`."""
-        yield from store.query(User).order_by(User.id).all()
+        return QuerySequence(store.query(User).order_by(User.id))
 
     @dbconnection
     def create_address(self, store, email, display_name=None):
@@ -138,10 +140,8 @@ class UserManager:
     @dbconnection
     def get_address(self, store, email):
         """See `IUserManager`."""
-        addresses = store.query(Address).filter_by(email=email.lower())
-        if addresses.count() == 0:
-            return None
-        return addresses.one()
+        return store.query(
+            Address).filter_by(email=email.lower()).one_or_none()
 
     @property
     @dbconnection
@@ -161,3 +161,13 @@ class UserManager:
         """ See `IUserManager."""
         yield from store.query(User).filter_by(
             is_server_owner=True).order_by(User.id)
+
+    @dbconnection
+    def find_users(self, store, query):
+        """ See `IUserManager."""
+        q = '%{}%'.format(query)
+        yield from store.query(User).join(
+            Address, Address.user_id == User.id).filter(
+                or_(User.display_name.ilike(q),
+                    Address.display_name.ilike(q),
+                    Address.email.ilike(q)))

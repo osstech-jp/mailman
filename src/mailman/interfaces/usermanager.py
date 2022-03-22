@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -115,6 +115,18 @@ class IUserManager(Interface):
         :return: The matching `IAddress` object, or None if no registered
             `IAddress` matches the text address.
         :rtype: `IAddress` or None
+        """
+
+    def find_users(query):
+        """Find a user using the query string.
+
+        Search for a user using the query string for partial search of the
+        User's display_name and address or addresses' display_name.
+
+        :param query: The search string
+        :type query: str
+        :return: The matching `IUser` object or empty list.
+        :rtype: `IUser`.
         """
 
     addresses = Attribute(

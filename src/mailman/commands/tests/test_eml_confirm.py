@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,18 +21,23 @@ import re
 import unittest
 
 from mailman.app.lifecycle import create_list
+from mailman.chains.hold import HoldChain
 from mailman.commands.eml_confirm import Confirm
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.command import ContinueProcessing
 from mailman.interfaces.mailinglist import SubscriptionPolicy
+from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.subscriptions import ISubscriptionManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner, Results
 from mailman.testing.helpers import (
-    get_queue_messages, make_testable_runner,
-    specialized_message_from_string as mfs, subscribe)
+    get_queue_messages,
+    make_testable_runner,
+    specialized_message_from_string as mfs,
+    subscribe,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
 
@@ -218,3 +223,94 @@ Confirmed
 
 - Done.
 """.format(token))
+
+
+class TestConfirmMessage(unittest.TestCase):
+    """Test the `confirm` command for held messages."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._mlist.moderator_password = config.password_context.encrypt(
+            'super secret').encode('us-ascii')
+        self._mlist.respond_to_post_requests = False
+        self._mlist.admin_immed_notify = True
+        # Create a message and hold it.
+        msg = Message()
+        msg['To'] = 'test@example.com'
+        msg['From'] = 'nobody@example.com'
+        msg['Subject'] = 'A message to be held'
+        msg['Message-ID'] = '<alpha>'
+        msg.set_payload('body')
+        msgdata = dict()
+        HoldChain()._process(self._mlist, msg, msgdata)
+        # There should now be one message in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        # And the confirm command is the Subject of the third part.
+        self._command = (
+            items[0].msg.get_payload(2).get_payload(0).get('subject'))
+        self._requestdb = IListRequests(self._mlist)
+
+    def test_discard_message(self):
+        # Test that confirming the token discards the message.
+        self.assertEqual(self._requestdb.count_of(RequestType.held_message), 1)
+        # Craft a confirmation message.
+        user_response = Message()
+        user_response['From'] = 'bart@example.com'
+        user_response['To'] = 'test-request@example.com'
+        user_response['Subject'] = self._command
+        user_response.set_payload('')
+        # Process the message through the command runner.
+        config.switchboards['command'].enqueue(
+            user_response, listid='test.example.com')
+        make_testable_runner(CommandRunner, 'command').run()
+        # The held message should be disposed of.
+        self.assertEqual(self._requestdb.count_of(RequestType.held_message), 0)
+        # There should be one `results` message in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        response = items[0].msg.get_payload()
+        self.assertIn('Message discarded', response)
+
+    def test_accept_message(self):
+        # Test that confirming the token with Approved: accepts the message.
+        self.assertEqual(self._requestdb.count_of(RequestType.held_message), 1)
+        # Craft a confirmation message.
+        user_response = Message()
+        user_response['From'] = 'bart@example.com'
+        user_response['To'] = 'test-request@example.com'
+        user_response['Subject'] = self._command
+        user_response['Approved'] = 'super secret'
+        user_response.set_payload('')
+        # Process the message through the command runner.
+        config.switchboards['command'].enqueue(
+            user_response, listid='test.example.com')
+        make_testable_runner(CommandRunner, 'command').run()
+        # The held message should be disposed of.
+        self.assertEqual(self._requestdb.count_of(RequestType.held_message), 0)
+        # There should be one `results` message in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        response = items[0].msg.get_payload()
+        self.assertIn('Message accepted', response)
+
+    def test_accept_wrong_password(self):
+        # Test that confirming the token with incorrest password leaves the
+        # message held.
+        self.assertEqual(self._requestdb.count_of(RequestType.held_message), 1)
+        # Craft a confirmation message.
+        user_response = Message()
+        user_response['From'] = 'bart@example.com'
+        user_response['To'] = 'test-request@example.com'
+        user_response['Subject'] = self._command
+        user_response['Approved'] = 'wrong'
+        user_response.set_payload('')
+        # Process the message through the command runner.
+        config.switchboards['command'].enqueue(
+            user_response, listid='test.example.com')
+        make_testable_runner(CommandRunner, 'command').run()
+        # The held message should still be held.
+        self.assertEqual(self._requestdb.count_of(RequestType.held_message), 1)
+        # There should be one `results` message in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        response = items[0].msg.get_payload()
+        self.assertIn('Invalid Approved: password', response)

@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,6 +25,9 @@ import logging
 import datetime
 
 from contextlib import ExitStack
+from mailman.config import config
+from mailman.database.helpers import is_mysql
+from mailman.database.types import SAUnicode, SAUnicode4Byte
 from mailman.handlers.decorate import decorate_template
 from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IEmailValidator
@@ -36,11 +39,16 @@ from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.errors import MailmanError
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    DMARCMitigateAction, IAcceptableAliasSet, IHeaderMatchList,
-    Personalization, ReplyToMunging, SubscriptionPolicy)
+    DMARCMitigateAction,
+    IAcceptableAliasSet,
+    IHeaderMatchList,
+    Personalization,
+    ReplyToMunging,
+    SubscriptionPolicy,
+)
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus, MemberRole
 from mailman.interfaces.nntp import NewsgroupModeration
-from mailman.interfaces.template import ITemplateLoader, ITemplateManager
+from mailman.interfaces.template import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.roster import RosterVisibility
 from mailman.utilities.filesystem import makedirs
@@ -49,6 +57,7 @@ from public import public
 from sqlalchemy import Boolean
 from urllib.error import URLError
 from zope.component import getUtility
+
 
 log = logging.getLogger('mailman.error')
 
@@ -192,6 +201,19 @@ enabled: yes
     return code
 
 
+def maybe_truncate_mysql(value):
+    # For MySQL, column type SAUnicode is VARCHAR(255).  In many MySQL
+    # configurations, attempts to store longer values are fatal.
+    if is_mysql(config.db.engine) and len(value) > 255:
+        # This actually is covered but only if db is MySQL.
+        print(                                # pragma: nocover
+              """Length of value for {} is {} which is too long for MySQL.
+Truncated from {}
+to {}""".format(key, len(value), value, value[:255]), file=sys.stderr)
+        return value[:255]                    # pragma: nocover
+    return value
+
+
 # Attributes in Mailman 2 which have a different type in Mailman 3.  Some
 # types (e.g. bools) are autodetected from their SA column types.
 TYPES = dict(
@@ -249,9 +271,13 @@ DATETIME_COLUMNS = [
     ]
 
 EXCLUDES = set((
+    'accept_these_nonmembers',
     'delivery_status',
     'digest_members',
+    'discard_these_nonmembers',
+    'hold_these_nonmembers',
     'members',
+    'reject_these_nonmembers',
     'user_options',
     ))
 
@@ -265,6 +291,7 @@ def import_config_pck(mlist, config_dict):
     :param config_dict: The Mailman 2.1 configuration dictionary.
     :type config_dict: dict
     """
+    global key
     for key, value in config_dict.items():
         # Some attributes must not be directly imported.
         if key in EXCLUDES:
@@ -290,6 +317,10 @@ def import_config_pck(mlist, config_dict):
                 column = getattr(mlist.__class__, key, None)
                 if column is not None and isinstance(column.type, Boolean):
                     converter = bool
+                if column is not None \
+                        and (isinstance(column.type, SAUnicode)
+                             or isinstance(column.type, SAUnicode4Byte)):
+                    converter = maybe_truncate_mysql
             try:
                 if converter is not None:
                     value = converter(value)
@@ -437,7 +468,7 @@ def import_config_pck(mlist, config_dict):
     # special `mailman:` scheme indicating a file system path.  What we do
     # here is look to see if the list's decoration is different than the
     # default, and if so, we'll write the new decoration template to a
-    # `mailman:` scheme path, then add the template to the template manager.
+    # `mailman:` scheme path which is in the standard search path.
     # We are intentionally omitting the 2.1 welcome_msg here because the
     # string is actually interpolated into a larger template and there's
     # no good way to figure where in the default template to insert it.
@@ -462,7 +493,6 @@ def import_config_pck(mlist, config_dict):
         ('%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s\n', ''),
         ]
     # Collect defaults.
-    manager = getUtility(ITemplateManager)
     defaults = {}
     for oldvar, newvar in convert_to_uri.items():
         default_value = getUtility(ITemplateLoader).get(newvar, mlist)
@@ -510,11 +540,8 @@ def import_config_pck(mlist, config_dict):
                 expanded_text.strip() == default_text.strip()):
             # Keep the default.
             continue
-        # Write the custom value to the right file and add it to the template
-        # manager for real.
-        base_uri = 'mailman:///$listname/$language/'
+        # Write the custom value to the right file.
         filename = '{}.txt'.format(newvar)
-        manager.set(newvar, mlist.list_id, base_uri + filename)
         with ExitStack() as resources:
             filepath = list(search(resources, filename, mlist))[0]
         makedirs(os.path.dirname(filepath))
@@ -547,10 +574,11 @@ def import_config_pck(mlist, config_dict):
                 action_name = 'defer'
             import_roster(mlist, config_dict, emails, MemberRole.nonmember,
                           Action[action_name])
-            # Only keep the regexes in the legacy list property.
+            # Now add the regexes in the legacy list property.
             list_prop = getattr(mlist, prop_name)
-            for email in emails:
-                list_prop.remove(email)
+            for addr in config_dict.get(prop_name, []):
+                if addr.startswith('^'):
+                    list_prop.append(addr)
     finally:
         mlist.send_welcome_message = send_welcome_message
         mlist.admin_notify_mchanges = admin_notify_mchanges
@@ -656,18 +684,23 @@ def _import_roster(mlist, config_dict, members, role, action=None):
         # if email in config_dict.get('passwords', {}):
         #     user.password = config.password_context.encrypt(
         #         config_dict['passwords'][email])
-        # delivery_status
-        oldds = config_dict.get('delivery_status', {}).get(email, (0, 0))[0]
-        if oldds == 0:
+        # delivery_status - for members. owners/moderators are always enabled.
+        if role in (MemberRole.owner, MemberRole.moderator):
             member.preferences.delivery_status = DeliveryStatus.enabled
-        elif oldds == 1:
-            member.preferences.delivery_status = DeliveryStatus.unknown
-        elif oldds == 2:
-            member.preferences.delivery_status = DeliveryStatus.by_user
-        elif oldds == 3:
-            member.preferences.delivery_status = DeliveryStatus.by_moderator
-        elif oldds == 4:
-            member.preferences.delivery_status = DeliveryStatus.by_bounces
+        else:
+            oldds = config_dict.get(
+                'delivery_status', {}).get(email, (0, 0))[0]
+            if oldds == 0:
+                member.preferences.delivery_status = DeliveryStatus.enabled
+            elif oldds == 1:
+                member.preferences.delivery_status = DeliveryStatus.unknown
+            elif oldds == 2:
+                member.preferences.delivery_status = DeliveryStatus.by_user
+            elif oldds == 3:
+                member.preferences.delivery_status = \
+                    DeliveryStatus.by_moderator
+            elif oldds == 4:
+                member.preferences.delivery_status = DeliveryStatus.by_bounces
         # Moderation.
         if prefs is not None:
             # We're adding a member.

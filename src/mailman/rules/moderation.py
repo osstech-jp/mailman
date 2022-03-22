@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,6 +18,7 @@
 """Membership related rules."""
 
 import re
+import logging
 
 from contextlib import suppress
 from mailman.core.i18n import _
@@ -95,6 +96,20 @@ class MemberModeration:
         return False
 
 
+def _do_action(msgdata, action, sender):
+    if action is Action.defer:
+        # The regular moderation rules apply.
+        return False
+    else:
+        # We must stringify the moderation action so that it can be
+        # stored in the pending request table.
+        with _.defer_translation():
+            # This will be translated at the point of use.
+            reason = _('The message is not from a list member')
+        _record_action(msgdata, action.name, sender, reason)
+        return True
+
+
 def _record_action(msgdata, action, sender, reason):
     msgdata['member_moderation_action'] = action
     msgdata['moderation_sender'] = sender
@@ -140,6 +155,9 @@ class NonmemberModeration:
                     # This might be a list posting address in Reply-To: or
                     # some other invalid address.  In any case, ignore it.
                     mlist.subscribe(address, MemberRole.nonmember)
+        # If this message is gated from usenet the rule misses.
+        if msgdata.get('fromusenet', False):
+            return False
         # Check to see if any of the sender emails is already a member.  If
         # so, then this rule misses.
         member = _find_sender_member(mlist, msg)
@@ -151,7 +169,13 @@ class NonmemberModeration:
             assert nonmember is not None, (
                 "sender {} didn't get subscribed as a nonmember".format(sender)
                 )
-            # Check the '*_these_nonmembers' properties first.  XXX These are
+            action = nonmember.moderation_action
+            if action is not None:
+                # Do this first so a specific nonmember.moderation_action
+                # trumps the legacy settings.
+                return _do_action(msgdata, action, sender)
+            # nonmember has no moderation action so check the
+            # '*_these_nonmembers' properties.  XXX These are
             # legacy attributes from MM2.1; their database type is 'pickle' and
             # they should eventually get replaced.
             for action_name in ('accept', 'hold', 'reject', 'discard'):
@@ -159,31 +183,30 @@ class NonmemberModeration:
                     action_name)
                 checklist = getattr(mlist, legacy_attribute_name)
                 for addr in checklist:
-                    if ((addr.startswith('^') and re.match(addr, sender))
-                            or addr == sender):     # noqa: W503
-                        # accept_these_nonmembers should 'defer'.
-                        if action_name == 'accept':
-                            return False
-                        with _.defer_translation():
-                            # This will be translated at the point of use.
-                            reason = (
-                                _('The sender is in the nonmember {} list'),
-                                action_name)
-                        _record_action(msgdata, action_name, sender, reason)
-                        return True
-            action = (mlist.default_nonmember_action
-                      if nonmember.moderation_action is None
-                      else nonmember.moderation_action)
-            if action is Action.defer:
-                # The regular moderation rules apply.
-                return False
-            elif action is not None:
-                # We must stringify the moderation action so that it can be
-                # stored in the pending request table.
-                with _.defer_translation():
-                    # This will be translated at the point of use.
-                    reason = _('The message is not from a list member')
-                _record_action(msgdata, action.name, sender, reason)
-                return True
-        # The sender must be a member, so this rule does not match.
-        return False
+                    try:
+                        if ((addr.startswith('^') and re.match(addr, sender))
+                                or addr == sender):     # noqa: W503
+                            # accept_these_nonmembers should 'defer'.
+                            if action_name == 'accept':
+                                return False
+                            with _.defer_translation():
+                                # This will be translated at the point of use.
+                                reason = (_(
+                                    'The sender is in the nonmember {} list'
+                                    ), action_name)
+                            _record_action(msgdata,
+                                           action_name, sender, reason)
+                            return True
+                    except re.error as error:
+                        # The pattern is a malformed regular expression.
+                        # Log and continue with the next pattern.
+                        log = logging.getLogger('mailman.error')
+                        log.error("Invalid regexp '{}' in "
+                                  '{}_these_nonmembers for {}: {}'
+                                  .format(addr, action_name, mlist.list_id,
+                                          error.msg))
+                        continue
+            # No nonmember.moderation.action and no legacy hits for this
+            # sender - continue
+        action = mlist.default_nonmember_action
+        return _do_action(msgdata, action, sender)

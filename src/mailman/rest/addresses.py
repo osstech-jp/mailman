@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,15 +18,27 @@
 """REST for addresses."""
 
 from mailman.interfaces.address import (
-    AddressAlreadyLinkedError, ExistingAddressError, InvalidEmailAddressError)
+    AddressAlreadyLinkedError,
+    ExistingAddressError,
+    InvalidEmailAddressError,
+)
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
-    BadRequest, CollectionMixin, NotFound, bad_request, child, created, etag,
-    no_content, not_found, okay)
+    bad_request,
+    BadRequest,
+    child,
+    CollectionMixin,
+    created,
+    etag,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.members import MemberCollection
 from mailman.rest.preferences import Preferences
-from mailman.rest.validator import Validator, email_validator
+from mailman.rest.validator import email_validator, Validator
 from mailman.utilities.datetime import now
 from operator import attrgetter
 from public import public
@@ -154,6 +166,24 @@ class AnAddress(_AddressBase):
             not_found(response)
         else:
             okay(response, self._resource_as_json(self._address))
+
+    def on_patch(self, request, response):
+        """Patch an existing Address."""
+        if self._address is None:
+            not_found(response)
+        else:
+            # The only attribute of a address that can be PATCH'd is the
+            # display_name. To change the verified_on, use the /verify
+            # endpoint.
+            validator = Validator(display_name=str)
+            try:
+                data = validator(request)
+            except ValueError as error:
+                bad_request(response, str(error))
+                return
+            display_name = data.pop('display_name')
+            self._address.display_name = display_name
+            no_content(response)
 
     def on_delete(self, request, response):
         if self._address is None:

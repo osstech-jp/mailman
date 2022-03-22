@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -16,6 +16,7 @@
 # GNU Mailman.  If not, see <https://www.gnu.org/licenses/>.
 
 """The 'mailman' command dispatcher."""
+import os
 import click
 
 from mailman.commands.cli_help import help as help_command
@@ -103,6 +104,12 @@ def initialize_config(ctx, param, value):
     MAILMAN_CONFIG_FILE is consulted and used if set.  If neither are given, a
     default configuration file is loaded."""),
     is_eager=True, callback=initialize_config)
+@click.option(
+    '--run-as-root',
+    is_flag=True, default=False,
+    help=_("""\
+    Running mailman commands as root is not recommended and mailman will
+    refuse to run as root unless this option is specified."""))
 @click.group(
     cls=Subcommands,
     context_settings=dict(help_option_names=['-h', '--help']),
@@ -110,13 +117,17 @@ def initialize_config(ctx, param, value):
 @click.pass_context
 @click.version_option(MAILMAN_VERSION_FULL, message='%(version)s')
 @public
-def main(ctx, config_file):
+def main(ctx, config_file, run_as_root):
     # XXX https://github.com/pallets/click/issues/303
     """\
     The GNU Mailman mailing list management system
     Copyright 1998-2018 by the Free Software Foundation, Inc.
     http://www.list.org
     """
+    # Only run as root if allowed.
+    if os.geteuid() == 0 and not run_as_root:
+        raise click.UsageError(_("""\
+    If you are sure you want to run as root, specify --run-as-root."""))
     # click handles dispatching to the subcommand via the Subcommands class.
     if ctx.invoked_subcommand is None:
         ctx.invoke(help_command)

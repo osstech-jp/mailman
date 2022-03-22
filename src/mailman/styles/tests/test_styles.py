@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,10 +23,13 @@ from mailman.app.lifecycle import create_list
 from mailman.interfaces.archiver import ArchivePolicy
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.styles import (
-    DuplicateStyleError, IStyle, IStyleManager)
+    DuplicateStyleError,
+    IStyle,
+    IStyleManager,
+)
 from mailman.testing.layers import ConfigLayer
 from zope.component import getUtility
-from zope.interface import Invalid, implementer
+from zope.interface import implementer, Invalid
 
 
 @implementer(IStyle)

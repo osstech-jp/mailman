@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -61,6 +61,8 @@ class PostingPipeline(BasePipeline):
         # All decoration is now done in delivery.
         # 'decorate',
         'dmarc',
-        'arc-sign',
+        # Message decoration in delivery can break an arc signature, so sign
+        # in delivery after decorating.
+        # 'arc-sign',
         'to-outgoing',
         )

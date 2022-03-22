@@ -6,9 +6,9 @@
 # <https://creativecommons.org/publicdomain/zero/1.0/>
 
 try:
-    import smtplib
-    import sys
     import os
+    import sys
+    import smtplib
 
     lmtp_host = sys.argv[3] if len(sys.argv) > 3 else 'localhost'
     lmtp = smtplib.LMTP(lmtp_host, int(sys.argv[1]))

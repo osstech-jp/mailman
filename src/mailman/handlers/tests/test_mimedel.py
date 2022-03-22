@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,7 +24,7 @@ import shutil
 import tempfile
 import unittest
 
-from contextlib import ExitStack, contextmanager
+from contextlib import contextmanager, ExitStack
 from importlib_resources import open_binary as resource_open, read_text
 from io import StringIO
 from mailman.app.lifecycle import create_list
@@ -35,8 +35,11 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pipeline import DiscardMessage, RejectMessage
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, configuration, get_queue_messages,
-    specialized_message_from_string as mfs)
+    configuration,
+    get_queue_messages,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 from zope.component import getUtility
@@ -46,11 +49,14 @@ from zope.component import getUtility
 def dummy_script(arg=''):
     exe = sys.executable
     non_ascii = ''
+    report = 'no'
     if arg == 'non-ascii':
         non_ascii = '‘...’'
     extra = ''
     if arg == 'scripterr':
         extra = 'error'
+    if arg == 'report':
+        report = 'yes'
     with ExitStack() as resources:
         tempdir = tempfile.mkdtemp()
         resources.callback(shutil.rmtree, tempdir)
@@ -69,7 +75,9 @@ print(open(sys.argv[1]).readlines()[0])
         config.push('dummy script', """\
 [mailman]
 html_to_plain_text_command = {exe} {script} {extra} $filename
-""".format(exe=exe, script=filter_path, extra=extra))
+filter_report = {report}
+""".format(exe=exe, script=filter_path, extra=extra, report=report))
+
         resources.callback(config.pop, 'dummy script')
         if arg == 'nonexist':
             os.rename(filter_path, filter_path + 'xxx')
@@ -351,6 +359,22 @@ MIME-Version: 1.0
         payload_lines = msg.get_payload().splitlines()
         self.assertEqual(payload_lines[0], '<html><head></head>')
 
+    def test_html_part_with_non_ascii(self):
+        # Ensure we can convert HTML to plain text in an HTML sub-part which
+        # contains non-ascii.
+        with resource_open(
+                'mailman.handlers.tests.data',
+                'html_to_plain.eml') as fp:
+            msg = email.message_from_binary_file(fp)
+        process = config.handlers['mime-delete'].process
+        with dummy_script():
+            process(self._mlist, msg, {})
+        part = msg.get_payload(1)
+        cset = part.get_content_charset('us-ascii')
+        text = part.get_payload(decode=True).decode(cset).splitlines()
+        self.assertEqual(text[0], 'Converted text/html to text/plain')
+        self.assertEqual(text[2], 'Um frühere Nachrichten')
+
 
 class TestMiscellaneous(unittest.TestCase):
     """Test various miscellaneous filtering actions."""
@@ -517,4 +541,83 @@ spreadsheet
         self.assertEqual(msg['content-type'], 'text/plain; charset="utf-8"')
         self.assertEqual(msg.get_payload(decode=True), b"""\
 Plain text
+""")
+
+    def test_report(self):
+        # Hit all the pass and filter conditions for reporting
+        self._mlist.pass_extensions = ['txt']
+        self._mlist.filter_types = ['image']
+        self._mlist.pass_types = ['text', 'application', 'multipart']
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: Testing mixed extension
+Message-ID: <ant>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="AAAA"
+
+--AAAA
+Content-Type: multipart/alternative; boundary="BBBB"
+
+--BBBB
+Content-Type: text/plain; charset="utf-8"
+
+Plain text
+
+--BBBB
+Content-Type: text/html; charset="utf-8"
+
+HTML text
+
+--BBBB--
+--AAAA
+Content-Type: application/octet-stream; name="test.xlsX"
+Content-Disposition: attachment; filename="test.xlsX"
+
+spreadsheet
+
+--AAAA
+Content-Type: application/octet-stream; name="test.exe"
+Content-Disposition: attachment; filename="test.exe"
+
+executable
+
+--AAAA
+Content-Type: image/jpeg; name="My_image"
+Content-Disposition: inline; filename="My_image"
+
+image
+
+--AAAA
+Content-Type: video/mp4; name="My_video"
+Content-Disposition: inline; filename="My_video"
+
+video
+
+--AAAA--
+""")
+        process = config.handlers['mime-delete'].process
+        with dummy_script('report'):
+            process(self._mlist, msg, {})
+        self.assertEqual(msg['content-type'], 'text/plain; charset="utf-8"')
+        self.assertEqual(msg.get_payload(decode=True), b"""\
+Plain text
+
+___________________________________________
+Mailman's content filtering has removed the
+following MIME parts from this message.
+
+Content-Type: application/octet-stream
+    Name: test.xlsX
+
+Content-Type: application/octet-stream
+    Name: test.exe
+
+Content-Type: image/jpeg
+    Name: My_image
+
+Content-Type: video/mp4
+    Name: My_video
+
+Replaced multipart/alternative part with first alternative.
 """)

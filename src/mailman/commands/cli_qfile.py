@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -67,14 +67,14 @@ def qfile(doprint, interactive, qfile):
         print(_('[----- start pickle -----]'))
         for i, obj in enumerate(m):
             count = i + 1
-            print(_('<----- start object $count ----->'))
+            print(_('<----- start object ${count} ----->'))
             if isinstance(obj, (bytes, str)):
                 print(obj)
             else:
                 printer.pprint(obj)
         print(_('[----- end pickle -----]'))
     count = len(m)                              # noqa: F841
-    banner = _("Number of objects found (see the variable 'm'): $count")
+    banner = _("Number of objects found (see the variable 'm'): ${count}")
     if interactive:
         interact(banner=banner)
 

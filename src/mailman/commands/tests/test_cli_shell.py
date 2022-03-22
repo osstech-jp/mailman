@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -32,8 +32,9 @@ from mailman.utilities.modules import hacked_sys_modules
 from types import ModuleType
 from unittest.mock import MagicMock, patch
 
+
 try:
-    import readline                                 # noqa: F401
+    import readline  # noqa: F401
     has_readline = True
 except ImportError:
     has_readline = False

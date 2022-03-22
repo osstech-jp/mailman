@@ -1,10 +1,10 @@
-La tua mailing list '$listname' è stata appena creata.  Di seguito sono riportate alcune informazioni 
-basilari riguardanti la nuova mailing list.
+La mailing list '$listname' è stata appena creata per te.  Di
+seguito sono riportate alcune informazioni di base sulla tua mailing list.
 
-Esiste un'interfaccia basata sulle e-mail per gli utenti (non amministratori) della tua lista;
-puoi ottenere delle informazioni sull'uso semplicemente inviando un messaggio con la sola parola "help"
-nell'oggetto oppure nel corpo del seguente indirizzo:
+Esiste un'interfaccia basata su posta elettronica per gli utenti (non gli amministratori) della tua lista;
+puoi ottenere informazioni sull'utilizzo inviando un messaggio con la sola parola 'help'
+come soggetto o nel corpo del messaggio, a:
 
     $request_email
 
-Per qualsiasi domanda, si prega di rivolgersi a $site_email.
+Per favore indirizza tutte le domande a $site_email.

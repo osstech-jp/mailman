@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,7 +28,7 @@ from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.filesystem import path as resource_path
-from mailman.utilities.i18n import TemplateNotFoundError, find, search
+from mailman.utilities.i18n import find, search, TemplateNotFoundError
 from zope.component import getUtility
 
 

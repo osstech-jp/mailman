@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,7 +24,7 @@ import errno
 import signal
 import logging
 
-from mailman.bin.master import WatcherState, master_state
+from mailman.bin.master import master_state, WatcherState
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
@@ -144,18 +144,18 @@ def kill_watcher(sig):
     try:
         with open(config.PID_FILE) as fp:
             pid = int(fp.read().strip())
-    except (IOError, ValueError) as error:
+    except (IOError, ValueError) as error:        # pragma: nocover
         # For i18n convenience
-        print(_('PID unreadable in: $config.PID_FILE'), file=sys.stderr)
+        print(_('PID unreadable in: ${config.PID_FILE}'), file=sys.stderr)
         print(error, file=sys.stderr)
         print(_('Is the master even running?'), file=sys.stderr)
         return
     try:
         os.kill(pid, sig)
-    except OSError as error:
+    except OSError as error:                      # pragma: nocover
         if error.errno != errno.ESRCH:
             raise
-        print(_('No child with pid: $pid'), file=sys.stderr)
+        print(_('No child with pid: ${pid}'), file=sys.stderr)
         print(error, file=sys.stderr)
         print(_('Stale pid file removed.'), file=sys.stderr)
         os.unlink(config.PID_FILE)

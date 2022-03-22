@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,7 +21,9 @@ import sys
 import click
 
 from mailman.app.digests import (
-    bump_digest_number_and_volume, maybe_send_digest_now)
+    bump_digest_number_and_volume,
+    maybe_send_digest_now,
+)
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
@@ -87,7 +89,7 @@ def digests(ctx, list_ids, send, bump, dry_run, verbose, periodic):
             else:
                 mlist = list_manager.get_by_list_id(spec)
             if mlist is None:
-                print(_('No such list found: $spec'), file=sys.stderr)
+                print(_('No such list found: ${spec}'), file=sys.stderr)
             else:
                 lists.append(mlist)
     else:
@@ -96,19 +98,20 @@ def digests(ctx, list_ids, send, bump, dry_run, verbose, periodic):
         for mlist in lists:
             if verbose:
                 print(_('\
-$mlist.list_id is at volume $mlist.volume, number \
+${mlist.list_id} is at volume ${mlist.volume}, number \
 ${mlist.next_digest_number}'))
             if not dry_run:
                 bump_digest_number_and_volume(mlist)
                 if verbose:
                     print(_('\
-$mlist.list_id bumped to volume $mlist.volume, number \
+${mlist.list_id} bumped to volume ${mlist.volume}, number \
 ${mlist.next_digest_number}'))
     if send:
         for mlist in lists:
             if verbose:
                 print(_('\
-$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}'))
+${mlist.list_id} sent volume ${mlist.volume}, number \
+${mlist.next_digest_number}'))
             if not dry_run:
                 maybe_send_digest_now(mlist, force=True)
 
@@ -117,7 +120,8 @@ $mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}'))
             if mlist.digest_send_periodic:
                 if verbose:
                     print(_('\
-$mlist.list_id sent volume $mlist.volume, number ${mlist.next_digest_number}'))
+${mlist.list_id} sent volume ${mlist.volume}, number \
+${mlist.next_digest_number}'))
                 if not dry_run:
                     maybe_send_digest_now(mlist, force=True)
 

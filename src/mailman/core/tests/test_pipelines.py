@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,11 +26,17 @@ from mailman.handlers.to_outgoing import ToOutgoing
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pipeline import (
-    DiscardMessage, IPipeline, RejectMessage)
+    DiscardMessage,
+    IPipeline,
+    RejectMessage,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
-    LogFileMark, digest_mbox, get_queue_messages,
-    specialized_message_from_string as mfs)
+    digest_mbox,
+    get_queue_messages,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 from operator import delitem
 from zope.component import getUtility

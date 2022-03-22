@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,24 +18,48 @@
 """REST for members."""
 
 from lazr.config import as_boolean
-from mailman.app.membership import add_member, delete_member
+from mailman.app.membership import add_member
 from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
-    MembershipIsBannedError, MissingPreferredAddressError)
+    AlreadySubscribedError,
+    DeliveryMode,
+    DeliveryStatus,
+    MemberRole,
+    MembershipError,
+    MembershipIsBannedError,
+    MissingPreferredAddressError,
+)
 from mailman.interfaces.subscriptions import (
-    ISubscriptionManager, ISubscriptionService, RequestRecord,
-    SubscriptionPendingError, TokenOwner)
+    ISubscriptionManager,
+    ISubscriptionService,
+    RequestRecord,
+    SubscriptionPendingError,
+    TokenOwner,
+)
 from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
-    CollectionMixin, NotFound, accepted, bad_request, child, conflict,
-    created, etag, no_content, not_found, okay)
+    accepted,
+    bad_request,
+    child,
+    CollectionMixin,
+    conflict,
+    created,
+    etag,
+    no_content,
+    not_found,
+    NotFound,
+    okay,
+)
 from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
-    Validator, enum_validator, list_of_strings_validator, subscriber_validator)
+    enum_validator,
+    list_of_strings_validator,
+    subscriber_validator,
+    Validator,
+)
 from operator import attrgetter
 from public import public
 from uuid import UUID
@@ -61,6 +85,10 @@ class _MemberBase(CollectionMixin):
         # issue #121 for details.
         return {
             'address': self._get_address,
+            'bounce_score': attrgetter('bounce_score'),
+            'last_bounce_received': attrgetter('last_bounce_received'),
+            'last_warning_sent': attrgetter('last_warning_sent'),
+            'total_warnings_sent': attrgetter('total_warnings_sent'),
             'delivery_mode': attrgetter('delivery_mode'),
             'email': attrgetter('address.email'),
             'list_id': attrgetter('list_id'),
@@ -206,10 +234,39 @@ class AMember(_MemberBase):
             return
         mlist = getUtility(IListManager).get_by_list_id(self._member.list_id)
         if self._member.role is MemberRole.member:
-            delete_member(mlist, self._member.address.email, False, False)
+            try:
+                values = Validator(
+                    pre_confirmed=as_boolean,
+                    pre_approved=as_boolean,
+                    _optional=('pre_confirmed', 'pre_approved'),
+                    )(request)
+            except ValueError as error:
+                bad_request(response, str(error))
+                return
+            manager = ISubscriptionManager(mlist)
+            # XXX(maxking): For backwards compat, we are going to keep
+            # pre-confirmed to be "True" by defualt instead of "False", that it
+            # should be. Any, un-authenticated requests should manually specify
+            # that it is *not* confirmed by the user.
+            if 'pre_confirmed' in values:
+                pre_confirmed = values.get('pre_confirmed')
+            else:
+                pre_confirmed = True
+            token, token_owner, member = manager.unregister(
+                self._member.address,
+                pre_approved=values.get('pre_approved'),
+                pre_confirmed=pre_confirmed)
+            if member is None:
+                assert token is None
+                assert token_owner is TokenOwner.no_one
+                no_content(response)
+            else:
+                assert token is not None
+                content = dict(token=token, token_owner=token_owner.name)
+                accepted(response, etag(content))
         else:
             self._member.unsubscribe()
-        no_content(response)
+            no_content(response)
 
     def on_patch(self, request, response):
         """Patch the membership.
@@ -259,6 +316,7 @@ class AllMembers(_MemberBase):
                 subscriber=subscriber_validator(self.api),
                 display_name=str,
                 delivery_mode=enum_validator(DeliveryMode),
+                delivery_status=enum_validator(DeliveryStatus),
                 role=enum_validator(MemberRole),
                 pre_verified=as_boolean,
                 pre_confirmed=as_boolean,
@@ -267,7 +325,8 @@ class AllMembers(_MemberBase):
                 send_welcome_message=as_boolean,
                 _optional=('delivery_mode', 'display_name', 'role',
                            'pre_verified', 'pre_confirmed', 'pre_approved',
-                           'invitation', 'send_welcome_message',))
+                           'invitation', 'send_welcome_message',
+                           'delivery_status'))
             arguments = validator(request)
         except ValueError as error:
             bad_request(response, str(error))
@@ -311,6 +370,8 @@ class AllMembers(_MemberBase):
             pre_approved = arguments.pop('pre_approved', False)
             invitation = arguments.pop('invitation', False)
             send_welcome_message = arguments.pop('send_welcome_message', None)
+            delivery_status = arguments.pop('delivery_status', None)
+            delivery_mode = arguments.pop('delivery_mode', None)
             # Now we can run the registration process until either the
             # subscriber is subscribed, or the workflow is paused for
             # verification, confirmation, or approval.
@@ -322,7 +383,9 @@ class AllMembers(_MemberBase):
                     pre_confirmed=pre_confirmed,
                     pre_approved=pre_approved,
                     invitation=invitation,
-                    send_welcome_message=send_welcome_message)
+                    send_welcome_message=send_welcome_message,
+                    delivery_mode=delivery_mode,
+                    delivery_status=delivery_status)
             except AlreadySubscribedError:
                 conflict(response, b'Member already subscribed')
                 return
@@ -384,7 +447,10 @@ class AllMembers(_MemberBase):
             assert IAddress.providedBy(subscriber)
             email = subscriber.email
         delivery_mode = arguments.pop('delivery_mode', DeliveryMode.regular)
-        record = RequestRecord(email, display_name, delivery_mode)
+        delivery_status = arguments.pop('delivery_status', None)
+        record = RequestRecord(
+            email, display_name, delivery_mode,
+            delivery_status=delivery_status)
         try:
             member = add_member(mlist, record, role)
         except MembershipIsBannedError:
@@ -437,12 +503,18 @@ class FindMembers(_MemberBase):
             list_id=str,
             subscriber=str,
             role=enum_validator(MemberRole),
+            moderation_action=enum_validator(Action, allow_blank=True),
+            # preferences.
+            delivery_mode=enum_validator(DeliveryMode),
+            delivery_status=enum_validator(DeliveryStatus),
             # Allow pagination.
             page=int,
             count=int,
             fields=list_of_strings_validator,
             _optional=(
-                'list_id', 'subscriber', 'role', 'page', 'count', 'fields'))
+                'list_id', 'subscriber', 'role', 'moderation_action',
+                'delivery_mode', 'delivery_status',
+                'page', 'count', 'fields'))
         try:
             data = validator(request)
         except ValueError as error:

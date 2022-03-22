@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -36,7 +36,8 @@ from mailman.bin.master import Loop as Master
 from mailman.config import config
 from mailman.database.transaction import transaction
 from mailman.email.message import Message
-from mailman.interfaces.member import MemberRole
+from mailman.interfaces.action import Action
+from mailman.interfaces.member import DeliveryStatus, MemberRole
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
@@ -85,7 +86,10 @@ def make_testable_runner(runner_class, name=None, predicate=None):
             """Stop when the queue is empty."""
             super()._do_periodic()
             if predicate is None:
-                self._stop = (len(self.switchboard.files) == 0)
+                if self.switchboard is None:
+                    self._stop = True
+                else:
+                    self._stop = (len(self.switchboard.files) == 0)
             else:
                 self._stop = predicate(self)
 
@@ -290,7 +294,7 @@ def call_api(url, data=None, method=None, username=None, password=None,
     :type username: str
     :param password: The HTTP Basic Auth password.  None means use the value
         from the configuration.
-    :type username: str
+    :type password: str
     :param headers: List of additional headers to be included with the request.
     :type headers: A dictionary of {'Header': 'Value'}
     :param json: JSON body for the request.
@@ -600,3 +604,15 @@ def nose2_start_test_run_callback(plugin):
     if (plugin.stderr or
             len(os.environ.get('MM_VERBOSE_TESTLOG', '').strip()) > 0):
         ConfigLayer.stderr = True
+
+
+def set_moderation(mlist, subscriber, action):
+    """Set moderation action for the subscriber of mailing list."""
+    member = mlist.members.get_member(subscriber)
+    member.moderation_action = Action[action]
+
+
+def set_delivery(mlist, subscriber, delivery_status):
+    """Set delivery_status to DeliveryStatus"""
+    member = mlist.members.get_member(subscriber)
+    member.preferences.delivery_status = DeliveryStatus[delivery_status]

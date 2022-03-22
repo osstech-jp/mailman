@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -72,11 +72,25 @@ class TestCache(unittest.TestCase):
         contents = self._cachemgr.get('abc')
         self.assertEqual(contents, 'xyz')
 
+    def test_get_str_missing(self):
+        # Store a str, get a str even if file is missing.
+        file_id = self._cachemgr.add('abc', 'xyz')
+        os.remove(self._cachemgr._id_to_path(file_id)[0])
+        contents = self._cachemgr.get('abc')
+        self.assertEqual(contents, 'Cache content lost')
+
     def test_get_bytes(self):
         # Store a bytes, get a bytes.
         self._cachemgr.add('abc', b'xyz')
         contents = self._cachemgr.get('abc')
         self.assertEqual(contents, b'xyz')
+
+    def test_get_bytes_missing(self):
+        # Store a bytes, get a bytes even if file is missing.
+        file_id = self._cachemgr.add('abc', b'xyz')
+        os.remove(self._cachemgr._id_to_path(file_id)[0])
+        contents = self._cachemgr.get('abc')
+        self.assertEqual(contents, b'Cache content lost')
 
     def test_get_str_expunge(self):
         # When the entry is not expunged, it can be gotten multiple times.
@@ -84,6 +98,15 @@ class TestCache(unittest.TestCase):
         self._cachemgr.add('abc', 'xyz')
         self.assertEqual(self._cachemgr.get('abc'), 'xyz')
         self.assertEqual(self._cachemgr.get('abc', expunge=True), 'xyz')
+        self.assertIsNone(self._cachemgr.get('abc'))
+
+    def test_get_str_expunge_missing(self):
+        # Test get expunge works even if file is missing.
+        file_id = self._cachemgr.add('abc', 'xyz')
+        os.remove(self._cachemgr._id_to_path(file_id)[0])
+        self.assertEqual(self._cachemgr.get('abc'), 'Cache content lost')
+        self.assertEqual(self._cachemgr.get('abc', expunge=True),
+                         'Cache content lost')
         self.assertIsNone(self._cachemgr.get('abc'))
 
     @configuration('mailman', cache_life='1d')
@@ -98,6 +121,15 @@ class TestCache(unittest.TestCase):
         self.assertIsNone(self._cachemgr.get('abc'))
         self.assertEqual(self._cachemgr.get('def'), 'uvw')
 
+    def test_evict_expired_missing(self):
+        # Evicting expired entries works even if file is missing.
+        file_id = self._cachemgr.add('abc', 'xyz', lifetime=timedelta(hours=3))
+        self.assertEqual(self._cachemgr.get('abc'), 'xyz')
+        os.remove(self._cachemgr._id_to_path(file_id)[0])
+        factory.fast_forward(days=1)
+        self._cachemgr.evict_expired()
+        self.assertIsNone(self._cachemgr.get('abc'))
+
     def test_evict(self):
         # Evicting a single cached file makes them inaccessible.
         self._cachemgr.add('abc', 'xyz', lifetime=timedelta(hours=2))
@@ -106,6 +138,14 @@ class TestCache(unittest.TestCase):
         self.assertIsNone(self._cachemgr.get('abc'))
         # Nothing happens if we try to evict a non-existent cache entry.
         self.assertIsNone(self._cachemgr.evict('somenonexistentid'))
+
+    def test_evict_missing(self):
+        # Evicting a single entry works even if file is missing.
+        file_id = self._cachemgr.add('abc', 'xyz')
+        self.assertEqual(self._cachemgr.get('abc'), 'xyz')
+        os.remove(self._cachemgr._id_to_path(file_id)[0])
+        self._cachemgr.evict('abc')
+        self.assertIsNone(self._cachemgr.get('abc'))
 
     def test_clear(self):
         # Clearing the cache gets rid of all entries, regardless of lifetime.
@@ -117,3 +157,11 @@ class TestCache(unittest.TestCase):
         self._cachemgr.clear()
         self.assertIsNone(self._cachemgr.get('abc'))
         self.assertIsNone(self._cachemgr.get('xyz'))
+
+    def test_clear_missing(self):
+        # Clearing the cache works even if file is missing.
+        file_id = self._cachemgr.add('abc', 'xyz')
+        self.assertEqual(self._cachemgr.get('abc'), 'xyz')
+        os.remove(self._cachemgr._id_to_path(file_id)[0])
+        self._cachemgr.clear()
+        self.assertIsNone(self._cachemgr.get('abc'))

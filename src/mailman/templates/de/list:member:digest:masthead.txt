@@ -1,4 +1,4 @@
-Senden Sie Nachrichten an die $display_name Mailingliste an
+Senden Sie Beiträge für die Mailingliste $display_name an
 	$listname
 
 Um die Liste per E-Mail zu abonnieren oder um sich abzumelden,
@@ -8,6 +8,5 @@ senden Sie bitte Nachricht mit dem Betreff oder Inhalt 'help' an
 Sie erreichen die Administator*in dieser Liste unter
 	$owner_email
 
-Wenn Sie antworten, ergänzen Sie bitte den Betreff der Nachricht, so
-dass er aussagekräftiger ist als
-"Re: Inhalt von $display_name Zusammenfassung..."
+Wenn Sie antworten, bearbeiten Sie bitte die Betreffzeile, damit sie 
+aussagekräftiger ist als "Re: Inhalt des $display_name Digest..."

@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2016-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,7 +24,7 @@ from contextlib import ExitStack
 from datetime import timedelta
 from dns.exception import DNSException
 from dns.rdatatype import CNAME, TXT
-from dns.resolver import NXDOMAIN, NoAnswer, NoNameservers
+from dns.resolver import NoAnswer, NoNameservers, NXDOMAIN
 from email import message_from_bytes
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from importlib_resources import path
@@ -34,8 +34,11 @@ from mailman.config import config
 from mailman.interfaces.mailinglist import DMARCMitigateAction
 from mailman.rules import dmarc
 from mailman.testing.helpers import (
-    LogFileMark, configuration, specialized_message_from_string as mfs,
-    wait_for_webservice)
+    configuration,
+    LogFileMark,
+    specialized_message_from_string as mfs,
+    wait_for_webservice,
+)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from public import public
@@ -414,12 +417,12 @@ To: ant@example.com
         mark = LogFileMark('mailman.error')
         rule = dmarc.DMARCMitigation()
         with get_dns_resolver(rmult=True):
-            self.assertTrue(rule.check(mlist, msg, {}))
+            self.assertFalse(rule.check(mlist, msg, {}))
         line = mark.readline()
         self.assertEqual(
-            line[-85:],
+            line[-95:],
             'RRset of TXT records for _dmarc.example.biz has 2 '
-            'v=DMARC1 entries; testing them all\n')
+            'v=DMARC1 entries; ignoring them per RFC 7849\n')
 
     def test_multiple_cnames(self):
         mlist = create_list('ant@example.com')

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,6 +17,7 @@
 
 """Test the message API."""
 
+import sys
 import unittest
 
 from email import message_from_binary_file
@@ -26,7 +27,10 @@ from email.utils import _has_surrogates
 from importlib_resources import path
 from mailman.app.lifecycle import create_list
 from mailman.email.message import Message, UserNotification
-from mailman.testing.helpers import get_queue_messages
+from mailman.testing.helpers import (
+    get_queue_messages,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import ConfigLayer
 
 
@@ -98,6 +102,23 @@ Test content
         # Make sure the senders property does not fail
         self.assertEqual(msg.senders, ['test@example.com'])
 
+    def test_senders_long_header(self):
+        msg = Message()
+        msg['From'] = (
+            '"User, A. Very Long Name W. (CNTR-DEPT)[An Employer,\r\n'
+            ' Inc.]" <a.user-1@example.org>'
+            )
+        self.assertEqual(msg.senders, ['a.user-1@example.org'])
+
+    def test_senders_multiple_addresses(self):
+        msg = Message()
+        msg['From'] = 'Anne <anne@example.com>'
+        msg['Reply-To'] = 'Bart <bart@example.com>, Cate <cate@example.com>'
+        self.assertEqual(msg.senders,
+                         ['anne@example.com',
+                          'bart@example.com',
+                          'cate@example.com'])
+
     def test_user_notification_bad_charset(self):
         msg = UserNotification(
             'aperson@example.com',
@@ -107,11 +128,26 @@ Test content
         self.assertEqual(msg.get_payload(), 'Non-ascii text ?.')
 
     def test_as_string_python_bug_27321(self):
+        # Bug 27321 is fixed in Python 3.8.7rc1, 3.9.1rc1 and later.
         with path('mailman.email.tests.data', 'bad_email.eml') as email_path:
             with open(str(email_path), 'rb') as fp:
                 msg = message_from_binary_file(fp, Message)
                 fp.seek(0)
                 text = fp.read().decode('ascii', 'replace')
+        if (sys.version_info.minor == 8 and sys.hexversion >= 0x030807C1 or
+                sys.hexversion >= 0x030901C1):
+            self.assertEqual(msg.as_string(), """\
+To: <test@example.com>
+Subject: =?koi8-r?B?UF9AX/NfQ1/5X+xfS1/p?=
+From: =?koi8-r?B?8sXL0sXB1MnXzs/FIMHHxc7U09TXzw==?=
+Content-Type: text/plain; charset="koi8-r"
+Message-Id: <20160614102505.9OFQ19L1C>
+Content-Transfer-Encoding: base64
+
+/vTvIPTh6+/lIPLl6+zh7e7h8SDy4fPz+ezr4T8K68HLz8ogz9TLzMnLINbEwdTYIM/UINzUz8fP
+IM3F1M/EwSDQz8nTy8Egy8zJxc7Uz9c/Cg==
+""")
+        else:
             self.assertEqual(msg.as_string(), text)
 
     def test_as_string_python_bug_32330(self):
@@ -127,6 +163,19 @@ Test content
             with open(str(email_path), 'rb') as fp:
                 msg = message_from_binary_file(fp, Message)
         self.assertFalse(_has_surrogates(msg.as_string()))
+
+    def test_as_bytes_python_bug_41307(self):
+        msgstr = """\
+To: list@example.com
+From: user@example.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Message with \u201cNon-ascii\u201d.
+"""
+        msg = mfs(msgstr)
+        self.assertEqual(msg.as_bytes(), msgstr.encode('utf-8'))
 
     def test_bogus_content_charset(self):
         with path('mailman.email.tests.data', 'bad_email_3.eml') as email_path:

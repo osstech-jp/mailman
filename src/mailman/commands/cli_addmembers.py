@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2020 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2022 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,9 +27,15 @@ from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, DeliveryStatus,
-    MembershipIsBannedError)
-from mailman.interfaces.subscriptions import ISubscriptionManager
+    AlreadySubscribedError,
+    DeliveryMode,
+    DeliveryStatus,
+    MembershipIsBannedError,
+)
+from mailman.interfaces.subscriptions import (
+    ISubscriptionManager,
+    SubscriptionPendingError,
+)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.options import I18nCommand
 from public import public
@@ -64,7 +70,7 @@ def add_members(mlist, in_fp, delivery, invite, welcome_msg):
         # returns ('', 'foobar@') in python 3.6.7 and 3.7.1 so check validity.
         if not email_validator.is_valid(email):
             line = line.strip()
-            print(_('Cannot parse as valid email address (skipping): $line'),
+            print(_('Cannot parse as valid email address (skipping): ${line}'),
                   file=sys.stderr)
             continue
         subscriber = get_addr(display_name, email, user_manager)
@@ -95,9 +101,13 @@ def add_members(mlist, in_fp, delivery, invite, welcome_msg):
         except AlreadySubscribedError:
             # It's okay if the address is already subscribed, just print a
             # warning and continue.
-            print(_('Already subscribed (skipping): $email'), file=sys.stderr)
+            print(_('Already subscribed (skipping): ${email}'),
+                  file=sys.stderr)
         except MembershipIsBannedError:
-            print(_('Membership is banned (skipping): $email'),
+            print(_('Membership is banned (skipping): ${email}'),
+                  file=sys.stderr)
+        except SubscriptionPendingError:
+            print(_('Subscription already pending (skipping): ${email}'),
                   file=sys.stderr)
 
 
@@ -133,7 +143,7 @@ def addmembers(ctx, in_fp, delivery, invite, welcome_msg, listspec):
     """Add members to a mailing list."""
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
-        ctx.fail(_('No such list: $listspec'))
+        ctx.fail(_('No such list: ${listspec}'))
     add_members(mlist, in_fp, delivery, invite, welcome_msg)
 
 
