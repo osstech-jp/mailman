@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2021-08-29 13:33+0000\n"
+"PO-Revision-Date: 2022-03-22 10:08+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/mailman/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.8.1-dev\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 4.12-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -140,7 +142,7 @@ msgstr "הוזמנת להצטרף לרשימת הדיוור ${event.mlist.fqdn_l
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "נדרש אימות מצדך כדי לעזוב את רשימת הדיוור mailing list."
+msgstr "נדרש אימות מצדך כדי לעזוב את רשימת הדיוור {event.mlist.fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
@@ -333,6 +335,20 @@ msgid ""
 "    set which subtly changes some error handling behavior.\n"
 "    "
 msgstr ""
+"    הפעלת אצן.\n"
+"\n"
+"    האצן שצוין בשורת הפקודה הופעל והוא יכול לפעול דרך הלולאה הראשונה\n"
+"    שלו עם אחת (לאצנים שתומכים בזה) או באופן רצוף. האפשרות השנייה\n"
+"    היא הדרך בה האצן הראשי מפעיל את כל תת־התהליכים שלו.\n"
+"\n"
+"    ‎-r דרוש אלמלא סופקו ‎-l או ‎-h, והמשתנים שלו חייבים להיות אחד מהשמות\n"
+"    שמצוינים על ידי הפקודה ‎-l.\n"
+"\n"
+"    בדרך כלל, את הסקריפט הזה יש להפעיל דרך `mailman start`.  הפעלתו\n"
+"    בנפרד או עם ‎-o שימושית בדרך כלל לניפוי שגיאות.  הפעלה באופן הזה\n"
+"    מובילה לכך שהמשתנה הסביבתי ‎$MAILMAN_UNDER_MASTER_CONTROL\n"
+"    יוגדר, מה שמוביל לשינויים קלים בחלק מהתנהגות הטיפול בשגיאות.\n"
+"    "
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
@@ -462,7 +478,7 @@ msgstr "דחיית/הקפצת הודעה והפסקת העיבוד."
 #: src/mailman/commands/cli_syncmembers.py:121
 #, python-brace-format
 msgid "Cannot parse as valid email address (skipping): ${line}"
-msgstr "Cannot parse as valid email address (skipping): ${line}"
+msgstr "לא ניתן לפענח ככתובת דוא״ל תקנית (מדלג): ${line}"
 
 #: src/mailman/commands/cli_addmembers.py:104
 #, python-brace-format
@@ -473,7 +489,7 @@ msgstr "כבר בוצע רישום (מדלג): ${email}"
 #: src/mailman/commands/cli_syncmembers.py:87
 #, python-brace-format
 msgid "Membership is banned (skipping): ${email}"
-msgstr "Membership is banned (skipping): ${email}"
+msgstr "החברות חסומה (מדלג): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:110
 #: src/mailman/commands/cli_syncmembers.py:90
@@ -523,7 +539,7 @@ msgstr "    Override the list's setting for send_welcome_message."
 #: src/mailman/commands/cli_withlist.py:293 src/mailman/commands/cli_withlist.py:300
 #, python-brace-format
 msgid "No such list: ${listspec}"
-msgstr "No such list: ${listspec}"
+msgstr "אין כזאת רשימה: ${listspec}"
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
@@ -685,7 +701,7 @@ msgstr "Generating MTA alias maps"
 #: src/mailman/commands/cli_control.py:149
 #, python-brace-format
 msgid "PID unreadable in: ${config.PID_FILE}"
-msgstr "PID unreadable in: ${config.PID_FILE}"
+msgstr "מזהה התהליך אינו קריא תחת: ${config.PID_FILE}"
 
 #: src/mailman/commands/cli_control.py:151
 msgid "Is the master even running?"
@@ -694,7 +710,7 @@ msgstr "Is the master even running?"
 #: src/mailman/commands/cli_control.py:158
 #, python-brace-format
 msgid "No child with pid: ${pid}"
-msgstr "No child with pid: ${pid}"
+msgstr "אין צאצא עם מזהה התהליך: ${pid}"
 
 #: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
@@ -727,7 +743,7 @@ msgstr "Restarting the Mailman runners"
 #: src/mailman/commands/cli_delmembers.py:48
 #, python-brace-format
 msgid "Member not subscribed (skipping): ${email}"
-msgstr "Member not subscribed (skipping): ${email}"
+msgstr "החבר אינו מנוי (מדלג): ${email}"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
@@ -804,7 +820,7 @@ msgstr "    Override the list's setting for admin_notify_mchanges."
 #: src/mailman/commands/cli_delmembers.py:123
 #, python-brace-format
 msgid "No such list: ${_list}"
-msgstr "No such list: ${_list}"
+msgstr "אין כזאת רשימה: ${_list}"
 
 #: src/mailman/commands/cli_digests.py:38
 msgid "Operate on digests."
@@ -865,7 +881,7 @@ msgstr "--send and --periodic flags cannot be used together"
 #: src/mailman/commands/cli_digests.py:92 src/mailman/commands/cli_notify.py:69
 #, python-brace-format
 msgid "No such list found: ${spec}"
-msgstr "No such list found: ${spec}"
+msgstr "לא נמצאה רשימה כזאת: ${spec}"
 
 #: src/mailman/commands/cli_digests.py:100
 #, python-brace-format
@@ -875,12 +891,15 @@ msgstr "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_diges
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
 msgid "${mlist.list_id} bumped to volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} bumped to volume ${mlist.volume}, number ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} קפצה לנפח ${mlist.volume}, מספר ${mlist.next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:112 src/mailman/commands/cli_digests.py:122
 #, python-brace-format
 msgid "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} שלחה את הנפח ${mlist.volume}, מספר ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_findmember.py:66
 msgid ""
@@ -1014,7 +1033,7 @@ msgstr ""
 #: src/mailman/commands/cli_inject.py:79
 #, python-brace-format
 msgid "No such queue: ${queue}"
-msgstr "No such queue: ${queue}"
+msgstr "אין כזה תור: ${queue}"
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List all mailing lists."
@@ -1053,7 +1072,7 @@ msgstr "No matching mailing lists found"
 #: src/mailman/commands/cli_lists.py:95
 #, python-brace-format
 msgid "${count} matching mailing lists found:"
-msgstr "${count} matching mailing lists found:"
+msgstr "${count} רשימות דיוור תואמות נמצאו:"
 
 #: src/mailman/commands/cli_lists.py:126
 msgid ""
@@ -1116,32 +1135,32 @@ msgstr ""
 #: src/mailman/commands/cli_lists.py:170
 #, python-brace-format
 msgid "Invalid language code: ${language_code}"
-msgstr "Invalid language code: ${language_code}"
+msgstr "קוד השפה שגוי: ${language_code}"
 
 #: src/mailman/commands/cli_lists.py:186
 #, python-brace-format
 msgid "Illegal owner addresses: ${invalid}"
-msgstr "Illegal owner addresses: ${invalid}"
+msgstr "כתובת בעלים שגויה: ${invalid}"
 
 #: src/mailman/commands/cli_lists.py:190
 #, python-brace-format
 msgid "Illegal list name: ${fqdn_listname}"
-msgstr "Illegal list name: ${fqdn_listname}"
+msgstr "שם רשימה שגוי: ${fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:192
 #, python-brace-format
 msgid "List already exists: ${fqdn_listname}"
-msgstr "List already exists: ${fqdn_listname}"
+msgstr "הרשימה כבר קיימת: ${fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:194
 #, python-brace-format
 msgid "Undefined domain: ${domain}"
-msgstr "Undefined domain: ${domain}"
+msgstr "שם תחום לא מוגדר: ${domain}"
 
 #: src/mailman/commands/cli_lists.py:202
 #, python-brace-format
 msgid "Created mailing list: ${mlist.fqdn_listname}"
-msgstr "Created mailing list: ${mlist.fqdn_listname}"
+msgstr "נוצרה רשימת דיוור: ${mlist.fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:217
 #, python-brace-format
@@ -1164,7 +1183,7 @@ msgstr "אין מפרט כזה לרשימת דיוור: ${listspec}"
 #: src/mailman/commands/cli_lists.py:246
 #, python-brace-format
 msgid "Removed list: ${listspec}"
-msgstr "Removed list: ${listspec}"
+msgstr "רשימה הוסרה: ${listspec}"
 
 #: src/mailman/commands/cli_members.py:90
 #, python-brace-format
@@ -1179,6 +1198,11 @@ msgid ""
 "    to stdout is the default mode.\n"
 "    "
 msgstr ""
+"    הצגת חברי רשימת התפוצה.\n"
+"    אפשר לסנן לפי מגוון תנאים בעת ההצגה.\n"
+"    כשלא מציינים אפשרויות, מוצגים חברי הרשימה\n"
+"    ל־stdout (פלט מסוף) במצב ברירת המחדל.\n"
+"    "
 
 #: src/mailman/commands/cli_members.py:121
 msgid ""
@@ -1211,6 +1235,8 @@ msgid ""
 "    Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
+"    הצגת הפלט ל־FILENAME במקום ל־ stdout (פלט המסוף).  FILENAME\n"
+"    יכול להיות ‚-’ כדי לציין את הפלט למסוף (stdout)."
 
 #: src/mailman/commands/cli_members.py:147
 msgid ""
@@ -1219,14 +1245,18 @@ msgid ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then 'member' role is assumed."
 msgstr ""
+"    להציג רק חברים עם ROLE (תפקיד) מסוים.\n"
+"    התפקיד יכול ‚any’,‏ ‚member’,‏ ‚nonmember’,‏ ‚owner’,‏ ‚moderator’,\n"
+"    או ‚administrator’ (כלומר הבעלים או המפקחים).\n"
+"    אם לא צוין, ההנחה היא שמדובר בתפקיד ‚member’."
 
 #: src/mailman/commands/cli_members.py:155
 msgid "    Display only regular delivery members."
-msgstr ""
+msgstr "    להציג רק חברי מסירה רגילים."
 
 #: src/mailman/commands/cli_members.py:166
 msgid "    This option has no effect. It exists for backwards compatibility only."
-msgstr ""
+msgstr "    לאפשרות זו אין השפעה. היא קיימת למטרות תמיכה בגרסאות הקודמות בלבד."
 
 #: src/mailman/commands/cli_members.py:172
 msgid ""
@@ -1348,7 +1378,7 @@ msgstr "[----- start pickle -----]"
 #: src/mailman/commands/cli_qfile.py:70
 #, python-brace-format
 msgid "<----- start object ${count} ----->"
-msgstr "<----- start object ${count} ----->"
+msgstr "<----- התחלת הפריט ${count} ----->"
 
 #: src/mailman/commands/cli_qfile.py:75
 msgid "[----- end pickle -----]"
@@ -1357,7 +1387,7 @@ msgstr "[----- end pickle -----]"
 #: src/mailman/commands/cli_qfile.py:77
 #, python-brace-format
 msgid "Number of objects found (see the variable 'm'): ${count}"
-msgstr "Number of objects found (see the variable 'm'): ${count}"
+msgstr "מספר הפריטים שנמצאו (להלן המשתנה ‚m’): ${count}"
 
 #: src/mailman/commands/cli_status.py:34
 msgid "Show the current running status of the Mailman system."
@@ -1370,17 +1400,17 @@ msgstr "GNU Mailman is not running"
 #: src/mailman/commands/cli_status.py:41
 #, python-brace-format
 msgid "GNU Mailman is running (master pid: ${pid})"
-msgstr "GNU Mailman is running (master pid: ${pid})"
+msgstr "GNU Mailman פעיל (מזהה תהליך ראשי: ${pid})"
 
 #: src/mailman/commands/cli_status.py:44
 #, python-brace-format
 msgid "GNU Mailman is stopped (stale pid: ${pid})"
-msgstr "GNU Mailman is stopped (stale pid: ${pid})"
+msgstr "GNU Mailman נעצר (מזהה תהליך מיושן: ${pid})"
 
 #: src/mailman/commands/cli_status.py:50
 #, python-brace-format
 msgid "GNU Mailman is in an unexpected state (${hostname} != ${fqdn_name})"
-msgstr "GNU Mailman is in an unexpected state (${hostname} != ${fqdn_name})"
+msgstr "GNU Mailman נמצא במצב בלתי צפוי (${hostname} != ${fqdn_name})"
 
 #: src/mailman/commands/cli_syncmembers.py:136
 #, python-format
@@ -1939,6 +1969,9 @@ msgid ""
 "authorized for delivery.  The original message as received by Mailman is\n"
 "attached.\n"
 msgstr ""
+"ההודעה הדחופה שלך לרשימת הדיוור ${mlist.display_name} לא\n"
+"אושרה למסירה.  ההודעה המקורית כפי שהתקבלה על ידי Mailman\n"
+"מצורפת.\n"
 
 #: src/mailman/handlers/mime_delete.py:62
 #, python-brace-format
