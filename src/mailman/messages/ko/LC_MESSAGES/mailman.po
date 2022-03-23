@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: ParkSeongSoo <syvf64@naver.com>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ko/>\n"
 "Language: ko\n"
@@ -129,7 +129,8 @@ msgstr "$ self.address.email에서 ${self.mlist.display_name}에 대한 새로�
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "${self.address.email}에서 ${self.mlist.display_name}에 대한 새로운 구독 취소 요청"
+msgstr "${self.address.email}에서 ${self.mlist.display_name}에 대한 새로운 구독 취소 "
+"요청"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
@@ -196,7 +197,9 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
-"다른 호스트의 일부 프로세스가이를 획득 한 것처럼 보이기 때문에 마스터 잠금을 획득 할 수 없습니다.··호스트 경계를 넘어 오래된 잠금을 테스트 할 수 없습니다,  수동으로 정리해야 합니다.\n"
+"다른 호스트의 일부 프로세스가이를 획득 한 것처럼 보이기 때문에 마스터 잠금을 "
+"획득 할 수 없습니다.··호스트 경계를 넘어 오래된 잠금을 테스트 할 수 "
+"없습니다,  수동으로 정리해야 합니다.\n"
 "\n"
 "잠금 파일: ${config.LOCK_FILE}\n"
 "잠금 사용자: ${hostname}\n"
@@ -922,7 +925,9 @@ msgid ""
 "    The name of the queue to inject the message to.  QUEUE must be one of the\n"
 "    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
-msgstr "    메시지를 주입 할 큐의 이름입니다. QUEUE는 qfiles 디렉토리 내의 디렉토리 중 하나 여야합니다. 생략하면 들어오는 큐가 사용됩니다."
+msgstr ""
+"    메시지를 주입 할 큐의 이름입니다. QUEUE는 qfiles 디렉토리 내의 디렉토리 "
+"중 하나 여야합니다. 생략하면 들어오는 큐가 사용됩니다."
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
@@ -1826,7 +1831,9 @@ msgid ""
 "message.\n"
 "\n"
 msgstr ""
-"첨부 된 메시지가 ${mlist.display_name} 메일 링리스트의 컨텐츠 필터링 규칙과 일치하여리스트 멤버쉽으로 전달되지 않았습니다. 삭제 된 메시지의 남은 사본 만 받고 있습니다.\n"
+"첨부 된 메시지가 ${mlist.display_name} 메일 링리스트의 컨텐츠 필터링 규칙과 "
+"일치하여리스트 멤버쉽으로 전달되지 않았습니다. 삭제 된 메시지의 남은 사본 만 "
+"받고 있습니다.\n"
 "\n"
 
 #: src/mailman/handlers/mime_delete.py:69
@@ -2340,7 +2347,14 @@ msgstr "\"$ listname 메일 링리스트에 대한 귀하의 메시지는 다음
 
 #, fuzzy
 msgid "list:user:notice:warning.txt"
-msgstr "\"이 메시지는 무시할 수 있습니다.이 메시지는 무시해도됩니다. $ listname 메일 링리스트에서 $ sender_email로 메시지를 전달하는 데 문제가있을 수 있음을 나타내는 여러 번의 반송 메일이 수신되었습니다. 아래에 샘플이 첨부되어 있습니다. 이메일 주소에 문제가 없는지 확인하십시오. 메일 관리자에게 도움을 요청하십시오. 메일 링리스트의 활성화 된 구성원으로 남아 있으려면 아무 것도 할 필요가 없습니다. 질문이나 문제가 있으면 메일 링리스트 소유자에게 $ owner_email에게 연락하십시오 \""
+msgstr ""
+"\"이 메시지는 무시할 수 있습니다.이 메시지는 무시해도됩니다. $ listname 메일 "
+"링리스트에서 $ sender_email로 메시지를 전달하는 데 문제가있을 수 있음을 "
+"나타내는 여러 번의 반송 메일이 수신되었습니다. 아래에 샘플이 첨부되어 "
+"있습니다. 이메일 주소에 문제가 없는지 확인하십시오. 메일 관리자에게 도움을 "
+"요청하십시오. 메일 링리스트의 활성화 된 구성원으로 남아 있으려면 아무 것도 "
+"할 필요가 없습니다. 질문이나 문제가 있으면 메일 링리스트 소유자에게 $ "
+"owner_email에게 연락하십시오 \""
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
