@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:35+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "gnu-mailman/mailman/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -139,7 +139,9 @@ msgstr ""
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Din bekreftelse kreves for å forlate ${event.mlist.fqdn_listname}-e-postlisten"
+msgstr ""
+"Din bekreftelse kreves for å forlate ${event.mlist."
+"fqdn_listname}-e-postlisten"
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
@@ -358,7 +360,8 @@ msgstr "Hold en melding og stopp behandling."
 #: src/mailman/chains/hold.py:199
 #, python-brace-format
 msgid "Your message to ${mlist.fqdn_listname} awaits moderator approval"
-msgstr "Din melding til ${mlist.fqdn_listname} er i påvente av moderatorgodkjenning"
+msgstr ""
+"Din melding til ${mlist.fqdn_listname} er i påvente av moderatorgodkjenning"
 
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
