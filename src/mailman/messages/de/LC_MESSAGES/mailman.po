@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: Milo Ivir <mail@milotype.de>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/de/>\n"
 "Language: de\n"
@@ -116,7 +116,8 @@ msgstr "${member}'s bounce zahl wurde auf ${mlist.display_name} erhöht"
 #: src/mailman/app/notifications.py:227
 #, python-brace-format
 msgid "${member} unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "${member} wurde von ${mlist.display_name} abgemeldet wegen Unzustellbarkeit"
+msgstr ""
+"${member} wurde von ${mlist.display_name} abgemeldet wegen Unzustellbarkeit"
 
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
@@ -126,27 +127,37 @@ msgstr "Sie wurden von der Mailingliste ${mlist.display_name} abgemeldet"
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
 msgid "New subscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Neuer Abonnementantrag für ${self.mlist.display_name} von ${self.address.email}"
+msgstr ""
+"Neuer Abonnementantrag für ${self.mlist.display_name} von ${self.address."
+"email}"
 
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Neuer Abonnementantrag für ${self.mlist.display_name} von ${self.address.email}"
+msgstr ""
+"Neuer Abonnementantrag für ${self.mlist.display_name} von ${self.address."
+"email}"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
 msgid "You have been invited to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Sie wurden eingeladen, der Mailingliste ${event.mlist.fqdn_listname} beizutreten."
+msgstr ""
+"Sie wurden eingeladen, der Mailingliste ${event.mlist.fqdn_listname} "
+"beizutreten."
 
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Ihre Bestätigung ist erforderlich, um die Mailingliste ${event.mlist.fqdn_listname} zu verlassen."
+msgstr ""
+"Ihre Bestätigung ist erforderlich, um die Mailingliste ${event.mlist."
+"fqdn_listname} zu verlassen."
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
 msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Deine Zustimmung zum Beitritt der ${event.mlist.fqdn_listname} Mailingliste ist erforderlich."
+msgstr ""
+"Deine Zustimmung zum Beitritt der ${event.mlist.fqdn_listname} Mailingliste "
+"ist erforderlich."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
@@ -190,8 +201,10 @@ msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running ${program} with the --force flag."
 msgstr ""
-"Mastersperre konnte nicht erlangt werden. Es sieht so aus, als gäbe es eine veraltete\n"
-"Mastersperre. Versuchen Sie, ${program} mit dem Flag --force erneut auszuführen."
+"Mastersperre konnte nicht erlangt werden. Es sieht so aus, als gäbe es eine "
+"veraltete\n"
+"Mastersperre. Versuchen Sie, ${program} mit dem Flag --force erneut "
+"auszuführen."
 
 #: src/mailman/bin/master.py:169
 #, python-brace-format
@@ -205,9 +218,11 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
-"Die Mastersperre konnte nicht erlangt werden, da es so aussieht, als ob ein Prozess\n"
+"Die Mastersperre konnte nicht erlangt werden, da es so aussieht, als ob ein "
+"Prozess\n"
 "auf einem anderen Host sie möglicherweise erlangt hat.  Wir können nicht\n"
-"hostübergreifend auf veraltete Sperren testen, sodass Sie dies manuell bereinigen müssen.\n"
+"hostübergreifend auf veraltete Sperren testen, sodass Sie dies manuell "
+"bereinigen müssen.\n"
 "\n"
 "Sperrdatei: ${config.LOCK_FILE}\n"
 "Sperrhost: ${hostname}\n"
@@ -460,12 +475,15 @@ msgstr "Halte eine Nachricht und beende die Verarbeitung."
 #: src/mailman/chains/hold.py:199
 #, python-brace-format
 msgid "Your message to ${mlist.fqdn_listname} awaits moderator approval"
-msgstr "Ihre Nachricht an ${mlist.fqdn_listname} wartet auf die Zustimmung des Moderators"
+msgstr ""
+"Ihre Nachricht an ${mlist.fqdn_listname} wartet auf die Zustimmung des "
+"Moderators"
 
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
 msgid "${mlist.fqdn_listname} post from ${msg.sender} requires approval"
-msgstr "Der Beitrag ${mlist.fqdn_listname} von ${msg.sender} muss genehmigt werden"
+msgstr ""
+"Der Beitrag ${mlist.fqdn_listname} von ${msg.sender} muss genehmigt werden"
 
 #: src/mailman/chains/hold.py:238
 msgid ""
@@ -501,7 +519,9 @@ msgstr "Eine Nachricht ablehnen/verwerfen und die Verarbeitung stoppen."
 #: src/mailman/commands/cli_syncmembers.py:121
 #, python-brace-format
 msgid "Cannot parse as valid email address (skipping): ${line}"
-msgstr "Kann nicht als gültige E-Mail-Adresse geparst werden (wird übersprungen): ${line}"
+msgstr ""
+"Kann nicht als gültige E-Mail-Adresse geparst werden (wird übersprungen): "
+"${line}"
 
 #: src/mailman/commands/cli_addmembers.py:104
 #, python-brace-format
@@ -949,17 +969,23 @@ msgstr "Keine solche Liste gefunden: ${spec}"
 #: src/mailman/commands/cli_digests.py:100
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} ist bei Ausgabe ${mlist.volume}, Nummer ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} ist bei Ausgabe ${mlist.volume}, Nummer ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
 msgid "${mlist.list_id} bumped to volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} wurde auf Ausgabe ${mlist.volume} erhöht, Nummer ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} wurde auf Ausgabe ${mlist.volume} erhöht, Nummer ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:112 src/mailman/commands/cli_digests.py:122
 #, python-brace-format
 msgid "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} sendete Ausgabe ${mlist.volume}, Nummer ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} sendete Ausgabe ${mlist.volume}, Nummer ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_findmember.py:66
 msgid ""
@@ -1261,7 +1287,8 @@ msgstr "Statusmeldungen unterdrücken"
 #: src/mailman/commands/cli_lists.py:241
 #, python-brace-format
 msgid "No such list matching spec: ${listspec}"
-msgstr "Keine solche Liste, die mit der Spezifikation übereinstimmt: ${listspec}"
+msgstr ""
+"Keine solche Liste, die mit der Spezifikation übereinstimmt: ${listspec}"
 
 #: src/mailman/commands/cli_lists.py:246
 #, python-brace-format
@@ -1478,7 +1505,9 @@ msgstr "GNU Mailman ist gestoppt (stale pid: ${pid})"
 #: src/mailman/commands/cli_status.py:50
 #, python-brace-format
 msgid "GNU Mailman is in an unexpected state (${hostname} != ${fqdn_name})"
-msgstr "GNU Mailman befindet sich in einem unerwarteten Zustand (${hostname} != ${fqdn_name})"
+msgstr ""
+"GNU Mailman befindet sich in einem unerwarteten Zustand (${hostname} != "
+"${fqdn_name})"
 
 #: src/mailman/commands/cli_syncmembers.py:136
 #, python-format
@@ -1566,7 +1595,8 @@ msgid ""
 "Cannot unshunt message ${filebase}, skipping:\n"
 "${error}"
 msgstr ""
-"Kann die Nachricht \"${filebase}\" nicht wieder aktivieren, überspringe sie:\n"
+"Kann die Nachricht \"${filebase}\" nicht wieder aktivieren, überspringe sie:"
+"\n"
 "${error}"
 
 #: src/mailman/commands/cli_version.py:32
@@ -1944,7 +1974,8 @@ msgstr "Verlassen Sie diese Mailingliste."
 #: src/mailman/commands/eml_membership.py:194
 #, python-brace-format
 msgid "${self.name}: No valid email address found to unsubscribe"
-msgstr "${self.name}: Es wurde keine gültige E-Mail-Adresse zum Abbestellen gefunden"
+msgstr ""
+"${self.name}: Es wurde keine gültige E-Mail-Adresse zum Abbestellen gefunden"
 
 #: src/mailman/commands/eml_membership.py:200
 #, python-brace-format
@@ -1969,7 +2000,9 @@ msgstr "${person} hat ${mlist.fqdn_listname} verlassen"
 #: src/mailman/commands/eml_membership.py:239
 #, python-brace-format
 msgid "Confirmation email sent to ${person} to leave ${mlist.fqdn_listname}"
-msgstr "Bestätigungs-E-Mail um ${mlist.fqdn_listname} zu verlassen an ${person} gesendet"
+msgstr ""
+"Bestätigungs-E-Mail um ${mlist.fqdn_listname} zu verlassen an ${person} "
+"gesendet"
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
@@ -2090,7 +2123,8 @@ msgid ""
 "\n"
 msgstr ""
 "Die angehängte Nachricht wurde wegen einer Filterregel der Mailingliste\n"
-"${mlist.display_name} daran gehindert, auf die Liste weitergeleitet zu werden.  \n"
+"${mlist.display_name} daran gehindert, auf die Liste weitergeleitet zu "
+"werden.  \n"
 "Sie erhalten die einzige verbliebene Kopie der verworfenen Nachricht.\n"
 "\n"
 
@@ -2153,7 +2187,9 @@ msgstr "Automatische Antworten senden."
 #: src/mailman/handlers/replybot.py:101
 #, python-brace-format
 msgid "Auto-response for your message to the \"${display_name}\" mailing list"
-msgstr "Automatische Antwort für Ihre Nachricht an die Mailingliste \"${display_name}\""
+msgstr ""
+"Automatische Antwort für Ihre Nachricht an die Mailingliste \"${display_name}"
+"\""
 
 #: src/mailman/handlers/replybot.py:114
 msgid "The Mailman Replybot"
