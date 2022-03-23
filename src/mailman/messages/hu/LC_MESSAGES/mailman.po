@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: balping <balping314@gmail.com>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/hu/>\n"
 "Language: hu\n"
@@ -116,7 +116,9 @@ msgstr "${member} bounce pontszáma növekszik ${mlist.display_name} alapján"
 #: src/mailman/app/notifications.py:227
 #, python-brace-format
 msgid "${member} unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "${member} lekerült a ${mlist.display_name} listáról visszapattanó levelek miatt"
+msgstr ""
+"${member} lekerült a ${mlist.display_name} listáról visszapattanó levelek "
+"miatt"
 
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
@@ -126,12 +128,16 @@ msgstr "A(z) {mlist.display_name} levelezési listára szóló feliratkozása le
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
 msgid "New subscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Új feliratkozási kérvény a(z) ${self.mlist.display_name} listára ${self.address.email} címről"
+msgstr ""
+"Új feliratkozási kérvény a(z) ${self.mlist.display_name} listára ${self."
+"address.email} címről"
 
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Új feliratkozási kérvény a(z) ${self.mlist.display_name} listára ${self.address.email} címről"
+msgstr ""
+"Új feliratkozási kérvény a(z) ${self.mlist.display_name} listára ${self."
+"address.email} címről"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
@@ -141,12 +147,16 @@ msgstr "Meg lett hívva a(z) ${event.mlist.fqdn_listname} levelezőlistára."
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Az ön hozzájárulása szülséges a(z) ${event.mlist.fqdn_listname} lista elhagyásához."
+msgstr ""
+"Az ön hozzájárulása szülséges a(z) ${event.mlist.fqdn_listname} lista "
+"elhagyásához."
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
 msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Az ön hozzájárulása szükséges a(z) ${event.mlist.fqdn_listname} listához való csatlakozáshoz."
+msgstr ""
+"Az ön hozzájárulása szükséges a(z) ${event.mlist.fqdn_listname} listához "
+"való csatlakozáshoz."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
@@ -376,7 +386,9 @@ msgstr "A(z) ${mlist.fqdn_listname} listára küldött levele moderálásra vár
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
 msgid "${mlist.fqdn_listname} post from ${msg.sender} requires approval"
-msgstr "${mlist.fqdn_listname} listára, ${msg.sender} által írt üzenet jóváhagyásra vár"
+msgstr ""
+"${mlist.fqdn_listname} listára, ${msg.sender} által írt üzenet jóváhagyásra "
+"vár"
 
 #: src/mailman/chains/hold.py:238
 msgid ""
