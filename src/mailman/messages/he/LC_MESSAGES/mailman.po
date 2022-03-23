@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
 "Language: he\n"
@@ -132,7 +132,9 @@ msgstr "בקשת מינוי חדשה אל ${self.mlist.display_name} מאת ${se
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "בקשת ביטול מינוי חדשה מהרשימה ${self.mlist.display_name} מאת ${self.address.email}"
+msgstr ""
+"בקשת ביטול מינוי חדשה מהרשימה ${self.mlist.display_name} מאת ${self.address."
+"email}"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
@@ -914,7 +916,9 @@ msgstr "לא נמצאה רשימה כזאת: ${spec}"
 #: src/mailman/commands/cli_digests.py:100
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} is at volume ${mlist.volume}, number ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
@@ -1920,7 +1924,8 @@ msgstr "${person} מחוץ לרשימה ${mlist.fqdn_listname}"
 #: src/mailman/commands/eml_membership.py:239
 #, python-brace-format
 msgid "Confirmation email sent to ${person} to leave ${mlist.fqdn_listname}"
-msgstr "נשלחה הודעת דוא״ל לאישור העזיבה של ${person} מהרשימה ${mlist.fqdn_listname}"
+msgstr ""
+"נשלחה הודעת דוא״ל לאישור העזיבה של ${person} מהרשימה ${mlist.fqdn_listname}"
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
