@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-22 19:19+0000\n"
-"Last-Translator: dpa-weblate@aegee.org <dpa-weblate@aegee.org>\n"
+"PO-Revision-Date: 2022-03-23 03:36+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/bg/>\n"
 "Language: bg\n"
@@ -140,17 +140,22 @@ msgstr ""
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
 msgid "You have been invited to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Поканен си да се включиш в пощенския списък ${event.mlist.fqdn_listname}."
+msgstr ""
+"Поканен си да се включиш в пощенския списък ${event.mlist.fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Необходимо е потвърждението ти за напускане на пощенския списък ${event.mlist.fqdn_listname}."
+msgstr ""
+"Необходимо е потвърждението ти за напускане на пощенския списък ${event.mlist"
+".fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
 msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Необходимо е да потвърдиш включването в пощенския списък ${event.mlist.fqdn_listname}."
+msgstr ""
+"Необходимо е да потвърдиш включването в пощенския списък ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
