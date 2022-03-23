@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2021-11-25 15:50+0000\n"
-"Last-Translator: Ecron <ecron_89@hotmail.com>\n"
-"Language-Team: Catalan <https://hosted.weblate.org/projects/gnu-mailman/mailman/ca/>\n"
+"PO-Revision-Date: 2022-03-23 03:34+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/gnu-mailman/"
+"mailman/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10-dev\n"
+"X-Generator: Weblate 4.12-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -110,12 +111,15 @@ msgstr "S'ha desactivat la subscripció de ${member} en ${mlist.display_name}"
 #: src/mailman/app/notifications.py:201
 #, python-brace-format
 msgid "${member}'s bounce score incremented on ${mlist.display_name}"
-msgstr "S'ha incrementat la puntuació de rebot de ${member} en ${mlist.display_name}"
+msgstr ""
+"S'ha incrementat la puntuació de rebot de ${member} en ${mlist.display_name}"
 
 #: src/mailman/app/notifications.py:227
 #, python-brace-format
 msgid "${member} unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "S'ha donat de baixa a ${member} de la llista de correu ${mlist.display_name} a causa dels rebots"
+msgstr ""
+"S'ha donat de baixa a ${member} de la llista de correu ${mlist.display_name} "
+"a causa dels rebots"
 
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
@@ -125,27 +129,37 @@ msgstr "Se us ha desactivat la subscripció a la llista de correu ${mlist.displa
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
 msgid "New subscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Nova sol·licitud de subscripció a ${self.mlist.display_name} des de ${self.address.email}"
+msgstr ""
+"Nova sol·licitud de subscripció a ${self.mlist.display_name} des de ${self."
+"address.email}"
 
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Nova sol·licitud de baixa a ${self.mlist.display_name} des de ${self.address.email}"
+msgstr ""
+"Nova sol·licitud de baixa a ${self.mlist.display_name} des de ${self.address."
+"email}"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
 msgid "You have been invited to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Us han convidat a unir-vos a la llista de correu ${event.mlist.fqdn_listname}."
+msgstr ""
+"Us han convidat a unir-vos a la llista de correu ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Cal la vostra confirmació per a abandonar la llista de correu ${event.mlist.fqdn_listname}."
+msgstr ""
+"Cal la vostra confirmació per a abandonar la llista de correu ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
 msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Cal la vostra confirmació per a unir-vos a la llista de correu ${event.mlist.fqdn_listname}."
+msgstr ""
+"Cal la vostra confirmació per a unir-vos a la llista de correu ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
@@ -185,7 +199,8 @@ msgid ""
 "master lock.  Try re-running ${program} with the --force flag."
 msgstr ""
 "No s'ha pogut adquirir el blocatge principal. Sembla com si hi hagués un\n"
-"blocatge principal obsolet. Proveu de tornar a executar ${program} amb l'opció --force."
+"blocatge principal obsolet. Proveu de tornar a executar ${program} amb "
+"l'opció --force."
 
 #: src/mailman/bin/master.py:169
 #, python-brace-format
@@ -199,9 +214,11 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
-"El bloqueig principal no s'ha pogut adquirir, perquè sembla com si algun procés\n"
+"El bloqueig principal no s'ha pogut adquirir, perquè sembla com si algun "
+"procés\n"
 "en algun altre host pogués haver-ho adquirit.  No podem provar si hi ha cap\n"
-"bloqueig obsolet més enllà dels límits del host, pel que s'haurà de netejar manualment.\n"
+"bloqueig obsolet més enllà dels límits del host, pel que s'haurà de netejar "
+"manualment.\n"
 "\n"
 "Fitxer de blocatge: ${config.LOCK_FILE}\n"
 "Host de blocatge: ${hostname}\n"
@@ -430,12 +447,14 @@ msgstr "Reté un missatge i deté processament."
 #: src/mailman/chains/hold.py:199
 #, python-brace-format
 msgid "Your message to ${mlist.fqdn_listname} awaits moderator approval"
-msgstr "El seu missatge a ${mlist.fqdn_listname} s'espera l'aprovació de l'moderador"
+msgstr ""
+"El seu missatge a ${mlist.fqdn_listname} s'espera l'aprovació de l'moderador"
 
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
 msgid "${mlist.fqdn_listname} post from ${msg.sender} requires approval"
-msgstr "L'enviament a ${mlist.fqdn_listname} de ${msg.sender} precisa d'aprovació"
+msgstr ""
+"L'enviament a ${mlist.fqdn_listname} de ${msg.sender} precisa d'aprovació"
 
 #: src/mailman/chains/hold.py:238
 msgid ""
@@ -839,17 +858,23 @@ msgstr "No s'ha trobat la llista: ${spec}"
 #: src/mailman/commands/cli_digests.py:100
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${Mlist.list_id} es troba en el volum ${mlist.volume}, nombre ${mlist.next_digest_number}"
+msgstr ""
+"${Mlist.list_id} es troba en el volum ${mlist.volume}, nombre ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
 msgid "${mlist.list_id} bumped to volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${Mlist.list_id} saltat al volum ${mlist.volume}, nombre ${mlist.next_digest_number}"
+msgstr ""
+"${Mlist.list_id} saltat al volum ${mlist.volume}, nombre ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:112 src/mailman/commands/cli_digests.py:122
 #, python-brace-format
 msgid "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${Mlist.list_id} ha enviat volum ${mlist.volume}, nombre ${mlist.next_digest_number}"
+msgstr ""
+"${Mlist.list_id} ha enviat volum ${mlist.volume}, nombre ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_findmember.py:66
 msgid ""
@@ -941,7 +966,8 @@ msgid ""
 "    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 msgstr ""
-"    El nom de la cua a la qual s'injectarà el missatge. QUEUE ha de ser un dels\n"
+"    El nom de la cua a la qual s'injectarà el missatge. QUEUE ha de ser un "
+"dels\n"
 "    directoris dins del directori qfiles. Si s'omet, s 'utilitza\n"
 "    la cua entrant."
 
@@ -1735,7 +1761,8 @@ msgstr "Deixar aquesta llista de correu."
 #: src/mailman/commands/eml_membership.py:194
 #, python-brace-format
 msgid "${self.name}: No valid email address found to unsubscribe"
-msgstr "${self.name}: No es troba una adreça de correu vàlida per a donar-se de baixa"
+msgstr ""
+"${self.name}: No es troba una adreça de correu vàlida per a donar-se de baixa"
 
 #: src/mailman/commands/eml_membership.py:200
 #, python-brace-format
@@ -1760,7 +1787,8 @@ msgstr "${person} va deixar ${mlist.fqdn_listname}"
 #: src/mailman/commands/eml_membership.py:239
 #, python-brace-format
 msgid "Confirmation email sent to ${person} to leave ${mlist.fqdn_listname}"
-msgstr "Correu de confirmació enviat a ${person} per sortir de ${mlist.fqdn_listname}"
+msgstr ""
+"Correu de confirmació enviat a ${person} per sortir de ${mlist.fqdn_listname}"
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
@@ -1932,7 +1960,9 @@ msgstr "Enviar respostes automàtiques."
 #: src/mailman/handlers/replybot.py:101
 #, python-brace-format
 msgid "Auto-response for your message to the \"${display_name}\" mailing list"
-msgstr "Resposta automàtica per al seu missatge a la llista de correu \"${display_name}\""
+msgstr ""
+"Resposta automàtica per al seu missatge a la llista de correu \""
+"${display_name}\""
 
 #: src/mailman/handlers/replybot.py:114
 msgid "The Mailman Replybot"
@@ -2294,7 +2324,8 @@ msgid ""
 "Size: ${size} bytes\n"
 "Desc: ${desc}\n"
 msgstr ""
-"S'ha eliminat una part del missatge incompatible amb els resums en text sense format...\n"
+"S'ha eliminat una part del missatge incompatible amb els resums en text "
+"sense format...\n"
 "Nom: ${filename}\n"
 "Tipus: ${ctype}\n"
 "Mida: ${size} bytes\n"
@@ -2386,7 +2417,16 @@ msgstr "El seu missatge a la llista de correu ${listname} s'ha rebutjat per les 
 
 #, fuzzy
 msgid "list:user:notice:warning.txt"
-msgstr "Aquest és un missatge de sonda.  Podeu ignorar aquest missatge. La llista de correu ${listname} ha rebut diversos rebots de la vostra part, indicant que pot haver-hi un problema al enviar missatges a ${sender_email}. Una mostra s'adjunta a continuació.  Consulteu aquest missatge per assegurar-vos que no hi hagi problemes amb la seva adreça de correu.  Potser voldreu consultar amb el vostre administrador de correu per obtenir més ajuda. No heu de fer res per seguir sent un membre actiu de la llista de correu. Si teniu cap pregunta o problema, podeu fer-ho contactant amb el propietari de la llista de distribució a    ${owner_email}"
+msgstr ""
+"Aquest és un missatge de sonda.  Podeu ignorar aquest missatge. La llista de "
+"correu ${listname} ha rebut diversos rebots de la vostra part, indicant que "
+"pot haver-hi un problema al enviar missatges a ${sender_email}. Una mostra "
+"s'adjunta a continuació.  Consulteu aquest missatge per assegurar-vos que no "
+"hi hagi problemes amb la seva adreça de correu.  Potser voldreu consultar "
+"amb el vostre administrador de correu per obtenir més ajuda. No heu de fer "
+"res per seguir sent un membre actiu de la llista de correu. Si teniu cap "
+"pregunta o problema, podeu fer-ho contactant amb el propietari de la llista "
+"de distribució a    ${owner_email}"
 
 msgid "list:user:notice:welcome.txt"
 msgstr "Benvingut a la llista de correu \"${display_name} \"! Per a publicar en aquesta llista, envieu el vostre correu electrònic a:  ${listname}. Podeu donar-vos de baixa o fer ajustos a les vostres opcions per correu electrònic enviant un missatge a: ${request_email} amb la paraula 'help' en l'assumpte o el cos (no inclogueu les cometes) i rebreu un missatge amb instruccions. Necessitareu la vostra contrasenya per a canviar les opcions, però, a efectes de seguretat, aquesta contrasenya no s’hi inclourà. Si heu oblidat la contrasenya, haureu de restablir-la mitjançant la interfície d'usuari web."
