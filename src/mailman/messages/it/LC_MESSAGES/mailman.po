@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-23 03:34+0000\n"
-"Last-Translator: Claudio Maradonna <claudio@unitoo.pw>\n"
+"PO-Revision-Date: 2022-03-23 03:35+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/it/>\n"
 "Language: it\n"
@@ -67,7 +67,9 @@ msgstr "Inoltro di messaggi moderati"
 #: src/mailman/app/moderator.py:233
 #, python-brace-format
 msgid "New unsubscription request from ${mlist.display_name} by ${email}"
-msgstr "Nuova richiesta di disiscrizione per la lista ${mlist.display_name} da parte di ${email}"
+msgstr ""
+"Nuova richiesta di disiscrizione per la lista ${mlist.display_name} da parte "
+"di ${email}"
 
 #: src/mailman/app/moderator.py:266
 msgid "Unsubscription request"
@@ -126,27 +128,37 @@ msgstr ""
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
 msgid "New subscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Nuova richiesta di iscrizione a ${self.mlist.display_name} da ${self.address.email}"
+msgstr ""
+"Nuova richiesta di iscrizione a ${self.mlist.display_name} da ${self.address."
+"email}"
 
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Nuova richiesta di disiscrizione per ${self.mlist.display_name} da ${self.address.email}"
+msgstr ""
+"Nuova richiesta di disiscrizione per ${self.mlist.display_name} da ${self."
+"address.email}"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
 msgid "You have been invited to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Sei stato invitato a partecipare alla mailing list ${event.mlist.fqdn_listname}."
+msgstr ""
+"Sei stato invitato a partecipare alla mailing list ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "La tua conferma è necessaria per lasciare la mailing list ${event.mlist.fqdn_listname}."
+msgstr ""
+"La tua conferma è necessaria per lasciare la mailing list ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
 msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "La tua conferma è necessaria per aggiungerti alla mailing list ${event.mlist.fqdn_listname}."
+msgstr ""
+"La tua conferma è necessaria per aggiungerti alla mailing list ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
@@ -200,8 +212,10 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
-"L'uso esclusivo come master non può essere ottenuto perché sembra che un'altro processo\n"
-"in un altro host lo abbia già ottenuto.  Non è possibile controllare l'uso esclusivo in host diversi,\n"
+"L'uso esclusivo come master non può essere ottenuto perché sembra che "
+"un'altro processo\n"
+"in un altro host lo abbia già ottenuto.  Non è possibile controllare l'uso "
+"esclusivo in host diversi,\n"
 "quindi devi procedere manualmente.\n"
 "\n"
 "File di lock: ${config.LOCK_FILE}\n"
@@ -442,7 +456,9 @@ msgstr "Trattieni il messaggio e ferma il processamento."
 #: src/mailman/chains/hold.py:199
 #, python-brace-format
 msgid "Your message to ${mlist.fqdn_listname} awaits moderator approval"
-msgstr "Il tuo messaggio a ${mlist.fqdn_listname} attende l'approvazione del moderatore"
+msgstr ""
+"Il tuo messaggio a ${mlist.fqdn_listname} attende l'approvazione del "
+"moderatore"
 
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
@@ -908,17 +924,23 @@ msgstr "Lista non trovata: ${spec}"
 #: src/mailman/commands/cli_digests.py:100
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} è al volume ${mlist.volume}, numero ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} è al volume ${mlist.volume}, numero ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
 msgid "${mlist.list_id} bumped to volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} aggiornato al volume volume ${mlist.volume}, numero ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} aggiornato al volume volume ${mlist.volume}, numero ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:112 src/mailman/commands/cli_digests.py:122
 #, python-brace-format
 msgid "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} inviato volume ${mlist.volume}, numero ${mlist.next_digest_number}"
+msgstr ""
+"${mlist.list_id} inviato volume ${mlist.volume}, numero ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_findmember.py:66
 msgid ""
@@ -1881,7 +1903,8 @@ msgstr "Indirizzo e-mail invalido o non verificato: ${email}"
 #: src/mailman/commands/eml_membership.py:226
 #, python-brace-format
 msgid "${self.name}: ${email} is not a member of ${mlist.fqdn_listname}"
-msgstr "${self.name}: ${email} non è un membro della lista ${mlist.fqdn_listname}"
+msgstr ""
+"${self.name}: ${email} non è un membro della lista ${mlist.fqdn_listname}"
 
 #: src/mailman/commands/eml_membership.py:237
 #, python-brace-format
@@ -1891,7 +1914,9 @@ msgstr "${person} si è disiscritto da ${mlist.fqdn_listname}"
 #: src/mailman/commands/eml_membership.py:239
 #, python-brace-format
 msgid "Confirmation email sent to ${person} to leave ${mlist.fqdn_listname}"
-msgstr "E-mail di conferma inviata a ${person} per disiscriversi da ${mlist.fqdn_listname}"
+msgstr ""
+"E-mail di conferma inviata a ${person} per disiscriversi da ${mlist."
+"fqdn_listname}"
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
@@ -2012,8 +2037,10 @@ msgid ""
 "message.\n"
 "\n"
 msgstr ""
-"Il messaggio allegato per la lista ${mlist.display_name} è stato intercettato dalle\n"
-"regole di filtraggio dei contenuti e non è stato inoltrato alla lista.  Questa\n"
+"Il messaggio allegato per la lista ${mlist.display_name} è stato "
+"intercettato dalle\n"
+"regole di filtraggio dei contenuti e non è stato inoltrato alla lista.  "
+"Questa\n"
 "è una copia indirizzata solo a te del messaggio\n"
 "scartato.\n"
 "\n"
@@ -2384,7 +2411,9 @@ msgstr "Il risultato del tuo comando e-mail"
 #: src/mailman/runners/digest.py:55
 #, python-brace-format
 msgid "${mlist.display_name} Digest, Vol ${volume}, Issue ${digest_number}"
-msgstr "${mlist.display_name} Raggruppamento, Volume ${volume}, Numero ${digest_number}"
+msgstr ""
+"${mlist.display_name} Raggruppamento, Volume ${volume}, Numero "
+"${digest_number}"
 
 #: src/mailman/runners/digest.py:84
 msgid "Today's Topics:\n"
