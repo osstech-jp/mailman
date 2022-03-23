@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:35+0000\n"
-"Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/tr/>\n"
 "Language: tr\n"
@@ -69,7 +69,9 @@ msgstr "Denetlenen mesajın iletilmesi"
 #: src/mailman/app/moderator.py:233
 #, python-brace-format
 msgid "New unsubscription request from ${mlist.display_name} by ${email}"
-msgstr "${email} tarafından yeni ${mlist.display_name} listesi aboneliğinden çıkma isteği"
+msgstr ""
+"${email} tarafından yeni ${mlist.display_name} listesi aboneliğinden çıkma "
+"isteği"
 
 #: src/mailman/app/moderator.py:266
 msgid "Unsubscription request"
@@ -106,17 +108,22 @@ msgstr "${mlist.display_name} abonelik bildirimi"
 #: src/mailman/app/notifications.py:173
 #, python-brace-format
 msgid "${member}'s subscription disabled on ${mlist.display_name}"
-msgstr "${member} üyesinin ${mlist.display_name} üzerindeki aboneliği devre dışı bırakıldı"
+msgstr ""
+"${member} üyesinin ${mlist.display_name} üzerindeki aboneliği devre dışı "
+"bırakıldı"
 
 #: src/mailman/app/notifications.py:201
 #, python-brace-format
 msgid "${member}'s bounce score incremented on ${mlist.display_name}"
-msgstr "${member}'in geri dönme puanı ${mlist.display_name} listesinde artırıldı"
+msgstr ""
+"${member}'in geri dönme puanı ${mlist.display_name} listesinde artırıldı"
 
 #: src/mailman/app/notifications.py:227
 #, python-brace-format
 msgid "${member} unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "${member}, geri dönmeler nedeniyle ${mlist.display_name} posta listesinden çıkarıldı"
+msgstr ""
+"${member}, geri dönmeler nedeniyle ${mlist.display_name} posta listesinden "
+"çıkarıldı"
 
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
@@ -127,12 +134,16 @@ msgstr ""
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
 msgid "New subscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "${self.address.email} adresinden ${self.mlist.display_name} için yeni abonelik isteği"
+msgstr ""
+"${self.address.email} adresinden ${self.mlist.display_name} için yeni "
+"abonelik isteği"
 
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "${self.address.email} adresinden ${self.mlist.display_name} için yeni abonelikten çıkma isteği"
+msgstr ""
+"${self.address.email} adresinden ${self.mlist.display_name} için yeni "
+"abonelikten çıkma isteği"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
@@ -142,12 +153,16 @@ msgstr "${event.mlist.fqdn_listname} posta listesine katılmaya davet edildiniz.
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "${event.mlist.fqdn_listname} posta listesinden ayrılmak için doğrulamanız gerekiyor."
+msgstr ""
+"${event.mlist.fqdn_listname} posta listesinden ayrılmak için doğrulamanız "
+"gerekiyor."
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
 msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "${event.mlist.fqdn_listname} posta listesine katılmak için doğrulamanız gerekiyor."
+msgstr ""
+"${event.mlist.fqdn_listname} posta listesine katılmak için doğrulamanız "
+"gerekiyor."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
@@ -189,7 +204,8 @@ msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running ${program} with the --force flag."
 msgstr ""
-"Ana kilit elde edilemedi.  Eski bir ana kilit varmış gibi görünüyor.  ${program}'ı\n"
+"Ana kilit elde edilemedi.  Eski bir ana kilit varmış gibi görünüyor.  "
+"${program}'ı\n"
 "--force seçeneğiyle yeniden çalıştırmayı deneyin."
 
 #: src/mailman/bin/master.py:169
@@ -204,8 +220,10 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
-"Başka bir ana makinedeki başka bir işlem onu almış gibi göründüğü için ana kilit\n"
-"elde edilemedi.  Farklı ana makineler üzerindeki eski kilitleri test edemiyoruz, bu\n"
+"Başka bir ana makinedeki başka bir işlem onu almış gibi göründüğü için ana "
+"kilit\n"
+"elde edilemedi.  Farklı ana makineler üzerindeki eski kilitleri test "
+"edemiyoruz, bu\n"
 "nedenle bunu elle temizlemeniz gerekecek.\n"
 "\n"
 "Kilit dosyası: ${config.LOCK_FILE}\n"
@@ -487,7 +505,9 @@ msgstr "${mlist.fqdn_listname} listesine mesajınız moderatör onayı bekliyor"
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
 msgid "${mlist.fqdn_listname} post from ${msg.sender} requires approval"
-msgstr "${msg.sender} kişisinin ${mlist.fqdn_listname} listesine gönderisi için onay gerekiyor"
+msgstr ""
+"${msg.sender} kişisinin ${mlist.fqdn_listname} listesine gönderisi için onay "
+"gerekiyor"
 
 #: src/mailman/chains/hold.py:238
 msgid ""
@@ -964,17 +984,22 @@ msgstr "Böyle bir liste bulunamadı: ${spec}"
 #: src/mailman/commands/cli_digests.py:100
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} cilt ${mlist.volume}, ${mlist.next_digest_number}. sayıda"
+msgstr ""
+"${mlist.list_id} cilt ${mlist.volume}, ${mlist.next_digest_number}. sayıda"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
 msgid "${mlist.list_id} bumped to volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} cilt ${mlist.volume}, ${mlist.next_digest_number}. sayıya yükseltildi"
+msgstr ""
+"${mlist.list_id} cilt ${mlist.volume}, ${mlist.next_digest_number}. sayıya "
+"yükseltildi"
 
 #: src/mailman/commands/cli_digests.py:112 src/mailman/commands/cli_digests.py:122
 #, python-brace-format
 msgid "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr "${mlist.list_id} cilt ${mlist.volume}, ${mlist.next_digest_number}. sayıyı gönderdi"
+msgstr ""
+"${mlist.list_id} cilt ${mlist.volume}, ${mlist.next_digest_number}. sayıyı "
+"gönderdi"
 
 #: src/mailman/commands/cli_findmember.py:66
 msgid ""
@@ -1997,7 +2022,9 @@ msgstr "${person}, ${mlist.fqdn_listname} listesinden ayrıldı"
 #: src/mailman/commands/eml_membership.py:239
 #, python-brace-format
 msgid "Confirmation email sent to ${person} to leave ${mlist.fqdn_listname}"
-msgstr "${mlist.fqdn_listname} listesinden ayrılmak için ${person} kişisine doğrulama e-postası gönderildi"
+msgstr ""
+"${mlist.fqdn_listname} listesinden ayrılmak için ${person} kişisine "
+"doğrulama e-postası gönderildi"
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
@@ -2119,8 +2146,10 @@ msgid ""
 "message.\n"
 "\n"
 msgstr ""
-"Ekteki mesaj ${mlist.display_name} posta listesinin içerik filtreleme kurallarıyla\n"
-"eşleşti ve liste üyelerine yönlendirilmesi engellendi.  Atılan mesajın kalan tek\n"
+"Ekteki mesaj ${mlist.display_name} posta listesinin içerik filtreleme "
+"kurallarıyla\n"
+"eşleşti ve liste üyelerine yönlendirilmesi engellendi.  Atılan mesajın kalan "
+"tek\n"
 "kopyasını alıyorsunuz.\n"
 "\n"
 
