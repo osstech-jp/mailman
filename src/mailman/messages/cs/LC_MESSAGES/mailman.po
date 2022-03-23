@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
 "PO-Revision-Date: 2022-03-23 03:36+0000\n"
-"Last-Translator: Sebastian Machat <sebi@outlook.com>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/cs/>\n"
 "Language: cs\n"
@@ -70,7 +70,8 @@ msgstr "Přeposlání moderované zprávy"
 #: src/mailman/app/moderator.py:233
 #, python-brace-format
 msgid "New unsubscription request from ${mlist.display_name} by ${email}"
-msgstr "Nový požadavek na odhlášení odběru skupiny ${mlist.display_name} od ${email}"
+msgstr ""
+"Nový požadavek na odhlášení odběru skupiny ${mlist.display_name} od ${email}"
 
 #: src/mailman/app/moderator.py:266
 msgid "Unsubscription request"
@@ -107,17 +108,23 @@ msgstr "Upozornění na přihlášení odběru skupiny ${mlist.display_name}"
 #: src/mailman/app/notifications.py:173
 #, python-brace-format
 msgid "${member}'s subscription disabled on ${mlist.display_name}"
-msgstr "Odběr mailing-listu ${mlist.display_name} byl pro uživatele ${member} deaktivován"
+msgstr ""
+"Odběr mailing-listu ${mlist.display_name} byl pro uživatele ${member} "
+"deaktivován"
 
 #: src/mailman/app/notifications.py:201
 #, python-brace-format
 msgid "${member}'s bounce score incremented on ${mlist.display_name}"
-msgstr "Bounce skóre uživatele ${member} na mailing-listu ${mlist.display_name} bylo zvýšeno"
+msgstr ""
+"Bounce skóre uživatele ${member} na mailing-listu ${mlist.display_name} bylo "
+"zvýšeno"
 
 #: src/mailman/app/notifications.py:227
 #, python-brace-format
 msgid "${member} unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "${member} byl odhlášen od odběru mailing-listu ${mlist.display_name} z důvodu opakovaných autoodpovědí (bounces)"
+msgstr ""
+"${member} byl odhlášen od odběru mailing-listu ${mlist.display_name} z "
+"důvodu opakovaných autoodpovědí (bounces)"
 
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
@@ -127,12 +134,16 @@ msgstr "Váš odběr mailing-listu ${mlist.display_name} byl deaktivován"
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
 msgid "New subscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Nový požadavek na přihlášení k odběru mailing-listu ${self.mlist.display_name} od ${self.address.email}"
+msgstr ""
+"Nový požadavek na přihlášení k odběru mailing-listu ${self.mlist."
+"display_name} od ${self.address.email}"
 
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr "Nový požadavek na odhlášení odběru mailing-listu ${self.mlist.display_name} od ${self.address.email}"
+msgstr ""
+"Nový požadavek na odhlášení odběru mailing-listu ${self.mlist.display_name} "
+"od ${self.address.email}"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
@@ -142,12 +153,15 @@ msgstr "Byli jste přizváni k odběru mailing-listu ${event.mlist.fqdn_listname
 #: src/mailman/app/subscriptions.py:636
 #, python-brace-format
 msgid "Your confirmation is needed to leave the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Musíte potvrdit odhlášení odběru mailing-listu ${event.mlist.fqdn_listname}."
+msgstr ""
+"Musíte potvrdit odhlášení odběru mailing-listu ${event.mlist.fqdn_listname}."
 
 #: src/mailman/app/subscriptions.py:640
 #, python-brace-format
 msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
-msgstr "Musíte potvrdit přihlášení k odběru mailing-listu ${event.mlist.fqdn_listname}."
+msgstr ""
+"Musíte potvrdit přihlášení k odběru mailing-listu ${event.mlist."
+"fqdn_listname}."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518
 #: src/mailman/bin/runner.py:96
@@ -1537,7 +1551,8 @@ msgstr "${person} opustil ${mlist.fqdn_listname}"
 #: src/mailman/commands/eml_membership.py:239
 #, python-brace-format
 msgid "Confirmation email sent to ${person} to leave ${mlist.fqdn_listname}"
-msgstr "Potvrzovací email pro opuštění ${mlist.fqdn_listname} byl odeslán ${person}"
+msgstr ""
+"Potvrzovací email pro opuštění ${mlist.fqdn_listname} byl odeslán ${person}"
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
@@ -1655,7 +1670,9 @@ msgid ""
 "message.\n"
 "\n"
 msgstr ""
-"Přiložená zpráva odpovídá pravidlům zakázaného obsahu mailing listu ${mlist.display_name} a z tohoto důvodu nebude dále zpracována. Tento email je tak jedinou kopií Vámi odeslané zprávy.\n"
+"Přiložená zpráva odpovídá pravidlům zakázaného obsahu mailing listu ${mlist."
+"display_name} a z tohoto důvodu nebude dále zpracována. Tento email je tak "
+"jedinou kopií Vámi odeslané zprávy.\n"
 "\n"
 
 #: src/mailman/handlers/mime_delete.py:69
@@ -2021,7 +2038,8 @@ msgstr "Výstup Vašich emailových příkazů"
 #: src/mailman/runners/digest.py:55
 #, python-brace-format
 msgid "${mlist.display_name} Digest, Vol ${volume}, Issue ${digest_number}"
-msgstr "Shrnutí z ${mlist.display_name}, Číslo ${volume}, Vydání ${digest_number}"
+msgstr ""
+"Shrnutí z ${mlist.display_name}, Číslo ${volume}, Vydání ${digest_number}"
 
 #: src/mailman/runners/digest.py:84
 msgid "Today's Topics:\n"
@@ -2084,7 +2102,8 @@ msgid ""
 "Size: ${size} bytes\n"
 "Desc: ${desc}\n"
 msgstr ""
-"Část zprávy nekompatibilní s plain text formátem zpráv Shrnutí byla odstraněna ...\n"
+"Část zprávy nekompatibilní s plain text formátem zpráv Shrnutí byla "
+"odstraněna ...\n"
 "Název: ${filename}\n"
 "Typ: ${ctype}\n"
 "Velikost: ${size} bytes\n"
