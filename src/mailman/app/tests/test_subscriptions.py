@@ -30,13 +30,14 @@ from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.member import (
+    AlreadySubscribedError,
     DeliveryMode,
     DeliveryStatus,
     MemberRole,
     MembershipIsBannedError,
 )
 from mailman.interfaces.pending import IPendings
-from mailman.interfaces.subscriptions import TokenOwner
+from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     get_queue_messages,
@@ -203,6 +204,42 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         user = self._user_manager.create_user()
         workflow = SubscriptionWorkflow(self._mlist, user)
         self.assertRaises(AssertionError, workflow.run_thru, 'sanity_checks')
+
+    def test_sanity_checks_finds_address_for_user(self):
+        # Test raises AlreadySubscribedError for User when member is Address.
+        anne = self._user_manager.make_user(self._anne)
+        anne.addresses[0].verified_on = anne.created_on
+        anne.preferred_address = anne.addresses[0]
+        self._mlist.subscription_policy = SubscriptionPolicy.open
+        # Subscribe Address.
+        ISubscriptionManager(self._mlist).register(
+            anne.preferred_address,
+            pre_verified=True,
+            pre_confirmed=True,
+            pre_approved=True,
+            send_welcome_message=False
+            )
+        workflow = SubscriptionWorkflow(self._mlist, anne)
+        self.assertRaises(
+            AlreadySubscribedError, workflow.run_thru, 'sanity_checks')
+
+    def test_sanity_checks_finds_user_for_address(self):
+        # Test raises AlreadySubscribedError for Address when member is User.
+        anne = self._user_manager.make_user(self._anne)
+        anne.addresses[0].verified_on = anne.created_on
+        anne.preferred_address = anne.addresses[0]
+        self._mlist.subscription_policy = SubscriptionPolicy.open
+        # Subscribe User.
+        ISubscriptionManager(self._mlist).register(
+            anne,
+            pre_verified=True,
+            pre_confirmed=True,
+            pre_approved=True,
+            send_welcome_message=False
+            )
+        workflow = SubscriptionWorkflow(self._mlist, anne.preferred_address)
+        self.assertRaises(
+            AlreadySubscribedError, workflow.run_thru, 'sanity_checks')
 
     def test_sanity_checks_globally_banned_address(self):
         # An exception is raised if the address is globally banned.
