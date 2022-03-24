@@ -235,17 +235,10 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         assert self.user is not None and self.address is not None, (
             'Insane sanity check results')
         # Is this subscriber already a member?
-        if (self.which is WhichSubscriber.user and
-                self.user.preferred_address is not None):
-            subscriber = self.user
-        else:
-            subscriber = self.address
-        if self.mlist.is_subscribed(subscriber):
-            # 2017-04-22 BAW: This branch actually *does* get covered, as I've
-            # verified by a full coverage run, but diffcov for some reason
-            # claims that the test added in the branch that added this code
-            # does not cover the change.  That seems like a bug in diffcov.
-            raise AlreadySubscribedError(           # pragma: nocover
+        if ((self.user.preferred_address is not None and
+                self.mlist.is_subscribed(self.user)) or
+                self.mlist.is_subscribed(self.address)):
+            raise AlreadySubscribedError(
                 self.mlist.fqdn_listname,
                 self.address.email,
                 MemberRole.member)

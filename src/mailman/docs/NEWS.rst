@@ -52,6 +52,8 @@ Bugs fixed
   ``template`` table.  (Closes #988)
 * DMARC munge from mitigation will now find a nonmember poster's display name.
   (Closes #989)
+* Subscription workflow will now find an existing User when subscription is
+  for an Address and vice versa.  (Closes #994)
 
 REST
 ====
