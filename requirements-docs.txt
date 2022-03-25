@@ -1,4 +1,4 @@
 sphinx>=3.2
 sphinx_rtd_theme
-docutils==0.12
+docutils<0.18,>=0.14
 sphinxcontrib-zopeext
