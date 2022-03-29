@@ -203,7 +203,7 @@ The ``-confirm`` address is also available as an implicit command.
     >>> command.run()
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
-    0
+    1
 
 
 Stopping command processing
