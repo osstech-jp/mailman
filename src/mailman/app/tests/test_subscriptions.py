@@ -22,8 +22,10 @@ import unittest
 
 from contextlib import suppress
 from datetime import datetime
+from email.header import decode_header
 from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
+from mailman.app.membership import delete_member
 from mailman.app.subscriptions import SubscriptionWorkflow
 from mailman.config import config
 from mailman.interfaces.address import InvalidEmailAddressError
@@ -48,6 +50,14 @@ from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from unittest.mock import patch
 from zope.component import getUtility
+
+
+def _decode_header(header):
+    # convert an encoded header value to Python string
+    decoded_string, charset = decode_header(header)[0]
+    if charset is not None:
+        return decoded_string.decode(charset)
+    return decoded_string
 
 
 class TestSubscriptionWorkflow(unittest.TestCase):
@@ -898,3 +908,34 @@ approval:
         self.assertEqual(
             anne_member.delivery_mode, DeliveryMode.plaintext_digests)
         self.assertEqual(anne_member.delivery_status, DeliveryStatus.by_user)
+
+    def test_translated_subject_your_confirmation_is_needed(self):
+        anne = self._user_manager.create_user(self._anne)
+        old_language = self._mlist.preferred_language.code
+        self._mlist.preferred_language.code = 'fr'
+        anne_address = anne.addresses[0]
+        workflow = SubscriptionWorkflow(
+            self._mlist, anne_address, pre_verified=True,
+            send_welcome_message=False, delivery_status=DeliveryStatus.by_user)
+        list(workflow)
+        confirm_workflow = SubscriptionWorkflow(self._mlist)
+        confirm_workflow.token = workflow.token
+        confirm_workflow.restore()
+        list(confirm_workflow)
+        self._mlist.preferred_language.code = old_language
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(items[0].msg['Subject'], "Votre "
+                         "confirmation est nécessaire pour vous abonner à "
+                         "la liste de diffusion test@example.com.")
+
+    def test_translated_subject_unsubscribe(self):
+        anne = self._user_manager.create_user(self._anne)
+        set_preferred(anne)
+        old_code = anne.preferences.preferred_language
+        anne.preferences.preferred_language = 'fr'
+        self._mlist.subscribe(anne, send_welcome_message=False)
+        delete_member(self._mlist, self._anne, False, True)
+        anne.preferences.preferred_language = old_code
+        items = get_queue_messages('virgin', expected_count=1)
+        self.assertEqual(_decode_header(items[0].msg['Subject']), "Vous avez"
+                         " été désabonné de la liste de diffusion Test")
