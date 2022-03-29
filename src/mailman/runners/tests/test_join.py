@@ -23,6 +23,7 @@ import unittest
 from email.iterators import body_line_iterator
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.subscriptions import (
     ISubscriptionManager,
@@ -110,6 +111,37 @@ Subject: join
         self.assertEqual(len(confirmation_lines), 1)
         # And the confirmation line should name Anne's email address.
         self.assertIn('anne@example.org', confirmation_lines[0])
+
+    def test_join_banned_address_produces_error(self):
+        msg = mfs("""\
+From: anne@example.org
+To: test-join@example.com
+""")
+        IBanManager(self._mlist).ban('anne@example.org')
+        get_queue_messages('virgin')
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='join'))
+        self._runner.run()
+        # This should send out an error email.
+        get_queue_messages('virgin', expected_count=1)
+
+    def test_join_subscription_pending_produces_error(self):
+        msg = mfs("""\
+From: anne@example.org
+To: test-join@example.com
+""")
+        # Pend a subscription.
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='join'))
+        self._runner.run()
+        # Clear the virgin queue.
+        get_queue_messages('virgin')
+        # And try another.
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='join'))
+        self._runner.run()
+        # This should send out an error email.
+        get_queue_messages('virgin', expected_count=1)
 
 
 class TestJoinWithDigests(unittest.TestCase):

@@ -372,3 +372,16 @@ bad-command
         # This should send out one email that confirms that token was accepted.
         items = get_queue_messages('virgin', expected_count=1)
         self.assertNotIn('No such command: bad-command', str(items[0].msg))
+
+    def test_confirm_with_bad_token_produces_response(self):
+        # A message to test-confirm+1234 should produce an error response.
+        msg = mfs("""\
+From: anne@example.org
+To: test-confirm+1234@example.com
+""")
+        get_queue_messages('virgin')
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='confirm'))
+        self._runner.run()
+        # This should send out an error email.
+        get_queue_messages('virgin', expected_count=1)

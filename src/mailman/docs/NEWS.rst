@@ -55,6 +55,8 @@ Bugs fixed
 * Subscription workflow will now find an existing User when subscription is
   for an Address and vice versa.  (Closes #994)
 * The subject of Welcome and Goodbye messages is now translated (Closes #1000)
+* Emails to a list's ``-join``, ``-leave`` or ``-confirm`` address that result
+  in some errors will now produce a response.  (Closes #991)
 
 REST
 ====

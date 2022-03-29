@@ -107,3 +107,38 @@ leave
                                          subaddress='leave'))
         self._runner.run()
         get_queue_messages('virgin', sort_on='subject', expected_count=0)
+
+    def test_leave_no_user_produces_response(self):
+        msg = mfs("""\
+From: anne@example.org
+To: test-leave@example.com
+
+leave
+""")
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='leave'))
+        self._runner.run()
+        # This should send out an error email.
+        get_queue_messages('virgin', expected_count=1)
+
+    def test_leave_unverified_produces_response(self):
+        with transaction():
+            self._mlist.unsubscription_policy = SubscriptionPolicy.confirm
+            anne = getUtility(IUserManager).create_user('anne@example.org')
+            set_preferred(anne)
+            self._mlist.subscribe(anne.preferred_address)
+            # Set address unverified.
+            anne.preferred_address.verified_on = None
+        msg = mfs("""\
+From: anne@example.org
+To: test-leave@example.com
+
+leave
+""")
+        # Clear virgin queue.
+        get_queue_messages('virgin')
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='leave'))
+        self._runner.run()
+        # This should send out an error email.
+        get_queue_messages('virgin', expected_count=1)

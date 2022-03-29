@@ -58,6 +58,7 @@ class Confirm:
         pendable = getUtility(IPendings).confirm(token, expunge=False)
         if pendable is None:
             print(_('Confirmation token did not match'), file=results)
+            results.send_response = True
             return ContinueProcessing.no
         if pendable['type'] == 'held message':
             return self.process_held(

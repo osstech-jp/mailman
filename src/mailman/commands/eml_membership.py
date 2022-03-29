@@ -124,11 +124,13 @@ other than the sender of the command.
         except (AlreadySubscribedError, InvalidEmailAddressError,
                 MembershipIsBannedError) as e:
             print(str(e), file=results)
+            results.send_response = True
         except SubscriptionPendingError:
             # SubscriptionPendingError doesn't return an error message.
             listname = mlist.fqdn_listname                        # noqa: F841
             print(_('${person} has a pending subscription for ${listname}'),
                   file=results)
+            results.send_response = True
         else:
             print(_('Confirmation email sent to ${person}'), file=results)
         return ContinueProcessing.yes
@@ -199,6 +201,7 @@ You may be asked to confirm your request.""")
         if user is None:
             print(_('No registered user for email address: ${email}'),
                   file=results)
+            results.send_response = True
             return ContinueProcessing.no
         # The address that the -leave command was sent from, must be verified.
         # Otherwise you could link a bogus address to anyone's account, and
@@ -206,6 +209,7 @@ You may be asked to confirm your request.""")
         if user_manager.get_address(email).verified_on is None:
             print(_('Invalid or unverified email address: ${email}'),
                   file=results)
+            results.send_response = True
             return ContinueProcessing.no
         already_left = msgdata.setdefault('leaves', set())
         for user_address in user.addresses:
