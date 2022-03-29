@@ -8,16 +8,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-23 03:38+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-03-26 23:25+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.2.1-dev\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 4.12-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -337,6 +338,20 @@ msgid ""
 "    set which subtly changes some error handling behavior.\n"
 "    "
 msgstr ""
+"    הפעלת אצן.\n"
+"\n"
+"    האצן שצוין בשורת הפקודה הופעל והוא יכול לפעול דרך הלולאה הראשונה\n"
+"    שלו עם אחת (לאצנים שתומכים בזה) או באופן רצוף. האפשרות השנייה\n"
+"    היא הדרך בה האצן הראשי מפעיל את כל תת־התהליכים שלו.\n"
+"\n"
+"    ‎-r דרוש אלמלא סופקו ‎-l או ‎-h, והמשתנים שלו חייבים להיות אחד מהשמות\n"
+"    שמצוינים על ידי הפקודה ‎-l.\n"
+"\n"
+"    בדרך כלל, את הסקריפט הזה יש להפעיל דרך `mailman start`.  הפעלתו\n"
+"    בנפרד או עם ‎-o שימושית בדרך כלל לניפוי שגיאות.  הפעלה באופן הזה\n"
+"    מובילה לכך שהמשתנה הסביבתי ‎$MAILMAN_UNDER_MASTER_CONTROL\n"
+"    יוגדר, מה שמוביל לשינויים קלים בחלק מהתנהגות הטיפול בשגיאות.\n"
+"    "
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
@@ -493,9 +508,10 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
-"    Add all member addresses in FILENAME with delivery mode as specified\n"
-"    with -d/--delivery.  FILENAME can be '-' to indicate standard input.\n"
-"    Blank lines and lines that start with a '#' are ignored.\n"
+"    להוסיף את כל כתובות החברים שב־FILENAME עם מצב המסירה שצוין\n"
+"    עם ‎-d/--delivery.‏  FILENAME יכול להיות ‚-’ כדי לציין את הקלט הרגיל "
+"(stdin).\n"
+"    שורות ריקות או כאלו שנפתחות ב־‚#’ לא עוברות עיבוד.\n"
 "    "
 
 #: src/mailman/commands/cli_addmembers.py:124
@@ -580,8 +596,8 @@ msgid ""
 "    File to send the output to.  If not given, or if '-' is given, standard\n"
 "    output is used."
 msgstr ""
-"    File to send the output to.  If not given, or if '-' is given, standard\n"
-"    output is used."
+"    קובץ אליו לשלוח את הפלט.  אם לא צוין, או שצוין ‚-’, ייעשה שימוש\n"
+"    בפלט הרגיל (stdout)."
 
 #: src/mailman/commands/cli_conf.py:62
 msgid ""
@@ -684,22 +700,22 @@ msgid ""
 "    Don't print status messages.  Error messages are still printed to standard\n"
 "    error."
 msgstr ""
-"    Don't print status messages.  Error messages are still printed to "
-"standard\n"
-"    error."
+"    לא להציג הודעות מצב.  הודעות השגיאה עדיין נשלחות לערוץ השגיאות\n"
+"    הרגיל (stderr)."
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
-msgstr "GNU Mailman is already running"
+msgstr "GNU Mailman כבר פעיל"
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
 msgstr ""
-"A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
+"הפעלה קודמת של GNU Mailman לא הסתיימה כראוי ({}).  עדיף לנסות להשתמש "
+"ב־‎--force"
 
 #: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
-msgstr "Starting Mailman's master runner"
+msgstr "האצן הראשי של Mailman מופעל"
 
 #: src/mailman/commands/cli_control.py:108
 msgid "Generating MTA alias maps"
@@ -712,7 +728,7 @@ msgstr "מזהה התהליך אינו קריא תחת: ${config.PID_FILE}"
 
 #: src/mailman/commands/cli_control.py:151
 msgid "Is the master even running?"
-msgstr "Is the master even running?"
+msgstr "התהליך הראשי פעיל בכלל?"
 
 #: src/mailman/commands/cli_control.py:158
 #, python-brace-format
@@ -721,15 +737,15 @@ msgstr "אין צאצא עם מזהה התהליך: ${pid}"
 
 #: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
-msgstr "Stale pid file removed."
+msgstr "קובץ מזהה תהליך יתום הוסר."
 
 #: src/mailman/commands/cli_control.py:166
 msgid "Stop the Mailman master and runner processes."
-msgstr "Stop the Mailman master and runner processes."
+msgstr "לעצור את התהליך הראשי ואת תת־התהליכים של האצנים של Mailman."
 
 #: src/mailman/commands/cli_control.py:175
 msgid "Shutting down Mailman's master runner"
-msgstr "Shutting down Mailman's master runner"
+msgstr "האצן הראשי של Mailman נכבה"
 
 #: src/mailman/commands/cli_control.py:188
 msgid "Signal the Mailman processes to re-open their log files."
@@ -737,15 +753,15 @@ msgstr "Signal the Mailman processes to re-open their log files."
 
 #: src/mailman/commands/cli_control.py:197
 msgid "Reopening the Mailman runners"
-msgstr "Reopening the Mailman runners"
+msgstr "האצנים של Mailman נפתחים מחדש"
 
 #: src/mailman/commands/cli_control.py:210
 msgid "Stop and restart the Mailman runner subprocesses."
-msgstr "Stop and restart the Mailman runner subprocesses."
+msgstr "לעצור ולהפעיל מחדש את תת־תהליכי האצנים של Mailman."
 
 #: src/mailman/commands/cli_control.py:219
 msgid "Restarting the Mailman runners"
-msgstr "Restarting the Mailman runners"
+msgstr "האצנים של Mailman מופעלים מחדש"
 
 #: src/mailman/commands/cli_delmembers.py:48
 #, python-brace-format
@@ -754,14 +770,14 @@ msgstr "החבר אינו מנוי (מדלג): ${email}"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
-msgstr "    Delete members from a mailing list."
+msgstr "    מחיקת חברים מרשימת דיוור."
 
 #: src/mailman/commands/cli_delmembers.py:58
 msgid ""
 "    The list to operate on.  Required unless --fromall is specified.\n"
 "    "
 msgstr ""
-"    The list to operate on.  Required unless --fromall is specified.\n"
+"    הרשימה לתפעול.  נחוץ אלמלא צוין ‎--fromall.\n"
 "    "
 
 #: src/mailman/commands/cli_delmembers.py:64
@@ -964,7 +980,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr "Show this help message and exit."
+msgstr "להציג את הודעת העזרה הזאת ולצאת."
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
@@ -987,19 +1003,19 @@ msgstr ""
 #: src/mailman/commands/cli_import.py:82
 #, python-brace-format
 msgid "Not a Mailman 2.1 configuration file: ${pickle_file}"
-msgstr "Not a Mailman 2.1 configuration file: ${pickle_file}"
+msgstr "לא קובץ הגדרות של Mailman 2.1‏: ${pickle_file}"
 
 #: src/mailman/commands/cli_import.py:85
 msgid "Ignoring non-dictionary: {0!r}"
-msgstr "Ignoring non-dictionary: {0!r}"
+msgstr "בלתי מילוני, מתעלם: {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
-msgstr "Information about this Mailman instance."
+msgstr "מידע על העותק הזה של Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
-msgstr "    File to send the output to.  If not given, standard output is used."
+msgstr "    קובץ אליו יישלח הפלט.  אם לא סופק, זה יהיה הפלט הרגיל (stdout)."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
@@ -1136,7 +1152,9 @@ msgstr ""
 msgid ""
 "    Notify the list owner by email that their mailing list has been\n"
 "    created."
-msgstr "    להודיע לבעלי הרשימה בדוא״ל שרשימת הדיוור שלהם נוצרה."
+msgstr ""
+"    להודיע לבעלי הרשימה בדוא״ל שרשימת הדיוור שלהם\n"
+"    נוצרה."
 
 #: src/mailman/commands/cli_lists.py:155
 msgid "Print less output."
@@ -1284,6 +1302,9 @@ msgid ""
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
+"    להציג רק חברי תקציר מסוג מסוים.\n"
+"    ‚any’ משמעו כל סוג תקציר שהוא, ‚plaintext’ משמעו רק תקצירים\n"
+"    בטקסט פשוט (rfc 1153), ‚mime’ משמעו תקצירים מסוג MIME."
 
 #: src/mailman/commands/cli_members.py:180
 msgid ""
@@ -1296,10 +1317,18 @@ msgid ""
 "    administrator or moderator, and 'unknown' means that delivery was disabled\n"
 "    for unknown (legacy) reasons."
 msgstr ""
+"    להציג רק חברים עם מצב מסירה מסוים.\n"
+"    ‚enabled’ אומר כל החברים שהמסירה אליהם פעילה, ‚any’ אומר\n"
+"    כל החברים שהמסירה שלהם בוטלה מכל סיבה שהיא, ‚byuser’ אומר\n"
+"    המשתמשים השביתו לעצמם את המסירה, ‚bybounces’ אומר אלו\n"
+"    שהמסירה הושבתה על ידי מעבד ההחזרות האוטומטית,\n"
+"    ‚byadmin’ אומר שהמסירה הושבתה על ידי הנהלת או מפקחי הרשימה\n"
+"    ו־‚unknown’ אומר שהמסירה הושבתה\n"
+"    מסיבות לא ידועות (מיושן)."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid "Notify list owners/moderators of pending requests."
-msgstr "Notify list owners/moderators of pending requests."
+msgstr "להודיע לבעלי/מפקחי הרשימה על בקשות ממתינות."
 
 #: src/mailman/commands/cli_notify.py:43
 msgid ""
@@ -1307,11 +1336,9 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the requests for all mailing lists."
 msgstr ""
-"    Operate on this mailing list.  Multiple --list options can be given.  "
-"The\n"
-"    argument can either be a List-ID or a fully qualified list name.  "
-"Without\n"
-"    this option, operate on the requests for all mailing lists."
+"    תפעול רשימת הדיוור הזאת.  אפשר לספק מספר אפשרויות ‎--list.  הארגומנטים\n"
+"    יכולים להיות מזהה רשימה או השם המלא של הרשימה.  ללא האפשרות הזאת\n"
+"    הפעולות תתבצענה על כל רשימות הדיוור."
 
 #: src/mailman/commands/cli_notify.py:80 src/mailman/commands/cli_notify.py:141
 msgid "The {} list has {} moderation requests waiting."
@@ -1366,10 +1393,8 @@ msgid ""
 "Missing data for request {}\n"
 "\n"
 msgstr ""
-"לרשימה {} יש {} בקשות פיקוח ממתינות.\n"
+"חסרים נתונים לבקשה {}\n"
 "\n"
-"{}\n"
-"נא לטפל בהן בהזדמנות הראשונה שמתאפשרת לך.\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
@@ -1516,7 +1541,7 @@ msgid ""
 "Cannot unshunt message ${filebase}, skipping:\n"
 "${error}"
 msgstr ""
-"Cannot unshunt message ${filebase}, skipping:\n"
+"לא ניתן למשוך את ההודעה ${filebase} מתור הסקירה, ממשיכים:\n"
 "${error}"
 
 #: src/mailman/commands/cli_version.py:32
@@ -1734,7 +1759,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:254
 msgid "Print detailed instructions and exit."
-msgstr "Print detailed instructions and exit."
+msgstr "הצגת הנחיות מפורטות ולצאת."
 
 #: src/mailman/commands/cli_withlist.py:258
 msgid ""
@@ -1756,7 +1781,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:274
 msgid "Regular expression requires --run"
-msgstr "Regular expression requires --run"
+msgstr "ביטוי רגולרי דורש ‎--run"
 
 #: src/mailman/commands/cli_withlist.py:301
 #, python-brace-format
@@ -1828,7 +1853,7 @@ msgid ""
 "used.  You can use the 'address' option to request subscription of an address\n"
 "other than the sender of the command.\n"
 msgstr ""
-"תופיע בפניך בקשה לאשר את בקשת המינוי שלך ותונפק עבורך ססמה זמנית. \n"
+"תופיע בפניך בקשה לאשר את בקשת המינוי שלך ותונפק עבורך ססמה זמנית.\n"
 "\n"
 "על ידי שימוש באפשרות ‚digest’ (תקציר), ניתן לציין האם מעניין אותך לקבל\n"
 "תקציר או לא. אם לא ציינת דבר, ייעשה שימוש בשיטת המשלוח כבררת המחדל\n"
@@ -1922,26 +1947,35 @@ msgid ""
 "either delivery= or mode= is specified more than once, only the last occurrence\n"
 "is used.\n"
 msgstr ""
+"מפיק רשימה של שמות וכתובות הדוא״ל של החברים.\n"
+"\n"
+"ניתן להשתמש במשתני הרשות הנוספים delivery=‎ ו־mode=‎ כדי להגביל את\n"
+"הדוח למשתמשים שעונים על מצב ו/או תצורת משלוח. אם צוינו delivery=‎\n"
+"או mode=‎ יותר מפעם אחת, רק הצירוף האחרון ייחשב.\n"
 
 #: src/mailman/commands/eml_who.py:50
 msgid "Get a list of the list members."
-msgstr ""
+msgstr "קבלת רשימה של חברי הרשימה."
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
-msgstr ""
+msgstr "אין לך הרשאה לצפות ברשימת החברים."
 
 #: src/mailman/commands/eml_who.py:78
 msgid ""
 "Unrecognized or invalid argument(s):\n"
 "{}"
 msgstr ""
+"משתנים לא מוכרים או שגויים:\n"
+"{}"
 
 #: src/mailman/commands/eml_who.py:101
 msgid ""
 "Members of the {} mailing list:\n"
 "{}"
 msgstr ""
+"חברי רשימת הדיוור {}:\n"
+"{}"
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
@@ -2701,7 +2735,7 @@ msgstr ""
 "כדי לוודא שאין בעיות בכתובת הדוא״ל. אולי כדאי לך לפנות להנהלת הדוא״ל לעזרה "
 "נוספת.\n"
 "\n"
-"אין צורך בפעולות מיוחדות כדי להישאר במצב חברות פעיל ברשימת הדיוור. \n"
+"אין צורך בפעולות מיוחדות כדי להישאר במצב חברות פעיל ברשימת הדיוור.\n"
 "\n"
 "אם יש לך שאלות או תקלות, ניתן ליצור קשר עם בעלי רשימת הדיוור בכתובת\n"
 "\n"
