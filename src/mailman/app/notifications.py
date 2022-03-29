@@ -89,14 +89,15 @@ def send_welcome_message(mlist, member, language, text=''):
         list_name=mlist.display_name,
         list_requests=mlist.request_address,
         ))
-    digmode = (''                                   # noqa: F841
-               if member.delivery_mode is DeliveryMode.regular
-               else _(' (Digest mode)'))
-    msg = UserNotification(
-        formataddr((display_name, member.address.email)),
-        mlist.request_address,
-        _('Welcome to the "${mlist.display_name}" mailing list${digmode}'),
-        text, language)
+    with _.using(language.code):
+        digmode = (''                                   # noqa: F841
+                   if member.delivery_mode is DeliveryMode.regular
+                   else _(' (Digest mode)'))
+        msg = UserNotification(
+            formataddr((display_name, member.address.email)),
+            mlist.request_address,
+            _('Welcome to the "${mlist.display_name}" mailing list${digmode}'),
+            text, language)
     msg['X-No-Archive'] = 'yes'
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
 
@@ -125,11 +126,12 @@ def send_goodbye_message(mlist, address, language):
         list_name=mlist.display_name,
         list_requests=mlist.request_address,
         )))
-    msg = UserNotification(
-        address, mlist.bounces_address,
-        _('You have been unsubscribed from the ${mlist.display_name} '
-          'mailing list'),
-        goodbye_message, language)
+    with _.using(language.code):
+        msg = UserNotification(
+            address, mlist.bounces_address,
+            _('You have been unsubscribed from the ${mlist.display_name} '
+              'mailing list'),
+            goodbye_message, language)
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
 
 

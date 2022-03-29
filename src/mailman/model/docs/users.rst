@@ -228,13 +228,13 @@ Some of these preferences are booleans and they can be set to ``True`` or
     >>> from mailman.core.constants import DeliveryMode
     >>> prefs = user_1.preferences
     >>> prefs.acknowledge_posts = True
-    >>> prefs.preferred_language = 'it'
+    >>> prefs.preferred_language = 'fr'
     >>> prefs.receive_list_copy = False
     >>> prefs.receive_own_postings = False
     >>> prefs.delivery_mode = DeliveryMode.regular
     >>> show_prefs(user_1.preferences)
     acknowledge_posts    : True
-    preferred_language   : <Language [it] Italian>
+    preferred_language   : <Language [fr] French>
     receive_list_copy    : False
     receive_own_postings : False
     delivery_mode        : DeliveryMode.regular

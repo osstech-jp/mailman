@@ -234,7 +234,7 @@ The next person to subscribe will get a French welcome message.
     MIME-Version: 1.0
     Content-Type: text/plain; charset="iso-8859-1"
     Content-Transfer-Encoding: quoted-printable
-    Subject: =?iso-8859-1?q?Welcome_to_the_=22Ant=22_mailing_list?=
+    Subject: =?iso-8859-1?q?Bienvenue_sur_la_liste_de_diffusion_=AB_Ant_=BB?=
     From: ant-request@example.com
     To: Elle Person <eperson@example.com>
     ...
@@ -324,7 +324,7 @@ So far so good.  What happens if Fred subscribes to the Ant mailing list?
     MIME-Version: 1.0
     Content-Type: text/plain; charset="iso-8859-1"
     Content-Transfer-Encoding: quoted-printable
-    Subject: =?iso-8859-1?q?Welcome_to_the_=22Ant=22_mailing_list?=
+    Subject: =?iso-8859-1?q?Bienvenue_sur_la_liste_de_diffusion_=AB_Ant_=BB?=
     From: ant-request@example.com
     To: Fred Person <fperson@example.com>
     ...

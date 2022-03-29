@@ -78,3 +78,20 @@ msgstr "Pied de page des remises groupées"
 #: Mailman/Handlers/ToDigest.py:376
 msgid "End of "
 msgstr "Fin de "
+
+#: src/mailman/app/notifications.py:98
+#, python-brace-format
+msgid "Welcome to the \"${mlist.display_name}\" mailing list${digmode}"
+msgstr "Bienvenue sur la liste de diffusion${digmode} « ${mlist.display_name} »"
+
+#: src/mailman/app/notifications.py:130
+#, python-brace-format
+msgid "You have been unsubscribed from the ${mlist.display_name} mailing list"
+msgstr "Vous avez été désabonné de la liste de diffusion ${mlist.display_name}"
+
+#: src/mailman/app/subscriptions.py:640
+#, python-brace-format
+msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
+msgstr ""
+"Votre confirmation est nécessaire pour vous abonner à la liste de diffusion "
+"${event.mlist.fqdn_listname}."
