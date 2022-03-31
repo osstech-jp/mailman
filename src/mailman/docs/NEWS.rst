@@ -57,6 +57,8 @@ Bugs fixed
 * The subject of Welcome and Goodbye messages is now translated (Closes #1000)
 * Emails to a list's ``-join``, ``-leave`` or ``-confirm`` address that result
   in some errors will now produce a response.  (Closes #991)
+* RFC2047 encoded Subject: and From: headers reported in email command replies
+  are now decoded.  (Closes #999)
 
 REST
 ====

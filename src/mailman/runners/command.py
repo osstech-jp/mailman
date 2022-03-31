@@ -186,9 +186,11 @@ class CommandRunner(Runner):
         # Include just a few key pieces of information from the original: the
         # sender, date, and message id.
         print(_('- Original message details:'), file=results)
-        subject = msg.get('subject', 'n/a')                      # noqa: F841
+        subject = str(make_header(decode_header(                 # noqa: F841
+            msg.get('subject', 'n/a'))))
         date = msg.get('date', 'n/a')                            # noqa: F841
-        from_ = msg.get('from', 'n/a')                           # noqa: F841
+        from_ = str(make_header(decode_header(                   # noqa: F841
+            msg.get('from', 'n/a'))))
         print(_('    From: ${from_}'), file=results)
         print(_('    Subject: ${subject}'), file=results)
         print(_('    Date: ${date}'), file=results)
