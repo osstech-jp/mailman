@@ -385,3 +385,26 @@ To: test-confirm+1234@example.com
         self._runner.run()
         # This should send out an error email.
         get_queue_messages('virgin', expected_count=1)
+
+    def test_confirm_with_non_ascii_from_and_subject(self):
+        # this test shall return in the body the RFC2047-decoded
+        # From:display-part and Subject:
+        get_queue_messages('virgin')
+        msg = mfs("""\
+From: =?utf-8?Q?=D0=90=D0=BD=D0=B0?= <anne@example.org>
+Subject: =?utf-8?Q?=D0=9A=D1=8A=D1=89=D0=B0?=
+
+bad-command
+""")
+        self._commandq.enqueue(msg, dict(listid='test.example.com',
+                                         subaddress='confirm'))
+        self._runner.run()
+        # This should send out one email that confirms that token was accepted.
+        items = get_queue_messages('virgin', expected_count=1)
+        msg_result = items[0].msg
+        payload = msg_result.get_payload()
+        encoding = msg_result.get('Content-Transfer-Encoding')
+        if encoding and encoding.lower() == 'base64':
+            payload = base64.b64decode(payload).decode('utf-8')
+        self.assertIn('Ана <anne@example.org>', payload)
+        self.assertIn('Къща', payload)
