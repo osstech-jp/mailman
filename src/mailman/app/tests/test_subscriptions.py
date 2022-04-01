@@ -22,7 +22,6 @@ import unittest
 
 from contextlib import suppress
 from datetime import datetime
-from email.header import decode_header
 from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import delete_member
@@ -50,14 +49,6 @@ from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
 from unittest.mock import patch
 from zope.component import getUtility
-
-
-def _decode_header(header):
-    # convert an encoded header value to Python string
-    decoded_string, charset = decode_header(header)[0]
-    if charset is not None:
-        return decoded_string.decode(charset)
-    return decoded_string
 
 
 class TestSubscriptionWorkflow(unittest.TestCase):
@@ -937,5 +928,5 @@ approval:
         delete_member(self._mlist, self._anne, False, True)
         anne.preferences.preferred_language = old_code
         items = get_queue_messages('virgin', expected_count=1)
-        self.assertEqual(_decode_header(items[0].msg['Subject']), "Vous avez"
+        self.assertEqual(str(items[0].msg['Subject']), "Vous avez"
                          " été désabonné de la liste de diffusion Test")
