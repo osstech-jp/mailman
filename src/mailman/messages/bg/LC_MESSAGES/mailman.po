@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-23 03:40+0000\n"
-"Last-Translator: dpa-weblate@aegee.org <dpa-weblate@aegee.org>\n"
+"PO-Revision-Date: 2022-03-29 22:04+0000\n"
+"Last-Translator: Дилян Палаузов <dpa-weblate@aegee.org>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/bg/>\n"
 "Language: bg\n"
@@ -86,17 +86,17 @@ msgstr "Заявката до пощенския списък „${display_name}
 
 #: src/mailman/app/notifications.py:94
 msgid " (Digest mode)"
-msgstr ""
+msgstr " (Сборни писма)"
 
 #: src/mailman/app/notifications.py:98
 #, python-brace-format
 msgid "Welcome to the \"${mlist.display_name}\" mailing list${digmode}"
-msgstr "Добре дошли в пощенския списък „${mlist.display_name}“{digmode}"
+msgstr "Добре дошъл в пощенския списък „${mlist.display_name}“${digmode}"
 
 #: src/mailman/app/notifications.py:130
 #, python-brace-format
 msgid "You have been unsubscribed from the ${mlist.display_name} mailing list"
-msgstr "Беше изтрит от пощенския списък ${mlist.display_name}"
+msgstr "Изтрит си от пощенския списък ${mlist.display_name}"
 
 #: src/mailman/app/notifications.py:148
 #, python-brace-format
@@ -443,6 +443,12 @@ msgid ""
 "    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 msgstr ""
+"    Задай режим на доставка за добавения член из 'regular', 'mime', 'plain',"
+"\n"
+"    'summary' or 'disabled'.  Т.е. едно от regular, три варианта за сборни "
+"писма\n"
+"    или без доставка.  Ако не е указано се подразбира regular.  Не се взема\n"
+"    пред вид за поканени членове."
 
 #: src/mailman/commands/cli_addmembers.py:132
 msgid ""
@@ -704,6 +710,8 @@ msgid ""
 "    Send any collected digests right now, even if the size threshold has not\n"
 "    yet been met."
 msgstr ""
+"    Изпрати веднага всички сборни писма, дори и горната граница за технея\n"
+"    размер още да не е достигната."
 
 #: src/mailman/commands/cli_digests.py:54
 msgid ""
@@ -727,6 +735,8 @@ msgid ""
 "    Send any collected digests for the List only if their digest_send_periodic\n"
 "    is set to True."
 msgstr ""
+"    Изпрати всички събрани пощенски писма за списъка, само ако\n"
+"    digest_send_periodic има стойност True."
 
 #: src/mailman/commands/cli_digests.py:79
 msgid "--send and --periodic flags cannot be used together"
@@ -741,6 +751,7 @@ msgstr "Не беше намерен такъв списък: ${spec}"
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
 msgstr ""
+"${mlist.list_id} е в година ${mlist.volume} брой ${mlist.next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
@@ -751,6 +762,8 @@ msgstr ""
 #, python-brace-format
 msgid "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
 msgstr ""
+"${mlist.list_id} изпрати година ${mlist.volume}, брой ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_findmember.py:66
 msgid ""
@@ -952,27 +965,27 @@ msgstr ""
 #: src/mailman/commands/cli_lists.py:190
 #, python-brace-format
 msgid "Illegal list name: ${fqdn_listname}"
-msgstr ""
+msgstr "Невалидно име на списък: ${fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:192
 #, python-brace-format
 msgid "List already exists: ${fqdn_listname}"
-msgstr ""
+msgstr "Списъкът вече съществува: ${fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:194
 #, python-brace-format
 msgid "Undefined domain: ${domain}"
-msgstr ""
+msgstr "Неопределен домейн: ${domain}"
 
 #: src/mailman/commands/cli_lists.py:202
 #, python-brace-format
 msgid "Created mailing list: ${mlist.fqdn_listname}"
-msgstr ""
+msgstr "Създаден пощенски списък: ${mlist.fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:217
 #, python-brace-format
 msgid "Your new mailing list: ${fqdn_listname}"
-msgstr ""
+msgstr "Твоят нов пощенски списък: ${fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Remove a mailing list."
@@ -1100,6 +1113,8 @@ msgid ""
 "\n"
 "Held Unsubscriptions:\n"
 msgstr ""
+"\n"
+"Задържани заявки за отписване:\n"
 
 #: src/mailman/commands/cli_notify.py:119
 msgid ""
@@ -1130,6 +1145,8 @@ msgid ""
 "Missing data for request {}\n"
 "\n"
 msgstr ""
+"Липсващи данни за заявка {}\n"
+"\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
@@ -1232,6 +1249,8 @@ msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
 msgstr ""
+"    Не прави промените.  Вместо това отпечатай какво\n"
+"    би се случило с пощенския списък."
 
 #: src/mailman/commands/cli_unshunt.py:33
 msgid "Unshunt messages."
@@ -1429,11 +1448,11 @@ msgstr "Съобщение ${message}"
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
-msgstr ""
+msgstr "Отговори с параметрите на тази команда."
 
 #: src/mailman/commands/eml_end.py:33
 msgid "Stop processing commands."
-msgstr ""
+msgstr "Спри да обработваш команди."
 
 #: src/mailman/commands/eml_end.py:47
 msgid "An alias for 'end'."
@@ -1467,6 +1486,15 @@ msgid ""
 "used.  You can use the 'address' option to request subscription of an address\n"
 "other than the sender of the command.\n"
 msgstr ""
+"Ще бъдеш помолен да потвърдиш желанието ти да се запишеш и миже\n"
+"да получиш временна парола.\n"
+"\n"
+"Чрез опцията 'digest' може да укажеш дали искаш да получаваш сборни\n"
+"писма.  Ако опцията не е указана, ще се използва стандартния за пощенския "
+"списък\n"
+"режим на доставка.  Може да използваш опцията 'address' за да запишеш адрес,"
+"\n"
+"различен от адреса на подателя на командата.\n"
 
 #: src/mailman/commands/eml_membership.py:79
 msgid "Join this mailing list."
@@ -1543,7 +1571,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
-msgstr "Псевдоним за 'leave'."
+msgstr "Псевдоним на 'leave'."
 
 #: src/mailman/commands/eml_who.py:42
 msgid ""
@@ -1667,11 +1695,11 @@ msgstr ""
 
 #: src/mailman/handlers/mime_delete.py:110
 msgid "The message's content type was explicitly disallowed"
-msgstr ""
+msgstr "Съдържанието на писмото е изрично забранено"
 
 #: src/mailman/handlers/mime_delete.py:115
 msgid "The message's content type was not explicitly allowed"
-msgstr ""
+msgstr "Съдържанието на писмото не е изрично разрешено"
 
 #: src/mailman/handlers/mime_delete.py:124
 msgid "The message's file extension was explicitly disallowed"
@@ -1737,6 +1765,7 @@ msgstr "Добави съобщението към архива."
 #: src/mailman/handlers/to_digest.py:36
 msgid "Add the message to the digest, possibly sending it."
 msgstr ""
+"Добави съобщението към сборните писма и евентуално изпрати сборно писмо."
 
 #: src/mailman/handlers/to_outgoing.py:38
 msgid "Send the message to the outgoing queue."
@@ -1792,7 +1821,7 @@ msgstr ""
 
 #: src/mailman/rules/banned_address.py:33
 msgid "Match messages sent by banned addresses."
-msgstr ""
+msgstr "Прихваща съобщения, изпратени от блокирани адреси."
 
 #: src/mailman/rules/banned_address.py:45
 msgid "Message sender {} is banned from this list"
@@ -1804,7 +1833,7 @@ msgstr ""
 
 #: src/mailman/rules/digests.py:58
 msgid "Message has a digest subject"
-msgstr ""
+msgstr "Съобщението има тема на сборно писмо"
 
 #: src/mailman/rules/digests.py:89
 msgid "Message quotes digest boilerplate"
@@ -1860,15 +1889,15 @@ msgstr "Съобщението има повече от {} получателя"
 
 #: src/mailman/rules/max_size.py:37
 msgid "Catch messages that are bigger than a specified maximum."
-msgstr ""
+msgstr "Прихваща съобщения, чийто размер надхвърля указания максимум."
 
 #: src/mailman/rules/max_size.py:68
 msgid "The message is larger than the {} KB maximum size"
-msgstr ""
+msgstr "Съобщението е по-голямо от максималния размер {} KB"
 
 #: src/mailman/rules/moderation.py:65
 msgid "Match messages sent by moderated members."
-msgstr ""
+msgstr "Прихваща съобщения изпратени от модерирани абонати."
 
 #: src/mailman/rules/moderation.py:93
 msgid "The message comes from a moderated member"
@@ -1880,7 +1909,7 @@ msgstr "Съобщението не е от абонат на пощенския
 
 #: src/mailman/rules/moderation.py:125
 msgid "Match messages sent by nonmembers."
-msgstr ""
+msgstr "Прихваща съобщения изпратени от не-членове."
 
 #: src/mailman/rules/moderation.py:140
 msgid "No sender was found in the message."
@@ -1903,7 +1932,7 @@ msgstr ""
 
 #: src/mailman/rules/no_senders.py:32
 msgid "Match messages with no valid senders."
-msgstr ""
+msgstr "Прихваща съобщения без валиден подател."
 
 #: src/mailman/rules/no_senders.py:44
 msgid "The message has no valid senders"
@@ -1911,7 +1940,7 @@ msgstr "Съобщението няма валидни податели"
 
 #: src/mailman/rules/no_subject.py:32
 msgid "Catch messages with no, or empty, Subject headers."
-msgstr ""
+msgstr "Прихваща съобщения без тема или с празна тема."
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
@@ -1931,7 +1960,7 @@ msgstr "Правило, което винаги е изпълнено."
 
 #: src/mailman/runners/command.py:103
 msgid "Ignoring non-text/plain MIME parts"
-msgstr ""
+msgstr "Текстът от не text/plain MIME части не се взема пред вид"
 
 #: src/mailman/runners/command.py:143
 msgid "The results of your email command are provided below.\n"
@@ -2000,12 +2029,13 @@ msgstr ""
 
 #: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
-msgstr ""
+msgstr "Резултатите от твоите команди изпратени по електронна поща"
 
 #: src/mailman/runners/digest.py:55
 #, python-brace-format
 msgid "${mlist.display_name} Digest, Vol ${volume}, Issue ${digest_number}"
 msgstr ""
+"${mlist.display_name} Сборно писмо год. ${volume}, брой ${digest_number}"
 
 #: src/mailman/runners/digest.py:84
 msgid "Today's Topics:\n"
@@ -2013,16 +2043,16 @@ msgstr "Днешните теми:\n"
 
 #: src/mailman/runners/digest.py:153
 msgid "Digest Header"
-msgstr ""
+msgstr "Текст-шапка за сборни писма"
 
 #: src/mailman/runners/digest.py:173
 #, python-brace-format
 msgid "Today's Topics (${count} messages)"
-msgstr ""
+msgstr "Днешните теми (${count} съобщения)"
 
 #: src/mailman/runners/digest.py:195 src/mailman/runners/digest.py:270
 msgid "Digest Footer"
-msgstr ""
+msgstr "Текст за края на сборните писма"
 
 #: src/mailman/runners/digest.py:202 src/mailman/runners/digest.py:277
 msgid "End of "
@@ -2031,19 +2061,19 @@ msgstr "Край на "
 #: src/mailman/styles/base.py:59
 #, python-brace-format
 msgid "[${mlist.display_name}] "
-msgstr ""
+msgstr "[${mlist.display_name}] "
 
 #: src/mailman/styles/default.py:44
 msgid "Ordinary discussion mailing list style."
-msgstr ""
+msgstr "Редовен пощенски списък за дискусии."
 
 #: src/mailman/styles/default.py:64
 msgid "Announce only mailing list style."
-msgstr ""
+msgstr "Пощенски списък само за анонси."
 
 #: src/mailman/styles/default.py:84
 msgid "Discussion mailing list style with private archives."
-msgstr ""
+msgstr "Дискусионен пощенски списък със скрити архиви."
 
 #: src/mailman/utilities/options.py:47
 #, python-brace-format
@@ -2068,6 +2098,12 @@ msgid ""
 "Size: ${size} bytes\n"
 "Desc: ${desc}\n"
 msgstr ""
+"Част от съобщението, несъвместима със сборните писма в чист текст, беше "
+"изтрита …\n"
+"Име: ${filename}\n"
+"Тип: ${ctype}\n"
+"Размер: ${size} байта\n"
+"Описание: ${desc}\n"
 
 #: src/mailman/utilities/scrubber.py:58
 msgid "-------------- next part --------------\n"
@@ -2091,9 +2127,9 @@ msgid "help.txt"
 msgstr ""
 "Помощ за пощенския списък ${listname}\n"
 "\n"
-"Това е команда „help“ за версия ${version} на GNU Mailman - управител на "
+"Това е команда „help“ за версия $version на GNU Mailman - управител на "
 "пощенски\n"
-"списъци на ${domain}.  Следният текст описва команди, които може да изпратиш "
+"списъци на $domain.  Следният текст описва команди, които може да изпратиш "
 "за\n"
 "да получиш информация за и да управляваш абонаментите си за Mailman пощенски "
 "списъци\n"
@@ -2102,27 +2138,40 @@ msgstr ""
 "\n"
 "Командите следва да се изпращат на адрес ${listname}-request@${domain}.\n"
 "\n"
-"По отношение на описанието - думи в „<>“ са ЗАДЪЛЖИТЕЛНИ елементи, думи\n"
-"в „[]“ са ПО ЖЕЛАНИЕ.  Не включвай „<>“ и „[]“  когато изпращаш командите.\n"
+"По отношение на описанието - думи в „<>“ са ЗАДЪЛЖИТЕЛНИ елементи,\n"
+"думи в „[]“ са ПО ЖЕЛАНИЕ.  Не включвай „<>“ и „[]“,\n"
+"когато изпращаш командите.\n"
 "\n"
-"Съществуват следните команди:\n"
+"Налични са следните команди:\n"
 "\n"
-"    ${commands}\n"
+"    $commands\n"
 "\n"
-"Въпроси и съображения, които следва да се обработят от човек, следва да се "
-"изпращат до:\n"
+"Отпращай въпроси и съображения, които следва да се обработят от човек, до:\n"
 "\n"
-"    ${administrator}"
+"    $administrator"
 
 msgid "list:admin:action:post.txt"
 msgstr ""
+"Като администратор на пощенски списък е нужно одобрението ти за\n"
+"следните писма до пощенски списък:\n"
+"\n"
+"    Пощенски списък: $listname\n"
+"    От: $sender_email\n"
+"    Тема: $subject\n"
+"\n"
+"Писмото е задържано, защото:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Посети интернет таблото си за да одобриш или отхвърлиш\n"
+"чакащите писма."
 
 msgid "list:admin:action:subscribe.txt"
 msgstr ""
 "Необходимо е одобрението ти за записване за пощенски\n"
 "списък:\n"
 "\n"
-"    За: $member\n"
+"    За:    $member\n"
 "    Списък: $listname"
 
 msgid "list:admin:action:unsubscribe.txt"
@@ -2130,14 +2179,22 @@ msgstr ""
 "Необходимо е одобрението ти за отписване от\n"
 "пощенски списък:\n"
 "\n"
-"    За: $member\n"
+"    За:    $member\n"
 "    Списък: $listname"
 
 msgid "list:admin:notice:disable.txt"
 msgstr ""
+"Абонатът $member беше изключен от $listname защото броят на върнатите\n"
+"писма надскочи допустимият максимум да пощенския списък "
+"(bounce_score_threshold).\n"
+"\n"
+"Върнатото писмо (DSN), надхвърлящо максимума, е приложено, ако е налично."
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
+"Увеличи се броят върнати писма до $member.\n"
+"\n"
+"Върнатото писмо (DSN) е приложено, ако е налично."
 
 msgid "list:admin:notice:pending.txt"
 msgstr ""
@@ -2155,6 +2212,10 @@ msgstr "$member се абонира за $display_name."
 
 msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
+"Приложеното съобщение беше върнато като грешка, но или неговият формат\n"
+"не беше разпознат, или в него нямаше адрес на абонат.  Този пощенски списък\n"
+"е настроен да изпраща всички неразтълкувани върнати съобщения до\n"
+"администраторите на пощенския списък."
 
 msgid "list:admin:notice:unsubscribe.txt"
 msgstr "${member} е изтрит от ${display_name}."
@@ -2174,9 +2235,8 @@ msgstr ""
 "Адрес за връзка лицата, отговарящи за пощенския списък:\n"
 "\t$owner_email\n"
 "\n"
-"Когато отговаряш, редактирай темата на писмото си, да бъде нещо по-конкретно "
-"от\n"
-"\"Re: Сборно съдържание от $display_name...\""
+"Когато отговаряш, редактирай темата на писмото си да бъде нещо\n"
+"по-конкретно от \"Re: Сборно съдържание от $display_name...\""
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
@@ -2189,9 +2249,49 @@ msgstr ""
 
 msgid "list:user:action:invite.txt"
 msgstr ""
+"Твоят адрес „$user_email“ е поканен да се включи в пощенския списък\n"
+"$short_listname на $domain от администраторите на $short_listname.\n"
+"Може да приемеш поканата отговаряйки на това съобщение.\n"
+"\n"
+"Може да приемеш поканата и включвайки следния ред -- и само\n"
+"него -- в съобщение до $request_email:\n"
+"\n"
+"    confirm $token\n"
+"\n"
+"Обикновено натискането на копчето „Отговори“ на това електронно съобщение\n"
+"е достатъчно при повечето програми за четене на електронни писма.\n"
+"\n"
+"Ако искаш да отхвърлиш поканата, игнорирай това съобщение. Отправи\n"
+"въпросите си до\n"
+"$owner_email."
 
 msgid "list:user:action:subscribe.txt"
 msgstr ""
+"Потвържднеие за регистрация на електронен адрес\n"
+"\n"
+"Здрасти, аз съм GNU Mailman сървър на $domain.\n"
+"\n"
+"Получих заявка за регистрация за електронния адрес\n"
+"\n"
+"    $user_email\n"
+"\n"
+"Преди да започнеш да използваш GNU Mailman на този сайт, трябва да\n"
+"потвърдиш, че това е твоят адрес.  Това става като отговориш на това "
+"съобщение.\n"
+"\n"
+"Друга възможност да потвърдиш е като включиш следния ред -- и само\n"
+"него -- в съобщение до $request_email:\n"
+"\n"
+"    confirm $token\n"
+"\n"
+"Обикновено натискането на копчето „Отговор“ при това съобщение е\n"
+"достатъчно при повечето програми за обработка на електронни писма.\n"
+"\n"
+"Ако не искаш да регистрираш този електронен адрес, игнорирай това\n"
+"писмо.  Ако записването ти за този пощенски списък е подозрително или\n"
+"имаш други въпроси, пиши на\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
@@ -2309,7 +2409,7 @@ msgstr ""
 
 msgid "list:user:notice:warning.txt"
 msgstr ""
-"Твоят абонамент за $listname mailing беше изключен, защото\n"
+"Твоят абонамент за $listname mailing беше прекратен, защото\n"
 "твърде много съобщения се върнаха, което е показател за проблеми при\n"
 "доставката на писма до $sender_email. Може да се свържеш с\n"
 "администратора на електронната ти поща за помощ.\n"
@@ -2320,9 +2420,9 @@ msgstr ""
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
-"Добре дошъл в пощенски списък  „${display_name}“!\n"
+"Добре дошъл в пощенски списък „${display_name}“!\n"
 "\n"
-"За да изпратиш съобщения до списъка, пиши на:\n"
+"За да изпратиш съобщения до списъка, пиши на :\n"
 "\n"
 "  ${listname}\n"
 "\n"
@@ -2331,10 +2431,11 @@ msgstr ""
 "\n"
 "  ${request_email}\n"
 "\n"
-"с думата 'help' в темата или тялото (не включвай кавичките).  Ще получиш\n"
-"отговор с допълнителни инструкции.  Ще ти трябва и паролата ти за са\n"
-"промениш настройките си.  От съображения за сигурност паролата ти не е\n"
-"спомената тук.  Ако си я забравил може да я смениш чрез веб-страницата."
+"с думата 'help' в темата или тялото (не включвай кавичките).  Ще\n"
+"получиш отговор с допълнителни инструкции.  Ще ти трябва и паролата\n"
+"ти за са промениш настройките си.  От съображения за сигурност\n"
+"паролата ти не е спомената тук.  Ако си я забравил може да я смениш\n"
+"чрез веб-страницата."
 
 #~ msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address}.email"
 #~ msgstr "Ново желание за отписване от ${self.mlist.display_name} за ${self.address.email}"
