@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-29 22:04+0000\n"
+"PO-Revision-Date: 2022-04-03 17:15+0000\n"
 "Last-Translator: Дилян Палаузов <dpa-weblate@aegee.org>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/bg/>\n"
@@ -1508,7 +1508,7 @@ msgstr ""
 #: src/mailman/commands/eml_membership.py:130
 #, python-brace-format
 msgid "${person} has a pending subscription for ${listname}"
-msgstr ""
+msgstr "${person} има друга непотвърдена заявка за включване в ${listname}"
 
 #: src/mailman/commands/eml_membership.py:133
 #, python-brace-format
@@ -1964,7 +1964,7 @@ msgstr "Текстът от не text/plain MIME части не се взема
 
 #: src/mailman/runners/command.py:143
 msgid "The results of your email command are provided below.\n"
-msgstr "Следват резултатите от твоята команда изпратена по електронна поща.\n"
+msgstr "Следват резултатите от твоята команда, изпратена по електронна поща.\n"
 
 #: src/mailman/runners/command.py:187
 msgid "- Original message details:"
@@ -2025,7 +2025,7 @@ msgid ""
 "- Done."
 msgstr ""
 "\n"
-"- Готово."
+"- Край."
 
 #: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
@@ -2310,7 +2310,7 @@ msgstr ""
 "\n"
 "    confirm $token\n"
 "\n"
-"Обикновено просто натискане на копчето „Отговор“ би трябвало да\n"
+"Обикновено натискането на копчето „Отговор“ би трябвало да\n"
 "работи с повечето програми за четене на електронни писма.\n"
 "\n"
 "Ако не искаш да се отписваш от пощенския списък, игнорирай това\n"
@@ -2422,7 +2422,7 @@ msgid "list:user:notice:welcome.txt"
 msgstr ""
 "Добре дошъл в пощенски списък „${display_name}“!\n"
 "\n"
-"За да изпратиш съобщения до списъка, пиши на :\n"
+"За да изпратиш съобщения до списъка, пиши на:\n"
 "\n"
 "  ${listname}\n"
 "\n"
