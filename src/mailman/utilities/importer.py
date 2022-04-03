@@ -488,9 +488,19 @@ def import_config_pck(mlist, config_dict):
         ('%(real_name)s@%(host_name)s',
          'To unsubscribe send an email to ${short_listname}-leave@${domain}'),
         ('%(real_name)s mailing list',
-         '$display_name mailing list -- $listname'),
+         '${display_name} mailing list -- ${listname}'),
         # The generic footers no longer have URLs in them.
         ('%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s\n', ''),
+        # Additional simple replacement conversions.
+        ('%(real_name)s', '${display_name}'),
+        ('%(list_name)s', '${listname}'),
+        ('%(description)s', '${description}'),
+        ('%(info)s', '${info}'),
+        ('%(cgiext)s', ''),
+        ('%(user_address)s', '${user_email}'),
+        ('%(user_delivered_to)s', '${user_delivered_to}'),
+        ('%(user_password)s', ''),
+        ('%(user_name)s', '${user_name}'),
         ]
     # Collect defaults.
     defaults = {}
@@ -507,7 +517,7 @@ def import_config_pck(mlist, config_dict):
             # more harm than good and it's easy to change if needed.
             # TESTME
             print('Unable to convert mailing list attribute:', oldvar,
-                  'with old value "{}"'.format(default_value),
+                  'with bad replacements in "{}"'.format(default_value),
                   file=sys.stderr)
             continue
         defaults[newvar] = default_text
@@ -540,6 +550,10 @@ def import_config_pck(mlist, config_dict):
                 expanded_text.strip() == default_text.strip()):
             # Keep the default.
             continue
+        if expanded_text and '%' in expanded_text:
+            print('Unable to convert mailing list attribute:', oldvar,
+                  'with value "{}"'.format(text),
+                  file=sys.stderr)
         # Write the custom value to the right file.
         filename = '{}.txt'.format(newvar)
         with ExitStack() as resources:

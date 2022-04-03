@@ -20,10 +20,11 @@
 import os
 import unittest
 
-from contextlib import ExitStack
+from contextlib import ExitStack, redirect_stderr
 from datetime import datetime, timedelta
 from enum import Enum
 from importlib_resources import open_binary
+from io import StringIO
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.database.helpers import is_mysql
@@ -829,8 +830,8 @@ class TestConvertToURI(unittest.TestCase):
     def test_substitutions(self):
         test_text = ('UNIT TESTING %(real_name)s mailing list\n'
                      '%(real_name)s@%(host_name)s')
-        expected_text = ('UNIT TESTING $display_name mailing list '
-                         '-- $listname\n'
+        expected_text = ('UNIT TESTING ${display_name} mailing list '
+                         '-- ${listname}\n'
                          'To unsubscribe send an email to '
                          '${short_listname}-leave@${domain}')
         for oldvar, newvar in self._conf_mapping.items():
@@ -840,6 +841,85 @@ class TestConvertToURI(unittest.TestCase):
             self.assertEqual(
                 text, expected_text,
                 'Old variables were not converted for %s' % newvar)
+
+    def test_more_substitutions(self):
+        test_text = ('UNIT TESTING %(real_name)s some list\n'
+                     'The listname is %(list_name)s\n'
+                     'The description is %(description)s\n'
+                     'Info is %(info)s\n'
+                     'User address to is %(user_address)s\n'
+                     'User delivered is %(user_delivered_to)s\n'
+                     'User password: %(user_password)s\n'
+                     'User name %(user_name)s\n')
+        expected_text = ('UNIT TESTING ${display_name} some list\n'
+                         'The listname is ${listname}\n'
+                         'The description is ${description}\n'
+                         'Info is ${info}\n'
+                         'User address to is ${user_email}\n'
+                         'User delivered is ${user_delivered_to}\n'
+                         'User password: \n'
+                         'User name ${user_name}\n')
+        for oldvar, newvar in self._conf_mapping.items():
+            self._pckdict[str(oldvar)] = str(test_text)
+            import_config_pck(self._mlist, self._pckdict)
+            text = getUtility(ITemplateLoader).get(newvar, self._mlist)
+            self.assertEqual(
+                text, expected_text,
+                'Old variables were not converted for %s' % newvar)
+
+    def test_cgiext_dropped(self):
+        test_text = ('UNIT TESTING %(real_name)s mailing list\n'
+                     'https://example.com/mailman/listinfo%(cgiext)s')
+        expected_text = ('UNIT TESTING ${display_name} mailing list '
+                         '-- ${listname}\n'
+                         'https://example.com/mailman/listinfo')
+        for oldvar, newvar in self._conf_mapping.items():
+            self._pckdict[str(oldvar)] = str(test_text)
+            import_config_pck(self._mlist, self._pckdict)
+            text = getUtility(ITemplateLoader).get(newvar, self._mlist)
+            self.assertEqual(
+                text, expected_text,
+                'Old variables were not converted for %s' % newvar)
+
+    def test_unconverted_issues_message(self):
+        test_text = ('UNIT TESTING %(real_name)s mailing list\n'
+                     '%(web_page_url)slistinfo/')
+        expected_text = ('UNIT TESTING ${display_name} mailing list '
+                         '-- ${listname}\n'
+                         '%(web_page_url)slistinfo/')
+        for oldvar, newvar in self._conf_mapping.items():
+            serr = StringIO()
+            with redirect_stderr(serr):
+                self._pckdict[str(oldvar)] = str(test_text)
+                import_config_pck(self._mlist, self._pckdict)
+                text = getUtility(ITemplateLoader).get(newvar, self._mlist)
+                self.assertEqual(
+                    text, expected_text,
+                    'Old variables were not converted for %s' % newvar)
+            self.assertEqual(serr.getvalue(),
+                             'Unable to convert mailing list attribute: '
+                             f'{oldvar} with value "UNIT TESTING '
+                             '${display_name} mailing list -- ${listname}\n'
+                             '%(web_page_url)slistinfo/"\n')
+            serr.close()
+
+    def test_no_unconverted_issues_no_message(self):
+        test_text = ('UNIT TESTING %(real_name)s mailing list\n'
+                     'List description: %(description)s')
+        expected_text = ('UNIT TESTING ${display_name} mailing list '
+                         '-- ${listname}\n'
+                         'List description: ${description}')
+        for oldvar, newvar in self._conf_mapping.items():
+            serr = StringIO()
+            with redirect_stderr(serr):
+                self._pckdict[str(oldvar)] = str(test_text)
+                import_config_pck(self._mlist, self._pckdict)
+                text = getUtility(ITemplateLoader).get(newvar, self._mlist)
+                self.assertEqual(
+                    text, expected_text,
+                    'Old variables were not converted for %s' % newvar)
+            self.assertEqual(serr.getvalue(), '')
+            serr.close()
 
     def test_drop_listinfo_if_contains_crs(self):
         self._pckdict = dict(msg_footer=(

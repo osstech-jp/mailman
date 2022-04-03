@@ -59,6 +59,8 @@ Bugs fixed
   in some errors will now produce a response.  (Closes #991)
 * RFC2047 encoded Subject: and From: headers reported in email command replies
   are now decoded.  (Closes #999)
+* The ``mailman import21`` command now converts more template replacements and
+  reports to stderr any remaining unconverted replacements.  (See #870)
 
 REST
 ====
