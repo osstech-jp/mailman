@@ -402,9 +402,6 @@ bad-command
         # This should send out one email that confirms that token was accepted.
         items = get_queue_messages('virgin', expected_count=1)
         msg_result = items[0].msg
-        payload = msg_result.get_payload()
-        encoding = msg_result.get('Content-Transfer-Encoding')
-        if encoding and encoding.lower() == 'base64':
-            payload = base64.b64decode(payload).decode('utf-8')
+        payload = msg_result.get_payload(decode=True).decode()
         self.assertIn('Ана <anne@example.org>', payload)
         self.assertIn('Къща', payload)
