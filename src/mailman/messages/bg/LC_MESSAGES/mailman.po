@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-04-03 17:15+0000\n"
+"PO-Revision-Date: 2022-04-21 09:13+0000\n"
 "Last-Translator: Дилян Палаузов <dpa-weblate@aegee.org>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/bg/>\n"
@@ -106,22 +106,26 @@ msgstr "${mlist.display_name} уводомление за записване"
 #: src/mailman/app/notifications.py:173
 #, python-brace-format
 msgid "${member}'s subscription disabled on ${mlist.display_name}"
-msgstr ""
+msgstr "Абонаментът на ${member} за ${mlist.display_name} е прекратен"
 
 #: src/mailman/app/notifications.py:201
 #, python-brace-format
 msgid "${member}'s bounce score incremented on ${mlist.display_name}"
 msgstr ""
+"Броят върнати, недоставени писма до ${member} е увеличен за ${mlist."
+"display_name}"
 
 #: src/mailman/app/notifications.py:227
 #, python-brace-format
 msgid "${member} unsubscribed from ${mlist.display_name} mailing list due to bounces"
 msgstr ""
+"Абонат ${member} беше отписан от ${mlist.display_name} поради недоставени "
+"писма"
 
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr ""
+msgstr "Твоят абонамент за ${mlist.display_name} е спрян"
 
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
@@ -1741,6 +1745,7 @@ msgstr "Изпращай автоматични отговори."
 #, python-brace-format
 msgid "Auto-response for your message to the \"${display_name}\" mailing list"
 msgstr ""
+"Автоматичен отговор на твоето съобщение до пощенски списък „${display_name}“"
 
 #: src/mailman/handlers/replybot.py:114
 msgid "The Mailman Replybot"
@@ -1752,7 +1757,7 @@ msgstr ""
 
 #: src/mailman/handlers/subject_prefix.py:158
 msgid "Add a list-specific prefix to the Subject header value."
-msgstr ""
+msgstr "Добави представка към темата на всяко писмо до този пощенски списък."
 
 #: src/mailman/handlers/tagger.py:173
 msgid "Tag messages with topic matches."
@@ -1851,6 +1856,10 @@ msgstr ""
 #, python-brace-format
 msgid "You are not allowed to post to this mailing list From: a domain which publishes a DMARC policy of reject or quarantine, and your message has been automatically rejected.  If you think that your messages are being rejected in error, contact the mailing list owner at ${listowner}."
 msgstr ""
+"Не ти се разрешава да пишеш до този пощенски списък от From: домейн, който "
+"публикува DMARC политика reject или quarantine. Твоето съобщение е "
+"отхвърлено.  Ако смяташ, че това е грешка, се обърни до собствениците на "
+"пощенския списък на ${listowner}."
 
 #: src/mailman/rules/emergency.py:34
 msgid ""
@@ -1948,7 +1957,7 @@ msgstr "Съобщението няма тема"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
-msgstr ""
+msgstr "Прихвани съобщения със съмнителни полета."
 
 #: src/mailman/rules/suspicious.py:97
 msgid "Header \"{}\" matched a bounce_matching_header line"
