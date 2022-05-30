@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-23 03:38+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2022-05-30 19:19+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/de/>\n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.13-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -1875,7 +1875,7 @@ msgstr ""
 #: src/mailman/commands/eml_confirm.py:111
 #, python-brace-format
 msgid "Message ${message}"
-msgstr ""
+msgstr "Nachricht ${message}"
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
@@ -2170,7 +2170,7 @@ msgstr ""
 #: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
 #, python-brace-format
 msgid "Name: ${fname}\n"
-msgstr ""
+msgstr "Name: ${fname}\n"
 
 #: src/mailman/handlers/mime_delete.py:374
 msgid "Filter the MIME content of messages."
@@ -2551,7 +2551,7 @@ msgstr "Schlechte Runner-Spezifikation: ${value}"
 
 #: src/mailman/utilities/scrubber.py:48 src/mailman/utilities/scrubber.py:49
 msgid "not available"
-msgstr ""
+msgstr "nicht verfügbar"
 
 #: src/mailman/utilities/scrubber.py:50
 #, python-brace-format
@@ -2565,7 +2565,7 @@ msgstr ""
 
 #: src/mailman/utilities/scrubber.py:58
 msgid "-------------- next part --------------\n"
-msgstr ""
+msgstr "-------------- nächster Teil --------------\n"
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
