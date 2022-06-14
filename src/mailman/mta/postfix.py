@@ -236,7 +236,7 @@ class LMTP:
             for mlist in sorted(by_domain[domain], key=sort_key):
                 aliases = list(utility.destinations(mlist))
                 width = (max(len(alias) for alias in aliases) +
-                         len(mlist.mail_host) + 14)
+                         len(mlist.true_mail_host) + 14)
                 for alias in aliases:
                     addr = '{}@{}'.format(alias, mlist.mail_host)
                     true_addr = self._decorate(

@@ -405,15 +405,15 @@ third-unsubscribe@x.example.org            lmtp:[127.0.0.1]:9024
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
 # Virtual mappings for the @example.org domain.
-third@example.org                           third@x.example.org
-third-bounces@example.org                   third-bounces@x.example.org
-third-confirm@example.org                   third-confirm@x.example.org
-third-join@example.org                      third-join@x.example.org
-third-leave@example.org                     third-leave@x.example.org
-third-owner@example.org                     third-owner@x.example.org
-third-request@example.org                   third-request@x.example.org
-third-subscribe@example.org                 third-subscribe@x.example.org
-third-unsubscribe@example.org               third-unsubscribe@x.example.org
+third@example.org                         third@x.example.org
+third-bounces@example.org                 third-bounces@x.example.org
+third-confirm@example.org                 third-confirm@x.example.org
+third-join@example.org                    third-join@x.example.org
+third-leave@example.org                   third-leave@x.example.org
+third-owner@example.org                   third-owner@x.example.org
+third-request@example.org                 third-request@x.example.org
+third-subscribe@example.org               third-subscribe@x.example.org
+third-unsubscribe@example.org             third-unsubscribe@x.example.org
 """)
 
     def test_vmap_regex(self):
@@ -466,15 +466,15 @@ third-unsubscribe@example.org               third-unsubscribe@x.example.org
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
 # Virtual mappings for the @example.org domain.
-/^other@example\\.org$/                      other@x.example.org
-/^other-bounces(\\+.*)?@example\\.org$/       other-bounces@x.example.org
-/^other-confirm(\\+.*)?@example\\.org$/       other-confirm@x.example.org
-/^other-join@example\\.org$/                 other-join@x.example.org
-/^other-leave@example\\.org$/                other-leave@x.example.org
-/^other-owner@example\\.org$/                other-owner@x.example.org
-/^other-request@example\\.org$/              other-request@x.example.org
-/^other-subscribe@example\\.org$/            other-subscribe@x.example.org
-/^other-unsubscribe@example\\.org$/          other-unsubscribe@x.example.org
+/^other@example\\.org$/                    other@x.example.org
+/^other-bounces(\\+.*)?@example\\.org$/     other-bounces@x.example.org
+/^other-confirm(\\+.*)?@example\\.org$/     other-confirm@x.example.org
+/^other-join@example\\.org$/               other-join@x.example.org
+/^other-leave@example\\.org$/              other-leave@x.example.org
+/^other-owner@example\\.org$/              other-owner@x.example.org
+/^other-request@example\\.org$/            other-request@x.example.org
+/^other-subscribe@example\\.org$/          other-subscribe@x.example.org
+/^other-unsubscribe@example\\.org$/        other-unsubscribe@x.example.org
 """)
 
     def test_long_list_names(self):
@@ -491,13 +491,13 @@ third-unsubscribe@example.org               third-unsubscribe@x.example.org
             contents = _strip_header(fp.read())
         self.assertMultiLineEqual(contents, """\
 # Virtual mappings for the @grups.mailsandbox.xxxxxx.org domain.
-llista1@grups.mailsandbox.xxxxxx.org               llista1@mail-ng.xxxxxx.org
-llista1-bounces@grups.mailsandbox.xxxxxx.org       llista1-bounces@mail-ng.xxxxxx.org
-llista1-confirm@grups.mailsandbox.xxxxxx.org       llista1-confirm@mail-ng.xxxxxx.org
-llista1-join@grups.mailsandbox.xxxxxx.org          llista1-join@mail-ng.xxxxxx.org
-llista1-leave@grups.mailsandbox.xxxxxx.org         llista1-leave@mail-ng.xxxxxx.org
-llista1-owner@grups.mailsandbox.xxxxxx.org         llista1-owner@mail-ng.xxxxxx.org
-llista1-request@grups.mailsandbox.xxxxxx.org       llista1-request@mail-ng.xxxxxx.org
-llista1-subscribe@grups.mailsandbox.xxxxxx.org     llista1-subscribe@mail-ng.xxxxxx.org
-llista1-unsubscribe@grups.mailsandbox.xxxxxx.org   llista1-unsubscribe@mail-ng.xxxxxx.org
+llista1@grups.mailsandbox.xxxxxx.org                         llista1@mail-ng.xxxxxx.org
+llista1-bounces@grups.mailsandbox.xxxxxx.org                 llista1-bounces@mail-ng.xxxxxx.org
+llista1-confirm@grups.mailsandbox.xxxxxx.org                 llista1-confirm@mail-ng.xxxxxx.org
+llista1-join@grups.mailsandbox.xxxxxx.org                    llista1-join@mail-ng.xxxxxx.org
+llista1-leave@grups.mailsandbox.xxxxxx.org                   llista1-leave@mail-ng.xxxxxx.org
+llista1-owner@grups.mailsandbox.xxxxxx.org                   llista1-owner@mail-ng.xxxxxx.org
+llista1-request@grups.mailsandbox.xxxxxx.org                 llista1-request@mail-ng.xxxxxx.org
+llista1-subscribe@grups.mailsandbox.xxxxxx.org               llista1-subscribe@mail-ng.xxxxxx.org
+llista1-unsubscribe@grups.mailsandbox.xxxxxx.org             llista1-unsubscribe@mail-ng.xxxxxx.org
 """)   # noqa: E501
