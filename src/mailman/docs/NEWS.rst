@@ -61,6 +61,8 @@ Bugs fixed
   are now decoded.  (Closes #999)
 * The ``mailman import21`` command now converts more template replacements and
   reports to stderr any remaining unconverted replacements.  (See #870)
+* The postfix generated virtual mappings now have correct spacing with
+  alias_domains.  (Closes #1001 and #1013)
 
 REST
 ====
