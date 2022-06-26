@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  # mailman-dev:
+  #   image: ghcr.io/maxking/mailman-ci-runner:latest
+  #   container_name: mailman-dev
+  #   hostname: mailman-dev
+  #   links:
+  #   - database:database
+  #   depends_on:
+  #   - database
+  #   command:
+  #   - bash
+  #   - -c
+  #   - 'sleep infinity'
+
+  database:
+    environment:
+      MYSQL_DATABASE: mailmandb
+      MYSQL_USER: mailman
+      MYSQL_PASSWORD: mailmanpass
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    image: mariadb:10.5
+    ports: 
+      - "3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
