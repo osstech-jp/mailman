@@ -16,6 +16,8 @@ variables:
   MYSQL_USER_PASSWORD: "runner"
   MYSQL_DATABASE: "test_mailman"
   LC_ALL: "C.UTF-8"
+  GIT_CEILING_DIRECTORIES: "/builds"
+  HOME: "/builds"
 
 
 qa:
@@ -87,6 +89,8 @@ mysql-37:
 
 diffcov:
   script:
+  - git config --global --add safe.directory /builds/mailman/mailman
+  - git config safe.directory
   - tox -e py37-diffcov
   only:
   - merge_requests
