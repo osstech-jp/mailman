@@ -61,11 +61,11 @@ class OutgoingRunner(Runner):
         self._logged = False
         self._retryq = config.switchboards['retry']
 
-    def _fake_dsn(self, recipient, code, smtp_message):
+    def _fake_dsn(self, mlist, recipient, code, smtp_message):
         # Craft a fake DSN for SMTP permanent failures.
         msg = Message()
-        msg['From'] = 'Mailman <mailman@example.com>'
-        msg['To'] = 'Mailman Bounces <mailman-bounces@example.com>'
+        msg['From'] = f'Mailman <{mlist.posting_address}>'
+        msg['To'] = f'Mailman Bounces <{mlist.bounces_address}>'
         msg['Subject'] = 'SMTP Delivery Failure'
         msg['Message-ID'] = make_msgid()
         msg['Date'] = formatdate(localtime=True)
@@ -144,7 +144,8 @@ Error message: {}
                         # The UUID had to be pended as a unicode.
                         member = getUtility(ISubscriptionService).get_member(
                             UUID(hex=pended['member_id']))
-                        msg = self._fake_dsn(*error.permanent_failures[0])
+                        msg = self._fake_dsn(
+                            mlist, *error.permanent_failures[0])
                         processor.register(
                             mlist, member.address.email, msg,
                             BounceContext.probe)
@@ -153,7 +154,7 @@ Error message: {}
                 # recipients.  Permanent failures are registered as bounces,
                 # but temporary failures are retried for later.
                 for email, code, smtp_message in error.permanent_failures:
-                    msg = self._fake_dsn(email, code, smtp_message)
+                    msg = self._fake_dsn(mlist, email, code, smtp_message)
                     processor.register(mlist, email, msg, BounceContext.normal)
                 # Move temporary failures to the qfiles/retry queue which will
                 # occasionally move them back here for another shot at

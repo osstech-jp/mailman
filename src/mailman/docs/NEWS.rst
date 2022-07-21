@@ -63,6 +63,8 @@ Bugs fixed
   reports to stderr any remaining unconverted replacements.  (See #870)
 * The postfix generated virtual mappings now have correct spacing with
   alias_domains.  (Closes #1001 and #1013)
+* Updated outgoing runner's fake DSN to use list addresses rather than
+  mailman@example.com in From: and To:.  (Closes #1018)
 
 REST
 ====
