@@ -332,6 +332,10 @@ Message-Id: <first>
         # But we can get the message.
         msg = getUtility(IMessageStore).get_message_by_id(event.message_id)
         self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertEqual(f'Mailman <{self._mlist.posting_address}>',
+                         msg.get('From'))
+        self.assertEqual(f'Mailman Bounces <{self._mlist.bounces_address}>',
+                         msg.get('To'))
         self.assertIn('Error code: 500', msg.as_string())
         self.assertIn('Error message: Failure', msg.as_string())
 
@@ -375,6 +379,10 @@ Message-Id: <first>
         # Check the fake DSN we created.
         msg = getUtility(IMessageStore).get_message_by_id(events[0].message_id)
         self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertEqual(f'Mailman <{self._mlist.posting_address}>',
+                         msg.get('From'))
+        self.assertEqual(f'Mailman Bounces <{self._mlist.bounces_address}>',
+                         msg.get('To'))
         self.assertIn('Error code: 500', msg.as_string())
         self.assertIn('Error message: Failure', msg.as_string())
 
@@ -393,10 +401,18 @@ Message-Id: <first>
         # Check the fake DSNs we created.
         msg = getUtility(IMessageStore).get_message_by_id(events[0].message_id)
         self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertEqual(f'Mailman <{self._mlist.posting_address}>',
+                         msg.get('From'))
+        self.assertEqual(f'Mailman Bounces <{self._mlist.bounces_address}>',
+                         msg.get('To'))
         self.assertIn('Error code: 500', msg.as_string())
         self.assertIn('Error message: Failure', msg.as_string())
         msg = getUtility(IMessageStore).get_message_by_id(events[1].message_id)
         self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertEqual(f'Mailman <{self._mlist.posting_address}>',
+                         msg.get('From'))
+        self.assertEqual(f'Mailman Bounces <{self._mlist.bounces_address}>',
+                         msg.get('To'))
         self.assertIn('Error code: 501', msg.as_string())
         self.assertIn('Error message: Another Failure', msg.as_string())
 
@@ -454,10 +470,18 @@ Message-Id: <first>
         # Check the fake DSNs we created.
         msg = getUtility(IMessageStore).get_message_by_id(events[0].message_id)
         self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertEqual(f'Mailman <{self._mlist.posting_address}>',
+                         msg.get('From'))
+        self.assertEqual(f'Mailman Bounces <{self._mlist.bounces_address}>',
+                         msg.get('To'))
         self.assertIn('Error code: 500', msg.as_string())
         self.assertIn('Error message: Failure', msg.as_string())
         msg = getUtility(IMessageStore).get_message_by_id(events[1].message_id)
         self.assertEqual('SMTP Delivery Failure', msg.get('subject'))
+        self.assertEqual(f'Mailman <{self._mlist.posting_address}>',
+                         msg.get('From'))
+        self.assertEqual(f'Mailman Bounces <{self._mlist.bounces_address}>',
+                         msg.get('To'))
         self.assertIn('Error code: 501', msg.as_string())
         self.assertIn('Error message: Another Failure', msg.as_string())
         # Let's look at the temporary failures.
