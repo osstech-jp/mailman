@@ -270,3 +270,13 @@ class TestSubjectPrefix(unittest.TestCase):
         self.assertEqual(decoded,
                          [(b'[Test] ', 'us-ascii'),
                           (b'\xd6\xd0\xce\xc4', 'eucgb2312_cn')])
+
+    def test_non_ascii_list_folded_subject(self):
+        # Test a folded subject header on a list with non-ascii
+        # preferred_language cset.
+        msg = Message()
+        msg['Subject'] = 'This is a folded subject\n header.'
+        self._mlist.preferred_language.charset = 'utf-8'
+        self._process(self._mlist, msg, {})
+        self.assertEqual(str(msg['subject']),
+                         '[Test] This is a folded subject header.')

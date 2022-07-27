@@ -107,6 +107,8 @@ def all_same_charset(mlist, msgdata, subject, prefix, prefix_pattern, ws):
         first_line.insert(0, recolon)
     if prefix:
         first_line.insert(0, prefix)
+    if len(lines) > 1:
+        first_line.extend(lines[1:])
     subject_text = EMPTYSTRING.join(first_line)
     return Header(subject_text, charset=list_charset, continuation_ws=ws)
 
