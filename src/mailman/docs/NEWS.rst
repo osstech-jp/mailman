@@ -65,6 +65,8 @@ Bugs fixed
   alias_domains.  (Closes #1001 and #1013)
 * Updated outgoing runner's fake DSN to use list addresses rather than
   mailman@example.com in From: and To:.  (Closes #1018)
+* Subject prefixing on lists with non-ascii preferred language no longer drops
+  parts of folded subject headers.  (Closes #1021)
 
 REST
 ====
