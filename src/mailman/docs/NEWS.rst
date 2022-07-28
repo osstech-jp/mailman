@@ -67,6 +67,8 @@ Bugs fixed
   mailman@example.com in From: and To:.  (Closes #1018)
 * Subject prefixing on lists with non-ascii preferred language no longer drops
   parts of folded subject headers.  (Closes #1021)
+* Outgoing messages are now flattened using the as_bytes() method for better
+  RFC compliance.  (Closes #1022)
 
 REST
 ====
