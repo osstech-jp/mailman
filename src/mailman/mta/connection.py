@@ -130,7 +130,13 @@ class Connection:
         # smtplib.SMTP.sendmail requires the message string to be pure ascii.
         # We have seen malformed messages with non-ascii unicodes, so ensure
         # we have pure ascii.
-        msgtext = msgtext.encode('ascii', 'replace').decode('ascii')
+        # msgtext can be a string or bytes. Handle either, but the result
+        # should be a string because passing bytes to smtplib.SMTP.sendmail
+        # doesn't convert the line endings.
+        if isinstance(msgtext, str):
+            msgtext = msgtext.encode('ascii', 'replace').decode('ascii')
+        else:
+            msgtext = msgtext.decode('ascii', 'replace')
         try:
             log.debug('envsender: %s, recipients: %s, size(msgtext): %s',
                       envsender, recipients, len(msgtext))

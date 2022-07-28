@@ -71,7 +71,7 @@ class BaseDelivery:
         # email address for predictability and testability.
         try:
             refused = self._connection.sendmail(
-                sender, sorted(recipients), msg.as_string())
+                sender, sorted(recipients), msg.as_bytes())
         except smtplib.SMTPRecipientsRefused as error:
             log.error('%s recipients refused: %s', message_id, error)
             refused = error.recipients
