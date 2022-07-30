@@ -69,6 +69,8 @@ Bugs fixed
   parts of folded subject headers.  (Closes #1021)
 * Outgoing messages are now flattened using the as_bytes() method for better
   RFC compliance.  (Closes #1022)
+* The ``verp_confirmations`` setting has now been implemented with default
+  of ``yes``.  (Closes #1023)
 
 REST
 ====
