@@ -22,8 +22,10 @@ import logging
 
 from email.utils import formataddr
 from enum import Enum
+from lazr.config import as_boolean
 from mailman.app.membership import delete_member
 from mailman.app.workflow import Workflow
+from mailman.config import config
 from mailman.core.i18n import _
 from mailman.database.transaction import flush
 from mailman.email.message import UserNotification
@@ -647,6 +649,10 @@ def _handle_confirmation_needed_events(event, template_name):
         domain_name=event.mlist.domain.mail_host,
         contact_address=event.mlist.owner_address,
         ))
+    if ('verp_confirmations' in config.mta and not
+            as_boolean(config.mta.verp_confirmations)):
+        subject = 'confirm {}'.format(event.token)
+        confirm_address = event.mlist.request_address
     msg = UserNotification(
         email_address, confirm_address, subject, text,
         event.mlist.preferred_language)

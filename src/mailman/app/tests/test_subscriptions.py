@@ -41,6 +41,7 @@ from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
+    configuration,
     get_queue_messages,
     LogFileMark,
     set_preferred,
@@ -634,6 +635,21 @@ approval:
         # one token still in the database.
         self._expected_pendings_count = 1
 
+    def test_invitation_verp_confirmations_no(self):
+        # Test From: and Subject: with verp_confirmations equal no.
+        anne = self._user_manager.create_address(self._anne)
+        self.assertIsNone(anne.verified_on)
+        # Run the workflow to model the confirmation step.
+        workflow = SubscriptionWorkflow(self._mlist, anne, invitation=True)
+        with configuration('mta', verp_confirmations='no'):
+            list(workflow)
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
+        token = workflow.token
+        self.assertEqual(f'confirm {token}', str(message['Subject']))
+        self.assertEqual('test-request@example.com', message['From'])
+        self._expected_pendings_count = 1
+
     def test_send_confirmation_pre_confirmed(self):
         # A confirmation message gets sent when the address is not verified
         # but the subscription is pre-confirmed.
@@ -652,6 +668,21 @@ approval:
             message['From'], 'test-confirm+{}@example.com'.format(token))
         # The state machine stopped at the moderator approval so there will be
         # one token still in the database.
+        self._expected_pendings_count = 1
+
+    def test_confirmation_subscribe_verp_confirmations_no(self):
+        # Test From: and Subject: with verp_confirmations equal no.
+        anne = self._user_manager.create_address(self._anne)
+        self.assertIsNone(anne.verified_on)
+        # Run the workflow to model the confirmation step.
+        workflow = SubscriptionWorkflow(self._mlist, anne, pre_confirmed=True)
+        with configuration('mta', verp_confirmations='no'):
+            list(workflow)
+        items = get_queue_messages('virgin', expected_count=1)
+        message = items[0].msg
+        token = workflow.token
+        self.assertEqual(f'confirm {token}', str(message['Subject']))
+        self.assertEqual('test-request@example.com', message['From'])
         self._expected_pendings_count = 1
 
     def test_send_confirmation_pre_verified(self):
