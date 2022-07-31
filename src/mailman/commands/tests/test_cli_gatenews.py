@@ -77,7 +77,7 @@ def get_nntplib_nntp(fail=0):
 
         def group(self, group_name):
             if group_name == 'my.group':
-                return('', 3, 1, 3, group_name)
+                return ('', 3, 1, 3, group_name)
             else:
                 raise nntplib.NNTPTemporaryError(
                     'No such group: {}'.format(group_name))

@@ -631,7 +631,7 @@ def _handle_confirmation_needed_events(event, template_name):
             subject = _('Your confirmation is needed to leave the '
                         '${event.mlist.fqdn_listname} mailing list.')
         else:
-            assert(template_name.endswith(':subscribe'))
+            assert template_name.endswith(':subscribe')
             subject = _('Your confirmation is needed to join the '
                         '${event.mlist.fqdn_listname} mailing list.')
     confirm_address = event.mlist.confirm_address(event.token)

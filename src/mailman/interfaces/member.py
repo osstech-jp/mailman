@@ -321,8 +321,8 @@ class IMembershipManager(Interface):
     """Member object manager."""
 
     def memberships_pending_warning():
-        """Memberships that have been disabled due to excessive bounces and require a
-        warning to be sent.
+        """Memberships that have been disabled due to excessive bounces and
+        require a warning to be sent.
 
         The total number of warnings sent to these are less than the
         MailingList's configured number of warnings to be sent before the

@@ -261,7 +261,8 @@ class BounceProcessor:
 
     @dbconnection
     def _remove_memberships(self, store):
-        """Remove all the memberships for whom max number of warnings have been sent.
+        """Remove all the memberships for whom max number of warnings have
+        been sent.
         """
         manager = getUtility(IMembershipManager)
         for member in manager.memberships_pending_removal():
@@ -294,7 +295,8 @@ class BounceProcessor:
 
     @dbconnection
     def _send_warnings(self, store):
-        """Send warnings to the user who have reached their bounce score threshold.
+        """Send warnings to the user who have reached their bounce score
+        threshold.
 
         We send warnings only to the members who have delivery disabled and
         haven't already got a warning in the last

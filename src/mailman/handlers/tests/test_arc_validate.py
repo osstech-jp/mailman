@@ -210,7 +210,8 @@ This is a test message.
         lst = create_list('test@example.com')
         msgdata = {}
 
-        msg = message_from_string("""DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        msg = message_from_string(
+            """DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=valimail.com; s=google2048;
         h=mime-version:from:date:message-id:subject:to;
         bh=3VWGQGY+cSNYd1MGM+X6hRXU0stl8JCaQtl4mbX/j2I=;
@@ -255,7 +256,8 @@ This is a test!
         lst = create_list('test@example.com')
         msgdata = {}
 
-        msg = message_from_string("""DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        msg = message_from_string(
+            """DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=valimail.com; s=google2048;
         h=mime-version:from:date:message-id:subject:to;
         bh=3VWGQGY+cSNYd1MGM+X6hRXU0stl8JCaQtl4mbX/j2I=;
@@ -298,7 +300,8 @@ This is a test!
         lst = create_list('test@example.com')
         msgdata = {}
 
-        msg = message_from_string("""DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        msg = message_from_string(
+            """DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=valimail.com; s=google2048;
         h=mime-version:from:date:message-id:subject:to;
         bh=3VWGQGY+cSNYd1MGM+X6hRXU0stl8JCaQtl4mbX/j2I=;
