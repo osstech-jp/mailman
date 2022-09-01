@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-23 03:39+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-08-30 09:55+0000\n"
+"Last-Translator: SONS ČR <weblate@sons.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/cs/>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -180,16 +180,22 @@ msgid ""
 "    Running mailman commands as root is not recommended and mailman will\n"
 "    refuse to run as root unless this option is specified."
 msgstr ""
+"    Spouštět příkazy mailman pod root uživatelem je nedoporučeno a pokud "
+"nebude specifikováno jinak, \n"
+"mailman odmítne pod root uživatelem nastartovat."
 
 #: src/mailman/bin/mailman.py:129
 msgid "    If you are sure you want to run as root, specify --run-as-root."
 msgstr ""
+"    Pokud jste si jisti, že má běžet jako root, specifikujte --run-as-root."
 
 #: src/mailman/bin/master.py:157
 msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
+"Zámek \"master\" nemohl být získán, protože to vypadá, že jiný \"master\" už "
+"běží."
 
 #: src/mailman/bin/master.py:163
 #, python-brace-format
@@ -1671,8 +1677,9 @@ msgid ""
 "\n"
 msgstr ""
 "Přiložená zpráva odpovídá pravidlům zakázaného obsahu mailing listu ${mlist."
-"display_name} a z tohoto důvodu nebude dále zpracována. Tento email je tak "
-"jedinou kopií Vámi odeslané zprávy.\n"
+"display_name} \n"
+"a z tohoto důvodu nebude dále zpracována. \n"
+"Tento email je tak jedinou kopií Vámi odeslané zprávy.\n"
 "\n"
 
 #: src/mailman/handlers/mime_delete.py:69
