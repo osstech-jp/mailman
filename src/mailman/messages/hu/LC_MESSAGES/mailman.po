@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-23 03:38+0000\n"
+"PO-Revision-Date: 2022-07-22 12:20+0000\n"
 "Last-Translator: Peter Donka <peter.donka@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/hu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.14-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -216,6 +216,16 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
+"A főzárat nem lehetett megszerezni, mert úgy tűnik, mintha valamilyen "
+"eljárás\n"
+"egy másik állomáson megszerezte azt.  Nem tudjuk tesztelni az elavult "
+"zárakat a következő területeken\n"
+"host határokat, így ezt kézzel kell tisztázni.\n"
+"\n"
+"Zárolási fájl: ${config.LOCK_FILE}\n"
+"Lock host: ${hostname}\n"
+"\n"
+"Kilépés."
 
 #: src/mailman/bin/master.py:182
 #, python-brace-format
@@ -227,6 +237,12 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
+"Ismeretlen okokból a főzárat nem sikerült megszerezni.\n"
+"\n"
+"Zárfájl: ${config.LOCK_FILE}\n"
+"Lock host: ${hostname}\n"
+"\n"
+"Kilépés."
 
 #: src/mailman/bin/master.py:494
 msgid ""
@@ -250,6 +266,36 @@ msgid ""
 "    its own process id in the file specified in the configuration file but you\n"
 "    normally don't need to use this PID directly."
 msgstr ""
+"    Fő alfolyamat figyelő.\n"
+"\n"
+"    Elindítja és figyeli a konfigurált futókat, biztosítva, hogy azok "
+"életben maradjanak és\n"
+"    futnak.  Minden futó sorban elágazik és végrehajtódik, a master pedig "
+"várakozik.\n"
+"    a processz azonosítójukra.  Ha azt észleli, hogy egy gyermek futó "
+"kilépett, akkor a\n"
+"    újraindíthatja.\n"
+"\n"
+"    A futók reagálnak a SIGINT, SIGTERM, SIGUSR1 és SIGHUP jelekre.  SIGINT,"
+"\n"
+"    SIGTERM és SIGUSR1 hatására a futó tisztán kilép.  A master\n"
+"    újraindítja azokat a futókat, amelyek SIGUSR1 vagy valamilyen más "
+"SIGUSR1 vagy egyéb hiba miatt léptek ki.\n"
+"    kilépési feltétel miatt (például egy el nem fogadott kivétel miatt).  A "
+"SIGHUP hatására a\n"
+"    a master és a futók lezárják a naplófájljaikat, majd újra megnyitják "
+"azokat, ha a\n"
+"    következő kinyomtatott üzenetet.\n"
+"\n"
+"    A master a SIGINT, SIGTERM, SIGUSR1 és SIGHUP jelekre is reagál, "
+"amelyeket a SIGINT, SIGTERM, SIGUSR1 és SIGHUP\n"
+"    egyszerűen továbbítja a futóknak.  Megjegyzendő, hogy a master bezárja "
+"és\n"
+"    a saját naplófájljait a SIGHUP üzenetet követően.  A mester továbbá "
+"elhagyja a\n"
+"    a saját folyamatazonosítóját a konfigurációs fájlban megadott fájlban, "
+"de a master\n"
+"    általában nincs szükség arra, hogy ezt a PID-t közvetlenül használja."
 
 #: src/mailman/bin/master.py:525
 msgid ""
@@ -269,6 +315,18 @@ msgid ""
 "    remove the apparently stale lock and make another attempt to claim the\n"
 "    master lock."
 msgstr ""
+"    Ha a master watcher talál egy létező master lockot, akkor általában "
+"kilép a\n"
+"    hibaüzenettel.  Ezzel az opcióval a master egy extra\n"
+"    szintű ellenőrzést végez.  Ha egy olyan folyamat, amely megfelel a "
+"masterben leírt host/pid-nek, akkor a\n"
+"    lock fájlban megadott leírásban szereplő rendszer fut, a master akkor is "
+"kilép, és manuálisan kell elvégezni a\n"
+"    a zárolást.  Ha azonban nem talál megfelelő folyamatot, a master a "
+"következő lépéseket teszi\n"
+"    eltávolítja a látszólag elavult zárolást, és újabb kísérletet tesz a "
+"zárolás igénybevételére.\n"
+"    mesterzárat."
 
 #: src/mailman/bin/master.py:544
 msgid ""
@@ -276,20 +334,24 @@ msgid ""
 "    typically defined in the configuration file.  Multiple -r options may be\n"
 "    given.  The values for -r are passed straight through to bin/runner."
 msgstr ""
+"    Felülbírálja a futók alapértelmezett készletét, amelyet a mester hív "
+"meg, ami a következő\n"
+"    általában a konfigurációs fájlban van megadva.  Több -r opció is lehet\n"
+"    megadható.  A -r értékeit a bin/runner közvetlenül kapja meg."
 
 #: src/mailman/bin/master.py:551 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
-msgstr ""
+msgstr "További hibakeresési információk megjelenítése a naplófájlban."
 
 #: src/mailman/bin/runner.py:50
 #, python-brace-format
 msgid "Undefined runner name: ${name}"
-msgstr ""
+msgstr "Nem definiált futónév: ${name}"
 
 #: src/mailman/bin/runner.py:58
 #, python-brace-format
 msgid "Cannot import runner module: ${class_path}"
-msgstr ""
+msgstr "Nem lehet importálni a futó modult: ${class_path}"
 
 #: src/mailman/bin/runner.py:76
 msgid ""
@@ -309,10 +371,31 @@ msgid ""
 "    set which subtly changes some error handling behavior.\n"
 "    "
 msgstr ""
+"    Indítson egy futót.\n"
+"\n"
+"    A parancssorban megnevezett futó elindul, és futtathatja a következőket\n"
+"    egyszer végigfutni a fő hurokján (azoknál a futóknál, amelyek ezt "
+"támogatják), vagy\n"
+"    folyamatosan.  Ez utóbbi módon a főfutó elindítja az összes\n"
+"    alfolyamatokat.\n"
+"\n"
+"    A -r szükséges, hacsak nem adtuk meg a -l vagy -h értéket, és az "
+"argumentumának a következő értékek valamelyikének kell lennie\n"
+"    a -l kapcsoló által megjelenített nevek közül.\n"
+"\n"
+"    Normális esetben ezt a szkriptet a `mailman start` parancsból kell "
+"indítani.  Futtatása\n"
+"    külön vagy a -o kapcsolóval általában csak hibakereséshez hasznos.  "
+"Amikor futtatjuk\n"
+"    a $MAILMAN_UNDER_MASTER_CONTROL környezeti változót a rendszer a "
+"következő módon\n"
+"    beállításra kerül, ami finoman megváltoztat néhány hibakezelési "
+"viselkedést.\n"
+"    "
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
-msgstr ""
+msgstr "Sorolja fel az elérhető runnereket és lépjen ki."
 
 #: src/mailman/bin/runner.py:107
 msgid ""
@@ -320,6 +403,10 @@ msgid ""
 "    runner runs indefinitely until the process receives a signal.  This is not\n"
 "    compatible with runners that cannot be run once."
 msgstr ""
+"    Futtassa le a megnevezett futót pontosan egyszer a fő ciklusán "
+"keresztül.  Ellenkező esetben a\n"
+"    futó korlátlan ideig fut, amíg a folyamat nem kap jelzést.  Ez nem\n"
+"    kompatibilis az olyan futókkal, amelyeket nem lehet egyszer lefuttatni."
 
 #: src/mailman/bin/runner.py:115
 msgid ""
@@ -338,15 +425,36 @@ msgid ""
 "    1:1 is used.\n"
 "    "
 msgstr ""
+"\n"
+"    Elindítja a megnevezett futót, amelynek a -l parancs által visszaadott "
+"stringek egyikének kell lennie.\n"
+"    opció által megadott értéket.\n"
+"\n"
+"    A várólista könyvtárat kezelő futók esetében opcionális `slice:range`, "
+"ha megadva van.\n"
+"    több futófolyamat hozzárendelésére szolgál az adott várólistához. range "
+"a\n"
+"    a sorban lévő futók teljes száma, míg a slice a sorban lévő futók száma."
+"\n"
+"    futó száma a [0..range] tartományból.  Azon futók esetében, amelyek nem "
+"kezelnek várólistát, a slice és a\n"
+"    tartományt figyelmen kívül hagyjuk.\n"
+"\n"
+"    A `slice:range` forma használatakor biztosítani kell, hogy minden egyes "
+"futó a listához tartozó\n"
+"    sorban ugyanazt a tartományértéket kapja.  Ha a `slice:runner` érték "
+"nincs megadva, akkor a\n"
+"    1:1 arányt használunk.\n"
+"    "
 
 #: src/mailman/bin/runner.py:157
 msgid "No runner name given."
-msgstr ""
+msgstr "Nincs megadva a futó neve."
 
 #: src/mailman/bin/runner.py:181
 #, python-brace-format
 msgid "${name} runs ${classname}"
-msgstr ""
+msgstr "${name} ${classname} $ fut"
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
@@ -362,7 +470,7 @@ msgstr "Üzenet megsemmisítése és feldolgozás leállítása."
 
 #: src/mailman/chains/dmarc.py:30
 msgid "Process DMARC reject or discard mitigations"
-msgstr ""
+msgstr "DMARC elutasítás vagy elutasítás mérséklések feldolgozása"
 
 #: src/mailman/chains/headers.py:121
 msgid "Header \"{}\" matched a header rule"
@@ -404,6 +512,14 @@ msgid ""
 "message will be approved for posting to the list.  The Approved: header can\n"
 "also appear in the first line of the body of the reply."
 msgstr ""
+"Ha válaszol erre az üzenetre, a Subject: fejlécet érintetlenül hagyva, akkor "
+"a Mailman\n"
+"a visszatartott üzenetet el fogja dobni.  Ezt akkor tegye, ha az üzenet "
+"spam.  Ha válaszol a\n"
+"erre az üzenetre, és a listán szereplő jelszóval ellátott Approved: fejlécet "
+"is tartalmaz, akkor a\n"
+"az üzenetet jóváhagyja a listára való feladásra.  A Jóváhagyva: fejléc\n"
+"a válasz első sorában is megjelenhet."
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
@@ -411,34 +527,34 @@ msgstr "Moderálási lánc"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
-msgstr ""
+msgstr "A beépített tulajdonosi feladási lánc."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
-msgstr ""
+msgstr "Üzenet elutasítása/visszaküldése és feldolgozás leállítása."
 
 #: src/mailman/commands/cli_addmembers.py:73
 #: src/mailman/commands/cli_syncmembers.py:121
 #, python-brace-format
 msgid "Cannot parse as valid email address (skipping): ${line}"
-msgstr ""
+msgstr "Nem értelmezhető érvényes e-mail címként (kihagyva): ${line}"
 
 #: src/mailman/commands/cli_addmembers.py:104
 #, python-brace-format
 msgid "Already subscribed (skipping): ${email}"
-msgstr ""
+msgstr "Már feliratkozott (kihagyás): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:107
 #: src/mailman/commands/cli_syncmembers.py:87
 #, python-brace-format
 msgid "Membership is banned (skipping): ${email}"
-msgstr ""
+msgstr "A tagság kitiltva (kihagyás): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:110
 #: src/mailman/commands/cli_syncmembers.py:90
 #, python-brace-format
 msgid "Subscription already pending (skipping): ${email}"
-msgstr ""
+msgstr "Már függőben lévő előfizetés (kihagyás): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:116
 msgid ""
@@ -447,6 +563,12 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    A FILENAME-ben szereplő összes tagcím hozzáadása a megadott szállítási "
+"móddal\n"
+"    a -d/--delivery kapcsolóval.  A FILENAME lehet '-' a szabványos bemenet "
+"jelzésére.\n"
+"    Az üres sorokat és a '#'-vel kezdődő sorokat figyelmen kívül hagyjuk.\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:124
 msgid ""
@@ -455,16 +577,26 @@ msgid ""
 "    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 msgstr ""
+"    A hozzáadott tagok szállítási módjának beállítása 'regular', 'mime', "
+"'plain',\n"
+"    'summary' vagy 'disabled'.  Vagyis a regular, a digest három módja közül "
+"az egyiket.\n"
+"    vagy nincs kézbesítés.  Ha nincs megadva, az alapértelmezett a regular.  "
+"Meghívott esetén figyelmen kívül hagyva\n"
+"    tagok esetében."
 
 #: src/mailman/commands/cli_addmembers.py:132
 msgid ""
 "    Send the added members an invitation rather than immediately adding them.\n"
 "    "
 msgstr ""
+"    Küldjön meghívót a hozzáadott tagoknak ahelyett, hogy azonnal hozzáadná "
+"őket.\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:137
 msgid "    Override the list's setting for send_welcome_message."
-msgstr ""
+msgstr "    A lista send_welcome_message beállításának felülírása."
 
 #: src/mailman/commands/cli_addmembers.py:146 src/mailman/commands/cli_import.py:68
 #: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:195
@@ -476,11 +608,11 @@ msgstr "Nincs ilyen lista: ${listspec}"
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
-msgstr ""
+msgstr "Generálja újra az MTA-nak megfelelő álneveket."
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
-msgstr ""
+msgstr "Alternatív könyvtár a különböző MTA fájlok kimenetéhez."
 
 #: src/mailman/commands/cli_changeaddress.py:34
 msgid ""
@@ -488,26 +620,29 @@ msgid ""
 "    new_address.\n"
 "    "
 msgstr ""
+"    A felhasználó e-mail címének megváltoztatása a régi címről az\n"
+"    új címre.\n"
+"    "
 
 #: src/mailman/commands/cli_changeaddress.py:45
 msgid "Address {} not found."
-msgstr ""
+msgstr "A {} cím nem található."
 
 #: src/mailman/commands/cli_changeaddress.py:47
 msgid "Address {} is not a valid email address."
-msgstr ""
+msgstr "A(z) {} cím nem érvényes e-mail-cím."
 
 #: src/mailman/commands/cli_changeaddress.py:50
 msgid "Addresses are not different.  Nothing to change."
-msgstr ""
+msgstr "A címek nem különböznek egymástól.  Nincs mit változtatni."
 
 #: src/mailman/commands/cli_changeaddress.py:53
 msgid "Address {} already exists; can't change."
-msgstr ""
+msgstr "A cím {} már létezik; nem módosítható."
 
 #: src/mailman/commands/cli_changeaddress.py:58
 msgid "Address changed from {} to {}."
-msgstr ""
+msgstr "A cím {}-ről {}-ra változott."
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
@@ -518,22 +653,31 @@ msgid ""
 "    File to send the output to.  If not given, or if '-' is given, standard\n"
 "    output is used."
 msgstr ""
+"    Fájl, ahová a kimenetet el kell küldeni. Ha nincs megadva, vagy ha „-” "
+"van megadva, a szabvány\n"
+"    kimenetet használja."
 
 #: src/mailman/commands/cli_conf.py:62
 msgid ""
 "    Section to use for the lookup.  If no key is given, all the key-value pairs\n"
 "    of the given section will be displayed."
 msgstr ""
+"    A kereséshez használandó szakasz. Ha nincs megadva kulcs, akkor az "
+"összes kulcs-érték pár\n"
+"    az adott szakaszból meg fog jelenni."
 
 #: src/mailman/commands/cli_conf.py:67
 msgid ""
 "    Key to use for the lookup.  If no section is given, all the key-values pair\n"
 "    from any section matching the given key will be displayed."
 msgstr ""
+"    A kereséshez használható kulcs. Ha nincs megadva szakasz, akkor az "
+"összes kulcs-érték páros\n"
+"    bármely, az adott kulcsnak megfelelő szekcióból megjelenik."
 
 #: src/mailman/commands/cli_control.py:42
 msgid "Start the Mailman master and runner processes."
-msgstr ""
+msgstr "Indítsa el a Mailman master és runner folyamatokat."
 
 #: src/mailman/commands/cli_control.py:46
 msgid ""
@@ -545,6 +689,18 @@ msgid ""
 "    remove the apparently stale lock and make another attempt to claim the\n"
 "    master lock."
 msgstr ""
+"    Ha a master watcher talál egy létező master lockot, akkor általában "
+"kilép a\n"
+"    hibaüzenettel.  Ezzel az opcióval a mester egy extra\n"
+"    szintű ellenőrzést végez.  Ha egy olyan folyamat, amely megfelel a "
+"masterben leírt host/pid-nek, akkor a\n"
+"    lock fájlban megadott paraméterekkel, a master akkor is kilép, és "
+"manuálisan kell elvégezni a\n"
+"    a zárolást.  Ha azonban nem talál megfelelő folyamatot, akkor a master a "
+"következő lépéseket teszi\n"
+"    eltávolítja a látszólag elavult zárolást, és újabb kísérletet tesz a "
+"zárolás igénybevételére.\n"
+"    mesterzárat."
 
 #: src/mailman/commands/cli_control.py:57
 msgid ""
@@ -554,6 +710,16 @@ msgid ""
 "    start of mailman3 server. Setting this option to true will make this\n"
 "    script create the files and thus allow the MTA to operate smoothly."
 msgstr ""
+"    Az MTA alias fájlok generálása indításkor. Néhány MTA, mint például a "
+"postfix, nem képes\n"
+"    kézbesíteni az e-maileket, ha a konfigurációjában említett alias fájlok "
+"nem\n"
+"    nincsenek meg. Bizonyos helyzetekben ez holtpontra vezethet az első "
+"indításkor.\n"
+"    mailman3 szerver első indításakor. Ha ezt az opciót true-ra állítjuk, "
+"akkor ez\n"
+"    szkript létrehozza a fájlokat, és így lehetővé teszi az MTA "
+"zökkenőmentes működését."
 
 #: src/mailman/commands/cli_control.py:66
 msgid ""
@@ -571,6 +737,27 @@ msgid ""
 "    may have permission problems, such as being unable to delete a list's\n"
 "    archives through the web.  Tough luck!"
 msgstr ""
+"    Normális esetben ez a szkript nem hajlandó futtatni, ha a felhasználói "
+"azonosító és a csoport azonosítója\n"
+"    nem a 'mailman' felhasználó és csoport (ahogyan azt a konfiguráláskor "
+"meghatároztuk).\n"
+"    Mailman konfigurálásakor).  Ha root felhasználóként futtatjuk, akkor a "
+"szkript átvált erre a felhasználóra és csoportra.\n"
+"    mielőtt az ellenőrzés megtörténne.\n"
+"\n"
+"    Ez kényelmetlen lehet tesztelési és hibakeresési célokra, ezért a -u "
+"jelzővel\n"
+"    azt jelenti, hogy az uid/gid beállítását és ellenőrzését végző lépés "
+"kimarad, és a\n"
+"    program az aktuális felhasználóval és csoporttal fut.  Ez a flag nem "
+"ajánlott\n"
+"    normál termelési környezetekben.\n"
+"\n"
+"    Vegye figyelembe azonban, hogy ha a -u kapcsolóval futtatja, és nem "
+"tagja a mailman csoportnak, akkor\n"
+"    jogosultsági problémák adódhatnak, például nem tudja törölni a listák "
+"listáját.\n"
+"    archívumokat a weben keresztül.  Pech!"
 
 #: src/mailman/commands/cli_control.py:83 src/mailman/commands/cli_control.py:170
 #: src/mailman/commands/cli_control.py:192 src/mailman/commands/cli_control.py:214
@@ -578,6 +765,9 @@ msgid ""
 "    Don't print status messages.  Error messages are still printed to standard\n"
 "    error."
 msgstr ""
+"    Ne nyomtasson állapotüzeneteket. A hibaüzenetek továbbra is szabványos "
+"módon kerülnek\n"
+"    kinyomtatásra."
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
@@ -586,71 +776,76 @@ msgstr "GNU Mailman már fut"
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
 msgstr ""
+"A GNU Mailman egy korábbi futása nem lépett ki tisztán ({}).  Próbálja meg "
+"használni a --force kapcsolót"
 
 #: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
-msgstr ""
+msgstr "A Mailman master runner indítása"
 
 #: src/mailman/commands/cli_control.py:108
 msgid "Generating MTA alias maps"
-msgstr ""
+msgstr "MTA aliasleképezések létrehozása"
 
 #: src/mailman/commands/cli_control.py:149
 #, python-brace-format
 msgid "PID unreadable in: ${config.PID_FILE}"
-msgstr ""
+msgstr "A PID nem olvasható: ${config.PID_FILE}"
 
 #: src/mailman/commands/cli_control.py:151
 msgid "Is the master even running?"
-msgstr ""
+msgstr "Fut egyáltalán a mester?"
 
 #: src/mailman/commands/cli_control.py:158
 #, python-brace-format
 msgid "No child with pid: ${pid}"
-msgstr ""
+msgstr "Nincs gyerek azonosítóval: ${pid}"
 
 #: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
-msgstr ""
+msgstr "Elavult pid fájl eltávolítva."
 
 #: src/mailman/commands/cli_control.py:166
 msgid "Stop the Mailman master and runner processes."
-msgstr ""
+msgstr "Állítsa le a Mailman master és runner folyamatokat."
 
 #: src/mailman/commands/cli_control.py:175
 msgid "Shutting down Mailman's master runner"
-msgstr ""
+msgstr "A Mailman master runner leállítása"
 
 #: src/mailman/commands/cli_control.py:188
 msgid "Signal the Mailman processes to re-open their log files."
 msgstr ""
+"Jelezze a Mailman-folyamatoknak, hogy nyissák meg újra a naplófájljaikat."
 
 #: src/mailman/commands/cli_control.py:197
 msgid "Reopening the Mailman runners"
-msgstr ""
+msgstr "A Mailman futók újranyitása"
 
 #: src/mailman/commands/cli_control.py:210
 msgid "Stop and restart the Mailman runner subprocesses."
-msgstr ""
+msgstr "Állítsa le és indítsa újra a Mailman futó alfolyamatokat."
 
 #: src/mailman/commands/cli_control.py:219
 msgid "Restarting the Mailman runners"
-msgstr ""
+msgstr "A Mailman futók újraindítása"
 
 #: src/mailman/commands/cli_delmembers.py:48
 #, python-brace-format
 msgid "Member not subscribed (skipping): ${email}"
-msgstr ""
+msgstr "Tag nem iratkozott fel (kihagyás): ${email}"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
-msgstr ""
+msgstr "    Tagok törlése egy levelezőlistáról."
 
 #: src/mailman/commands/cli_delmembers.py:58
 msgid ""
 "    The list to operate on.  Required unless --fromall is specified.\n"
 "    "
 msgstr ""
+"    A műveleti lista. Kötelező, hacsak nincs megadva a --fromall.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:64
 msgid ""
@@ -659,6 +854,11 @@ msgid ""
 "    standard input.  Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    Törölje azokat a listatagokat, akiknek a címe a FILENAME fájlban van\n"
+"    ha van -m/--tag megadva. A FILENAME '-' lehet\n"
+"    szabványos bemenet. Az üres sorokat és a „#” karakterrel kezdődő sorokat "
+"figyelmen kívül hagyja.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:71
 msgid ""
@@ -667,6 +867,12 @@ msgid ""
 "    multiple addresses.\n"
 "    "
 msgstr ""
+"    Törli azt a listatagot, amelynek címe ADDRESS, azokon kívül, akiknek a "
+"címe\n"
+"    a -f/--fájl opcióval megadottak mellett, ha van ilyen.  Ez az opció "
+"megismételhető a\n"
+"    több cím megismételhető.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:79
 msgid ""
@@ -674,6 +880,10 @@ msgid ""
 "    -m/--member or --fromall may be specified.\n"
 "    "
 msgstr ""
+"    Törölje a lista összes tagját.  Ha meg van adva, az -f/--fájl egyike sem,"
+"\n"
+"    -m/--tag vagy --fromall megadható.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:86
 msgid ""
@@ -682,6 +892,11 @@ msgid ""
 "    -a/--all or -l/--list.\n"
 "    "
 msgstr ""
+"    Törölje az -m/--tag és/vagy -f/--fájl által megadott tago(ka)t az "
+"összesből\n"
+"    listák a telepítésben.  Ez nem adható meg a következőkkel együtt:\n"
+"    -a/--all vagy -l/--list.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:93
 #: src/mailman/commands/cli_syncmembers.py:182
@@ -689,11 +904,13 @@ msgid ""
 "    Override the list's setting for send_goodbye_message to\n"
 "    deleted members."
 msgstr ""
+"    A lista send_goodbye_message beállításának felülírása a\n"
+"    törölt tagoknak."
 
 #: src/mailman/commands/cli_delmembers.py:98
 #: src/mailman/commands/cli_syncmembers.py:187
 msgid "    Override the list's setting for admin_notify_mchanges."
-msgstr ""
+msgstr "    A lista admin_notify_mchanges beállításának felülírása."
 
 #: src/mailman/commands/cli_delmembers.py:123
 #, python-brace-format
@@ -702,7 +919,7 @@ msgstr "Nincs ilyen lista: ${_list}"
 
 #: src/mailman/commands/cli_digests.py:38
 msgid "Operate on digests."
-msgstr ""
+msgstr "Kivonatok kezelése."
 
 #: src/mailman/commands/cli_digests.py:41
 msgid ""
@@ -710,12 +927,19 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the digests for all mailing lists."
 msgstr ""
+"    Működjön ezen a levelezőlistán.  Több --list opció is megadható.  A\n"
+"    argumentum lehet egy lista azonosító vagy egy teljesen minősített "
+"listanév.  A  nélkül.\n"
+"    opció nélkül az összes levelezőlista kivonatával operál."
 
 #: src/mailman/commands/cli_digests.py:48
 msgid ""
 "    Send any collected digests right now, even if the size threshold has not\n"
 "    yet been met."
 msgstr ""
+"    Küldje el az összegyűjtött kivonatokat most azonnal, még akkor is, ha a "
+"méretküszöb még nem érte el a\n"
+"    még nem teljesült."
 
 #: src/mailman/commands/cli_digests.py:54
 msgid ""
@@ -723,26 +947,37 @@ msgid ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 msgstr ""
+"    Növeli a digest kötet számát, és visszaállítja a digest számot egyre.  "
+"Ha\n"
+"    a --send opcióval együtt megadva, a kötetszámot a rendszer növeli, "
+"mielőtt bármelyik aktuális\n"
+"    digestek elküldésére kerül sor."
 
 #: src/mailman/commands/cli_digests.py:61 src/mailman/commands/cli_notify.py:50
 msgid ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
 msgstr ""
+"    Valójában nem csinál semmit, de a --verbose kapcsolóval együtt "
+"megmutatja, hogy mi a\n"
+"    mi fog történni."
 
 #: src/mailman/commands/cli_digests.py:67 src/mailman/commands/cli_notify.py:56
 msgid "Print some additional status."
-msgstr ""
+msgstr "Nyomtasson ki néhány további állapotot."
 
 #: src/mailman/commands/cli_digests.py:71
 msgid ""
 "    Send any collected digests for the List only if their digest_send_periodic\n"
 "    is set to True."
 msgstr ""
+"    Csak akkor küldjön összegyűjtött kivonatokat a listához, ha azok "
+"digest_send_periodic\n"
+"    igazra van állítva."
 
 #: src/mailman/commands/cli_digests.py:79
 msgid "--send and --periodic flags cannot be used together"
-msgstr ""
+msgstr "--send és --periodikus jelzők nem használhatók együtt"
 
 #: src/mailman/commands/cli_digests.py:92 src/mailman/commands/cli_notify.py:69
 #, python-brace-format
@@ -753,16 +988,21 @@ msgstr "Nincs ilyen lista: ${spec}"
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
 msgstr ""
+"A ${mlist.list_id} ${mlist.volume} kötet, ${mlist.next_digest_number} szám"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
 msgid "${mlist.list_id} bumped to volume ${mlist.volume}, number ${mlist.next_digest_number}"
 msgstr ""
+"${mlist.list_id} átkerült a kötetbe ${mlist.volume}, szám $ .{mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:112 src/mailman/commands/cli_digests.py:122
 #, python-brace-format
 msgid "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
 msgstr ""
+"${mlist.list_id} küldött kötet ${mlist.volume}, szám $ , szám ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_findmember.py:66
 msgid ""
@@ -770,28 +1010,36 @@ msgid ""
 "    pattern.\n"
 "    "
 msgstr ""
+"    Az összes tagság megjelenítése egy vagy több felhasználóhoz, akiknek a "
+"címe megegyezik a\n"
+"    mintával.\n"
+"    "
 
 #: src/mailman/commands/cli_findmember.py:74
 msgid ""
 "    Display only memberships with the given role.  If not given, 'all' role,\n"
 "    i.e. all roles, is the default."
 msgstr ""
+"    Csak az adott szerepkörrel rendelkező tagságok megjelenítése.  Ha nincs "
+"megadva, 'all' szerepkör,\n"
+"    azaz az összes szerepkör, az alapértelmezett."
 
 #: src/mailman/commands/cli_findmember.py:98
 msgid "Email: {}"
-msgstr ""
+msgstr "E-mail: {}"
 
 #: src/mailman/commands/cli_findmember.py:102
 msgid "List: {}"
-msgstr ""
+msgstr "Lista: {}"
 
 #: src/mailman/commands/cli_findmember.py:105
 msgid "{}"
-msgstr ""
+msgstr "{}"
 
 #: src/mailman/commands/cli_gatenews.py:170
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
 msgstr ""
+"Az NNTP-kiszolgáló lekérdezése a levelezőlistákra továbbítandó üzenetekről."
 
 #: src/mailman/commands/cli_gatenews.py:177
 msgid ""
@@ -800,16 +1048,24 @@ msgid ""
 "    If you want to run it manually, set _MAILMAN_GATENEWS_NNTP in the\n"
 "    environment."
 msgstr ""
+"    A gatenews parancsot az nntp futtató rendszeresen futtatja.\n"
+"    Ha cronon keresztül futtatod, akkor érdemes eltávolítani a crontab-ból.\n"
+"    Ha manuálisan akarja futtatni, akkor állítsa be a _MAILMAN_GATENEWS_NNTP "
+"parancsot a\n"
+"    környezetbe."
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr ""
+msgstr "Megjeleníti ezt a súgóüzenetet és kilép."
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
 "    Import Mailman 2.1 list data.  Requires the fully-qualified name of the\n"
 "    list to import and the path to the Mailman 2.1 pickle file."
 msgstr ""
+"    Mailman 2.1 listaadatok importálása.  Szükséges a teljes körűen "
+"minősített lista neve\n"
+"    és a Mailman 2.1 pickle fájl elérési útvonala."
 
 #: src/mailman/commands/cli_import.py:56
 msgid ""
@@ -817,33 +1073,43 @@ msgid ""
 "    thereof. This will normally be the Mailman 2.1 charset of the list's\n"
 "    preferred_language."
 msgstr ""
+"    A PICKLE_FILE fájlban lévő karakterláncok kódolásának megadása, ha nem "
+"utf-8 vagy egy részhalmaza\n"
+"    annak nem része. Ez általában a lista Mailman 2.1 karakterkészlete lesz."
+"\n"
+"    preferred_language."
 
 #: src/mailman/commands/cli_import.py:82
 #, python-brace-format
 msgid "Not a Mailman 2.1 configuration file: ${pickle_file}"
-msgstr ""
+msgstr "Nem Mailman 2.1 konfigurációs fájl: ${pickle_file}"
 
 #: src/mailman/commands/cli_import.py:85
 msgid "Ignoring non-dictionary: {0!r}"
-msgstr ""
+msgstr "A nem szótári szavak figyelmen kívül hagyása: {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
-msgstr ""
+msgstr "Információk erről a Mailman példányról."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
 msgstr ""
+"    Fájl, amelybe a kimenetet el kell küldeni.  Ha nincs megadva, a rendszer "
+"szabványos kimenetet használ."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
 "    A more verbose output including the file system paths that Mailman is\n"
 "    using."
 msgstr ""
+"    Részletesebb kimenet, beleértve a fájlrendszer elérési útjait is, "
+"amelyeket a Mailman\n"
+"    használ."
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
-msgstr ""
+msgstr "Üzenet beillesztése egy fájlból egy levelezőlista várólistájába."
 
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
@@ -851,16 +1117,23 @@ msgid ""
 "    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 msgstr ""
+"    Annak a várólistának a neve, amelybe az üzenetet be kell injektálni.  A "
+"QUEUEUE-nak a\n"
+"    queue könyvtáron belüli könyvtárnak kell lennie.  Ha nem adja meg, akkor "
+"a bejövő várólistát\n"
+"    használja."
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
-msgstr ""
+msgstr "Megjeleníti az összes elérhető várólista nevét és kilép."
 
 #: src/mailman/commands/cli_inject.py:60
 msgid ""
 "    Name of file containing the message to inject.  If not given, or\n"
 "    '-' (without the quotes) standard input is used."
 msgstr ""
+"    Az injektálandó üzenetet tartalmazó fájl neve.  Ha nincs megadva, vagy\n"
+"    '-' (idézőjelek nélkül), akkor a szabványos bemenetet használja."
 
 #: src/mailman/commands/cli_inject.py:66
 msgid ""
@@ -868,11 +1141,15 @@ msgid ""
 "    dictionary.  Use the format key=value.  Multiple -m options are\n"
 "    allowed."
 msgstr ""
+"    További metaadatkulcs/érték párok, amelyeket hozzáadhat az üzenet "
+"metaadat\n"
+"    szótárához.  Használja a formátumkulcs=érték formátumot.  Több -m opció\n"
+"    megengedett."
 
 #: src/mailman/commands/cli_inject.py:79
 #, python-brace-format
 msgid "No such queue: ${queue}"
-msgstr ""
+msgstr "Nincs ilyen várólista: ${queue}"
 
 #: src/mailman/commands/cli_lists.py:53
 msgid "List all mailing lists."
@@ -881,6 +1158,7 @@ msgstr "Összes lista megjelenítése."
 #: src/mailman/commands/cli_lists.py:57
 msgid "List only those mailing lists that are publicly advertised"
 msgstr ""
+"Csak azokat a levelezőlistákat sorolja fel, amelyeket nyilvánosan hirdetnek"
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list names"
@@ -892,7 +1170,7 @@ msgstr "Lista leírások megjelenítése"
 
 #: src/mailman/commands/cli_lists.py:69
 msgid "Less verbosity"
-msgstr ""
+msgstr "Kevesebb verbositás"
 
 #: src/mailman/commands/cli_lists.py:73
 msgid ""
@@ -900,10 +1178,14 @@ msgid ""
 "    must be the email host name.  Multiple -d options may be given.\n"
 "    "
 msgstr ""
+"    Csak azokat a levelezőlistákat listázza ki, amelyek az adott "
+"tartományban találhatóak, és amelyeket\n"
+"    az e-mail hoszt nevének kell lennie.  Több -d opció is megadható.\n"
+"    "
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "No matching mailing lists found"
-msgstr ""
+msgstr "Nem található egyező levelezőlista"
 
 #: src/mailman/commands/cli_lists.py:95
 #, python-brace-format
@@ -918,12 +1200,22 @@ msgid ""
 "    list is required.  It must be a valid email address and the domain must be\n"
 "    registered with Mailman.  List names are forced to lower case."
 msgstr ""
+"    Hozzon létre egy levelezőlistát.\n"
+"\n"
+"    A \"fully qualified list name\", azaz a levelezőlista feladási címe\n"
+"    lista címét kell megadni.  Ennek egy érvényes e-mail címnek kell lennie, "
+"és a tartománynak\n"
+"    regisztrálva kell lennie a Mailmanben.  A listanevek kisbetűs írást "
+"használnak."
 
 #: src/mailman/commands/cli_lists.py:134
 msgid ""
 "    Set the list's preferred language to CODE, which must be a registered two\n"
 "    letter language code."
 msgstr ""
+"    A lista preferált nyelvének beállítása a CODE-ra, amelynek egy "
+"regisztrált két\n"
+"    betűs nyelvkódnak kell lennie."
 
 #: src/mailman/commands/cli_lists.py:140
 msgid ""
@@ -933,16 +1225,25 @@ msgid ""
 "    send a list creation notice to the address.  More than one owner can be\n"
 "    specified."
 msgstr ""
+"    Adja meg a lista tulajdonosának e-mail címét.  Ha a cím jelenleg nincs\n"
+"    regisztrálva a Mailman rendszerben, a cím regisztrálásra kerül, és a "
+"felhasználóhoz kapcsolódik.\n"
+"    A Mailman egy megerősítő üzenetet küld a címre, de a\n"
+"    lista létrehozási értesítést is küld a címre.  Egynél több tulajdonos "
+"is\n"
+"    megadható."
 
 #: src/mailman/commands/cli_lists.py:149
 msgid ""
 "    Notify the list owner by email that their mailing list has been\n"
 "    created."
 msgstr ""
+"    Értesíti a lista tulajdonosát e-mailben, hogy a levelezőlistáját\n"
+"    létrehozták."
 
 #: src/mailman/commands/cli_lists.py:155
 msgid "Print less output."
-msgstr ""
+msgstr "Kevesebb kimenet nyomtatása."
 
 #: src/mailman/commands/cli_lists.py:159
 msgid ""
@@ -950,6 +1251,11 @@ msgid ""
 "    the default behavior, but these options are provided for backward\n"
 "    compatibility.  With -D do not register the mailing list's domain."
 msgstr ""
+"    Regisztrálja a levelezőlista domainjét, ha még nincs regisztrálva.  Ez "
+"a\n"
+"    az alapértelmezett viselkedés, ezek az opciók a visszamenőleges\n"
+"    kompatibilitás miatt vannak.  A -D kapcsolóval nem regisztrálja a "
+"levelezőlista tartományát."
 
 #: src/mailman/commands/cli_lists.py:170
 #, python-brace-format
@@ -959,7 +1265,7 @@ msgstr "Érvénytelen nyelvkód ${language_code}"
 #: src/mailman/commands/cli_lists.py:186
 #, python-brace-format
 msgid "Illegal owner addresses: ${invalid}"
-msgstr ""
+msgstr "Érvénytelen tulajdonosi címek: ${invalid}"
 
 #: src/mailman/commands/cli_lists.py:190
 #, python-brace-format
@@ -984,7 +1290,7 @@ msgstr "Lista létrehozva: ${mlist.fqdn_listname}"
 #: src/mailman/commands/cli_lists.py:217
 #, python-brace-format
 msgid "Your new mailing list: ${fqdn_listname}"
-msgstr ""
+msgstr "Az új levelezőlistád: ${fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Remove a mailing list."
@@ -992,12 +1298,12 @@ msgstr "Lista eltávolítása."
 
 #: src/mailman/commands/cli_lists.py:235
 msgid "Suppress status messages"
-msgstr ""
+msgstr "Az állapotüzenetek letiltása"
 
 #: src/mailman/commands/cli_lists.py:241
 #, python-brace-format
 msgid "No such list matching spec: ${listspec}"
-msgstr ""
+msgstr "Nincs ilyen lista, amely megfelel a specifikációnak: ${listspec}"
 
 #: src/mailman/commands/cli_lists.py:246
 #, python-brace-format
@@ -1017,6 +1323,12 @@ msgid ""
 "    to stdout is the default mode.\n"
 "    "
 msgstr ""
+"    A levelezőlista tagjainak megjelenítése.\n"
+"    A megjelenítés során különböző kritériumok szerinti szűrés végezhető.\n"
+"    Ha nincsenek beállítások megadva, a levelezőlista tagjainak "
+"megjelenítése\n"
+"    az stdout-ra történő megjelenítése az alapértelmezett mód.\n"
+"    "
 
 #: src/mailman/commands/cli_members.py:121
 msgid ""
@@ -2084,6 +2396,20 @@ msgstr ""
 
 msgid "list:admin:action:post.txt"
 msgstr ""
+"Mint a lista adminisztrátora, az Ön engedélyét kérjük a\n"
+"a következő levelezőlistára való feladáshoz:\n"
+"\n"
+"    Lista:    $listanév\n"
+"    Feladó: $sender_email\n"
+"    Tárgy: $subject\n"
+"\n"
+"Az üzenetet azért tartjuk vissza, mert:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Ha úgy gondolja, látogasson el a műszerfalra, hogy jóváhagyja vagy "
+"elutasítsa a\n"
+"kérést."
 
 msgid "list:admin:action:subscribe.txt"
 msgstr ""
