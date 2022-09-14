@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-09-01 18:20+0000\n"
+"PO-Revision-Date: 2022-09-13 09:16+0000\n"
 "Last-Translator: Sergii Horichenko <m@sgg.im>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/uk/>\n"
@@ -1039,6 +1039,8 @@ msgid ""
 "    Import Mailman 2.1 list data.  Requires the fully-qualified name of the\n"
 "    list to import and the path to the Mailman 2.1 pickle file."
 msgstr ""
+"    Імпорт даних списку Mailman 2.1.  Потрібна повна назва імпортованого\n"
+"    списку та шлях до pck-файлу Mailman 2.1."
 
 #: src/mailman/commands/cli_import.py:56
 msgid ""
@@ -1046,11 +1048,15 @@ msgid ""
 "    thereof. This will normally be the Mailman 2.1 charset of the list's\n"
 "    preferred_language."
 msgstr ""
+"    Вказажіть кодування рядків у PICKLE_FILE, якщо це не utf-8 або не його "
+"підмножина.\n"
+"    Зазвичай це буде кодування Mailman 2.1 preferred_language\n"
+"    для мови списку."
 
 #: src/mailman/commands/cli_import.py:82
 #, python-brace-format
 msgid "Not a Mailman 2.1 configuration file: ${pickle_file}"
-msgstr ""
+msgstr "Не є конфігураційним файлом Mailman 2.1: ${pickle_file}"
 
 #: src/mailman/commands/cli_import.py:85
 msgid "Ignoring non-dictionary: {0!r}"
@@ -1058,21 +1064,25 @@ msgstr "Ігнорування несловникового: {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
-msgstr ""
+msgstr "Інформація про цей екземпляр Mailman."
 
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
 msgstr ""
+"    Файл, у який буде надіслано вивід.  Якщо не вказано, використовується "
+"стандартний вивід."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
 "    A more verbose output including the file system paths that Mailman is\n"
 "    using."
 msgstr ""
+"    Більш детально із зазначенням шляхів до файлової системи,\n"
+"    які використовує Mailman."
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
-msgstr ""
+msgstr "Вставте повідомлення з файлу в чергу списку розсилки."
 
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
@@ -1080,16 +1090,22 @@ msgid ""
 "    directories inside the queue directory.  If omitted, the incoming queue is\n"
 "    used."
 msgstr ""
+"    Ім'я черги, в яку потрібно вставити повідомлення.  QUEUE має бути одним "
+"з каталогів\n"
+"    всередині каталогу черги.  Якщо не вказано, використовується вхідна\n"
+"    черга."
 
 #: src/mailman/commands/cli_inject.py:56
 msgid "Show a list of all available queue names and exit."
-msgstr ""
+msgstr "Показати список усіх доступних імен черг та вийти."
 
 #: src/mailman/commands/cli_inject.py:60
 msgid ""
 "    Name of file containing the message to inject.  If not given, or\n"
 "    '-' (without the quotes) standard input is used."
 msgstr ""
+"    Ім'я файлу, що містить повідомлення для вставки.  Якщо не вказано, або\n"
+"    '-' (без лапок) використовується стандартний вхід."
 
 #: src/mailman/commands/cli_inject.py:66
 msgid ""
@@ -1097,6 +1113,11 @@ msgid ""
 "    dictionary.  Use the format key=value.  Multiple -m options are\n"
 "    allowed."
 msgstr ""
+"    Додаткові пари метаданих ключ/значення для додавання до метаданих "
+"словника\n"
+"    повідомлення.  Використовуйте формат ключ=значення.  Допускається "
+"використання\n"
+"    декількох опцій -m."
 
 #: src/mailman/commands/cli_inject.py:79
 #, python-brace-format
@@ -1109,15 +1130,15 @@ msgstr "Показати усі списки."
 
 #: src/mailman/commands/cli_lists.py:57
 msgid "List only those mailing lists that are publicly advertised"
-msgstr ""
+msgstr "Спиок лише тих списків розсилки, які публічно рекламуються"
 
 #: src/mailman/commands/cli_lists.py:61
 msgid "Show also the list names"
-msgstr ""
+msgstr "Показати також назви списків"
 
 #: src/mailman/commands/cli_lists.py:65
 msgid "Show also the list descriptions"
-msgstr ""
+msgstr "Показати також описи списків"
 
 #: src/mailman/commands/cli_lists.py:69
 msgid "Less verbosity"
@@ -1129,15 +1150,18 @@ msgid ""
 "    must be the email host name.  Multiple -d options may be given.\n"
 "    "
 msgstr ""
+"    Список лише тих списків розсилки, які розміщені на даному домені, який\n"
+"    має бути ім'ям хоста ел.пошти.  Можна вказати декілька параметрів -d.\n"
+"    "
 
 #: src/mailman/commands/cli_lists.py:91
 msgid "No matching mailing lists found"
-msgstr ""
+msgstr "Відповідні списки розсилки не знайдені"
 
 #: src/mailman/commands/cli_lists.py:95
 #, python-brace-format
 msgid "${count} matching mailing lists found:"
-msgstr ""
+msgstr "Знайдено ${count} відповідних списків розсилки:"
 
 #: src/mailman/commands/cli_lists.py:126
 msgid ""
@@ -1147,12 +1171,20 @@ msgid ""
 "    list is required.  It must be a valid email address and the domain must be\n"
 "    registered with Mailman.  List names are forced to lower case."
 msgstr ""
+"    Створіть список розсилки.\n"
+"\n"
+"    Необхідно вказати \"повне ім'я списку\", тобто адресу ел.пошти списку\n"
+"    розсилки.  Це має бути дійсна адреса ел.пошти та домен повинен бути\n"
+"    зареєстрованим у Mailman.  Назви списків примусово вводяться в нижньому "
+"регістрі."
 
 #: src/mailman/commands/cli_lists.py:134
 msgid ""
 "    Set the list's preferred language to CODE, which must be a registered two\n"
 "    letter language code."
 msgstr ""
+"    Встановіть бажану мову списку на CODE, який повинен бути зареєстрованим\n"
+"    дволітерним кодом мови."
 
 #: src/mailman/commands/cli_lists.py:140
 msgid ""
@@ -1162,12 +1194,21 @@ msgid ""
 "    send a list creation notice to the address.  More than one owner can be\n"
 "    specified."
 msgstr ""
+"    Вкажіть адресу ел.пошти власника списку.  Якщо адреса наразі\n"
+"    не зареєстрована в Mailman, адреса буде зареєстрована і прив'язана до "
+"користувача.\n"
+"    Mailman надішле на цю адресу повідомлення для підтвердження, а також\n"
+"    надішле сповіщення про створення списку на цю адресу.  Можна вказати "
+"більше\n"
+"    одного власника."
 
 #: src/mailman/commands/cli_lists.py:149
 msgid ""
 "    Notify the list owner by email that their mailing list has been\n"
 "    created."
 msgstr ""
+"    Повідомити власника списку ел.поштою про те, що його список розсилки\n"
+"    створений."
 
 #: src/mailman/commands/cli_lists.py:155
 msgid "Print less output."
@@ -1179,6 +1220,9 @@ msgid ""
 "    the default behavior, but these options are provided for backward\n"
 "    compatibility.  With -D do not register the mailing list's domain."
 msgstr ""
+"    Зареєструвати домен розсилки, якщо він ще не зареєстрований.  Це типова\n"
+"    поведінка, але ці опції надані для зворотної\n"
+"    сумісності.  За допомогою -D не реєструвати домен списку розсилки."
 
 #: src/mailman/commands/cli_lists.py:170
 #, python-brace-format
@@ -1213,7 +1257,7 @@ msgstr "Створений список розсилки: ${mlist.fqdn_listname}
 #: src/mailman/commands/cli_lists.py:217
 #, python-brace-format
 msgid "Your new mailing list: ${fqdn_listname}"
-msgstr ""
+msgstr "Ваш новий список розсилки: ${fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:231
 msgid "Remove a mailing list."
@@ -1226,7 +1270,7 @@ msgstr "Заборонити повідомлення про стан"
 #: src/mailman/commands/cli_lists.py:241
 #, python-brace-format
 msgid "No such list matching spec: ${listspec}"
-msgstr ""
+msgstr "Немає списку який би відповідав специфікації: ${listspec}"
 
 #: src/mailman/commands/cli_lists.py:246
 #, python-brace-format
@@ -1246,18 +1290,29 @@ msgid ""
 "    to stdout is the default mode.\n"
 "    "
 msgstr ""
+"    Показати учасників списку розсилки.\n"
+"    Можна зробити фільтрацію за різними критеріями.\n"
+"    Якщо ніяких параметрів не задано, то відображення учасників списку "
+"розсилки\n"
+"    в stdout є типовим режимом.\n"
+"    "
 
 #: src/mailman/commands/cli_members.py:121
 msgid ""
 "    [MODE] Add all member addresses in FILENAME.  This option is removed.\n"
 "    Use 'mailman addmembers' instead."
 msgstr ""
+"    [MODE] Додати всі адреси учасників у FILENAME.  Цей параметр вилучений.\n"
+"    Замість цього використовуйте 'mailman addmembers'."
 
 #: src/mailman/commands/cli_members.py:127
 msgid ""
 "    [MODE] Delete all member addresses found in FILENAME.\n"
 "    This option is removed. Use 'mailman delmembers' instead."
 msgstr ""
+"    [MODE] Видалити всі адреси учасників, знайдені у FILENAME.\n"
+"    Цей параметр вилучений. Замість цього використовуйте 'mailman "
+"delmembers'."
 
 #: src/mailman/commands/cli_members.py:133
 msgid ""
@@ -1265,12 +1320,18 @@ msgid ""
 "    with the member addresses found in FILENAME.\n"
 "    This option is removed. Use 'mailman syncmembers' instead."
 msgstr ""
+"    [MODE] Синхронізувати всі адреси учасників вказаного списку розсилки\n"
+"    з адресами учасників, знайденими в FILENAME.\n"
+"    Цей параметр вилучено. Замість цього використовуйте \"mailman "
+"syncmembers\"."
 
 #: src/mailman/commands/cli_members.py:140
 msgid ""
 "    Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
+"    Виведення у FILENAME замість stdout.  FILENAME\n"
+"    може бути '-' для позначення стандартного виводу."
 
 #: src/mailman/commands/cli_members.py:147
 msgid ""
