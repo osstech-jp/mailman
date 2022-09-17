@@ -69,6 +69,8 @@ Bugs fixed
   parts of folded subject headers.  (Closes #1021)
 * The ``verp_confirmations`` setting has now been implemented with default
   of ``yes``.  (Closes #1023)
+* The ``anonymous_list_keep_headers`` setting now only applies to X-* headers
+  and will not cause non X-* headers to be removed.  (Closes #1031)
 
 REST
 ====
