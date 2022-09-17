@@ -53,6 +53,9 @@ class Cleanse:
                     'Ignored bad anonymous_list_keep_headers regexp %s: %s',
                     regexp, e)
         for hdr in msg.keys():
+            # Only remove X- headers here.
+            if not hdr.lower().startswith('x-'):
+                continue
             keep = False
             for cre in cres:
                 if cre.search(hdr):

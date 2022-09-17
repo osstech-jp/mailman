@@ -37,9 +37,8 @@ class TestSystemConfiguration(unittest.TestCase):
         self.assertIn('http_etag', json)
         del json['http_etag']
         self.assertEqual(json, dict(
-            anonymous_list_keep_headers='^(?!x-) ^x-mailman- '
-                                        '^x-content-filtered-by:\n'
-                                        '^x-topics: ^x-ack: ^x-beenthere: '
+            anonymous_list_keep_headers='^x-mailman- ^x-content-filtered-by: '
+                                        '^x-topics:\n^x-ack: ^x-beenthere: '
                                         '^x-list-administrivia: ^x-spam-',
             cache_life='7d',
             check_max_size_on_filtered_message='no',

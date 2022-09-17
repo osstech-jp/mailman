@@ -15,8 +15,8 @@ You can also get all the values for a particular section, such as the
 ``[mailman]`` section...
 
     >>> dump_json('http://localhost:9001/3.0/system/configuration/mailman')
-    anonymous_list_keep_headers: ^(?!x-) ^x-mailman- ^x-content-filtered-by:
-    ^x-topics: ^x-ack: ^x-beenthere: ^x-list-administrivia: ^x-spam-
+    anonymous_list_keep_headers: ^x-mailman- ^x-content-filtered-by: ^x-topics:
+    ^x-ack: ^x-beenthere: ^x-list-administrivia: ^x-spam-
     cache_life: 7d
     check_max_size_on_filtered_message: no
     default_language: en
