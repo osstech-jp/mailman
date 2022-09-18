@@ -17,7 +17,7 @@
 
 """Inject a message into a queue."""
 
-from email import message_from_string
+from email import message_from_bytes
 from email.utils import formatdate, make_msgid
 from mailman.config import config
 from mailman.email.message import Message
@@ -91,5 +91,8 @@ def inject_text(mlist, text, recipients=None, switchboard=None, **kws):
     :return: filebase of enqueued message
     :rtype: string
     """
-    message = message_from_string(text, Message)
+    if isinstance(text, str):
+        text = text.encode('utf-8')
+    assert isinstance(text, bytes), 'Bad text input to inject_text'
+    message = message_from_bytes(text, Message)
     return inject_message(mlist, message, recipients, switchboard, **kws)

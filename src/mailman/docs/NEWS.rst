@@ -71,6 +71,11 @@ Bugs fixed
   of ``yes``.  (Closes #1023)
 * The ``anonymous_list_keep_headers`` setting now only applies to X-* headers
   and will not cause non X-* headers to be removed.  (Closes #1031)
+* The ``mailman.mta.connection.sendmail()`` method now accepts a string, bytes
+  or a Message object and ``BaseDelivery`` now passes a Message object.
+  (See #1022)
+* The ``mailman.app.inject.inject_text()`` function now creates the Message
+  object from bytes.  (Closes #1024)
 
 REST
 ====

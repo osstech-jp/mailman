@@ -19,6 +19,7 @@
 
 import unittest
 
+from email import message_from_bytes
 from mailman.app.inject import inject_message, inject_text
 from mailman.app.lifecycle import create_list
 from mailman.email.message import Message
@@ -48,6 +49,19 @@ Date: Tue, 14 Jun 2011 21:12:00 -0400
 
 Nothing.
 """)
+        self.msg2 = message_from_bytes("""
+From: anne@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <first>
+Date: Tue, 14 Jun 2011 21:12:00 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Here's some text.
+Throw in some specials “fancy quoted”
+""".encode('utf-8'), Message)
         # Let assertMultiLineEqual work without bounds.
 
     def test_inject_message(self):
@@ -125,6 +139,16 @@ Nothing.
         self.assertIn('message-id', items[0].msg)
         self.assertIn('message-id-hash', items[0].msg)
 
+    def test_inject_non_ascii_message(self):
+        # Test basic inject_message() call with a non-ascii message.
+        inject_message(self.mlist, self.msg2)
+        items = get_queue_messages('in', expected_count=1)
+        self.assertMultiLineEqual(items[0].msg.as_string(),
+                                  self.msg2.as_string())
+        self.assertEqual(items[0].msgdata['listid'], 'test.example.com')
+        self.assertEqual(items[0].msgdata['original_size'],
+                         len(self.msg2.as_string()))
+
 
 class TestInjectText(unittest.TestCase):
     """Test text injection."""
@@ -142,6 +166,19 @@ Message-ID: <second>
 Date: Tue, 14 Jun 2011 21:12:00 -0400
 
 Nothing.
+"""
+        self.text2 = """\
+From: bart@example.com
+To: test@example.com
+Subject: A test message
+Message-ID: <second>
+Date: Tue, 14 Jun 2011 21:12:00 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Here's some text.
+Throw in some specials “fancy quoted”
 """
 
     def _remove_line(self, header):
@@ -245,3 +282,29 @@ Nothing.
         items = get_queue_messages('in', expected_count=1)
         self.assertIn('message-id', items[0].msg)
         self.assertIn('message-id-hash', items[0].msg)
+
+    def test_inject_text_non_ascii_string(self):
+        # Test basic inject_text() call with a non-ascii string.
+        inject_text(self.mlist, self.text2)
+        items = get_queue_messages('in', expected_count=1)
+        self.assertIsInstance(items[0].msg, Message)
+        self.assertEqual(items[0].msg['message-id-hash'],
+                         'GUXXQKNCHBFQAHGBFMGCME6HKZCUUH3K')
+        # Remove the Message-ID-Hash header which isn't in the original text.
+        del items[0].msg['message-id-hash']
+        del items[0].msg['x-message-id-hash']
+        self.assertMultiLineEqual(items[0].msg.as_bytes().decode('utf-8'),
+                                  self.text2)
+
+    def test_inject_text_non_ascii_bytes(self):
+        # Test basic inject_text() call with non-ascii bytes.
+        inject_text(self.mlist, self.text2.encode('utf-8'))
+        items = get_queue_messages('in', expected_count=1)
+        self.assertIsInstance(items[0].msg, Message)
+        self.assertEqual(items[0].msg['message-id-hash'],
+                         'GUXXQKNCHBFQAHGBFMGCME6HKZCUUH3K')
+        # Remove the Message-ID-Hash header which isn't in the original text.
+        del items[0].msg['message-id-hash']
+        del items[0].msg['x-message-id-hash']
+        self.assertMultiLineEqual(items[0].msg.as_bytes().decode('utf-8'),
+                                  self.text2)

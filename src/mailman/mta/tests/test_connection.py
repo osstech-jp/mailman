@@ -21,7 +21,10 @@ import unittest
 
 from mailman.config import config
 from mailman.mta.connection import Connection, SecureMode
-from mailman.testing.helpers import LogFileMark
+from mailman.testing.helpers import (
+    LogFileMark,
+    specialized_message_from_string as mfs,
+)
 from mailman.testing.layers import SMTPLayer, SMTPSLayer, STARTTLSLayer
 from smtplib import SMTPAuthenticationError, SMTPNotSupportedError
 from unittest.mock import patch
@@ -59,6 +62,48 @@ Subject: aardvarks
 """)
         self.assertEqual(self.layer.smtpd.get_authentication_credentials(),
                          'AHRlc3R1c2VyAHRlc3RwYXNz')
+
+    def test_sendmail_accepts_string(self):
+        # The sendmail method accepts bytes.
+        connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0)
+        connection.sendmail('anne@example.com', ['bart@example.com'], """\
+From: anne@example.com
+To: bart@example.com
+Subject: aardvarks
+
+""")
+        messages = list(self.layer.smtpd.messages)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0]['subject'], 'aardvarks')
+
+    def test_sendmail_accepts_bytes(self):
+        # The sendmail method accepts bytes.
+        connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0)
+        connection.sendmail('anne@example.com', ['bart@example.com'], b"""\
+From: anne@example.com
+To: bart@example.com
+Subject: aardvarks
+
+""")
+        messages = list(self.layer.smtpd.messages)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0]['subject'], 'aardvarks')
+
+    def test_sendmail_accepts_message(self):
+        # The sendmail method accepts a message object.
+        connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port), 0)
+        connection.sendmail('anne@example.com', ['bart@example.com'], mfs("""\
+From: anne@example.com
+To: bart@example.com
+Subject: aardvarks
+
+"""))
+        messages = list(self.layer.smtpd.messages)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0]['subject'], 'aardvarks')
 
 
 class _ConnectionCounter:

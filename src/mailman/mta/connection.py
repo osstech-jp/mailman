@@ -24,6 +24,7 @@ import logging
 import smtplib
 
 from contextlib import suppress
+from email.message import Message
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.interfaces.configuration import InvalidConfigurationError
@@ -118,7 +119,7 @@ class Connection:
             self._tls_context = self._get_tls_context(self.verify_cert,
                                                       self.verify_hostname)
 
-    def sendmail(self, envsender, recipients, msgtext):
+    def sendmail(self, envsender, recipients, msg):
         """Mimic `smtplib.SMTP.sendmail`."""
         if as_boolean(config.devmode.enabled):
             # Force the recipients to the specified address, but still deliver
@@ -127,14 +128,23 @@ class Connection:
         if self._connection is None:
             self._connect()
             self._login()
-        # smtplib.SMTP.sendmail requires the message string to be pure ascii.
-        # We have seen malformed messages with non-ascii unicodes, so ensure
-        # we have pure ascii.
-        msgtext = msgtext.encode('ascii', 'replace').decode('ascii')
+        # We accept a string, bytes or a Message object for the msg argument.
+        # A string is converted to ascii bytes with errors replaced and
+        # passed to smtplib.SMTP.sendmail. Bytes are passed as is and a
+        # Message is passed to smtplib.SMTP.send_message. Passing a Message
+        # object is preferred because of the treatment of line endings.
+        if isinstance(msg, str):
+            msg = msg.encode('ascii', 'replace')
+        assert isinstance(msg, bytes) or isinstance(msg, Message), \
+            'Connection.sendmail received an invalid msg arg.'
         try:
-            log.debug('envsender: %s, recipients: %s, size(msgtext): %s',
-                      envsender, recipients, len(msgtext))
-            results = self._connection.sendmail(envsender, recipients, msgtext)
+            log.debug('envsender: %s, recipients: %s, size(msg): %s',
+                      envsender, recipients, len(msg))
+            if isinstance(msg, Message):
+                results = self._connection.send_message(msg, envsender,
+                                                        recipients)
+            else:
+                results = self._connection.sendmail(envsender, recipients, msg)
         except smtplib.SMTPException:
             # For safety, close this connection.  The next send attempt will
             # automatically re-open it.  Pass the exception on up.
