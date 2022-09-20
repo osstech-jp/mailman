@@ -76,6 +76,9 @@ Bugs fixed
   (See #1022)
 * The ``mailman.app.inject.inject_text()`` function now creates the Message
   object from bytes.  (Closes #1024)
+* The ``mailman import21`` command now adds ``^listname@`` to the list's
+  ``acceptable_aliases`` for compatablity with Mailman 2.1's behavior.
+  (Closes #1032)
 
 REST
 ====
