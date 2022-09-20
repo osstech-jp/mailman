@@ -410,6 +410,8 @@ def import_config_pck(mlist, config_dict):
         # but .add() would not raise ValueError if address contained '@' and
         # that needs the '^' too as it could be a regexp with an '@' in it.
         alias_set.add(address)
+    # MM 2.1 accepts the listname as a local part regardless of domain.
+    alias_set.add('^' + mlist.list_name + '@')
     # Handle roster visibility.
     mapping = member_roster_visibility_mapping(
         config_dict.get('private_roster', None))
