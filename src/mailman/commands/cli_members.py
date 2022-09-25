@@ -32,7 +32,7 @@ from zope.interface import implementer
 
 
 def display_members(ctx, mlist, role, regular, digest,
-                    nomail, outfp, email_only):
+                    nomail, outfp, email_only, count_only):
     # Which type of digest recipients should we display?
     if digest == 'any':
         digest_types = [
@@ -87,7 +87,11 @@ def display_members(ctx, mlist, role, regular, digest,
     # Print; outfp will be either the file or stdout to print to.
     addresses = list(roster.addresses)
     if len(addresses) == 0:
-        print(_('${mlist.list_id} has no members'), file=outfp)
+        print(0 if count_only else _('${mlist.list_id} has no members'),
+              file=outfp)
+        return
+    if count_only:
+        print(roster.member_count, file=outfp)
         return
     for address in sorted(addresses, key=attrgetter('email')):
         member = roster.get_member(address.email)
@@ -161,6 +165,12 @@ def display_members(ctx, mlist, role, regular, digest,
     Display member addresses only, without the display name.
     """))
 @click.option(
+    '--count-only', '-c', 'count_only',
+    is_flag=True, default=False,
+    help=("""\
+    Display members count only.
+    """))
+@click.option(
     '--no-change', '-N', 'no_change',
     is_flag=True, default=False,
     help=_("""\
@@ -189,7 +199,8 @@ def display_members(ctx, mlist, role, regular, digest,
 @click.argument('listspec')
 @click.pass_context
 def members(ctx, add_infp, del_infp, sync_infp, outfp,
-            role, regular, no_change, digest, nomail, listspec, email_only):
+            role, regular, no_change, digest, nomail, listspec,
+            email_only, count_only):
     mlist = getUtility(IListManager).get(listspec)
     if mlist is None:
         ctx.fail(_('No such list: ${listspec}'))
@@ -205,9 +216,12 @@ def members(ctx, add_infp, del_infp, sync_infp, outfp,
     elif role == 'any' and (regular or digest or nomail):
         ctx.fail('The --regular, --digest and --nomail options are '
                  'incompatible with role=any.')
+    elif email_only and count_only:
+        ctx.fail('The --email_only and --count_only options are '
+                 'mutually exclusive.')
     else:
         display_members(ctx, mlist, role, regular,
-                        digest, nomail, outfp, email_only)
+                        digest, nomail, outfp, email_only, count_only)
 
 
 @public
