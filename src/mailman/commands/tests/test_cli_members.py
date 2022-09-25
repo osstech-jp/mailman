@@ -367,6 +367,24 @@ class TestCLIMembers(unittest.TestCase):
         self.assertEqual(
             result.output, 'aperson@example.com\nbperson@example.com\n')
 
+    def test_count_only(self):
+        subscribe(self._mlist, 'Anne')
+        subscribe(self._mlist, 'Bart')
+        result = self._command.invoke(members, (
+            '--count-only', 'ant.example.com'))
+        self.assertEqual(
+            result.output, '2\n')
+
+    def test_incompatible_email_only_count_only(self):
+        result = self._command.invoke(members, (
+            '--email-only', '--count-only', 'ant.example.com'))
+        self.assertEqual(
+            result.output,
+            'Usage: members [OPTIONS] LISTSPEC\n'
+            'Try \'members --help\' for help.\n\n'
+            'Error: The --email_only and --count_only options are '
+            'mutually exclusive.\n')
+
     def test_incompatible_role_any_regular(self):
         result = self._command.invoke(members, (
             '--role', 'any', '--regular', 'ant.example.com'))

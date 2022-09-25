@@ -81,8 +81,13 @@ Bugs fixed
   (Closes #1032)
 
 REST
-====
+----
 * Expose bounce related parameters for Member objects.
+
+Command line
+------------
+* The ``mailman members`` command now has a ``--count-only`` option.
+  (Closes #1030)
 
 .. _news-3.3.5:
 
