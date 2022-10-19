@@ -89,6 +89,11 @@ Command line
 * The ``mailman members`` command now has a ``--count-only`` option.
   (Closes #1030)
 
+New Features
+------------
+* The LMTP service now only accept ``RCPT TO`` commands if the given
+  recipient address is acceptable (See !1043).
+
 .. _news-3.3.5:
 
 3.3.5
