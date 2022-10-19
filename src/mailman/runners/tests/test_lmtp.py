@@ -114,7 +114,7 @@ Message-ID: <ant>
 
     def test_nonexistent_mailing_list(self):
         # Trying to post to a nonexistent mailing list is an error.
-        with self.assertRaises(smtplib.SMTPDataError) as cm:
+        with self.assertRaises(smtplib.SMTPRecipientsRefused) as cm:
             self._lmtp.sendmail('anne@example.com',
                                 ['notalist@example.com'], """\
 From: anne.person@example.com
@@ -123,13 +123,22 @@ Subject: An interesting message
 Message-ID: <aardvark>
 
 """)
-        self.assertEqual(cm.exception.smtp_code, 550)
-        self.assertEqual(cm.exception.smtp_error,
+        # smtplib.SMTPRecipientsRefused.args contains a list of errors (for
+        # each RCPT TO), thus we should have only one error
+        self.assertEqual(len(cm.exception.args), 1)
+        args0 = cm.exception.args[0]
+        # each error should be a dict with the corresponding email address
+        # as key
+        self.assertTrue('notalist@example.com' in args0)
+        errorval = args0['notalist@example.com']
+        # errorval must be a tuple of (code, errorstr)
+        self.assertEqual(errorval[0], 550)
+        self.assertEqual(errorval[1],
                          b'Requested action not taken: mailbox unavailable')
 
     def test_nonexistent_domain(self):
         # Trying to post to a nonexistent domain is an error.
-        with self.assertRaises(smtplib.SMTPDataError) as cm:
+        with self.assertRaises(smtplib.SMTPRecipientsRefused) as cm:
             self._lmtp.sendmail('anne@example.com',
                                 ['test@x.example.com'], """\
 From: anne.person@example.com
@@ -138,8 +147,17 @@ Subject: An interesting message
 Message-ID: <aardvark>
 
 """)
-        self.assertEqual(cm.exception.smtp_code, 550)
-        self.assertEqual(cm.exception.smtp_error,
+        # smtplib.SMTPRecipientsRefused.args contains a list of errors (for
+        # each RCPT TO), thus we should have only one error
+        self.assertEqual(len(cm.exception.args), 1)
+        args0 = cm.exception.args[0]
+        # each error should be a dict with the corresponding email address
+        # as key
+        self.assertTrue('test@x.example.com' in args0)
+        errorval = args0['test@x.example.com']
+        # errorval must be a tuple of (code, errorstr)
+        self.assertEqual(errorval[0], 550)
+        self.assertEqual(errorval[1],
                          b'Requested action not taken: mailbox unavailable')
 
     def test_alias_domain(self):
@@ -168,7 +186,7 @@ X-MailFrom: anne@example.com
 
     def test_missing_subaddress(self):
         # Trying to send a message to a bogus subaddress is an error.
-        with self.assertRaises(smtplib.SMTPDataError) as cm:
+        with self.assertRaises(smtplib.SMTPRecipientsRefused) as cm:
             self._lmtp.sendmail('anne@example.com',
                                 ['test-bogus@example.com'], """\
 From: anne.person@example.com
@@ -177,8 +195,17 @@ Subject: An interesting message
 Message-ID: <aardvark>
 
 """)
-        self.assertEqual(cm.exception.smtp_code, 550)
-        self.assertEqual(cm.exception.smtp_error,
+        # smtplib.SMTPRecipientsRefused.args contains a list of errors (for
+        # each RCPT TO), thus we should have only one error
+        self.assertEqual(len(cm.exception.args), 1)
+        args0 = cm.exception.args[0]
+        # each error should be a dict with the corresponding email address
+        # as key
+        self.assertTrue('test-bogus@example.com' in args0)
+        errorval = args0['test-bogus@example.com']
+        # errorval must be a tuple of (code, errorstr)
+        self.assertEqual(errorval[0], 550)
+        self.assertEqual(errorval[1],
                          b'Requested action not taken: mailbox unavailable')
 
     def test_mailing_list_with_subaddress(self):

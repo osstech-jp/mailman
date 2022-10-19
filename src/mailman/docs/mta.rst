@@ -253,6 +253,8 @@ which are local, you may need ``local_recipient_maps`` as above.  Note that
 these can be ``regexp`` tables rather than ``hash`` tables.  See the
 ``Transport maps`` section above.
 
+Starting with version 3.3.6, it is possible to use Mailman's LMTP
+service with Postfix' ``reject_unverified_recipient``.
 
 Postfix documentation
 ---------------------
@@ -380,6 +382,42 @@ two lines to the ``mailman3_transport:`` section.
 
       headers_remove = message-id
       headers_add = "Message-ID: ${if def:header_message-id:{$h_message-id:}{<E${message_exim_id}@${qualify_domain}>}}"
+
+Alternative setup using callout verification
+--------------------------------------------
+
+Starting with version 3.3.6, you can rely on Mailman's responce on
+``RCPT TO:`` LMTP command if mailman would accept the recipient
+address as valid. This can be used in Exim to validate recipients
+using callout verification.
+::
+
+    # /etc/exim4/conf.d/main/25_mm3_macros
+    # The colon-separated list of domains served by Mailman.
+    domainlist mm_domains = list.example.net
+    # The port of your Mailman's LMTP service
+    MM3_LMTP_PORT = 8024
+
+    # /etc/exim4/local_rcpt_callout (create file or append if already exists)
+    # Make callout verification for all domains served by Mailman.
+    *@+mm_domains
+
+    # /etc/exim4/conf.d/router/455_mm3_router
+    mailman3_router:
+      driver = accept
+      domains = +mm_domains
+      # no further conditions, valid recipients are verified in
+      # acl_check_rcpt using callout verification
+      transport = mailman3_transport
+
+    # /etc/exim4/conf.d/transport/55_mm3_transport
+    mailman3_transport:
+      driver = smtp
+      protocol = lmtp
+      allow_localhost
+      hosts = localhost
+      port = MM3_LMTP_PORT
+      rcpt_include_affixes = true
 
 Exim 4 documentation
 --------------------

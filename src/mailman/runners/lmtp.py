@@ -128,6 +128,44 @@ def split_recipient(address):
 class LMTPHandler:
     @asyncio.coroutine
     @transactional
+    def handle_RCPT(self, server, session, envelope, to, rcpt_options):
+        listnames = set(getUtility(IListManager).names)
+        try:
+            to = parseaddr(to)[1].lower()
+            local, subaddress, domain = split_recipient(to)
+            if subaddress is not None:
+                # Check that local-subaddress is not an actual list name.
+                listname = '{}-{}@{}'.format(local, subaddress, domain)
+                if listname in listnames:
+                    local = '{}-{}'.format(local, subaddress)
+                    subaddress = None
+            listname = '{}@{}'.format(local, domain)
+            if listname not in listnames:
+                return ERR_550
+            canonical_subaddress = SUBADDRESS_NAMES.get(subaddress)
+            if subaddress is None:
+                # The message is destined for the mailing list.
+                # nothing to do here, just keep code similar to handle_DATA
+                pass
+            elif canonical_subaddress is None:
+                # The subaddress was bogus.
+                slog.error('unknown sub-address: %s', subaddress)
+                return ERR_550
+            else:
+                # A valid subaddress.
+                # nothing to do here, just keep code similar to handle_DATA
+                pass
+            # recipient validated, just do the same as aiosmtpd.LMTP would do
+            envelope.rcpt_tos.append(to)
+            envelope.rcpt_options.extend(rcpt_options)
+            return '250 Ok'
+        except Exception:
+            slog.exception('Address verification: %s', to)
+            config.db.abort()
+            return ERR_550
+
+    @asyncio.coroutine
+    @transactional
     def handle_DATA(self, server, session, envelope):
         try:
             # Refresh the list of list names every time we process a message
