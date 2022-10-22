@@ -79,6 +79,8 @@ Bugs fixed
 * The ``mailman import21`` command now adds ``^listname@`` to the list's
   ``acceptable_aliases`` for compatiblity with Mailman 2.1's behavior.
   (Closes #1032)
+* An ``AttributeError`` thrown in the task runner, possibly due to a race
+  condition, is now avoided.  (Closes #1028)
 
 REST
 ----
