@@ -51,6 +51,7 @@ class TestConfirmJoin(unittest.TestCase):
         self._mlist = create_list('test@example.com')
         anne = getUtility(IUserManager).create_address(
             'anne@example.com', 'Anne Person')
+        self._address = anne
         self._token, token_owner, member = ISubscriptionManager(
             self._mlist).register(anne)
         self._command = Confirm()
@@ -102,6 +103,19 @@ class TestConfirmJoin(unittest.TestCase):
         # The result will contain an error message.
         self.assertIn('anne@example.com is not allowed to subscribe to '
                       'test@example.com', str(result))
+
+    def test_confirm_already_member(self):
+        # Confirmation of an already subscribed address should return an
+        # appropriate error.
+        # Subscribe anne.
+        self._mlist.subscribe(self._address)
+        result = Results()
+        status = self._command.process(
+            self._mlist, Message(), {}, (self._token,), result)
+        self.assertEqual(status, ContinueProcessing.no)
+        # The result will contain an error message.
+        self.assertIn('anne@example.com is already a MemberRole.member of '
+                      'mailing list test@example.com', str(result))
 
 
 class TestConfirmLeave(unittest.TestCase):

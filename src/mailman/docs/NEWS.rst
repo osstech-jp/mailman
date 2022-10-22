@@ -81,6 +81,8 @@ Bugs fixed
   (Closes #1032)
 * An ``AttributeError`` thrown in the task runner, possibly due to a race
   condition, is now avoided.  (Closes #1028)
+* Email confirmation of a subscription request for a member is no longer
+  shunted.  (Closes #1035)
 
 REST
 ----
