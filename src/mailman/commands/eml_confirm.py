@@ -21,7 +21,10 @@ from mailman.app.moderator import handle_message
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
-from mailman.interfaces.member import MembershipIsBannedError
+from mailman.interfaces.member import (
+    AlreadySubscribedError,
+    MembershipIsBannedError,
+)
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.subscriptions import ISubscriptionManager, TokenOwner
 from mailman.rules.approved import Approved
@@ -85,7 +88,7 @@ class Confirm:
         except LookupError:
             # The token must not exist in the database.
             succeeded = False
-        except MembershipIsBannedError as e:
+        except (MembershipIsBannedError, AlreadySubscribedError) as e:
             print(str(e), file=results)
             return ContinueProcessing.no
         if succeeded:
