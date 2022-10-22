@@ -94,6 +94,8 @@ class TaskRunner(Runner):
         # Also, delete any orphaned messages from the message store.
         mids = dict()
         for token, pendable in pendings:
+            if not pendable:
+                continue                                # pragma: nocover
             mid = pendable.get('_mod_message_id')
             if mid:
                 mids[mid] = True
