@@ -2,13 +2,13 @@
  Installing and running Mailman 3
 ==================================
 
-Copyright (C) 2008-2018 by the Free Software Foundation, Inc.
+Copyright (C) 2008-2022 by the Free Software Foundation, Inc.
 
 
 Requirements
 ============
 
-For the Core, Python 3.6 or newer is required.  It can either be the default
+For the Core, Python 3.7 or newer is required.  It can either be the default
 'python3' on your ``$PATH`` or it can be accessible via the ``python3.6`` or
 ``python3.7`` binary.  If your operating system does not include Python 3, see
 https://www.python.org for information about downloading installers (where
@@ -79,8 +79,8 @@ Try ``mailman --help`` for more details.  You can use the commands
 Note that you can also run Mailman from one of the virtual environments
 created by tox, e.g.::
 
-    $ tox -e py35-nocov --notest -r
-    $ .tox/py35-nocov/bin/mailman info
+    $ tox -e py39-nocov --notest -r
+    $ .tox/py39-nocov/bin/mailman info
 
 
 Mailman Shell

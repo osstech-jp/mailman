@@ -2,7 +2,7 @@
  Contributing to Mailman 3
 ===========================
 
-Copyright (C) 2008-2018 by the Free Software Foundation, Inc.
+Copyright (C) 2008-2022 by the Free Software Foundation, Inc.
 
 
 How to contribute
@@ -61,29 +61,29 @@ quickest manner with components that should be available everywhere, run one
 of these commands, depending on which version of Python 3 you have::
 
     $ tox -e py36-nocov
-    $ tox -e py35-nocov
+    $ tox -e py39-nocov
 
 You can run individual tests in any given environment by providing additional
 positional arguments.  For example, to run only the tests that match a
 specific pattern::
 
-    $ tox -e py35-nocov -- -P user
+    $ tox -e py39-nocov -- -P user
 
 You can see all the other arguments supported by the test suite by running::
 
-    $ tox -e py35-nocov -- --help
+    $ tox -e py39-nocov -- --help
 
 You also have access to the virtual environments created by tox, and you can
 use this run the virtual environment's Python executable, or run the
 ``mailman`` command locally, e.g.::
 
-    $ .tox/py35-nocov/bin/python
-    $ .tox/py35-nocov/bin/mailman --help
+    $ .tox/py39-nocov/bin/python
+    $ .tox/py39-nocov/bin/mailman --help
 
 If you want to set up the virtual environment without running the full test
 suite, you can do this::
 
-    $ tox -e py35-nocov --notest -r
+    $ tox -e py39-nocov --notest -r
 
 
 Testing with PostgreSQL and MySQL
@@ -103,12 +103,12 @@ e.g.::
 
 Then run the test suite like so::
 
-    $ MAILMAN_EXTRA_TESTING_CFG=/path/to/postgres.cfg tox -e py35-pg
+    $ MAILMAN_EXTRA_TESTING_CFG=/path/to/postgres.cfg tox -e py39-pg
 
 You can combine these ways to invoke Mailman, so if you want to run an
 individual test against PostgreSQL, you could do::
 
-    $ MAILMAN_EXTRA_TESTING_CFG=/path/to/postgres.cfg tox -e py35-pg -- -P user
+    $ MAILMAN_EXTRA_TESTING_CFG=/path/to/postgres.cfg tox -e py39-pg -- -P user
 
 Note that the path specified in `MAILMAN_EXTRA_TESTING_CFG` must be an
 absolute path or some tests will fail.
