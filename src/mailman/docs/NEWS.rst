@@ -2,7 +2,7 @@
  GNU Mailman 3 changes
 =======================
 
-Copyright (C) 1998-2021 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 Here is a history of user visible changes to Mailman.
@@ -13,7 +13,7 @@ Here is a history of user visible changes to Mailman.
 3.3.6
 =====
 
-(xxxx-xx-xx)
+(2022-10-24)
 
 Bugs fixed
 ----------

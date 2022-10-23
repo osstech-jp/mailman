@@ -71,7 +71,7 @@ by Mailman.
 
    digraph pipeline {
    node [shape=box, style=rounded, group=0]
-   { "MIME\ndelete" -> "cleanse headers" -> "add headers" -> 
+   { "MIME\ndelete" -> "cleanse headers" -> "add headers" ->
      "calculate\nrecipients" -> "to digest" -> "to archive" ->
      "to outgoing" }
    node [shape=box, color=lightblue, style=filled, group=1]
