@@ -16,3 +16,6 @@ include src/mailman/testing/config*.pck
 include src/mailman/database/alembic/script.py.mako
 include src/mailman/database/alembic/versions/*.py
 include src/mailman/testing/ssl_test_*
+include *.sh
+recursive-include src *.pot
+recursive-include src *.py
