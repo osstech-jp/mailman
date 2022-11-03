@@ -961,3 +961,27 @@ approval:
         items = get_queue_messages('virgin', expected_count=1)
         self.assertEqual(str(items[0].msg['Subject']), "Vous avez"
                          " été désabonné de la liste de diffusion Test")
+
+    def test_mutltiple_subscriptions_for_one_user(self):
+        anne = self._user_manager.create_user(self._anne)
+        set_preferred(anne)
+        email_2 = self._user_manager.create_address('second@example.com')
+        anne.link(email_2)
+        # Subscribe the user first.
+        workflow = SubscriptionWorkflow(
+            self._mlist, anne,
+            pre_verified=True, pre_confirmed=True, pre_approved=True
+            )
+        list(workflow)
+        # Assert the user was subscribed.
+        member = self._mlist.regular_members.get_member(self._anne)
+        self.assertIsNotNone(member)
+        # Now, try to subscribe the 2nd address of the same user.
+        workflow = SubscriptionWorkflow(
+            self._mlist, email_2,
+            pre_verified=True, pre_confirmed=True, pre_approved=True
+            )
+        list(workflow)
+        # And assert it succeeded.
+        member = self._mlist.regular_members.get_member(email_2.email)
+        self.assertIsNotNone(member)

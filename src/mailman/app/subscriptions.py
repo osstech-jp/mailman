@@ -237,7 +237,7 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
         assert self.user is not None and self.address is not None, (
             'Insane sanity check results')
         # Is this subscriber already a member?
-        if ((self.user.preferred_address is not None and
+        if ((self.user.preferred_address == self.address and
                 self.mlist.is_subscribed(self.user)) or
                 self.mlist.is_subscribed(self.address)):
             raise AlreadySubscribedError(
