@@ -13,6 +13,12 @@ Here is a history of user visible changes to Mailman.
 3.3.7
 =====
 
+(2022-xx-xx)
+
+Bugs fixed
+----------
+* The fix for #994 in 3.3.6 blocked too many subscription attempts.  This is
+  now corrected and another test added.
 
 .. _news-3.3.6:
 
