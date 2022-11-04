@@ -39,6 +39,7 @@ from mailman.model.mime import ContentFilter
 from mailman.utilities.datetime import now
 from mailman.utilities.queries import QuerySequence
 from public import public
+from sqlalchemy import select
 from zope.event import notify
 from zope.interface import implementer
 
@@ -128,7 +129,7 @@ class ListManager:
         """See `IListManager`."""
         result_set = store.query(MailingList)
         for list_id in result_set.values(MailingList._list_id):
-            assert isinstance(list_id, tuple) and len(list_id) == 1
+            assert len(list_id) == 1
             yield list_id[0]
 
     @property
@@ -142,10 +143,10 @@ class ListManager:
 
     @dbconnection
     def find(self, store, *, advertised=None, mail_host=None):
-        query = store.query(MailingList)
+        query = select(MailingList)
         if advertised is not None:
             query = query.filter_by(advertised=advertised)
         if mail_host is not None:
             query = query.filter_by(mail_host=mail_host)
         query = query.order_by(MailingList._list_id)
-        return QuerySequence(query)
+        return QuerySequence(store, query)

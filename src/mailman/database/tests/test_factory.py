@@ -29,7 +29,7 @@ from mailman.database.model import Model
 from mailman.database.types import SAUnicode
 from mailman.interfaces.database import DatabaseError
 from mailman.testing.layers import ConfigLayer
-from sqlalchemy import Column, Integer, MetaData, Table
+from sqlalchemy import Column, Integer, MetaData, Table, text
 from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.schema import Index
 from unittest.mock import patch
@@ -66,20 +66,23 @@ class TestSchemaManager(unittest.TestCase):
             Column('version', SAUnicode),
             )
         version_table.create(config.db.engine)
-        config.db.store.execute(version_table.insert().values(
-            component='schema', version=revision))
-        config.db.commit()
-        # Other Storm specific changes, those SQL statements hopefully work on
-        # all DB engines...
-        config.db.engine.execute(
-            'ALTER TABLE mailinglist ADD COLUMN acceptable_aliases_id INT')
+
+        with config.db.engine.connect() as conn:
+            conn.execute(version_table.insert().values(
+                component='schema', version=revision))
+            # Other Storm specific changes, those SQL statements hopefully
+            # work on all DB engines...
+            conn.execute(
+                text('ALTER TABLE mailinglist ADD COLUMN acceptable_aliases_id INT'))   # noqa: E501
+            conn.commit()
         # In case of MySQL, you cannot create/drop indexes on primary keys
         # manually as it is handled automatically by MySQL.
         if not is_mysql(config.db.engine):
-            Index('ix_user__user_id').drop(bind=config.db.engine)
             # Don't pollute our main metadata object, create a new one.
             md = MetaData()
             user_table = Model.metadata.tables['user'].tometadata(md)
+            (Index('ix_user__user_id', user_table.c._user_id)
+             .drop(bind=config.db.engine))
             Index('ix_user_user_id', user_table.c._user_id).create(
                 bind=config.db.engine)
         config.db.commit()
@@ -98,12 +101,15 @@ class TestSchemaManager(unittest.TestCase):
         # indexes for primary keys, don't try doing it with that backend.
         if not is_mysql(config.db.engine):
             with suppress(ProgrammingError, OperationalError):
-                Index('ix_user_user_id').drop(bind=config.db.engine)
+                md = MetaData()
+                user_table = Model.metadata.tables['user'].tometadata(md)
+                Index('ix_user_user_id', user_table.c._user_id).drop(
+                    bind=config.db.engine)
         config.db.commit()
 
     def test_current_database(self):
         # The database is already at the latest version.
-        alembic.command.stamp(alembic_cfg, 'head')
+        alembic.command.stamp(alembic_cfg, revision='head', sql=False)
         with patch('alembic.command') as alembic_command:
             self.schema_mgr.setup_database()
             self.assertFalse(alembic_command.stamp.called)
@@ -124,8 +130,9 @@ class TestSchemaManager(unittest.TestCase):
         # The current Alembic revision is the same as the initial revision.
         md = MetaData()
         md.reflect(bind=config.db.engine)
-        current_rev = config.db.engine.execute(
-            md.tables['alembic_version'].select()).scalar()
+        with config.db.engine.begin() as conn:
+            current_rev = conn.execute(
+                md.tables['alembic_version'].select()).scalar()
         self.assertEqual(current_rev, head_rev)
 
     @patch('alembic.command')

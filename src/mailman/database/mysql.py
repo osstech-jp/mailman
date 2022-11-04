@@ -20,6 +20,7 @@
 from mailman.database.base import SABaseDatabase
 from mailman.database.model import Model
 from public import public
+from sqlalchemy import text
 
 
 @public
@@ -31,4 +32,6 @@ class MySQLDatabase(SABaseDatabase):
         super()._post_reset(store)
         tables = reversed(Model.metadata.sorted_tables)
         for table in tables:
-            store.execute('ALTER TABLE {} AUTO_INCREMENT = 1;'.format(table))
+            store.execute(
+                text('ALTER TABLE {} AUTO_INCREMENT = 1;'.format(table))
+                )

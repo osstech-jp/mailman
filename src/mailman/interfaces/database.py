@@ -19,7 +19,7 @@
 
 from mailman.interfaces.errors import MailmanError
 from public import public
-from zope.interface import Attribute, Interface
+from zope.interface import Interface
 
 
 @public
@@ -49,8 +49,11 @@ class IDatabase(Interface):
     def abort():
         """Abort the current transaction."""
 
-    store = Attribute(
-        """The underlying database object on which you can do queries.""")
+    # maxking: This is commented out because it is not an attribute anymore
+    # but implemented as a property and I haven't figured out a way to fix
+    # this with zope.interface implementations.
+    # store = Attribute(
+    #     """The underlying database object on which you can do queries.""")
 
 
 @public

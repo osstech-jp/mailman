@@ -79,9 +79,12 @@ def downgrade():
         )
     for mlist_id, header, pattern in connection.execute(
             header_match_table.select()).fetchall():
-        mlist = connection.execute(mlist_table.select().where(
-            mlist_table.c.id == mlist_id)).fetchone()
-        header_matches = mlist['header_matches']
+        stmt = sa.select(mlist_table).where(
+            mlist_table.c.id == mlist_id)
+        mlist = connection.execute(stmt).one()
+        # Above returns a tuple with `mlist.id, mlist.header_matches`
+        # So pick the 2nd element, whichi is the header_matches.
+        header_matches = mlist[1]
         if not header_matches:
             header_matches = []
         header_matches.append((header, pattern))

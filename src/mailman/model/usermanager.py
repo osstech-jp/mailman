@@ -28,7 +28,7 @@ from mailman.model.preferences import Preferences
 from mailman.model.user import User
 from mailman.utilities.queries import QuerySequence
 from public import public
-from sqlalchemy import or_
+from sqlalchemy import or_, select
 from zope.interface import implementer
 
 
@@ -37,13 +37,15 @@ from zope.interface import implementer
 class UserManager:
     """See `IUserManager`."""
 
-    def create_user(self, email=None, display_name=None):
+    @dbconnection
+    def create_user(self, store, email=None, display_name=None):
         """See `IUserManager`."""
         if email:
             address = self.create_address(email, display_name)
         user = User(display_name, Preferences())
         if email:
             user.link(address)
+        store.add(user)
         return user
 
     def make_user(self, email, display_name=None):
@@ -101,7 +103,7 @@ class UserManager:
     @dbconnection
     def users(self, store):
         """See `IUserManager`."""
-        return QuerySequence(store.query(User).order_by(User.id))
+        return QuerySequence(store, select(User).order_by(User.id))
 
     @dbconnection
     def create_address(self, store, email, display_name=None):

@@ -20,7 +20,7 @@
 from mailman.database.base import SABaseDatabase
 from mailman.database.model import Model
 from public import public
-from sqlalchemy import Integer
+from sqlalchemy import Integer, text
 
 
 @public
@@ -43,8 +43,8 @@ class PostgreSQLDatabase(SABaseDatabase):
                 if (column.autoincrement
                         and isinstance(column.type, Integer)      # noqa: W503
                         and not column.foreign_keys):             # noqa: W503
-                    store.execute("""\
+                    store.execute(text("""\
                         SELECT setval('"{0}_{1}_seq"', coalesce(max("{1}"), 1),
                                       max("{1}") IS NOT null)
                                FROM "{0}";
-                        """.format(table, column.name))
+                        """.format(table, column.name)))

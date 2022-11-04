@@ -57,14 +57,18 @@ MISSING = object()
 
 
 def _get_default_action(connection, member):
-    list_id = member['list_id']
-    property_name = 'default_{}_action'.format(member['role'].name)
+    # breakpoint()
+    list_id = member[1]
+    property_name = 'default_{}_action'.format(member[2].name)
     list_mapping = DEFAULT_ACTION_CACHE.setdefault(list_id, {})
     action = list_mapping.get(property_name, MISSING)
     if action is MISSING:
-        mailing_list = connection.execute(mailinglist_table.select().where(
-            mailinglist_table.c.list_id == list_id)).fetchone()
-        action = mailing_list[property_name]
+        action = (
+            connection.execute(
+                sa.select(getattr(mailinglist_table.c, property_name))
+                .where(mailinglist_table.c.list_id == list_id))
+            .fetchone()[0]
+            )
         list_mapping[property_name] = action
     return action
 
@@ -76,9 +80,9 @@ def upgrade():
         # If the (non)member's moderation action is the same as the mailing
         # list's default, then set it to None.  The moderation rule will
         # fallback to the list's default.
-        if member['moderation_action'] == default_action:
+        if member[3] == default_action:
             connection.execute(member_table.update().where(
-                member_table.c.id == member['id']
+                member_table.c.id == member[0]
                 ).values(moderation_action=None))
 
 
@@ -89,5 +93,5 @@ def downgrade():
         default_action = _get_default_action(connection, member)
         # Use the mailing list's default action
         connection.execute(member_table.update().where(
-            member_table.c.id == member['id']
+            member_table.c.id == member[0]
             ).values(moderation_action=default_action))

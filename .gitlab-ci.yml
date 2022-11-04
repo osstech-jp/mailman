@@ -30,11 +30,6 @@ docs:
   script:
   - tox -e docs
 
-sqlite-36:
-  <<: *only-default
-  script:
-  - tox -e py36-nocov
-
 sqlite-37:
   <<: *only-default
   script:
@@ -68,6 +63,15 @@ pgsql-37:
   tags:
   - postgres
 
+pgsql-39:
+  <<: *only-default
+  services:
+  - postgres:latest
+  script:
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py39-nocov-pg
+  tags:
+  - postgres
+
 mysql-38:
   <<: *only-default
   services:
@@ -86,6 +90,14 @@ mysql-37:
   tags:
   - mysql
 
+mysql-39:
+  <<: *only-default
+  services:
+  - mysql:5.6
+  script:
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py39-nocov-mysql
+  tags:
+  - mysql
 
 diffcov:
   script:

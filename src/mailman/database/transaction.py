@@ -57,6 +57,27 @@ def transactional(function):
 
 
 @public
+def api_transaction(function):
+    """Decorator for transactional support in REST API.
+
+    Difference between this and :py:func:`transactional` is just that this
+    one also closes the session. This is used in REST API to ensure that
+    no state is retained after a request-response cycle.
+    """
+    def wrapper(*args, **kws):
+        try:
+            rtn = function(*args, **kws)
+            config.db.commit()
+            config.db.close_session()
+            return rtn
+        except:                                  # noqa: E722 pragma: nocover
+            config.db.abort()
+            config.db.close_session()
+            raise
+    return wrapper
+
+
+@public
 @contextmanager
 def flush():
     """Context manager for flushing SQLAlchemy.
