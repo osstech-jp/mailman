@@ -50,7 +50,7 @@ You would then need to set both the `class` and `url` variables in
 
     [database]
     class: mailman.database.postgresql.PostgreSQLDatabase
-    url: postgres://myuser:mypassword@mypghost/mailman
+    url: postgresql://myuser:mypassword@mypghost/mailman
 
 If you have any problems, you may need to delete the database and re-create
 it::
