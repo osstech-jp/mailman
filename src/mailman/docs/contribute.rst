@@ -99,7 +99,7 @@ e.g.::
 
     [database]
     class: mailman.database.postgresql.PostgreSQLDatabase
-    url: postgres://myuser:mypassword@mypghost/mailman
+    url: postgresql://myuser:mypassword@mypghost/mailman
 
 Then run the test suite like so::
 
