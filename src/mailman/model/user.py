@@ -176,6 +176,7 @@ class User(Model):
         if address.user is not None:
             raise AddressAlreadyLinkedError(address)
         address.user = self
+        store.add(address)
         return address
 
     @property

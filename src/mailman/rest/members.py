@@ -17,6 +17,8 @@
 
 """REST for members."""
 
+import logging
+
 from lazr.config import as_boolean
 from mailman.app.membership import add_member
 from mailman.interfaces.action import Action
@@ -64,6 +66,9 @@ from operator import attrgetter
 from public import public
 from uuid import UUID
 from zope.component import getUtility
+
+
+log = logging.getLogger('mailman.rest')
 
 
 class _MemberBase(CollectionMixin):
@@ -402,6 +407,7 @@ class AllMembers(_MemberBase):
                 conflict(response, b'Subscription request already pending')
                 return
             except Exception as e:
+                log.exception(e)
                 bad_request(response, str(e))
                 return
             if token is None:

@@ -44,6 +44,7 @@ from mailman.rest.templates import TemplateFinder
 from mailman.rest.uris import AllSiteURIs, ASiteURI
 from mailman.rest.users import AllUsers, AUser, FindUsers, ServerOwners
 from public import public
+from sqlalchemy.orm import close_all_sessions
 from zope.component import getUtility
 
 
@@ -152,6 +153,14 @@ class Reserved:
             not_found(response)
             return
         UID.cull_orphans()
+        no_content(response)
+
+    def on_get(self, request, response):
+        """This will reset the database sessions."""
+        if self._resource_path != 'reset':
+            not_found(response)
+            return
+        close_all_sessions()
         no_content(response)
 
 

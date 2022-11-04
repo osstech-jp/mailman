@@ -21,6 +21,7 @@ import os
 
 from mailman.database.base import SABaseDatabase
 from public import public
+from sqlalchemy.pool import NullPool
 from urllib.parse import urlparse
 
 
@@ -42,3 +43,10 @@ class SQLiteDatabase(SABaseDatabase):
         # Ignore errors
         if fd > 0:
             os.close(fd)
+
+        # Starting with Sqlalchemy 2.0, the new threading behavior
+        # for SQLite3 is in effect, which uses QueuePool, whereas it
+        # previously used NullPool. Revert to using NullPool for now
+        # so we can do multiple connections.
+        # https://docs.sqlalchemy.org/en/20/dialects/sqlite.html#threading-pooling-behavior
+        self.pool_class = NullPool

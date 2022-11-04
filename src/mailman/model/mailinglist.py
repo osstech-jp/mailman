@@ -80,6 +80,7 @@ from sqlalchemy import (
     Interval,
     LargeBinary,
     PickleType,
+    select,
 )
 from sqlalchemy.event import listen
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -492,19 +493,22 @@ class MailingList(Model):
         member = None
         email = None
         if IAddress.providedBy(subscriber):
-            member = store.query(Member).filter(
+            stmt = select(Member).filter(
                 Member.role == role,
                 Member.list_id == self._list_id,
-                Member._address == subscriber).first()
+                Member._address == subscriber)
+            member = store.execute(stmt).first()
             email = subscriber.email
         elif IUser.providedBy(subscriber):
             if subscriber.preferred_address is None:
                 raise MissingPreferredAddressError(subscriber)
             email = subscriber.preferred_address.email
-            member = store.query(Member).filter(
+            stmt = select(Member).filter(
                 Member.role == role,
                 Member.list_id == self._list_id,
-                Member._user == subscriber).first()
+                Member._user == subscriber)
+            member = store.execute(stmt).first()
+
         return member, email
 
     @dbconnection

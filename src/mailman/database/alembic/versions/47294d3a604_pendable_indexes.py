@@ -53,28 +53,27 @@ def upgrade():
         unique=False)
     # Data migration.
     connection = op.get_bind()
-    for pended_result in connection.execute(pended_table.select()).fetchall():
-        pended_id = pended_result['id']
+    for pended_id in connection.execute(pended_table.select()).scalars().fetchall():  # noqa: E501
         keyvalues = connection.execute(keyvalue_table.select().where(
             keyvalue_table.c.pended_id == pended_id
             )).fetchall()
-        kv_type = [kv for kv in keyvalues if kv['key'] == 'type']
+        kv_type = [kv for kv in keyvalues if kv[1] == 'type']
         if kv_type:
             # Convert existing type keys from JSON to plain text.
             # The (pended_id, key) tuple is unique.
             kv_type = kv_type[0]
             try:
-                new_value = json.loads(kv_type['value'])
+                new_value = json.loads(kv_type[2])
             except ValueError:
                 # New-style entry (or already converted).
                 pass
             else:
                 connection.execute(keyvalue_table.update().where(
-                    keyvalue_table.c.id == kv_type['id']
+                    keyvalue_table.c.id == kv_type[0]
                     ).values(value=new_value))
         else:
             # Detect the type and add the corresponding type key.
-            keys = [kv['key'] for kv in keyvalues]
+            keys = [kv[1] for kv in keyvalues]
             for clue_key, clue_type in TYPE_CLUES.items():
                 if clue_key not in keys:
                     continue
@@ -93,12 +92,12 @@ def downgrade():
         keyvalue_table.c.value.in_(TYPE_CLUES.values())
         )))
     # Convert the other type keys to JSON.
-    keyvalues = connection.execute(keyvalue_table.select().where(
+    keyvalues = connection.execute(sa.select(keyvalue_table.c.id, keyvalue_table.c.value).where(  # noqa: E501
         keyvalue_table.c.key == 'type')).fetchall()
     for keyvalue in keyvalues:
         connection.execute(keyvalue_table.update().where(
-            keyvalue_table.c.id == keyvalue['id']
-            ).values(value=json.dumps(keyvalue['value'])))
+            keyvalue_table.c.id == keyvalue[0]
+            ).values(value=json.dumps(keyvalue[1])))
     # Remove indexes.
     op.drop_index(op.f('ix_pendedkeyvalue_value'), table_name='pendedkeyvalue')
     op.drop_index(op.f('ix_pendedkeyvalue_key'), table_name='pendedkeyvalue')

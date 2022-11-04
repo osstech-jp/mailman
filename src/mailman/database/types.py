@@ -34,6 +34,7 @@ class Enum(TypeDecorator):
     converts it on-the-fly.
     """
     impl = Integer
+    cache_ok = True
 
     def __init__(self, enum, *args, **kw):
         super().__init__(*args, **kw)
@@ -59,6 +60,7 @@ class UUID(TypeDecorator):
 
     """
     impl = CHAR
+    cache_ok = True
 
     def load_dialect_impl(self, dialect):
         if dialect.name == 'postgresql':
@@ -77,7 +79,9 @@ class UUID(TypeDecorator):
             return '%.32x' % value.int
 
     def process_result_value(self, value, dialect):
-        if value is None:
+        # postgres returns UUID object by default in SQLAlchemy 2.0.0
+        # and str value on sqlalchemy < 2.0.0.
+        if (value is None) or (isinstance(value, uuid.UUID)):
             return value
         else:
             return uuid.UUID(value)
@@ -97,6 +101,7 @@ class SAUnicode(TypeDecorator):
     column needs to be indexed, otherwise use SAUnicode4Byte.
     """
     impl = Unicode
+    cache_ok = True
 
 
 @compiles(SAUnicode)
@@ -120,6 +125,7 @@ class SAUnicode4Byte(TypeDecorator):
     type and it can still be used if needed in the codebase.
     """
     impl = Unicode
+    cache_ok = True
 
 
 @compiles(SAUnicode4Byte)
@@ -140,6 +146,7 @@ class SAUnicodeLarge(TypeDecorator):
     This is double size of SAUnicode defined above.
     """
     impl = Unicode
+    cache_ok = True
 
 
 @compiles(SAUnicodeLarge, 'mysql')
@@ -166,6 +173,7 @@ class SAUnicodeXL(TypeDecorator):
     See https://docs.sqlalchemy.org/en/latest/dialects/mysql.html#index-length
     """
     impl = Unicode
+    cache_ok = True
 
 
 @compiles(SAUnicodeXL, 'mysql')
@@ -187,6 +195,7 @@ class SAText(TypeDecorator):
     case of other dialects defaults to the Text type.
     """
     impl = Text
+    cache_ok = True
 
 
 @compiles(SAText)

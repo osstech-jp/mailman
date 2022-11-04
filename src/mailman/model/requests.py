@@ -28,7 +28,7 @@ from mailman.model.pending import Pended, PendedKeyValue
 from mailman.utilities.queries import QuerySequence
 from pickle import dumps, loads
 from public import public
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer, select
 from sqlalchemy.orm import relationship
 from zope.component import getUtility
 from zope.interface import implementer
@@ -84,10 +84,15 @@ class ListRequests:
 
     @dbconnection
     def of_type(self, store, request_type):
-        return QuerySequence(
-            store.query(_Request).filter_by(
-                mailing_list=self.mailing_list, request_type=request_type
-                ).order_by(_Request.id))
+        return (
+            QuerySequence(
+                store,
+                select(_Request)
+                .filter_by(
+                    mailing_list=self.mailing_list, request_type=request_type)
+                .order_by(_Request.id),
+                )
+            )
 
     @dbconnection
     def hold_request(self, store, request_type, key, data=None):

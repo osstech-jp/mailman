@@ -114,11 +114,12 @@ def _reset(self):
     """See `IDatabase`."""
     # Avoid a circular import at module level.
     from mailman.database.model import Model
-    self.store.rollback()
+    self.store.expunge_all()
+    self.abort()
     self._pre_reset(self.store)
     Model._reset(self)
     self._post_reset(self.store)
-    self.store.commit()
+    self.commit()
 
 
 @public
@@ -134,9 +135,9 @@ class DatabaseTestingFactory:
         verifyObject(IDatabase, database)
         database.initialize()
         # Remove existing tables (PostgreSQL will keep them across runs)
-        metadata = MetaData(bind=database.engine)
-        metadata.reflect()
-        metadata.drop_all()
+        metadata = MetaData()
+        metadata.reflect(bind=database.engine)
+        metadata.drop_all(bind=database.engine)
         database.commit()
         # Now create the current model without Alembic upgrades.
         Model.metadata.create_all(database.engine)

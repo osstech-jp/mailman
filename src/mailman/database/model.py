@@ -21,6 +21,7 @@ from contextlib import closing
 from mailman.config import config
 from public import public
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import close_all_sessions
 
 
 class ModelMeta:
@@ -32,10 +33,12 @@ class ModelMeta:
     """
     @staticmethod
     def _reset(db):
-        # Make sure we delete/expunge all objects before we drop tables.
         config.db.store.expunge_all()
+        close_all_sessions()
+        # Make sure we delete/expunge all objects before we drop tables.
         with closing(config.db.engine.connect()) as connection:
-            transaction = connection.begin()
+            _ = connection.begin()
+
             try:
                 # Delete all the tables in reverse foreign key dependency
                 # order.
@@ -44,10 +47,10 @@ class ModelMeta:
                 for table in reversed(Model.metadata.sorted_tables):
                     connection.execute(table.delete())
             except:                             # noqa: E722 pragma: nocover
-                transaction.rollback()
+                connection.rollback()
                 raise
             else:
-                transaction.commit()
+                connection.commit()
 
 
 Model = declarative_base(cls=ModelMeta)

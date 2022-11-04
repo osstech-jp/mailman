@@ -187,7 +187,7 @@ class TestUser(unittest.TestCase):
         # user manager.
         all_users = list(self._manager.users)
         self.assertEqual(len(all_users), 1)
-        self.assertEqual(all_users[0], self._anne)
+        self.assertEqual(all_users[0].user_id, self._anne.user_id)
         # There are no leftover memberships for user Bart.  Anne owns all the
         # memberships.
         all_members = list(self._manager.members)
@@ -255,8 +255,9 @@ class TestUser(unittest.TestCase):
         self._anne.absorb(bart)
         self.assertEqual(self._anne.preferences.acknowledge_posts, True)
         # Check that Bart's preferences were deleted (requires a DB flush).
-        config.db.store.flush()
-        self.assertTrue(inspect(bart.preferences).deleted)
+        self.assertTrue(inspect(bart.preferences).persistent)
+        config.db.commit()
+        self.assertFalse(inspect(bart.preferences).persistent)
 
     def test_absorb_properties(self):
         properties = {

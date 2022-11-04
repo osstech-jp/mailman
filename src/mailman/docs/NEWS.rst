@@ -13,12 +13,22 @@ Here is a history of user visible changes to Mailman.
 3.3.7
 =====
 
-(2022-xx-xx)
+Dependencies
+------------
+* Add support for SQLAlchemy 1.4+ (Closes #964)
+
+
+Python Support
+--------------
+* Drop support for Python 3.6 since SQLAlchemy 2.0 will drop
+  support for it and it is EOL by now. (See !1035)
+
 
 Bugs fixed
 ----------
 * The fix for #994 in 3.3.6 blocked too many subscription attempts.  This is
   now corrected and another test added.
+
 
 .. _news-3.3.6:
 

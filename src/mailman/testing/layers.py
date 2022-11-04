@@ -406,6 +406,7 @@ class RESTLayer(SMTPLayer):
     """Layer for starting, stopping, and accessing the test REST layer."""
 
     server = None
+    stderr = True
 
     @classmethod
     def setUp(cls):

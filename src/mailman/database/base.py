@@ -24,7 +24,8 @@ from mailman.interfaces.database import IDatabase
 from mailman.utilities.string import expand
 from public import public
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import PendingRollbackError
+from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.interface import implementer
 
 
@@ -40,7 +41,7 @@ class SABaseDatabase:
     """
     def __init__(self):
         self.url = None
-        self.store = None
+        self.pool_class = None
 
     def begin(self):
         """See `IDatabase`."""
@@ -49,7 +50,10 @@ class SABaseDatabase:
 
     def commit(self):
         """See `IDatabase`."""
-        self.store.commit()
+        try:
+            self.store.commit()
+        except PendingRollbackError:
+            self.abort()                    # pragma: nocover
 
     def abort(self):
         """See `IDatabase`."""
@@ -82,6 +86,13 @@ class SABaseDatabase:
         """
         pass
 
+    @property
+    def store(self):
+        return self.sessionmaker()
+
+    def close_session(self):
+        self.store.close()
+
     def initialize(self, debug=None):
         """See `IDatabase`."""
         # Calculate the engine url.
@@ -104,7 +115,11 @@ class SABaseDatabase:
         # half dozen and all...
         self.url = url
         self.engine = create_engine(
-            url, isolation_level='READ UNCOMMITTED', pool_pre_ping=True)
-        session = sessionmaker(bind=self.engine)
-        self.store = session()
-        self.store.commit()
+            url,
+            isolation_level='READ UNCOMMITTED',
+            pool_pre_ping=True,
+            poolclass=self.pool_class,
+            future=True,
+            )
+        self.sessionmaker = scoped_session(sessionmaker(
+            bind=self.engine, expire_on_commit=True, future=True))

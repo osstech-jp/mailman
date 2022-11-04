@@ -48,6 +48,7 @@ from mailman.testing.helpers import (
 )
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
+from sqlalchemy import text
 from unittest.mock import patch
 from zope.component import getUtility
 
@@ -106,9 +107,9 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
         self.assertEqual(pendable['token_owner'], 'subscriber')
         # Get the expiration datetime and verify.
-        expiration = config.db.store.execute(
+        expiration = config.db.store.execute(text(
             "select expiration_date from pended where token = '{}';".format(
-                workflow.token)).fetchone()[0]
+                workflow.token))).fetchone()[0]
         if isinstance(expiration, str):
             expiration = datetime.fromisoformat(expiration)
         expected = datetime.fromisoformat(pendable['when']) + as_timedelta(
@@ -131,9 +132,9 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
         self.assertEqual(pendable['token_owner'], 'moderator')
         # Get the expiration datetime and verify.
-        expiration = config.db.store.execute(
-            "select expiration_date from pended where token = '{}';".format(
-                workflow.token)).fetchone()[0]
+        expiration = config.db.store.execute(text(
+            "SELECT expiration_date FROM pended WHERE token = '{}';".format(
+                workflow.token))).fetchone()[0]
         if isinstance(expiration, str):
             expiration = datetime.fromisoformat(expiration)
         expected = datetime.fromisoformat(pendable['when']) + as_timedelta(

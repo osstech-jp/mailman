@@ -25,7 +25,7 @@ from base64 import b64decode
 from falcon import App, HTTPUnauthorized
 from falcon.routing import map_http_methods, set_default_responders
 from mailman.config import config
-from mailman.database.transaction import transactional
+from mailman.database.transaction import api_transaction
 from mailman.rest.helpers import bad_request
 from mailman.rest.root import Root
 from public import public
@@ -190,7 +190,7 @@ class RootedAPI(App):
     # Override the base class implementation to wrap a transactional
     # handler around the call, so that the current transaction is
     # committed if no errors occur, and aborted otherwise.
-    @transactional
+    @api_transaction
     def __call__(self, environ, start_response):
         return super().__call__(environ, start_response)
 

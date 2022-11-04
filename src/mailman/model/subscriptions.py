@@ -32,7 +32,8 @@ from mailman.model.user import User
 from mailman.utilities.queries import QuerySequence
 from operator import attrgetter
 from public import public
-from sqlalchemy import or_
+from sqlalchemy import or_, select, union_all
+from sqlalchemy.orm import aliased
 from zope.component import getUtility
 from zope.interface import implementer
 
@@ -98,8 +99,8 @@ class SubscriptionService:
         # building two queries, one joined on the member's address, and one
         # joined on the member's user.  Add the resulting email address to the
         # selected values to be able to sort on it later on.
-        q_address = store.query(Member, Address.email).join(Member._address)
-        q_user = store.query(Member, Address.email).join(
+        q_address = select(Member, Address.email).join(Member._address)
+        q_user = select(Member, Address.email).join(
             User, User.id == Member.user_id).join(User._preferred_address)
         if subscriber is not None:
             if isinstance(subscriber, str):
@@ -138,8 +139,9 @@ class SubscriptionService:
             q_user = q_user.filter(
                 Member.moderation_action == moderation_action)
         # Do a UNION of the two queries, sort the result and generate Members.
-        query = QuerySequence(
-            q_address.union(q_user).order_by(*order).from_self(Member))
+        union = union_all(q_address, q_user).order_by(*order)
+        stmt = select(aliased(Member, union.subquery()))
+        query = QuerySequence(store, stmt)
         # These are python attributes and not actual table colukmsn and hence
         # their filtering can only be done in Python.
         if delivery_status or delivery_mode:

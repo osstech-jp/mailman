@@ -35,6 +35,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.template import ITemplateManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
+from sqlalchemy import text
 from warnings import catch_warnings, simplefilter
 from zope.component import getUtility
 
@@ -48,8 +49,8 @@ class TestMigrations(unittest.TestCase):
     def tearDown(self):
         # Drop and restore a virgin database.
         config.db.store.rollback()
-        md = sa.MetaData(bind=config.db.engine)
-        md.reflect()
+        md = sa.MetaData()
+        md.reflect(bind=config.db.engine)
         # We have circular dependencies between user and address, thus we can't
         # use drop_all() without getting a warning.  Setting use_alter to True
         # on the foreign keys helps SQLAlchemy mark those loops as known.
@@ -58,7 +59,7 @@ class TestMigrations(unittest.TestCase):
                 continue
             for fk in md.tables[tablename].foreign_keys:
                 fk.constraint.use_alter = True
-        md.drop_all()
+        md.drop_all(bind=config.db.engine)
         Model.metadata.create_all(config.db.engine)
 
     def test_all_migrations(self):
@@ -145,12 +146,12 @@ class TestMigrations(unittest.TestCase):
             results = {}
             for i in range(1, 6):
                 query = sa.sql.select(
-                    [keyvalue_table.c.key, keyvalue_table.c.value]
+                    keyvalue_table.c.key, keyvalue_table.c.value
                     ).where(
                         keyvalue_table.c.pended_id == i
                     )
                 results[i] = dict([
-                    (r['key'], r['value']) for r in
+                    (r[0], r[1]) for r in
                     config.db.store.execute(query).fetchall()
                     ])
             return results
@@ -207,13 +208,13 @@ class TestMigrations(unittest.TestCase):
         with transaction():
             alembic.command.downgrade(alembic_cfg, '47294d3a604')
             results = config.db.store.execute(
-                'SELECT id, digestable FROM mailinglist').fetchall()
+                text('SELECT id, digestable FROM mailinglist')).fetchall()
         self.assertEqual(results, IDS_TO_DIGESTABLE)
         # Upgrading.
         with transaction():
             alembic.command.upgrade(alembic_cfg, '70af5a4e5790')
         results = config.db.store.execute(
-            'SELECT id, digests_enabled FROM mailinglist').fetchall()
+            text('SELECT id, digests_enabled FROM mailinglist')).fetchall()
         self.assertEqual(results, IDS_TO_DIGESTABLE)
 
     def test_70af5a4e5790_data_paths(self):
@@ -288,7 +289,7 @@ class TestMigrations(unittest.TestCase):
                 ]))
         # Cris and Dana have actions which match the list default action for
         # members and nonmembers respectively.
-        query = sa.sql.select([member_table.c.moderation_action]).where(
+        query = sa.sql.select(member_table.c.moderation_action).where(
             sa.and_(
                 member_table.c.role == MemberRole.member,
                 member_table.c.list_id == 'ant.example.com',
@@ -298,7 +299,7 @@ class TestMigrations(unittest.TestCase):
             )
         action = config.db.store.execute(query).fetchone()[0]
         self.assertEqual(action, default_member_action)
-        query = sa.sql.select([member_table.c.moderation_action]).where(
+        query = sa.sql.select(member_table.c.moderation_action).where(
             sa.and_(
                 member_table.c.role == MemberRole.nonmember,
                 member_table.c.list_id == 'ant.example.com',
@@ -311,9 +312,9 @@ class TestMigrations(unittest.TestCase):
         # Upgrade and check the moderation_actions.   Cris's and Dana's
         # actions have been set to None to fall back to the list defaults.
         alembic.command.upgrade(alembic_cfg, '7b254d88f122')
-        members = config.db.store.execute(sa.select([
+        members = config.db.store.execute(sa.select(
             member_table.c.address_id, member_table.c.moderation_action,
-            ])).fetchall()
+            )).fetchall()
         self.assertEqual(members, [
             (anne.id, Action.accept),
             (bart.id, Action.accept),
@@ -323,9 +324,9 @@ class TestMigrations(unittest.TestCase):
         # Downgrade and check that Cris's and Dana's actions have been set
         # explicitly.
         alembic.command.downgrade(alembic_cfg, 'd4fbb4fd34ca')
-        members = config.db.store.execute(sa.select([
+        members = config.db.store.execute(sa.select(
             member_table.c.address_id, member_table.c.moderation_action,
-            ])).fetchall()
+            )).fetchall()
         self.assertEqual(members, [
             (anne.id, Action.accept),
             (bart.id, Action.accept),

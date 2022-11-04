@@ -26,9 +26,33 @@ from operator import getitem
 class TestQueries(unittest.TestCase):
 
     def test_index_error(self):
-        query = QuerySequence(None)
+        query = QuerySequence(None, None)
         self.assertRaises(IndexError, getitem, query, 1)
 
     def test_iterate_with_none(self):
-        query = QuerySequence(None)
+        query = QuerySequence(None, None)
         self.assertEqual(list(query), [])
+
+    def test_getitem_with_steps(self):
+        # True is definitely a bad input value here,
+        # but we are passing it here only to not have
+        # to be stuck by None check on query.
+        query = QuerySequence(None, unittest.mock.Mock())
+        self.assertRaises(IndexError, getitem, query, slice(1, 4, -1))
+
+    def test_getitem_with_slice(self):
+        query = unittest.mock.Mock()
+        session = unittest.mock.Mock()
+        seq = QuerySequence(session, query)
+        seq[5]
+        self.assertTrue(query.offset.called)
+        self.assertTrue(query.offset.asseert_called_with(5))
+        self.assertTrue(query.offset(5).limit.called)
+        query.offset(5).limit.assert_called_with(1)
+        self.assertTrue(session.scalars.called)
+        query.reset_mock()
+        session.reset_mock()
+        seq[5:10]
+        self.assertTrue(query.slice.called)
+        query.slice.assert_called_with(5, 10)
+        self.assertTrue(session.scalars.called)

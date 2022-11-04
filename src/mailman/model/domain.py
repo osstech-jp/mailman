@@ -33,7 +33,7 @@ from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.mailinglist import MailingList
 from public import public
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column, func, Integer, select
 from sqlalchemy.orm import relationship
 from zope.component import getUtility
 from zope.event import notify
@@ -185,4 +185,8 @@ class DomainManager:
     @dbconnection
     def __contains__(self, store, mail_host):
         """See `IDomainManager`."""
-        return store.query(Domain).filter_by(mail_host=mail_host).count() > 0
+        stmt = (
+            select(func.count())
+            .select_from(Domain)
+            .filter_by(mail_host=mail_host))
+        return store.scalars(stmt).one() > 0
