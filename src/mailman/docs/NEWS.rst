@@ -13,6 +13,16 @@ Here is a history of user visible changes to Mailman.
 3.3.7
 =====
 
+**BREAKING CHANGE**: When using PostgreSQL database with Mailman, starting with
+Mailman Core 3.3.7 (due to bump in SQLAlchemy 1.4+), the urls in ``[database]``
+section will require ``postgresql`` as the scheme. Previously, ``postgres`` was
+also accepted. This is an example config::
+
+    [database]
+    class: mailman.database.postgresql.PostgreSQLDatabase
+    url: postgresql://myuser:mypassword@mypghost/mailman
+
+
 Dependencies
 ------------
 * Add support for SQLAlchemy 1.4+ (Closes #964)
@@ -20,6 +30,7 @@ Dependencies
 
 Python Support
 --------------
+
 * Drop support for Python 3.6 since SQLAlchemy 2.0 will drop
   support for it and it is EOL by now. (See !1035)
 
