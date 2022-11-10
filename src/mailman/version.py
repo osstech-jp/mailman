@@ -31,8 +31,8 @@ FINAL = 0xf
 
 MAJOR_REV = 3
 MINOR_REV = 3
-MICRO_REV = 6
-REL_LEVEL = ALPHA
+MICRO_REV = 7
+REL_LEVEL = FINAL
 # At most 15 beta releases!
 REL_SERIAL = 1
 

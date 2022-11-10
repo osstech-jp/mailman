@@ -13,6 +13,8 @@ Here is a history of user visible changes to Mailman.
 3.3.7
 =====
 
+(2022-11-10)
+
 **BREAKING CHANGE**: When using PostgreSQL database with Mailman, starting with
 Mailman Core 3.3.7 (due to bump in SQLAlchemy 1.4+), the urls in ``[database]``
 section will require ``postgresql`` as the scheme. Previously, ``postgres`` was
