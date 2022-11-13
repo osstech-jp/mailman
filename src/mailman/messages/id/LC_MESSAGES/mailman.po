@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-11-09 17:30+0000\n"
+"PO-Revision-Date: 2022-11-13 14:48+0000\n"
 "Last-Translator: Neko Nekowazarashi <kodra@nekoweb.my.id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/id/>\n"
@@ -84,7 +84,7 @@ msgstr "Permintaan ke milis \"${display_name}\" ditolak"
 
 #: src/mailman/app/notifications.py:94
 msgid " (Digest mode)"
-msgstr ""
+msgstr " (Mode ringkasan)"
 
 #: src/mailman/app/notifications.py:98
 #, fuzzy, python-brace-format
@@ -119,7 +119,7 @@ msgstr ""
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr ""
+msgstr "Langganan Anda pada milis ${mlist.display_name} telah dinonaktifkan"
 
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
@@ -353,7 +353,7 @@ msgstr ""
 
 #: src/mailman/chains/headers.py:121
 msgid "Header \"{}\" matched a header rule"
-msgstr ""
+msgstr "Tajuk \"{}\" cocok dengan aturan tajuk"
 
 #: src/mailman/chains/headers.py:136
 msgid "The built-in header matching chain"
@@ -365,16 +365,16 @@ msgstr ""
 
 #: src/mailman/chains/hold.py:118
 msgid "Last autoresponse notification for today"
-msgstr ""
+msgstr "Pemberitahuan respons otomatis terakhir untuk hari ini"
 
 #: src/mailman/chains/hold.py:133
 msgid "Hold a message and stop processing."
-msgstr ""
+msgstr "Tahan pesan dan berhenti pemrosesan."
 
 #: src/mailman/chains/hold.py:199
 #, python-brace-format
 msgid "Your message to ${mlist.fqdn_listname} awaits moderator approval"
-msgstr ""
+msgstr "Pesan Anda untuk ${mlist.fqdn_listname} menunggu persetujuan moderator"
 
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
@@ -410,12 +410,12 @@ msgstr ""
 #: src/mailman/commands/cli_addmembers.py:104
 #, python-brace-format
 msgid "Already subscribed (skipping): ${email}"
-msgstr "Telah berlangganan (dilewat): ${email}"
+msgstr "Telah berlangganan (dilewati): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:107 src/mailman/commands/cli_syncmembers.py:87
 #, python-brace-format
 msgid "Membership is banned (skipping): ${email}"
-msgstr ""
+msgstr "Keanggotaan terlarang (dilewati): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:110 src/mailman/commands/cli_syncmembers.py:90
 #, python-brace-format
@@ -446,7 +446,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_addmembers.py:137
 msgid "    Override the list's setting for send_welcome_message."
-msgstr ""
+msgstr "    Timpa pengaturan milis untuk send_welcome_message."
 
 #: src/mailman/commands/cli_addmembers.py:146 src/mailman/commands/cli_import.py:68
 #: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:195
@@ -622,7 +622,7 @@ msgstr ""
 #: src/mailman/commands/cli_delmembers.py:48
 #, python-brace-format
 msgid "Member not subscribed (skipping): ${email}"
-msgstr ""
+msgstr "Anggota tidak berlangganan (dilewati): ${email}"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
@@ -678,7 +678,7 @@ msgstr ""
 #: src/mailman/commands/cli_delmembers.py:123
 #, python-brace-format
 msgid "No such list: ${_list}"
-msgstr ""
+msgstr "Tidak ada milis: ${_list}"
 
 #: src/mailman/commands/cli_digests.py:38
 msgid "Operate on digests."
@@ -1466,7 +1466,7 @@ msgstr "${self.name}: Tidak ada surel valid yang ditemukan untuk dilanggan"
 #: src/mailman/commands/eml_membership.py:130
 #, python-brace-format
 msgid "${person} has a pending subscription for ${listname}"
-msgstr ""
+msgstr "${person} memiliki langganan tertunda untuk ${listname}"
 
 #: src/mailman/commands/eml_membership.py:133
 #, python-brace-format
@@ -1511,7 +1511,7 @@ msgstr ""
 #: src/mailman/commands/eml_membership.py:207
 #, python-brace-format
 msgid "Invalid or unverified email address: ${email}"
-msgstr ""
+msgstr "Surel tidak valid atau tidak terverifikasi: ${email}"
 
 #: src/mailman/commands/eml_membership.py:226
 #, python-brace-format
@@ -1527,6 +1527,8 @@ msgstr "${person} meninggalkan ${mlist.fqdn_listname}"
 #, python-brace-format
 msgid "Confirmation email sent to ${person} to leave ${mlist.fqdn_listname}"
 msgstr ""
+"Surel konfirmasi dikirim untuk ${person} untuk meninggalkan ${mlist."
+"fqdn_listname}"
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
@@ -1593,11 +1595,11 @@ msgstr ""
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
-msgstr ""
+msgstr "Ubah tajuk pesan."
 
 #: src/mailman/handlers/decorate.py:246
 msgid "Decorate a message with headers and footers."
-msgstr ""
+msgstr "Hias pesan dengan tajuk dan catatan kaki."
 
 #: src/mailman/handlers/dmarc.py:127
 #, python-brace-format
@@ -1635,8 +1637,9 @@ msgid ""
 msgstr ""
 
 #: src/mailman/handlers/mime_delete.py:69
+#, fuzzy
 msgid "Content filter message notification"
-msgstr ""
+msgstr "Pemberitahuan filter konten pesan"
 
 #: src/mailman/handlers/mime_delete.py:97
 msgid ""
@@ -1664,7 +1667,7 @@ msgstr ""
 
 #: src/mailman/handlers/mime_delete.py:140
 msgid "After content filtering, the message was empty"
-msgstr ""
+msgstr "Setelah filter konten, pesan kosong"
 
 #: src/mailman/handlers/mime_delete.py:152 src/mailman/handlers/mime_delete.py:291
 msgid ""
@@ -1680,7 +1683,7 @@ msgstr "Nama: ${fname}\n"
 
 #: src/mailman/handlers/mime_delete.py:374
 msgid "Filter the MIME content of messages."
-msgstr ""
+msgstr "Filter konten MIME dari pesan."
 
 #: src/mailman/handlers/owner_recipients.py:34
 msgid "Calculate the owner and moderator recipients."
@@ -1701,7 +1704,7 @@ msgstr ""
 
 #: src/mailman/handlers/rfc_2369.py:128
 msgid "Add the RFC 2369 List-* headers."
-msgstr ""
+msgstr "Muat tajuk RFC 2369 List-*."
 
 #: src/mailman/handlers/subject_prefix.py:158
 msgid "Add a list-specific prefix to the Subject header value."
@@ -1713,11 +1716,11 @@ msgstr ""
 
 #: src/mailman/handlers/to_archive.py:34
 msgid "Add the message to the archives."
-msgstr ""
+msgstr "Tambah pesan ke arsip."
 
 #: src/mailman/handlers/to_digest.py:36
 msgid "Add the message to the digest, possibly sending it."
-msgstr ""
+msgstr "Tambah pesan ke ringkasan, memungkinkan dikirim."
 
 #: src/mailman/handlers/to_outgoing.py:38
 msgid "Send the message to the outgoing queue."
@@ -1785,7 +1788,7 @@ msgstr ""
 
 #: src/mailman/rules/digests.py:58
 msgid "Message has a digest subject"
-msgstr ""
+msgstr "Pesan memiliki sebuah subjek ringkasan"
 
 #: src/mailman/rules/digests.py:89
 msgid "Message quotes digest boilerplate"
@@ -1853,11 +1856,11 @@ msgstr "Pesan lebih besar dari ukuran maksimum {} KB"
 
 #: src/mailman/rules/moderation.py:65
 msgid "Match messages sent by moderated members."
-msgstr ""
+msgstr "Cocokkan pesan yang dikirim oleh anggota termoderasi."
 
 #: src/mailman/rules/moderation.py:93
 msgid "The message comes from a moderated member"
-msgstr ""
+msgstr "Pesan ini dari anggota termoderasi"
 
 #: src/mailman/rules/moderation.py:108
 msgid "The message is not from a list member"
@@ -1865,7 +1868,7 @@ msgstr "Pesan bukan dari anggota milis"
 
 #: src/mailman/rules/moderation.py:125
 msgid "Match messages sent by nonmembers."
-msgstr ""
+msgstr "Cocokkan pesan yang dikirim oleh non-anggota."
 
 #: src/mailman/rules/moderation.py:140
 msgid "No sender was found in the message."
@@ -1887,8 +1890,9 @@ msgid "Post to a moderated newsgroup gateway"
 msgstr ""
 
 #: src/mailman/rules/no_senders.py:32
+#, fuzzy
 msgid "Match messages with no valid senders."
-msgstr ""
+msgstr "Cocokkan pesan tanpa pengirim valid."
 
 #: src/mailman/rules/no_senders.py:44
 msgid "The message has no valid senders"
@@ -1904,7 +1908,7 @@ msgstr "Pesan tidak ada subjek"
 
 #: src/mailman/rules/suspicious.py:38
 msgid "Catch messages with suspicious headers."
-msgstr ""
+msgstr "Tangkap pesan dengan tajuk mencurigakan."
 
 #: src/mailman/rules/suspicious.py:97
 msgid "Header \"{}\" matched a bounce_matching_header line"
@@ -1916,7 +1920,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:103
 msgid "Ignoring non-text/plain MIME parts"
-msgstr ""
+msgstr "Abaikan bagian MIME non-teks/polos"
 
 #: src/mailman/runners/command.py:143
 msgid "The results of your email command are provided below.\n"
@@ -1998,25 +2002,25 @@ msgstr "Topik Hari Ini:\n"
 
 #: src/mailman/runners/digest.py:153
 msgid "Digest Header"
-msgstr ""
+msgstr "Tajuk Ringkasan"
 
 #: src/mailman/runners/digest.py:173
 #, python-brace-format
 msgid "Today's Topics (${count} messages)"
-msgstr ""
+msgstr "Topik Hari Ini (${count} pesan)"
 
 #: src/mailman/runners/digest.py:195 src/mailman/runners/digest.py:270
 msgid "Digest Footer"
-msgstr ""
+msgstr "Catatan Kaki Ringkasan"
 
 #: src/mailman/runners/digest.py:202 src/mailman/runners/digest.py:277
 msgid "End of "
-msgstr ""
+msgstr "Akhir dari "
 
 #: src/mailman/styles/base.py:59
 #, python-brace-format
 msgid "[${mlist.display_name}] "
-msgstr ""
+msgstr "[${mlist.display_name}] "
 
 #: src/mailman/styles/default.py:44
 msgid "Ordinary discussion mailing list style."
@@ -2053,10 +2057,16 @@ msgid ""
 "Size: ${size} bytes\n"
 "Desc: ${desc}\n"
 msgstr ""
+"Bagian pesan yang tidak kompatibel dengan ringkasan teks polos telah "
+"dihapus...\n"
+"Nama: ${filename}\n"
+"Jenis: ${ctype}\n"
+"Ukuran: ${size} bita\n"
+"Deskripsi: ${desc}\n"
 
 #: src/mailman/utilities/scrubber.py:58
 msgid "-------------- next part --------------\n"
-msgstr ""
+msgstr "-------------- bagian selanjutnya --------------\n"
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
