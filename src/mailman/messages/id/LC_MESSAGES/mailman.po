@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-11-15 12:18+0000\n"
+"PO-Revision-Date: 2022-11-16 19:32+0000\n"
 "Last-Translator: Neko Nekowazarashi <kodra@nekoweb.my.id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/id/>\n"
@@ -36,7 +36,7 @@ msgstr ""
 
 #: src/mailman/app/bounces.py:266
 msgid "Uncaught bounce notification"
-msgstr ""
+msgstr "Pemberitahuan galat pengiriman tak tertangkap"
 
 #: src/mailman/app/membership.py:147
 #, python-brace-format
@@ -1091,7 +1091,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:80 src/mailman/commands/cli_notify.py:141
 msgid "The {} list has {} moderation requests waiting."
-msgstr "Milis {} memiliki {} antrian permintaan moderasi"
+msgstr "Milis {} memiliki {} antrian permintaan moderasi."
 
 #: src/mailman/commands/cli_notify.py:111
 msgid ""
@@ -1535,7 +1535,7 @@ msgstr ""
 #: src/mailman/commands/eml_membership.py:200
 #, python-brace-format
 msgid "No registered user for email address: ${email}"
-msgstr ""
+msgstr "Tidak ada pengguna terdaftar untuk surel: ${email}"
 
 #: src/mailman/commands/eml_membership.py:207
 #, python-brace-format
@@ -1579,7 +1579,7 @@ msgstr "Dapatkan daftar dari anggota milis."
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
-msgstr ""
+msgstr "Anda tidak diizinkan untuk melihat daftar langganan milis."
 
 #: src/mailman/commands/eml_who.py:78
 msgid ""
@@ -1592,6 +1592,8 @@ msgid ""
 "Members of the {} mailing list:\n"
 "{}"
 msgstr ""
+"Anggota dari milis {}:\n"
+"{}"
 
 #: src/mailman/handlers/acknowledge.py:40
 msgid "Send an acknowledgment of a posting."
@@ -1616,11 +1618,11 @@ msgstr ""
 
 #: src/mailman/handlers/cleanse_dkim.py:42
 msgid "Remove DomainKeys headers."
-msgstr ""
+msgstr "Hapus tajuk DomainKeys."
 
 #: src/mailman/handlers/cleanse.py:42
 msgid "Cleanse certain headers from all messages."
-msgstr ""
+msgstr "Hapus beberapa tajuk dari semua pesan."
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
@@ -1633,7 +1635,7 @@ msgstr "Hias pesan dengan tajuk dan catatan kaki."
 #: src/mailman/handlers/dmarc.py:127
 #, python-brace-format
 msgid "${realname} via ${mlist.display_name}"
-msgstr ""
+msgstr "${realname} via ${mlist.display_name}"
 
 #: src/mailman/handlers/dmarc.py:228
 msgid "Apply DMARC mitigations."
@@ -1729,7 +1731,7 @@ msgstr "Respons otomatis terhadap pesan Anda untuk milis \"${display_name}\""
 
 #: src/mailman/handlers/replybot.py:114
 msgid "The Mailman Replybot"
-msgstr ""
+msgstr "Bot Pembalas dari Mailman"
 
 #: src/mailman/handlers/rfc_2369.py:128
 msgid "Add the RFC 2369 List-* headers."
@@ -1737,11 +1739,11 @@ msgstr "Muat tajuk RFC 2369 List-*."
 
 #: src/mailman/handlers/subject_prefix.py:158
 msgid "Add a list-specific prefix to the Subject header value."
-msgstr ""
+msgstr "Tambah awalan khusus milis ke tajuk Subject."
 
 #: src/mailman/handlers/tagger.py:173
 msgid "Tag messages with topic matches."
-msgstr ""
+msgstr "Tandai pesan dengan topik yang cocok."
 
 #: src/mailman/handlers/to_archive.py:34
 msgid "Add the message to the archives."
@@ -1801,7 +1803,7 @@ msgstr ""
 
 #: src/mailman/rules/approved.py:45
 msgid "The message has a matching Approve or Approved header."
-msgstr ""
+msgstr "Pesan memiliki tajuk Approve atau Approved yang cocok."
 
 #: src/mailman/rules/banned_address.py:33
 msgid "Match messages sent by banned addresses."
@@ -1825,7 +1827,7 @@ msgstr ""
 
 #: src/mailman/rules/dmarc.py:307
 msgid "Find DMARC policy of From: domain."
-msgstr ""
+msgstr "Cari kebijakan DMARC untuk domain From:"
 
 #: src/mailman/rules/dmarc.py:327
 msgid "DMARC moderation"
@@ -1845,6 +1847,9 @@ msgid ""
 "        pre-approved by the list administrator.\n"
 "        "
 msgstr ""
+"Milis ini sedang dinyatakan darurat dan pesan ini tidak disetujui sebelumnya "
+"oleh administrator.\n"
+"        "
 
 #: src/mailman/rules/emergency.py:47
 #, fuzzy
@@ -1853,11 +1858,11 @@ msgstr "Moderasi daarurat diaktifkan untuk milis ini"
 
 #: src/mailman/rules/implicit_dest.py:37
 msgid "Catch messages with implicit destination."
-msgstr ""
+msgstr "Tangkap pesan dengan tujuan yang tertulis."
 
 #: src/mailman/rules/implicit_dest.py:95
 msgid "Message has implicit destination"
-msgstr ""
+msgstr "Pesan mempunyai tujuan yang tertulis"
 
 #: src/mailman/rules/loop.py:32
 msgid "Look for a posting loop."
@@ -2053,15 +2058,15 @@ msgstr "[${mlist.display_name}] "
 
 #: src/mailman/styles/default.py:44
 msgid "Ordinary discussion mailing list style."
-msgstr ""
+msgstr "Gaya milis diskusi biasa."
 
 #: src/mailman/styles/default.py:64
 msgid "Announce only mailing list style."
-msgstr ""
+msgstr "Gaya milis hanya untuk pengumuman."
 
 #: src/mailman/styles/default.py:84
 msgid "Discussion mailing list style with private archives."
-msgstr ""
+msgstr "Gaya milis diskusi dengan arsip privat."
 
 #: src/mailman/utilities/options.py:47
 #, python-brace-format
@@ -2183,6 +2188,10 @@ msgstr "$member telah berhasil berlangganan ke $display_name."
 
 msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
+"Pesan yang dilampirkan diterima sebagai galat pengiriman, tetapi antara "
+"format galat tidak dikenali atau tidak ada surel anggota yang didapatkan "
+"dari itu.  Milis ini telah diatur agar semua pesan galat pengiriman dikirim "
+"ke administrator milis."
 
 msgid "list:admin:notice:unsubscribe.txt"
 msgstr "$member telah berhasil dihapus dari $display_name."
@@ -2192,6 +2201,18 @@ msgstr ""
 
 msgid "list:member:digest:masthead.txt"
 msgstr ""
+"Kirim pos milis $display_name ke\n"
+"\t$listname\n"
+"\n"
+"Untuk berlangganan atau membatalkan langganan lewat surel, kirim pesan "
+"dengan di subjek atau badan bertulis 'help' ke\n"
+"\t$request_email\n"
+"\n"
+"Anda bisa menghubungi yang mengelola milis di\n"
+"\t$owner_email\n"
+"\n"
+"Ketika membalas, sunting baris subjek Anda sehingga bisa lebih rinci dari "
+"\"Re: Konten dari ringkasan $display_name...\""
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
@@ -2299,6 +2320,11 @@ msgstr ""
 
 msgid "list:user:notice:post.txt"
 msgstr ""
+"Pesan Anda dengan judul\n"
+"\n"
+"    $subject\n"
+"\n"
+"telah berhasil diterima oleh milis $display_name."
 
 msgid "list:user:notice:probe.txt"
 msgstr ""
@@ -2328,6 +2354,14 @@ msgstr ""
 
 msgid "list:user:notice:warning.txt"
 msgstr ""
+"Langganan Anda untuk milis $listname telah dimatikan karena ada banyaknya "
+"galat pengiriman yang mengindikasikan bahwa ada masalah mengirimkan pesan ke "
+"$sender_email. Anda mungkin ingin memeriksakannya ke administrator surel "
+"Anda untuk bantuan lebih lanjut.\n"
+"\n"
+"Jika Anda ada pertanyaan atau masalah, silakan hubungi pemilik milis di\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-11-16 08:36+0000\n"
+"PO-Revision-Date: 2022-11-16 19:32+0000\n"
 "Last-Translator: Michael Smith <shmitty@protonmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/nl/>\n"
@@ -27,16 +27,16 @@ msgstr "(geen onderwerp)"
 
 #: src/mailman/app/bounces.py:78
 msgid "[No bounce details are available]"
-msgstr "[Er zijn geen bouncedetails beschikbaar]"
+msgstr "[Er zijn geen details over afleveringsproblemen beschikbaar]"
 
 #: src/mailman/app/bounces.py:230
 #, python-brace-format
 msgid "${mlist.display_name} mailing list probe message"
-msgstr "${mlist.display_name} maillijst onderzoeksbericht"
+msgstr "${mlist.display_name} maillijst testbericht"
 
 #: src/mailman/app/bounces.py:266
 msgid "Uncaught bounce notification"
-msgstr "Niet onderschepte bouncemelding"
+msgstr "Niet onderschept afleveringsprobleem"
 
 #: src/mailman/app/membership.py:147
 #, python-brace-format
@@ -48,9 +48,8 @@ msgid ""
 "The content of this message was lost. It was probably cross-posted to\n"
 "multiple lists and previously handled on another list.\n"
 msgstr ""
-"De inhoud van dit bericht is verloren gegaan. Het werd waarschijnlijk "
-"gecrosspost naar\n"
-"meerdere lijsten en is eerder verwerkt op een andere lijst.\n"
+"De inhoud van dit bericht is verloren gegaan. Het werd waarschijnlijk naar\n"
+"meerdere lijsten verstuurd en is eerder verwerkt op een andere lijst.\n"
 
 #: src/mailman/app/moderator.py:132
 #, python-brace-format
@@ -105,35 +104,39 @@ msgstr "${mlist.display_name} aanmeldingsbericht"
 #: src/mailman/app/notifications.py:173
 #, python-brace-format
 msgid "${member}'s subscription disabled on ${mlist.display_name}"
-msgstr "${member}'s aanmelding uitgeschakeld op ${mlist.display_name}"
+msgstr "Abonnement van ${member} op ${mlist.display_name} is uitgeschakeld"
 
 #: src/mailman/app/notifications.py:201
 #, python-brace-format
 msgid "${member}'s bounce score incremented on ${mlist.display_name}"
-msgstr "${member}'s bounce score verhoogd op ${mlist.display_name}"
+msgstr ""
+"Het aantal afleveringsproblemen voor ${member} op ${mlist.display_name} is "
+"verhoogd"
 
 #: src/mailman/app/notifications.py:227
 #, python-brace-format
 msgid "${member} unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr "${member} afgemeld van ${mlist.display_name} maillijst vanwege bounces"
+msgstr ""
+"${member} afgemeld van ${mlist.display_name} maillijst vanwege "
+"afleveringsproblemen"
 
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr "Uw aanmelding voor ${mlist.display_name} maillijst is uitgeschakeld"
+msgstr "Uw abonnement op de ${mlist.display_name} maillijst is uitgeschakeld"
 
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
 msgid "New subscription request to ${self.mlist.display_name} from ${self.address.email}"
 msgstr ""
-"Nieuw aanmeldingsverzoek aan lijst ${self.mlist.display_name} van ${self."
+"Nieuw aanmeldingsverzoek voor lijst ${self.mlist.display_name} van ${self."
 "address.email}"
 
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
 msgstr ""
-"Nieuw afmeldingsverzoek aan ${self.mlist.display_name} van ${self.address."
+"Nieuw afmeldingsverzoek voor ${self.mlist.display_name} van ${self.address."
 "email}"
 
 #: src/mailman/app/subscriptions.py:633
@@ -152,8 +155,8 @@ msgstr ""
 #, python-brace-format
 msgid "Your confirmation is needed to join the ${event.mlist.fqdn_listname} mailing list."
 msgstr ""
-"Uw bevestiging is nodig om u aan te melden voor de ${event.mlist."
-"fqdn_listname} maillijst."
+"Uw bevestiging is nodig om u te abonneren op de ${event.mlist.fqdn_listname} "
+"maillijst."
 
 #: src/mailman/bin/mailman.py:102 src/mailman/bin/master.py:518 src/mailman/bin/runner.py:96
 msgid ""
@@ -164,7 +167,7 @@ msgstr ""
 "    Welk configuratiebestand gebruikt moet worden.  Indien niet opgegeven "
 "zal de environment variabele\n"
 "    MAILMAN_CONFIG_FILE gecheckt en gebruikt worden als deze een waarde "
-"heeft.  Als geen waarde gevonden kan worden, dan zal\n"
+"heeft.  Als er geen waarde kan gevonden worden, dan zal\n"
 "    het standaard configuratiebestand geladen worden."
 
 #: src/mailman/bin/mailman.py:110
@@ -172,7 +175,7 @@ msgid ""
 "    Running mailman commands as root is not recommended and mailman will\n"
 "    refuse to run as root unless this option is specified."
 msgstr ""
-"    Mailman commando's als root uitvoeren wordt afgeraden en mailman zal\n"
+"    Mailman commando's als root uitvoeren wordt afgeraden en Mailman zal\n"
 "    weigeren als root te draaien tenzij deze optie meegegeven wordt."
 
 #: src/mailman/bin/mailman.py:129
@@ -216,8 +219,8 @@ msgstr ""
 "De master lock kon niet verkregen worden omdat het erop lijkt dat een "
 "proces\n"
 "op een andere host de lock verkregen heeft.  We kunnen niet testen op "
-"vervallen locks over\n"
-"hosts heen, dus je moet dit manueel opkuisen.\n"
+"vervallen locks tussen\n"
+"verschillende hosts, dus je moet dit manueel opkuisen.\n"
 "\n"
 "Lockbestand: ${config.LOCK_FILE}\n"
 "Lock host: ${hostname}\n"
@@ -267,8 +270,8 @@ msgstr ""
 "\n"
 "    Start en waakt over de geconfigureerde runners. Zorgt ervoor dat ze "
 "blijven\n"
-"    draaien.  Elke runner wordt in volgorde geforket en uitgevoerd terwijl "
-"de master wacht\n"
+"    draaien.  Elke runner wordt in volgorde geforkt en uitgevoerd terwijl de "
+"master wacht\n"
 "    op hun proces id's.  Wanneer hij merkt dat een onderliggende runner "
 "beëindigd is, kan\n"
 "    die herstart worden.\n"
@@ -320,7 +323,8 @@ msgstr ""
 "    zal de master nog steeds stoppen en moet je de lock manueel opruimen.\n"
 "    Maar als er geen overeenkomstig proces gevonden wordt, dan zal de master "
 "de\n"
-"    ogenschijnlijke lock verwijderen en een nieuwe poging ondernemen om de\n"
+"    ogenschijnlijk vervallen lock verwijderen en een nieuwe poging "
+"ondernemen om de\n"
 "    master lock te verkrijgen."
 
 #: src/mailman/bin/master.py:544
@@ -329,9 +333,9 @@ msgid ""
 "    typically defined in the configuration file.  Multiple -r options may be\n"
 "    given.  The values for -r are passed straight through to bin/runner."
 msgstr ""
-"    Override de standaard set van runners die de master zal starten, "
+"    Overschrijf de standaard set van runners die de master zal starten, wat "
 "meestal\n"
-"    bepaald in het configuratiebestand.  Meerdere -r opties kunnen\n"
+"    bepaald is in het configuratiebestand.  Meerdere -r opties kunnen\n"
 "    gedefinieerd worden.  De waarden voor -r worden rechtstreeks doorgegeven "
 "aan bin/runner."
 
@@ -372,7 +376,7 @@ msgstr ""
 "    De runner bepaald in de command line wordt gestart en kan ofwel één keer "
 "door\n"
 "    z'n main loop gaan (voor runners die dit ondersteunen) ofwel\n"
-"    voortdurend.  Die laatste is hoe de master al z'n subprocessen\n"
+"    voortdurend.  Die laatste is hoe de master al zijn subprocessen\n"
 "    start.\n"
 "\n"
 "    -r is vereist tenzij -l or -h wordt meegegeven, en het argument moet één "
@@ -397,7 +401,7 @@ msgid ""
 "    runner runs indefinitely until the process receives a signal.  This is not\n"
 "    compatible with runners that cannot be run once."
 msgstr ""
-"    Draai de genoemde runner exact één keer door z'n main loop.  Anders "
+"    Draai de genoemde runner exact één keer door zijn main loop.  Anders "
 "draait de\n"
 "    runner doorlopend tot het proces een signaal ontvangt.  Dit is niet\n"
 "    compatibel met runners die niet éénmalig kunnen draaien."
@@ -426,7 +430,7 @@ msgstr ""
 "    Voor runners die een wachtrijmap beheren kan een optionele `slice:range` "
 "gebruikt\n"
 "    worden om meerdere runner processen toe te wijzen aan die wachtrij.  "
-"range is het\n"
+"Range is het\n"
 "    totaal aantal runners voor de wachtrij en slice is the nummer van deze\n"
 "    runner tussen 0 en range. Voor runners die geen wachtrijmap beheren "
 "worden slice\n"
@@ -470,7 +474,7 @@ msgstr "Header \"{}\" komt overeen met een headerregel"
 
 #: src/mailman/chains/headers.py:136
 msgid "The built-in header matching chain"
-msgstr "De ingebouwde headerovereenkomstketen"
+msgstr "De ingebouwde headermatchketen"
 
 #: src/mailman/chains/hold.py:59
 msgid "N/A"
@@ -493,7 +497,8 @@ msgstr ""
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
 msgid "${mlist.fqdn_listname} post from ${msg.sender} requires approval"
-msgstr "${mlist.fqdn_listname} bericht van ${msg.sender} vereist goedkeuring"
+msgstr ""
+"Bericht aan ${mlist.fqdn_listname} van ${msg.sender} vereist goedkeuring"
 
 #: src/mailman/chains/hold.py:238
 msgid ""
@@ -508,7 +513,7 @@ msgstr ""
 "is.\n"
 "Als u dit bericht beantwoordt en in de onderwerpregel het woord Approved: en "
 "uw wachtwoord vermeldt,\n"
-"zal het bericht worden goedgekeurd voor doorzending naar de lijst. U mag het "
+"zal het bericht worden goedgekeurd voor verzending naar de lijst. U mag het "
 "woord\n"
 "Approved: gevolgd door uw wachtwoord ook vermelden op de eerste regel van uw "
 "antwoord."
@@ -528,17 +533,17 @@ msgstr "Weiger / stuur bericht terug en stop verwerking."
 #: src/mailman/commands/cli_addmembers.py:73 src/mailman/commands/cli_syncmembers.py:121
 #, python-brace-format
 msgid "Cannot parse as valid email address (skipping): ${line}"
-msgstr "Kan geen geldig e-mailadres verwerken (wordt overgeslagen): ${line}"
+msgstr "Kan geen geldig e-mailadres ontleden (wordt overgeslagen): ${line}"
 
 #: src/mailman/commands/cli_addmembers.py:104
 #, python-brace-format
 msgid "Already subscribed (skipping): ${email}"
-msgstr "Reeds aangemeld (wordt overgeslagen): ${email}"
+msgstr "Is reeds geabonneerd (wordt overgeslagen): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:107 src/mailman/commands/cli_syncmembers.py:87
 #, python-brace-format
 msgid "Membership is banned (skipping): ${email}"
-msgstr "Lidmaatschap is verbannen (wordt overgeslagen): ${email}"
+msgstr "E-mailadres is verbannen (wordt overgeslagen): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:110 src/mailman/commands/cli_syncmembers.py:90
 #, python-brace-format
@@ -642,7 +647,7 @@ msgid ""
 msgstr ""
 "    Bestand waar de uitvoer naartoe gestuurd moet worden.  Als dit niet "
 "wordt opgegeven of als '-' wordt opgegeven, dan\n"
-"    wordt de standaarduitvoer gebruikt."
+"    wordt de standaard uitvoer gebruikt."
 
 #: src/mailman/commands/cli_conf.py:62
 msgid ""
@@ -698,11 +703,11 @@ msgid ""
 msgstr ""
 "    Genereer de MTA alias bestanden bij het opstarten. Sommige MTAs, zoals "
 "Postfix,\n"
-"    kunnen geen email afleveren als de aliassen beschreven in hun "
+"    kunnen geen e-mail afleveren als de aliassen beschreven in hun "
 "configuratiebestand\n"
 "    niet aanwezig zijn. Dit kan in sommige gevallen leiden tot een deadlock "
 "bij de eerste\n"
-"    start van een mailman3 server. Als je deze optie op true zet zal dit "
+"    start van een mailman3 server. Als je deze optie op true zet, zal dit "
 "script de bestanden\n"
 "    genereren en ervoor zorgen dat de MTA zonder problemen draait."
 
@@ -748,7 +753,7 @@ msgid ""
 "    error."
 msgstr ""
 "    Toon geen statusmeldingen.  Foutmeldingen worden nog steeds naar "
-"standard error\n"
+"standaard foutuitvoer\n"
 "    gestuurd."
 
 #: src/mailman/commands/cli_control.py:93
@@ -767,7 +772,7 @@ msgstr "Mailman's master runner wordt opgestart"
 
 #: src/mailman/commands/cli_control.py:108
 msgid "Generating MTA alias maps"
-msgstr "MTA alias maps worden gegenereerd"
+msgstr "MTA aliassen worden gegenereerd"
 
 #: src/mailman/commands/cli_control.py:149
 #, python-brace-format
@@ -781,11 +786,11 @@ msgstr "Draait de master wel?"
 #: src/mailman/commands/cli_control.py:158
 #, python-brace-format
 msgid "No child with pid: ${pid}"
-msgstr "Geen childproces met pid: ${pid}"
+msgstr "Geen onderliggend proces met pid: ${pid}"
 
 #: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
-msgstr "Vervallen pid bestand verwijderd."
+msgstr "Vervallen pid bestand werd verwijderd."
 
 #: src/mailman/commands/cli_control.py:166
 msgid "Stop the Mailman master and runner processes."
@@ -814,7 +819,7 @@ msgstr "De Mailman runners worden opnieuw opgestart"
 #: src/mailman/commands/cli_delmembers.py:48
 #, python-brace-format
 msgid "Member not subscribed (skipping): ${email}"
-msgstr "Lid niet aangemeld (wordt overgeslagen): ${email}"
+msgstr "Lid is niet geabonneerd (wordt overgeslagen): ${email}"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
@@ -839,7 +844,7 @@ msgstr ""
 "ook zij die\n"
 "    opgegeven zijn met -m/--member als die er zijn.  BESTANDSNAAM kan '-' "
 "zijn om aan te geven\n"
-"    dat standaard input ingelezen moet worden.  Lege lijnen en lijnen die "
+"    dat standaard invoer ingelezen moet worden.  Lege lijnen en lijnen die "
 "beginnen met '#' worden genegeerd.\n"
 "    "
 
@@ -862,9 +867,8 @@ msgid ""
 "    -m/--member or --fromall may be specified.\n"
 "    "
 msgstr ""
-"    Verwijder alle leden van de lijst.  Indien opgegeven, mag noch -f/--file,"
-"\n"
-"    -m/--member of --fromall opgegeven zijn.\n"
+"    Verwijder alle leden van de lijst.  Indien opgegeven, mogen -f/--file,\n"
+"    -m/--member of --fromall niet opgegeven zijn.\n"
 "    "
 
 #: src/mailman/commands/cli_delmembers.py:86
@@ -885,7 +889,7 @@ msgid ""
 "    Override the list's setting for send_goodbye_message to\n"
 "    deleted members."
 msgstr ""
-"    Overschrijf de mailijstinstelling voor send_goodbye_message naar\n"
+"    Overschrijf de maillijstinstelling voor send_goodbye_message naar\n"
 "    verwijderde leden."
 
 #: src/mailman/commands/cli_delmembers.py:98 src/mailman/commands/cli_syncmembers.py:187
@@ -927,10 +931,10 @@ msgid ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 msgstr ""
-"    Verhoog het verzamelmail volumenummer en zet het uitgave nummer terug op "
+"    Verhoog het verzamelmail volumenummer en zet het uitgavenummer terug op "
 "1.  Indien\n"
 "    opgegeven met --send, zal het volumenummer verhoogd worden alvorens\n"
-"    huidige verzamelmails verstuurd worden."
+"    de huidige verzamelmails verstuurd worden."
 
 #: src/mailman/commands/cli_digests.py:61 src/mailman/commands/cli_notify.py:50
 msgid ""
@@ -966,7 +970,7 @@ msgstr "Lijst bestaat niet: ${spec}"
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
 msgstr ""
-"${mlist.list_id} zit in volume ${mlist.volume}, nummer ${mlist."
+"${mlist.list_id} zit aan volume ${mlist.volume}, nummer ${mlist."
 "next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:106
@@ -1044,7 +1048,7 @@ msgid ""
 msgstr ""
 "    Importeer Mailman 2.1 lijstgegevens.  Dit vereist de fully-qualified "
 "naam van de te\n"
-"    importeren lijst en het pad naar het Mailman 2.1 pickle bestand."
+"    importeren lijst en het pad naar het Mailman 2.1 picklebestand."
 
 #: src/mailman/commands/cli_import.py:56
 msgid ""
@@ -1052,7 +1056,7 @@ msgid ""
 "    thereof. This will normally be the Mailman 2.1 charset of the list's\n"
 "    preferred_language."
 msgstr ""
-"    Bepaal de string encoding in PICKLE_BESTAND als ze niet utf-8 of een "
+"    Bepaal de string encoding in PICKLE_BESTAND als die niet utf-8 of een "
 "afgeleide daarvan\n"
 "    is. Dit is normaal gezien de Mailman 2.1 charset van de\n"
 "    preferred_language van de maillijst."
@@ -1060,11 +1064,11 @@ msgstr ""
 #: src/mailman/commands/cli_import.py:82
 #, python-brace-format
 msgid "Not a Mailman 2.1 configuration file: ${pickle_file}"
-msgstr "Is geen Mailman 2.1 configuratiebestand: ${pickle_file}"
+msgstr "Dit is geen Mailman 2.1 configuratiebestand: ${pickle_file}"
 
 #: src/mailman/commands/cli_import.py:85
 msgid "Ignoring non-dictionary: {0!r}"
-msgstr "Niet-woordenboek negeren: {0!r}"
+msgstr "Niet-woordenboek wordt genegeerd: {0!r}"
 
 #: src/mailman/commands/cli_info.py:36
 msgid "Information about this Mailman instance."
@@ -1073,21 +1077,21 @@ msgstr "Informatie over deze Mailman installatie."
 #: src/mailman/commands/cli_info.py:40
 msgid "    File to send the output to.  If not given, standard output is used."
 msgstr ""
-"    Bestand waar de uitvoer naartoe moet worden gestuurd.  Indien niet "
-"opgegeven, wordt standard output gebruikt."
+"    Bestand waar de uitvoer naartoe gestuurd moet worden.  Indien niet "
+"opgegeven, wordt de standaard uitvoer gebruikt."
 
 #: src/mailman/commands/cli_info.py:45
 msgid ""
 "    A more verbose output including the file system paths that Mailman is\n"
 "    using."
 msgstr ""
-"    Een meer uitgebreide uitvoer, inclusief de bestandssysteem paden die "
+"    Een meer uitgebreide uitvoer, inclusief de bestandssysteempaden die "
 "Mailman\n"
 "    gebruikt."
 
 #: src/mailman/commands/cli_inject.py:45
 msgid "Inject a message from a file into a mailing list's queue."
-msgstr "Zet een bericht vanuit een bestand in de maillijst wachtrij."
+msgstr "Zet een bericht vanuit een bestand in de wachtrij van de maillijst."
 
 #: src/mailman/commands/cli_inject.py:48
 msgid ""
@@ -1112,8 +1116,8 @@ msgid ""
 msgstr ""
 "    Naam van het bestand met het bericht dat ingevoegd moet worden.  Indien "
 "niet opgegeven of\n"
-"    indien gelijk aan '-' (zonder de aanhalingstekens) wordt standard input "
-"gebruikt."
+"    indien gelijk aan '-' (zonder de aanhalingstekens) wordt de standaard "
+"invoer gebruikt."
 
 #: src/mailman/commands/cli_inject.py:66
 msgid ""
@@ -1121,9 +1125,10 @@ msgid ""
 "    dictionary.  Use the format key=value.  Multiple -m options are\n"
 "    allowed."
 msgstr ""
-"    Bijkomende metadata key/value paren, toe te voegen aan de "
+"    Bijkomende metadata sleutel/waarde paren, toe te voegen aan de "
 "metadatabibiliotheek\n"
-"    van het bericht.  Gebruik het formaat key=value.  Meerdere -m opties\n"
+"    van het bericht.  Gebruik het formaat sleutel=waarde.  Meerdere -m "
+"opties\n"
 "    zijn toegelaten."
 
 #: src/mailman/commands/cli_inject.py:79
@@ -1180,11 +1185,12 @@ msgid ""
 msgstr ""
 "    Maak een maillijst aan.\n"
 "\n"
-"    De 'fully qualified lijstnaam', d.w.z. het post e-mailadres van de\n"
+"    De 'fully qualified naam van de lijst', d.w.z. het post e-mailadres van "
+"de\n"
 "    maillijst is verplicht.  Het moet een geldig e-mailadres zijn en het "
 "domein moet\n"
-"    in Mailman geregistreerd zijn.  Lijstnamen worden in kleine letters "
-"omgezet."
+"    in Mailman geregistreerd zijn.  Lijstnamen worden automatisch in kleine "
+"letters omgezet."
 
 #: src/mailman/commands/cli_lists.py:134
 msgid ""
@@ -1253,7 +1259,7 @@ msgstr "Ongeldige maillijstnaam: ${fqdn_listname}"
 #: src/mailman/commands/cli_lists.py:192
 #, python-brace-format
 msgid "List already exists: ${fqdn_listname}"
-msgstr "Maillijst bestaat al: ${fqdn_listname}"
+msgstr "Lijst bestaat al: ${fqdn_listname}"
 
 #: src/mailman/commands/cli_lists.py:194
 #, python-brace-format
@@ -1281,7 +1287,7 @@ msgstr "Onderdruk statusberichten"
 #: src/mailman/commands/cli_lists.py:241
 #, python-brace-format
 msgid "No such list matching spec: ${listspec}"
-msgstr "Geen lijst gevonden die overeenkomt met spec: ${listspec}"
+msgstr "Geen lijst gevonden die overeenkomt met specificatie: ${listspec}"
 
 #: src/mailman/commands/cli_lists.py:246
 #, python-brace-format
@@ -1302,9 +1308,9 @@ msgid ""
 "    "
 msgstr ""
 "    Toon de leden van een maillijst.\n"
-"    Filters volgens verschillende criteria kunnen toegepast worden.\n"
+"    Er kunnen filters volgens verschillende criteria toegepast worden.\n"
 "    Wanneer er geen opties worden meegegeven, wordt het resultaat naar\n"
-"    stdout gestuurd.\n"
+"    de standaard uitvoer gestuurd.\n"
 "    "
 
 #: src/mailman/commands/cli_members.py:121
@@ -1341,9 +1347,9 @@ msgid ""
 "    Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
-"    Stuur uitvoer naar BESTANDSNAAM in plaats van naar stdout.  "
-"BESTANDSNAAM\n"
-"    kan '-' zijn om naar standard output te sturen."
+"    Stuur uitvoer naar BESTANDSNAAM in plaats van naar de standaard "
+"uitvoer.  BESTANDSNAAM\n"
+"    kan '-' zijn om naar de standaard uitvoer te sturen."
 
 #: src/mailman/commands/cli_members.py:147
 msgid ""
@@ -1390,16 +1396,18 @@ msgid ""
 "    for unknown (legacy) reasons."
 msgstr ""
 "    Toon enkel leden met een bepaalde afleveringsstatus.\n"
-"    'enabled' betekent alle leden wiens aflevering actief is, 'any' betkent\n"
-"    leden wiens afleveringsmethode uitgeschakeld is voor eender welke reden, "
+"    'enabled' betekent alle leden wiens aflevering actief is, 'any' "
+"betekent\n"
+"    leden wiens afleveringsmethode uitgeschakeld is om eender welke reden, "
 "'byuser' betekent\n"
-"    dat het lid zelf de aflevering heeft uitgeschakeld, 'bybounces' betkent\n"
-"    dat de aflevering werd automatisch uitgeschakeld door het systeem dat "
+"    dat het lid zelf de aflevering heeft uitgeschakeld, 'bybounces' "
+"betekent\n"
+"    dat de aflevering automatisch werd uitgeschakeld door het systeem dat "
 "afleveringsproblemen detecteert,\n"
-"    'byadmin' betkent dat aflevering uitgeschakeld werd door een\n"
-"    beheerder of moderator en 'unknown' betekent dat aflevering werd "
+"    'byadmin' betekent dat aflevering uitgeschakeld werd door een\n"
+"    beheerder of moderator en 'unknown' betekent dat de aflevering werd "
 "uitgeschakeld\n"
-"    voor onbekende redenen of redenen die niet meer van toepassing zijn."
+"    om onbekende redenen of redenen die niet meer van toepassing zijn."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid "Notify list owners/moderators of pending requests."
@@ -1414,8 +1422,8 @@ msgid ""
 msgstr ""
 "    Werk met deze maillijst.  Meerdere --list opties kunnen opgegeven "
 "worden.  Het\n"
-"    argument kan ofwel een List-ID of een fully qualified lijstnaam zijn.  "
-"Zonder deze\n"
+"    argument kan ofwel een List-ID of een fully qualified naam van een lijst "
+"zijn.  Zonder deze\n"
 "    optie werk je met de verzoeken van alle maillijsten."
 
 #: src/mailman/commands/cli_notify.py:80 src/mailman/commands/cli_notify.py:141
@@ -1452,7 +1460,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_notify.py:126
 msgid "Sender: {}\n"
-msgstr "Verzender: {}\n"
+msgstr "Afzender: {}\n"
 
 #: src/mailman/commands/cli_notify.py:128 src/mailman/commands/cli_notify.py:131
 msgid "Subject: {}\n"
@@ -1487,18 +1495,19 @@ msgid ""
 msgstr ""
 "    Probeer het object niet mooier weer te geven.  Dit is handig wanneer er "
 "een\n"
-"    probleem is met het object en je wil enkel een unpicklede voorstelling\n"
+"    probleem is met het object en je wil enkel een niet gepicklede "
+"voorstelling\n"
 "    zien.  Handig in combinatie met 'mailman qfile -i <file>'.  In dat "
 "geval\n"
-"    wordt de lijst van unpickled objecten in een variabele 'm' gezet."
+"    wordt de lijst van niet gepickelde objecten in een variabele 'm' gezet."
 
 #: src/mailman/commands/cli_qfile.py:50
 msgid ""
 "    Start an interactive Python session, with a variable called 'm'\n"
 "    containing the list of unpickled objects."
 msgstr ""
-"    Start een interactieve Python sessie, met een variabele 'm' genoemd\n"
-"    die een lijst van unpickled objecten bevat."
+"    Start een interactieve Python sessie, met een variabele 'm'\n"
+"    die een lijst van niet gepickelde objecten bevat."
 
 #: src/mailman/commands/cli_qfile.py:67
 msgid "[----- start pickle -----]"
@@ -1578,9 +1587,9 @@ msgstr ""
 "    zullen worden toegevoegd met de afleveringsmethode die bepaald wordt "
 "door\n"
 "    -d/--delivery.  Leden van de maillijst wiens e-mailadres niet in "
-"BESTANDSNAAM voorkomen\n"
-"    zullen worden afgemeld.  BESTANDSNAAM kan '-' zijn om de invoer uit "
-"standard input te lezen.\n"
+"BESTANDSNAAM voorkomt\n"
+"    zullen worden afgemeld.  BESTANDSNAAM kan '-' zijn om de invoer uit de "
+"standaard invoer te lezen.\n"
 "    "
 
 #: src/mailman/commands/cli_syncmembers.py:172
@@ -1605,7 +1614,7 @@ msgid ""
 "    Don't actually make the changes.  Instead, print out what would be\n"
 "    done to the list."
 msgstr ""
-"    Voer de wijzigingen niet uit.  Toon in plaats daarvan wat er met\n"
+"    Voer de wijzigingen niet echt uit, maar toon wat er met\n"
 "    de lijst zou gebeuren."
 
 #: src/mailman/commands/cli_unshunt.py:33
@@ -1664,7 +1673,7 @@ msgid ""
 msgstr ""
 "Dit script kan op twee manieren gebruikt worden: interactief or "
 "programmatisch.\n"
-"Door het interactief gebruik kan je met de maillijst spelen, hem bekijken "
+"Door het interactief gebruik kan je met een maillijst spelen, hem bekijken "
 "en\n"
 "bewerken vanuit de Python interactieve interpreter.  Indien interactief "
 "gebruikt, zal\n"
@@ -1683,7 +1692,8 @@ msgid ""
 "where `listspec` is either the posting address of the mailing list\n"
 "(e.g. ant@example.com), or the List-ID (e.g. ant.example.com)."
 msgstr ""
-"U kan programmatisch een functie schrijven die opereert op een maillijst en\n"
+"U kan programmatisch een functie schrijven die bewerkingen uitvoert op een "
+"maillijst en\n"
 "dit script zal dan de nodige boekhoudkundige taken verrichten (zie onderaan "
 "voor voorbeelden).  In\n"
 "dat geval is de gebruikelijke syntax:\n"
@@ -1713,8 +1723,8 @@ msgid ""
 msgstr ""
 "Dit voorbeeld toont het gebruik van de --run optie.  Stel dat je een bestand "
 "'listaddr.py' in de\n"
-"Mailman installatiemap hebt staan, dat de volgende twee functies bevat\n"
-"functies:\n"
+"Mailman installatiemap hebt staan, dat de volgende twee functies\n"
+"bevat:\n"
 "\n"
 "def listaddr(mlist):\n"
 "    print(mlist.posting_address)\n"
@@ -1758,7 +1768,7 @@ msgid ""
 "Running listaddr.requestaddr() ...\n"
 "ant-request@example.com"
 msgstr ""
-"En je kan het requestadres van de maillijst tonen door volgend commando uit "
+"En je kan het verzoekadres van de maillijst tonen door volgend commando uit "
 "te voeren:\n"
 "\n"
 "% mailman withlist -r listaddr.requestaddr -l ant@example.com\n"
@@ -1790,11 +1800,11 @@ msgstr ""
 "def change(mlist, display_name):\n"
 "    mlist.display_name = display_name\n"
 "\n"
-"en voer het uit vanop de command line:\n"
+"en het uitvoeren vanop de command line:\n"
 "\n"
 "% mailman withlist -r change -l ant@example.com 'My List'\n"
 "\n"
-"Merk op dat je geen expliciete database transacties moet comitten omdat\n"
+"Merk op dat je geen expliciete databasetransacties moet comitten omdat\n"
 "Mailman dit automatisch voor jou doet (ervan uit gaande dat er geen fouten "
 "zijn opgetreden)."
 
@@ -1833,15 +1843,15 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"    Voer een script uit.  Het argument is een modulepad naar een callable.  "
-"Deze\n"
-"    callable wordt dan geïmporteerd en dan wordt, als --listspec/-l ook "
-"meegegeven is,\n"
-"    het aangeroepen met de maillijst als eerste argument.  Als meerdere\n"
+"    Voer een script uit.  Het argument is een modulepad naar iets wat "
+"uitgevoerd kan worden.  Dit\n"
+"    uitvoerbaar object wordt dan geïmporteerd en dan wordt dan, als "
+"--listspec/-l ook meegegeven is,\n"
+"    aangeroepen met de maillijst als eerste argument.  Als meerdere\n"
 "    argumenten opgegeven zijn aan het eind van de command line, dan worden "
 "zij\n"
-"    als opeenvolgende positionele argumenten meegegeven aan de callable.  "
-"Voor meer informatie,\n"
+"    als opeenvolgende positionele argumenten meegegeven aan het uitvoerbaar "
+"object.  Voor meer informatie,\n"
 "    zie --details.\n"
 "\n"
 "    Als er geen --listspec/-l argument wordt meegegeven, dan wordt de "
@@ -1851,7 +1861,7 @@ msgstr ""
 
 #: src/mailman/commands/cli_withlist.py:254
 msgid "Print detailed instructions and exit."
-msgstr "Toon gedetailleerde instructies en beëindig."
+msgstr "Toon gedetailleerde instructies en stop."
 
 #: src/mailman/commands/cli_withlist.py:258
 msgid ""
@@ -1865,18 +1875,18 @@ msgstr ""
 "    Een specificatie van de maillijst waarmee gewerkt moet worden.  Dit kan "
 "het postadres\n"
 "    van de lijst zijn of het List-ID.  Het argument kan ook een Python\n"
-"    regular expression zijn, dan wordt het gematcht tegen zowel het "
+"    reguliere expressie zijn, dan wordt het gematcht tegen zowel het "
 "postadres\n"
-"    als het List-ID van alle maillijsten.  Om een regular expression te "
+"    als het List-ID van alle maillijsten.  Om een reguliere expressie te "
 "gebruiken,\n"
 "    moet LISTSPEC beginnen met een ^ (en de match wordt uitgevoerd met re."
 "match()).\n"
-"    LISTSPEC kan geen regular expression zijn tenzij de --run optie gebruikt "
-"wordt."
+"    LISTSPEC kan geen reguliere expressie zijn tenzij de --run optie "
+"gebruikt wordt."
 
 #: src/mailman/commands/cli_withlist.py:274
 msgid "Regular expression requires --run"
-msgstr "Regular expression vereist --run"
+msgstr "Reguliere expressie vereist --run"
 
 #: src/mailman/commands/cli_withlist.py:301
 #, python-brace-format
@@ -1893,7 +1903,7 @@ msgstr "Geen bevestigingscode gevonden"
 
 #: src/mailman/commands/eml_confirm.py:60 src/mailman/commands/eml_confirm.py:95
 msgid "Confirmation token did not match"
-msgstr "Bevestigingscode kwam niet overeen"
+msgstr "Ongeldige bevestigingscode"
 
 #: src/mailman/commands/eml_confirm.py:91
 msgid "Confirmed"
@@ -1922,7 +1932,7 @@ msgstr "Een alias voor 'end'."
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
-msgstr "Ontvang hulp over beschikbare e-mail commando's."
+msgstr "Ontvang hulp over beschikbare e-mailcommando's."
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
@@ -1931,7 +1941,7 @@ msgstr "N.v.t."
 #: src/mailman/commands/eml_help.py:59
 #, python-brace-format
 msgid "${self.name}: no such command: ${command_name}"
-msgstr "${self.name}: onbestaand commando: ${command_name}"
+msgstr "${self.name}: commando bestaat niet: ${command_name}"
 
 #: src/mailman/commands/eml_help.py:70
 #, python-brace-format
@@ -1948,7 +1958,7 @@ msgid ""
 "used.  You can use the 'address' option to request subscription of an address\n"
 "other than the sender of the command.\n"
 msgstr ""
-"U zal gevraagd worden uw abonnementaanvraag te bevestigen en u kan een\n"
+"U zal gevraagd worden uw abonnement te bevestigen en u kan een\n"
 "voorlopig wachtwoord toegewezen worden.\n"
 "\n"
 "Met de 'digest' optie kan u aangeven of u verzamelmails wenst te ontvangen\n"
@@ -1960,12 +1970,12 @@ msgstr ""
 
 #: src/mailman/commands/eml_membership.py:79
 msgid "Join this mailing list."
-msgstr "Meld je aan op deze maillijst."
+msgstr "Abonneer op deze maillijst."
 
 #: src/mailman/commands/eml_membership.py:102
 #, python-brace-format
 msgid "${self.name}: No valid address found to subscribe"
-msgstr "${self.name}: Geen geldig adres gevonden om aan te melden"
+msgstr "${self.name}: Geen geldig adres gevonden om te abonneren"
 
 #: src/mailman/commands/eml_membership.py:130
 #, python-brace-format
@@ -1975,7 +1985,7 @@ msgstr "${person} heeft een hangende aanmelding voor ${listname}"
 #: src/mailman/commands/eml_membership.py:133
 #, python-brace-format
 msgid "Confirmation email sent to ${person}"
-msgstr "Bevestigingsmail verstuurd naar ${person}"
+msgstr "Bevestigingsmail is verstuurd naar ${person}"
 
 #: src/mailman/commands/eml_membership.py:150 src/mailman/commands/eml_membership.py:160
 #, python-brace-format
@@ -2003,7 +2013,7 @@ msgstr "Verlaat deze maillijst."
 #: src/mailman/commands/eml_membership.py:194
 #, python-brace-format
 msgid "${self.name}: No valid email address found to unsubscribe"
-msgstr "${self.name}: Geen geldig e-mailadres gevonden om af te melden"
+msgstr "${self.name}: Geen geldig e-mailadres gevonden om uit te schrijven"
 
 #: src/mailman/commands/eml_membership.py:200
 #, python-brace-format
@@ -2029,8 +2039,8 @@ msgstr "${person} heeft ${mlist.fqdn_listname} verlaten"
 #, python-brace-format
 msgid "Confirmation email sent to ${person} to leave ${mlist.fqdn_listname}"
 msgstr ""
-"E-mail met bevestigingsverzoek om de ${mlist.fqdn_listname} maillijst te "
-"verlaten, verstuurd naar ${person}"
+"Vraag om bevestiging om de ${mlist.fqdn_listname} maillijst te verlaten is "
+"verstuurd naar ${person}"
 
 #: src/mailman/commands/eml_membership.py:249
 msgid "An alias for 'leave'."
@@ -2045,7 +2055,7 @@ msgid ""
 "either delivery= or mode= is specified more than once, only the last occurrence\n"
 "is used.\n"
 msgstr ""
-"Produceert een lijst van namen en e-mailadressen van leden.\n"
+"Genereert een ledenlijst met namen en e-mailadressen.\n"
 "\n"
 "De optionele delivery= en mode= argumenten kunnen gebruikt worden om de "
 "lijst\n"
@@ -2056,7 +2066,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_who.py:50
 msgid "Get a list of the list members."
-msgstr "Toon een lijst van maillijst leden."
+msgstr "Genereer een ledenlijst van de maillijst."
 
 #: src/mailman/commands/eml_who.py:63
 msgid "You are not authorized to see the membership list."
@@ -2140,8 +2150,8 @@ msgid ""
 "attached.\n"
 msgstr ""
 "Uw dringend bericht naar de ${mlist.display_name} maillijst werd niet\n"
-"goedgekeurd voor aflevering.  Het originele bericht zoals het ontvangen is "
-"door Mailman\n"
+"goedgekeurd voor aflevering.  Het originele bericht zoals het door Mailman "
+"ontvangen is,\n"
 "zit in bijlage.\n"
 
 #: src/mailman/handlers/mime_delete.py:62
@@ -2155,14 +2165,14 @@ msgid ""
 msgstr ""
 "Het bericht in bijlage matchte één of meerdere regels van de ${mlist."
 "display_name} maillijst\n"
-"inhoudsfilter en de aflevering aan de lijst werd tegengehouden.\n"
+"inhoudsfilter waardoor de aflevering aan de lijst werd tegengehouden.\n"
 "U ontvangt de enige overgebleven kopie van het verwijderde\n"
 "bericht.\n"
 "\n"
 
 #: src/mailman/handlers/mime_delete.py:69
 msgid "Content filter message notification"
-msgstr "Inhoudsfilter bericht melding"
+msgstr "De inhoud van uw bericht werd gefilterd"
 
 #: src/mailman/handlers/mime_delete.py:97
 msgid ""
@@ -2178,11 +2188,11 @@ msgstr ""
 
 #: src/mailman/handlers/mime_delete.py:110
 msgid "The message's content type was explicitly disallowed"
-msgstr "De aard van de inhoud van het bericht werd expliciet niet toegelaten"
+msgstr "Het content type (MIME) van het bericht werd expliciet geweigerd"
 
 #: src/mailman/handlers/mime_delete.py:115
 msgid "The message's content type was not explicitly allowed"
-msgstr "De content type van het bericht werd niet expliciet toegelaten"
+msgstr "De content type (MIME) van het bericht werd niet expliciet toegelaten"
 
 #: src/mailman/handlers/mime_delete.py:124
 msgid "The message's file extension was explicitly disallowed"
@@ -2194,7 +2204,7 @@ msgstr "De bestandsextensie van het bericht werd niet expliciet toegelaten"
 
 #: src/mailman/handlers/mime_delete.py:140
 msgid "After content filtering, the message was empty"
-msgstr "Het bericht was leeg na het filteren van de inhoud"
+msgstr "Na het filteren van de inhoud, bleek het bericht leeg"
 
 #: src/mailman/handlers/mime_delete.py:152 src/mailman/handlers/mime_delete.py:291
 msgid ""
@@ -2202,7 +2212,7 @@ msgid ""
 "Replaced multipart/alternative part with first alternative.\n"
 msgstr ""
 "\n"
-"Multipart/alternative deel vervangen door eerste alternative.\n"
+"Multipart/alternative deel werd vervangen door het eerste alternatief.\n"
 
 #: src/mailman/handlers/mime_delete.py:239 src/mailman/handlers/mime_delete.py:246
 #: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
@@ -2216,7 +2226,7 @@ msgstr "Filter de MIME inhoud van berichten."
 
 #: src/mailman/handlers/owner_recipients.py:34
 msgid "Calculate the owner and moderator recipients."
-msgstr "Bereken beheerder en moderator ontvangers."
+msgstr "Leid af wie de beheerder en moderator ontvangers zijn."
 
 #: src/mailman/handlers/replybot.py:48
 msgid "Send automatic responses."
@@ -2226,7 +2236,7 @@ msgstr "Stuur automatische antwoorden."
 #, python-brace-format
 msgid "Auto-response for your message to the \"${display_name}\" mailing list"
 msgstr ""
-"Automatisch antwoord voor uw bericht naar de \"${display_name}\" maillijst"
+"Automatisch antwoord op uw bericht naar de \"${display_name}\" maillijst"
 
 #: src/mailman/handlers/replybot.py:114
 msgid "The Mailman Replybot"
@@ -2238,7 +2248,8 @@ msgstr "Voeg de RFC 2369 List-* headers toe."
 
 #: src/mailman/handlers/subject_prefix.py:158
 msgid "Add a list-specific prefix to the Subject header value."
-msgstr "Voeg een specifiek prefix toe aan de Onderwerp header voor deze lijst."
+msgstr ""
+"Voeg een prefix toe aan het Onderwerp van berichten verstuurd via deze lijst."
 
 #: src/mailman/handlers/tagger.py:173
 msgid "Tag messages with topic matches."
@@ -2258,7 +2269,7 @@ msgstr "Stuur het bericht naar de uitgaande wachtrij."
 
 #: src/mailman/handlers/to_usenet.py:39
 msgid "Move the message to the outgoing news queue."
-msgstr "Verplaats het bericht naar de uitgaande nieuws wachtrij."
+msgstr "Verplaats het bericht naar de uitgaande wachtrij voor nieuws."
 
 #: src/mailman/handlers/validate_authenticity.py:120
 msgid "Perform auth checks and attach Authentication-Results header."
@@ -2268,11 +2279,11 @@ msgstr ""
 
 #: src/mailman/interfaces/pipeline.py:53
 msgid "[No details are available]"
-msgstr "[Geen details beschikbaar]"
+msgstr "[Er zijn geen details beschikbaar]"
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr "[Geen redenen opgegeven]"
+msgstr "[Geen reden opgegeven]"
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
@@ -2284,7 +2295,7 @@ msgstr "De ingebouwde berichten pipeline."
 
 #: src/mailman/pipelines/virgin.py:32
 msgid "The virgin queue pipeline."
-msgstr "De maagdelijke wachtrij pipeline."
+msgstr "De pipeline voor de wachtrij van interne Mailman berichten."
 
 #: src/mailman/rest/sub_moderation.py:121
 msgid "Subscription request"
@@ -2292,7 +2303,7 @@ msgstr "Aanmeldingsverzoek"
 
 #: src/mailman/rules/administrivia.py:53
 msgid "Catch mis-addressed email commands."
-msgstr "Onderschep foutief geadresseerde e-mail commando's."
+msgstr "Onderschep foutief geadresseerde e-mailcommando's."
 
 #: src/mailman/rules/administrivia.py:97
 msgid "Message contains administrivia"
@@ -2308,11 +2319,11 @@ msgstr "Het bericht heeft een matchende Approve of Approved header."
 
 #: src/mailman/rules/banned_address.py:33
 msgid "Match messages sent by banned addresses."
-msgstr "Filter berichten verstuurd door verbannen adressen."
+msgstr "Filter berichten die verstuurd werden door verbannen adressen."
 
 #: src/mailman/rules/banned_address.py:45
 msgid "Message sender {} is banned from this list"
-msgstr "Afzender van het bericht {} is verbannen van deze lijst"
+msgstr "Afzender van het bericht {} is verbannen uit deze lijst"
 
 #: src/mailman/rules/digests.py:43
 msgid "Catch messages with digest Subject or boilerplate quote."
@@ -2320,7 +2331,7 @@ msgstr "Vang berichten met verzamelmail Onderwerp of boilerplate aanhaling op."
 
 #: src/mailman/rules/digests.py:58
 msgid "Message has a digest subject"
-msgstr "Berichte heeft een verzamelmail onderwerp"
+msgstr "Bericht heeft een verzamelmail onderwerp"
 
 #: src/mailman/rules/digests.py:89
 msgid "Message quotes digest boilerplate"
@@ -2370,7 +2381,7 @@ msgstr "Bericht heeft impliciete bestemming"
 
 #: src/mailman/rules/loop.py:32
 msgid "Look for a posting loop."
-msgstr "Zoek naar een berichtlus."
+msgstr "Zoek naar een afleveringslus."
 
 #: src/mailman/rules/loop.py:45
 msgid "Message has already been posted to this list"
@@ -2386,7 +2397,7 @@ msgstr "Bericht heeft meer dan {} ontvangers"
 
 #: src/mailman/rules/max_size.py:37
 msgid "Catch messages that are bigger than a specified maximum."
-msgstr "Vang berichten op die groter zijn dan een gegeven maximum."
+msgstr "Vang berichten op die groter zijn dan een ingesteld maximum."
 
 #: src/mailman/rules/max_size.py:68
 msgid "The message is larger than the {} KB maximum size"
@@ -2394,7 +2405,7 @@ msgstr "Het bericht is groter dan de {} KB maximum grootte"
 
 #: src/mailman/rules/moderation.py:65
 msgid "Match messages sent by moderated members."
-msgstr "Match berichten verzonden door gemodereerde leden."
+msgstr "Match berichten die verzonden zijn door gemodereerde leden."
 
 #: src/mailman/rules/moderation.py:93
 msgid "The message comes from a moderated member"
@@ -2440,7 +2451,7 @@ msgstr "Dit bericht heeft geen geldige afzenders"
 
 #: src/mailman/rules/no_subject.py:32
 msgid "Catch messages with no, or empty, Subject headers."
-msgstr "Vang berichten zonder of met lege Onderwerp headers op."
+msgstr "Vang berichten zonder of met een leeg Onderwerp op."
 
 #: src/mailman/rules/no_subject.py:45
 msgid "Message has no subject"
@@ -2456,11 +2467,11 @@ msgstr "Header \"{}\" heeft gematcht met een bounce_matching_header lijn"
 
 #: src/mailman/rules/truth.py:32
 msgid "A rule which always matches."
-msgstr "Een regel die altijd overeen komt."
+msgstr "Een regel die altijd gematcht."
 
 #: src/mailman/runners/command.py:103
 msgid "Ignoring non-text/plain MIME parts"
-msgstr "Niet-text/plain MIME onderdelen worden genegeerd"
+msgstr "MIME onderdelen die niet van het type text/plain zijn, worden genegeerd"
 
 #: src/mailman/runners/command.py:143
 msgid "The results of your email command are provided below.\n"
@@ -2501,7 +2512,7 @@ msgstr ""
 #: src/mailman/runners/command.py:209
 #, python-brace-format
 msgid "No such command: ${command_name}"
-msgstr "Onbestaand commando: ${command_name}"
+msgstr "Commando bestaat niet: ${command_name}"
 
 #: src/mailman/runners/command.py:223
 msgid ""
@@ -2529,7 +2540,7 @@ msgstr ""
 
 #: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
-msgstr "Het resultaat van uw e-mail commando"
+msgstr "Het resultaat van uw e-mailcommando"
 
 #: src/mailman/runners/digest.py:55
 #, python-brace-format
@@ -2549,7 +2560,7 @@ msgstr "Verzamelmail Koptekst"
 #: src/mailman/runners/digest.py:173
 #, python-brace-format
 msgid "Today's Topics (${count} messages)"
-msgstr "Onderwerpen van vandaag (${count} messages)"
+msgstr "Onderwerpen van vandaag (${count} berichten)"
 
 #: src/mailman/runners/digest.py:195 src/mailman/runners/digest.py:270
 msgid "Digest Footer"
@@ -2574,7 +2585,7 @@ msgstr "Type maillijst enkel voor aankondigingen."
 
 #: src/mailman/styles/default.py:84
 msgid "Discussion mailing list style with private archives."
-msgstr "Discussie type maillijst met private archieven."
+msgstr "Type maillijst voor discussies, met private archieven."
 
 #: src/mailman/utilities/options.py:47
 #, python-brace-format
@@ -2584,7 +2595,7 @@ msgstr "slice en range moeten hele getallen zijn: ${value}"
 #: src/mailman/utilities/options.py:50
 #, python-brace-format
 msgid "Bad runner spec: ${value}"
-msgstr "Ongeldige runner spec: ${value}"
+msgstr "Ongeldige runner specificatie: ${value}"
 
 #: src/mailman/utilities/scrubber.py:48 src/mailman/utilities/scrubber.py:49
 msgid "not available"
@@ -2608,12 +2619,12 @@ msgstr ""
 
 #: src/mailman/utilities/scrubber.py:58
 msgid "-------------- next part --------------\n"
-msgstr "-------------- next part --------------\n"
+msgstr "-------------- volgend deel --------------\n"
 
 msgid "domain:admin:notice:new-list.txt"
 msgstr ""
 "De '$listname' maillijst is zonet voor u aangemaakt.  Hier\n"
-"volgt wat praktische informatie over uw maillijst.\n"
+"volgt wat praktische informatie over uw nieuwe maillijst.\n"
 "\n"
 "Voor de leden van uw maillijst (niet voor beheerders) is er een "
 "gebruikersinterface beschikbaar via e-mail;\n"
@@ -2670,33 +2681,33 @@ msgstr ""
 
 msgid "list:admin:action:subscribe.txt"
 msgstr ""
-"Uw goedkeuring is vereist voor een maillijst\n"
-" aanmeldingsverzoek:\n"
+"Uw goedkeuring is vereist voor een nieuw abonnement op de\n"
+" maillijst:\n"
 "\n"
 "    Voor:  $member\n"
 "    Lijst: $listname"
 
 msgid "list:admin:action:unsubscribe.txt"
 msgstr ""
-"Uw goedkeuring is vereist voor een maillijst\n"
-"afmeldingsverzoek:\n"
+"Uw goedkeuring is vereist voor een afmelding van de\n"
+"maillijst:\n"
 "\n"
 "    Voor:  $member\n"
 "    Lijst: $listname"
 
 msgid "list:admin:notice:disable.txt"
 msgstr ""
-"Het abonnement van $member op $listname is uitgeschakeld omdat hun bounce "
-"score\n"
-"de ingestelde bounce_score_threshold van de maillijst overschrijdt.\n"
+"Het abonnement van $member op $listname is uitgeschakeld omdat het aantal "
+"afleveringsproblemen\n"
+"de ingestelde bounce_score_threshold marge van de maillijst overschrijdt.\n"
 "\n"
-"De triggerende DSN zit in bijlage indien beschikbaar."
+"De betreffende DSN zit in bijlage indien beschikbaar."
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
-"De bounce score voor $member op $listname is verhoogd.\n"
+"Het aantal afleveringsproblemen voor $member op $listname is verhoogd.\n"
 "\n"
-"De triggerende DSN is bijgevoegd indien beschikbaar."
+"De betreffende DSN is bijgevoegd indien beschikbaar."
 
 msgid "list:admin:notice:pending.txt"
 msgstr ""
@@ -2708,17 +2719,17 @@ msgstr ""
 msgid "list:admin:notice:removal.txt"
 msgstr ""
 "$member is afgemeld van $listname omwille van overmatige "
-"afleveringsproblemen (bounces)."
+"afleveringsproblemen."
 
 msgid "list:admin:notice:subscribe.txt"
-msgstr "$member is succesvol geabonneerd op $display_name."
+msgstr "$member is met succes geabonneerd op $display_name."
 
 msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
-"Het bijgevoegde bericht werd ontvangen als een melding van een "
+"Het bijgevoegde bericht werd ontvangen als melding van een "
 "afleveringsprobleem, maar ofwel werd het formaat\n"
-"van de melding niet herkend of er kon geen e-mailadres van een lid uit "
-"gehaald worden.  Deze\n"
+"van de melding niet herkend of er kon geen e-mailadres van een lid "
+"uitgehaald worden.  Deze\n"
 "maillijst is zo ingesteld dat alle onherkenbare meldingen van "
 "afleveringsproblemen naar de\n"
 "beheerder(s) van de lijst gestuurd worden."
@@ -2731,7 +2742,7 @@ msgstr " "
 
 msgid "list:member:digest:masthead.txt"
 msgstr ""
-"Verstuur $display_name maillijst berichten naar\n"
+"Verstuur berichten aan de $display_name maillijst naar\n"
 "\t$listname\n"
 "\n"
 "Om te abonneren of je abonnement op te zeggen via e-mail, stuur je een "
@@ -2744,13 +2755,14 @@ msgstr ""
 "\n"
 "Indien je antwoordt op deze e-mail, wijzig dan het onderwerp zodat het meer "
 "informatie bevat dan\n"
-"\"Antw: Inhoud van $display_name verzamelmail...\""
+"alleen maar \"Antw: Inhoud van $display_name verzamelmail...\""
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
 "_______________________________________________\n"
 "$display_name maillijst -- $listname\n"
-"Stuur een e-mail naar ${short_listname}-leave@${domain} om af te melden"
+"Stuur een e-mail naar ${short_listname}-leave@${domain} om je uit te "
+"schrijven"
 
 msgid "list:member:regular:header.txt"
 msgstr " "
@@ -2807,15 +2819,16 @@ msgstr ""
 
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
-"Bevestiging voor het afmelden van een e-mailadres\n"
+"Uitschrijven bevestigen\n"
 "\n"
 "Hallo, dit is de GNU Mailman server van $domain.\n"
 "\n"
-"Wij hebben een verzoek tot afmelden ontvangen voor het volgend e-mailadres\n"
+"Wij hebben een verzoek om uit te schrijven ontvangen voor volgend e-"
+"mailadres\n"
 "\n"
 "    $user_email\n"
 "\n"
-"Voordat GNU Mailman u kan afmelden, moet u uw verzoek eerst bevestigen.\n"
+"Voordat GNU Mailman u kan uitschrijven, moet u uw verzoek eerst bevestigen.\n"
 "U kan dit door eenvoudig weg dit bericht te beantwoorden.\n"
 "\n"
 "Of u kan volgende lijn, en enkel de volgende\n"
@@ -2826,8 +2839,9 @@ msgstr ""
 "Merk op dat eenvoudigweg dit bericht beantwoorden in de meeste\n"
 "e-mailprogramma's zou moeten werken.\n"
 "\n"
-"Indien u zich niet wenst af te melden van deze lijst, negeer dan gewoon dit\n"
-"bericht.  Indien u vermoedt dat u onrechtmatig wordt afgemeld voor deze "
+"Indien u zich niet wenst uit te schrijven uit deze lijst, negeer dan gewoon "
+"dit\n"
+"bericht.  Indien u vermoedt dat u onrechtmatig wordt uitgeschreven voor deze "
 "lijst,\n"
 "of u heeft andere vragen, dan mag u altijd de lijstbeheerder contacteren "
 "via\n"
@@ -2881,7 +2895,7 @@ msgstr ""
 "Dit is een testbericht.  U mag dit bericht negeren.\n"
 "\n"
 "De $listname maillijst heeft een aantal afleveringsfouten ontvangen van u,\n"
-"die aantonen dat er problemen zijn met het versturen van e-mail aan $"
+"die aantonen dat er problemen zijn met het afleveren van e-mail aan $"
 "sender_email.  Een\n"
 "voorbeeld zit in bijlage.  Gelieve dit bericht even te bekijken en u ervan "
 "te vergewissen\n"
@@ -2889,7 +2903,7 @@ msgstr ""
 "mail\n"
 "systeembeheerder te rade gaan voor meer hulp.\n"
 "\n"
-"U hoeft niets te doen om lid te blijven de maillijst.\n"
+"U hoeft niets te doen om lid te blijven van de maillijst.\n"
 "\n"
 "Indien u vragen of problemen heeft, dan kan u de lijstbeheerder contacteren\n"
 "via\n"
@@ -2928,11 +2942,11 @@ msgstr ""
 "afleveringsproblemen hebben voorgedaan die kunnen wijzen op problemen met "
 "het\n"
 "afleveren van berichten aan $sender_email. U kan best contact opnemen met uw "
-"systeembeheerder\n"
+"e-mailprovider of systeembeheerder\n"
 "voor meer hulp.\n"
 "\n"
-"Indien u vragen of problemen ondervindt, dan kan u contact opnemen met de "
-"lijstbeheerder via\n"
+"Indien u vragen of problemen ondervindt, dan kan u ook contact opnemen met "
+"de lijstbeheerder via\n"
 "\n"
 "    $owner_email"
 
@@ -2940,12 +2954,11 @@ msgid "list:user:notice:welcome.txt"
 msgstr ""
 "Welkom op de \"$display_name\" maillijst!\n"
 "\n"
-"Om op deze lijst te posten, stuur uw bericht naar:\n"
+"Om berichten naar deze lijst te verzenden, stuur uw bericht naar:\n"
 "\n"
 "  $listname\n"
 "\n"
-"U kan uw abonnement opzeggen of opties aanpassen via e-mail door een bericht "
-"te\n"
+"U kan zich uitschrijven of opties aanpassen via e-mail door een bericht te\n"
 "sturen naar:\n"
 "\n"
 "  $request_email\n"
