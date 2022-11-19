@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-11-16 19:32+0000\n"
+"PO-Revision-Date: 2022-11-19 15:48+0000\n"
 "Last-Translator: Neko Nekowazarashi <kodra@nekoweb.my.id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/id/>\n"
@@ -62,7 +62,7 @@ msgstr "[Tidak ada alasan yang diberikan]"
 
 #: src/mailman/app/moderator.py:184
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "Penerusan dari pesan yang dimoderasi"
 
 #: src/mailman/app/moderator.py:233
 #, python-brace-format
@@ -345,11 +345,11 @@ msgstr "Terima pesan."
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "Rantai moderasi bawaan."
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
-msgstr ""
+msgstr "Hapus pesan dan berhenti memproses."
 
 #: src/mailman/chains/dmarc.py:30
 msgid "Process DMARC reject or discard mitigations"
@@ -401,11 +401,12 @@ msgstr ""
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
-msgstr ""
+msgstr "Rantai moderasi"
 
 #: src/mailman/chains/owner.py:38
+#, fuzzy
 msgid "The built-in -owner posting chain."
-msgstr ""
+msgstr "Rantai pos -owner bawaan."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
@@ -414,7 +415,7 @@ msgstr ""
 #: src/mailman/commands/cli_addmembers.py:73 src/mailman/commands/cli_syncmembers.py:121
 #, python-brace-format
 msgid "Cannot parse as valid email address (skipping): ${line}"
-msgstr ""
+msgstr "Tidak bisa mengurai sebagai surel yang valid (dilewati): ${line}"
 
 #: src/mailman/commands/cli_addmembers.py:104
 #, python-brace-format
@@ -470,7 +471,7 @@ msgstr "Tidak ada milis: ${listspec}"
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
-msgstr ""
+msgstr "Buat ulang alias yang sesuai untuk MTA Anda."
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
@@ -572,6 +573,8 @@ msgid ""
 "    Don't print status messages.  Error messages are still printed to standard\n"
 "    error."
 msgstr ""
+"    Jangan cetak pesan status.  Pesan galat tetap akan dicetak ke galat "
+"standar."
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
@@ -645,6 +648,8 @@ msgid ""
 "    The list to operate on.  Required unless --fromall is specified.\n"
 "    "
 msgstr ""
+"    Beroperasi di milis ini.  Diperlukan kecuali --fromall dirinci.\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:64
 msgid ""
@@ -700,7 +705,7 @@ msgstr "Tidak ada milis: ${_list}"
 
 #: src/mailman/commands/cli_digests.py:38
 msgid "Operate on digests."
-msgstr ""
+msgstr "Beroperasi di ringkasan."
 
 #: src/mailman/commands/cli_digests.py:41
 msgid ""
@@ -747,12 +752,14 @@ msgstr "opsi --send dan --periodic tidak bisa digunakan bersama-sama"
 #: src/mailman/commands/cli_digests.py:92 src/mailman/commands/cli_notify.py:69
 #, python-brace-format
 msgid "No such list found: ${spec}"
-msgstr ""
+msgstr "Milis tersebut tidak ditemukan: ${spec}"
 
 #: src/mailman/commands/cli_digests.py:100
-#, python-brace-format
+#, fuzzy, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
 msgstr ""
+"${mlist.list_id} berada di volume ${mlist.volume}, nomor ${mlist."
+"next_digest_number}"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
@@ -908,7 +915,7 @@ msgstr "Tidak ada milis yang cocok yang ditemukan."
 #: src/mailman/commands/cli_lists.py:95
 #, python-brace-format
 msgid "${count} matching mailing lists found:"
-msgstr ""
+msgstr "${count} milis yang cocok ditemukan:"
 
 #: src/mailman/commands/cli_lists.py:126
 msgid ""
@@ -918,6 +925,11 @@ msgid ""
 "    list is required.  It must be a valid email address and the domain must be\n"
 "    registered with Mailman.  List names are forced to lower case."
 msgstr ""
+"    Buat milis.\n"
+"\n"
+"    'Nama Milis Absolut', contoh alamat pos dari milis diperlukan.  Harus "
+"merupakan surel yang valid dan domain harus didaftarkan ke Mailman.  Nama "
+"milis akan dipaksakan ke huruf kecil."
 
 #: src/mailman/commands/cli_lists.py:134
 msgid ""
@@ -1371,6 +1383,10 @@ msgid ""
 "    For detailed help, see --details\n"
 "    "
 msgstr ""
+"    Beroperasi di milis.\n"
+"\n"
+"    Untuk bantuan lebih lanjut, lihat --details\n"
+"    "
 
 #: src/mailman/commands/cli_withlist.py:233
 msgid ""
@@ -1456,7 +1472,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_help.py:38
 msgid "Get help about available email commands."
-msgstr ""
+msgstr "Dapatkan bantuan tentang perintah surel yang tersedia."
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
@@ -1465,7 +1481,7 @@ msgstr ""
 #: src/mailman/commands/eml_help.py:59
 #, python-brace-format
 msgid "${self.name}: no such command: ${command_name}"
-msgstr ""
+msgstr "${self.name}: tidak ada perintah seperti itu: ${command_name}"
 
 #: src/mailman/commands/eml_help.py:70
 #, python-brace-format
@@ -1508,8 +1524,9 @@ msgid "bad argument: ${argument}"
 msgstr ""
 
 #: src/mailman/commands/eml_membership.py:173
+#, fuzzy
 msgid "An alias for 'join'."
-msgstr ""
+msgstr "Alias untuk 'gabung'."
 
 #: src/mailman/commands/eml_membership.py:184
 msgid ""
@@ -1560,8 +1577,9 @@ msgstr ""
 "fqdn_listname}"
 
 #: src/mailman/commands/eml_membership.py:249
+#, fuzzy
 msgid "An alias for 'leave'."
-msgstr ""
+msgstr "Alias untuk 'keluar'."
 
 #: src/mailman/commands/eml_who.py:42
 msgid ""
@@ -1647,7 +1665,7 @@ msgstr ""
 
 #: src/mailman/handlers/member_recipients.py:42
 msgid "Calculate the regular recipients of the message."
-msgstr ""
+msgstr "Hitung penerima reguler dari pesan."
 
 #: src/mailman/handlers/member_recipients.py:77
 #, python-brace-format
@@ -1656,6 +1674,8 @@ msgid ""
 "authorized for delivery.  The original message as received by Mailman is\n"
 "attached.\n"
 msgstr ""
+"Pesan mendesak Anda ke ${mlist.display_name} tidak diotorisasi untuk "
+"pengiriman.  Pesan asli yang diterima oleh Mailman dilampirkan.\n"
 
 #: src/mailman/handlers/mime_delete.py:62
 #, python-brace-format
@@ -1679,10 +1699,14 @@ msgid ""
 "Mailman's content filtering has removed the\n"
 "following MIME parts from this message.\n"
 msgstr ""
+"\n"
+"___________________________________________\n"
+"Penyaring konten Mailman telah menghapus bagian MIME berikut dari pesan ini."
+"\n"
 
 #: src/mailman/handlers/mime_delete.py:110
 msgid "The message's content type was explicitly disallowed"
-msgstr ""
+msgstr "Jenis konten pesan secara tertulis tidak diperbolehkan"
 
 #: src/mailman/handlers/mime_delete.py:115
 msgid "The message's content type was not explicitly allowed"
@@ -1690,7 +1714,7 @@ msgstr ""
 
 #: src/mailman/handlers/mime_delete.py:124
 msgid "The message's file extension was explicitly disallowed"
-msgstr ""
+msgstr "Ekstensi berkas pesan secara tertulis tidak diperbolehkan"
 
 #: src/mailman/handlers/mime_delete.py:128
 msgid "The message's file extension was not explicitly allowed"
@@ -1755,7 +1779,7 @@ msgstr "Tambah pesan ke ringkasan, memungkinkan dikirim."
 
 #: src/mailman/handlers/to_outgoing.py:38
 msgid "Send the message to the outgoing queue."
-msgstr ""
+msgstr "Kirim pesan ke antrian keluar."
 
 #: src/mailman/handlers/to_usenet.py:39
 msgid "Move the message to the outgoing news queue."
