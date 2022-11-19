@@ -67,7 +67,7 @@ class TestInteract(unittest.TestCase):
         self._enter(hackenv('PYTHONSTARTUP', None))
         interact()
         stderr = self._stderr.getvalue().splitlines()
-        banner = 'Python {} on {} '.format(sys.version, sys.platform)
+        banner = 'Python {} on {}'.format(sys.version, sys.platform)
         self.assertEqual(stderr[0], banner.splitlines()[0])
 
     def test_interact_custom_banner(self):
