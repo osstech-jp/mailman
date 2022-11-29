@@ -215,6 +215,19 @@ above. The ``postfix-mailman.cfg`` would look like this::
     transport_file_type: regex
 
 
+Postfix + Dovecot
+----------------------
+
+In case of using Postfix with Dovecot LMTP, ``main.cf`` should look like
+
+    virtual_mailbox_maps = 
+        hash:/opt/mailman/data/postfix_lmtp ${dovecot}
+    local_recipient_maps = 
+        hash:/opt/mailman/data/postfix_lmtp ${dovecot}
+    transport_maps = 
+        hash:/opt/mailman/data/postfix_lmtp
+
+
 Unusual Postfix configuration
 -----------------------------
 
