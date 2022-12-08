@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-08-18 15:38+0000\n"
-"Last-Translator: Sergii Horichenko <m@sgg.im>\n"
+"PO-Revision-Date: 2022-12-08 14:47+0000\n"
+"Last-Translator: Alexander Ryazanov (alryaz) <alryaz@xavux.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -1549,7 +1549,7 @@ msgstr "ipython недоступен, установите параметр use_
 
 #: src/mailman/commands/cli_withlist.py:86
 msgid "readline not available"
-msgstr ""
+msgstr "утилита readline недоступна"
 
 #: src/mailman/commands/cli_withlist.py:134
 msgid "Invalid value for [shell]use_python: {}"
@@ -1705,7 +1705,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_confirm.py:91
 msgid "Confirmed"
-msgstr ""
+msgstr "Подтверждено"
 
 #: src/mailman/commands/eml_confirm.py:108
 msgid "Invalid Approved: password"
@@ -1714,7 +1714,7 @@ msgstr ""
 #: src/mailman/commands/eml_confirm.py:111
 #, python-brace-format
 msgid "Message ${message}"
-msgstr ""
+msgstr "Сообщение ${message}"
 
 #: src/mailman/commands/eml_echo.py:36
 msgid "Echo back your arguments."
@@ -1722,7 +1722,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_end.py:33
 msgid "Stop processing commands."
-msgstr ""
+msgstr "Прекратить обработку команд."
 
 #: src/mailman/commands/eml_end.py:47
 msgid "An alias for 'end'."
@@ -1734,7 +1734,7 @@ msgstr ""
 
 #: src/mailman/commands/eml_help.py:51
 msgid "n/a"
-msgstr ""
+msgstr "н/д"
 
 #: src/mailman/commands/eml_help.py:59
 #, python-brace-format
@@ -1780,7 +1780,7 @@ msgstr ""
 #: src/mailman/commands/eml_membership.py:160
 #, python-brace-format
 msgid "bad argument: ${argument}"
-msgstr ""
+msgstr "неверный аргумент: ${argument}"
 
 #: src/mailman/commands/eml_membership.py:173
 msgid "An alias for 'join'."
@@ -1820,7 +1820,7 @@ msgstr ""
 #: src/mailman/commands/eml_membership.py:237
 #, python-brace-format
 msgid "${person} left ${mlist.fqdn_listname}"
-msgstr ""
+msgstr "${person} покинул ${mlist.fqdn_listname}"
 
 #: src/mailman/commands/eml_membership.py:239
 #, python-brace-format
@@ -1884,7 +1884,7 @@ msgstr ""
 
 #: src/mailman/handlers/cleanse_dkim.py:42
 msgid "Remove DomainKeys headers."
-msgstr ""
+msgstr "Удалить заголовки DomainKeys."
 
 #: src/mailman/handlers/cleanse.py:42
 msgid "Cleanse certain headers from all messages."
@@ -1892,7 +1892,7 @@ msgstr ""
 
 #: src/mailman/handlers/cook_headers.py:169
 msgid "Modify message headers."
-msgstr ""
+msgstr "Изменить заголовки писем."
 
 #: src/mailman/handlers/decorate.py:246
 msgid "Decorate a message with headers and footers."
@@ -1905,7 +1905,7 @@ msgstr ""
 
 #: src/mailman/handlers/dmarc.py:228
 msgid "Apply DMARC mitigations."
-msgstr ""
+msgstr "Применять устранения DMARC."
 
 #: src/mailman/handlers/file_recipients.py:35
 msgid "Get the normal delivery recipients from an include file."
@@ -1975,7 +1975,7 @@ msgstr ""
 #: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
 #, python-brace-format
 msgid "Name: ${fname}\n"
-msgstr ""
+msgstr "Имя: ${fname}\n"
 
 #: src/mailman/handlers/mime_delete.py:374
 msgid "Filter the MIME content of messages."
@@ -1987,7 +1987,7 @@ msgstr ""
 
 #: src/mailman/handlers/replybot.py:48
 msgid "Send automatic responses."
-msgstr ""
+msgstr "Отправлять автоматические ответы."
 
 #: src/mailman/handlers/replybot.py:101
 #, python-brace-format
@@ -1996,7 +1996,7 @@ msgstr ""
 
 #: src/mailman/handlers/replybot.py:114
 msgid "The Mailman Replybot"
-msgstr ""
+msgstr "Бот-ответчик Mailman"
 
 #: src/mailman/handlers/rfc_2369.py:128
 msgid "Add the RFC 2369 List-* headers."
@@ -2036,7 +2036,7 @@ msgstr ""
 
 #: src/mailman/interfaces/pipeline.py:54
 msgid "[No reasons given]"
-msgstr ""
+msgstr "[Причина не предоставлена]"
 
 #: src/mailman/pipelines/builtin.py:30
 msgid "The built-in owner pipeline."
@@ -2052,7 +2052,7 @@ msgstr ""
 
 #: src/mailman/rest/sub_moderation.py:121
 msgid "Subscription request"
-msgstr ""
+msgstr "Запрос на подписку"
 
 #: src/mailman/rules/administrivia.py:53
 msgid "Catch mis-addressed email commands."
@@ -2096,7 +2096,7 @@ msgstr ""
 
 #: src/mailman/rules/dmarc.py:327
 msgid "DMARC moderation"
-msgstr ""
+msgstr "Модерация DMARC"
 
 #: src/mailman/rules/dmarc.py:333
 #, python-brace-format
@@ -2224,28 +2224,30 @@ msgstr ""
 #: src/mailman/runners/command.py:191
 #, python-brace-format
 msgid "    From: ${from_}"
-msgstr ""
+msgstr "    От: ${from_}"
 
 #: src/mailman/runners/command.py:192
 #, python-brace-format
 msgid "    Subject: ${subject}"
-msgstr ""
+msgstr "    Тема: ${subject}"
 
 #: src/mailman/runners/command.py:193
 #, python-brace-format
 msgid "    Date: ${date}"
-msgstr ""
+msgstr "    Дата: ${date}"
 
 #: src/mailman/runners/command.py:194
 #, python-brace-format
 msgid "    Message-ID: ${message_id}"
-msgstr ""
+msgstr "    Идентификатор сообщ.: ${message_id}"
 
 #: src/mailman/runners/command.py:195
 msgid ""
 "\n"
 "- Results:"
 msgstr ""
+"\n"
+"- Результаты:"
 
 #: src/mailman/runners/command.py:209
 #, python-brace-format
@@ -2257,18 +2259,24 @@ msgid ""
 "\n"
 "- Unprocessed:"
 msgstr ""
+"\n"
+"- Не обработано:"
 
 #: src/mailman/runners/command.py:228
 msgid ""
 "\n"
 "- Ignored:"
 msgstr ""
+"\n"
+"- Проигнорировано:"
 
 #: src/mailman/runners/command.py:231
 msgid ""
 "\n"
 "- Done."
 msgstr ""
+"\n"
+"- Выполнено."
 
 #: src/mailman/runners/command.py:237
 msgid "The results of your email commands"
@@ -2281,11 +2289,11 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:84
 msgid "Today's Topics:\n"
-msgstr ""
+msgstr "Сегодняшние темы:\n"
 
 #: src/mailman/runners/digest.py:153
 msgid "Digest Header"
-msgstr ""
+msgstr "Шапка дайджеста"
 
 #: src/mailman/runners/digest.py:173
 #, python-brace-format
@@ -2294,16 +2302,16 @@ msgstr ""
 
 #: src/mailman/runners/digest.py:195 src/mailman/runners/digest.py:270
 msgid "Digest Footer"
-msgstr ""
+msgstr "Подвал дайджеста"
 
 #: src/mailman/runners/digest.py:202 src/mailman/runners/digest.py:277
 msgid "End of "
-msgstr ""
+msgstr "Завершение "
 
 #: src/mailman/styles/base.py:59
 #, python-brace-format
 msgid "[${mlist.display_name}] "
-msgstr ""
+msgstr "[${mlist.display_name}] "
 
 #: src/mailman/styles/default.py:44
 msgid "Ordinary discussion mailing list style."
@@ -2329,7 +2337,7 @@ msgstr ""
 
 #: src/mailman/utilities/scrubber.py:48 src/mailman/utilities/scrubber.py:49
 msgid "not available"
-msgstr ""
+msgstr "не доступно"
 
 #: src/mailman/utilities/scrubber.py:50
 #, python-brace-format
@@ -2371,6 +2379,8 @@ msgstr ""
 
 msgid "list:admin:notice:removal.txt"
 msgstr ""
+"$member был отписан от рассылки $listname из-за избыточного количества "
+"отказов."
 
 msgid "list:admin:notice:subscribe.txt"
 msgstr ""
@@ -2389,6 +2399,10 @@ msgstr ""
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
+"_______________________________________________\n"
+"Список рассылки $display_name -- $listname\n"
+"Чтобы покинуть список рассылки, отправьте email на "
+"${short_listname}-leave@${domain}"
 
 msgid "list:member:regular:header.txt"
 msgstr ""
@@ -2399,8 +2413,34 @@ msgstr ""
 msgid "list:user:action:subscribe.txt"
 msgstr ""
 
+#, fuzzy
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
+"Уведомление о подтверждении отписки\n"
+"\n"
+"Здравствуйте, это сервер GNU Mailman домена $domain.\n"
+"\n"
+"Мы получили запрос на исключение следующего адреса из списка рассылки\n"
+"\n"
+"    $user_email\n"
+"\n"
+"Прежде чем GNU Mailman обработает отписку, потребуется Ваше одобрение.\n"
+"Вы можете подтвердить операцию ответом на это письмо.\n"
+"\n"
+"Or you should include the following line -- and only the following\n"
+"line -- in a message to $request_email:\n"
+"\n"
+"    confirm $token\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers.\n"
+"\n"
+"If you do not wish to unsubscribe this email address, simply disregard this\n"
+"message.  If you think you are being maliciously unsubscribed from the list,"
+"\n"
+"or have any other questions, you may contact\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:goodbye.txt"
 msgstr ""
