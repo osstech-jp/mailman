@@ -119,8 +119,8 @@ class ListManager:
     def names(self, store):
         """See `IListManager`."""
         result_set = store.query(MailingList)
-        for mail_host, list_name in result_set.values(MailingList.mail_host,
-                                                      MailingList.list_name):
+        for mail_host, list_name in result_set.with_entities(
+                MailingList.mail_host, MailingList.list_name):
             yield '{}@{}'.format(list_name, mail_host)
 
     @property
@@ -128,7 +128,7 @@ class ListManager:
     def list_ids(self, store):
         """See `IListManager`."""
         result_set = store.query(MailingList)
-        for list_id in result_set.values(MailingList._list_id):
+        for list_id in result_set.with_entities(MailingList._list_id):
             assert len(list_id) == 1
             yield list_id[0]
 
@@ -137,8 +137,8 @@ class ListManager:
     def name_components(self, store):
         """See `IListManager`."""
         result_set = store.query(MailingList)
-        for mail_host, list_name in result_set.values(MailingList.mail_host,
-                                                      MailingList.list_name):
+        for mail_host, list_name in result_set.with_entities(
+                MailingList.mail_host, MailingList.list_name):
             yield list_name, mail_host
 
     @dbconnection
