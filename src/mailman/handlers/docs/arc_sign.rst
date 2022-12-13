@@ -15,13 +15,22 @@ http://www.gettingemaildelivered.com/dkim-explained-how-to-set-up-and-use-domain
 for reference, as well as the additional documentaion about ARC configuration
 in general in schema.cfg.
 
+.. note::
+
+  Depending on your version of openssl and opendkim-genkey, you might find that
+  Mailman is unable to read the private key file. This manifests in emails
+  getting shunted because of "Unparsable private key" exceptions (seen in 
+  mailman.log).
+
+  This is due to a
+  `bug in a dependency <https://bugs.launchpad.net/dkimpy/+bug/1978835>`_, which
+  is for instance present in the bullseye release of Debian.
+
 The private key should be secured locally and made readable to Mailman, and the
 can be specified in ``mailman.cfg``::
 
   [ARC]
   privkey: /path/to/private.key
-
-
 
 The public key should be put into a DNS TXT record, and located at:
 
