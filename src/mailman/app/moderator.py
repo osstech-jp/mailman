@@ -192,16 +192,7 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         # token, but we need to delete the user token too.
         user_token = None
         pendings = getUtility(IPendings)
-        # We call list() over the generator to determine if it will return any
-        # actual values or not with len().
-        all_held_pendings = list(
-            pendings.find(pend_type='held message', mlist=mlist))
-        if len(all_held_pendings) == 0:
-            # This is mostly meant to handle old held message pendings
-            # that don't have the list_id pendedkeyvalue, which makes it
-            # very expensive to find the right pending to delete.
-            all_held_pendings = pendings.find(pend_type='held message')
-        for token, data in all_held_pendings:
+        for token, data in pendings.find(pend_type='held message'):
             # This can return None if there is a concurrent deletion.
             if data and data['id'] == id:
                 user_token = token
@@ -212,8 +203,7 @@ def handle_message(mlist, id, action, comment=None, forward=None):
         # Only delete the message from the message store if there's no other
         # request for it.
         delete = True
-        for token, data in pendings.find(
-                pend_type='data', held_msgid=message_id):
+        for token, data in pendings.find(pend_type='data'):
             if data and data.get('_mod_message_id') == message_id:
                 delete = False
                 break
