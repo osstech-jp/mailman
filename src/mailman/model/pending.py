@@ -132,11 +132,10 @@ class Pendings:
         # Token can come in as a unicode, but it's stored in the database as
         # bytes.  They must be ascii.
         pendings = store.query(Pended).filter_by(token=str(token))
-        pendings_count = pendings.count()
-        if pendings_count == 0:
+        if pendings.count() == 0:
             return None
-        assert pendings_count == 1, (
-            'Unexpected token count: {}'.format(pendings_count))
+        assert pendings.count() == 1, (
+            'Unexpected token count: {}'.format(pendings.count()))
         pending = pendings[0]
         pendable = UnpendedPendable()
         # Iterate on PendedKeyValue entries that are associated with the
@@ -165,21 +164,13 @@ class Pendings:
                 store.delete(pending)
 
     @dbconnection
-    def _query(
-        self, store, mlist, pend_type, token_owner, held_msgid
-    ):
+    def _query(self, store, mlist, pend_type, token_owner):
         query = store.query(Pended)
         if mlist is not None:
             pkv_alias_mlist = aliased(PendedKeyValue)
             query = query.join(pkv_alias_mlist).filter(and_(
                 pkv_alias_mlist.key == 'list_id',
                 pkv_alias_mlist.value == json.dumps(mlist.list_id)
-                ))
-        if held_msgid is not None:
-            pkv_alias_held_msg = aliased(PendedKeyValue)
-            query = query.join(pkv_alias_held_msg).filter(and_(
-                pkv_alias_held_msg.key == '_mod_message_id',
-                pkv_alias_held_msg.value == json.dumps(held_msgid)
                 ))
         if pend_type is not None:
             pkv_alias_type = aliased(PendedKeyValue)
@@ -195,15 +186,8 @@ class Pendings:
                 ))
         return query
 
-    def find(
-        self,
-        mlist=None,
-        pend_type=None,
-        confirm=True,
-        token_owner=None,
-        held_msgid=None,
-    ):
-        query = self._query(mlist, pend_type, token_owner, held_msgid)
+    def find(self, mlist=None, pend_type=None, confirm=True, token_owner=None):
+        query = self._query(mlist, pend_type, token_owner)
         for pending in query:
             pendable = (self.confirm(pending.token, expunge=False)
                         if confirm else None)
@@ -214,8 +198,6 @@ class Pendings:
         for pending in store.query(Pended).all():
             yield pending.token, self.confirm(pending.token, expunge=False)
 
-    def count(
-        self, mlist=None, pend_type=None, token_owner=None, held_msgid=None
-    ):
-        query = self._query(mlist, pend_type, token_owner, held_msgid)
+    def count(self, mlist=None, pend_type=None, token_owner=None):
+        query = self._query(mlist, pend_type, token_owner)
         return query.count()
