@@ -246,6 +246,23 @@ Message-ID: <alpha>
         request_id = hold_message(self._mlist, self._msg)
         # The hold chain does more.
         pendings = getUtility(IPendings)
+        user_hash = pendings.add(HeldMessagePendable(
+            id=request_id, list_id=self._mlist.list_id))
+        # Get the hash for this pending request.
+        hash = list(self._request_db.held_requests)[0].data_hash
+        handle_message(self._mlist, request_id, Action.discard)
+        self.assertEqual(self._request_db.count, 0)
+        self.assertIsNone(pendings.confirm(hash))
+        self.assertIsNone(pendings.confirm(user_hash))
+
+    def test_all_pendings_removed_old(self):
+        # This is different from the testcase above in that it
+        # handles the old style HeldMessagePendable where the
+        # list_id is not added to pendedkeyvalue. It is only
+        # meant so that new versions can handle old pendables.
+        request_id = hold_message(self._mlist, self._msg)
+        # The hold chain does more.
+        pendings = getUtility(IPendings)
         user_hash = pendings.add(HeldMessagePendable(id=request_id))
         # Get the hash for this pending request.
         hash = list(self._request_db.held_requests)[0].data_hash
