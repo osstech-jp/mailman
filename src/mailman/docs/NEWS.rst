@@ -20,6 +20,8 @@ Bugs fixed
 * The deprecated SQLAlchemy query.values() method is replaced by
   query.with_entities().  This fixes an issue with MariaDB that truncated
   the generated postfix_lmtp file.  (Closes #1044)
+* An uncaught passlib.exc.UnknownHashError in utilities/passwords.py is now
+  caught and handled appropriately.  (Closes #1046)
 
 
 .. _news-3.3.7:
