@@ -20,6 +20,7 @@
 from mailman.config.config import load_external
 from mailman.interfaces.configuration import ConfigurationUpdatedEvent
 from passlib.context import CryptContext
+from passlib.exc import UnknownHashError
 from public import public
 
 
@@ -58,7 +59,10 @@ class PasswordContext:
             existing hash needs to be replaced (a str if so, else None).
         :rtype: 2-tuple
         """
-        return self._context.verify_and_update(password, hashed)
+        try:
+            return self._context.verify_and_update(password, hashed)
+        except UnknownHashError:
+            return (False, password)
 
 
 @public

@@ -23,6 +23,7 @@ import unittest
 from mailman.config import config
 from mailman.testing.helpers import configuration
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.passwords import PasswordContext
 
 
 class TestPasswords(unittest.TestCase):
@@ -49,3 +50,8 @@ schemes = plaintext
         with configuration('passwords', configuration=config_file):
             self.assertEqual(config.password_context.encrypt('my password'),
                              'my password')
+
+    def test_check_bad_hash(self):
+        # Check against an invalid hash should return (False, None).
+        self.assertEqual(PasswordContext(config).verify('my password', ''),
+                         (False, 'my password'))
