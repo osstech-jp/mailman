@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-23 03:39+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-12-16 22:47+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "gnu-mailman/mailman/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.15\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -1162,9 +1162,9 @@ msgid "GNU Mailman is running (master pid: ${pid})"
 msgstr ""
 
 #: src/mailman/commands/cli_status.py:44
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "GNU Mailman is stopped (stale pid: ${pid})"
-msgstr "GNU Mailman er stoppet (stoppet pid: ${pid})"
+msgstr "GNU Mailman er stoppet (stoppet PID: ${pid})"
 
 #: src/mailman/commands/cli_status.py:50
 #, python-brace-format
