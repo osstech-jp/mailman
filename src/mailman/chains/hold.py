@@ -148,7 +148,7 @@ class HoldChain(TerminalChainBase):
         request_id = hold_message(mlist, msg, msgdata, SEMISPACE.join(reasons))
         # Calculate a confirmation token to send to the author of the
         # message.
-        pendable = HeldMessagePendable(id=request_id)
+        pendable = HeldMessagePendable(id=request_id, list_id=mlist.list_id)
         token = getUtility(IPendings).add(pendable)
         # Get the language to send the response in.  If the sender is a
         # member, then send it in the member's language, otherwise send it in

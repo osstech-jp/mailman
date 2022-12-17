@@ -24,6 +24,13 @@ Bugs fixed
   caught and handled appropriately.  (Closes #1046)
 
 
+Performance
+-----------
+* Improve the performance of Held message handling by reducing the total
+  number of database calls required. (Fixes #1026 and #1045)
+
+
+
 .. _news-3.3.7:
 
 3.3.7

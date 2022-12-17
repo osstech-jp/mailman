@@ -22,6 +22,7 @@ import unittest
 from click.testing import CliRunner
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
+from mailman.chains.hold import HoldChain
 from mailman.commands.cli_notify import notify
 from mailman.interfaces.mailinglist import SubscriptionPolicy
 from mailman.interfaces.subscriptions import ISubscriptionManager
@@ -193,6 +194,47 @@ The ant@example.com list has 1 moderation requests waiting.
 Held Messages:
     Sender: anne@example.com
     Subject: =?gb2312?q?=E9=FF_message_1?=
+    Reason: Non-member post
+
+
+Please attend to this at your earliest convenience.""")
+
+
+class TestChainsHold(unittest.TestCase):
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('ant@example.com')
+        msg = mfs("""\
+To: ant@example.com
+From: anne@example.com
+Subject: message 1
+
+""")
+        # Hold this message using chains.hold. Supply moderation_reasons and
+        # set fromusenet to suppress user notice.
+        msgdata = {'moderation_reasons': ['Non-member post'],
+                   'fromusenet': True}
+        # Suppress owner notice too.
+        self._mlist.admin_immed_notify = False
+        HoldChain()._process(self._mlist, msg, msgdata)
+        self._command = CliRunner()
+
+    def test_notify_with_hold_from_hold_chain(self):
+        # Clear messages from setup.
+        get_queue_messages('virgin')
+        result = self._command.invoke(notify, ('-v',))
+        self.assertMultiLineEqual(result.output, """\
+The ant@example.com list has 1 moderation requests waiting.
+""")
+        msg = get_queue_messages('virgin', expected_count=1)[0].msg
+        self.assertMultiLineEqual(msg.get_payload(), """\
+The ant@example.com list has 1 moderation requests waiting.
+
+
+Held Messages:
+    Sender: anne@example.com
+    Subject: message 1
     Reason: Non-member post
 
 
