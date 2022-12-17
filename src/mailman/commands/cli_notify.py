@@ -94,7 +94,7 @@ def _get_subs(mlist):
     subs = []
     unsubs = []
     for token, data in pendingsdb.find(mlist):
-        if data['token_owner'] == 'moderator':
+        if data.get('token_owner') == 'moderator':
             if data['type'] == 'subscription':
                 subs.append(data['email'])
             elif data['type'] == 'unsubscription':
