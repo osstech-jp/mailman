@@ -21,7 +21,7 @@ API.
     >>> user_manager = getUtility(IUserManager)
     >>> anne = user_manager.create_address('anne@example.com')
     >>> from mailman.config import config
-    >>> transaction = config.db    
+    >>> transaction = config.db
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/addresses')
@@ -204,9 +204,7 @@ parameter to the POST request and set it to False.
 
     >>> dump_json('http://localhost:9001/3.0/addresses/anne@example.com/user',
     ...           {'display_name': 'Anne User', 'auto_create': False})
-    Traceback (most recent call last):
-    ...
-    urllib.error.HTTPError: HTTP Error 403: ...
+    HTTP Error 403: 403 Forbidden
 
 A request to the `/user` sub-resource will return the linked user's
 representation:
@@ -235,9 +233,7 @@ The address and the user can be unlinked by sending a DELETE request on the
     >>> user_manager.get_user_by_id(UUID(int=1))
     <User "Cris X. Person" (1) at 0x...>
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com/user')
-    Traceback (most recent call last):
-    ...
-    urllib.error.HTTPError: HTTP Error 404: ...
+    HTTP Error 404: 404 Not Found
 
 You can link an existing user to an address by passing the user's ID in the
 POST request.
@@ -395,18 +391,14 @@ address is unset.
     total_size: 1
     >>> import pdb
     >>> dump_json('http://localhost:9001/3.1/users/ram@example.com/preferred_address')
-    Traceback (most recent call last):
-    ...
-    urllib.error.HTTPError: HTTP Error 404: ...
+    HTTP Error 404: 404 Not Found
 
 Setting Ram's preferred addresses requires that it first be verified:
 ::
 
     >>> dump_json('http://localhost:9001/3.1/users/ram@example.com/preferred_address',
     ...     {'email': 'ram@example.com'})
-    Traceback (most recent call last):
-    ...
-    urllib.error.HTTPError: HTTP Error 400: Ram Person <ram@example.com> must be verified before setting as primary
+    HTTP Error 400: Ram Person <ram@example.com> must be verified before setting as primary
 
 Verify Ram's address first:
 ::
@@ -464,7 +456,7 @@ Elle registers several email addresses.
 Elle subscribes to two mailing lists with one of her addresses.
 ::
 
-    >>> from mailman.app.lifecycle import create_list   
+    >>> from mailman.app.lifecycle import create_list
     >>> ant = create_list('ant@example.com')
     >>> bee = create_list('bee@example.com')
     >>> ant.subscribe(subscriber)
@@ -634,7 +626,7 @@ user, it just unlinks it.
     start: 0
     total_size: 1
 
-    
+
     >>> dump_json('http://localhost:9001/3.0/addresses/gwen@example.com',
     ...     method='DELETE')
     date: ...
