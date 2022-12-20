@@ -31,6 +31,7 @@ from mailman.testing.helpers import call_api
 from mailman.testing.layers import SMTPLayer
 from public import public
 from subprocess import PIPE, run, STDOUT
+from urllib.error import HTTPError
 
 
 DOT = '.'
@@ -93,7 +94,11 @@ def call_http(url, data=None, method=None, username=None, password=None):
     :return: The decoded JSON data structure.
     :raises HTTPError: when a non-2xx return code is received.
     """
-    content, response = call_api(url, data, method, username, password)
+    try:
+        content, response = call_api(url, data, method, username, password)
+    except HTTPError as ex:
+        print(ex)
+        return
     if content is None:
         # We used to use httplib2 here, which included the status code in the
         # response headers in the `status` key.  requests doesn't do this, but

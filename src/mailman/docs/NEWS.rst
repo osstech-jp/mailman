@@ -30,6 +30,11 @@ Performance
   number of database calls required. (Fixes #1026 and #1045)
 
 
+Python Support
+--------------
+* Add support for Python 3.10. (Closes #936)
+
+
 
 .. _news-3.3.7:
 

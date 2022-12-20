@@ -1471,9 +1471,7 @@ As with list-centric bans, you can delete a global ban.
     status: 204
 
     >>> dump_json('http://localhost:9001/3.0/bans/banned@example.com')
-    Traceback (most recent call last):
-    ...
-    urllib.error.HTTPError: HTTP Error 404: ...
+    HTTP Error 404: Email is not banned: banned@example.com
     >>> dump_json('http://localhost:9001/3.0/bans')
     http_etag: "..."
     start: 0

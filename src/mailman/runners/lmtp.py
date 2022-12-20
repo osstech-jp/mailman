@@ -126,6 +126,7 @@ def split_recipient(address):
 
 
 class LMTPHandler:
+
     @asyncio.coroutine
     @transactional
     def handle_RCPT(self, server, session, envelope, to, rcpt_options):

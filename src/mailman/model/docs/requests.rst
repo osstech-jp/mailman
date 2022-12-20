@@ -38,7 +38,7 @@ The list's requests database starts out empty.
 
     >>> print(requests.count)
     0
-    >>> from mailman.testing.documentation import dump_list    
+    >>> from mailman.testing.documentation import dump_list
     >>> dump_list(requests.held_requests)
     *Empty*
 
@@ -122,7 +122,7 @@ an additional key which holds the name of the request type.
     >>> key, data = requests.get_request(5)
     >>> print(key)
     hold_5
-    >>> from mailman.testing.documentation import dump_msgdata    
+    >>> from mailman.testing.documentation import dump_msgdata
     >>> dump_msgdata(data)
     _request_type: held_message
     bar          : no
@@ -140,13 +140,13 @@ over by type.
     3
     >>> for request in requests.of_type(RequestType.held_message):
     ...     key, data = requests.get_request(request.id)
-    ...     print(request.id, request.request_type, key)
+    ...     print(request.id, request.request_type.name, key)
     ...     if data is not None:
     ...         for key in sorted(data):
     ...             print('    {0}: {1}'.format(key, data[key]))
-    1 RequestType.held_message hold_1
-    4 RequestType.held_message hold_4
-    5 RequestType.held_message hold_5
+    1 held_message hold_1
+    4 held_message hold_4
+    5 held_message hold_5
         _request_type: held_message
         bar: no
         foo: yes

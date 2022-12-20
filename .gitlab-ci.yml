@@ -45,23 +45,34 @@ sqlite-39:
   script:
     - tox -e py39-nocov
 
-pgsql-38:
+sqlite-310:
+  <<: *only-default
+  script:
+    - tox -e py310-nocov
+
+# sqlite-311:
+#   <<: *only-default
+#   script:
+#     - tox -e py311-nocov
+
+
+pgsql-310:
   <<: *only-default
   services:
   - postgres:latest
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py38-nocov-pg
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py310-nocov-pg
   tags:
   - postgres
 
-pgsql-37:
-  <<: *only-default
-  services:
-  - postgres:latest
-  script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py37-nocov-pg
-  tags:
-  - postgres
+# pgsql-311:
+#   <<: *only-default
+#   services:
+#   - postgres:latest
+#   script:
+#   - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py311-nocov-pg
+#   tags:
+#   - postgres
 
 pgsql-39:
   <<: *only-default
@@ -72,21 +83,21 @@ pgsql-39:
   tags:
   - postgres
 
-mysql-38:
-  <<: *only-default
-  services:
-  - mysql:5.6
-  script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py38-nocov-mysql
-  tags:
-  - mysql
+# mysql-311:
+#   <<: *only-default
+#   services:
+#   - mysql:5.6
+#   script:
+#   - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py311-nocov-mysql
+#   tags:
+#   - mysql
 
-mysql-37:
+mysql-310:
   <<: *only-default
   services:
   - mysql:5.6
   script:
-  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py37-nocov-mysql
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py310-nocov-mysql
   tags:
   - mysql
 
