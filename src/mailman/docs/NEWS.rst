@@ -33,6 +33,7 @@ Performance
 Python Support
 --------------
 * Add support for Python 3.10. (Closes #936)
+* Add support for Python 3.11 (See !1076)
 
 
 
