@@ -50,10 +50,10 @@ sqlite-310:
   script:
     - tox -e py310-nocov
 
-# sqlite-311:
-#   <<: *only-default
-#   script:
-#     - tox -e py311-nocov
+sqlite-311:
+  <<: *only-default
+  script:
+    - tox -e py311-nocov
 
 
 pgsql-310:
@@ -65,14 +65,14 @@ pgsql-310:
   tags:
   - postgres
 
-# pgsql-311:
-#   <<: *only-default
-#   services:
-#   - postgres:latest
-#   script:
-#   - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py311-nocov-pg
-#   tags:
-#   - postgres
+pgsql-311:
+  <<: *only-default
+  services:
+  - postgres:latest
+  script:
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/postgres.cfg tox -e py311-nocov-pg
+  tags:
+  - postgres
 
 pgsql-39:
   <<: *only-default
@@ -83,14 +83,14 @@ pgsql-39:
   tags:
   - postgres
 
-# mysql-311:
-#   <<: *only-default
-#   services:
-#   - mysql:5.6
-#   script:
-#   - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py311-nocov-mysql
-#   tags:
-#   - mysql
+mysql-311:
+  <<: *only-default
+  services:
+  - mysql:5.6
+  script:
+  - MAILMAN_EXTRA_TESTING_CFG=/home/runner/configs/mysql.cfg tox -e py311-nocov-mysql
+  tags:
+  - mysql
 
 mysql-310:
   <<: *only-default

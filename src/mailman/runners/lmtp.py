@@ -35,7 +35,6 @@ so that the peer mail server can provide better diagnostics.
 """
 
 import email
-import asyncio
 import logging
 
 from aiosmtpd.controller import Controller
@@ -127,9 +126,13 @@ def split_recipient(address):
 
 class LMTPHandler:
 
-    @asyncio.coroutine
+    async def handle_RCPT(self, server, session, envelope, to, rcpt_options):
+        # Use a helper function to use the transactional wrapper on since it
+        # doesn't yet work on awaitables (async def funcs.)
+        return self._handle_RCPT(server, session, envelope, to, rcpt_options)
+
     @transactional
-    def handle_RCPT(self, server, session, envelope, to, rcpt_options):
+    def _handle_RCPT(self, server, session, envelope, to, rcpt_options):
         listnames = set(getUtility(IListManager).names)
         try:
             to = parseaddr(to)[1].lower()
@@ -165,9 +168,13 @@ class LMTPHandler:
             config.db.abort()
             return ERR_550
 
-    @asyncio.coroutine
+    async def handle_DATA(self, server, session, envelope):
+        # Use a helper function to use the transactional wrapper on since it
+        # doesn't yet work on awaitables (async def funcs.)
+        return self._handle_DATA(server, session, envelope)
+
     @transactional
-    def handle_DATA(self, server, session, envelope):
+    def _handle_DATA(self, server, session, envelope):
         try:
             # Refresh the list of list names every time we process a message
             # since the set of mailing lists could have changed.
