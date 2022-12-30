@@ -414,3 +414,13 @@ class TestCLIMembers(unittest.TestCase):
             'Try \'members --help\' for help.\n\n'
             'Error: The --regular, --digest and --nomail options are '
             'incompatible with role=any.\n')
+
+    def test_non_ascii_display_name(self):
+        subscribe(self._mlist, 'Bögüs', role=MemberRole.member)
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Bögüs Person <bperson@example.com>\n')

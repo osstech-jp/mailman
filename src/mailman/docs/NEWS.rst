@@ -24,6 +24,12 @@ Bugs fixed
   caught and handled appropriately.  (Closes #1046)
 
 
+Command line
+------------
+* The ``mailman members`` command no longer RFC 2047 encodes non-ascii display
+  names.  (Closes #1048)
+
+
 Performance
 -----------
 * Improve the performance of Held message handling by reducing the total
