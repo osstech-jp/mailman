@@ -19,7 +19,6 @@
 
 import click
 
-from email.utils import formataddr
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
@@ -104,10 +103,10 @@ def display_members(ctx, mlist, role, regular, digest,
         if nomail is not None:
             if member.delivery_status not in status_types:
                 continue
-        if email_only:
+        if email_only or not address.display_name:
             print(address.original_email, file=outfp)
         else:
-            print(formataddr((address.display_name, address.original_email)),
+            print(f'{address.display_name} <{address.original_email}>',
                   file=outfp)
 
 
