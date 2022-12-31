@@ -49,7 +49,7 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         self._mlist.send_welcome_message = False
         self._anne = 'anne@example.com'
         self._user_manager = getUtility(IUserManager)
-        self.anne = self._user_manager.create_user(self._anne)
+        self.anne = self._user_manager.create_user(self._anne, 'Ане')
         self.anne.addresses[0].verified_on = now()
         self.anne.preferred_address = self.anne.addresses[0]
         self._mlist.subscribe(self.anne)
@@ -80,7 +80,7 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         pendable = getUtility(IPendings).confirm(workflow.token, expunge=False)
         self.assertEqual(pendable['list_id'], 'test.example.com')
         self.assertEqual(pendable['email'], 'anne@example.com')
-        self.assertEqual(pendable['display_name'], '')
+        self.assertEqual(pendable['display_name'], 'Ане')
         self.assertEqual(pendable['when'], '2005-08-01T07:49:23')
         self.assertEqual(pendable['token_owner'], 'subscriber')
         # The token is still in the database.
@@ -307,11 +307,11 @@ class TestUnSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(
             message['Subject'],
             'New unsubscription request to Test from anne@example.com')
-        self.assertEqual(message.get_payload(), """\
+        self.assertEqual(message.get_payload(decode=True).decode('utf-8'), """\
 Your authorization is required for a mailing list unsubscription
 request approval:
 
-    For:  anne@example.com
+    For:  Ане <anne@example.com>
     List: test@example.com
 """)
         # The state machine stopped at the moderator approval so there will be

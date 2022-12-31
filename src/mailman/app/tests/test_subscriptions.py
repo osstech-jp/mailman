@@ -543,7 +543,8 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         # is so configured, a notification is sent to the list moderators.
         self._mlist.admin_immed_notify = True
         self._mlist.subscription_policy = SubscriptionPolicy.moderate
-        anne = self._user_manager.create_address(self._anne)
+        anne = self._user_manager.create_user(self._anne, 'Ане')
+        set_preferred(anne)
         bart = self._user_manager.create_user('bart@example.com', 'Bart User')
         address = set_preferred(bart)
         self._mlist.subscribe(address, MemberRole.moderator)
@@ -567,11 +568,11 @@ class TestSubscriptionWorkflow(unittest.TestCase):
         self.assertEqual(
             message['Subject'],
             'New subscription request to Test from anne@example.com')
-        self.assertEqual(message.get_payload(), """\
+        self.assertEqual(message.get_payload(decode=True).decode('utf-8'), """\
 Your authorization is required for a mailing list subscription request
 approval:
 
-    For:  anne@example.com
+    For:  Ане <anne@example.com>
     List: test@example.com
 """)
         # The state machine stopped at the moderator approval so there will be

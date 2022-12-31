@@ -24,6 +24,8 @@ Bugs fixed
   caught and handled appropriately.  (Closes #1046)
 * Rejection notices for a message with an RFC 2047 encoded Subject: now display
   the decoded subject.  (Closes #672)
+* Don't RFC 2047 encode display names in UserNotifications. Allow sending
+  utf-8 encoded notifications.  (Closes #673)
 
 
 Command line
