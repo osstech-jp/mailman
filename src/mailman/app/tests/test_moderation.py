@@ -271,6 +271,21 @@ Message-ID: <alpha>
         self.assertIsNone(pendings.confirm(hash))
         self.assertIsNone(pendings.confirm(user_hash))
 
+    def test_rejection_subject_decoded(self):
+        # Test that a rejected message with an RFC 2047 encoded Subject: has
+        # the Subject: decoded for the rejection
+        del self._msg['subject']
+        self._msg['Subject'] = '=?utf-8?q?hold_me?='
+        request_id = hold_message(self._mlist, self._msg)
+        handle_message(self._mlist, request_id, Action.reject)
+        # The rejected message lives in the virgin queue.
+        items = get_queue_messages('virgin', expected_count=1)
+        rejection = items[0].msg
+        self.assertEqual(str(rejection['subject']),
+                         'Request to mailing list "Test" rejected')
+        self.assertIn('Posting of your message titled "hold me"',
+                      rejection.get_payload())
+
 
 class TestUnsubscription(unittest.TestCase):
     """Test unsubscription requests."""

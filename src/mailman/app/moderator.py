@@ -34,7 +34,7 @@ from mailman.interfaces.pending import IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.interfaces.template import ITemplateLoader
 from mailman.utilities.datetime import now
-from mailman.utilities.string import expand, wrap
+from mailman.utilities.string import expand, oneline, wrap
 from public import public
 from zope.component import getUtility
 
@@ -114,7 +114,8 @@ def handle_message(mlist, id, action, comment=None, forward=None):
     rejection = None
     message_id = msgdata['_mod_message_id']
     sender = msgdata['_mod_sender']
-    subject = msgdata['_mod_subject']
+    # Decode the Subject: if necessary.
+    subject = oneline(msgdata['_mod_subject'], in_unicode=True)
     keep = False
     if action in (Action.defer, Action.hold):
         # Nothing to do, but preserve the message for later.
@@ -130,7 +131,7 @@ def handle_message(mlist, id, action, comment=None, forward=None):
             language = None
         send_rejection(
             mlist, _('Posting of your message titled "${subject}"'),
-            sender, comment or _('[No reason given]'), language)
+            sender, comment or _('[No reason given]'), lang=language)
     elif action is Action.accept:
         # Start by getting the message from the message store.
         msg = message_store.get_message_by_id(message_id)
