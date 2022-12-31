@@ -22,6 +22,8 @@ Bugs fixed
   the generated postfix_lmtp file.  (Closes #1044)
 * An uncaught passlib.exc.UnknownHashError in utilities/passwords.py is now
   caught and handled appropriately.  (Closes #1046)
+* Rejection notices for a message with an RFC 2047 encoded Subject: now display
+  the decoded subject.  (Closes #672)
 
 
 Command line
