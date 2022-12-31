@@ -20,7 +20,6 @@
 import uuid
 import logging
 
-from email.utils import formataddr
 from enum import Enum
 from lazr.config import as_boolean
 from mailman.app.membership import delete_member
@@ -328,8 +327,9 @@ class SubscriptionWorkflow(_SubscriptionWorkflowCommon):
             subject = _(
                 'New subscription request to ${self.mlist.display_name} '
                 'from ${self.address.email}')
-            username = formataddr(
-                (self.subscriber.display_name, self.address.email))
+            username =\
+                f'{self.subscriber.display_name} <{self.address.email}>'\
+                if self.subscriber.display_name else self.address.email
             template = getUtility(ITemplateLoader).get(
                 'list:admin:action:subscribe', self.mlist)
             text = wrap(expand(template, self.mlist, dict(
@@ -496,8 +496,9 @@ class UnSubscriptionWorkflow(_SubscriptionWorkflowCommon):
             subject = _(
                 'New unsubscription request to ${self.mlist.display_name} '
                 'from ${self.address.email}')
-            username = formataddr(
-                (self.subscriber.display_name, self.address.email))
+            username =\
+                f'{self.subscriber.display_name} <{self.address.email}>'\
+                if self.subscriber.display_name else self.address.email
             template = getUtility(ITemplateLoader).get(
                 'list:admin:action:unsubscribe', self.mlist)
             text = wrap(expand(template, self.mlist, dict(

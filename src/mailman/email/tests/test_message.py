@@ -125,7 +125,8 @@ Test content
             'test@example.com',
             'Something you need to know',
             'Non-ascii text é.')
-        self.assertEqual(msg.get_payload(), 'Non-ascii text ?.')
+        self.assertEqual(msg.get_payload(decode=True).decode(),
+                         'Non-ascii text é.')
 
     def test_as_string_python_bug_27321(self):
         # Bug 27321 is fixed in Python 3.8.7rc1, 3.9.1rc1 and later.
