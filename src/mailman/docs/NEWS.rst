@@ -26,6 +26,7 @@ Bugs fixed
   the decoded subject.  (Closes #672)
 * Don't RFC 2047 encode display names in UserNotifications. Allow sending
   utf-8 encoded notifications.  (Closes #673)
+* Don't replace non-ascii in subjects in notifications.  (Closes #673)
 
 
 Command line

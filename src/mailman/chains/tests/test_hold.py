@@ -172,6 +172,7 @@ A message body.
 
     def test_hold_chain_charset(self):
         # Issue #144 - UnicodeEncodeError in the hold chain.
+        # Also, issue # 673 use UTF-8 rather than replace.
         self._mlist.admin_immed_notify = True
         self._mlist.respond_to_post_requests = False
         bart = self._user_manager.create_user('bart@example.com', 'Bart User')
@@ -189,14 +190,36 @@ A message body.
         # Ensure that the subject looks correct in the postauth.txt.
         msg = items[0].msg
         value = None
-        for line in msg.get_payload(0).get_payload().splitlines():
+        payload = msg.get_payload(0).get_payload(decode=True).decode('utf-8')
+        for line in payload.splitlines():
             if line.strip().startswith('Subject:'):
                 header, colon, value = line.partition(':')
                 break
-        self.assertEqual(value.lstrip(), 'Vi?enamjenski pi?tolj za vodu 8/1')
+        self.assertEqual(value.lstrip(), 'Višenamjenski pištolj za vodu 8/1')
         self.assertEqual(
             msg['Subject'],
             'test@example.com post from anne@example.com requires approval')
+
+    def test_hold_chain_charset_user(self):
+        # Issue # 673 use UTF-8 rather than replace in user notice.
+        self._mlist.admin_immed_notify = False
+        self._mlist.respond_to_post_requests = True
+        msg = mfb(read_binary('mailman.chains.tests', 'issue144.eml'))
+        msg.sender = 'anne@example.com'
+        process_chain(self._mlist, msg, {}, start_chain='hold')
+        # The user notice message is now in the virgin queue awaiting
+        # delivery to the user.
+        items = get_queue_messages('virgin', expected_count=1)
+        msgdata = items[0].msgdata
+        # Should get sent to -owner address.
+        self.assertEqual(msgdata['recipients'], {'anne@example.com'})
+        # Ensure that the subject looks correct in the postauth.txt.
+        msg = items[0].msg
+        payload = msg.get_payload(decode=True).decode('utf-8')
+        self.assertIn('Višenamjenski pištolj za vodu 8/1', payload)
+        self.assertEqual(
+            msg['Subject'],
+            'Your message to test@example.com awaits moderator approval')
 
     def test_hold_chain_crosspost(self):
         mlist2 = create_list('test2@example.com')

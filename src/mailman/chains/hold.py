@@ -162,12 +162,15 @@ class HoldChain(TerminalChainBase):
         if original_subject is None:
             original_subject = _('(no subject)')
         else:
-            # This must be encoded to the mailing list's perferred charset,
-            # ignoring incompatible characters, otherwise when creating the
-            # notification messages, we could get a Unicode error.
+            # We try to encode to the mailing list's perferred charset,
+            # but if we can't, we leave it as is because notificatuins can now
+            # be sent as utf-8 if necessary.
             oneline_subject = oneline(original_subject, in_unicode=True)
-            bytes_subject = oneline_subject.encode(charset, 'replace')
-            original_subject = bytes_subject.decode(charset)
+            try:
+                bytes_subject = oneline_subject.encode(charset)
+                original_subject = bytes_subject.decode(charset)
+            except UnicodeError:
+                original_subject = oneline_subject
         substitutions = dict(
             subject=original_subject,
             sender_email=msg.sender,
@@ -233,8 +236,13 @@ class HoldChain(TerminalChainBase):
                 nmsg.set_type('multipart/mixed')
                 template = getUtility(ITemplateLoader).get(
                     'list:admin:action:post', mlist)
-                text = MIMEText(expand(template, mlist, substitutions),
-                                _charset=charset)
+                try:
+                    text = MIMEText(expand(template, mlist, substitutions),
+                                    _charset=charset)
+                except UnicodeError:
+                    # Fall back to utf-8 if necessary.
+                    text = MIMEText(expand(template, mlist, substitutions),
+                                    _charset='utf-8')
                 dmsg = MIMEText(wrap(_("""\
 If you reply to this message, keeping the Subject: header intact, Mailman will
 discard the held message.  Do this if the message is spam.  If you reply to
