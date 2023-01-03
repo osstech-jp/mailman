@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2023-01-03 17:17+0000\n"
+"PO-Revision-Date: 2023-01-03 18:05+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/es/>\n"
@@ -1365,6 +1365,8 @@ msgid ""
 "    Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
+"    Muestra la salida en FILENAME en lugar de stdout.  FILENAME\n"
+"    puede ser '-' para indicar salida estándar."
 
 #: src/mailman/commands/cli_members.py:147
 msgid ""
@@ -1373,14 +1375,21 @@ msgid ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then 'member' role is assumed."
 msgstr ""
+"    Mostrar solo miembros con un ROL dado.\n"
+"    El rol puede ser 'cualquiera', 'miembro', 'no miembro', 'propietario', "
+"'moderador',\n"
+"    o 'administrador' (es decir, propietarios y moderadores).\n"
+"    Si no se proporciona, se asume el rol de 'menber'."
 
 #: src/mailman/commands/cli_members.py:155
 msgid "    Display only regular delivery members."
-msgstr ""
+msgstr "    Solo se muestran los miembros con envíos regulares."
 
 #: src/mailman/commands/cli_members.py:166
 msgid "    This option has no effect. It exists for backwards compatibility only."
 msgstr ""
+"    Esta opción no tiene ningún efecto. Existe solo para compatibilidad con "
+"versiones anteriores."
 
 #: src/mailman/commands/cli_members.py:172
 msgid ""
