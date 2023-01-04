@@ -175,6 +175,7 @@ class TestSystemConfiguration(unittest.TestCase):
             'logging.debug',
             'logging.error',
             'logging.fromusenet',
+            'logging.gunicorn',
             'logging.http',
             'logging.locks',
             'logging.mischief',

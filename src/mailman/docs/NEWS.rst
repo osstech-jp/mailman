@@ -11,7 +11,14 @@ Here is a history of user visible changes to Mailman.
 
 3.3.9
 =====
+Configuration
+-------------
 
+* **BREAKING CHANGE**: ``logging.http`` section has now been split into two
+  parts, ``logging.http`` is for the Mailman internal code and
+  ``logging.gunicorn`` is for Gunicorn specifically since they have
+  different logging formats. This should fix suprious errors with
+  ``KeyError: t`` that was often confusing for users. (Fixes #1049)
 
 .. _news-3.3.8:
 
