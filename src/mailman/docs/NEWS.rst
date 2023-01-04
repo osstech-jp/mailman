@@ -13,7 +13,7 @@ Here is a history of user visible changes to Mailman.
 3.3.8
 =====
 
-(xxxx-xx-xx)
+(2023-01-04)
 
 Bugs fixed
 ----------
