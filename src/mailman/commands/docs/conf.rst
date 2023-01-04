@@ -46,6 +46,7 @@ key, along with the names of the corresponding sections.
     [logging.debug] path: debug.log
     [logging.error] path: mailman.log
     [logging.fromusenet] path: mailman.log
+    [logging.gunicorn] path: mailman.log
     [logging.http] path: mailman.log
     [logging.locks] path: mailman.log
     [logging.mischief] path: mailman.log

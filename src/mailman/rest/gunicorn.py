@@ -63,13 +63,13 @@ def make_gunicorn_server():
     # some logging options since gunicorn sets up it's own loggers.
     host = config.webservice.hostname
     port = int(config.webservice.port)
-    log_path = os.path.join(config.LOG_DIR, config.logging.http['path'])
+    log_path = os.path.join(config.LOG_DIR, config.logging.gunicorn['path'])
     options = {
         'bind': '{}:{}'.format(host, port),
         'accesslog': log_path,
         'errorlog': log_path,
-        'loglevel': config.logging.http['level'],
-        'access_log_format': config.logging.http['format'],
+        'loglevel': config.logging.gunicorn['level'],
+        'access_log_format': config.logging.gunicorn['format'],
         'disable_redirect_access_to_syslog': True,
         'workers': int(config.webservice.workers),
         'post_worker_init': _post_worker_init,
