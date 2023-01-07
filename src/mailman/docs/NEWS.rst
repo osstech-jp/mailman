@@ -20,6 +20,11 @@ Configuration
   different logging formats. This should fix suprious errors with
   ``KeyError: t`` that was often confusing for users. (Fixes #1049)
 
+Bugs fixed
+----------
+* ``config.mta.remove_dkim_headers`` now applies to messages to -owner.
+  (Closes #1053)
+
 .. _news-3.3.8:
 
 3.3.8

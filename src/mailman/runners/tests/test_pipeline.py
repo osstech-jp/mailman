@@ -25,6 +25,8 @@ from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import IPipeline
 from mailman.runners.pipeline import PipelineRunner
 from mailman.testing.helpers import (
+    configuration,
+    get_queue_messages,
     make_testable_runner,
     specialized_message_from_string as mfs,
 )
@@ -105,3 +107,15 @@ To: test@example.com
         self._pipeline.run()
         self.assertEqual(len(self._markers), 1)
         self.assertEqual(self._markers[0], 'owner')
+
+    def test_cleanse_owner(self):
+        # The owner pipeline honors remove_dkim_headers.
+        msgdata = dict(listid='test.example.com',
+                       to_owner=True)
+        self._msg['DKIM-Signature'] = 'just testing'
+        self._mlist.owner_pipeline = 'default-owner-pipeline'
+        config.switchboards['pipeline'].enqueue(self._msg, msgdata)
+        with configuration('mta', remove_dkim_headers='yes'):
+            self._pipeline.run()
+        item = get_queue_messages('out', expected_count=1)[0]
+        self.assertIsNone(item.msg.get('DKIM-Signature'))

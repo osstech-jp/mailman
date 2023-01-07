@@ -30,6 +30,7 @@ class OwnerPipeline(BasePipeline):
     description = _('The built-in owner pipeline.')
 
     _default_handlers = (
+        'cleanse-dkim',
         'owner-recipients',
         'to-outgoing',
         )
