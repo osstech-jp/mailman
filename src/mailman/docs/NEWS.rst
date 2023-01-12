@@ -24,6 +24,8 @@ Bugs fixed
 ----------
 * ``config.mta.remove_dkim_headers`` now applies to messages to -owner.
   (Closes #1053)
+* The master process now robustly detects when runner processes
+  terminate and restarts them (Closes #898).
 
 .. _news-3.3.8:
 

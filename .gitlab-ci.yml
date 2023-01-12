@@ -112,7 +112,7 @@ mysql-39:
 
 diffcov:
   script:
-  - git config --global --add safe.directory /builds/mailman/mailman
+  - git config --global --add safe.directory "/builds/${CI_PROJECT_NAMESPACE}/mailman"
   - git config safe.directory
   - tox -e py37-diffcov
   only:
