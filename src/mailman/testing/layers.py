@@ -162,12 +162,16 @@ class ConfigLayer(MockAndMonkeyLayer):
             # debugging because it's just too verbose.  Unfortunately, if you
             # do want that level of debugging you currently have to manually
             # modify this conditional.
-            if cls.stderr and sub_name != 'database':
+            if sub_name != 'database':
                 test_config += expand(dedent("""
                 [logging.$name]
-                propagate: yes
-                level: debug
-                """), None, dict(name=sub_name, path=path))
+                path: $path
+                $extra_verbose
+                """), None, dict(name=sub_name, path=path,
+                                 extra_verbose=dedent("""
+                                     propagate: yes
+                                     level: debug
+                                     """) if cls.stderr else ""))
         # The root logger will already have a handler, but it's not the right
         # handler.  Remove that and set our own.
         if cls.stderr:

@@ -18,6 +18,8 @@
 """Test master watcher utilities."""
 
 import os
+import time
+import signal
 import tempfile
 import unittest
 
@@ -29,6 +31,7 @@ from importlib_resources import path
 from io import StringIO
 from mailman.bin import master
 from mailman.config import config
+from mailman.testing.helpers import LogFileMark, TestableMaster
 from mailman.testing.layers import ConfigLayer
 from unittest.mock import patch
 
@@ -135,3 +138,216 @@ Exiting.
             # We created a non-restartable loop.
             start_mock.assert_called_once_with([('in', 1, 1)])
             loop_mock.assert_called_once_with()
+
+    def test_sighup_handler(self):
+        """Invokes the SIGHUP handler.
+
+        This sends SIGHUPs to the runners.  Unfortunately, there is no
+        easy way to test whether that actually happens.  We'd need a
+        specialized runner for that.
+
+        """
+        m = TestableMaster()
+        mark = LogFileMark('mailman.runner')
+        m.start('command')
+        self.assertEqual(len(list(m._kids)), 1)
+
+        # We need to give the runner some time to install the signal
+        # handler.  If we send SIGHUP before it does, the default
+        # action is to terminate the process.  We wait until we see
+        # that the runner has done so by inspecting the log file.
+        # This is race free, and bounded in time.
+        start = time.time()
+        while ("runner started." not in mark.read()
+               and time.time() - start < 10):
+            time.sleep(0.1)
+
+        mark = LogFileMark('mailman.runner')
+        m._sighup_handler(None, None)
+
+        # Check if the runner reopened the log.
+        start = time.time()
+        needle = "command runner caught SIGHUP.  Reopening logs."
+        while (needle not in mark.read()
+               and time.time() - start < 10):
+            time.sleep(0.1)
+        self.assertIn(needle, mark.read())
+
+        # Just to make sure it didn't die.
+        self.assertEqual(len(list(m._kids)), 1)
+        m.stop()
+
+    def test_sigusr1_handler(self):
+        """Invokes the SIGUSR1 handler.
+
+        We then check whether the runners restart.
+        """
+        m = TestableMaster()
+        m._restartable = True
+        mark = LogFileMark('mailman.runner')
+        m.start('command')
+        kids = list(m._kids)
+        self.assertEqual(len(kids), 1)
+        old_kid = kids[0]
+
+        # We need to give the runner some time to install the signal
+        # handler.  If we send SIGUSR1 before it does, the default
+        # action is to terminate the process.  We wait until we see
+        # that the runner has done so by inspecting the log file.
+        # This is race free, and bounded in time.
+        start = time.time()
+        while ("runner started." not in mark.read()
+               and time.time() - start < 10):
+            time.sleep(0.1)
+
+        # Invoke the handler in a loop.  This is race free, and
+        # bounded in time.
+        start = time.time()
+        mark = LogFileMark('mailman.runner')
+        while old_kid in set(m._kids) and time.time() - start < 10:
+            # We must not send signals in rapid succession, because
+            # the behavior of signals arriving while the process is in
+            # the signal handler varies.  Linux implements System V
+            # semantics, which means the default signal action is
+            # restored for the duration of the signal handler.  In
+            # this case it means to terminate the process.
+            time.sleep(1)
+            m._sigusr1_handler(None, None)
+
+        # Check if the runner got the signal.
+        start = time.time()
+        needle = "command runner caught SIGUSR1.  Stopping."
+        while (needle not in mark.read()
+               and time.time() - start < 10):
+            time.sleep(0.1)
+        self.assertIn(needle, mark.read())
+
+        new_kids = list(m._kids)
+        self.assertEqual(len(new_kids), 1)
+        self.assertTrue(kids[0] != new_kids[0])
+        m._restartable = False
+        for pid in new_kids:
+            try:
+                os.kill(pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+        m.thread.join()
+        m.cleanup()
+
+    def test_sigterm_handler(self):
+        """Invokes the SIGTERM handler.
+
+        We then check whether the runners are actually stopped.
+        """
+        m = TestableMaster()
+        mark = LogFileMark('mailman.runner')
+        m.start('command')
+        kids = list(m._kids)
+        self.assertEqual(len(kids), 1)
+        old_kid = kids[0]
+
+        # We need to give the runner some time to install the signal
+        # handler.  If we send SIGTERM before it does, the default
+        # action is to terminate the process and will return a
+        # slightly different status code.  We wait until we see that
+        # the runner has done so by inspecting the log file.  This is
+        # race free, and bounded in time.
+        start = time.time()
+        while ("runner started." not in mark.read()
+               and time.time() - start < 10):
+            time.sleep(0.1)
+
+        # Invoke the handler in a loop.  This is race free, and
+        # bounded in time.
+        start = time.time()
+        mark = LogFileMark('mailman.runner')
+        while old_kid in set(m._kids) and time.time() - start < 10:
+            time.sleep(0.1)
+            m._sigterm_handler(None, None)
+
+        # Check if the runner got the signal.
+        start = time.time()
+        needle = "command runner caught SIGTERM.  Stopping."
+        while (needle not in mark.read()
+               and time.time() - start < 10):
+            time.sleep(0.1)
+        self.assertIn(needle, mark.read())
+
+        m.thread.join()
+        self.assertEqual(len(list(m._kids)), 0)
+        m.cleanup()
+
+    def test_sigint_handler(self):
+        """Invokes the SIGINT handler.
+
+        We then check whether the runners are actually stopped.
+        """
+        m = TestableMaster()
+        mark = LogFileMark('mailman.runner')
+        m.start('command')
+        self.assertEqual(len(list(m._kids)), 1)
+
+        kids = list(m._kids)
+        self.assertEqual(len(kids), 1)
+        old_kid = kids[0]
+
+        # We need to give the runner some time to install the signal
+        # handler.  If we send SIGINT before it does, the default
+        # action is to terminate the process and will return a
+        # slightly different status code.  We wait until we see that
+        # the runner has done so by inspecting the log file.  This is
+        # race free, and bounded in time.
+        start = time.time()
+        while ("runner started." not in mark.read()
+               and time.time() - start < 10):
+            time.sleep(0.1)
+
+        # Invoke the handler in a loop.  This is race free, and
+        # bounded in time.
+        start = time.time()
+        mark = LogFileMark('mailman.runner')
+        while old_kid in set(m._kids) and time.time() - start < 10:
+            time.sleep(0.1)
+            m._sigint_handler(None, None)
+
+        # Check if the runner got the signal.
+        start = time.time()
+        needle = "command runner caught SIGINT.  Stopping."
+        while (needle not in mark.read()
+               and time.time() - start < 10):
+            time.sleep(0.1)
+        self.assertIn(needle, mark.read())
+
+        m.thread.join()
+        self.assertEqual(len(list(m._kids)), 0)
+        m.cleanup()
+
+    def test_runner_restart_on_sigkill(self):
+        """Kills a runner with SIGKILL and see if it restarted."""
+        m = TestableMaster()
+        m._restartable = True
+        m.start('command')
+        kids = list(m._kids)
+        self.assertEqual(len(kids), 1)
+        old_kid = kids[0]
+
+        # Kill it.  No need to wait for anything as this cannot be
+        # caught anyway.
+        os.kill(old_kid, signal.SIGKILL)
+
+        # But, we need to wait for the master to collect it.
+        start = time.time()
+        while old_kid in set(m._kids) and time.time() - start < 10:
+            time.sleep(0.1)
+
+        new_kids = list(m._kids)
+        self.assertEqual(len(new_kids), 1)
+        self.assertTrue(old_kid != new_kids[0])
+        m._restartable = False
+        for pid in new_kids:
+            try:
+                os.kill(pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+        m.thread.join()
+        m.cleanup()

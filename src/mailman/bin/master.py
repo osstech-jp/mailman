@@ -257,6 +257,7 @@ class Loop:
     """Main control loop class."""
 
     def __init__(self, lock=None, restartable=None, config_file=None):
+        self._log = logging.getLogger('mailman.runner')
         self._lock = lock
         self._restartable = restartable
         self._config_file = config_file
@@ -264,7 +265,6 @@ class Loop:
 
     def install_signal_handlers(self):
         """Install various signals handlers for control from the master."""
-        log = logging.getLogger('mailman.runner')
         # Set up our signal handlers.  Also set up a SIGALRM handler to
         # refresh the lock once per day.  The lock lifetime is 1 day + 6 hours
         # so this should be plenty.
@@ -273,32 +273,64 @@ class Loop:
             signal.alarm(SECONDS_IN_A_DAY)
         signal.signal(signal.SIGALRM, sigalrm_handler)
         signal.alarm(SECONDS_IN_A_DAY)
-        # SIGHUP tells the runners to close and reopen their log files.
-        def sighup_handler(signum, frame):                        # noqa: E306
-            reopen()
-            for pid in self._kids:
+        signal.signal(signal.SIGHUP, self._sighup_handler)
+        signal.signal(signal.SIGUSR1, self._sigusr1_handler)
+        signal.signal(signal.SIGTERM, self._sigterm_handler)
+        signal.signal(signal.SIGINT, self._sigint_handler)
+
+    def _sighup_handler(self, signum, frame):
+        """Handles SIGHUP.
+
+        SIGHUP tells the runners to close and reopen their log files.
+        """
+        reopen()
+        for pid in self._kids:
+            try:
                 os.kill(pid, signal.SIGHUP)
-            log.info('Master watcher caught SIGHUP.  Re-opening log files.')
-        signal.signal(signal.SIGHUP, sighup_handler)
-        # SIGUSR1 is used by 'mailman restart'.
-        def sigusr1_handler(signum, frame):                       # noqa: E306
-            for pid in self._kids:
+            except ProcessLookupError:                       # pragma: nocover
+                pass
+        self._log.info('Master watcher caught SIGHUP.  Re-opening log files.')
+
+    def _sigusr1_handler(self, signum, frame):
+        """Handles SIGUSR1.
+
+        SIGUSR1 is used by 'mailman restart'.
+        """
+        for pid in self._kids:
+            try:
                 os.kill(pid, signal.SIGUSR1)
-            log.info('Master watcher caught SIGUSR1.  Exiting.')
-        signal.signal(signal.SIGUSR1, sigusr1_handler)
-        # SIGTERM is what init will kill this process with when changing run
-        # levels.  It's also the signal 'mailman stop' uses.
-        def sigterm_handler(signum, frame):                       # noqa: E306
-            for pid in self._kids:
+            except ProcessLookupError:                       # pragma: nocover
+                pass
+        self._log.info('Master watcher caught SIGUSR1.  Restarting.')
+
+    def _sigterm_handler(self, signum, frame):
+        """Handles SIGTERM.
+
+        SIGTERM is what init will kill this process with when changing
+        run levels.  It's also the signal 'mailman stop' uses.
+        """
+        # Clear the flag so that we won't try to restart the runners.
+        self._restartable = False
+        for pid in self._kids:
+            try:
                 os.kill(pid, signal.SIGTERM)
-            log.info('Master watcher caught SIGTERM.  Exiting.')
-        signal.signal(signal.SIGTERM, sigterm_handler)
-        # SIGINT is what control-C gives.
-        def sigint_handler(signum, frame):                        # noqa: E306
-            for pid in self._kids:
+            except ProcessLookupError:                       # pragma: nocover
+                pass
+        self._log.info('Master watcher caught SIGTERM.  Exiting.')
+
+    def _sigint_handler(self, signum, frame):
+        """Handles SIGINT.
+
+        SIGINT is what control-C gives.
+        """
+        # Clear the flag so that we won't try to restart the runners.
+        self._restartable = False
+        for pid in self._kids:
+            try:
                 os.kill(pid, signal.SIGINT)
-            log.info('Master watcher caught SIGINT.  Restarting.')
-        signal.signal(signal.SIGINT, sigint_handler)
+            except ProcessLookupError:                       # pragma: nocover
+                pass
+        self._log.info('Master watcher caught SIGINT.  Exiting.')
 
     def _start_runner(self, spec):
         """Start a runner.
@@ -392,8 +424,14 @@ class Loop:
         """Sleep until a signal is received."""
         # Sleep until a signal is received.  This prevents the master from
         # exiting immediately even if there are no runners (as happens in the
-        # test suite).
+        # test suite).  We install a handler for SIGCHLD so that pause(2)
+        # will return control to us.
+        signal.signal(signal.SIGCHLD,
+                      lambda sig, stack: None)               # pragma: nocover
         signal.pause()
+        # Note: We cannot set the signal handler to SIG_IGN again,
+        # because since POSIX.1-2001 this changes the semantics of
+        # wait(2) to not return until all children have exited.
 
     def loop(self):
         """Main loop.
@@ -434,11 +472,20 @@ class Loop:
             # runaway restarts (e.g.  if the subprocess had a syntax error!)
             rname, slice_number, count, restarts = self._kids.pop(pid)
             config_name = 'runner.' + rname
-            restart = False
-            if why == signal.SIGUSR1 and self._restartable:  # pragma: nocover
-                restart = True
+            restart = self._restartable
+            # Don't restart if the runner explicitly asks not to be
+            # restarted.
+            if why == signal.SIGTERM:
+                # Note: See bin/runner.py and core/runner.py where
+                # this signaling is used.
+                restart = False
             # Have we hit the maximum number of restarts?
-            restarts += 1
+            if not why == signal.SIGUSR1:
+                # Note: Explicit restarts using SIGUSR1 should not be
+                # counted here, because max_restarts only limits the
+                # number of automated restarts (see
+                # mailman/config/schema.cfg).
+                restarts += 1
             max_restarts = int(getattr(config, config_name).max_restarts)
             if restarts > max_restarts:
                 restart = False
