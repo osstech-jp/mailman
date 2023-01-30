@@ -26,6 +26,8 @@ Bugs fixed
   (Closes #1053)
 * The master process now robustly detects when runner processes
   terminate and restarts them (Closes #898).
+* Setting Postfix transport_file_type: regex without setting something for
+  postmap_command: no longer throws an exception.  (Closes #1058)
 
 .. _news-3.3.8:
 
