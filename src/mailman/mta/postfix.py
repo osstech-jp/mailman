@@ -84,9 +84,10 @@ class LMTP:
     def __init__(self):
         # Locate and read the Postfix specific configuration file.
         mta_config = external_configuration(config.mta.configuration)
-        self.postmap_command = mta_config.get('postfix', 'postmap_command')
         self.transport_file_type = mta_config.get(
             'postfix', 'transport_file_type')
+        if self.transport_file_type == 'hash':
+            self.postmap_command = mta_config.get('postfix', 'postmap_command')
 
     def create(self, mlist):
         """See `IMailTransportAgentLifecycle`."""
