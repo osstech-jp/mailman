@@ -183,7 +183,12 @@ strictly needed (but it is harmless).  All you need to do in this scenario is
 to make sure that Postfix accepts mail for your one domain, normally by
 including it in ``mydestination``.
 
-Regular Expression tables remove the additional dependency of having ``postmap``
+
+Regular Expression Tables
+-------------------------
+
+Regular Expression tables are less efficient than hash tables, but they
+remove the additional dependency of having ``postmap``
 command available to Mailman. If you want to use ``regexp`` or Regular
 Expression tables, then add the following to Postfix's ``main.cf`` file::
 
