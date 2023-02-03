@@ -170,8 +170,9 @@ If the ``bounce_score`` reaches the Mailinglist's configured
     >>> event = processor.register(
     ...     mlist, 'bart@example.com', msg, BounceContext.normal)
     >>> processor.process_event(event)
+    >>> # Disabling delivery resets the score.
     >>> print(bart_member.bounce_score)
-    5
+    0
     >>> print(bart_member.preferences.delivery_status)
     DeliveryStatus.by_bounces
 

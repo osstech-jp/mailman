@@ -473,7 +473,8 @@ Message-Id: <first>
         anne.bounce_score = 2
         anne.last_bounce_received = now() - timedelta(days=2)
         self._runner.run()
-        self.assertEqual(anne.bounce_score, 3)
+        # Score is reset when delovery is disabled.
+        self.assertEqual(anne.bounce_score, 0)
         self.assertEqual(
             anne.preferences.delivery_status, DeliveryStatus.by_bounces)
         # There should also be a pending notification for the list
