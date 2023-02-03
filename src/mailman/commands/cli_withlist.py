@@ -22,7 +22,6 @@ import sys
 import click
 
 from contextlib import ExitStack, suppress
-from functools import partial
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.core.i18n import _
@@ -57,12 +56,11 @@ def start_ipython1(overrides, banner, *, debug=False):
 def start_ipython4(overrides, banner, *, debug=False):
     try:
         from IPython.terminal.embed import InteractiveShellEmbed
-        shell = InteractiveShellEmbed.instance()
     except ImportError:
         if debug:
             print_exc()
         return None
-    return partial(shell.mainloop, local_ns=overrides, display_banner=banner)
+    return InteractiveShellEmbed.instance(banner1=banner, user_ns=overrides)
 
 
 def start_ipython(overrides, banner, debug):
