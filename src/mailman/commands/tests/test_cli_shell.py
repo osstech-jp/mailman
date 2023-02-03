@@ -79,9 +79,9 @@ class TestShell(unittest.TestCase):
         mock = MagicMock()
         with hacked_sys_modules('IPython.terminal.embed', mock):
             self._command.invoke(shell, ('--interactive',))
-        posargs, kws = mock.InteractiveShellEmbed.instance().mainloop.call_args
+        posargs, kws = mock.InteractiveShellEmbed.instance.call_args
         self.assertEqual(
-            kws['display_banner'], """Welcome to the GNU Mailman shell
+            kws['banner1'], """Welcome to the GNU Mailman shell
 Use commit() to commit changes.
 Use abort() to discard changes since the last commit.
 Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
@@ -103,9 +103,9 @@ Exit with ctrl+D does an implicit commit() but exit() does not.\n""")
         mock = MagicMock()
         with hacked_sys_modules('IPython.terminal.embed', mock):
             self._command.invoke(shell, ('--interactive',))
-        posargs, kws = mock.InteractiveShellEmbed.instance().mainloop.call_args
+        posargs, kws = mock.InteractiveShellEmbed.instance.call_args
         self.assertEqual(
-            kws['display_banner'], """Welcome to the GNU Mailman shell
+            kws['banner1'], """Welcome to the GNU Mailman shell
 Use commit() to commit changes.
 Use abort() to discard changes since the last commit.
 Exit with ctrl+D does an implicit commit() but exit() does not.\n""")

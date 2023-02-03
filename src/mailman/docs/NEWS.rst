@@ -30,6 +30,8 @@ Bugs fixed
   postmap_command: no longer throws an exception.  (Closes #1058)
 * When bounce processing disables delivery for a user, the user's score is
   reset so it will be zero if delivery is enabled.  (Closes #1061)
+* The ``mailman shell`` command now works and displays the banner with
+  ``use_ipython: yes``.  (Closes #1062)
 
 .. _news-3.3.8:
 
