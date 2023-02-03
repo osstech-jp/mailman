@@ -28,6 +28,8 @@ Bugs fixed
   terminate and restarts them (Closes #898).
 * Setting Postfix transport_file_type: regex without setting something for
   postmap_command: no longer throws an exception.  (Closes #1058)
+* When bounce processing disables delivery for a user, the user's score is
+  reset so it will be zero if delivery is enabled.  (Closes #1061)
 
 .. _news-3.3.8:
 

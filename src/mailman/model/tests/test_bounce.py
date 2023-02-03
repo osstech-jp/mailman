@@ -202,9 +202,10 @@ Message-Id: <first>
         # Now, process the events and check that user is disabled.
         for event in events:
             self._processor.process_event(event)
-        # The first event scores 1 and disables delivery.  The second is
-        # not processed because delivery is already disabled.
-        self.assertEqual(member.bounce_score, 1)
+        # The first event scores 1 and disables delivery.  Disabling delivery
+        # resets the score. The second is not processed because delivery is
+        # already disabled.
+        self.assertEqual(member.bounce_score, 0)
         self.assertEqual(
             member.preferences.delivery_status, DeliveryStatus.by_bounces)
 
@@ -295,7 +296,8 @@ Message-Id: <first>
         self._process_pending_events()
         self.assertEqual(member.preferences.delivery_status,
                          DeliveryStatus.by_bounces)
-        self.assertEqual(member.bounce_score, 4)
+        # Disabling delivery resets the score.
+        self.assertEqual(member.bounce_score, 0)
 
         self._processor._send_warnings()
         self.assertEqual(member.last_warning_sent.day, now().day)

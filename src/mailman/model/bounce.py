@@ -234,6 +234,9 @@ class BounceProcessor:
                 send_probe(member, msg=msg, message_id=event.message_id)
                 action = 'sending probe'
             else:
+                # Bounce score is reset by sending a probe but needs to be
+                # reset here too.  See #1061.
+                member.bounce_score = 0
                 self._disable_delivery(mlist, member, event)
                 action = 'disabling delivery'
             log.info(
