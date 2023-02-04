@@ -32,6 +32,8 @@ Bugs fixed
   reset so it will be zero if delivery is enabled.  (Closes #1061)
 * The ``mailman shell`` command now works and displays the banner with
   ``use_ipython: yes``.  (Closes #1062)
+* Bogus Message-ID headers that have been observed in the wild are now fixed.
+  (Closes #1065)
 
 .. _news-3.3.8:
 

@@ -34,6 +34,7 @@ so that the peer mail server can provide better diagnostics.
     http://www.faqs.org/rfcs/rfc2033.html
 """
 
+import re
 import email
 import logging
 
@@ -198,6 +199,10 @@ class LMTPHandler:
             # and https://gitlab.com/mailman/mailman/-/issues/490.
             message_id = email.utils.make_msgid()
             msg['Message-ID'] = message_id
+        # Workaround for bogus Message-IDs. See #1065.
+        new_mid = re.sub(r'^<?\[(.*)\]>?', r'<\1>', message_id)
+        if new_mid != message_id:
+            msg.replace_header('Message-ID', new_mid)
         if msg.defects:
             return ERR_501
         msg.original_size = len(envelope.content)
