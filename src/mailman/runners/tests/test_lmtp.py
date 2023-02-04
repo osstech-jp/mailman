@@ -66,6 +66,30 @@ Subject: This has no Message-ID header
         items = get_queue_messages('in', expected_count=1)
         self.assertIsNotNone(items[0].msg.get('message-id'))
 
+    def test_bogus_message_id_is_fixed(self):
+        # fix bogus Message-ID with []
+        self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
+From: anne@example.com
+To: test@example.com
+Subject: Bogus [] Message-ID
+Message-ID: [bogus@example.com]
+
+""")
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual('<bogus@example.com>', items[0].msg.get('message-id'))
+
+    def test_other_bogus_message_id_is_fixed(self):
+        # fix bogus Message-ID with <[]>
+        self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
+From: anne@example.com
+To: test@example.com
+Subject: Bogus <[]> Message-ID
+Message-ID: <[bogus@example.com]>
+
+""")
+        items = get_queue_messages('in', expected_count=1)
+        self.assertEqual('<bogus@example.com>', items[0].msg.get('message-id'))
+
     def test_message_id_hash_is_added(self):
         self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
 From: anne@example.com
