@@ -67,7 +67,8 @@ class Workflow:
         try:
             name, step = self._pop()
             return step()
-        except IndexError:
+        except (IndexError, StopIteration):
+            # Catch StopIteration so it's not logged. See #1059.
             raise StopIteration
         except:                                     # noqa: E722
             log.exception('deque: {}'.format(COMMASPACE.join(self._next)))
