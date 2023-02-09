@@ -34,6 +34,8 @@ Bugs fixed
   ``use_ipython: yes``.  (Closes #1062)
 * Bogus Message-ID headers that have been observed in the wild are now fixed.
   (Closes #1065)
+* Raising StopIteration in a workflow process no longer creates a mailman.error
+  log entry.  (Closes #1059)
 
 .. _news-3.3.8:
 
