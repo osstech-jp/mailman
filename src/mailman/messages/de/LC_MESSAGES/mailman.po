@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2023-02-08 06:24+0000\n"
-"Last-Translator: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>\n"
+"PO-Revision-Date: 2023-02-11 23:42+0000\n"
+"Last-Translator: Lars Vogdt <lars.vogdt@suse.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/de/>\n"
 "Language: de\n"
@@ -1377,6 +1377,8 @@ msgid ""
 "    Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
+"    Leitet die Ausgabe in FILENAME anstelle von stdout um. FILENAME kann '-' "
+"sein, um die Standardausgabe anzugeben."
 
 #: src/mailman/commands/cli_members.py:147
 msgid ""
@@ -1385,14 +1387,21 @@ msgid ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then 'member' role is assumed."
 msgstr ""
+"    Nur Mitglieder mit einer bestimmten ROLLE anzeigen.\n"
+"     Die Rolle kann 'beliebig', 'Mitglied', 'Nichtmitglied', 'Eigentümer', "
+"'Moderator',\n"
+"     oder „Administrator“ (d. h. Eigentümer und Moderatoren) sein.\n"
+"     Wenn nicht angegeben, wird die Rolle „Mitglied“ angenommen."
 
 #: src/mailman/commands/cli_members.py:155
 msgid "    Display only regular delivery members."
-msgstr ""
+msgstr "    Nur Mitglieder mit regelmäßiger Zustellung anzeigen."
 
 #: src/mailman/commands/cli_members.py:166
 msgid "    This option has no effect. It exists for backwards compatibility only."
 msgstr ""
+"    Diese Option hat keine Auswirkung. Sie existiert nur aus Gründen der "
+"Abwärtskompatibilität."
 
 #: src/mailman/commands/cli_members.py:172
 msgid ""
@@ -1400,6 +1409,10 @@ msgid ""
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
+"    Nur Digest-Mitglieder der folgenden Form anzeigen.\n"
+"     'beliebig' bedeutet irgendein Digest-Typ, 'Klartext' bedeutet nur "
+"Klartext (rfc 1153)\n"
+"     Digests vom Typ MIME bedeutet Digests vom MIME-Typ."
 
 #: src/mailman/commands/cli_members.py:180
 msgid ""
@@ -1412,6 +1425,18 @@ msgid ""
 "    administrator or moderator, and 'unknown' means that delivery was disabled\n"
 "    for unknown (legacy) reasons."
 msgstr ""
+"    Nur Mitglieder mit einem bestimmten Zustellstatus anzeigen.\n"
+"     'aktiviert' bedeutet alle Mitglieder, deren Zustellung aktiviert ist, "
+"'beliebig' bedeutet\n"
+"     Mitglieder, deren Zustellung aus irgendeinem Grund deaktiviert ist, "
+"'durch  Nutzer' bedeutet,\n"
+"     dass das Mitglied seine eigene Zustellung deaktiviert hat, 'bybounces' "
+"bedeutet, die\n"
+"     Zustellung wurde vom automatischen Bounce-Prozessor deaktiviert,\n"
+"     'byadmin' bedeutet, dass die Zustellung durch den Administrator oder "
+"Moderator der Liste deaktiviert wurde\n"
+"     und „unbekannt“ bedeutet, dass die Zustellung aus unbekannten (alten)\n"
+"     Gründen deaktiviert wurde."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid "Notify list owners/moderators of pending requests."
@@ -1483,6 +1508,8 @@ msgid ""
 "Missing data for request {}\n"
 "\n"
 msgstr ""
+"Fehlende Daten für Anfrage {}\n"
+"\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
@@ -1899,6 +1926,7 @@ msgstr "Die Variable 'm' ist die ${listspec} Mailingliste"
 #: src/mailman/commands/eml_confirm.py:40
 msgid "Confirm a subscription or held message request."
 msgstr ""
+"Anfrage für ein Abonnement oder eine zurückgehaltene Nachricht bestätigen."
 
 #: src/mailman/commands/eml_confirm.py:47
 msgid "No confirmation token found"
@@ -2156,6 +2184,11 @@ msgid ""
 "authorized for delivery.  The original message as received by Mailman is\n"
 "attached.\n"
 msgstr ""
+"Ihre dringende Nachricht an die ${mlist.display_name}-Mailingliste wurde  "
+"nicht\n"
+"zur Auslieferung genehmigt. Die ursprüngliche Nachricht, wie sie von Mailman "
+"empfangen\n"
+" wurde, ist beigefügt.\n"
 
 #: src/mailman/handlers/mime_delete.py:62
 #, python-brace-format
@@ -2183,6 +2216,10 @@ msgid ""
 "Mailman's content filtering has removed the\n"
 "following MIME parts from this message.\n"
 msgstr ""
+"\n"
+"___________________________________________\n"
+"Die Inhaltsfilterung von Mailman hat die folgenden \n"
+"MIME-Teile aus dieser Nachricht entfernt.\n"
 
 #: src/mailman/handlers/mime_delete.py:110
 msgid "The message's content type was explicitly disallowed"
@@ -2209,6 +2246,8 @@ msgid ""
 "\n"
 "Replaced multipart/alternative part with first alternative.\n"
 msgstr ""
+"\n"
+"Mehrteiliger/alternativer Teil durch erste Alternative ersetzt.\n"
 
 #: src/mailman/handlers/mime_delete.py:239 src/mailman/handlers/mime_delete.py:246
 #: src/mailman/handlers/mime_delete.py:255 src/mailman/handlers/mime_delete.py:261
@@ -2325,15 +2364,15 @@ msgstr "Der Absender der Nachricht {} ist aus dieser Liste ausgeschlossen"
 
 #: src/mailman/rules/digests.py:43
 msgid "Catch messages with digest Subject or boilerplate quote."
-msgstr ""
+msgstr "Fange Nachrichten mit Digest-Betreff oder Boilerplate-Zitat ab."
 
 #: src/mailman/rules/digests.py:58
 msgid "Message has a digest subject"
-msgstr ""
+msgstr "Die Nachricht hat einen Digest-Betreff"
 
 #: src/mailman/rules/digests.py:89
 msgid "Message quotes digest boilerplate"
-msgstr ""
+msgstr "Nachricht zitiert Digest-Boilerplate"
 
 #: src/mailman/rules/dmarc.py:307
 msgid "Find DMARC policy of From: domain."
@@ -2606,6 +2645,12 @@ msgid ""
 "Size: ${size} bytes\n"
 "Desc: ${desc}\n"
 msgstr ""
+"Ein Nachrichtenteil, der mit Klartext-Digests nicht kompatibel ist, wurde "
+"entfernt ...\n"
+"Name: ${filename}\n"
+"Typ: ${ctype}\n"
+"Größe: ${size} Bytes\n"
+"Beschreibung: ${desc}\n"
 
 #: src/mailman/utilities/scrubber.py:58
 msgid "-------------- next part --------------\n"
@@ -2699,9 +2744,16 @@ msgstr ""
 
 msgid "list:admin:notice:increment.txt"
 msgstr ""
+"Der Bounce-Score von $member auf $listname wurde erhöht.\n"
+"\n"
+"Der auslösende DSN, sofern vorhanden, ist angehängt."
 
 msgid "list:admin:notice:pending.txt"
 msgstr ""
+"Auf die Liste $listname warten $count Moderationsanfragen.\n"
+"\n"
+"$data\n"
+"Bitte kümmern Sie sich so bald wie möglich darum."
 
 msgid "list:admin:notice:removal.txt"
 msgstr ""
