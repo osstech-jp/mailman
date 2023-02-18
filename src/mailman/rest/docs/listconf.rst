@@ -376,7 +376,9 @@ Acceptable aliases
 ------------------
 
 These are recipient aliases that can be used in the ``To:`` and ``CC:``
-headers instead of the posting address.  They are often used in forwarded
+headers instead of the posting address.  They can also be strings beginning
+with ``^`` which are interpreted as regular expressions matched against
+addresses in ``To:`` and ``CC:`` headers.  They are often used in forwarded
 emails.  By default, a mailing list has no acceptable aliases.
 
     >>> from mailman.interfaces.mailinglist import IAcceptableAliasSet
