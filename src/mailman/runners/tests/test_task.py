@@ -21,14 +21,17 @@ import unittest
 
 from datetime import timedelta
 from lazr.config import as_timedelta
+from mailman.app.bounces import PENDABLE_LIFETIME
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message
 from mailman.config import config
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.cache import ICacheManager
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.requests import IListRequests
 from mailman.interfaces.workflow import IWorkflowStateManager
+from mailman.model.bounce import BounceEvent
 from mailman.runners.task import TaskRunner
 from mailman.testing.helpers import (
     LogFileMark,
@@ -53,6 +56,7 @@ class TestTask(unittest.TestCase):
 
     def setUp(self):
         self._pendings = getUtility(IPendings)
+        self._events = BounceEvent
         self._wfmanager = getUtility(IWorkflowStateManager)
         self._cachemanager = getUtility(ICacheManager)
         self._messages = getUtility(IMessageStore)
@@ -140,3 +144,52 @@ second message
         self.assertIsNotNone(self._messages.get_message_by_id('<msg2>'))
         log = mark.read()
         self.assertIn('Task runner deleted 1 orphaned messages', log)
+
+    @dbconnection
+    def test_task_runner_bounce_events_old_unprocessed(self, store):
+        # Test that the task runner deletes processed bounce events older than
+        # PENDABLE_LIFETIME, but not newer ones or unprocessed ones.
+        # Set one old but unprocessed.
+        event = self._events(self._mlist.list_id,
+                             'anne@example.com',
+                             self._msg1,
+                             )
+        event.timestamp -= as_timedelta(PENDABLE_LIFETIME) + as_timedelta('1d')
+        store.add(event)
+        mark = LogFileMark('mailman.task')
+        self._runner.run()
+        log = mark.read()
+        self.assertIn('Task runner evicted 0 expired bounce events', log)
+
+    @dbconnection
+    def test_task_runner_bounce_events_old_processed(self, store):
+        # Test that the task runner deletes processed bounce events older than
+        # PENDABLE_LIFETIME, but not newer ones or unprocessed ones.
+        # Set one old and processed.
+        event = self._events(self._mlist.list_id,
+                             'anne@example.com',
+                             self._msg1,
+                             )
+        event.timestamp -= as_timedelta(PENDABLE_LIFETIME) + as_timedelta('1d')
+        event.processed = True
+        store.add(event)
+        mark = LogFileMark('mailman.task')
+        self._runner.run()
+        log = mark.read()
+        self.assertIn('Task runner evicted 1 expired bounce events', log)
+
+    @dbconnection
+    def test_task_runner_bounce_events_processed(self, store):
+        # Test that the task runner deletes processed bounce events older than
+        # PENDABLE_LIFETIME, but not newer ones or unprocessed ones.
+        # Set one processed.
+        event = self._events(self._mlist.list_id,
+                             'anne@example.com',
+                             self._msg1,
+                             )
+        event.processed = True
+        store.add(event)
+        mark = LogFileMark('mailman.task')
+        self._runner.run()
+        log = mark.read()
+        self.assertIn('Task runner evicted 0 expired bounce events', log)
