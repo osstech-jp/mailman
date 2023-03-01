@@ -9,10 +9,10 @@ Configuration
 =============
 
 By default, the Task runner executes tasks once per hour to evict expired
-pending requests and cache entries and to delete any saved workflow states
-and saved message store messages orphaned by deleting the associated pending
-request.  This timing is configurable in the ``[mailman]`` section of the
-configuration.::
+pending requests, bounce events and cache entries and to delete any saved
+workflow states and saved message store messages orphaned by deleting the
+associated pending request.  This timing is configurable in the ``[mailman]``
+section of the configuration.::
 
     # mailman.cfg
     [mailman]
@@ -39,6 +39,7 @@ The Task runner writes some simple log messages to a new task log.
     xxx Task runner deleted 0 orphaned workflows
     xxx Task runner deleted 0 orphaned requests
     xxx Task runner deleted 0 orphaned messages
+    xxx Task runner evicted 0 expired bounce events
     xxx Task runner evicted expired cache entries
     <BLANKLINE>
     >>> doctest.ELLIPSIS_MARKER = '...'

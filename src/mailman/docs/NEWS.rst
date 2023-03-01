@@ -36,6 +36,7 @@ Bugs fixed
   (Closes #1065)
 * Raising StopIteration in a workflow process no longer creates a mailman.error
   log entry.  (Closes #1059)
+* The task runner now evicts old, processed bounce events.  (Closes #1067)
 
 .. _news-3.3.8:
 

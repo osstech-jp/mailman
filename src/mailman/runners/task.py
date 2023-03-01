@@ -21,6 +21,7 @@ import logging
 
 from datetime import datetime
 from lazr.config import as_timedelta
+from mailman.app.bounces import PENDABLE_LIFETIME
 from mailman.config import config
 from mailman.core.runner import Runner
 from mailman.database.transaction import dbconnection, transactional
@@ -28,7 +29,9 @@ from mailman.interfaces.cache import ICacheManager
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.workflow import IWorkflowStateManager
+from mailman.model.bounce import BounceEvent
 from mailman.model.requests import _Request
+from mailman.utilities.datetime import now
 from public import public
 from zope.component import getUtility
 
@@ -56,6 +59,7 @@ class TaskRunner(Runner):
         self.lastrun = datetime.now()
         dlog.debug('Running task runner periodic tasks')
         self._evict_pendings()
+        self._evict_expired_bounce_events()
         self._evict_cache()
 
     @dbconnection
@@ -109,6 +113,18 @@ class TaskRunner(Runner):
                     messages.delete_message(mid)
                     count += 1
         tlog.info('Task runner deleted %d orphaned messages', count)
+
+    @dbconnection
+    def _evict_expired_bounce_events(self, store):
+        count = 0
+        for entry in store.query(BounceEvent).all():
+            if not entry.processed:
+                continue
+            if entry.timestamp > now() - as_timedelta(PENDABLE_LIFETIME):
+                continue
+            store.delete(entry)
+            count += 1
+        tlog.info('Task runner evicted %d expired bounce events', count)
 
     def _evict_cache(self):
         getUtility(ICacheManager).evict_expired()
