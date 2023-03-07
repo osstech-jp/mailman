@@ -37,6 +37,7 @@ Bugs fixed
 * Raising StopIteration in a workflow process no longer creates a mailman.error
   log entry.  (Closes #1059)
 * The task runner now evicts old, processed bounce events.  (Closes #1067)
+* We now require authheaders>=0.15.2.  (Closes #1064)
 
 .. _news-3.3.8:
 
