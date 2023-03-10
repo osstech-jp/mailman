@@ -112,6 +112,19 @@ Dummy text
             self._msg.get_all('Archived-At'),
             ['<http://example.com/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB>'])
 
+    def test_digest_add_headers(self):
+        # Test the addition of the Archived-At and List-Archive headers.
+        config.push('archiver', """
+        [archiver.dummy]
+        class: {}.DummyArchiver
+        enable: yes
+        """.format(DummyArchiver.__module__))
+        self.addCleanup(config.pop, 'archiver')
+        rfc_2369.process(self._mlist, self._msg, dict(isdigest=True))
+        self.assertEqual(
+            self._msg.get_all('List-Archive'), ['<http://example.com>'])
+        self.assertIsNone(self._msg.get('Archived-At'))
+
     def test_prototype_no_url(self):
         # The prototype archiver is not web-based, it must not return URLs
         config.push('archiver', """
