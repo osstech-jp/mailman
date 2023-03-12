@@ -404,7 +404,7 @@ two lines to the ``mailman3_transport:`` section.
 Alternative setup using callout verification
 --------------------------------------------
 
-Starting with version 3.3.6, you can rely on Mailman's responce on
+Starting with version 3.3.6, you can rely on Mailman's response on
 ``RCPT TO:`` LMTP command if mailman would accept the recipient
 address as valid. This can be used in Exim to validate recipients
 using callout verification.
