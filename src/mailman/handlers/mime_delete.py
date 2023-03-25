@@ -25,6 +25,7 @@ contents.
 """
 
 import os
+import copy
 import shutil
 import logging
 import tempfile
@@ -181,7 +182,31 @@ Replaced multipart/alternative part with first alternative.
         msg['X-Content-Filtered-By'] = 'Mailman/MimeDel {}'.format(VERSION)
     if attach_report and as_boolean(config.mailman.filter_report):
         if msg.is_multipart():
-            msg.attach(MIMEText(report))
+            if msg.get_content_type() == 'multipart/mixed':
+                msg.attach(MIMEText(report))
+            else:
+                # Some non-mixed multipart, we need to wrap it.
+                # This is based on code in handlers/decorate.py
+                # Because of the way Message objects are passed around to
+                # process(), we need to play tricks with the outer message
+                # -- i.e. the outer one must remain the same instance.
+                #  So we're going to create a clone of the outer message,
+                # with all the header chrome intact, then delete unwanted
+                # headers.
+                inner = copy.deepcopy(msg)
+                # Which headers to keep?  Let's just do the Content-* headers
+                for h, v in inner.items():
+                    if not h.lower().startswith('content-'):
+                        del inner[h]
+                # Now, play games with the outer message to make it contain two
+                # subparts: the wrapped message, and the report.
+                payload = [inner]
+                payload.append(MIMEText(report))
+                msg.set_payload(payload)
+                del msg['content-type']
+                del msg['content-transfer-encoding']
+                del msg['content-disposition']
+                msg['Content-Type'] = 'multipart/mixed'
         else:
             pl = msg.get_payload(decode=True)
             cset = msg.get_content_charset(None) or 'us-ascii'
