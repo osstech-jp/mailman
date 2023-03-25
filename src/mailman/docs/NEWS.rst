@@ -39,6 +39,9 @@ Bugs fixed
 * The task runner now evicts old, processed bounce events.  (Closes #1067)
 * We now require authheaders>=0.15.2.  (Closes #1064)
 * Digests no longer contain a bogus Archived-At header.  (Closes #1069)
+* Content filtering will no longer add its report to a non-mixed multipart
+  message but will wrap the message and add the report to the wrapper.
+  (Closes #1071)
 
 .. _news-3.3.8:
 

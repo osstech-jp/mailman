@@ -621,3 +621,138 @@ Content-Type: video/mp4
 
 Replaced multipart/alternative part with first alternative.
 """)
+
+    def test_report_mixed(self):
+        # Hit all the pass and filter conditions for reporting
+        self._mlist.pass_extensions = ['txt']
+        self._mlist.pass_types = ['text', 'application', 'multipart', 'image']
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: Testing mixed extension
+Message-ID: <ant>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="AAAA"
+
+--AAAA
+Content-Type: multipart/alternative; boundary="BBBB"
+
+--BBBB
+Content-Type: text/plain; charset="utf-8"
+
+Plain text
+
+--BBBB
+Content-Type: text/html; charset="utf-8"
+
+HTML text
+
+--BBBB--
+--AAAA
+Content-Type: application/octet-stream; name="test.xlsX"
+Content-Disposition: attachment; filename="test.xlsX"
+
+spreadsheet
+
+--AAAA
+Content-Type: application/octet-stream; name="test.exe"
+Content-Disposition: attachment; filename="test.exe"
+
+executable
+
+--AAAA
+Content-Type: image/jpeg; name="My_image"
+Content-Disposition: inline; filename="My_image"
+
+image
+
+--AAAA
+Content-Type: video/mp4; name="My_video"
+Content-Disposition: inline; filename="My_video"
+
+video
+
+--AAAA--
+""")
+        process = config.handlers['mime-delete'].process
+        with dummy_script('report'):
+            process(self._mlist, msg, {})
+        self.assertIn('multipart/mixed', msg['content-type'])
+        self.assertEqual(len(msg.get_payload()), 3)
+        self.assertIn('text/plain', msg.get_payload(0).get_content_type())
+        self.assertIn('image/jpeg', msg.get_payload(1).get_content_type())
+        self.assertEqual(msg.get_payload(2).get_payload(decode=True), b"""\
+
+___________________________________________
+Mailman's content filtering has removed the
+following MIME parts from this message.
+
+Content-Type: application/octet-stream
+    Name: test.xlsX
+
+Content-Type: application/octet-stream
+    Name: test.exe
+
+Content-Type: video/mp4
+    Name: My_video
+
+Replaced multipart/alternative part with first alternative.
+""")
+
+    def test_report_other_multi(self):
+        # Hit all the pass and filter conditions for reporting
+        self._mlist.pass_extensions = ['txt']
+        self._mlist.pass_types = ['text', 'application', 'multipart']
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: Testing mixed extension
+Message-ID: <ant>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="AAAA"
+
+--AAAA
+Content-Type: multipart/alternative; boundary="BBBB"
+
+--BBBB
+Content-Type: text/plain; charset="utf-8"
+
+Plain text
+
+--BBBB
+Content-Type: application/pkcs7-signature
+
+HTML text
+
+--BBBB--
+--AAAA
+Content-Type: application/pkcs7-signature
+
+Signature
+--AAAA
+Content-Type: application/octet-stream; name="test.xlsX"
+Content-Disposition: attachment; filename="test.xlsX"
+
+spreadsheet
+
+--AAAA--
+""")
+        process = config.handlers['mime-delete'].process
+        with dummy_script('report'):
+            process(self._mlist, msg, {})
+        self.assertIn('multipart/mixed', msg['content-type'])
+        self.assertEqual(len(msg.get_payload()), 2)
+        self.assertIn('multipart/signed',
+                      msg.get_payload(0).get_content_type())
+        self.assertIn('text/plain', msg.get_payload(1).get_content_type())
+        self.assertEqual(msg.get_payload(1).get_payload(decode=True), b"""\
+
+___________________________________________
+Mailman's content filtering has removed the
+following MIME parts from this message.
+
+Content-Type: application/octet-stream
+    Name: test.xlsX
+
+Replaced multipart/alternative part with first alternative.
+""")
