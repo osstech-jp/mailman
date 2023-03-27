@@ -42,6 +42,8 @@ Bugs fixed
 * Content filtering will no longer add its report to a non-mixed multipart
   message but will wrap the message and add the report to the wrapper.
   (Closes #1071)
+* The administrivia rule will now decode encoded message bodies.
+  (Closes #1072)
 
 .. _news-3.3.8:
 

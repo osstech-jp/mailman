@@ -49,3 +49,21 @@ A message body.
         self.assertTrue(result)
         self.assertEqual(msgdata['moderation_reasons'],
                          ['Message contains administrivia'])
+
+    def test_encoded_body(self):
+        # Test that encoded body is decoded.
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: An innocuous subject
+Message-ID: <ant>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIMI-Version: 1.0
+
+SSB3YW50IG9mZiB0aGlzIGxpc3QKdW5zdWJzY3JpYmUK
+""")
+        rule = administrivia.Administrivia()
+        msgdata = {}
+        result = rule.check(self._mlist, msg, msgdata)
+        self.assertTrue(result)
