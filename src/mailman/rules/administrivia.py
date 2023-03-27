@@ -66,7 +66,9 @@ class Administrivia:
         # Search only the first text/plain subpart of the message.  There's
         # really no good way to find email commands in any other content type.
         for part in typed_subpart_iterator(msg, 'text', 'plain'):
-            payload = part.get_payload()
+            payload = part.get_payload(decode=True)
+            payload = payload.decode(part.get_content_charset('utf-8'),
+                                     errors='replace')
             lines = payload.splitlines()
             # Count lines without using enumerate() because blank lines in the
             # payload don't count against the maximum examined.
