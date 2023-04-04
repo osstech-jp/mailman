@@ -45,6 +45,10 @@ Bugs fixed
 * The administrivia rule will now decode encoded message bodies.
   (Closes #1072)
 
+Other
+-----
+* Typo corrected under "Building the documentation" section of``contribute.rst``. (Fixes #1075)
+
 .. _news-3.3.8:
 
 3.3.8

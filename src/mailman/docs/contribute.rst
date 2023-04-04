@@ -142,10 +142,10 @@ Building the documentation
 ==========================
 
 To build the documentation, you need some additional dependencies.  The only
-one you probably need from your OS vendor is `graphiz`.  E.g. On Debian or
+one you probably need from your OS vendor is `graphviz`.  E.g. On Debian or
 Ubuntu, you can do::
 
-    $ sudo apt install graphiz
+    $ sudo apt install graphviz
 
 All other dependencies should be automatically installed as needed.  Build the
 documentation by running::
