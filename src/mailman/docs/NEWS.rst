@@ -47,7 +47,8 @@ Bugs fixed
 
 Other
 -----
-* Typo corrected under "Building the documentation" section of``contribute.rst``. (Fixes #1075)
+* Typo corrected under "Building the documentation" section of
+  ``contribute.rst``.  (Fixes #1075)
 
 .. _news-3.3.8:
 
