@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mm 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-03-23 03:38+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2023-04-15 23:48+0000\n"
+"Last-Translator: Frédéric Daniel Luc Lehobey <weblate@lehobey.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.17-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -139,7 +139,7 @@ msgstr ""
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
 msgstr ""
-"Nouvelle demande de désabonnement de ${self.address.email} à ${mlist."
+"Nouvelle demande de désabonnement de ${self.address.email} à ${self.mlist."
 "display_name}"
 
 #: src/mailman/app/subscriptions.py:633
@@ -378,6 +378,28 @@ msgid ""
 "    set which subtly changes some error handling behavior.\n"
 "    "
 msgstr ""
+"    Lancer un processus.\n"
+"\n"
+"    Le processus nommé en ligne de commande est lancé et il peut soit\n"
+"    s'exécuter une fois lors du parcours principal (pour ceux qui le "
+"permettent)\n"
+"    ou continûment. Cette dernière est la façon dont le processus pilote "
+"démarre\n"
+"    tous ses sous-processus.\n"
+"\n"
+"    -r est nécessaire à moins que -l ou -h soit indiqués et son argument "
+"doit\n"
+"    être un des noms affichés par le sélecteur -l.\n"
+"\n"
+"    Normalement, ce script devrait être lancé depuis « mailman start ». Le "
+"lancer\n"
+"    séparément ou avec -o n'est en général utile que pour la mise au point. "
+"Quand\n"
+"    il est lancé de cette façon, la variable d'environnement $"
+"MAILMAN_UNDER_MASTER_CONTROL\n"
+"    sera activée ce qui modifie subtilement certains comportements dans la "
+"gestion des erreurs.\n"
+"    "
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
@@ -1308,6 +1330,12 @@ msgid ""
 "    to stdout is the default mode.\n"
 "    "
 msgstr ""
+"    Afficher les abonnés d'une liste de diffusion.\n"
+"    Il est possible de sélectionner selon divers critères lors de "
+"l'affichage.\n"
+"    Lorsqu'aucun option n'est indiquée, le mode par défaut est l'affichage\n"
+"    des abonnés de la liste vers stdout.\n"
+"    "
 
 #: src/mailman/commands/cli_members.py:121
 msgid ""
@@ -1341,6 +1369,8 @@ msgid ""
 "    Display output to FILENAME instead of stdout.  FILENAME\n"
 "    can be '-' to indicate standard output."
 msgstr ""
+"    Afficher la sortie dans FILENAME au lieu de stdout.  FILENAME\n"
+"    peut être « - » pour désigner la sortie standard."
 
 #: src/mailman/commands/cli_members.py:147
 msgid ""
@@ -1349,14 +1379,21 @@ msgid ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then 'member' role is assumed."
 msgstr ""
+"    N'afficher que les abonnés avec un RÔLE donné.\n"
+"    Le rôle peut être « tous », « abonné », « non-abonné », « propriétaire »"
+", « modérateur »,\n"
+"    ou « administrateur » (c'est à dire propriétaires et modérateurs).\n"
+"    Si aucun n'est indiqué, alors le rôle « abonné » est présumé."
 
 #: src/mailman/commands/cli_members.py:155
 msgid "    Display only regular delivery members."
-msgstr ""
+msgstr "    N'affiche que les abonnés normalement distribués."
 
 #: src/mailman/commands/cli_members.py:166
 msgid "    This option has no effect. It exists for backwards compatibility only."
 msgstr ""
+"    Cette option est sans effet. Elle n'existe pour des raisons de "
+"compatibilité ascendante."
 
 #: src/mailman/commands/cli_members.py:172
 msgid ""
@@ -1364,6 +1401,11 @@ msgid ""
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
+"    N'affiche que les abonnés condensés du type.\n"
+"    « tous » signifie tout type de condensé, « texte brut » signifie "
+"seulement des condensés\n"
+"    de type texte brut (rfc 1153), « mime » signifie des condensés de type "
+"MIME."
 
 #: src/mailman/commands/cli_members.py:180
 msgid ""
@@ -1376,6 +1418,20 @@ msgid ""
 "    administrator or moderator, and 'unknown' means that delivery was disabled\n"
 "    for unknown (legacy) reasons."
 msgstr ""
+"    N'affiche que les abonnés avec un statut de distribution donné.\n"
+"    « activé » signifie que tous les abonnés dont la distribution est "
+"activée, « tous » signifie\n"
+"    les abonnés dont la distribution est désactivée pour une quelconque "
+"raison,\n"
+"    « par l'utilisateur » signifie que l'abonné a désactivé sa propre "
+"distribution, « par rejets »\n"
+"    signifie que la distribution a été désactivée par le traitement "
+"automatique des rejets,\n"
+"    « par admin » signifie que la distribution a été désactivée par "
+"l'administrateur ou le\n"
+"    modérateur et « inconny » signifie que la distribution a été déactivée "
+"pour des raisons\n"
+"    inconnues (historiques)."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid "Notify list owners/moderators of pending requests."
@@ -2102,7 +2158,7 @@ msgstr "Décorer un message avec des en-têtes et pieds-de-page."
 #: src/mailman/handlers/dmarc.py:127
 #, python-brace-format
 msgid "${realname} via ${mlist.display_name}"
-msgstr "${realname} via ${mlist.display_name}"
+msgstr "${realname} par ${mlist.display_name}"
 
 #: src/mailman/handlers/dmarc.py:228
 msgid "Apply DMARC mitigations."
@@ -2125,6 +2181,10 @@ msgid ""
 "authorized for delivery.  The original message as received by Mailman is\n"
 "attached.\n"
 msgstr ""
+"La distribution de votre message urgent à la liste de diffusion {mlist."
+"display_name}\n"
+"n'a pas été autorisée. Le message originel tel que reçu par Mailman est\n"
+"joint.\n"
 
 #: src/mailman/handlers/mime_delete.py:62
 #, python-brace-format
@@ -2514,7 +2574,8 @@ msgstr "Les résultats de vos commandes par e-mail"
 #: src/mailman/runners/digest.py:55
 #, python-brace-format
 msgid "${mlist.display_name} Digest, Vol ${volume}, Issue ${digest_number}"
-msgstr "${mlist.display_name} Digest, Vol ${volume}, Issue ${digest_number}"
+msgstr ""
+"Condensé ${mlist.display_name}, volume ${volume}, numéro ${digest_number}"
 
 #: src/mailman/runners/digest.py:84
 msgid "Today's Topics:\n"
