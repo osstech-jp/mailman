@@ -32,10 +32,10 @@ def split_email(address):
     :rtype: 2-tuple where the first item is the local part and the second item
         is a sequence of domain parts.
     """
-    local_part, at, domain = address.partition('@')
+    local_part, at, domain = address.rpartition('@')
     if len(at) == 0:
         # There was no at-sign in the email address.
-        return local_part, None
+        return domain, None
     return local_part, domain.split('.')
 
 

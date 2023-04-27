@@ -47,6 +47,8 @@ class Validator:
         if not email:
             return False
         user, domain_parts = split_email(email)
+        # Strip quotes from quoted local.
+        user = re.sub('^"(.*)"$', r'\1', user)
         if not user or len(_valid_local.sub('', user)) > 0:
             return False
         # Local, unqualified addresses are not allowed.

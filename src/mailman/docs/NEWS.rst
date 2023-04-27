@@ -44,6 +44,8 @@ Bugs fixed
   (Closes #1071)
 * The administrivia rule will now decode encoded message bodies.
   (Closes #1072)
+* Email address validation now accepts quoted local parts and @ in local part.
+  (Closes #1077)
 
 Other
 -----
