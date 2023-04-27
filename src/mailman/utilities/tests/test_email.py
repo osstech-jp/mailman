@@ -38,6 +38,12 @@ class TestEmail(unittest.TestCase):
     def test_no_at_split(self):
         self.assertEqual(split_email('anne'), ('anne', None))
 
+    def test_multiple_at_split(self):
+        self.assertEqual(split_email('anne@foo@example.com'),
+                         ('anne@foo', ['example', 'com']))
+        self.assertEqual(split_email('"anne@foo"@example.com'),
+                         ('"anne@foo"', ['example', 'com']))
+
     def test_adding_the_message_hash(self):
         # When the message has a Message-ID header, this will add the
         # X-Mailman-Hash-ID header.
