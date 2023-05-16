@@ -8,7 +8,7 @@ For example, when a new member joins a list, a welcome message is sent to that
 member.  The welcome message is created from a template found by a URL
 associated with a template name and a context.
 
-So if for example, you want to include links to pages on you website, you can
+So if for example, you want to include links to pages on your website, you can
 create a custom template, make it available via download from a URL, and then
 associate that URL with a mailing list's welcome message.  Some standard
 placeholders can be defined in the template, and these will be filled in by
