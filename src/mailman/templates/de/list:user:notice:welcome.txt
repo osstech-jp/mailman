@@ -1,12 +1,12 @@
-Willkommen auf der Mailingliste "$display_name"!
+Willkommen auf der Mailingliste "${display_name}"!
 
 Um an diese Liste zu schreiben, senden Sie eine E-Mail an:
 
-  $listname
+  ${listname}
 
 Sie können Einstellungen vornehmen, indem Sie eine E-Mail senden an:
 
-  $request_email
+  ${request_email}
 
 mit dem Wort 'help' (ohne Anführungszeichen) im Betreff oder im Inhalt. Sie
 erhalten dann eine automatisierte Antwort mit weiteren Instruktionen. Sie werden

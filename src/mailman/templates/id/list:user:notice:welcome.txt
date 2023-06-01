@@ -1,0 +1,11 @@
+Selamat datang di milis "$display_name"!
+
+Untuk pos ke milis ini, kirim pesan Anda ke:
+
+  $listname
+
+Anda bisa membatalkan langganan atau mengatur pilihan Anda dengan surel dengan mengirim pesan ke:
+
+  $request_email
+
+dengan kata 'help' di antara subjek atau badan surel (jangan ketik tanda petiknya), dan Anda akan mendapatkan pesan dengan petunjuk.  Anda akan memerlukan kata sandi Anda untuk mengubah pilihan Anda, tetapi untuk alasan keamanan, kata sandi Anda tidak akan dilampirkan di sini.  Jika Anda lupa kata sandi Anda, Anda harus mengatur ulangnya dari UI Web.

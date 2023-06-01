@@ -1,3 +1,3 @@
-Bounce skóre (označující počet nedoručitelných emailů) uživatele $member se právě na mailing-listu $listname zvýšilo.
+Bounce skóre (označující počet nedoručitelných emailů) uživatele ${member} se právě na mailing-listu ${listname} zvýšilo.
 
 DSN které toto zvýšení způsobilo je přiložené.

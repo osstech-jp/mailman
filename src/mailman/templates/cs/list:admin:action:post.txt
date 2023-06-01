@@ -1,12 +1,12 @@
 Do Vašeho mailing-listu dorazil následující příspěvek, který je třeba Vámi, jakožto administrátorem, schválit:
 
-    List:    $listname
-    Odesílatel:    $sender_email
-    Předmět: $subject
+    List:    ${listname}
+    Odesílatel:    ${sender_email}
+    Předmět: ${subject}
 
 Zpráva byla přidržena z důvodu:
 
-$reasons
+${reasons}
 
 
 

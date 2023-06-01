@@ -1,0 +1,20 @@
+Hulp voor de $listname maillijst
+
+Dit is hulp voor de e-mailcommando's voor versie $version van de GNU Mailman lijst
+manager van $domain.  Dit beschrijft de commando's die u kan sturen
+om informatie over Mailman maillijsten op dit systeem te verkrijgen of om uw abonnementen op die lijsten te beheren.
+Een commando kan in het onderwerp of de body van het bericht staan.
+
+Commando's moeten naar ${listname}-request@${domain} gestuurd worden.
+
+Betreffende de beschrijvingen: - woorden tussen "<>" tekens tonen VERPLICHTE informatie
+en woorden tussen "[]" tonen OPTIONELE informatie.  Laat de "<>" of
+"[]" vallen wanneer u de commando's gebruikt.
+
+De volgende commando's kunnen gebruikt worden:
+
+    $commands
+
+Vragen en opmerkingen die door een persoon behandeld moeten worden, dienen verstuurd te worden naar:
+
+    $administrator

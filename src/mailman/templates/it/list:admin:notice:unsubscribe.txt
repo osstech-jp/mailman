@@ -1,1 +1,1 @@
-$member è stato rimosso da $display_name.
+${member} è stato rimosso da ${display_name}.

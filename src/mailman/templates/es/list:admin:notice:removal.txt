@@ -1,1 +1,1 @@
-Se ha cancelado la suscripción de $member a $display_name por tener demasiados rebotes.
+Se ha cancelado la suscripción de ${member} a ${display_name} por tener demasiados rebotes.

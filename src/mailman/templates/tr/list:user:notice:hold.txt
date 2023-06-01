@@ -1,13 +1,13 @@
-'$listname' posta listesine gönderdiğiniz
+'${listname}' posta listesine gönderdiğiniz
 
-    $subject
+    ${subject}
 
 konusundaki e-postanız liste moderatörü onay için gözden
 geçirene kadar bekletiliyor.
 
 Mesajın bekletilme nedeni:
 
-$reasons
+${reasons}
 
 Mesaj ya listeye gönderilecek ya da moderatörün kararı ile ilgili
 bir bildirim alacaksınız.

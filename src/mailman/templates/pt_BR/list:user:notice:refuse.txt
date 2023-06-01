@@ -1,13 +1,13 @@
-Sua solicitação à lista de discussão $listname
+Sua solicitação à lista de discussão ${listname}
 
-    $request
+    ${request}
 
 foi rejeitada pelo moderador da lista. O moderador deu o seguinte
 motivo para rejeitar sua solicitação:
 
-"$reason"
+"${reason}"
 
 Quaisquer perguntas ou comentários devem ser dirigidos ao
 administrador da lista em:
 
-    $owner_email
+    ${owner_email}

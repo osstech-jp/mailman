@@ -1,0 +1,5 @@
+Langganan Anda untuk milis $listname telah dimatikan karena ada banyaknya galat pengiriman yang mengindikasikan bahwa ada masalah mengirimkan pesan ke $sender_email. Anda mungkin ingin memeriksakannya ke administrator surel Anda untuk bantuan lebih lanjut.
+
+Jika Anda ada pertanyaan atau masalah, silakan hubungi pemilik milis di
+
+    $owner_email

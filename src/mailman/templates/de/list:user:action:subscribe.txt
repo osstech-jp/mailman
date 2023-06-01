@@ -1,19 +1,19 @@
 Adress-Bestätigung zur Anmeldung
 
-Hallo, hier ist die Mailinglistensoftware auf $domain.
+Hallo, hier ist die Mailinglistensoftware auf ${domain}.
 
 Wir haben eine Anfrage zur Registrierung von folgender Adresse erhalten
 
-    $user_email
+    ${user_email}
 
 Bevor Sie diese Mailingliste nutzen können, müssen Sie erst Ihre E-Mail-Adresse
 bestätigen. Dies können Sie tun, indem Sie auf diese Nachricht antworten, ohne
 die Betreff-Zeile zu verändern.
 
 Alternativ können Sie die folgende Zeile -- und nur diese Zeile -- in einer
-Nachricht an $request_email schicken:
+Nachricht an ${request_email} schicken:
 
-    confirm $token
+    confirm ${token}
 
 Beachten Sie, dass eine einfache Antwort in den meisten Fällen genügt.
 
@@ -21,4 +21,4 @@ Sollten Sie sich nicht unter dieser Adresse registrieren wollen, ignorieren Sie
 diese Nachricht einfach. Wenn Sie denken, dass Sie jemand in bösartiger Absicht
 anmelden will, oder Sie weitere Fragen haben, wenden Sie sich bitte an
 
-    $owner_email
+    ${owner_email}

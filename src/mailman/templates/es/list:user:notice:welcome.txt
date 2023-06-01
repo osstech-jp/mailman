@@ -1,13 +1,13 @@
-Bienvenido/a a la lista de correo "$display_name"
+Bienvenido/a a la lista de correo "${display_name}"
 
 Para publicar en esta lista, envíe sus correos a:
 
-  $listname
+  ${listname}
 
 Puede desuscribirse o hacer ajustes de configuración vía email enviando un
 mensaje a:
 
-  $request_email
+  ${request_email}
 
 con la palabra 'help' en el asunto o en el cuerpo (no incluya las comillas),
 y recibirá de vuelta un mensaje con instrucciones. Va a necesitar su contraseña

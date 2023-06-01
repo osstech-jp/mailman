@@ -1,6 +1,6 @@
-$listname posta listesine mesajınız aşağıdaki nedenlerden dolayı
+${listname} posta listesine mesajınız aşağıdaki nedenlerden dolayı
 reddedildi:
 
-$reasons
+${reasons}
 
 Orijinal mesaj Mailman tarafından alındığı şekilde ektedir.

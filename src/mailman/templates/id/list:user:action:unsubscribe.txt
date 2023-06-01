@@ -1,0 +1,19 @@
+Konfirmasi Membatalkan Langganan Alamat Surel
+
+Halo, ini adalah peladen GNU Mailman di $domain.
+
+Kami telah menerima permintaan pembatalan langganan untuk alamat surel
+
+    $user_email
+
+Sebelum GNU Mailman bisa membatalkan langganan Anda, pertama-tama Anda harus mengonfirmasi permintaan Anda.  Anda bisa melakukannya dengan membalas surel ini.
+
+Atau Anda bisa, dalam pesan ke $request_email, berisi baris berikut, dan hanya baris berikut:
+
+    confirm $token
+
+Perlu diketahui bahwa dengan hanya mengirim 'balasan' ke pesan ini seharusnya bisa bekerja di hampir semua pembaca surel.
+
+Jika Anda tidak menginginkan untuk membatalkan langganan alamat surel ini, tinggal abaikan pesan ini saja.  Jika Anda pikir Anda secara tidak wajar telah dibatalkan langganan milis, atau memiliki pertanyaan lain, Anda bisa menghubungi
+
+    $owner_email

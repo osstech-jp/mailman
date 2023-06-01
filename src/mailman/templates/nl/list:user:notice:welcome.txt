@@ -1,0 +1,16 @@
+Welkom op de "$display_name" maillijst!
+
+Om berichten naar deze lijst te verzenden, stuur uw bericht naar:
+
+  $listname
+
+U kan zich uitschrijven of opties aanpassen via e-mail door een bericht te
+sturen naar:
+
+  $request_email
+
+met het woord 'help' (zonder aanhalingstekens) in het onderwerp of de body. U
+zal dan een bericht met instructies toegestuurd krijgen.  Om uw opties te wijzigen zal u
+een wachtwoord nodig hebben, maar om veiligheidsredenen wordt dit wachtwoord niet
+meegestuurd in deze e-mail.  Als u uw wachtwoord vergeten bent, dan zal u het moeten resetten
+via de web gebruikersinterface.

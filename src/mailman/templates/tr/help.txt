@@ -1,6 +1,6 @@
-$listname posta listesi için yardım
+${listname} posta listesi için yardım
 
-Bu, $domain etki alanındaki GNU Mailman liste yöneticisinin $version sürümü için
+Bu, ${domain} etki alanındaki GNU Mailman liste yöneticisinin ${version} sürümü için
 'help' e-posta komutudur.  Aşağıda, bu sitedeki Mailman listelerine aboneliğiniz
 hakkında bilgi almak ve onu denetlemek için gönderebileceğiniz komutlar
 açıklanmaktadır.  Bir komut, Konu satırında veya mesajın gövdesinde olabilir.
@@ -13,8 +13,8 @@ veya "[]" karakterlerini dahil etmeyin.
 
 Aşağıdaki komutlar geçerlidir:
 
-    $commands
+    ${commands}
 
 Bir kişinin görmesi gereken sorular ve sorunlar aşağıdaki adrese gönderilmelidir:
 
-    $administrator
+    ${administrator}

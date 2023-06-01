@@ -1,7 +1,7 @@
-Aide pour la liste de diffusion $listname
+Aide pour la liste de diffusion ${listname}
 
-Ceci est le courriel correspondant à la commande « help » pour la version $version
-du gestionnaire de listes de diffusion GNU Mailman du domaine $domain. Vous
+Ceci est le courriel correspondant à la commande « help » pour la version ${version}
+du gestionnaire de listes de diffusion GNU Mailman du domaine ${domain}. Vous
 trouverez ci-dessous les commandes que vous pouvez utiliser pour obtenir des
 informations et contrôler vos abonnements aux listes de diffusion Mailman de ce
 site. Une commande peut être placée dans l’objet ou dans le corps du message.
@@ -14,9 +14,9 @@ commandes.
 
 Les commandes suivantes sont valides :
 
-    $commands
+    ${commands}
 
 Les questions et préoccupations à destination d’un être humain doivent être
 envoyées à :
 
-    $administrator
+    ${administrator}

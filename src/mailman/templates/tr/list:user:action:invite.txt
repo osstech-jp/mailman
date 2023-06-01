@@ -1,15 +1,15 @@
-"$user_email" adresiniz, $short_listname posta listesinin sahibi tarafından
-$domain etki alanındaki $short_listname posta listesine katılmaya davet edildi.
+"${user_email}" adresiniz, ${short_listname} posta listesinin sahibi tarafından
+${domain} etki alanındaki ${short_listname} posta listesine katılmaya davet edildi.
 Bu mesajı yanıtlayarak daveti kabul edebilirsiniz.
 
-Veya $request_email adresine aşağıdaki satırı -- ve yalnızca aşağıdaki
+Veya ${request_email} adresine aşağıdaki satırı -- ve yalnızca aşağıdaki
 satırı -- içeren bir mesaj gönderebilirsiniz:
 
-    confirm $token
+    confirm ${token}
 
 Bu mesaja basit bir şekilde bir 'yanıt' göndermenin çoğu e-posta
 okuyucusunda işe yarayacağını unutmayın.
 
 Bu daveti reddetmek istiyorsanız, lütfen bu mesajı dikkate almayın.
-Herhangi bir sorunuz varsa, lütfen bunları $owner_email adresine
+Herhangi bir sorunuz varsa, lütfen bunları ${owner_email} adresine
 gönderin.

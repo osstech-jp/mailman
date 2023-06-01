@@ -1,7 +1,7 @@
 Questo è un messaggio sonda. Puoi ignorare questo messaggio.
 
-La mailing list $listname ha ricevuto numerosi messaggi di mancato recapito,
-indicando che potrebbe esserci un problema durante la consegna dei messaggi a $sender_email. Un
+La mailing list ${listname} ha ricevuto numerosi messaggi di mancato recapito,
+indicando che potrebbe esserci un problema durante la consegna dei messaggi a ${sender_email}. Un
 campione è allegato di seguito. Esamina questo messaggio per assicurarti che non siano presenti
 problemi con il tuo indirizzo email.  Per ulteriore assistenza, potresti consultare il tuo
 amministratore di posta.
@@ -11,4 +11,4 @@ Non è necessario fare nulla per rimanere un membro abilitato della mailing list
 In caso di domande o problemi, è possibile contattare il proprietario della mailing list
 a
 
-    $owner_email
+    ${owner_email}

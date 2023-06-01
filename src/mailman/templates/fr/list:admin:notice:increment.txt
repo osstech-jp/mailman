@@ -1,3 +1,3 @@
-Le compte de rejet de $member sur $listname a été incrémenté.
+Le compte de rejet de ${member} sur ${listname} a été incrémenté.
 
 Si disponible, le DSN déclenchant est joint.

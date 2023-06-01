@@ -1,13 +1,13 @@
-Seja bem-vindo à lista de discussão "$display_name"!
+Seja bem-vindo à lista de discussão "${display_name}"!
 
 Para postar nesta lista, envie seu e-mail para:
 
-  $listname
+  ${listname}
 
 Você pode cancelar sua inscrição ou fazer ajustes em suas opções por
 e-mail enviando uma mensagem para:
 
-  $request_email
+  ${request_email}
 
 com a palavra "help" no assunto ou corpo (não inclua as aspas), e você
 receberá uma mensagem com instruções. Você precisará de sua senha para

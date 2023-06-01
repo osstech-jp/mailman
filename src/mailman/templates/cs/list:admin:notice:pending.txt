@@ -1,4 +1,4 @@
-V mailing-listu $listname je $count příspěvků čekajících na schválení moderátorem.
+V mailing-listu ${listname} je ${count} příspěvků čekajících na schválení moderátorem.
 
-$data
+${data}
 Co nejdříve je, prosím, zkontrolujte.

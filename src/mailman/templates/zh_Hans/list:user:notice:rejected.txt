@@ -1,5 +1,5 @@
-你发给 $listname 邮件列表的消息已被以下原因拒绝：
+你发给 ${listname} 邮件列表的消息已被以下原因拒绝：
 
-$reasons
+${reasons}
 
 附上 Mailman 接收到的原始消息。

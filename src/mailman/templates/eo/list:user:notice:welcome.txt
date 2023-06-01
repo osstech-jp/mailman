@@ -1,12 +1,12 @@
-Bonvenon al la dissendolisto "$display_name"!
+Bonvenon al la dissendolisto "${display_name}"!
 
 Por afiŝi al ĉi tiu listo, sendu vian mesaĝon al:
 
-  $listname
+  ${listname}
 
  Vi povas retpoŝte malaboni aŭ agordi per sendo de mesaĝo al:
 
-  $request_email
+  ${request_email}
 
 kun la vorto 'help' en la temo aŭ korpo (sen citiloj), kaj vi ricevos mesaĝon
 kun instrukcioj. Vi bezonos vian pasvorton por ŝanĝi viajn elektojn, sed pro

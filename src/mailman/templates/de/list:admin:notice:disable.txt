@@ -1,2 +1,2 @@
-$member wurde von $listname abgemeldet aufgrund der Anzahl unzustellbaren 
+${member} wurde von ${listname} abgemeldet aufgrund der Anzahl unzustellbaren 
 Rückläufer, die die Rückläuferanzahl-Schwelle der Mailingliste überschreitet.

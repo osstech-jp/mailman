@@ -1,8 +1,8 @@
 Toto je zkušení zpráva. Pokud jste ji dostali, prosím, ignorujte ji.
 
-Mailing-listu $listname v nedávné době při pokusu o doručení emailu na Vaší adresu $sender_email opakovaně dorazily tzv. nedoručenky (bounces), jejichž příklad najdete níže.
+Mailing-listu ${listname} v nedávné době při pokusu o doručení emailu na Vaší adresu ${sender_email} opakovaně dorazily tzv. nedoručenky (bounces), jejichž příklad najdete níže.
 Prosím zkontrolujte tuto zprávu a prověřte, jestli nemáte ve svém nastavení nějakou chybu - pokud nevíte, doporučujeme tuto zprávu prověřit spolu s Vaším poskytovatelem/správcem emailu.
 
 Pro zachování odběru tohoto mailing-listu nemusíte nyní dělat vůbec nic.
 
-V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese $owner_email
+V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese ${owner_email}

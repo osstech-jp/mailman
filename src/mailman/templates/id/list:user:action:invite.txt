@@ -1,0 +1,9 @@
+Surel Anda "$user_email" telah diundang untuk bergabung ke $short_listname di $domain oleh pemilik $short_listname. Anda bisa menerima undangan hanya dengan membalas pesan ini.
+
+Atau Anda bisa, dalam pesan ke $request_email, berisi baris berikut, dan hanya baris berikut:
+
+    confirm $token
+
+Perlu diketahui bahwa dengan hanya mengirim 'balasan' ke pesan ini seharusnya bisa bekerja di hampir semua pembaca surel.
+
+Jika Anda ingin menolak undangan ini, tinggal abaikan pesan ini saja.  Jika Anda memiliki pertanyaan, silakan kirim ke $owner_email.

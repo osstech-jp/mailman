@@ -1,7 +1,7 @@
-Hilfe für Mailingliste $listname
+Hilfe für Mailingliste ${listname}
 
-Dies ist der Mail-Steuerbefehl 'help' für die Mailinglistensoftware auf $domain
-in Version $version. Im Folgenden werden Steuerbefehle beschrieben mit denen
+Dies ist der Mail-Steuerbefehl 'help' für die Mailinglistensoftware auf ${domain}
+in Version ${version}. Im Folgenden werden Steuerbefehle beschrieben mit denen
 Sie Informationen über ihr Abonnement dieser Liste erhalten und Einstellungen
 vornehmen können. Ein Steuerbefehl kann in der Betreff-Zeile oder im Hauptteil
 Ihrer Nachricht stehen.
@@ -14,9 +14,9 @@ Kommandos benutzen.
 
 Die folgenden Steuerbefehle sind gültig:
 
-    $commands
+    ${commands}
 
 Mit Fragen und Anliegen, die persönlich beantwortet werden sollen,
 wenden Sie sich bitte an:
 
-    $administrator
+    ${administrator}

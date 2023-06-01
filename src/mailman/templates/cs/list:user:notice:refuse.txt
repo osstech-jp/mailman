@@ -1,8 +1,8 @@
-Váš příspěvek do mailing-listu '$listname' s předmětem
-    $subject
+Váš příspěvek do mailing-listu '${listname}' s předmětem
+    ${subject}
 
 byl odmítnut moderátorem. Jako odůvodnění tohoto zamítnutí uvedl:
 
-"$reason"
+"${reason}"
 
-Případné dotazy a připomínky směřujte na správce tohoto listu na $owner_email
+Případné dotazy a připomínky směřujte na správce tohoto listu na ${owner_email}

@@ -1,15 +1,15 @@
-Votre adresse « $user_email » a été invitée à rejoindre la liste de diffusion
-$short_listname@$domain par le propriétaire de $short_listname.
+Votre adresse « ${user_email} » a été invitée à rejoindre la liste de diffusion
+${short_listname}@${domain} par le propriétaire de ${short_listname}.
 Vous pouvez accepter l'invitation en répondant simplement à ce message.
 
 Vous devez sinon inclure la ligne suivante -- et uniquement la ligne suivante --
-dans un message à $request_email :
+dans un message à ${request_email} :
 
-    confirm $token
+    confirm ${token}
 
 Notez qu'envoyer simplement un `reply' à ce message devrait fonctionner
 sur la plupart des clients mail.
 
 Si vous souhaitez refuser cette invitation, veuillez simplement ignorer ce
 message.  Si vous avez la moindre question, merci de l'envoyer à
-$owner_email.
+${owner_email}.

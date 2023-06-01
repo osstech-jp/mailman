@@ -1,6 +1,6 @@
-Votre message à destination de la liste de diffusion $listname a été rejeté
+Votre message à destination de la liste de diffusion ${listname} a été rejeté
 pour les raisons suivantes :
 
-$reasons
+${reasons}
 
 Le message original reçu par Mailman est joint.

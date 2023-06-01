@@ -1,1 +1,1 @@
-$member, $display_name listesine başarıyla abone oldu.
+${member}, ${display_name} listesine başarıyla abone oldu.

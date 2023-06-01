@@ -1,4 +1,4 @@
-Odběr listu $listname byl, z důvodu opakovaných neúspěšných doručení (přesáhnutí tzv. bounce skóre), zakázán uživateli $member.
+Odběr listu ${listname} byl, z důvodu opakovaných neúspěšných doručení (přesáhnutí tzv. bounce skóre), zakázán uživateli ${member}.
 
 
 DSN které tento zákaz způsobilo je přiložené.

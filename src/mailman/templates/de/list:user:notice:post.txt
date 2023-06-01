@@ -1,5 +1,5 @@
 Ihre Nachricht mit dem Betreff
 
-    $subject
+    ${subject}
 
-ist erfolgreich bei der Mailingliste $display_name eingegangen.
+ist erfolgreich bei der Mailingliste ${display_name} eingegangen.

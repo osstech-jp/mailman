@@ -1,0 +1,16 @@
+Üdvözöljük a "$display_name" levelezőlistán!
+
+A listára való feliratkozáshoz küldje el üzenetét a következő címre:
+
+  $listname
+
+Leiratkozhat, vagy módosíthatja a beállításait e-mailben a következő címen
+üzenet küldésével a következő címre:
+
+  $request_email
+
+a "help" szóval a tárgyban vagy a szövegben (ne tegye bele az idézőjeleket), és a következő szöveggel
+vissza fog kapni egy üzenetet az utasításokkal.  Szüksége lesz a jelszavára, hogy
+a beállítások megváltoztatásához, de biztonsági okokból ez a jelszó nem szerepel az alábbiakban.
+itt.  Ha elfelejtette a jelszavát, akkor azt a következő menüponton keresztül kell visszaállítania
+webes felhasználói felületen.

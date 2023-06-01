@@ -1,0 +1,24 @@
+Uitschrijven bevestigen
+
+Hallo, dit is de GNU Mailman server van $domain.
+
+Wij hebben een verzoek om uit te schrijven ontvangen voor volgend e-mailadres
+
+    $user_email
+
+Voordat GNU Mailman u kan uitschrijven, moet u uw verzoek eerst bevestigen.
+U kan dit door eenvoudig weg dit bericht te beantwoorden.
+
+Of u kan volgende lijn, en enkel de volgende
+lijn, in een bericht naar $request_email sturen:
+
+    confirm $token
+
+Merk op dat eenvoudigweg dit bericht beantwoorden in de meeste
+e-mailprogramma's zou moeten werken.
+
+Indien u zich niet wenst uit te schrijven uit deze lijst, negeer dan gewoon dit
+bericht.  Indien u vermoedt dat u onrechtmatig wordt uitgeschreven voor deze lijst,
+of u heeft andere vragen, dan mag u altijd de lijstbeheerder contacteren via
+
+    $owner_email

@@ -1,0 +1,15 @@
+Uw e-mailadres "$user_email" is door de beheerder van de maillijst $short_listname
+van $domain gebruikt om u uit te nodigen voor de $short_listname maillijst.
+U kan deze uitnodiging aanvaarden door eenvoudigweg dit bericht te beantwoorden.
+
+Of u moet de volgende lijn, en alleen de volgende lijn,
+in een bericht naar $request_email sturen:
+
+    confirm $token
+
+Merk op dat deze mail gewoon beantwoorden vanuit de meeste
+e-mailprogramma's zou moeten werken.
+
+Als u deze uitnodiging wenst te weigeren, gelieve dit bericht dan gewoon
+te negeren.  Indien u vragen heeft, gelieve ze dan naar
+$owner_email te sturen.

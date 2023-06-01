@@ -1,5 +1,5 @@
 Bir posta listesi aboneliğinden çıkma isteği onayı için
 yetkilendirmeniz gerekiyor:
 
-    Kim için:  $member
-    Liste: $listname
+    Kim için:  ${member}
+    Liste: ${listname}

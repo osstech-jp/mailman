@@ -1,0 +1,24 @@
+Bevestig je inschrijving
+
+Hallo, dit is de GNU Mailman server van $domain.
+
+Wij hebben een inschrijvingsverzoek ontvangen voor het volgende e-mailadres
+
+    $user_email
+
+Alvorens u GNU Mailman op deze site kan gebruiken, moet u eerst
+bevestigen dat dit uw e-mailadres is.  U kan dat doen door dit bericht te beantwoorden.
+
+Of u moet de volgende lijn, en alleen de volgende lijn,
+in een bericht naar $request_email sturen:
+
+    confirm $token
+
+Merk op dat deze mail gewoon beantwoorden vanuit de meeste
+e-mailprogramma's zou moeten werken.
+
+Indien u dit adres niet wenst in te schrijven, gelieve dit bericht dan gewoon
+te negeren.  Als u denkt dat u ten onrechte wordt ingeschreven op deze lijst, of
+u heeft andere vragen, dan kan u de lijstbeheerder contacteren op
+
+    $owner_email

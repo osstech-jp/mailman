@@ -1,6 +1,6 @@
-Il tuo messaggio alla mailing list $listname è stato rifiutato per i seguenti
+Il tuo messaggio alla mailing list ${listname} è stato rifiutato per i seguenti
 motivi:
 
-$reasons
+${reasons}
 
 Il messaggio originale ricevuto da Mailman è in allegato.

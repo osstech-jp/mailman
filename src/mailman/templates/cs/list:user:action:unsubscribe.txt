@@ -1,17 +1,17 @@
 Potvrzení odhlášení emailové adresy
 
-Dobrý den, tohle je mailing-listový server na adrese $domain.
+Dobrý den, tohle je mailing-listový server na adrese ${domain}.
 
 Přijali jsme Vaší žádost o zrušení odběru na emailové adrese
-	$user_email
+	${user_email}
 
 Než budete moci začít distribuční skupinu používat, je třeba nejprve potvrdit, že jste o odhlášení skutečně požádali Vy. Nejjednodušší cestou jak toto udělat je jednoduše odpovědět na tuto zprávu.
 
-Alternativně můžete odeslat nový email na adresu $request_email, který bude v těle obsahovat jediný text a sice:
-    confirm $token
+Alternativně můžete odeslat nový email na adresu ${request_email}, který bude v těle obsahovat jediný text a sice:
+    confirm ${token}
 
 Ve většině emailových klientů ale bude stačit kliknout na "Odpovědět" nebo "Reply" a zprávu odeslat.
 
 Pokud si odběr na této emailové adrese zrušit nepřejete, jednoduše tuto zprávu smažte.
 V případě jakýchkoliv dotazů kontaktujte vlastníka mailing-listu na adrese 
-	$owner_email
+	${owner_email}

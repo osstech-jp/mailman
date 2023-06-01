@@ -1,18 +1,18 @@
 E-posta Adresini Abonelikten Çıkarma Doğrulaması
 
-Merhaba, ben $domain etki alanındaki GNU Mailman sunucusuyum.
+Merhaba, ben ${domain} etki alanındaki GNU Mailman sunucusuyum.
 
 Aşağıdaki e-posta adresi için bir abonelikten çıkma isteği aldık:
 
-    $user_email
+    ${user_email}
 
 GNU Mailman sizi abonelikten çıkarmadan önce, isteğinizi doğrulamalısınız.
 Bunu basit bir şekilde bu mesajı yanıtlayarak yapabilirsiniz.
 
-Veya $request_email adresine aşağıdaki satırı -- ve yalnızca aşağıdaki
+Veya ${request_email} adresine aşağıdaki satırı -- ve yalnızca aşağıdaki
 satırı -- içeren bir mesaj gönderebilirsiniz:
 
-    confirm $token
+    confirm ${token}
 
 Bu mesaja basit bir şekilde bir 'yanıt' göndermenin çoğu e-posta
 okuyucusunda işe yarayacağını unutmayın.
@@ -21,4 +21,4 @@ Bu e-posta adresini abonelikten çıkarmak istemiyorsanız, bu mesajı dikkate
 almayın.  Liste aboneliğinden kötü niyetli bir şekilde çıkarıldığınızı düşünüyorsanız
 veya başka sorularınız varsa, aşağıdaki adresle iletişime geçebilirsiniz:
 
-    $owner_email
+    ${owner_email}

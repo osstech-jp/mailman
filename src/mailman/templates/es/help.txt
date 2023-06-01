@@ -1,7 +1,7 @@
-Ayuda para la lista de correo $listname
+Ayuda para la lista de correo ${listname}
 
-Esta es la ayuda para el comando 'help' enviado vía email de la versión $version para el administrador 
-de listas de correo de GNU Mailman en $domain. A continuación se relacionan los comandos que se 
+Esta es la ayuda para el comando 'help' enviado vía email de la versión ${version} para el administrador 
+de listas de correo de GNU Mailman en ${domain}. A continuación se relacionan los comandos que se 
 pueden enviar para obtener información y controlar su suscripción a las listas de Mailman en este sitio.
 Un comando puede aparecer tanto en el asunto del mensaje como en el cuerpo.
 
@@ -13,8 +13,8 @@ ni "<>" ni "[]" cuando se usen estos comandos.
 
 Los siguientes son comandos válidos:
 
-    $commands
+    ${commands}
 
 Cualquier pregunta o consulta que deba ser atendida por una persona debería ser enviada a:
 
-    $administrator
+    ${administrator}
