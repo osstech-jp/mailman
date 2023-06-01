@@ -1,6 +1,6 @@
-Ihre Nachricht an die Mailingliste $listname wurde
+Ihre Nachricht an die Mailingliste ${listname} wurde
 mit folgender Begründung abgelehnt:
 
-$reasons
+${reasons}
 
 Die Originalnachricht wie von uns erhalten ist angehängt.

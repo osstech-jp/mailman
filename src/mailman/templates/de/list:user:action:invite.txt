@@ -1,14 +1,14 @@
-Ihre E-Mail-Adresse „$user_email“ wurde vom Listenbesitzer eingeladen,
-der Mailingliste  $short_listname auf $domain beizutreten.
+Ihre E-Mail-Adresse „${user_email}“ wurde vom Listenbesitzer eingeladen,
+der Mailingliste  ${short_listname} auf ${domain} beizutreten.
 Sie können die Einladung annehmen, indem Sie auf diese Nachricht antworten.
 
 Alternativ können Sie folgende Zeile -- und nur diese Zeile -- in einer
-Nachricht an $request_email schicken:
+Nachricht an ${request_email} schicken:
 
-    confirm $token
+    confirm ${token}
 
 Beachten Sie, dass eine einfache Antwort in den meisten Fällen genügt.
 
 Wenn Sie diese Einladung ablehnen möchten, ignorieren Sie diese
 Nachricht bitte einfach. Bei Fragen wenden Sie sich bitte an
-$owner_email.
+${owner_email}.

@@ -1,20 +1,20 @@
 Confirmação de cancelamento de inscrição de endereço de e-mail
 
-Olá! Este é o servidor GNU Mailman em $domain.
+Olá! Este é o servidor GNU Mailman em ${domain}.
 
 Recebemos uma solicitação de cancelamento de inscrição para o
 endereço de e-mail
 
-    $user_email
+    ${user_email}
 
 Antes que o GNU Mailman possa cancelar sua inscrição, você deve
 primeiro confirmar sua solicitação. Você pode fazer isso respondendo
 a esta mensagem.
 
 Ou você pode incluir a linha a seguir, e somente a linha a seguir,
-em uma mensagem para $request_email:
+em uma mensagem para ${request_email}:
 
-    confirm $token
+    confirm ${token}
 
 Observe que o simples envio de uma "resposta" a esta mensagem pode
 funcionar da maioria dos leitores de e-mail.
@@ -24,4 +24,4 @@ simplesmente desconsidere esta mensagem. Se você acha que está sendo
 mal-intencionadamente cancelado a inscrição da lista, ou tem alguma
 outra dúvida, entre em contato com
 
-    $owner_email
+    ${owner_email}

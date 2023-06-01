@@ -1,9 +1,9 @@
-Ihr Abonnement für die Mailingliste $listname wurde deaktiviert, weil wir zahlreiche
+Ihr Abonnement für die Mailingliste ${listname} wurde deaktiviert, weil wir zahlreiche
 unzustellbare Rückläufer erhalten haben, die darauf hinweisen, dass es ein Problem
-bei der Zustellung von Nachrichten an $sender_email gibt.
+bei der Zustellung von Nachrichten an ${sender_email} gibt.
 Im Zweifelsfall wenden Sie sich an den Support Ihres E-Mail-Providers.
 
 Sollten Sie weitere Fragen oder Probleme haben, wenden Sie sich bitte an
 die Besitzer*in der Liste unter
 
-     $owner_email
+     ${owner_email}

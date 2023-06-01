@@ -1,15 +1,15 @@
-Il tuo indirizzo «$user_email» è stato invitato a unirsi alla mailing list
-$short_listname su $ domain dal proprietario della mailing list $short_listname.
+Il tuo indirizzo «${user_email}» è stato invitato a unirsi alla mailing list
+${short_listname} su $domain dal proprietario della mailing list ${short_listname}.
 Puoi accettare l'invito semplicemente rispondendo a questo messaggio.
 
 Oppure dovresti includere la seguente riga e solo la seguente
-linea -- in un messaggio a $request_email:
+linea -- in un messaggio a ${request_email}:
 
-    conferma $token
+    conferma ${token}
 
 Nota che il semplice invio di una «risposta» a questo messaggio dovrebbe funzionare da
 la maggior parte dei lettori di posta.
 
 Se desideri rifiutare questo invito, ignora semplicemente questo
 messaggio.  Se hai domande, inviale a
-$owner_email.
+${owner_email}.

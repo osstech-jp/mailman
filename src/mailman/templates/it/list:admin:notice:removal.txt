@@ -1,1 +1,1 @@
-$member è stato annullato da $listname a causa di un numero eccessivo di rimbalzi.
+${member} è stato annullato da ${listname} a causa di un numero eccessivo di rimbalzi.

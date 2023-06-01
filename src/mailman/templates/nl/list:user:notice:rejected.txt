@@ -1,0 +1,6 @@
+Uw bericht naar de $listname maillijst werd afgekeurd om de volgende
+redenen:
+
+$reasons
+
+Het originele bericht zoals het ontvangen werd door Mailman zit in bijlage.

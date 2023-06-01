@@ -1,0 +1,14 @@
+Dit is een testbericht.  U mag dit bericht negeren.
+
+De $listname maillijst heeft een aantal afleveringsfouten ontvangen van u,
+die aantonen dat er problemen zijn met het afleveren van e-mail aan $sender_email.  Een
+voorbeeld zit in bijlage.  Gelieve dit bericht even te bekijken en u ervan te vergewissen
+dat er geen problemen zijn met uw e-mailadres.  U kan misschien bij uw e-mail
+systeembeheerder te rade gaan voor meer hulp.
+
+U hoeft niets te doen om lid te blijven van de maillijst.
+
+Indien u vragen of problemen heeft, dan kan u de lijstbeheerder contacteren
+via
+
+    $owner_email

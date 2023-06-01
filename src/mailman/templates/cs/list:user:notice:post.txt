@@ -1,5 +1,5 @@
 Vaše zpráva s názvem
 
-    $subject
+    ${subject}
 
-byla úspěšně přijata mailing-listem $display_name.
+byla úspěšně přijata mailing-listem ${display_name}.

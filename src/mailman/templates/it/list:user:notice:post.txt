@@ -1,5 +1,5 @@
 Il tuo messaggio intitolato
 
-    $subject
+    ${subject}
 
-è stato ricevuto con successo dalla mailing list $display_name.
+è stato ricevuto con successo dalla mailing list ${display_name}.

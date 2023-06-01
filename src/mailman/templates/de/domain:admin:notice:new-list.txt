@@ -1,10 +1,10 @@
-Die Mailingliste '$listname' wurde eben für Sie erstellt. Es folgen
+Die Mailingliste '${listname}' wurde eben für Sie erstellt. Es folgen
 grundlegende Informationen zu Ihrer Liste.
 
 Es gibt ein E-Mail-basiertes Interface für BenutzerInnen (nicht AdministratorInnen)
 der Liste; Informationen darüber erhalten Sie, indem Sie eine E-Mail mit dem Wort
 'help' als Betreff oder Inhaltan folgende Adresse senden:
 
-    $request_email
+    ${request_email}
 
-Sollten Sie noch Fragen haben, wenden Sie sich bitte an folgende Adresse: $site_email.
+Sollten Sie noch Fragen haben, wenden Sie sich bitte an folgende Adresse: ${site_email}.

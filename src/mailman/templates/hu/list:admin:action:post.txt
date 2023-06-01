@@ -1,0 +1,13 @@
+Mint a lista adminisztrátora, az Ön engedélyét kérjük a
+a következő levelezőlistára való feladáshoz:
+
+    Lista:    $listanév
+    Feladó: $sender_email
+    Tárgy: $subject
+
+Az üzenetet azért tartjuk vissza, mert:
+
+$reasons
+
+Ha úgy gondolja, látogasson el a műszerfalra, hogy jóváhagyja vagy elutasítsa a
+kérést.

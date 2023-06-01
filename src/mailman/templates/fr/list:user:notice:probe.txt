@@ -1,8 +1,8 @@
 C’est un message de test. Vous pouvez l’ignorer.
 
-La liste de diffusion $listname a reçu un nombre important de rejets de votre part,
+La liste de diffusion ${listname} a reçu un nombre important de rejets de votre part,
 ce qui peut indiquer qu’il y a un problème pour distribuer des messages à
-$sender_email. Un échantillon est joint ci-dessous. Veuillez examiner ce message
+${sender_email}. Un échantillon est joint ci-dessous. Veuillez examiner ce message
 pour vous assurer qu’il n’y a pas de problème avec votre adresse de courriel.
 Vous pouvez vérifier cela avec l’administrateur de vos courriels pour plus d’aide.
 
@@ -11,4 +11,4 @@ Vous n’avez rien besoin de faire pour rester abonné à la liste de diffusion.
 Si vous avez des questions ou rencontrez des problèmes, vous pouvez contacter
 le propriétaire de la liste de diffusion à l’adresse
 
-    $owner_email
+    ${owner_email}

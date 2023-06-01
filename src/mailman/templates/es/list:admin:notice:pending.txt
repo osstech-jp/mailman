@@ -1,4 +1,4 @@
-La lista $listname tiene $count peticiones de moderación.
+La lista ${listname} tiene ${count} peticiones de moderación.
 
-$data
+${data}
 Por favor, atiéndalas en cuanto le sea posible.

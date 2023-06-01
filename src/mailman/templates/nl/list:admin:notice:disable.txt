@@ -1,0 +1,4 @@
+Het abonnement van $member op $listname is uitgeschakeld omdat het aantal afleveringsproblemen
+de ingestelde bounce_score_threshold marge van de maillijst overschrijdt.
+
+De betreffende DSN zit in bijlage indien beschikbaar.

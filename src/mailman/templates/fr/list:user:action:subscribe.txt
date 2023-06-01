@@ -1,19 +1,19 @@
 Confirmation de l’inscription de votre adresse électronique
 
-Bonjour, c’est le serveur GNU Mailman de $domain.
+Bonjour, c’est le serveur GNU Mailman de ${domain}.
 
 Nous avons reçu une demande d’inscription pour l’adresse électronique
 
-    $user_email
+    ${user_email}
 
 Avant de pouvoir utiliser GNU Mailman sur ce serveur, vous devez préalablement
 confirmer que c’est bien votre adresse électronique. Vous pouvez le faire en
 répondant à ce message-ci.
 
 Vous pouvez sinon inclure la ligne suivante -- et uniquement la ligne suivante --
-dans un message à $request_email :
+dans un message à ${request_email} :
 
-    confirm $token
+    confirm ${token}
 
 Notez qu'envoyer simplement une « réponse » à ce message devrait fonctionner
 avec la plupart des outils lecteurs de courriels.
@@ -22,4 +22,4 @@ Si vous ne souhaitez pas inscrire cette adresse électronique, vous pouvez simpl
 ignorer ce message. Si vous pensez que vous avez été abonné à la liste de façon
 malveillante, ou pour toute autre question, vous pouvez contacter
 
-    $owner_email
+    ${owner_email}

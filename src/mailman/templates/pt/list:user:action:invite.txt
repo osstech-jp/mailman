@@ -1,15 +1,15 @@
-O seu endereço "$user_email" foi convidado a entrar na lista discussão
-$short_listname em $domain pelo dono da lista de discussão. Pode
+O seu endereço "${user_email}" foi convidado a entrar na lista discussão
+${short_listname} em ${domain} pelo dono da lista de discussão. Pode
 aceitar o convite com uma simples resposta a esta mensagem.
 
 Ou pode incluir a linha a seguir e somente a linha a seguir,
-numa mensagem para $request_email:
+numa mensagem para ${request_email}:
 
-    confirm $token
+    confirm ${token}
 
 Observe que o simples envio de uma "resposta" a esta mensagem pode
 funcionar da maioria dos leitores de e-mail.
 
 Se deseja recusar este convite, simplesmente desconsidere esta
 mensagem. Caso tenha alguma dúvida, envie-as para
-$owner_email.
+${owner_email}.

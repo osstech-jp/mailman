@@ -1,6 +1,6 @@
-Návod pro mailing list $listname
+Návod pro mailing list ${listname}
 
-Toto je zpráva odeslaná v reakci na klíčové slovo 'help' obsahující návod pro použití listu běžícím na GNU Mailman manažeru na doméně $domain ve verzi $version.
+Toto je zpráva odeslaná v reakci na klíčové slovo 'help' obsahující návod pro použití listu běžícím na GNU Mailman manažeru na doméně ${domain} ve verzi ${version}.
 Následuje seznam příkazů po jejichž odeslání bude automaticky vykonána Vámi zvolená akce sloužící jak k získání informací, tak ke správě Vašeho odběru Mailman listů.
 
 Příkazy mohou být jak v předmětu, tak v těle zprávy.
@@ -9,7 +9,7 @@ Odesílejte je, prosím, na adresu: ${listname}-request@${domain}.
 
 Použít je možné následující příkazy:
 
-    $commands
+    ${commands}
 
 K jednotlivým popiskům - slova v "<>" označují POVINNÉ položky, zatímco slova v "[]" označují VOLITELNÉ položky.
 Prosím neposílejte samotné znaky "<>" a "[]" při používání těchto příkazů.
@@ -17,4 +17,4 @@ Prosím neposílejte samotné znaky "<>" a "[]" při používání těchto pří
 
 S dotazy se, prosím, obracejte na adresu správce systému:
 
-    $administrator
+    ${administrator}

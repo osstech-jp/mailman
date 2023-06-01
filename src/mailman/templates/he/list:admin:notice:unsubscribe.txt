@@ -1,1 +1,1 @@
-ההסרה של $member מרשימת הדיוור $display_name הושלמה.
+ההסרה של ${member} מרשימת הדיוור ${display_name} הושלמה.

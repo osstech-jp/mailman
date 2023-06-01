@@ -1,5 +1,5 @@
 Via mesaĝo titolita
 
- $subject
+ ${subject}
 
-estis sukcese ricevita de la dissendolisto $display_name.
+estis sukcese ricevita de la dissendolisto ${display_name}.

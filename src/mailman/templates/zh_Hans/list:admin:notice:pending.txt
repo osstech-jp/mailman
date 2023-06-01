@@ -1,4 +1,4 @@
-$listname 列表有 $count 个审核请求等待中。
+${listname} 列表有 ${count} 个审核请求等待中。
 
-$data
+${data}
 请你在方面的时候尽快处理。

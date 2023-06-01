@@ -1,18 +1,18 @@
 Confirmation du désabonnement de votre adresse de courriel
 
-Bonjour, c’est le serveur GNU Mailman de $domain.
+Bonjour, c’est le serveur GNU Mailman de ${domain}.
 
 Nous avons reçu une demande de désabonnement pour l’adresse de courriel
 
-    $user_email
+    ${user_email}
 
 Pour que GNU Mailman puisse vous désabonner, vous devez confirmer votre
 demande. Vous pouvez le faire simplement en répondant à ce message.
 
 Vous pouvez sinon inclure la ligne suivante -- et uniquement la ligne suivante --
-dans un message à $request_email :
+dans un message à ${request_email} :
 
-    confirm $token
+    confirm ${token}
 
 Notez qu'envoyer simplement une réponse à ce message devrait fonctionner
 avec la plupart des outils lecteurs de courriel.
@@ -21,4 +21,4 @@ Si vous ne souhaitez pas désabonner cette adresse de courriel, vous pouvez simp
 ignorer ce message. Si vous pensez que quelqu’un a essayé de vous désabonner de la liste
 de façon malveillante, ou pour toute autre question, vous pouvez contacter
 
-    $owner_email
+    ${owner_email}

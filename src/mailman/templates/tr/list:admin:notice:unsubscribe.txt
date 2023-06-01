@@ -1,1 +1,1 @@
-$member, $display_name listesinden kaldırıldı.
+${member}, ${display_name} listesinden kaldırıldı.

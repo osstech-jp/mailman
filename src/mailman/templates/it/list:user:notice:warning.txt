@@ -1,8 +1,8 @@
-La tua iscrizione è stata disabilitata sulla mailing list $listname perché hai ricevuto
+La tua iscrizione è stata disabilitata sulla mailing list ${listname} perché hai ricevuto
 una serie di rimbalzi che indicano che potrebbe esserci un problema nel recapito dei
-messaggi a $sender_email.  Per ulteriore assistenza, potresti consultare il tuo amministratore
+messaggi a ${sender_email}.  Per ulteriore assistenza, potresti consultare il tuo amministratore
 di posta.
 
 In caso di domande o problemi, è possibile contattare il proprietario della mailing list all'indirizzo
 
-    $owner_email
+    ${owner_email}

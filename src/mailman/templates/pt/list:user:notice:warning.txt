@@ -1,9 +1,9 @@
-A sua inscrição foi desativada na lista de discussão $listname porque
+A sua inscrição foi desativada na lista de discussão ${listname} porque
 ela recebeu uma quantidade de devoluções a indicar que pode haver problemas
-na entrega de mensagens para $sender_email. Pode consultar o seu
+na entrega de mensagens para ${sender_email}. Pode consultar o seu
 administrador de e-mail para obter mais ajuda.
 
 Se tiver dúvidas ou problemas, pode entrar em contacto com o dono
 da lista de discussão em
 
-    $owner_email
+    ${owner_email}

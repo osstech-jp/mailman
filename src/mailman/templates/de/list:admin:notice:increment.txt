@@ -1,0 +1,3 @@
+Der Bounce-Score von $member auf $listname wurde erhöht.
+
+Der auslösende DSN, sofern vorhanden, ist angehängt.

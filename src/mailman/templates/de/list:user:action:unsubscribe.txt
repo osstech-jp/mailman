@@ -1,10 +1,10 @@
 Adress-Bestätigung zur Abmeldung
 
-Hallo, hier ist die Mailinglistensoftware auf $domain.
+Hallo, hier ist die Mailinglistensoftware auf ${domain}.
 
 Wir haben eine Anfrage zur Abmeldung von folgender Adresse erhalten
 
-    $user_email
+    ${user_email}
 
 Bevor wir Sie von dieser Mailingliste abmelden können, bitten wir Sie,
 Ihren Wunsch zu bestätigen. Dies können Sie tun, indem Sie auf diese
@@ -14,4 +14,4 @@ Sollten Sie sich nicht abmelden wollen, ignorieren Sie diese Nachricht einfach.
 Wenn Sie denken, dass Sie jemand in bösartiger Absicht abmelden will oder
 Sie weitere Fragen haben, wenden Siesich bitte an
 
-    $owner_email
+    ${owner_email}

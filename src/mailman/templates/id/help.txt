@@ -1,0 +1,15 @@
+Bantuan untuk milis $listname
+
+Ini adalah perintah surel 'help' untuk pengelola milis GNU Mailman versi $version di $domain.  Berikut akan merinci perintah yang bisa Anda kirim untuk mendapatkan informasi tentang dan kontrol langganan ke milis Mailman di situs ini.  Sebuah perintah bisa ada di baris Subjek atau badan pesan.
+
+Perintah dikirim ke ${listname}-request@${domain} address.
+
+Tentang deskripsi - kata di "<>" menandakan item WAJIB dan di "[]" menandakan item OPSIONAL.  Jangan memuat tanda "<>" atau "[]" ketika Anda menggunakan perintah.
+
+Perintah berikut valid:
+
+    $commands
+
+Pertanyaan dan lain-lain harap dikirim ke:
+
+    $administrator

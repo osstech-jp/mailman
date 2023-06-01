@@ -1,8 +1,8 @@
 Esta é uma mensagem de sondagem. Você pode ignorá-la.
 
-A lista de discussão $listname recebeu algumas devoluções suas,
+A lista de discussão ${listname} recebeu algumas devoluções suas,
 indicando que pode haver um problema na entrega de mensagens para
-$sender_email. Um exemplo está anexado abaixo. Examine esta
+${sender_email}. Um exemplo está anexado abaixo. Examine esta
 mensagem para certificar-se de que não haja problemas com seu endereço
 de e-mail. Você pode consultar seu administrador de e-mail para obter
 mais ajuda.
@@ -13,4 +13,4 @@ lista de discussão.
 Se tiver dúvidas ou problemas, você pode entrar em contato com o dono
 da lista de discussão em
 
-    $owner_email
+    ${owner_email}

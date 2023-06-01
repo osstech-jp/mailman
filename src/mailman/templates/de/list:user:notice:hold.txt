@@ -1,12 +1,12 @@
-Ihre Nachricht an '$listname' mit dem Betreff
+Ihre Nachricht an '${listname}' mit dem Betreff
 
-    $subject
+    ${subject}
 
 wurde zurückgehalten, bis eine Moderator*in sie freigegeben hat.
 
 Der Grund dafür ist:
 
-$reasons
+${reasons}
 
 Ihre Nachricht wird entweder an die Liste zugestellt, oder Sie werden
 über die Entscheidung der Moderator*innen benachrichtigt.

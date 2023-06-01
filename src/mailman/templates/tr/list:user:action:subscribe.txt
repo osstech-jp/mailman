@@ -1,18 +1,18 @@
 E-posta Adresi Kaydı Doğrulaması
 
-Merhaba, ben $domain etki alanındaki GNU Mailman sunucusuyum.
+Merhaba, ben ${domain} etki alanındaki GNU Mailman sunucusuyum.
 
 Aşağıdaki e-posta adresi için bir kayıt isteği aldık:
 
-    $user_email
+    ${user_email}
 
 Bu sitede GNU Mailman kullanmaya başlamadan önce, bunun sizin e-posta adresiniz
 olduğunu doğrulamalısınız.  Bunu bu mesajı yanıtlayarak yapabilirsiniz.
 
-Veya $request_email adresine aşağıdaki satırı -- ve yalnızca aşağıdaki
+Veya ${request_email} adresine aşağıdaki satırı -- ve yalnızca aşağıdaki
 satırı -- içeren bir mesaj gönderebilirsiniz:
 
-    confirm $token
+    confirm ${token}
 
 Bu mesaja basit bir şekilde bir 'yanıt' göndermenin çoğu e-posta
 okuyucusunda işe yarayacağını unutmayın.
@@ -21,4 +21,4 @@ Bu e-posta adresini kaydetmek istemiyorsanız, bu mesajı dikkate almayın.
 Listeye kötü niyetli bir şekilde abone yapıldığınızı düşünüyorsanız veya başka
 sorularınız varsa, aşağıdaki adresle iletişime geçebilirsiniz:
 
-    $owner_email
+    ${owner_email}

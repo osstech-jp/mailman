@@ -1,13 +1,13 @@
-Bienvenue dans la liste de diffusion « $display_name » !
+Bienvenue dans la liste de diffusion « ${display_name} » !
 
 Pour écrire à cette liste, envoyez vos messages à :
 
-    $listname
+    ${listname}
 
 Vous pouvez vous désabonner ou ajuster vos paramètres par courriel en expédiant
 un message à :
 
-    $request_email
+    ${request_email}
 
 avec le mot « help » dans l’objet ou le corps (n’incluez pas les guillemets). Vous
 recevrez en retour un message avec des instructions à suivre. Vous aurez besoin

@@ -1,8 +1,8 @@
 Diese Nachricht ist ein Test. Sie können sie ignorieren.
 
-Die Mailingliste $listname hat zahlreiche unzustellbare Rückläufer erhalten,
+Die Mailingliste ${listname} hat zahlreiche unzustellbare Rückläufer erhalten,
 was darauf hinweist, dass es Probleme bei der Zustellung von Nachrichten an
-$sender_email geben kann. Ein Beispiel ist unten angehängt. Bitte prüfen Sie die
+${sender_email} geben kann. Ein Beispiel ist unten angehängt. Bitte prüfen Sie die
 Nachricht um sicher zu gehen, dass es keine Schwierigkeiten mit IhrerAdresse gibt. 
 Im Zweifelsfall wenden Sie sich an die Administration Ihres Mail-Systems.
 
@@ -11,4 +11,4 @@ Sie müssen nichts weiter unternehmen, um weiterhin Abonnent*in der Liste zu ble
 Sollten Sie weitere Fragen oder Probleme haben, wenden Sie sich bitte an
 die Besitzer*in der Liste unter
 
-     $owner_email
+     ${owner_email}

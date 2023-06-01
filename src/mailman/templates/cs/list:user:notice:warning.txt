@@ -1,4 +1,4 @@
-Váš odběr mailing-listu $listname byl ukončen, protože jsme od Vás dostali příliš mnoho nedoručenek (bounces) značících možné problémy při doručení emailu na Vaší adresu $sender_email.
+Váš odběr mailing-listu ${listname} byl ukončen, protože jsme od Vás dostali příliš mnoho nedoručenek (bounces) značících možné problémy při doručení emailu na Vaší adresu ${sender_email}.
 Doporučujeme kontaktovat správce Vašeho emailu o pomoc.
 
-Pokud máte jakékoliv otázky nebo potíže, můžete kontaktovat vlastníka mailing-listu na adrese $owner_email
+Pokud máte jakékoliv otázky nebo potíže, můžete kontaktovat vlastníka mailing-listu na adrese ${owner_email}

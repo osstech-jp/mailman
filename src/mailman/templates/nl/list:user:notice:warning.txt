@@ -1,0 +1,8 @@
+Uw abonnement op de $listname maillijst is opgeschort omdat er zich een aantal
+afleveringsproblemen hebben voorgedaan die kunnen wijzen op problemen met het
+afleveren van berichten aan $sender_email. U kan best contact opnemen met uw e-mailprovider of systeembeheerder
+voor meer hulp.
+
+Indien u vragen of problemen ondervindt, dan kan u ook contact opnemen met de lijstbeheerder via
+
+    $owner_email

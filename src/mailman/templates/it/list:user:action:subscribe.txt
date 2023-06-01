@@ -1,18 +1,18 @@
 Conferma registrazione indirizzo e-mail
 
-Ciao, questo è il server GNU Mailman su $ domain.
+Ciao, questo è il server GNU Mailman su $domain.
 
 Abbiamo ricevuto una richiesta di registrazione per l'indirizzo e-mail
 
-    $user_email
+    ${user_email}
 
 Prima di poter iniziare a usare GNU Mailman su questo sito, devi prima confermare
 che questo è il tuo indirizzo email. Puoi farlo rispondendo a questo messaggio.
 
 Oppure dovresti includere la seguente riga -- e solo la seguente riga --
-in un messaggio a $request_email:
+in un messaggio a ${request_email}:
 
-    conferma $token
+    conferma ${token}
 
 Nota che il semplice invio di una 'risposta' a questo messaggio dovrebbe funzionare
 dalla maggior parte dei lettori di posta.
@@ -21,4 +21,4 @@ Se non desideri registrare questo indirizzo e-mail, ignora questo
 messaggio.  Se ritieni di essere stato iscritto alla lista a tua insaputa o
 hai altre domande, puoi contattarci
 
-    $owner_email
+    ${owner_email}

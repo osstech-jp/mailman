@@ -1,5 +1,5 @@
 Ihre Einwilligung als Administrator*in ist für eine Abmeldung von
 der Mailingliste nötig:
 
-    Für:    $member
-    Liste:  $listname
+    Für:    ${member}
+    Liste:  ${listname}

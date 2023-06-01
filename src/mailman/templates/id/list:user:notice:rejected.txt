@@ -1,0 +1,5 @@
+Pesan Anda ke milis $listname ditolak atas alasan berikut
+
+$reasons
+
+Pesan asli yang diterima oleh Mailman dilampirkan.

@@ -1,4 +1,4 @@
-$listname listesinde bekleyen $count denetim isteği var.
+${listname} listesinde bekleyen ${count} denetim isteği var.
 
-$data
+${data}
 Lütfen en kısa zamanda bununla ilgilenin.

@@ -1,8 +1,8 @@
-Su suscripción a la lista de correo $listname ha sido desactivada debido a la
+Su suscripción a la lista de correo ${listname} ha sido desactivada debido a la
 recepción de un número de rebotes que indican que puede haber un problema de
-envío de mensajes a $sender_email. Debería revisarlo junto a su administrador
+envío de mensajes a ${sender_email}. Debería revisarlo junto a su administrador
 de correo para obtener más ayuda.
 
 Si tiene alguna duda o problema, puede contactar con el propietario de la lista vía
 
- $owner_email
+ ${owner_email}

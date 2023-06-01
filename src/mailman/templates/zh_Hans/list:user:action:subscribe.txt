@@ -1,22 +1,22 @@
 电子邮件地址注册确认
 
-你好，这里是 $domain 的 GNU Mailman 服务器。
+你好，这里是 ${domain} 的 GNU Mailman 服务器。
 
 我们已经接收以下电子邮件地址的注册请求
 
-    $user_email
+    ${user_email}
 
 在可以使用此站点的 GNU Mailman 前，你必须首先确认这是你的电子邮件地址。
 你可以回复此消息来完成确认。
 
-或者你可以在发送至 $request_email 的消息中包括以下的一行
+或者你可以在发送至 ${request_email} 的消息中包括以下的一行
  *并且只能有这一行*：
 
-    confirm $token
+    confirm ${token}
 
 注意简单地“回复”此消息对于大多数邮件阅读器就已经足够。
 
 如果你不想要注册此电子邮件地址，请直接忽略此消息。如果你认为你被恶意
 订阅了此列表，或者有任何其他问题，你可以联系
 
-    $owner_email
+    ${owner_email}

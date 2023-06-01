@@ -1,1 +1,1 @@
-$member sukcese abonas la dissendoliston $display_name.
+${member} sukcese abonas la dissendoliston ${display_name}.

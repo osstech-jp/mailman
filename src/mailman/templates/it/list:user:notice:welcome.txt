@@ -1,13 +1,13 @@
-Benvenuto nella mailing list "$display_name"!
+Benvenuto nella mailing list "${display_name}"!
 
 Per postare in questo elenco, invia la tua email a:
 
-  $listname
+  ${listname}
 
 Puoi annullare l'iscrizione o apportare modifiche alle tue opzioni tramite e-mail inviando
 un messaggio a:
 
-  $request_email
+  ${request_email}
 
 con la parola 'help' nell'oggetto o nel corpo (non includere le virgolette)
 riceverai un messaggio con le istruzioni. Avrai bisogno della tua password per
