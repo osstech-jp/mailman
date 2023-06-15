@@ -46,6 +46,9 @@ Bugs fixed
   (Closes #1072)
 * Email address validation now accepts quoted local parts and @ in local part.
   (Closes #1077)
+* The default for max_recipients has been reduced to 10 to avoid possible lost
+  mail when a large number of invalid recipients causes the MTA to disconnect.
+  (Closes #1083)
 
 Other
 -----
