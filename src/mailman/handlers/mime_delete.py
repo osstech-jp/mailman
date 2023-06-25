@@ -132,12 +132,13 @@ following MIME parts from this message.
     if msg.is_multipart():
         # Recursively filter out any subparts that match the filter list
         prelen = len(msg.get_payload())
+        premsg = copy.deepcopy(msg)
         filter_parts(msg, filtertypes, passtypes, filterexts, passexts)
         # If the outer message is now an empty multipart (and it wasn't
         # before!) then, again it gets discarded.
         postlen = len(msg.get_payload())
         if postlen == 0 and prelen > 0:
-            dispose(mlist, msg, msgdata,
+            dispose(mlist, premsg, msgdata,
                     _("After content filtering, the message was empty"))
     # Now replace all multipart/alternatives with just the first non-empty
     # alternative.  BAW: We have to special case when the outer part is a
