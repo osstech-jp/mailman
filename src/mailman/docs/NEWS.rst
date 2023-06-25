@@ -49,6 +49,8 @@ Bugs fixed
 * The default for max_recipients has been reduced to 10 to avoid possible lost
   mail when a large number of invalid recipients causes the MTA to disconnect.
   (Closes #1083)
+* Messages preserved or forwarded by content filtering are now the original
+  message rather than the content filtered one.  (Closes #1089)
 
 Other
 -----

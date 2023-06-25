@@ -197,11 +197,51 @@ message.
         with self.assertRaises(DiscardMessage) as cm:
             mime_delete.dispose(self._mlist, self._msg, {}, 'preserved')
         self.assertEqual(cm.exception.message, 'preserved')
-        # There should be no messages in the 'bad' queue.
+        # There should be a message in the 'bad' queue.
         items = get_queue_messages('bad', expected_count=1)
         message = items[0].msg
         self.assertEqual(message['subject'], 'A disposable message')
         self.assertEqual(message['message-id'], '<ant>')
+
+    @configuration('mailman', filtered_messages_are_preservable='yes')
+    def test_preserved_message_has_content(self):
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: Testing preserved message has content
+Message-ID: <ant>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="AAAA"
+
+--AAAA
+Content-Type: text/bogus; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Let=E2=80=99s also consider
+
+--AAAA
+Content-Type: text/other; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Let=E2=80=99s also consider
+
+--AAAA--
+""")
+        self._mlist.filter_content = True
+        self._mlist.filter_action = FilterAction.preserve
+        self._mlist.pass_types = ['multipart', 'text/plain']
+        with self.assertRaises(DiscardMessage) as cm:
+            mime_delete.process(self._mlist, msg, {})
+        self.assertEqual(cm.exception.message,
+                         'After content filtering, the message was empty')
+        # There should be a message in the 'bad' queue.
+        items = get_queue_messages('bad', expected_count=1)
+        message = items[0].msg
+        self.assertEqual(message['subject'],
+                         'Testing preserved message has content')
+        self.assertEqual(message['message-id'], '<ant>')
+        # The message should be multipart with two subparts.
+        self.assertEqual(len(message.get_payload()), 2)
 
     def test_bad_action(self):
         # This should never happen, but what if it does?
