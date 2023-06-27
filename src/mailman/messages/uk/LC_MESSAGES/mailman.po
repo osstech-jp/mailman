@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-09-13 09:16+0000\n"
+"PO-Revision-Date: 2023-06-27 14:51+0000\n"
 "Last-Translator: Sergii Horichenko <m@sgg.im>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/uk/>\n"
@@ -16,9 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.1-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.18.1\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85 src/mailman/chains/hold.py:163
 #: src/mailman/handlers/acknowledge.py:56 src/mailman/handlers/subject_prefix.py:45
@@ -1340,14 +1340,20 @@ msgid ""
 "    or 'administrator' (i.e. owners and moderators).\n"
 "    If not given, then 'member' role is assumed."
 msgstr ""
+"    Відображати лише учасників із певною РОЛЛЮ.\n"
+"    Роль може бути \"будь-хто\", \"учасник\", \"не-учасник\", \"власник\", "
+"\"модератор\",\n"
+"    або \"адміністратор\" (тобто власники та модератори).\n"
+"    Якщо іншого не вказано, виконується роль \"учасник\"."
 
 #: src/mailman/commands/cli_members.py:155
 msgid "    Display only regular delivery members."
-msgstr ""
+msgstr "    Показати лише постійних учасників доставки."
 
 #: src/mailman/commands/cli_members.py:166
 msgid "    This option has no effect. It exists for backwards compatibility only."
 msgstr ""
+"    Ця опція нічого не робить. Вона існує лише для зворотної сумісності."
 
 #: src/mailman/commands/cli_members.py:172
 msgid ""
@@ -1355,6 +1361,10 @@ msgid ""
 "    'any' means any digest type, 'plaintext' means only plain text (rfc 1153)\n"
 "    type digests, 'mime' means MIME type digests."
 msgstr ""
+"    Показувати лише учасників дайджесту наступних типів.\n"
+"     \"будь-який\" означає будь-який тип дайджесту, \"простий текст\" "
+"означає лише простий текст (rfc 1153).\n"
+"     Дайджести типу MIME означає дайджести типу MIME."
 
 #: src/mailman/commands/cli_members.py:180
 msgid ""
@@ -1367,10 +1377,23 @@ msgid ""
 "    administrator or moderator, and 'unknown' means that delivery was disabled\n"
 "    for unknown (legacy) reasons."
 msgstr ""
+"    Відображати лише учасників із заданим станом доставки.\n"
+"    \"активовано\" означає всіх учасників, для яких доставку увімкнено, "
+"\"будь-який\" означає\n"
+"    учасників, доставку для яких вимкнено з будь-якої причини, \"через "
+"користувача\" означає\n"
+"    що учасник власноруч вимкнув доставку, \"через відмову\" означає, що\n"
+"    доставка була скасована автоматизованим обробником відмов,\n"
+"    \"через адміна\" означає, що доставка була вимкнена адміністратором\n"
+"    або модератором списку, а \"невідомо\" означає, що доставка була "
+"вимкнена\n"
+"    з невідомих (застарілих) причин."
 
 #: src/mailman/commands/cli_notify.py:40
 msgid "Notify list owners/moderators of pending requests."
 msgstr ""
+"Повідомляти власників/модераторів списків про запити, які знаходяться на "
+"розгляді."
 
 #: src/mailman/commands/cli_notify.py:43
 msgid ""
@@ -1378,10 +1401,15 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the requests for all mailing lists."
 msgstr ""
+"    Керуйте цим списком розсилки.  Можна використовувати декілька варіантів "
+"--list. \n"
+"    Аргумент може бути або ідентифікатором списку, або повною назвою "
+"списку.  Без\n"
+"    цього аргументу обробка матиме вплив на усі списки розсилки."
 
 #: src/mailman/commands/cli_notify.py:80 src/mailman/commands/cli_notify.py:141
 msgid "The {} list has {} moderation requests waiting."
-msgstr ""
+msgstr "У списку {} є {} запитів на модерацію."
 
 #: src/mailman/commands/cli_notify.py:111
 msgid ""
@@ -1432,10 +1460,12 @@ msgid ""
 "Missing data for request {}\n"
 "\n"
 msgstr ""
+"Відсутні дані для запиту {}\n"
+"\n"
 
 #: src/mailman/commands/cli_qfile.py:38
 msgid "Get information out of a queue file."
-msgstr ""
+msgstr "Отримати інформацію з файлу черги."
 
 #: src/mailman/commands/cli_qfile.py:42
 msgid ""
@@ -1444,12 +1474,19 @@ msgid ""
 "    representation.  Useful with 'mailman qfile -i <file>'.  In that case, the\n"
 "    list of unpickled objects will be left in a variable called 'm'."
 msgstr ""
+"    Не намагайтеся гарно надрукувати об'єкт.  Це корисно, якщо з об'єктом є "
+"якась\n"
+"    проблема і Ви просто хочете отримати розгорнуте\n"
+"    подання.  Корисно з \"mailman qfile -i <файл>\".  У цьому випадку\n"
+"    список розгорнутих об'єктів буде збережений у змінній \"m\"."
 
 #: src/mailman/commands/cli_qfile.py:50
 msgid ""
 "    Start an interactive Python session, with a variable called 'm'\n"
 "    containing the list of unpickled objects."
 msgstr ""
+"    Запустіть інтерактивний сеанс Python зі змінною \"m\",\n"
+"    яка містить список розгорнутих об'єктів."
 
 #: src/mailman/commands/cli_qfile.py:67
 msgid "[----- start pickle -----]"
@@ -1458,7 +1495,7 @@ msgstr "[----- початок серіалізації -----]"
 #: src/mailman/commands/cli_qfile.py:70
 #, python-brace-format
 msgid "<----- start object ${count} ----->"
-msgstr ""
+msgstr "<----- start object ${count} ----->"
 
 #: src/mailman/commands/cli_qfile.py:75
 msgid "[----- end pickle -----]"
@@ -1467,30 +1504,30 @@ msgstr "[----- кінець серіалізації -----]"
 #: src/mailman/commands/cli_qfile.py:77
 #, python-brace-format
 msgid "Number of objects found (see the variable 'm'): ${count}"
-msgstr ""
+msgstr "Кількість знайдених об'єктів (див. змінну \"m\"): ${count}"
 
 #: src/mailman/commands/cli_status.py:34
 msgid "Show the current running status of the Mailman system."
-msgstr ""
+msgstr "Відображення поточного стану Mailman."
 
 #: src/mailman/commands/cli_status.py:38
 msgid "GNU Mailman is not running"
-msgstr ""
+msgstr "GNU Mailman не працює"
 
 #: src/mailman/commands/cli_status.py:41
 #, python-brace-format
 msgid "GNU Mailman is running (master pid: ${pid})"
-msgstr ""
+msgstr "GNU Mailman працює (головний pid: ${pid})"
 
 #: src/mailman/commands/cli_status.py:44
 #, python-brace-format
 msgid "GNU Mailman is stopped (stale pid: ${pid})"
-msgstr ""
+msgstr "GNU Mailman зупинений (застарілий pid: ${pid})"
 
 #: src/mailman/commands/cli_status.py:50
 #, python-brace-format
 msgid "GNU Mailman is in an unexpected state (${hostname} != ${fqdn_name})"
-msgstr ""
+msgstr "GNU Mailman в неочікуваному стані (${hostname} != ${fqdn_name})"
 
 #: src/mailman/commands/cli_syncmembers.py:136
 #, python-format
@@ -1517,6 +1554,18 @@ msgid ""
 "    be removed from the list.  FILENAME can be '-' to indicate standard input.\n"
 "    "
 msgstr ""
+"    Додавайте та видаляйте учасників, якщо це необхідно для синхронізації "
+"списку\n"
+"    учасників з вхідним файлом.  FILENAME — файл, який містить нових "
+"учасників,\n"
+"    по одному на рядок.  Порожні рядки та рядки, які починаються з \"#\"\n"
+"    ігноруються.  Адреси у FILENAME, які не є поточними учасниками списку\n"
+"    будуть додані до списку з режимом доставки, вказаним за допомогою\n"
+"    -d/--delivery.  Учасники списку, адреси яких не вказані в FILENAME, "
+"будуть\n"
+"    видалені зі списку.  FILENAME може бути '-' для позначення стандартного "
+"введення.\n"
+"    "
 
 #: src/mailman/commands/cli_syncmembers.py:172
 msgid ""
