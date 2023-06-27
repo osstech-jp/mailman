@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2022-12-08 14:47+0000\n"
-"Last-Translator: Alexander Ryazanov (alryaz) <alryaz@xavux.com>\n"
+"PO-Revision-Date: 2023-06-27 14:51+0000\n"
+"Last-Translator: Sergii Horichenko <m@sgg.im>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -1431,7 +1431,7 @@ msgstr ""
 #: src/mailman/commands/cli_qfile.py:77
 #, python-brace-format
 msgid "Number of objects found (see the variable 'm'): ${count}"
-msgstr "Количество найденных и записанных в переменную 'm' объектов: ${count}"
+msgstr "Количество найденных объектов (см. переменную \"m\"): ${count}"
 
 #: src/mailman/commands/cli_status.py:34
 msgid "Show the current running status of the Mailman system."
