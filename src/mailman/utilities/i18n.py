@@ -21,11 +21,11 @@ import os
 import sys
 
 from contextlib import ExitStack
+from importlib.resources import path
 from itertools import product
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.interfaces.errors import MailmanError
-from mailman.utilities.filesystem import path
 from public import public
 
 
