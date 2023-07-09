@@ -30,16 +30,6 @@ docs:
   script:
   - tox -e docs
 
-sqlite-37:
-  <<: *only-default
-  script:
-  - tox -e py37-nocov
-
-sqlite-38:
-  <<: *only-default
-  script:
-  - tox -e py38-nocov
-
 sqlite-39:
   <<: *only-default
   script:

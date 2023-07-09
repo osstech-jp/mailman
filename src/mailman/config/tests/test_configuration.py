@@ -22,7 +22,7 @@ import tempfile
 import unittest
 
 from contextlib import ExitStack
-from importlib_resources import path
+from importlib.resources import path
 from mailman.config.config import (
     Configuration,
     external_configuration,

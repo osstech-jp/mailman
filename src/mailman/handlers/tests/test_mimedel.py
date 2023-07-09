@@ -25,7 +25,7 @@ import tempfile
 import unittest
 
 from contextlib import contextmanager, ExitStack
-from importlib_resources import open_binary as resource_open, read_text
+from importlib.resources import open_binary as resource_open, read_text
 from io import StringIO
 from mailman.app.lifecycle import create_list
 from mailman.config import config

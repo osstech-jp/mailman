@@ -24,7 +24,7 @@ import unittest
 from email import message_from_binary_file, message_from_bytes
 from email.iterators import _structure as structure
 from email.mime.text import MIMEText
-from importlib_resources import open_binary
+from importlib.resources import open_binary
 from io import StringIO
 from mailman.app.lifecycle import create_list
 from mailman.config import config
