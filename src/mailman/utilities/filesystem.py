@@ -18,7 +18,6 @@
 """Filesystem utilities."""
 
 import os
-import sys
 
 from contextlib import suppress
 from public import public
