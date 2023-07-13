@@ -90,6 +90,23 @@ Subdomains which don't have a policy will check the organizational domain.
     >>> msgdata
     {'dmarc': True}
 
+We can set an address or regexp to apply DMARC mitigations regardless of the
+domains policy.
+
+    >>> mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... To: ant@example.com
+    ... Subject: A posted message
+    ...
+    ... """)
+    >>> msgdata = {}
+    >>> mlist.dmarc_addresses = ['^.*@example.com']
+    >>> rule.check(mlist, msg, msgdata)
+    False
+    >>> msgdata
+    {'dmarc': True}
+
 The list's action can also be set to immediately discard or reject the
 message.
 

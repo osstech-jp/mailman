@@ -330,6 +330,15 @@ class TestBasicImport(unittest.TestCase):
         self.assertEqual('This is text.\n',
                          self._mlist.dmarc_wrapped_message_text)
 
+    def test_dmarc_addresses(self):
+        self._pckdict['dmarc_moderation_addresses'] = [
+            b'user@example.com',
+            b'^.*@gmail.com',
+            ]
+        self._import()
+        self.assertEqual(['user@example.com', '^.*@gmail.com'],
+                         self._mlist.dmarc_addresses)
+
     def test_ban_list(self):
         banned = [
             ('anne@example.net', 'anne@example.net'),

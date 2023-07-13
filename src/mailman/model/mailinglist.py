@@ -162,6 +162,7 @@ class MailingList(Model):
     # DMARC
     dmarc_mitigate_action = Column(Enum(DMARCMitigateAction))
     dmarc_mitigate_unconditionally = Column(Boolean)
+    dmarc_addresses = Column(MutableList.as_mutable(PickleType))
     dmarc_moderation_notice = Column(SAUnicodeLarge)
     dmarc_wrapped_message_text = Column(SAUnicodeLarge)
     # Miscellaneous

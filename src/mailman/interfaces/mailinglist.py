@@ -275,6 +275,14 @@ class IMailingList(Interface):
         discard.
         """)
 
+    dmarc_addresses = Attribute(
+        """From: addresses to receive dmarc_mitigate_action.
+
+        This is a list of addresses and regexps matching From: addresses of
+        messages to which dmarc_mitigate_action will be applied regardless of
+        DMARC policy.
+        """)
+
     dmarc_moderation_notice = Attribute(
         """Text to include in any DMARC rejected message.
 
