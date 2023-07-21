@@ -67,8 +67,8 @@ class TestValidators(unittest.TestCase):
         self.assertRaises(ValueError, integer_ge_zero_validator, '-1')
 
     def test_integer_ge_zero_validator_valid(self):
-        self.assertEquals(integer_ge_zero_validator('0'), 0)
-        self.assertEquals(integer_ge_zero_validator('100'), 100)
+        self.assertEqual(integer_ge_zero_validator('0'), 0)
+        self.assertEqual(integer_ge_zero_validator('100'), 100)
 
     def test_list_of_strings_validator_invalid(self):
         # Strings are required.
