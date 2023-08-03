@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2023-08-03 05:53+0000\n"
-"Last-Translator: DamarcusJonesPro <jonesdamarcus79@gmail.com>\n"
+"PO-Revision-Date: 2023-08-03 22:40+0000\n"
+"Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/sq/>\n"
 "Language: sq\n"
@@ -31,9 +31,9 @@ msgid "[No bounce details are available]"
 msgstr "[S’ka hollësi kthimesh]"
 
 #: src/mailman/app/bounces.py:230
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "${mlist.display_name} mailing list probe message"
-msgstr "${mlist.display_name} mailing list probe message"
+msgstr ""
 
 #: src/mailman/app/bounces.py:266
 msgid "Uncaught bounce notification"
