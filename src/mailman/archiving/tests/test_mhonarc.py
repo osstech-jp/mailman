@@ -23,7 +23,7 @@ import shutil
 import tempfile
 import unittest
 
-from importlib_resources import path
+from importlib.resources import path
 from mailman.app.lifecycle import create_list
 from mailman.archiving.mhonarc import MHonArc
 from mailman.database.transaction import transaction

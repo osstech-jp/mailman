@@ -30,16 +30,6 @@ docs:
   script:
   - tox -e docs
 
-sqlite-37:
-  <<: *only-default
-  script:
-  - tox -e py37-nocov
-
-sqlite-38:
-  <<: *only-default
-  script:
-  - tox -e py38-nocov
-
 sqlite-39:
   <<: *only-default
   script:
@@ -114,6 +104,6 @@ diffcov:
   script:
   - git config --global --add safe.directory "/builds/${CI_PROJECT_NAMESPACE}/mailman"
   - git config safe.directory
-  - tox -e py37-diffcov
+  - tox -e py311-diffcov
   only:
   - merge_requests

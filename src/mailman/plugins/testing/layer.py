@@ -20,7 +20,7 @@
 import os
 
 from contextlib import ExitStack
-from importlib_resources import path
+from importlib.resources import path
 from mailman.testing.helpers import (
     hackenv,
     TestableMaster,

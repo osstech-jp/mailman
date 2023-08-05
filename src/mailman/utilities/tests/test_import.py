@@ -23,7 +23,7 @@ import unittest
 from contextlib import ExitStack, redirect_stderr
 from datetime import datetime, timedelta
 from enum import Enum
-from importlib_resources import open_binary
+from importlib.resources import open_binary
 from io import StringIO
 from mailman.app.lifecycle import create_list
 from mailman.config import config

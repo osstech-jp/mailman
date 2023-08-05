@@ -22,7 +22,7 @@ import re
 import email
 import unittest
 
-from importlib_resources import open_binary as resource_open
+from importlib.resources import open_binary as resource_open
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.email.message import Message
