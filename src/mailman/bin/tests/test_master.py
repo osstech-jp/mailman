@@ -27,7 +27,7 @@ from click.testing import CliRunner
 from contextlib import ExitStack, suppress
 from datetime import timedelta
 from flufl.lock import Lock, TimeOutError
-from importlib_resources import path
+from importlib.resources import path
 from io import StringIO
 from mailman.bin import master
 from mailman.config import config

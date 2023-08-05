@@ -24,7 +24,7 @@ import mailman.templates
 from configparser import ConfigParser
 from contextlib import ExitStack
 from flufl.lock import Lock
-from importlib_resources import path, read_text
+from importlib.resources import path, read_text
 from lazr.config import as_boolean, ConfigSchema
 from mailman import version
 from mailman.interfaces.configuration import (

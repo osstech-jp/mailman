@@ -22,11 +22,11 @@ import sys
 import unittest
 
 from contextlib import contextmanager, ExitStack
+from importlib.resources import path
 from mailman.interfaces.rules import IRule
 from mailman.interfaces.styles import IStyle
 from mailman.testing.helpers import configuration
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.filesystem import path
 from mailman.utilities.modules import (
     find_components,
     find_pluggable_components,
