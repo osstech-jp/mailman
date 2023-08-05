@@ -20,7 +20,7 @@ enabled by adding a section to your ``mailman.cfg`` file, such as:
 
 We have such a configuration file handy.
 
-    >>> from importlib_resources import path
+    >>> from importlib.resources import path
     >>> config_file = str(cleanups.enter_context(
     ...     path('mailman.plugins.testing', 'hooks.cfg')))
 

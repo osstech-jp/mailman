@@ -18,7 +18,6 @@
 """Filesystem utilities."""
 
 import os
-import sys
 
 from contextlib import suppress
 from public import public
@@ -110,38 +109,3 @@ def first_inexistent_directory(path):
                 "The path %s exists but is not a directory.",
                 directory)
         directory, rhs = os.path.split(directory)
-
-
-@public
-def path(package, module, *args, **kw):
-    """Wrap around importlib.resources.path.
-
-    importlib_resources.path (PyPI package we use for compatibility in Python <
-    3.7) has now diverged in behavior from importlib.resources.path (in Python
-    >= 3.7), especially in terms of supporting directories. Even though we can
-    just jump to the new version of the library, many distributions packaging
-    Mailman do not package importlib_resources at all and instead patch the
-    source code to simply replace importlib_resources with importlib.resources.
-
-    This utility method is meant to keep that patching ability without any
-    complicated patches to make Mailman work with standard library
-    importlib.resources. This is only supposed to be used where the divergent
-    behavior causes problems for us.
-    """
-    # Note to packaging teams: This function will handle both standard library
-    # and 3rd party importlib_resources package. Please do not patch it.
-    if module:
-        module_package = '{}.{}'.format(package, module)
-    else:
-        module_package = package
-
-    try:
-        if sys.version_info < (3, 9):
-            from importlib.resources import path
-            return path(package, module, *args, **kw)
-        else:
-            from importlib.resources import files  # pragma: nocover
-            return files(module_package, *args, **kw)         # pragma: nocover
-    except ImportError:                                       # pragma: nocover
-        from importlib_resources import files  # pragma: nocover
-        return files(module_package, *args, **kw)             # pragma: nocover

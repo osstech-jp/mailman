@@ -21,7 +21,7 @@ import unittest
 
 from click.testing import CliRunner
 from contextlib import ExitStack
-from importlib_resources import path
+from importlib.resources import path
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_import import import21
 from mailman.testing.layers import ConfigLayer

@@ -32,7 +32,7 @@ import logging
 import datetime
 import tempfile
 
-from importlib_resources import files, read_text
+from importlib.resources import files, read_text
 from lazr.config import as_boolean
 from mailman.config import config
 from mailman.core import initialize

@@ -24,7 +24,7 @@ import dns.resolver
 
 from dns.exception import DNSException
 from email.utils import parseaddr
-from importlib_resources import read_binary
+from importlib.resources import read_binary
 from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.core.i18n import _

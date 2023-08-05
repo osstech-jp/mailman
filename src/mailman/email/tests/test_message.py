@@ -24,7 +24,7 @@ from email import message_from_binary_file
 from email.header import Header
 from email.parser import FeedParser
 from email.utils import _has_surrogates
-from importlib_resources import path
+from importlib.resources import path
 from mailman.app.lifecycle import create_list
 from mailman.email.message import Message, UserNotification
 from mailman.testing.helpers import (

@@ -19,7 +19,7 @@
 
 import unittest
 
-from importlib_resources import open_text
+from importlib.resources import open_text
 from mailman.testing.helpers import specialized_message_from_string as mfs
 from mailman.utilities import scrubber
 

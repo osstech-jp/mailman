@@ -30,7 +30,7 @@ import logging
 import mailman.core.logging
 import mailman.config.config
 
-from importlib_resources import read_text
+from importlib.resources import read_text
 from mailman.interfaces.database import IDatabaseFactory
 from public import public
 from zope.component import getUtility

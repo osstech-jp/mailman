@@ -29,7 +29,7 @@ from click.testing import CliRunner
 from contextlib import ExitStack, suppress
 from datetime import datetime, timedelta
 from flufl.lock import SEP
-from importlib_resources import path
+from importlib.resources import path
 from mailman.bin.master import WatcherState
 from mailman.commands.cli_control import reopen, restart, start
 from mailman.config import config
