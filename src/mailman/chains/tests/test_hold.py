@@ -20,7 +20,7 @@
 import unittest
 
 from email import message_from_bytes as mfb
-from importlib_resources import read_binary
+from importlib.resources import read_binary
 from mailman.app.lifecycle import create_list
 from mailman.chains.builtin import BuiltInChain
 from mailman.chains.hold import autorespond_to_sender, HoldChain

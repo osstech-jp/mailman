@@ -27,7 +27,7 @@ from dns.rdatatype import CNAME, TXT
 from dns.resolver import NoAnswer, NoNameservers, NXDOMAIN
 from email import message_from_bytes
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from importlib_resources import path
+from importlib.resources import path
 from lazr.config import as_timedelta
 from mailman.app.lifecycle import create_list
 from mailman.config import config

@@ -21,7 +21,7 @@ import unittest
 
 from click.testing import CliRunner
 from datetime import timedelta
-from importlib_resources import path
+from importlib.resources import path
 from mailman.app.lifecycle import create_list
 from mailman.bin.mailman import main
 from mailman.config import config

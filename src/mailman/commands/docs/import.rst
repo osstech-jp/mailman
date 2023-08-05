@@ -26,7 +26,7 @@ You must also specify a pickle file to import.
 
 Too bad the list doesn't exist.
 
-    >>> from importlib_resources import path
+    >>> from importlib.resources import path
     >>> with path('mailman.testing', 'config.pck') as pickle_path:
     ...     pickle_file = str(pickle_path)
     ...     command('mailman import21 import@example.com ' + pickle_file)

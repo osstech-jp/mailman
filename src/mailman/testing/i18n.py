@@ -19,7 +19,7 @@
 
 from flufl.i18n import registry
 from gettext import GNUTranslations, NullTranslations
-from importlib_resources import open_binary
+from importlib.resources import open_binary
 from public import public
 
 

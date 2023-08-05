@@ -22,7 +22,7 @@ import sys
 
 from contextlib import contextmanager
 from importlib import import_module
-from importlib_resources import contents, is_resource, path
+from importlib.resources import contents, is_resource, path
 from public import public
 
 

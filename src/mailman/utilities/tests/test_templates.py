@@ -23,11 +23,11 @@ import tempfile
 import unittest
 
 from contextlib import ExitStack
+from importlib.resources import files as resource_path
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.filesystem import path as resource_path
 from mailman.utilities.i18n import find, search, TemplateNotFoundError
 from zope.component import getUtility
 
@@ -64,7 +64,7 @@ class TestSearchOrder(unittest.TestCase):
         # /m/ as the root.
         with ExitStack() as resources:
             in_tree = str(resources.enter_context(
-                resource_path('mailman', 'templates')).parent)
+                resource_path('mailman').joinpath('templates')).parent)
             raw_search_order = search(
                 resources, template_file, mailing_list, language)
         for path in raw_search_order:
