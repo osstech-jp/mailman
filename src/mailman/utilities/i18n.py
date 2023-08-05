@@ -21,7 +21,7 @@ import os
 import sys
 
 from contextlib import ExitStack
-from importlib.resources import path
+from importlib.resources import files
 from itertools import product
 from mailman.config import config
 from mailman.core.constants import system_preferences
@@ -114,7 +114,7 @@ def search(resources, template_file, mlist=None, language=None):
         languages.append(language)
     languages.reverse()
     # The non-language qualified $template_dir paths in search order.
-    templates_dir = str(resources.enter_context(path('mailman', 'templates')))
+    templates_dir = files('mailman').joinpath('templates')
     paths = [templates_dir, os.path.join(config.TEMPLATE_DIR, 'site')]
     if mlist is not None:
         # Don't forget these are in REVERSE search order!
