@@ -23,7 +23,7 @@ import tempfile
 import unittest
 
 from contextlib import ExitStack
-from importlib.resources import path as resource_path
+from importlib.resources import files as resource_path
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
@@ -64,7 +64,7 @@ class TestSearchOrder(unittest.TestCase):
         # /m/ as the root.
         with ExitStack() as resources:
             in_tree = str(resources.enter_context(
-                resource_path('mailman', 'templates')).parent)
+                resource_path('mailman').joinpath('templates')).parent)
             raw_search_order = search(
                 resources, template_file, mailing_list, language)
         for path in raw_search_order:
