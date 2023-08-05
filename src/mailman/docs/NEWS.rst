@@ -52,6 +52,13 @@ Bugs fixed
 * Messages preserved or forwarded by content filtering are now the original
   message rather than the content filtered one.  (Closes #1089)
 
+New Features
+------------
+* There is a new ``dmarc_addresses`` list attribute which is a list of email
+  addresses and patterns matching email addresses.  If a post is From: an
+  address matching one of these, dmarc mitigations will be applied regardless
+  of the From: domain's dmarc policy.  (Closes #1084)
+
 Other
 -----
 * Typo corrected under "Building the documentation" section of

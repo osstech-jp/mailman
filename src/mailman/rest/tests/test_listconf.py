@@ -81,6 +81,7 @@ RESOURCE = dict(
     display_name='Fnords',
     dmarc_mitigate_action='munge_from',
     dmarc_mitigate_unconditionally=False,
+    dmarc_addresses='',
     dmarc_moderation_notice='Some moderation notice',
     dmarc_wrapped_message_text='some message text',
     emergency=False,

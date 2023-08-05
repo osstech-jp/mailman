@@ -476,6 +476,48 @@ To: ant@example.com
         with get_dns_resolver(rdata=b'v=DMARC1; pct=100;'):
             self.assertFalse(rule.check(mlist, msg, {}))
 
+    def test_address_in_dmarc_addresses(self):
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        mlist.dmarc_addresses = ['anne@example.biz']
+        msg = mfs("""\
+From: anne@example.biz
+To: ant@example.com
+
+""")
+        rule = dmarc.DMARCMitigation()
+        with get_dns_resolver(rdata=b'v=DMARC1; p=none;'):
+            self.assertTrue(rule.check(mlist, msg, {}))
+
+    def test_address_in_dmarc_addresses_regex(self):
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        mlist.dmarc_addresses = ['^.*@example.biz']
+        msg = mfs("""\
+From: anne@example.biz
+To: ant@example.com
+
+""")
+        rule = dmarc.DMARCMitigation()
+        with get_dns_resolver(rdata=b'v=DMARC1; p=none;'):
+            self.assertTrue(rule.check(mlist, msg, {}))
+
+    def test_address_in_dmarc_addresses_no_hit(self):
+        mlist = create_list('ant@example.com')
+        # Use action reject.  The rule only hits on reject and discard.
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.reject
+        mlist.dmarc_addresses = ['anne@example.com']
+        msg = mfs("""\
+From: anne@example.biz
+To: ant@example.com
+
+""")
+        rule = dmarc.DMARCMitigation()
+        with get_dns_resolver(rdata=b'v=DMARC1; p=none;'):
+            self.assertFalse(rule.check(mlist, msg, {}))
+
     def test_parser(self):
         data_file = str(self.resources.enter_context(
             path('mailman.rules.tests.data', 'org_domain.txt')))

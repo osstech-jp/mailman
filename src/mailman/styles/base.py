@@ -94,6 +94,7 @@ class BasicOperation:
         # DMARC
         mlist.dmarc_mitigate_action = DMARCMitigateAction.no_mitigation
         mlist.dmarc_mitigate_unconditionally = False
+        mlist.dmarc_addresses = []
         mlist.dmarc_moderation_notice = ''
         mlist.dmarc_wrapped_message_text = ''
         # NNTP gateway

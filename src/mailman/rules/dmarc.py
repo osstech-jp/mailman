@@ -279,8 +279,16 @@ def is_reject_or_quarantine(mlist, email, dmarc_domain, org=False):
 
 def maybe_mitigate(mlist, email):
     # This takes an email address, and returns True if DMARC policy is
-    # p=reject or p=quarantine.
+    # p=reject or p=quarantine or if the address matches dmarc_addresses.
     email = email.lower()
+    for address in mlist.dmarc_addresses:
+        if address.startswith('^'):
+            # It's a regexp.
+            if re.search(address, email, re.I):
+                return True
+        else:
+            if address.lower() == email:
+                return True
     # Scan from the right in case quoted local part has an '@'.
     local, at, from_domain = email.rpartition('@')
     if at != '@':

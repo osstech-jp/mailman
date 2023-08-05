@@ -206,6 +206,7 @@ ATTRIBUTES = dict(
     discard_these_nonmembers=GetterSetter(list_of_emails_or_regexp_validator),
     dmarc_mitigate_action=GetterSetter(enum_validator(DMARCMitigateAction)),
     dmarc_mitigate_unconditionally=GetterSetter(as_boolean),
+    dmarc_addresses=GetterSetter(list_of_emails_or_regexp_validator),
     dmarc_moderation_notice=GetterSetter(str),
     dmarc_wrapped_message_text=GetterSetter(str),
     emergency=GetterSetter(as_boolean),
