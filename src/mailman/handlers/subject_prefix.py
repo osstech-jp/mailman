@@ -39,12 +39,11 @@ def ascii_header(mlist, msgdata, subject, prefix, prefix_pattern, ws):
         if charset not in ASCII_CHARSETS:
             return None
     subject_text = EMPTYSTRING.join(str(subject).splitlines())
+    subject_text = re.sub(prefix_pattern, '', subject_text)
     # Replace empty subject.
     if subject_text.strip() == '':
         with _.using(mlist.preferred_language.code):
             subject_text = _('(no subject)')
-    else:
-        subject_text = re.sub(prefix_pattern, '', subject_text)
     msgdata['stripped_subject'] = subject_text
     rematch = re.match(RE_PATTERN, subject_text, re.I)
     if rematch:
@@ -85,12 +84,11 @@ def all_same_charset(mlist, msgdata, subject, prefix, prefix_pattern, ws):
             except UnicodeEncodeError:
                 return None
     subject_text = EMPTYSTRING.join(chunks)
+    subject_text = re.sub(prefix_pattern, '', subject_text)
     # Replace empty subject.
     if subject_text.strip() == '':
         with _.using(mlist.preferred_language.code):
             subject_text = _('(no subject)')
-    else:
-        subject_text = re.sub(prefix_pattern, '', subject_text)
     msgdata['stripped_subject'] = subject_text
     rematch = re.match(RE_PATTERN, subject_text, re.I)
     if rematch:
