@@ -58,9 +58,9 @@ long time, and/or require versions of Python or other components you might not
 have installed.  You can run ``tox -l`` to list the test suite *environments*
 available.  Very often, when you want to run the full test suite in the
 quickest manner with components that should be available everywhere, run one
-of these commands, depending on which version of Python 3 you have::
+of these commands::
 
-    $ tox -e py36-nocov
+    $ tox -e py311-nocov
     $ tox -e py39-nocov
 
 You can run individual tests in any given environment by providing additional
