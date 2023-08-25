@@ -9,8 +9,11 @@ Here is a history of user visible changes to Mailman.
 
 .. _news-3.3.9:
 
-3.3.9
-=====
+3.3.9b1
+=======
+
+(2023-08-25)
+
 Configuration
 -------------
 
@@ -19,6 +22,8 @@ Configuration
   ``logging.gunicorn`` is for Gunicorn specifically since they have
   different logging formats. This should fix suprious errors with
   ``KeyError: t`` that was often confusing for users. (Fixes #1049)
+
+* Python 3.9 is now the minimum supported version of Python.
 
 Bugs fixed
 ----------
