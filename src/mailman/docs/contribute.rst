@@ -25,7 +25,7 @@ Contributions of code, problem reports, and feature requests are welcome.
 Please submit bug reports on the Mailman bug tracker at
 https://gitlab.com/mailman/mailman/issues (you need to have a login on GitLab
 to do so).  You can also send email to the mailman-developers@python.org
-mailing list, or ask on IRC channel ``#mailman`` on Freenode.
+mailing list (or mailman-users@mailman3.org for usage specific questions).
 
 
 Get the sources
