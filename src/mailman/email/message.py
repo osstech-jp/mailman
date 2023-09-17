@@ -157,6 +157,12 @@ class UserNotification(Message):
                 self.set_payload(text.encode(charset), charset)
             except UnicodeError:
                 self.set_payload(text.encode(), 'utf-8')
+        if isinstance(subject, bytes):
+            subject = subject.decode()
+        try:
+            subject.encode(charset, errors='strict')
+        except UnicodeEncodeError:
+            charset = 'utf-8'
         self['Subject'] = Header(
             subject, charset, header_name='Subject', errors='replace')
         self['From'] = sender
