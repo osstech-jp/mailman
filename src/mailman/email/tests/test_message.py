@@ -128,6 +128,16 @@ Test content
         self.assertEqual(msg.get_payload(decode=True).decode(),
                          'Non-ascii text é.')
 
+    def test_ascii_user_notification_non_ascii_subject(self):
+        msg = UserNotification(
+            'aperson@example.com',
+            'test@example.com',
+            'Something you nééd to know',
+            'I needed to tell you this.')
+        self.assertIn(
+                b'Subject: =?utf-8?q?Something_you_n=C3=A9=C3=A9d_to_know?=',
+                msg.as_bytes())
+
     def test_as_string_python_bug_27321(self):
         # Bug 27321 is fixed in Python 3.8.7rc1, 3.9.1rc1 and later.
         with path('mailman.email.tests.data', 'bad_email.eml') as email_path:

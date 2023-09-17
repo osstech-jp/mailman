@@ -56,6 +56,8 @@ Bugs fixed
   (Closes #1083)
 * Messages preserved or forwarded by content filtering are now the original
   message rather than the content filtered one.  (Closes #1089)
+* List welcome and goodbye messages to users with English preferred_language
+  now have their Subject: RFC 2047 encoded as needed.  (Closes #1098)
 
 New Features
 ------------
