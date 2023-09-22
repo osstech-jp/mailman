@@ -38,12 +38,10 @@ log = logging.getLogger('mailman.error')
 
 
 def _get_dsn(message_id):
-    # Get the DSN from the message store and delete it from the message store.
+    # Get the DSN from the message store. Don't delete it as it may still be
+    # needed.
     messagestore = getUtility(IMessageStore)
-    dsn = messagestore.get_message_by_id(message_id)
-    if dsn:
-        messagestore.delete_message(message_id)
-    return dsn
+    return messagestore.get_message_by_id(message_id)
 
 
 def _make_multipart(msg):

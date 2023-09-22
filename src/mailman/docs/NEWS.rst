@@ -58,6 +58,8 @@ Bugs fixed
   message rather than the content filtered one.  (Closes #1089)
 * List welcome and goodbye messages to users with English preferred_language
   now have their Subject: RFC 2047 encoded as needed.  (Closes #1098)
+* Bounce processing notifications due to a DSN for multiple users now have the
+  DSN attached to each notice.  (Closes #1101)
 
 New Features
 ------------
