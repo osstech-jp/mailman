@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2023-09-14 05:56+0000\n"
-"Last-Translator: Matsubara <matsubara.cc@mie-u.ac.jp>\n"
+"PO-Revision-Date: 2023-09-27 22:21+0000\n"
+"Last-Translator: 総情バイト <cc-staff1.cc@mie-u.ac.jp>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ja/>\n"
 "Language: ja\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.0.1-dev\n"
+"X-Generator: Weblate 5.1-dev\n"
 
 #: src/mailman/app/bounces.py:76 src/mailman/app/moderator.py:85
 #: src/mailman/chains/hold.py:163 src/mailman/handlers/acknowledge.py:56
@@ -33,7 +33,7 @@ msgstr "バウンスの詳細は不明"
 #: src/mailman/app/bounces.py:230
 #, python-brace-format
 msgid "${mlist.display_name} mailing list probe message"
-msgstr ""
+msgstr "{mlist.display_name} メーリングリストがメッセージを探します"
 
 #: src/mailman/app/bounces.py:266
 msgid "Uncaught bounce notification"
@@ -49,25 +49,28 @@ msgid ""
 "The content of this message was lost. It was probably cross-posted to\n"
 "multiple lists and previously handled on another list.\n"
 msgstr ""
+"この内容のメッセージは失われます。おそらく複数のリストにクロスポストされてお"
+"り、\n"
+"以前に別のリストで取り扱われていいました。\n"
 
 #: src/mailman/app/moderator.py:132
 #, python-brace-format
 msgid "Posting of your message titled \"${subject}\""
-msgstr ""
+msgstr "{subject}というタイトルのあなたのメッセージの掲載"
 
 #: src/mailman/app/moderator.py:133 src/mailman/app/moderator.py:267
 #: src/mailman/rest/sub_moderation.py:119
 msgid "[No reason given]"
-msgstr ""
+msgstr "[理由なし]"
 
 #: src/mailman/app/moderator.py:184
 msgid "Forward of moderated message"
-msgstr ""
+msgstr "承認済みのメッセージの前に"
 
 #: src/mailman/app/moderator.py:233
 #, python-brace-format
 msgid "New unsubscription request from ${mlist.display_name} by ${email}"
-msgstr ""
+msgstr "{email}で{mlist.display_name}から新しく要求された予約"
 
 #: src/mailman/app/moderator.py:266
 msgid "Unsubscription request"
@@ -80,16 +83,16 @@ msgstr "元のメッセージ"
 #: src/mailman/app/moderator.py:310
 #, python-brace-format
 msgid "Request to mailing list \"${display_name}\" rejected"
-msgstr ""
+msgstr "拒否されたメーリングリスト{display_name}へのリクエスト"
 
 #: src/mailman/app/notifications.py:94
 msgid " (Digest mode)"
-msgstr ""
+msgstr " （ダイジェストモード）"
 
 #: src/mailman/app/notifications.py:98
 #, python-brace-format
 msgid "Welcome to the \"${mlist.display_name}\" mailing list${digmode}"
-msgstr ""
+msgstr "{mlist.display_name}メーリングリスト{digmode}へようこそ"
 
 #: src/mailman/app/notifications.py:130
 #, python-brace-format
@@ -104,32 +107,36 @@ msgstr "${mlist.display_name} 購読通知"
 #: src/mailman/app/notifications.py:173
 #, python-brace-format
 msgid "${member}'s subscription disabled on ${mlist.display_name}"
-msgstr ""
+msgstr "{mlist.display_name}から見えなくなった{member}のサブスクリプション"
 
 #: src/mailman/app/notifications.py:201
 #, python-brace-format
 msgid "${member}'s bounce score incremented on ${mlist.display_name}"
-msgstr ""
+msgstr "{mlist.display_name}で{member}のバウンススコアが増加しました"
 
 #: src/mailman/app/notifications.py:227
 #, python-brace-format
 msgid "${member} unsubscribed from ${mlist.display_name} mailing list due to bounces"
-msgstr ""
+msgstr "バウンスが原因で{member}が{mlist."
+"display_name}メーリングリストからサブスクライブを解除されました"
 
 #: src/mailman/app/notifications.py:254
 #, python-brace-format
 msgid "Your subscription for ${mlist.display_name} mailing list has been disabled"
-msgstr ""
+msgstr "{mlist.display_name}メーリングリストに対するあなたのサブスクリプションが見れ"
+"なくなりました"
 
 #: src/mailman/app/subscriptions.py:334
 #, python-brace-format
 msgid "New subscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr ""
+msgstr "{self.address.email}から{self.mlist."
+"display_name}へのサブスクリプションリクエスト"
 
 #: src/mailman/app/subscriptions.py:502
 #, python-brace-format
 msgid "New unsubscription request to ${self.mlist.display_name} from ${self.address.email}"
-msgstr ""
+msgstr "{self.address.email}から{self.mlist."
+"display_name}への新しいサブスクリプション解除リクエスト"
 
 #: src/mailman/app/subscriptions.py:633
 #, python-brace-format
@@ -163,16 +170,22 @@ msgid ""
 "    Running mailman commands as root is not recommended and mailman will\n"
 "    refuse to run as root unless this option is specified."
 msgstr ""
+"    rootとしてmailmanコマンドを実行することは\n"
+"推奨ておらず、mailmanはこの選択肢が指定された時を除いて\n"
+"rootとして実行しません。"
 
 #: src/mailman/bin/mailman.py:129
 msgid "    If you are sure you want to run as root, specify --run-as-root."
-msgstr ""
+msgstr "    rootとして実行したいのであれば、--run-as-rootを指定してください。"
 
 #: src/mailman/bin/master.py:157
 msgid ""
 "The master lock could not be acquired because it appears as though another\n"
 "master is already running."
 msgstr ""
+"すでに他のマスターが実行\n"
+"しているため、\n"
+"マスターロックを取得できませんでした。"
 
 #: src/mailman/bin/master.py:163
 #, python-brace-format
@@ -180,6 +193,9 @@ msgid ""
 "The master lock could not be acquired.  It appears as though there is a stale\n"
 "master lock.  Try re-running ${program} with the --force flag."
 msgstr ""
+"マスターロックを取得することができませんでした。\n"
+"古いタイプのものがあるようです。\n"
+"もう一度--force flagをつけて{program}を実行してみてください。"
 
 #: src/mailman/bin/master.py:169
 #, python-brace-format
@@ -193,6 +209,16 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
+"他のホストが取得したようなので、\n"
+"マスタロックを取得することが\n"
+"できないようです。ホストをまたいで\n"
+"古くなったロックのテストはできません。\n"
+"したがって、手作業でこれを削除してください。\n"
+"\n"
+"Lock file: ${config.LOCK_FILE}\n"
+"Lock host: ${hostname}\n"
+"\n"
+"exitする。"
 
 #: src/mailman/bin/master.py:182
 #, python-brace-format
@@ -204,6 +230,13 @@ msgid ""
 "\n"
 "Exiting."
 msgstr ""
+"不明なエラーが原因で、マスターロックを取得できませんでした。\n"
+"\n"
+"\n"
+"Lock file: ${config.LOCK_FILE}\n"
+"Lock host: ${hostname}\n"
+"\n"
+"exitする"
 
 #: src/mailman/bin/master.py:494
 msgid ""
@@ -227,12 +260,38 @@ msgid ""
 "    its own process id in the file specified in the configuration file but you\n"
 "    normally don't need to use this PID directly."
 msgstr ""
+"    マスターサブプロセス管理。\n"
+"\n"
+"スタートし、確認されたrunnerを見て、それらが存在し、動いているか確認してくだ"
+"さい。\n"
+"それぞれのrunnerはフォークされ、マスターがプロセスidを待ちながら順番に実行さ"
+"れます。\n"
+"子プロセスの存在が検知された時は、おそらく再起動します。\n"
+"\n"
+"\n"
+"\n"
+"runnerはSIGINTとSIGTERM、SIGUSR1 、SIGHUPに応答します。\n"
+"SIGINTとSIGTERM、SIGUSR1のすべては完全にrunnerを終了させます。\n"
+"マスターはSIGUSR1、もしくは他の状態（予測できない例外）"
+"が原因で終了したrunnerを\n"
+"再起動します。\n"
+"SIGHUPはマスターとrunnerにそれらのログファイルを閉じさせ、\n"
+"次の印刷されたメッセージを再び開きます。\n"
+"\n"
+"マスターはSIGINTとSIGTERM、SIGUSR1、SIGHUPにも応答し、\n"
+"それらは単にrunnerに渡されます。マスターはSIGHUPを受け取ると自身のログファイ"
+"ルを閉じ、\n"
+"再度開きます。マスターはそれらのプロセスidを設定ファイルで指定されたファイル"
+"に残すが、\n"
+"PIDを直接使う必要はない。"
 
 #: src/mailman/bin/master.py:525
 msgid ""
 "    Don't restart the runners when they exit because of an error or a SIGUSR1.\n"
 "    Use this only for debugging."
 msgstr ""
+"    SIGUSR1のエラーで終了した場合、プロセスを再起動しないでください。\n"
+"これはデバッグ用のみに用いてください。"
 
 #: src/mailman/bin/master.py:531
 msgid ""
@@ -244,6 +303,14 @@ msgid ""
 "    remove the apparently stale lock and make another attempt to claim the\n"
 "    master lock."
 msgstr ""
+"    マスター管理がマスターロックの存在を見つけた場合、\n"
+"エラーメッセージを表示して終了します。このオプションにより、マスター\n"
+"がより高いレベルのチェックを行います。ロックファイルに記載されているhost/"
+"pidと\n"
+"一致するプロセスが実行している場合、マスターは終了し、\n"
+"手動でロックを削除することが必要です。しかし、一致するプロセスが見つからない"
+"場合は、マスターは明らかに古いロックを削除し、\n"
+"マスターロックをサイド要求します。"
 
 #: src/mailman/bin/master.py:544
 msgid ""
@@ -251,20 +318,24 @@ msgid ""
 "    typically defined in the configuration file.  Multiple -r options may be\n"
 "    given.  The values for -r are passed straight through to bin/runner."
 msgstr ""
+"    基本的に設定ファイルに定義されている、マスターが呼び出すrunnerのデフォル"
+"トセットを優先します。\n"
+"複数の-rオプションが与えられます。\n"
+"-rの値が直接bin/runnnerに渡されます。"
 
 #: src/mailman/bin/master.py:551 src/mailman/bin/runner.py:133
 msgid "Display more debugging information to the log file."
-msgstr ""
+msgstr "ログファイルにより詳細なデバッグ情報を表示します。"
 
 #: src/mailman/bin/runner.py:50
 #, python-brace-format
 msgid "Undefined runner name: ${name}"
-msgstr ""
+msgstr "未定義のrunner名称：{name}"
 
 #: src/mailman/bin/runner.py:58
 #, python-brace-format
 msgid "Cannot import runner module: ${class_path}"
-msgstr ""
+msgstr "runnerモジュール{class_path}をインポートできません"
 
 #: src/mailman/bin/runner.py:76
 msgid ""
@@ -284,10 +355,26 @@ msgid ""
 "    set which subtly changes some error handling behavior.\n"
 "    "
 msgstr ""
+"    runnerを起動します。\n"
+"\n"
+"コマンドラインにある名称のrunnerが起動され、それは一度、\n"
+"もしくは連続してメインループ（これをサポートするrunnerの場合）を通して実行す"
+"る。\n"
+"後者はマスターがすべてのサブプロセスを実行する\n"
+"方法である。\n"
+"\n"
+"-rは-lか-hが与えられなければ必要であり、\n"
+"その引数は-lスイッチによって表示された名前の一つにするべきである。\n"
+"\n"
+"通常、このスクリプトは`mailman start`から始めるべきである。\n"
+"別々に実行する、もしくは-oを与えた場合はデバッグの時に役立ちます。\n"
+"この方法で実行した時、環境変数$MAILMAN_UNDER_MASTER_CONTROLが設定され、\n"
+"エラー処理の操作が変更される。\n"
+"    "
 
 #: src/mailman/bin/runner.py:103
 msgid "List the available runner names and exit."
-msgstr ""
+msgstr "利用できるrunner名称をリスト化し、終了する。"
 
 #: src/mailman/bin/runner.py:107
 msgid ""
@@ -295,6 +382,9 @@ msgid ""
 "    runner runs indefinitely until the process receives a signal.  This is not\n"
 "    compatible with runners that cannot be run once."
 msgstr ""
+"    指定されたrunnerをメインループを通して実行する。そうでなければ、\n"
+"runnerはプロセスがシグナルを受け取るまで実行する。\n"
+"これは一度実行できなかったrunnerと互換性がない。"
 
 #: src/mailman/bin/runner.py:115
 msgid ""
@@ -316,58 +406,58 @@ msgstr ""
 
 #: src/mailman/bin/runner.py:157
 msgid "No runner name given."
-msgstr ""
+msgstr "与えられた名前のrunnerはない。"
 
 #: src/mailman/bin/runner.py:181
 #, python-brace-format
 msgid "${name} runs ${classname}"
-msgstr ""
+msgstr "{name}が{classname}を実行する"
 
 #: src/mailman/chains/accept.py:39
 msgid "Accept a message."
-msgstr ""
+msgstr "メッセージを受け取る。"
 
 #: src/mailman/chains/builtin.py:38
 msgid "The built-in moderation chain."
-msgstr ""
+msgstr "ビルトインされたモデレーションチェーン。"
 
 #: src/mailman/chains/discard.py:37
 msgid "Discard a message and stop processing."
-msgstr ""
+msgstr "メッセージを削除しプロセスをストップする。"
 
 #: src/mailman/chains/dmarc.py:30
 msgid "Process DMARC reject or discard mitigations"
-msgstr ""
+msgstr "プロセスDMARCは緩和を拒否または破棄"
 
 #: src/mailman/chains/headers.py:121
 msgid "Header \"{}\" matched a header rule"
-msgstr ""
+msgstr "ヘッダールールに一致したヘッダー\"{}\""
 
 #: src/mailman/chains/headers.py:136
 msgid "The built-in header matching chain"
-msgstr ""
+msgstr "chainに一致したビルトインヘッダー"
 
 #: src/mailman/chains/hold.py:59
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #: src/mailman/chains/hold.py:118
 msgid "Last autoresponse notification for today"
-msgstr ""
+msgstr "本日最後の自動返信通知"
 
 #: src/mailman/chains/hold.py:133
 msgid "Hold a message and stop processing."
-msgstr ""
+msgstr "メッセージを保持し、プロセスを止めてください。"
 
 #: src/mailman/chains/hold.py:199
 #, python-brace-format
 msgid "Your message to ${mlist.fqdn_listname} awaits moderator approval"
-msgstr ""
+msgstr "あなたの{mlist.fqdn_listname}へのメッセージはモデレーターの承認を待っています"
 
 #: src/mailman/chains/hold.py:228
 #, python-brace-format
 msgid "${mlist.fqdn_listname} post from ${msg.sender} requires approval"
-msgstr ""
+msgstr "{msg.sender}からの{mlist.fqdn_listname}のポストは承認を待っています"
 
 #: src/mailman/chains/hold.py:238
 msgid ""
@@ -377,14 +467,21 @@ msgid ""
 "message will be approved for posting to the list.  The Approved: header can\n"
 "also appear in the first line of the body of the reply."
 msgstr ""
+"このメールに返信する場合、Subject:header intactを保持しながら、\n"
+"Mailmanは保持されたメッセージを削除する。メッセージがスパムの場合、これをする"
+"。\n"
+"このメッセージに返信してApproved: ヘッダーにリストパスワードが含まれていれば,"
+"\n"
+"メッセージはリストに投函されることが承認されます。\n"
+"Approved:ヘッダーは 、返信本文の最初の行にも表示できます。"
 
 #: src/mailman/chains/moderation.py:51
 msgid "Moderation chain"
-msgstr ""
+msgstr "モデレーションchain"
 
 #: src/mailman/chains/owner.py:38
 msgid "The built-in -owner posting chain."
-msgstr ""
+msgstr "The built-in -owner posting chain."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
