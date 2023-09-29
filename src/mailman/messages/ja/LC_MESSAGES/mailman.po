@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 11:45-0700\n"
-"PO-Revision-Date: 2023-09-27 22:21+0000\n"
+"PO-Revision-Date: 2023-09-29 07:37+0000\n"
 "Last-Translator: 総情バイト <cc-staff1.cc@mie-u.ac.jp>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/gnu-mailman/"
 "mailman/ja/>\n"
@@ -232,7 +232,6 @@ msgid ""
 msgstr ""
 "不明なエラーが原因で、マスターロックを取得できませんでした。\n"
 "\n"
-"\n"
 "Lock file: ${config.LOCK_FILE}\n"
 "Lock host: ${hostname}\n"
 "\n"
@@ -403,6 +402,23 @@ msgid ""
 "    1:1 is used.\n"
 "    "
 msgstr ""
+"\n"
+"    指定されたrunnerを起動する。これは-"
+"lオプションが返す文字列のいずれかでなければ\n"
+"    ならない。\n"
+"\n"
+"    キューディレクトリを管理するrunnerの場合、オプションの`slice:range`"
+"が与えられると\n"
+"    そのキューを複数のrunnerに割り当てるために使用される。  rangeは\n"
+"    キューのrunnerの総数であり、slideは[0…range]からの\n"
+"このrunnerの番号である。  キューを管理しないrunnerについては、sliceと\n"
+"    rangeは無視される。\n"
+"\n"
+"    `slice:range`フォームを使用する場合、キューの各runnerに\n"
+"    同じ範囲の値が与えられるようにしなければならない。  "
+"`slice:range`が与えられない場合、\n"
+"    1:1が使用される。\n"
+"    "
 
 #: src/mailman/bin/runner.py:157
 msgid "No runner name given."
@@ -485,30 +501,30 @@ msgstr "The built-in -owner posting chain."
 
 #: src/mailman/chains/reject.py:44
 msgid "Reject/bounce a message and stop processing."
-msgstr ""
+msgstr "メッセージを拒否/バウンスし、処理を停止する。"
 
 #: src/mailman/commands/cli_addmembers.py:73
 #: src/mailman/commands/cli_syncmembers.py:121
 #, python-brace-format
 msgid "Cannot parse as valid email address (skipping): ${line}"
-msgstr ""
+msgstr "有効な電子メールアドレスとして解析できません。(skipping):${line}"
 
 #: src/mailman/commands/cli_addmembers.py:104
 #, python-brace-format
 msgid "Already subscribed (skipping): ${email}"
-msgstr ""
+msgstr "既に購読済みです。(skipping): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:107
 #: src/mailman/commands/cli_syncmembers.py:87
 #, python-brace-format
 msgid "Membership is banned (skipping): ${email}"
-msgstr ""
+msgstr "会員登録が禁止されています。(skipping): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:110
 #: src/mailman/commands/cli_syncmembers.py:90
 #, python-brace-format
 msgid "Subscription already pending (skipping): ${email}"
-msgstr ""
+msgstr "購読は既に保留中です。(skipping): ${email}"
 
 #: src/mailman/commands/cli_addmembers.py:116
 msgid ""
@@ -517,6 +533,10 @@ msgid ""
 "    Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    -d/--deliveryで指定された配送モードで、FILENAMEの全メンバーアドレスを\n"
+"    追加する。FILENAMEには標準入力を示す'-'を指定できる。\n"
+"    空白行や'#'で始まる行は無視される。\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:124
 msgid ""
@@ -525,16 +545,24 @@ msgid ""
 "    or no delivery.  If not given, the default is regular.  Ignored for invited\n"
 "    members."
 msgstr ""
+"    追加されたメンバーの配信モードを'regular'、'mine'、'plain'、\n"
+"    'summary'または'disabled'に設定する。  "
+"つまり、通常、ダイジェストの3つのモード、\n"
+"    または配信なしのいずれかです。  指定しない場合、デフォルトはregularです。"
+"  招待されたメンバーには\n"
+"    無視されます。"
 
 #: src/mailman/commands/cli_addmembers.py:132
 msgid ""
 "    Send the added members an invitation rather than immediately adding them.\n"
 "    "
 msgstr ""
+"    追加されたメンバーには、すぐに追加するのではなく、招待状を送る。\n"
+"    "
 
 #: src/mailman/commands/cli_addmembers.py:137
 msgid "    Override the list's setting for send_welcome_message."
-msgstr ""
+msgstr "    リストのsend_welcome_messageの設定を上書きする。"
 
 #: src/mailman/commands/cli_addmembers.py:146 src/mailman/commands/cli_import.py:68
 #: src/mailman/commands/cli_inject.py:75 src/mailman/commands/cli_members.py:195
@@ -542,15 +570,15 @@ msgstr ""
 #: src/mailman/commands/cli_withlist.py:293 src/mailman/commands/cli_withlist.py:300
 #, python-brace-format
 msgid "No such list: ${listspec}"
-msgstr ""
+msgstr "リストはありません: ${listspec}"
 
 #: src/mailman/commands/cli_aliases.py:33
 msgid "Regenerate the aliases appropriate for your MTA."
-msgstr ""
+msgstr "MTAに適したエイリアスを再生成する。"
 
 #: src/mailman/commands/cli_aliases.py:38
 msgid "An alternative directory to output the various MTA files to."
-msgstr ""
+msgstr "様々なMTAファイルを出力するための代替ディレクトリ。"
 
 #: src/mailman/commands/cli_changeaddress.py:34
 msgid ""
@@ -558,52 +586,63 @@ msgid ""
 "    new_address.\n"
 "    "
 msgstr ""
+"    ユーザーのメールアドレスをold_addressから大文字小文字を区別しない\n"
+"    new_addressに変更する。\n"
+"    "
 
 #: src/mailman/commands/cli_changeaddress.py:45
 msgid "Address {} not found."
-msgstr ""
+msgstr "アドレス{}が見つかりません。"
 
 #: src/mailman/commands/cli_changeaddress.py:47
 msgid "Address {} is not a valid email address."
-msgstr ""
+msgstr "アドレス{}は有効な電子メールアドレスではありません。"
 
 #: src/mailman/commands/cli_changeaddress.py:50
 msgid "Addresses are not different.  Nothing to change."
-msgstr ""
+msgstr "住所は変わっていません。  何も変更することはありません。"
 
 #: src/mailman/commands/cli_changeaddress.py:53
 msgid "Address {} already exists; can't change."
-msgstr ""
+msgstr "アドレス{}は既に存在しています;変更できません。"
 
 #: src/mailman/commands/cli_changeaddress.py:58
 msgid "Address changed from {} to {}."
-msgstr ""
+msgstr "アドレスが{}から{}に変更されました。"
 
 #: src/mailman/commands/cli_conf.py:53
 msgid "Print the Mailman configuration."
-msgstr ""
+msgstr "Mailmanの設定を表示する。"
 
 #: src/mailman/commands/cli_conf.py:57
 msgid ""
 "    File to send the output to.  If not given, or if '-' is given, standard\n"
 "    output is used."
 msgstr ""
+"    出力を送るファイル。  指定されない場合、または'-'が指定された場合、\n"
+"    標準出力が使われる。"
 
 #: src/mailman/commands/cli_conf.py:62
 msgid ""
 "    Section to use for the lookup.  If no key is given, all the key-value pairs\n"
 "    of the given section will be displayed."
 msgstr ""
+"    検索に使用するセクション。  キーが与えられない場合、"
+"与えられたセクションの全てのキーと\n"
+"    値のペアが表示されます。"
 
 #: src/mailman/commands/cli_conf.py:67
 msgid ""
 "    Key to use for the lookup.  If no section is given, all the key-values pair\n"
 "    from any section matching the given key will be displayed."
 msgstr ""
+"    検索に使用するキー。  セクションを指定しない場合は、"
+"指定したキーにマッチするセクションのキーと\n"
+"    値のペアがすべて表示されます。"
 
 #: src/mailman/commands/cli_control.py:42
 msgid "Start the Mailman master and runner processes."
-msgstr ""
+msgstr "Mailmanマスタープロセスとランナープロセスを開始する。"
 
 #: src/mailman/commands/cli_control.py:46
 msgid ""
@@ -615,6 +654,17 @@ msgid ""
 "    remove the apparently stale lock and make another attempt to claim the\n"
 "    master lock."
 msgstr ""
+"    "
+"マスター・ウォッチャーが既存のマスター・ロックを見つけた場合、通常はエラー・"
+"メッセージを表示して\n"
+"    終了する。 このオプションを指定すると、マスタはさらにもう1段階上の\n"
+"    チェックを行ないます。   ロックファイルに記述されたホスト/"
+"pidにマッチするプロセスが\n"
+"    実行中であれば、 マスタは終了するので、手動でロックを\n"
+"    クリーンアップする必要がある。  "
+"しかし、マッチするプロセスが見つからなかった場合、 マスターは\n"
+"    明らかに古くなったロックを削除し、マスターロックを\n"
+"    再度要求します。"
 
 #: src/mailman/commands/cli_control.py:57
 msgid ""
@@ -624,6 +674,15 @@ msgid ""
 "    start of mailman3 server. Setting this option to true will make this\n"
 "    script create the files and thus allow the MTA to operate smoothly."
 msgstr ""
+"    "
+"起動時にMTAのエイリアスファイルを生成します。postfixのようないくつかのMTAは、"
+"\n"
+"    その設定に記載されているエイリアスファイルが存在しないとメールを\n"
+"    配信できません。状況によっては、これはmailman3サーバーの最初の起動時に\n"
+"    デッドロックにつながる可能性があります。このオプションを true "
+"に設定すると、\n"
+"    このスクリプトがファイルを作成し、MTA "
+"がスムーズに動作するようになります。"
 
 #: src/mailman/commands/cli_control.py:66
 msgid ""
@@ -641,6 +700,23 @@ msgid ""
 "    may have permission problems, such as being unable to delete a list's\n"
 "    archives through the web.  Tough luck!"
 msgstr ""
+"    通常、ユーザーIDとグループIDが\n"
+"    （Mailmanを設定したときに定義した）「mailman」ユーザーとグループに設定さ"
+"れていない場合、\n"
+"    このスクリプトは実行を拒否します。   rootとして実行した場合、"
+"このスクリプトはチェックが行われる前に\n"
+"    このユーザーとグループに変更されます。\n"
+"\n"
+"    これはテストやデバッグの目的には不都合なので、\n"
+"    -uフラグはuid/gidを設定しチェックするステップがスキップされ、\n"
+"    プログラムが現在のユーザーとグループで実行されることを意味します。  "
+"このフラグは、通常の本番環境では\n"
+"    推奨されない。\n"
+"\n"
+"    しかし、-uで実行し、mailmanグループに属していない場合、\n"
+"    ウェブを通してリストのアーカイブを削除できないなど、\n"
+"    パーミッションの問題が発生する可能性があることに注意してください。  "
+"幸運を祈ります！"
 
 #: src/mailman/commands/cli_control.py:83 src/mailman/commands/cli_control.py:170
 #: src/mailman/commands/cli_control.py:192 src/mailman/commands/cli_control.py:214
@@ -648,79 +724,84 @@ msgid ""
 "    Don't print status messages.  Error messages are still printed to standard\n"
 "    error."
 msgstr ""
+"    ステータス・メッセージを表示しない。   エラーメッセージは標準エラーに\n"
+"    出力される。"
 
 #: src/mailman/commands/cli_control.py:93
 msgid "GNU Mailman is already running"
-msgstr ""
+msgstr "GNU Mailmanはすでに起動している"
 
 #: src/mailman/commands/cli_control.py:97
 msgid "A previous run of GNU Mailman did not exit cleanly ({}).  Try using --force"
-msgstr ""
+msgstr "GNU Mailmanの以前の実行がきれいに終了しませんでした({})。  "
+"--forceを試してください"
 
 #: src/mailman/commands/cli_control.py:105
 msgid "Starting Mailman's master runner"
-msgstr ""
+msgstr "Mailmanのマスターランナーを起動する"
 
 #: src/mailman/commands/cli_control.py:108
 msgid "Generating MTA alias maps"
-msgstr ""
+msgstr "MTAエイリアスマップの生成"
 
 #: src/mailman/commands/cli_control.py:149
 #, python-brace-format
 msgid "PID unreadable in: ${config.PID_FILE}"
-msgstr ""
+msgstr "PIDを読み込めません ${config.PID_FILE}"
 
 #: src/mailman/commands/cli_control.py:151
 msgid "Is the master even running?"
-msgstr ""
+msgstr "masterは動作していますか？"
 
 #: src/mailman/commands/cli_control.py:158
 #, python-brace-format
 msgid "No child with pid: ${pid}"
-msgstr ""
+msgstr "pidを持つ子がいない:${pid}"
 
 #: src/mailman/commands/cli_control.py:160
 msgid "Stale pid file removed."
-msgstr ""
+msgstr "古いpidファイルを削除。"
 
 #: src/mailman/commands/cli_control.py:166
 msgid "Stop the Mailman master and runner processes."
-msgstr ""
+msgstr "Mailman masterとrunnerプロセスを停止する。"
 
 #: src/mailman/commands/cli_control.py:175
 msgid "Shutting down Mailman's master runner"
-msgstr ""
+msgstr "Mailmanのマスターランナーをシャットダウンする"
 
 #: src/mailman/commands/cli_control.py:188
 msgid "Signal the Mailman processes to re-open their log files."
-msgstr ""
+msgstr "Mailmanプロセスにログファイルを再度開くように合図する。"
 
 #: src/mailman/commands/cli_control.py:197
 msgid "Reopening the Mailman runners"
-msgstr ""
+msgstr "Mailman runnerの再開"
 
 #: src/mailman/commands/cli_control.py:210
 msgid "Stop and restart the Mailman runner subprocesses."
-msgstr ""
+msgstr "Mailman runnerサブプロセスを停止し、再起動します。"
 
 #: src/mailman/commands/cli_control.py:219
 msgid "Restarting the Mailman runners"
-msgstr ""
+msgstr "Mailmanランナーの再起動"
 
 #: src/mailman/commands/cli_delmembers.py:48
 #, python-brace-format
 msgid "Member not subscribed (skipping): ${email}"
-msgstr ""
+msgstr "メンバーが購読していません(skipping): ${email}"
 
 #: src/mailman/commands/cli_delmembers.py:54
 msgid "    Delete members from a mailing list."
-msgstr ""
+msgstr "    メーリングリストからメンバーを削除します。"
 
 #: src/mailman/commands/cli_delmembers.py:58
 msgid ""
 "    The list to operate on.  Required unless --fromall is specified.\n"
 "    "
 msgstr ""
+"    操作対象のリスト。  --fromallが指定されていない場合は必須。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:64
 msgid ""
@@ -729,6 +810,11 @@ msgid ""
 "    standard input.  Blank lines and lines that start with a '#' are ignored.\n"
 "    "
 msgstr ""
+"    -m/--memberで指定されたメンバーに加えて、\n"
+"    FILENAMEにアドレスを持つリストメンバーを削除する。  "
+"FILENAMEには標準入力を示す\n"
+"    '-'を指定できる。  空白行と'#'で始まる行は無視される。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:71
 msgid ""
@@ -737,6 +823,11 @@ msgid ""
 "    multiple addresses.\n"
 "    "
 msgstr ""
+"    アドレスがADDRESSであるリストメンバーがあれば、\n"
+"    -f/--fileで指定したメンバーに加えて削除する。  "
+"このオプションは複数のアドレスに対して\n"
+"    繰り返すことができる。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:79
 msgid ""
@@ -744,6 +835,9 @@ msgid ""
 "    -m/--member or --fromall may be specified.\n"
 "    "
 msgstr ""
+"    リストのすべてのメンバーを削除する。  指定された場合、-f/--file、\n"
+"    -m/--member、--fromall のいずれも指定できない。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:86
 msgid ""
@@ -752,6 +846,11 @@ msgid ""
 "    -a/--all or -l/--list.\n"
 "    "
 msgstr ""
+"    -m/--member および/または -f/--file で指定されたメンバーを、インストー "
+"ル内の\n"
+"    すべてのリストから削除する。  これは -a/--all または -l/--list と\n"
+"    一緒に指定してはならない。\n"
+"    "
 
 #: src/mailman/commands/cli_delmembers.py:93
 #: src/mailman/commands/cli_syncmembers.py:182
@@ -759,20 +858,22 @@ msgid ""
 "    Override the list's setting for send_goodbye_message to\n"
 "    deleted members."
 msgstr ""
+"    削除されたメンバーへの send_goodbye_message のリストの設定を\n"
+"    上書きします。"
 
 #: src/mailman/commands/cli_delmembers.py:98
 #: src/mailman/commands/cli_syncmembers.py:187
 msgid "    Override the list's setting for admin_notify_mchanges."
-msgstr ""
+msgstr "    リストの admin_notify_mchanges の設定を上書きする。"
 
 #: src/mailman/commands/cli_delmembers.py:123
 #, python-brace-format
 msgid "No such list: ${_list}"
-msgstr ""
+msgstr "そのようなリストはありません:${_list}"
 
 #: src/mailman/commands/cli_digests.py:38
 msgid "Operate on digests."
-msgstr ""
+msgstr "ダイジェストで操作する。"
 
 #: src/mailman/commands/cli_digests.py:41
 msgid ""
@@ -780,12 +881,18 @@ msgid ""
 "    argument can either be a List-ID or a fully qualified list name.  Without\n"
 "    this option, operate on the digests for all mailing lists."
 msgstr ""
+"    このメーリングリストを操作する。  複数の --list "
+"オプションを指定することができます。  引数には\n"
+"    リストIDか完全修飾リスト名を指定します。  このオプションを\n"
+"    指定しないと、すべてのメーリングリストのダイジェストを操作します。"
 
 #: src/mailman/commands/cli_digests.py:48
 msgid ""
 "    Send any collected digests right now, even if the size threshold has not\n"
 "    yet been met."
 msgstr ""
+"    収集したダイジェストは、まだサイズのしきい値に達していなくても、\n"
+"    今すぐ送信する。"
 
 #: src/mailman/commands/cli_digests.py:54
 msgid ""
@@ -793,46 +900,59 @@ msgid ""
 "    given with --send, the volume number is incremented before any current\n"
 "    digests are sent."
 msgstr ""
+"    ダイジェストのボリューム番号をインクリメントし、ダイジェスト番号を 1 "
+"にリセットする。  --sendを指定すると、\n"
+"    現在のダイジェストが送信される前にボリューム番号が\n"
+"    インクリメントされる。"
 
 #: src/mailman/commands/cli_digests.py:61 src/mailman/commands/cli_notify.py:50
 msgid ""
 "    Don't actually do anything, but in conjunction with --verbose, show what\n"
 "    would happen."
 msgstr ""
+"    実際には何もしないが、--verboseと組み合わせて、\n"
+"    何が起こるかを示す。"
 
 #: src/mailman/commands/cli_digests.py:67 src/mailman/commands/cli_notify.py:56
 msgid "Print some additional status."
-msgstr ""
+msgstr "追加のステータスを表示する。"
 
 #: src/mailman/commands/cli_digests.py:71
 msgid ""
 "    Send any collected digests for the List only if their digest_send_periodic\n"
 "    is set to True."
 msgstr ""
+"    digest_send_periodic が True に設定されている場合のみ、"
+"収集したダイジェストを \n"
+"    List に送信します。"
 
 #: src/mailman/commands/cli_digests.py:79
 msgid "--send and --periodic flags cannot be used together"
-msgstr ""
+msgstr "--sendフラグと--periodicフラグは併用できない"
 
 #: src/mailman/commands/cli_digests.py:92 src/mailman/commands/cli_notify.py:69
 #, python-brace-format
 msgid "No such list found: ${spec}"
-msgstr ""
+msgstr "そのようなリストは見つかりませんでした:${spec}"
 
 #: src/mailman/commands/cli_digests.py:100
 #, python-brace-format
 msgid "${mlist.list_id} is at volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr ""
+msgstr "${mlist.list_id}はボリューム${mlist.volume}、番号${mlist."
+"next_digest_number}にある"
 
 #: src/mailman/commands/cli_digests.py:106
 #, python-brace-format
 msgid "${mlist.list_id} bumped to volume ${mlist.volume}, number ${mlist.next_digest_number}"
 msgstr ""
+"${mlist.list_id}がボリューム${mlist.volume}にバンプされ、番号が${mlist."
+"next_digest_number}になった"
 
 #: src/mailman/commands/cli_digests.py:112 src/mailman/commands/cli_digests.py:122
 #, python-brace-format
 msgid "${mlist.list_id} sent volume ${mlist.volume}, number ${mlist.next_digest_number}"
-msgstr ""
+msgstr "${mlist.list_id}はボリューム${mlist.volume}、番号${mlist."
+"next_digest_number}を送った"
 
 #: src/mailman/commands/cli_findmember.py:66
 msgid ""
@@ -840,28 +960,36 @@ msgid ""
 "    pattern.\n"
 "    "
 msgstr ""
+"    パターンに一致する住所を持つユーザーまたはユーザーのすべてのメンバーシッ"
+"プを\n"
+"    表示します。\n"
+"    "
 
 #: src/mailman/commands/cli_findmember.py:74
 msgid ""
 "    Display only memberships with the given role.  If not given, 'all' role,\n"
 "    i.e. all roles, is the default."
 msgstr ""
+"    指定されたロールを持つ会員のみを表示する。  "
+"指定されない場合、'all'ロール、\n"
+"    つまりすべてのロールがデフォルトとなります。"
 
 #: src/mailman/commands/cli_findmember.py:98
 msgid "Email: {}"
-msgstr ""
+msgstr "Eメール: {}"
 
 #: src/mailman/commands/cli_findmember.py:102
 msgid "List: {}"
-msgstr ""
+msgstr "リスト: {}"
 
 #: src/mailman/commands/cli_findmember.py:105
 msgid "{}"
-msgstr ""
+msgstr "{}"
 
 #: src/mailman/commands/cli_gatenews.py:170
 msgid "Poll the NNTP server for messages to be gatewayed to mailing lists."
-msgstr ""
+msgstr "メーリングリストにゲートウェイされるメッセージをNNTPサーバーにポーリングする"
+"。"
 
 #: src/mailman/commands/cli_gatenews.py:177
 msgid ""
@@ -870,16 +998,23 @@ msgid ""
 "    If you want to run it manually, set _MAILMAN_GATENEWS_NNTP in the\n"
 "    environment."
 msgstr ""
+"    gatenewsコマンドはnntpランナーによって定期的に実行される。\n"
+"    cronで実行している場合は、crontabから削除してください。\n"
+"    手動で実行したい場合は、_MAILMAN_GATENEWS_NNTPを環境に\n"
+"    設定してください。"
 
 #: src/mailman/commands/cli_help.py:32
 msgid "Show this help message and exit."
-msgstr ""
+msgstr "このヘルプメッセージを表示して終了する。"
 
 #: src/mailman/commands/cli_import.py:51
 msgid ""
 "    Import Mailman 2.1 list data.  Requires the fully-qualified name of the\n"
 "    list to import and the path to the Mailman 2.1 pickle file."
 msgstr ""
+"    Mailman 2.1のリストデータをインポートします。  "
+"インポートするリストの完全修飾名と\n"
+"     Mailman 2.1 pickle ファイルへのパスが必要です。"
 
 #: src/mailman/commands/cli_import.py:56
 msgid ""
@@ -2158,10 +2293,16 @@ msgid "list:admin:notice:removal.txt"
 msgstr ""
 
 msgid "list:admin:notice:subscribe.txt"
-msgstr ""
+msgstr "memberは$display_nameの購読に成功しました。"
 
 msgid "list:admin:notice:unrecognized.txt"
 msgstr ""
+"添付されたメッセージはバウンスとして受信されましたが、バウンス形式が認識され"
+"なかったか、\n"
+"バウンスメンバーのアドレスが抽出できませんでした。  このメーリングリストは、"
+"\n"
+"認識できないバウンスメッセージをすべてリスト管理者に送信するように\n"
+"設定されています。"
 
 msgid "list:admin:notice:unsubscribe.txt"
 msgstr "${member} は ${display_name} から削除されました。"
@@ -2171,45 +2312,224 @@ msgstr ""
 
 msgid "list:member:digest:masthead.txt"
 msgstr ""
+"display_nameメーリングリストの送信先\n"
+"\t$listname\n"
+"\n"
+"Eメールでの購読・購読解除は、件名または本文に\n"
+"ヘルプ\n"
+"\t$request_email\n"
+"\n"
+"リストを管理している人物への連絡先は以下の通りです。\n"
+"\t$owner_email\n"
+"\n"
+"返信の際は、件名を \"Re: $display_nameのダイジェストの内容... \"\n"
+"より具体的に編集してください"
 
 msgid "list:member:generic:footer.txt"
 msgstr ""
+"_______________________________________________\n"
+"display_nameメーリングリスト -- $listname\n"
+"配信停止をご希望の方は、${short_listname}-leave@${ドメイン}までメールをお送り"
+"ください"
 
 msgid "list:member:regular:header.txt"
 msgstr ""
 
 msgid "list:user:action:invite.txt"
 msgstr ""
+"あなたのアドレス\"$user_email \"は、$"
+"short_listnameメーリングリストの所有者によって\n"
+"$ドメインの$short_listnameメーリングリストに招待されました。\n"
+"このメッセージに返信するだけで、招待を受けることができる。\n"
+"\n"
+"あるいは、$request_email宛のメッセージに、\n"
+"以下の行を--そして以下の行だけを--含めるべきである：\n"
+"\n"
+"    トークンを確認する\n"
+"\n"
+"ほとんどのメールリーダーでは、このメッセージに`返信'を送るだけでうまくいくは"
+"ずである。\n"
+"\n"
+"この招待を辞退したい場合は、\n"
+"このメッセージを無視してください。  ご質問は下記までお寄せください。\n"
+"$owner_email."
 
 msgid "list:user:action:subscribe.txt"
 msgstr ""
+"メールアドレス登録確認\n"
+"\n"
+"こんにちは、こちらは$ドメインのGNU Mailmanサーバーです。\n"
+"\n"
+"メールアドレスの登録リクエストを受け取りました。\n"
+"\n"
+"    $user_email\n"
+"\n"
+"このサイトでGNU Mailmanを使い始める前に、まずこれがあなたのメールアドレスであ"
+"ることを確認する必要があります。 \n"
+"このメッセージに返信することで確認できます。\n"
+"\n"
+"あるいは、$request_email宛のメッセージに、以下の行を--そして以下の行だけを--"
+"含めるべきである：\n"
+"\n"
+"    トークンを確認する\n"
+"\n"
+"ほとんどのメールリーダーでは、このメッセージに`返信'を送るだけでうまくいくは"
+"ずである。\n"
+"\n"
+"このメールアドレスを登録したくない場合は、\n"
+"このメッセージを無視してください。  "
+"あなたが悪意を持ってリストに登録されていると思われる場合、\n"
+"またはその他の質問がある場合は、下記までご連絡ください。\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:action:unsubscribe.txt"
 msgstr ""
+"メールアドレス配信停止確認\n"
+"\n"
+"こんにちは、こちらは$ドメインのGNU Mailmanサーバーです。\n"
+"\n"
+"メールアドレスの登録解除リクエストを受け取りました。\n"
+"\n"
+"    $user_email\n"
+"\n"
+"GNU Mailmanがあなたの配信を停止する前に、まずあなたのリクエストを確認する必要"
+"があります。\n"
+"このメッセージに返信するだけで、これを行うことができます。\n"
+"\n"
+"あるいは、$request_email宛のメッセージに、以下の行を--\n"
+"そして以下の行だけを--含めるべきである：\n"
+"\n"
+"    トークンを確認する\n"
+"\n"
+"ほとんどのメールリーダーでは、\n"
+"このメッセージに`返信'を送るだけでうまくいくはずである。\n"
+"\n"
+"このメールアドレスの配信停止を希望されない場合は、\n"
+"このメッセージを無視してください。  "
+"悪意を持って配信停止されていると思われる場合、\n"
+"またはその他のご質問がある場合は、下記までご連絡ください。\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:goodbye.txt"
 msgstr ""
 
 msgid "list:user:notice:hold.txt"
 msgstr ""
+"件名を'$listname'としたあなたのメール\n"
+"\n"
+"     $subject\n"
+"\n"
+"リストのモデレーターが承認のためにレビューするまで保留されます。\n"
+"\n"
+"このメッセージは、なぜ開催されるのか？\n"
+"\n"
+"$reasons\n"
+"\n"
+"メッセージがリストに投稿されるか、\n"
+"モデレーターの決定通知が届きます。"
 
 msgid "list:user:notice:no-more-today.txt"
 msgstr ""
+"あなたのアドレス<$sender_email>から、$listnameメーリングリストからの\n"
+"自動応答を要求するメッセージを受け取りました。\n"
+"\n"
+"今日見た数字：$count。  "
+"メールロボット間のメールループなどの問題を避けるため、\n"
+"本日はこれ以上の返信はいたしません。  明日\n"
+"もう一度試してください。\n"
+"\n"
+"このメッセージが誤りであると思われる場合、\n"
+"またはご質問がある場合は、$owner_emailまでリストオーナーにご連絡ください。"
 
 msgid "list:user:notice:post.txt"
 msgstr ""
+"あなたのメッセージ\n"
+"\n"
+"    $subject\n"
+"\n"
+"は$display_nameメーリングリストに正常に受信されました。"
 
 msgid "list:user:notice:probe.txt"
 msgstr ""
+"これはプローブメッセージである。  このメッセージは無視して構わない。\n"
+"\n"
+"listnameメーリングリストは、\n"
+"あなたからのバウンスを多数受け取りました。  以下に\n"
+"サンプルを添付する。  "
+"メールアドレスに問題がないか、このメッセージをご確認ください。\n"
+"\n"
+"メールアドレスに問題がないことを確認してください。  "
+"メール管理者に問い合わせてみてください。\n"
+"\n"
+"メーリングリストの有効メンバーであり続けるためには、何もする必要はありません"
+"。\n"
+"\n"
+"質問や問題がある場合は、\n"
+"メーリングリストのオーナーに連絡してください。\n"
+"\n"
+"メーリングリストの有効メンバーであり続けるためには、何もする必要はありません"
+"。\n"
+"\n"
+"質問や問題がある場合は、メーリングリストの所有者である\n"
+"までご連絡ください。\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:refuse.txt"
 msgstr ""
+"メーリングリストへのリクエスト\n"
+"\n"
+"    $request\n"
+"\n"
+"はリスト管理者によって拒否されました。  モデレーターは、"
+"あなたのリクエストを却下した理由を\n"
+"次のように述べています：\n"
+"\n"
+"\"$reason\"\n"
+"\n"
+"ご質問やご意見は、\n"
+"リスト管理者までお寄せください：\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:rejected.txt"
 msgstr ""
+"listnameメーリングリストへのメッセージは、以下の理由で拒否されました。\n"
+"理由:\n"
+"\n"
+"$reasons\n"
+"\n"
+"Mailmanが受信した元のメッセージを添付します。"
 
 msgid "list:user:notice:warning.txt"
 msgstr ""
+"listnameメーリングリストは、$sender_emailへのメッセージ配信に\n"
+"問題があることを示すバウンスを多数受信したため、\n"
+"あなたの購読は無効になりました。\n"
+"メール管理者に問い合わせてみてください。\n"
+"\n"
+"質問や問題がある場合は、メーリングリストのオーナーに連絡してください。\n"
+"\n"
+"    $owner_email"
 
 msgid "list:user:notice:welcome.txt"
 msgstr ""
+"「$display_name」メーリング リストへようこそ!\n"
+"\n"
+"このリストに投稿するには、次の宛先にメッセージを送信してください。\n"
+"\n"
+"  $listname\n"
+"\n"
+"次の宛先にメッセージを送信することで、電子メールで購読を解除したり、オプショ"
+"ンを調整したりできます。\n"
+"  $request_email\n"
+"\n"
+"件名または本文に「ヘルプ」という単語を含めると (引用符は含めないでください)、"
+"\n"
+"手順を記載したメッセージが返されます。  "
+"オプションを変更するにはパスワードが必要ですが、\n"
+"セキュリティのため、このパスワードは\n"
+"ここには記載されていません。  パスワードをお忘れの場合は、\n"
+"Web UIからパスワードをリセットする必要があります。"
