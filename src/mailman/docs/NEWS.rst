@@ -9,10 +9,10 @@ Here is a history of user visible changes to Mailman.
 
 .. _news-3.3.9:
 
-3.3.9b1
-=======
+3.3.9
+=====
 
-(2023-08-25)
+(2023-10-20)
 
 Configuration
 -------------

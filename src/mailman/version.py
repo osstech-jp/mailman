@@ -18,7 +18,7 @@
 """Mailman version strings."""
 
 # Mailman version.
-VERSION = '3.3.9b1'
+VERSION = '3.3.9'
 CODENAME = 'Tom Sawyer'
 
 # And as a hex number in the manner of PY_VERSION_HEX.
@@ -32,7 +32,7 @@ FINAL = 0xf
 MAJOR_REV = 3
 MINOR_REV = 3
 MICRO_REV = 9
-REL_LEVEL = BETA
+REL_LEVEL = FINAL
 # At most 15 beta releases!
 REL_SERIAL = 1
 
