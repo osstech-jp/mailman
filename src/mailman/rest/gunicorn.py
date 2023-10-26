@@ -62,7 +62,11 @@ def make_gunicorn_server():
     # for gunicorn can be defined in configuration: section. We also load up
     # some logging options since gunicorn sets up it's own loggers.
     host = config.webservice.hostname
-    port = int(config.webservice.port)
+    if host == 'local':
+        host = 'unix'
+        port = config.webservice.port
+    else:
+        port = int(config.webservice.port)
     log_path = os.path.join(config.LOG_DIR, config.logging.gunicorn['path'])
     options = {
         'bind': '{}:{}'.format(host, port),

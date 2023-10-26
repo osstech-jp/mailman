@@ -22,6 +22,7 @@ import sys
 import mailman.templates
 
 from configparser import ConfigParser
+from configparser import BasicInterpolation
 from contextlib import ExitStack
 from flufl.lock import Lock
 from importlib.resources import path, read_text
@@ -392,7 +393,7 @@ def load_external(path):
 
 
 @public
-def external_configuration(path):
+def external_configuration(path, interpolation=BasicInterpolation()):
     """Parse the configuration file named by path.
 
     :param path: A string naming the location of the external configuration
@@ -406,7 +407,7 @@ def external_configuration(path):
     # Is the context coming from a file system or Python path?
     with ExitStack() as resources:
         cfg_path = str(expand_path(resources, path))
-    parser = ConfigParser()
+    parser = ConfigParser(interpolation=interpolation)
     files = parser.read(cfg_path)
     if files != [cfg_path]:
         raise MissingConfigurationFileError(path)

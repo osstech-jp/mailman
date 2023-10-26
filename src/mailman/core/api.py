@@ -23,6 +23,7 @@ from mailman.interfaces.api import IAPI
 from public import public
 from uuid import UUID
 from zope.interface import implementer
+import urllib.parse
 
 
 @public
@@ -64,10 +65,15 @@ class API31:
     @classmethod
     def path_to(cls, resource):
         """See `IAPI`."""
-        return '{}://{}:{}/{}/{}'.format(
-            ('https' if as_boolean(config.webservice.use_https) else 'http'),
-            config.webservice.hostname,
-            config.webservice.port,
+        scheme = 'https' if as_boolean(config.webservice.use_https) else 'http'
+        if config.webservice.hostname == 'local':
+            scheme = f'{scheme}+unix'
+            hostname_port = urllib.parse.quote(config.webservice.port, safe='')
+        else:
+            hostname_port = f'{config.webservice.hostname}:{config.webservice.port}'
+        return '{}://{}/{}/{}'.format(
+            scheme,
+            hostname_port,
             cls.version,
             (resource[1:] if resource.startswith('/') else resource),
             )

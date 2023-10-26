@@ -53,26 +53,13 @@ def search_for_configuration_file():
     # Both None and the empty string are considered "missing".
     if config_path and os.path.exists(config_path):
         return os.path.abspath(config_path)
-    # ./mailman.cfg
-    config_path = os.path.abspath('mailman.cfg')
-    if os.path.exists(config_path):
-        return config_path
     # As a special case, look in ./var/etc/mailman.cfg.  We can't do this in
     # the Configuration.load() method because that depends on the
     # configuration system, which of course is not set up at that time!
     config_path = os.path.abspath(os.path.join('var', 'etc', 'mailman.cfg'))
     if os.path.exists(config_path):
         return config_path
-    # ~/.mailman.cfg
-    config_path = os.path.join(os.getenv('HOME', '~'), '.mailman.cfg')
-    if os.path.exists(config_path):
-        return os.path.abspath(config_path)
-    # /etc/mailman.cfg
-    config_path = '/etc/mailman.cfg'
-    if os.path.exists(config_path):
-        return os.path.abspath(config_path)
-    # /etc/mailman3/mailman.cfg
-    config_path = '/etc/mailman3/mailman.cfg'
+    config_path = '/opt/osstech/etc/mailman/mailman.cfg'
     if os.path.exists(config_path):
         return os.path.abspath(config_path)
     # $argv0/../../etc/mailman.cfg
