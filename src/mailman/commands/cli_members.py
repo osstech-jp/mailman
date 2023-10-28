@@ -103,10 +103,11 @@ def display_members(ctx, mlist, role, regular, digest,
         if nomail is not None:
             if member.delivery_status not in status_types:
                 continue
-        if email_only or not address.display_name:
+        dn = address.display_name or member.user.display_name
+        if email_only or not dn:
             print(address.original_email, file=outfp)
         else:
-            print(f'{address.display_name} <{address.original_email}>',
+            print(f'{dn} <{address.original_email}>',
                   file=outfp)
 
 

@@ -101,6 +101,17 @@ class TestCLIMembers(unittest.TestCase):
         self.assertEqual(len(lines), 1)
         self.assertEqual(lines[0], 'Cate Person <cperson@example.com>\n')
 
+    def test_display_name_fallback(self):
+        member = subscribe(self._mlist, 'Anne', role=MemberRole.member)
+        member.address.display_name = None
+        with NamedTemporaryFile('w', encoding='utf-8') as outfp:
+            self._command.invoke(members, (
+                '--role', 'member', '-o', outfp.name, 'ant.example.com'))
+            with open(outfp.name, 'r', encoding='utf-8') as infp:
+                lines = infp.readlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Anne Person <aperson@example.com>\n')
+
     def test_already_subscribed_with_display_name(self):
         subscribe(self._mlist, 'Anne')
         with NamedTemporaryFile('w', buffering=1, encoding='utf-8') as infp:
