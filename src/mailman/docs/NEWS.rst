@@ -7,6 +7,18 @@ Copyright (C) 1998-2022 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+.. _news-3.3.10:
+
+3.3.10
+======
+
+(xxxx-xx-xx)
+
+Bugs fixed
+----------
+* The ``mailman members`` command will now fall back to the member's user
+  record display_name if the address record has none.  (Closes #1107)
+
 .. _news-3.3.9:
 
 3.3.9
